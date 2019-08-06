@@ -47,7 +47,7 @@ return [
     'twitter' => [
         'client_id' => env('TWITTER_ID'),
         'client_secret' => env('TWITTER_SECRET'),
-        'redirect' => env('TWITTER_REDIRECT', 'http://localhost:8000/callback/twitter'),
+        'redirect' => env('TWITTER_REDIRECT'),
     ]
 
 ];
