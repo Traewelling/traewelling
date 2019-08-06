@@ -45,9 +45,9 @@ return [
     ],
 
     'twitter' => [
-        'client_id' => 'OffIE17bE32Bk4SwSyJPBjoeX',
-        'client_secret' => 'as4JkwvmAX2lpUZXmpTDD8RjHPRCReGdJrqpmlmP7JC1hXmIEp',
-        'redirect' => 'http://localhost:8000/callback/twitter',
+        'client_id' => env('TWITTER_ID'),
+        'client_secret' => env('TWITTER_SECRET'),
+        'redirect' => env('TWITTER_REDIRECT', 'http://localhost:8000/callback/twitter'),
     ]
 
 ];
