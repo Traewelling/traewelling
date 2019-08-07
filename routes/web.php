@@ -21,3 +21,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
+Route::get('/settings', function() {
+    $user = Auth::user();
+    return view('settings', compact('user'));
+})->name('settings')->middleware('auth');
+Route::post('/settings', 'UserController@updateSettings')->name('settings')->middleware('auth');
