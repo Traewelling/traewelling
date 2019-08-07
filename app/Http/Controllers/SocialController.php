@@ -35,8 +35,9 @@ class SocialController extends Controller
 
         $getInfo = Socialite::driver($provider)->user();
         $user = $this->createUser($getInfo, $provider);
-
-        auth()->login($user);
+        if(!Auth::check()) {
+            auth()->login($user);
+        }
 
         return redirect()->to('/home');
 
@@ -58,6 +59,9 @@ class SocialController extends Controller
 
         if (Auth::check()) {
             $user = Auth::user();
+            if ($identifier != null) {
+                return redirect()->to('/home')->withErrors(['msg', __('This Account is already connected to another user')]);
+            }
         } elseif ($identifier === null) {
             $user = User::create([
                             'name' => $getInfo->name,
