@@ -33,7 +33,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -74,9 +76,7 @@
         </nav>
 
         <main class="py-4">
-            @if ($errors->any())
-                {{ $errors->all('<div>:message</div>') }}
-            @endif
+
             @yield('content')
         </main>
     </div>

@@ -41,4 +41,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(SocialLoginProfile::class);
     }
+
+    public function statuses(){
+        return $this->hasMany('App\Status');
+    }
+
+    public function likes() {
+        return $this->hasMany('App\Like');
+    }
+
+    public function follows() {
+        return $this->hasMany('App\Follow');
+    }
+
 }
