@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Revolution\Socialite\Mastodon\MastodonProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+        $socialite->extend(
+            'mastodon',
+            function ($app) use ($socialite) {
+                $config = $app['config']['services.mastodon'];
+                return $socialite->buildProvider(MastodonProvider::class, $config);
+            }
+        );
     }
 }

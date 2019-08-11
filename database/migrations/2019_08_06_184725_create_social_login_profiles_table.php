@@ -22,6 +22,7 @@ class CreateSocialLoginProfilesTable extends Migration
             $table->string('twitter_id')->nullable();
             $table->string('twitter_token')->nullable();
             $table->string('twitter_tokenSecret')->nullable();
+            $table->string('mastodon_token')->nullable();
             $table->timestamps();
         });
     }

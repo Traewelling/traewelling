@@ -93,6 +93,15 @@
                     <div class="form-group row mb-0">
                         <div class="col-md-8 offset-md-4">
                             <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary"><i class="fa fa-twitter"></i> Twitter</a>
+                            <form class="form-inline" method="GET" action="{{ url('/auth/redirect/mastodon') }}">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="domain" placeholder="Mastodon URL" aria-describedby="button-addon4">
+                                    <div class="input-group-append" id="button-addon4">
+                                        <button class="btn btn-outline-secondary" type="submit">Mastodon</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <a href="{{ url('/auth/redirect/mastodon') }}" class="btn btn-primary">Mastodon</a>
                         </div>
                     </div>
                 </div>

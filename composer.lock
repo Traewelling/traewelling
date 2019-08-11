@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6c5db9946b42e8f471a6d7c88c7dd55",
+    "content-hash": "1d40742ebc1c07e0d69f610e593ffdfd",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1815,6 +1815,118 @@
                 "uuid"
             ],
             "time": "2018-07-19T23:38:55+00:00"
+        },
+        {
+            "name": "revolution/laravel-mastodon-api",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kawax/laravel-mastodon-api.git",
+                "reference": "199bbde64b25d4df3a8c8da7afc9682aec8ce3ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kawax/laravel-mastodon-api/zipball/199bbde64b25d4df3a8c8da7afc9682aec8ce3ff",
+                "reference": "199bbde64b25d4df3a8c8da7afc9682aec8ce3ff",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.2",
+                "illuminate/support": "^5.8 || ^6.0",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "~3.8",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Revolution\\Mastodon\\Providers\\MastodonServiceProvider"
+                    ],
+                    "aliases": {
+                        "Mastodon": "Revolution\\Mastodon\\Facades\\Mastodon"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Revolution\\Mastodon\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kawax",
+                    "email": "kawaxbiz@gmail.com"
+                }
+            ],
+            "description": "Mastodon API for Laravel",
+            "keywords": [
+                "laravel",
+                "mastodon"
+            ],
+            "time": "2019-07-25T04:59:28+00:00"
+        },
+        {
+            "name": "revolution/socialite-mastodon",
+            "version": "1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kawax/socialite-mastodon.git",
+                "reference": "61e2af4018df49116df9cf0917b54ca45b5a9077"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kawax/socialite-mastodon/zipball/61e2af4018df49116df9cf0917b54ca45b5a9077",
+                "reference": "61e2af4018df49116df9cf0917b54ca45b5a9077",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/socialite": "*",
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Revolution\\Socialite\\Mastodon\\MastodonServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Revolution\\Socialite\\Mastodon\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kawax",
+                    "email": "kawaxbiz@gmail.com"
+                }
+            ],
+            "description": "Socialite for Mastodon",
+            "keywords": [
+                "laravel",
+                "mastodon",
+                "socialite"
+            ],
+            "time": "2019-02-28T09:22:35+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

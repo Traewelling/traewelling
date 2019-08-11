@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function updateProfile(Request $request) {
+    public function updateSettings(Request $request) {
         $user = Auth::user();
 
         $user->username = $request->username;
         $user->name = $request->name;
         $user->save();
-        return view('profile', compact('user'));
+        return view('settings', compact('user'));
     }
 
     //Return Settings-page
@@ -29,6 +29,7 @@ class UserController extends Controller
 
     //Save Changes on Settings-Page
     public function SaveAccount(Request $request) {
+
         $this->validate($request, [
             'name' => 'required|max:120'
         ]);

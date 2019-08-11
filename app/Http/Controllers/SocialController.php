@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Validator,Redirect,Response,File;
 use Socialite;
 use App\User;
+use App\MastodonServer;
 use Auth;
+use Mastodon;
+
 class SocialController extends Controller
 {
     /**
@@ -17,8 +20,41 @@ class SocialController extends Controller
      *
      * @return redirect
      */
-    public function redirect($provider)
-    {
+    public function redirect($provider, Request $request) {
+
+        $this->validate($request, [
+            'domain' => 'url'
+        ]);
+
+        if ($provider === 'mastodon') {
+            //input domain by user
+            $domain = $request->input('domain');
+
+            //get app info. domain, client_id, client_secret ...
+            //Server is Eloquent Model
+            $server = MastodonServer::where('domain', $domain)->first();
+
+            if (empty($server)) {
+                //create new app
+                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'read write');
+
+                //save app info
+                $server = MastodonServer::create([
+                                             'domain'        => $domain,
+                                             'client_id'     => $info['client_id'],
+                                             'client_secret' => $info['client_secret'],
+                                         ]);
+            }
+
+            //change config
+            config(['services.mastodon.domain' => $domain]);
+            config(['services.mastodon.client_id' => $server->client_id]);
+            config(['services.mastodon.client_secret' => $server->client_secret]);
+
+            session(['mastodon_domain' => $domain]);
+            session(['mastodon_server' => $server]);
+
+        }
         return Socialite::driver($provider)->redirect();
     }
 
@@ -32,6 +68,16 @@ class SocialController extends Controller
      */
     public function callback($provider)
     {
+        if ($provider === 'mastodon') {
+            $domain = session('mastodon_domain');
+            $server = session('mastodon_server');
+
+            config(['services.mastodon.domain' => $domain]);
+            config(['services.mastodon.client_id' => $server->client_id]);
+            config(['services.mastodon.client_secret' => $server->client_secret]);
+
+        }
+
 
         $getInfo = Socialite::driver($provider)->user();
         $user = $this->createUser($getInfo, $provider);
@@ -79,6 +125,9 @@ class SocialController extends Controller
         if ($provider === 'twitter') {
             $socialProfile->twitter_token = $getInfo->token;
             $socialProfile->twitter_tokenSecret = $getInfo->tokenSecret;
+        }
+        if ($provider === 'mastodon') {
+            $socialProfile->mastodon_token = $getInfo->token;
         }
 
         $user->socialProfile()->save($socialProfile);
