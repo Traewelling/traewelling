@@ -90,18 +90,26 @@
                         </div>
                     </form>
                     <hr>
-                    <div class="form-group row mb-0">
-                        <div class="col-md-8 offset-md-4">
-                            <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary"><i class="fa fa-twitter"></i> Twitter</a>
-                            <form class="form-inline" method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="domain" placeholder="Mastodon URL" aria-describedby="button-addon4">
-                                    <div class="input-group-append" id="button-addon4">
-                                        <button class="btn btn-outline-secondary" type="submit">Mastodon</button>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary"><i class="fab fa-twitter"></i> Twitter</a>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <a href="{{ url('/auth/redirect/github') }}" class="btn btn-primary"><i class="fab fa-github"></i> Github</a>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="input-group">
+                                            <input type="text" name="domain" placeholder="Mastodon URL" aria-describedby="button-addon4" class="form-control">
+                                            <div id="button-addon4" class="input-group-append">
+                                                <button type="submit" class="btn btn-primary"><i class="fab fa-mastodon"></i> Mastodon</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
-                            <a href="{{ url('/auth/redirect/mastodon') }}" class="btn btn-primary">Mastodon</a>
                         </div>
                     </div>
                 </div>
