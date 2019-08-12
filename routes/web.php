@@ -22,6 +22,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 
+Route::post('/destroy/provider', [
+    'uses'  => 'SocialController@destroyProvider',
+    'as'    => 'provider.destroy',
+    'middleware' => 'auth'
+]);
+
 Route::post('/settings', [
     'uses' => 'UserController@updateSettings',
     'as'   => 'settings',
@@ -57,7 +63,7 @@ Route::post('/createstatus', [
     'middleware' => 'auth'
 ]);
 
-Route::post('/delete', [
+Route::delete('/destroystatus', [
     'uses' => 'StatusController@DeleteStatus',
     'as'   => 'status.delete',
     'middleware' => 'auth'
@@ -70,9 +76,15 @@ Route::post('/edit', [
     'middleware' => 'auth'
 ]);
 
-Route::post('/like', [
-    'uses' => 'StatusController@LikeStatus',
-    'as'   => 'like',
+Route::post('/createlike', [
+    'uses' => 'StatusController@createLike',
+    'as'   => 'like.create',
+    'middleware' => 'auth'
+]);
+
+Route::post('/destroylike', [
+    'uses' => 'StatusController@destroyLike',
+    'as'   => 'like.destroy',
     'middleware' => 'auth'
 ]);
 

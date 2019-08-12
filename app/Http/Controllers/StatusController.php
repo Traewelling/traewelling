@@ -34,7 +34,7 @@ class StatusController extends Controller
     public function DeleteStatus(Request $request) {
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {
-            return redirect()->back();
+            return redirect()->back()->with('error', __('You \'re not permitted to do this'));
         }
         $status->delete();
         return response()->json(['message' => 'Status successfully deleted.'], 200);
@@ -53,36 +53,38 @@ class StatusController extends Controller
         return response()->json(['new_body' => $status->body], 200);
     }
 
-    public function LikeStatus(Request $request)
-    {
-        $status_id = $request['statusId'];
-        $is_like = $request['isLike'] === 'true';
-        $update = false;
-        $status = Status::find($status_id);
+    public function createLike(Request $request) {
+        $statusID = $request->statusId;
+        $status = Status::find($statusID);
+
         if (!$status) {
-            return null;
+            return 'no Status';
         }
         $user = Auth::user();
-        $like = $user->likes()->where('status_id', $status_id)->first();
+        $like = $user->likes()->where('status_id', $statusID)->first();
+
         if ($like) {
-            $already_like = $like->like;
-            $update = true;
-            if ($already_like == $is_like) {
-                $like->delete();
-                return null;
-            }
-        } else {
-            $like = new Like();
+            return response('Like already exists', 409);
         }
-        $like->like = $is_like;
+
+        $like = new Like();
         $like->user_id = $user->id;
         $like->status_id = $status->id;
-        if ($update) {
-            $like->update();
-        } else {
-            $like->save();
+        $like->save();
+        return response('Like created', 201);
+    }
+
+    public function destroyLike(Request $request) {
+        $statusID = $request->statusId;
+        $user = Auth::user();
+        $like = $user->likes()->where('status_id', $statusID)->first();
+
+        if ($like) {
+            $like->delete();
+            return response('Like deleted', 200);
         }
-        return null;
+
+        return response('Like not found', 404);
     }
 
 }

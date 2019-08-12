@@ -102,7 +102,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <div class="input-group">
-                                            <input type="text" name="domain" placeholder="Mastodon URL" aria-describedby="button-addon4" class="form-control">
+                                            <input type="text" name="domain" placeholder="Instance URL" aria-describedby="button-addon4" class="form-control">
                                             <div id="button-addon4" class="input-group-append">
                                                 <button type="submit" class="btn btn-primary"><i class="fab fa-mastodon"></i> Mastodon</button>
                                             </div>

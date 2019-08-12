@@ -112,7 +112,7 @@ class SocialController extends Controller
             $user = User::create([
                             'name' => $getInfo->name,
                             'username' => $getInfo->nickname,
-                            'email' => request($getInfo->email),
+                            'email' => $getInfo->email,
                                      ]);
         } else {
             $user = User::where('id', $identifier->user_id)->first();
@@ -134,5 +134,18 @@ class SocialController extends Controller
 
 
         return $user;
+    }
+
+    public function destroyProvider(Request $request) {
+        $providerField = "{$request->provider}_id";
+        $user = Auth::user();
+        $SocialLoginProfile = SocialLoginProfile::where('user_id', $user->id)->first();
+        if ($SocialLoginProfile === null) {
+            return response('Your user does not have a Social Login provider', 404);
+        }
+        $SocialLoginProfile->{$providerField} = '';
+        $user->socialProfile()->save($SocialLoginProfile);
+
+        return response('Social Login Provider has been deleted', 200);
     }
 }

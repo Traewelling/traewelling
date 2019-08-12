@@ -76,23 +76,19 @@
         </nav>
 
         <main class="py-4">
+                @include('includes.message-block')
 
-            @if ($errors->any())
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        @foreach ($errors->all() as $error)
-                            <div class="alert my-3 alert-danger" role="alert">
-                                {{ $error }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-            @yield('content')
+                @yield('content')
         </main>
     </div>
+    <script>
+
+        var token = '{{ Session::token() }}';
+        var urlEdit = '{{ route('edit') }}';
+        var urlDelete = '{{ route('status.delete') }}';
+        var urlLike = '{{ route('like.create') }}';
+        var urlDislike = '{{ route('like.destroy') }}';
+        var urlDisconnect = '{{ route('provider.destroy') }}';
+    </script>
 </body>
 </html>

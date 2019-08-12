@@ -6,7 +6,6 @@
 @endsection
 
 @section('content')
-    @include('includes.message-block')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -31,9 +30,8 @@
                                     <p class="card-text">{{ $status->body }}</p>
                                 </div>
                                 <div class="card-footer text-muted interaction">
-                                    statuset by <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on {{ $status->created_at }} <br>
-                                    <a href="#" class="like">Like</a> |
-                                    <a href="#" class="like">Dislike</a>
+                                    <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on {{ $status->created_at }} <br>
+                                    <a href="#" class="like">{{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'Like' : 'Dislike'}}</a>
                                     @if(Auth::user() == $status->user)
                                         |
                                         <a href="#" class="edit">Edit</a> |
@@ -52,8 +50,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">Edit status</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
                         <form>
@@ -71,12 +69,4 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
     </div><!--- /container -->
-
-    <script>
-
-        var token = '{{ Session::token() }}';
-        var urlEdit = '{{ route('edit') }}';
-        var urlDelete = '{{ route('status.delete') }}';
-        var urlLike = '{{ route('like') }}';
-    </script>
 @endsection
