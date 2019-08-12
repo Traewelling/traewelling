@@ -10,11 +10,13 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <header><h3>Profile of {{ $user->username }}</h3></header>
-                <form action="{{ route('follow.create') }}" method="post">
-                    <button type="submit" class="btn btn-primary">Follow</button>
+                @if($user != Auth::user())
+                <form action="{{ Auth::user()->follows->where('follow_id', $user->id)->first() === null ? route('follow.create') : route('follow.destroy') }}" method="post">
+                    <button type="submit" class="btn btn-primary">{{ Auth::user()->follows->where('follow_id', $user->id)->first() === null ? 'Follow' : 'Unfollow' }}</button>
                     <input type="hidden" value="{{ $user->id }}" name="follow_id">
                     <input type="hidden" value="{{ Session::token() }}" name="_token">
                 </form>
+                @endif
             </div>
         </div>
         <div class="row justify-content-center">
