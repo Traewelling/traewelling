@@ -22,8 +22,8 @@
     <link href="{{ asset('css/typeaheadjs.css') }}" rel="stylesheet">
     <style>
         .product-icon {
-            width: 1.5em;
-            height: 1.5em;
+            width: 1em;
+            height: 1em;
         }
     </style>
 </head>
@@ -129,7 +129,6 @@
                     }
                 }
             }).on('typeahead:select', function(ev, suggestion) {
-                $('#autocomplete-station-id').val(suggestion.id);
                 $('#autocomplete-provider').val(suggestion.provider)
             // $('#hidden-input').val(d[resultList.indexOf(suggestion)].id);
         });

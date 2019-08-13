@@ -117,3 +117,5 @@ Route::get('/stationboard', [
     'as'    => 'trains.stationboard',
     'middleware' => 'auth'
 ]);
+
+Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\HafasTrip;
+use App\TrainStations;
 
 class TransportController extends Controller
 {
     public function TrainAutocomplete($station) {
         $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
-
         if ($response->getBody()->getContents() <= 2 ) {
             $response = $client->request('GET', "locations?query=$station");
         }
@@ -50,6 +51,7 @@ class TransportController extends Controller
     }
 
     public function stationboard(Request $request) {
+
         if (!isset($request->when)) {
             $request->when = 'now';
         }
@@ -64,8 +66,16 @@ class TransportController extends Controller
 
     function getTrainDepartures($station, $when='now') {
         $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
-        $response = $client->request('GET', "stations/$station/departures?when=$when");
+        $ibnrObject = json_decode($this->TrainAutocomplete($station)->content());
+        $ibnr = $ibnrObject{0}->id;
 
-        return json_decode($response->getBody()->getContents());
+        $response = $client->request('GET', "stations/$ibnr/departures?when=$when");
+        $json =  json_decode($response->getBody()->getContents());
+
+        return $json;
     }
+
+
+
+
 }

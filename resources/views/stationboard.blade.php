@@ -10,7 +10,7 @@
                 <div class="card-header">Stationboard</div>
 
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-dark table-borderless table-hover table-responsive-lg">
                         <thead>
                             <tr>
                                 <th></th>
@@ -27,6 +27,7 @@
                                 @else
                                     <i class="fa fa-train"></i>
                                 @endif</td>
+                             {{dd($departure)}}
                             <td>{{ $departure->line->name }}</td>
                             <td>{{ $departure->direction }}</td>
                             <td>{{ date('H:i', strtotime($departure->when)) }} Uhr</td>
@@ -40,4 +41,3 @@
     </div>
 </div>
 @endsection
-q
