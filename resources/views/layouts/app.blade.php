@@ -133,12 +133,11 @@
             // $('#hidden-input').val(d[resultList.indexOf(suggestion)].id);
         });
 
-        $(document).on('click', '.trainrow', function() {
+        $(document).on('click touchstart', '.trainrow', function() {
 
             var lineName = $(this).data('linename');
             var tripID = $(this).data('tripid');
             var start = $(this).data('start');
-            console.log('clicked');
                 window.location = '/trip?tripID=' + tripID + '&lineName=' + lineName + '&start=' + start;
         });
 
