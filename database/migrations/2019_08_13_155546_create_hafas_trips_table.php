@@ -27,7 +27,7 @@ class CreateHafasTripsTable extends Migration
             $table->json('polyline');
             $table->timestampTz('departure');
             $table->timestampTz('arrival');
-            $table->integer('delay');
+            $table->integer('delay')->nullable();
             $table->timestamps();
         });
     }

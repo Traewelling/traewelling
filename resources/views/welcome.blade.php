@@ -101,7 +101,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/dashboard') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
 
@@ -118,9 +118,9 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Twitter</a>
-                    <a href="https://laracasts.com">Github</a>
-                    <a href="https://laravel-news.com">Mastodon</a>
+                    <a href="{{ url('/auth/redirect/twitter') }}">Twitter</a>
+                    <a href="{{ url('/auth/redirect/Github') }}">Github</a>
+                    <a href="{{ url('/login') }}">Mastodon</a>
                 </div>
             </div>
         </div>

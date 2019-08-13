@@ -10,7 +10,7 @@
                 <div class="card-header">Stationboard</div>
 
                 <div class="card-body">
-                    <table class="table table-dark table-borderless table-hover table-responsive-lg">
+                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive-lg">
                         <thead>
                             <tr>
                                 <th></th>
@@ -21,17 +21,16 @@
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
-                        <tr>
+                        <tr class="trainrow" data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name }}" data-start="{{ $departure->stop->id }}">
                             <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                     <img class="product-icon" src="{{ asset('img/'.$departure->line->product.'.svg') }}">
                                 @else
                                     <i class="fa fa-train"></i>
                                 @endif</td>
-                             {{dd($departure)}}
                             <td>{{ $departure->line->name }}</td>
                             <td>{{ $departure->direction }}</td>
                             <td>{{ date('H:i', strtotime($departure->when)) }} Uhr</td>
-                            <td>{{ $departure->delay }}</td>
+                            <td>{{ $departure->delay / 60 }}</td>
                         </tr>
                     @endforeach
                     </table>

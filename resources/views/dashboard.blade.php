@@ -6,9 +6,11 @@
 
 @section('content')
 @include('includes.station-autocomplete')
+<div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <header><h3>What do you have to say?</h3></header>
+                <div class="card">
+                    <div class="card-header">What do you have to say?</div>
                 <form action="{{ route('status.create') }}" method="post">
                     <div class="form-group">
                         <textarea class="form-control" name="body" id="new-status" rows="5" placeholder="Your status"></textarea>
@@ -16,6 +18,7 @@
                     <button type="submit" class="btn btn-primary">Create status</button>
                     <input type="hidden" value="{{ Session::token() }}" name="_token">
                 </form>
+                </div>
             </div>
         </div>
         <div class="row justify-content-center">

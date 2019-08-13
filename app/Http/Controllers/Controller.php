@@ -10,4 +10,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    function searchForId($id, $array) {
+        foreach ($array as $key => $val) {
+            if ($val['stop']['id'] === $id) {
+                return $key;
+            }
+        }
+        return null;
+    }
 }
