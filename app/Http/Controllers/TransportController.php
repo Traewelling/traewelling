@@ -56,12 +56,14 @@ class TransportController extends Controller
             $request->when = 'now';
         }
         if ($request->get('provider') === 'train') {
-            $departures = $this->getTrainDepartures($request->get('station'), $request->when);
+            $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when);
+            $departures = $departuresArray[1];
+            $station = $departuresArray[0];
         } elseif($request->get('provider') === 'bus') {
             $baseURI = env('FLIX_REST', 'https://1.flixbus.transport.rest/');
         }
 
-        return view('stationboard', compact('departures'));
+        return view('stationboard', compact('station', 'departures'));
     }
 
     function getTrainDepartures($station, $when='now') {
@@ -72,7 +74,7 @@ class TransportController extends Controller
         $response = $client->request('GET', "stations/$ibnr/departures?when=$when");
         $json =  json_decode($response->getBody()->getContents());
 
-        return $json;
+        return [$ibnrObject{0}, $json];
     }
 
     function trip(Request $request) {
@@ -83,7 +85,9 @@ class TransportController extends Controller
         $stopovers = json_decode($train['stopovers'],true);
         $offset = $this->searchForId($request->start, $stopovers) + 1;
         $stopovers = array_slice($stopovers, $offset);
-        return view('trip', compact('train', 'stopovers'));
+        $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
+
+        return view('trip', compact('train', 'stopovers', 'destination'));
     }
 
     function getHAFAStrip($tripID, $lineName) {

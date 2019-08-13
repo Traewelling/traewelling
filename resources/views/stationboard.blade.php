@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@php(request()->station = $station->name)
 @section('content')
     @include('includes.station-autocomplete')
 
@@ -7,17 +7,16 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Stationboard</div>
+                <div class="card-header">{{ $station->name }}</div>
 
-                <div class="card-body">
-                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive-lg">
+                <div class="card-body p-0">
+                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive-lg m-0">
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>Line</th>
                                 <th>Destination</th>
                                 <th>Departure</th>
-                                <th>Delay</th>
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
@@ -29,8 +28,7 @@
                                 @endif</td>
                             <td>{{ $departure->line->name }}</td>
                             <td>{{ $departure->direction }}</td>
-                            <td>{{ date('H:i', strtotime($departure->when)) }} Uhr</td>
-                            <td>{{ $departure->delay / 60 }}</td>
+                            <td>{{ date('H:i', strtotime($departure->when)) }} Uhr @if(isset($departure->delay))<small>+{{ $departure->delay / 60 }}</small>@endif</td>
                         </tr>
                     @endforeach
                     </table>
