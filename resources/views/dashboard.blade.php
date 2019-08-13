@@ -1,4 +1,4 @@
-
+Stationboard
 @extends('layouts.app')
 
 @section('title')
@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-    <div class="container">
+@include('includes.station-autocomplete')
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <header><h3>What do you have to say?</h3></header>

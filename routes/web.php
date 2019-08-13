@@ -100,4 +100,20 @@ Route::post('/destroyfollow', [
     'middleware' => 'auth'
 ]);
 
+Route::get('/transport/train/autocomplete/{station}', [
+    'uses'  => 'TransportController@TrainAutocomplete',
+    'as'    => 'transport.train.autocomplete',
+    'middleware' => 'auth'
+]);
 
+Route::get('/transport/bus/autocomplete/{station}', [
+    'uses'  => 'TransportController@BusAutocomplete',
+    'as'    => 'transport.bus.autocomplete',
+    'middleware' => 'auth'
+]);
+
+Route::get('/stationboard', [
+    'uses'  => 'TransportController@stationboard',
+    'as'    => 'trains.stationboard',
+    'middleware' => 'auth'
+]);

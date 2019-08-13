@@ -14,7 +14,9 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                        <div id="remote">
+                            <input id="station-autocomplete" class="form-control" type="text" placeholder="Bahnhof">
+                        </div>
                 </div>
             </div>
         </div>

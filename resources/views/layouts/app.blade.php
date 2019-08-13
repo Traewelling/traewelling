@@ -10,7 +10,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/typeahead.bundle.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,6 +19,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/typeaheadjs.css') }}" rel="stylesheet">
+    <style>
+        .product-icon {
+            width: 1.5em;
+            height: 1.5em;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -82,6 +90,49 @@
         </main>
     </div>
     <script>
+        var traincomplete = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: '{{ url('transport/train/autocomplete') }}/%QUERY',
+                wildcard: '%QUERY'
+            }
+        });
+
+        var buscomplete = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: '{{ url('transport/bus/autocomplete') }}/%QUERY',
+                wildcard: '%QUERY'
+            }
+        });
+
+        $('#station-autocomplete').typeahead({
+            highlight: true
+        },
+            {
+                name: 'trains',
+                display: 'name',
+                source: traincomplete,
+                templates: {
+
+                }
+            },
+            {
+                name: 'busses',
+                display: 'name',
+                source: buscomplete,
+                templates: {
+                    suggestion: function (data) {
+                        return '<strong><strong>' + data.name + '</strong> | Flixbus</strong>';
+                    }
+                }
+            }).on('typeahead:select', function(ev, suggestion) {
+                $('#autocomplete-station-id').val(suggestion.id);
+                $('#autocomplete-provider').val(suggestion.provider)
+            // $('#hidden-input').val(d[resultList.indexOf(suggestion)].id);
+        });
 
         var token = '{{ Session::token() }}';
         var urlEdit = '{{ route('edit') }}';

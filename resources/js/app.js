@@ -4,9 +4,10 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+require('jquery');
 require('./bootstrap');
 require('./appControls');
-
+require('typeahead.js/dist/typeahead.bundle.min.js');
 window.Vue = require('vue');
 
 /**
