@@ -31,7 +31,6 @@
                             <td>{{ $departure->direction }}</td>
                             <td>{{ date('H:i', strtotime($departure->when)) }} Uhr</td>
                             <td>{{ $departure->delay }}</td>
-                            {{ dd($departure) }}
                         </tr>
                     @endforeach
                     </table>
@@ -41,3 +40,4 @@
     </div>
 </div>
 @endsection
+q
