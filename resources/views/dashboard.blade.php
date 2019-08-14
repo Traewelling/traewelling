@@ -9,27 +9,16 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">What do you have to say?</div>
-                <form action="{{ route('status.create') }}" method="post">
-                    <div class="form-group">
-                        <textarea class="form-control" name="body" id="new-status" rows="5" placeholder="Your status"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create status</button>
-                    <input type="hidden" value="{{ Session::token() }}" name="_token">
-                </form>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
                 <header><h3>What other people say...</h3></header>
                 @foreach($statuses as $status)
                     <div class="row">
                         <div class="col">
                             <div class="card status" data-statusid="{{ $status->id }}">
                                 <div class="card-body">
-                                    <p class="card-text">{{ $status->body }}</p>
+                                    <p class="card-text"><i class="fas fa-comment"></i> {{ $status->body }}</p>
+                                    <p>{{ \App\TrainStations::where('ibnr', $status->trainCheckin->origin)->first()->name }} <i class="fas fa-arrow-alt-circle-right"></i> {{ \App\TrainStations::where('ibnr', $status->trainCheckin->destination)->first()->name }}</p>
+                                    <p>{{ \App\HafasTrip::where('trip_id', $status->trainCheckin->trip_id)->first()->linename}} @ {{ date('d.m.Y H:i', strtotime($status->trainCheckin->departure)) }} -> {{ date('d.m.Y H:i', strtotime($status->trainCheckin->arrival)) }}</p>
+                                    <p>{{ $status->trainCheckin->distance }} km</p>
                                 </div>
                                 <div class="card-footer text-muted interaction">
                                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on {{ $status->created_at }} <br>

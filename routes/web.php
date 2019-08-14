@@ -89,15 +89,26 @@ Route::middleware(['auth'])->group(function() {
         'as'    => 'transport.bus.autocomplete',
     ]);
 
-    Route::get('/stationboard', [
-        'uses'  => 'TransportController@stationboard',
+    Route::get('/trains/stationboard', [
+        'uses'  => 'TransportController@trainStationboard',
         'as'    => 'trains.stationboard',
     ]);
 
-    Route::get('/trip', [
-        'uses'  => 'TransportController@trip',
+    Route::get('/trains/trip', [
+        'uses'  => 'TransportController@trainTrip',
         'as'    => 'trains.trip'
     ]);
+
+    Route::post('/trains/checkin', [
+        'uses'  => 'TransportController@trainCheckin',
+        'as'    => 'trains.checkin'
+    ]);
+
+    Route::get('/busses/stationboard', [
+        'uses'  => 'TransportController@trainStationboard',
+        'as'    => 'busses.stationboard'
+    ]);
+
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');
 

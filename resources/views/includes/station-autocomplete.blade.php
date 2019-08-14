@@ -5,7 +5,7 @@
                 <div class="card-header">Where to go?</div>
 
                 <div class="card-body">
-                    <form action="{{ route('trains.stationboard') }}" method="get">
+                    <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
                         <input type="text" id="station-autocomplete" name="station" class="form-control mb-2 mr-sm-2" aria-label="Text input with dropdown button" placeholder="Station" @isset(request()->station) value="{{request()->station}}" @endisset>
 

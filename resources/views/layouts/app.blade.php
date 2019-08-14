@@ -116,7 +116,9 @@
                 display: 'name',
                 source: traincomplete,
                 templates: {
-
+                    suggestion: function (data) {
+                        return '<strong><strong>' + data.name + '</strong> | Flixbus</strong>';
+                    }
                 }
             },
             {
@@ -129,16 +131,58 @@
                     }
                 }
             }).on('typeahead:select', function(ev, suggestion) {
-                $('#autocomplete-provider').val(suggestion.provider)
-            // $('#hidden-input').val(d[resultList.indexOf(suggestion)].id);
+                if(suggestion.provider === 'busses') {
+                    var autocompleteAction = '{{ route('busses.stationboard') }}';
+                } else {
+                    var autocompleteAction = '{{ route('trains.stationboard') }}';
+                }
+
+                $('#autocomplete-form').attr('action', autocompleteAction);
         });
 
+        var touchmoved;
         $(document).on('click touchstart', '.trainrow', function() {
-
             var lineName = $(this).data('linename');
             var tripID = $(this).data('tripid');
             var start = $(this).data('start');
-                window.location = '/trip?tripID=' + tripID + '&lineName=' + lineName + '&start=' + start;
+            if(touchmoved != true) {
+                window.location = '{{ route('trains.trip') }}?tripID=' + tripID + '&lineName=' + lineName + '&start=' + start;
+            }
+        }).on('touchmove', function(e){
+            touchmoved = true;
+        }).on('touchstart', function(){
+            touchmoved = false;
+        });
+
+        $(document).on('click touchstart', '.train-destinationrow', function() {
+            var tripID = $(this).parent().parent().data('tripid');
+            var start = $(this).parent().parent().data('start');
+            var destination = $(this).data('ibnr');
+            var stopname = $(this).data('stopname');
+            var linename = $(this).parent().parent().data('linename');
+            if(touchmoved != true) {
+                $('#checkinModal').modal('show', function (event) {
+                    var modal = $(this)
+                    modal.find('.modal-title').html(linename + ' <i class="fas fa-arrow-alt-circle-right"></i> ' + stopname);
+                    modal.find('#input-tripID').val(tripID);
+                    modal.find('#input-destination').val(destination);
+                    modal.find('#input-start').val(start);
+                });
+
+            }
+        }).on('touchmove', function(e){
+            touchmoved = true;
+        }).on('touchstart', function(){
+            touchmoved = false;
+        });
+
+        $('#checkinModal').on('show.bs.modal', function (event) {
+            $(event.relatedTarget)
+        });
+
+        $('#checkinButton').click(function(e){
+            e.preventDefault();
+            $('#checkinForm').submit();
         });
 
         var token = '{{ Session::token() }}';

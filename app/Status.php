@@ -15,4 +15,8 @@ class Status extends Model
         return $this->hasMany('App\Like');
     }
 
+    public function trainCheckin() {
+        return $this->hasOne('App\TrainCheckin');
+    }
+
 }

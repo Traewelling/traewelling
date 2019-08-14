@@ -37,6 +37,7 @@ class StatusController extends Controller
             return redirect()->back()->with('error', __('You \'re not permitted to do this'));
         }
         $status->delete();
+        $status->trainCheckin()->delete();
         return response()->json(['message' => 'Status successfully deleted.'], 200);
     }
 
