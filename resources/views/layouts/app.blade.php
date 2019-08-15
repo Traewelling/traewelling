@@ -25,6 +25,61 @@
             width: 1em;
             height: 1em;
         }
+
+        ul.timeline {
+            list-style-type: none;
+            position: relative;
+        }
+        ul.timeline:before {
+            content: ' ';
+            background: #d4d9df;
+            display: inline-block;
+            position: absolute;
+            left: 29px;
+            width: 2px;
+            height: 100%;
+            z-index: 400;
+        }
+        ul.timeline:last-child {
+            background: transparent !important;
+        }
+        ul.timeline > li {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        ul.timeline > li:before {
+            content: ' ';
+            background: white;
+            display: inline-block;
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid rgb(192, 57, 43);
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            z-index: 400;
+        }
+
+        p.status-body:before,
+        p.train-status:before {
+            font-family: FontAwesome;
+            display: inline-block;
+            padding-right: 6px;
+            vertical-align: middle;
+        }
+        p.train-status:before {
+            content: "\f239";
+        }
+        p.status-body:before {
+            content: "\f10e";
+        }
+        .connection {
+            background: #f5f5f5;
+        }
+        .text-trwl {
+            color: rgb(192, 57, 43) !important;;
+        }
+
     </style>
 </head>
 <body>
