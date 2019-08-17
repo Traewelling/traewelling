@@ -11,6 +11,9 @@
             <div class="col-md-8">
                 @foreach($statuses as $status)
                             <div class="card status mt-3" data-statusid="{{ $status->id }}">
+                                <div class="card-img-top">
+                                    {{$status->trainCheckin->getMapLines()}}
+                                </div>
                                 <div class="card-body">
                                     <ul class="timeline">
                                         <li>
