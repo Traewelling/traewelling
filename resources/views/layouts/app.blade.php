@@ -84,11 +84,25 @@
             color: rgb(192, 57, 43) !important;;
         }
 
+        .navbar-light .navbar-nav .nav-link {
+            color: rgb(192, 57, 43) !important;
+        }
+
+        .navbar-light .navbar-brand {
+            color: rgb(192, 57, 43) !important;
+            font-weight: bold !important;
+        }
+
+        .top-border {
+            border-top: 5px solid rgb(192, 57, 43);
+            margin-top: -11px;
+        }
+
     </style>
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -118,12 +132,13 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
+                            <li class="nav-item dropdown top-border">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">Profile</a>
                                     <a class="dropdown-item" href="{{ route('settings') }}">{{ __('Settings') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
