@@ -11,6 +11,15 @@ use App\TrainCheckin;
 
 class TransportController extends Controller
 {
+    /**
+     * Takes just about any date string and formats it in Y-m-d H:i:s which is
+     * the required format for MySQL inserts.
+     * @return String
+     */
+    function dateToMySQLEscape(String $in): String {
+        return date("Y-m-d H:i:s", strtotime($in));
+    }
+
     public function TrainAutocomplete($station) {
         $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
@@ -128,8 +137,8 @@ class TransportController extends Controller
         $trainCheckin->origin = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
         $trainCheckin->distance = $distance;
-        $trainCheckin->departure = $stopovers[$offset1]['departure'];
-        $trainCheckin->arrival = $stopovers[$offset2]['arrival'];
+        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
+        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
         $trainCheckin->delay = $hafas['delay'];
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
@@ -159,8 +168,8 @@ class TransportController extends Controller
             $trip->destination = $destination->ibnr;
             $trip->stopovers = json_encode($json->stopovers);
             $trip->polyline = json_encode($json->polyline);
-            $trip->departure = $json->departure;
-            $trip->arrival = $json->arrival;
+            $trip->departure = self::dateToMySQLEscape($json->departure);
+            $trip->arrival = self::dateToMySQLEscape($json->arrival);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
             }
