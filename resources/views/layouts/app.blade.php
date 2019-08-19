@@ -60,6 +60,10 @@
             z-index: 400;
         }
 
+        ul.timeline > li:last-child {
+            line-height: 1;
+        }
+
         p.status-body:before,
         p.train-status:before {
             font-family: FontAwesome;
