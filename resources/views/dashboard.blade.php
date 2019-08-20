@@ -12,7 +12,7 @@
                 @foreach($statuses as $status)
                             <div class="card status mt-3" data-statusid="{{ $status->id }}">
                                 <div class="card-img-top">
-                                    @include('includes.statusMap', $status)
+                                    <div id="map-{{ $status->id }}" class="map statusMap" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
                                 </div>
                                 <div class="card-body">
                                     <ul class="timeline">

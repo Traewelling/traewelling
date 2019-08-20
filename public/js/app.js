@@ -49239,8 +49239,6 @@ __webpack_require__(/*! ./appControls */ "./resources/js/appControls.js");
 
 __webpack_require__(/*! typeahead.js/dist/typeahead.bundle.min.js */ "./node_modules/typeahead.js/dist/typeahead.bundle.min.js");
 
-__webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
-
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
  * The following block of code may be used to automatically register your
@@ -49262,6 +49260,10 @@ Vue.component("example-component", __webpack_require__(/*! ./components/ExampleC
 var app = new Vue({
   el: "#app"
 });
+
+window.onload = function () {
+  __webpack_require__(/*! ./components/statusMap.js */ "./resources/js/components/statusMap.js");
+};
 
 /***/ }),
 
@@ -49484,6 +49486,53 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/statusMap.js":
+/*!**********************************************!*\
+  !*** ./resources/js/components/statusMap.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+__webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
+
+Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem) {
+  var map = L.map(elem, {
+    zoomControl: false
+  });
+  console.log(elem);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19
+  }).addTo(map);
+  var latlngs = JSON.parse(elem.dataset.polygon).map(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        a = _ref2[0],
+        b = _ref2[1];
+
+    return [b, a];
+  });
+  var polyline = L.polyline(latlngs).setStyle({
+    color: "rgb(192, 57, 43)",
+    weight: 5
+  }).addTo(map);
+  map.fitBounds(polyline.getBounds());
+  map.dragging.disable();
+  map.touchZoom.disable();
+  map.doubleClickZoom.disable();
+  map.scrollWheelZoom.disable();
+});
 
 /***/ }),
 

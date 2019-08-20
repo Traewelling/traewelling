@@ -17118,3 +17118,9 @@ a.text-dark:focus {
   }
 }
 
+.status .map {
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+}
+

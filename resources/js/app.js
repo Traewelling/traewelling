@@ -8,7 +8,6 @@ require("jquery");
 require("./bootstrap");
 require("./appControls");
 require("typeahead.js/dist/typeahead.bundle.min.js");
-require("leaflet/dist/leaflet.js");
 window.Vue = require("vue");
 
 /**
@@ -36,3 +35,7 @@ Vue.component(
 const app = new Vue({
     el: "#app"
 });
+
+window.onload = function() {
+    require("./components/statusMap.js");
+};
