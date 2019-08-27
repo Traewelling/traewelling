@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware('guest');
+})->middleware('guest')->name('welcome');
 
 Auth::routes();
 
@@ -42,6 +42,11 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/settings', [
         'uses' => 'UserController@getAccount',
         'as'   => 'settings',
+    ]);
+
+    Route::get('/delsession', [
+        'uses' => 'UserController@deleteSession',
+        'as'   => 'delsession',
     ]);
 
     Route::post('/createstatus', [

@@ -54,4 +54,8 @@ class User extends Authenticatable
         return $this->hasMany('App\Follow');
     }
 
+    public function sessions() {
+        return $this->hasMany('App\Session');
+    }
+
 }
