@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 
 
 class UserController extends Controller
@@ -24,7 +25,28 @@ class UserController extends Controller
 
     //Return Settings-page
     public function getAccount() {
-        return view('settings', ['user' => Auth::user()]);
+        $user = Auth::user();
+        $sessions = array();
+        foreach($user->sessions as $session) {
+            $session_array = array();
+            $result = new Agent();
+            $result->setUserAgent($session->user_agent);
+            $session_array['platform'] = $result->platform();
+
+            if ($result->isphone()) {
+                $session_array['device'] = 'mobile-alt';
+            } elseif ( $result->isTablet()) {
+                $session_array['device'] = 'tablet';
+            } else {
+                $session_array['device'] = 'desktop';
+            }
+            $session_array['id'] = $session->id;
+            $session_array['ip'] = $session->ip_address;
+            $session_array['last'] = $session->last_activity;
+            array_push($sessions, $session_array);
+        }
+
+        return view('settings', compact('user', 'sessions'));
     }
 
     //Save Changes on Settings-Page
