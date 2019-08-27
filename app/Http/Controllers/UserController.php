@@ -49,6 +49,15 @@ class UserController extends Controller
         return view('settings', compact('user', 'sessions'));
     }
 
+    //delete sessions from user
+    public function deleteSession(Request $request) {
+        $user = Auth::user();
+        foreach ($user->sessions as $session) {
+            $session->delete();
+        }
+        return redirect()->route('welcome');
+    }
+
     //Save Changes on Settings-Page
     public function SaveAccount(Request $request) {
 

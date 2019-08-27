@@ -164,6 +164,7 @@
                         @endforeach
 
                     </table>
+                    <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger" role="button">{{ __('Delete all sessions') }}</a>
                 </div>
             </div>
         </div>
