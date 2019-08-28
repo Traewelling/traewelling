@@ -2,14 +2,22 @@
 @php(request()->station = $station->name)
 @section('content')
     @include('includes.station-autocomplete')
-
     <div class="container">
     <div class="row justify-content-center">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when)]) }}" alt="-15 Minutes" class="btn btn-secondary"><i class="fas fa-arrow-circle-left"></i></a>
+            <!-- <a href="" class="btn btn-secondary">...</a>-->
+            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when)]) }}" alt="+15 Minutes" class="btn btn-secondary"><i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
         <div class="col-md-8">
+
             <div class="card">
-                <div class="card-header">{{ $station->name }}</div>
+                <div class="card-header">{{ $station->name }} <small><i class="far fa-clock fa-sm"></i> {{ date('H:i (Y-m-d)', $request->when) }}</small></div>
 
                 <div class="card-body p-0">
+
                     <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive-lg m-0">
                         <thead>
                             <tr>
