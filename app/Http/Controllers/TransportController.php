@@ -103,7 +103,7 @@ class TransportController extends Controller
 
     public function trainCheckin(Request $request) {
         $this->validate($request, [
-            'body' => 'required|max:140'
+            'body' => 'max:280'
         ]);
 
         $hafas = $this->getHAFAStrip($request['tripID'], '')->getAttributes();
@@ -144,7 +144,7 @@ class TransportController extends Controller
         //check if there are colliding checkins
         $between = TrainCheckin::whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
         if(!empty($between)) {
-            return redirect()->route('dashboard')->withErrors("You have an overlapping checkin.");
+            return redirect()->route('dashboard')->withErrors('You have an overlapping checkin: <a href="'.url('/status/'.$between->id).'">'.$between->id.'</a>');
         }
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);

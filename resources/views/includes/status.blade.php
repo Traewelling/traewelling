@@ -16,7 +16,7 @@
         </ul>
     </div>
     <div class="card-footer text-muted interaction">
-        <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on {{ $status->created_at }}</span>
+        <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ $status->created_at }}</a></span>
         <a href="#" class="like">{{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'Like' : 'Dislike'}}</a>
         @if(Auth::user() == $status->user)
             |

@@ -3,7 +3,7 @@
         <div class="col-md-8">
             @foreach ($errors->all() as $error)
                 <div class="alert my-3 alert-danger" role="alert">
-                    {{ $error }}
+                    {!! $error !!}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
