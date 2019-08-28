@@ -39,6 +39,11 @@ Route::middleware(['auth'])->group(function() {
         'as'   => 'dashboard',
     ]);
 
+    Route::get('/dashboard/global', [
+        'uses' => 'StatusController@getGlobalDashboard',
+        'as'   => 'globaldashboard',
+    ]);
+
     Route::get('/settings', [
         'uses' => 'UserController@getAccount',
         'as'   => 'settings',

@@ -12,8 +12,21 @@ use Illuminate\Support\Facades\Auth;
 class StatusController extends Controller
 {
     public function getDashboard() {
+        $user = Auth::user();
+        $userIds = $user->follows()->pluck('follow_id');
+        $userIds[] = $user->id;
+        $statuses = Status::whereIn('user_id', $userIds)->latest()->get();
 
-        $statuses = Status::orderBy('created_at', 'desc')->get();
+        if ($statuses->isEmpty()) {
+            return redirect()->route('globaldashboard');
+        }
+
+        return view('dashboard', ['statuses' => $statuses]);
+    }
+
+    public function getGlobalDashboard() {
+        $statuses = Status::orderBy('created_at', 'desc')->latest()->get();
+
         return view('dashboard', ['statuses' => $statuses]);
     }
 
