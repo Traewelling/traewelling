@@ -64,13 +64,13 @@ class TransportController extends Controller
     public function trainStationboard(Request $request) {
 
         if (!isset($request->when)) {
-            $request->when = 'now';
+            $request->when = time();
         }
             $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when);
             $departures = $departuresArray[1];
             $station = $departuresArray[0];
 
-        return view('stationboard', compact('station', 'departures'));
+        return view('stationboard', compact('station', 'departures', 'request'));
     }
 
     function getTrainDepartures($station, $when='now') {
