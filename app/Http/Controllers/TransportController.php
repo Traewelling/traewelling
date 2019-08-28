@@ -141,6 +141,12 @@ class TransportController extends Controller
         $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
         $trainCheckin->delay = $hafas['delay'];
 
+        //check if there are colliding checkins
+        $between = TrainCheckin::whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
+        if(!empty($between)) {
+            return redirect()->route('dashboard')->withErrors("You have an overlapping checkin.");
+        }
+
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
         return redirect()->route('dashboard')->with('message', 'Checked in!');
