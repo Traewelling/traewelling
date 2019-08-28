@@ -10,7 +10,7 @@
             <div class="col-md-8">
                 <h1>Changelog</h1>
                 <h5>{{ get_current_git_commit() }}</h5>
-                <p>{{ get_current_git_commit_message() }}</p>
+                <pre>{{ get_current_git_commit_message() }}</pre>
             </div>
         </div>
     </div><!--- /container -->
