@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class StatusController extends Controller
 {
+    public function getStatus($id) {
+        $status = Status::where('id', $id)->first();
+
+        return view('status', compact('status'));
+    }
+
     public function getDashboard() {
         $user = Auth::user();
         $userIds = $user->follows()->pluck('follow_id');
@@ -56,7 +62,7 @@ class StatusController extends Controller
 
     public function EditStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'required'
+            'body' => 'max:280'
         ]);
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {
