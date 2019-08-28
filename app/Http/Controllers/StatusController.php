@@ -32,7 +32,7 @@ class StatusController extends Controller
 
     public function CreateStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'required|max:140'
         ]);
         $status = new Status();
         $status->body = $request['body'];
