@@ -15,6 +15,18 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware('guest')->name('welcome');
 
+Route::get('/imprint', function() {
+    return view('imprint');
+})->name('imprint');
+
+Route::get('/privacy', function() {
+    return view('privacy');
+})->name('privacy');
+
+Route::get('/changelog', function() {
+    return view('changelog');
+})->name('changelog');
+
 Auth::routes();
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
