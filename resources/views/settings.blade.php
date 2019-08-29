@@ -69,7 +69,7 @@
                     </form>
                 </div>
             </div>
-            &nbsp;
+            &nbsp;<!-- Login Providers -->
             <div class="card">
                 <div class="card-header">{{ __('Login-Services') }}</div>
 
@@ -137,6 +137,34 @@
                         </tr>
                     @endif
                     </table>
+                </div>
+            </div>
+
+            <!-- Sessions -->
+            <div class="card mt-3">
+                <div class="card-header">{{ __('Sessions') }}</div>
+
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ __('Device') }}</th>
+                            <th></th>
+                            <th>{{ __('IP') }}</th>
+                            <th>{{ __('Last Activity') }}</th>
+                        </tr>
+                        </thead>
+                        @foreach($sessions as $session)
+                        <tr>
+                            <td><i class="fas fa-{{ $session['device'] }}"></i></td>
+                            <td>{{ $session['platform'] }}</td>
+                            <td>{{ $session['ip'] }}</td>
+                            <td>{{ date('Y-m-d H:i:s', $session['last']) }}</td>
+                        </tr>
+                        @endforeach
+
+                    </table>
+                    <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger" role="button">{{ __('Delete all sessions') }}</a>
                 </div>
             </div>
         </div>

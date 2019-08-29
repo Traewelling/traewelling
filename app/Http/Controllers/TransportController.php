@@ -64,13 +64,13 @@ class TransportController extends Controller
     public function trainStationboard(Request $request) {
 
         if (!isset($request->when)) {
-            $request->when = 'now';
+            $request->when = time();
         }
             $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when);
             $departures = $departuresArray[1];
             $station = $departuresArray[0];
 
-        return view('stationboard', compact('station', 'departures'));
+        return view('stationboard', compact('station', 'departures', 'request'));
     }
 
     function getTrainDepartures($station, $when='now') {
@@ -103,7 +103,7 @@ class TransportController extends Controller
 
     public function trainCheckin(Request $request) {
         $this->validate($request, [
-            'body' => 'required|max:140'
+            'body' => 'max:280'
         ]);
 
         $hafas = $this->getHAFAStrip($request['tripID'], '')->getAttributes();
@@ -140,6 +140,12 @@ class TransportController extends Controller
         $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
         $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
         $trainCheckin->delay = $hafas['delay'];
+
+        //check if there are colliding checkins
+        $between = TrainCheckin::whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
+        if(!empty($between)) {
+            return redirect()->route('dashboard')->withErrors('You have an overlapping checkin: <a href="'.url('/status/'.$between->id).'">'.$between->id.'</a>');
+        }
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
