@@ -11,15 +11,34 @@ use Illuminate\Support\Facades\Auth;
 
 class StatusController extends Controller
 {
-    public function getDashboard() {
+    public function getStatus($id) {
+        $status = Status::where('id', $id)->first();
 
-        $statuses = Status::orderBy('created_at', 'desc')->get();
+        return view('status', compact('status'));
+    }
+
+    public function getDashboard() {
+        $user = Auth::user();
+        $userIds = $user->follows()->pluck('follow_id');
+        $userIds[] = $user->id;
+        $statuses = Status::whereIn('user_id', $userIds)->latest()->get();
+
+        if ($statuses->isEmpty()) {
+            return redirect()->route('globaldashboard');
+        }
+
+        return view('dashboard', ['statuses' => $statuses]);
+    }
+
+    public function getGlobalDashboard() {
+        $statuses = Status::orderBy('created_at', 'desc')->latest()->get();
+
         return view('dashboard', ['statuses' => $statuses]);
     }
 
     public function CreateStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'required|max:140'
+            'body' => 'max:280'
         ]);
         $status = new Status();
         $status->body = $request['body'];
@@ -43,7 +62,7 @@ class StatusController extends Controller
 
     public function EditStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'required'
+            'body' => 'max:280'
         ]);
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {

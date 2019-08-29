@@ -13,12 +13,25 @@
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware('guest');
+})->middleware('guest')->name('welcome');
+
+Route::get('/imprint', function() {
+    return view('imprint');
+})->name('imprint');
+
+Route::get('/privacy', function() {
+    return view('privacy');
+})->name('privacy');
+
+Route::get('/changelog', function() {
+    return view('changelog');
+})->name('changelog');
 
 Auth::routes();
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
+Route::get('/status/{id}', 'StatusController@getStatus');
 
 
 
@@ -39,9 +52,19 @@ Route::middleware(['auth'])->group(function() {
         'as'   => 'dashboard',
     ]);
 
+    Route::get('/dashboard/global', [
+        'uses' => 'StatusController@getGlobalDashboard',
+        'as'   => 'globaldashboard',
+    ]);
+
     Route::get('/settings', [
         'uses' => 'UserController@getAccount',
         'as'   => 'settings',
+    ]);
+
+    Route::get('/delsession', [
+        'uses' => 'UserController@deleteSession',
+        'as'   => 'delsession',
     ]);
 
     Route::post('/createstatus', [
