@@ -27,6 +27,10 @@ Route::get('/changelog', function() {
     return view('changelog');
 })->name('changelog');
 
+Route::get('/about', function() {
+    return view('about');
+})->name('about');
+
 Auth::routes();
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');

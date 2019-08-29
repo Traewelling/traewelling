@@ -164,8 +164,13 @@
         </main>
         <footer class="footer mt-auto py-3">
             <div class="container">
-                <p class="text-muted mb-0"><a href="{{ route('changelog') }}">{{ substr(get_current_git_commit(), 0, -35) }}</a> / <a href="{{ route('imprint') }}">{{ __('Imprint') }}</a> / <a href="{{ route('privacy') }}">{{ __('Privacy') }}</a></p>
-                <p class="mb-0">{!! __('Developped with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in Baden') !!}</p>
+                <p class="text-muted mb-0">
+                    <a href="{{ route('changelog') }}">{{ substr(get_current_git_commit(), 0, -35) }}</a>
+                    / <a href="{{ route('imprint') }}">{{ __('Imprint') }}</a>
+                    / <a href="{{ route('privacy') }}">{{ __('Privacy') }}</a>
+                    / <a href="{{ route('about') }}">{{ __('About')}}</a>
+                </p>
+                <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in Baden') !!}</p>
                 <p>&copy; 2019 Tr&auml;welling</p>
             </div>
         </footer>
