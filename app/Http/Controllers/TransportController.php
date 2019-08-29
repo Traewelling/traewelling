@@ -8,6 +8,7 @@ use App\HafasTrip;
 use App\TrainStations;
 use App\Status;
 use App\TrainCheckin;
+use Illuminate\Support\Facades\DB;
 
 class TransportController extends Controller
 {
@@ -108,6 +109,8 @@ class TransportController extends Controller
 
         $hafas = $this->getHAFAStrip($request['tripID'], '')->getAttributes();
 
+        $factor = DB::table('pointscalculation')->where([['type', 'train'], ['transport_type', $hafas['category']]])->first()->value;
+
         $stopovers = json_decode($hafas['stopovers'], true);
 
         $offset1 = $this->searchForId($request->start, $stopovers);
@@ -140,6 +143,7 @@ class TransportController extends Controller
         $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
         $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
         $trainCheckin->delay = $hafas['delay'];
+        $trainCheckin->points = $factor + ceil($distance / 10);
 
         //check if there are colliding checkins
         $between = TrainCheckin::whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
@@ -149,7 +153,7 @@ class TransportController extends Controller
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
-        return redirect()->route('dashboard')->with('message', 'Checked in!');
+        return redirect()->route('dashboard')->with('message', 'Checked in! with ' . $trainCheckin->points . ' Points!');
     }
 
     function getHAFAStrip($tripID, $lineName) {
