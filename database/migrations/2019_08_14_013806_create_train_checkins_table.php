@@ -26,6 +26,7 @@ class CreateTrainCheckinsTable extends Migration
             $table->integer('distance');
             $table->timestampTz('departure');
             $table->timestampTz('arrival');
+            $table->integer('points')->nullable();
             $table->integer('delay')->nullable();
             $table->timestamps();
         });
