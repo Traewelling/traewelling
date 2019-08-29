@@ -106,7 +106,7 @@ class SocialController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             if ($identifier != null) {
-                return redirect()->to('/home')->withErrors(['msg', __('This Account is already connected to another user')]);
+                return redirect()->to('/dashboard')->withErrors(['msg', __('This Account is already connected to another user')]);
             }
         } elseif ($identifier === null) {
             $user = User::create([
