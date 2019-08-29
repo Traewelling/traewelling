@@ -30,6 +30,7 @@ class PointsCalculation extends Migration
             ['type' => 'train', 'transport_type' => 'ferry', 'value' => '3'],
             ['type' => 'train', 'transport_type' => 'regional', 'value' => '5'],
             ['type' => 'train', 'transport_type' => 'express', 'value' => '10'],
+            ['type' => 'train', 'transport_type' => 'nationalExpress', 'value' => '10'],
         ]);
     }
 
