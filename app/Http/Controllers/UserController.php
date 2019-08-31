@@ -17,10 +17,11 @@ class UserController extends Controller
     public function updateSettings(Request $request) {
         $user = Auth::user();
 
+        $user->email = $request->email;
         $user->username = $request->username;
         $user->name = $request->name;
         $user->save();
-        return view('settings', compact('user'));
+        return $this->getAccount();
     }
 
     //Return Settings-page
