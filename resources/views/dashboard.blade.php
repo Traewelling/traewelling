@@ -10,7 +10,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 @foreach($statuses as $status)
-                           @include('includes.status')
+                    @include('includes.status')
                 @endforeach
             </div>
         </div>
