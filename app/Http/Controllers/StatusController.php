@@ -10,6 +10,7 @@ use App\TrainStations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class StatusController extends Controller
 {
@@ -138,18 +139,18 @@ class StatusController extends Controller
             return redirect(route('export.landing'));
         }
 
-        $end = (new \DateTime($end))->add(new \DateInterval("P1D"))->format("Y-m-d");
+        $endInclLastOfMonth = (new \DateTime($end))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
         $user = Auth::user();
 
         $trainCheckins = DB::table('train_checkins')
             ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
             ->select('train_checkins.*', 'statuses.user_id')
-            ->whereBetween('train_checkins.departure', [$begin, $end])
-            ->orWhereBetween('train_checkins.arrival', [$begin, $end])
+            ->whereBetween('train_checkins.departure', [$begin, $endInclLastOfMonth])
+            ->orWhereBetween('train_checkins.arrival', [$begin, $endInclLastOfMonth])
             ->take(100)->get();
 
-        echo $this->writeLine(
+        $return = $this->writeLine(
             ["Status-ID",           "Zugart",
             "Zugnummer",            "Abfahrtsort",
             "Abfahrtskoordinaten",  "Abfahrtszeit",
@@ -178,8 +179,13 @@ class StatusController extends Controller
                 $t->distance, $t->points,
                 Status::find($t->status_id)->first()->body, ""
             ];
-            echo $this->writeLine($checkin);
-            
+            $return .= $this->writeLine($checkin);
         }
+
+        return Response::make($return, 200, [
+        'Content-type' => 'text/csv', 
+        'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
+        'Content-Length' => strlen($return)
+        ]);
     }
 }
