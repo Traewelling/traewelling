@@ -7,9 +7,9 @@
             <li>
                 <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
                 <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }} Uhr</span>
-                <p class="train-status">{{ $status->trainCheckin->getHafasTrip->linename }}</p>
+                <p class="train-status"><i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}</p>
                 @if(!empty($status->body))
-                    <p class="status-body">{{ $status->body }}</p>
+                    <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
                 @endif
             </li>
             <li>

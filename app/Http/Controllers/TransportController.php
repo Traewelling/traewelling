@@ -155,7 +155,7 @@ class TransportController extends Controller
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
-        return redirect()->route('dashboard')->with('message', 'Checked in! with ' . $trainCheckin->points . ' Points!');
+        return redirect()->route('dashboard')->with('message', 'Checked in with ' . $trainCheckin->points . ' Points!');
     }
 
     function getHAFAStrip($tripID, $lineName) {
