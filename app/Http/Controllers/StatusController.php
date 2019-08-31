@@ -107,4 +107,10 @@ class StatusController extends Controller
         return response('Like not found', 404);
     }
 
+    public function exportLanding() {
+        return view('export')->with([
+            'begin_of_month' => (new \DateTime("first day of this month"))->format("Y-m-d"),
+            'end_of_month' => (new \DateTime("last day of this month"))->format("Y-m-d")
+        ]);
+    }
 }
