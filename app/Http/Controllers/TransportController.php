@@ -146,7 +146,9 @@ class TransportController extends Controller
         $trainCheckin->points = $factor + ceil($distance / 10);
 
         //check if there are colliding checkins
-        $between = TrainCheckin::whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
+        $between = TrainCheckin::where('userid', $request->user()->id)->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
+
+        dump($between);
         if(!empty($between)) {
             return redirect()->route('dashboard')->withErrors('You have an overlapping checkin: <a href="'.url('/status/'.$between->id).'">'.$between->id.'</a>');
         }
