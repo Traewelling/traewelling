@@ -141,7 +141,6 @@ class TransportController extends Controller
         $status = new Status();
         $status->body = $request['body'];
 
-
         $trainCheckin = new TrainCheckin;
         $trainCheckin->trip_id = $request['tripID'];
         $trainCheckin->origin = $originStation->ibnr;
