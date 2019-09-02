@@ -68,6 +68,7 @@ class SocialController extends Controller
      */
     public function callback($provider)
     {
+        $domain = '';
         if ($provider === 'mastodon') {
             $domain = session('mastodon_domain');
             $server = session('mastodon_server');
@@ -80,7 +81,10 @@ class SocialController extends Controller
 
 
         $getInfo = Socialite::driver($provider)->user();
-        $user = $this->createUser($getInfo, $provider);
+        $user = $this->createUser($getInfo, $provider, $domain);
+        if ($user === null) {
+            return redirect()->to('/login')->withErrors([ __('There has been an error creating your account.')]);
+        }
         if(!Auth::check()) {
             auth()->login($user);
         }
@@ -99,9 +103,12 @@ class SocialController extends Controller
      *
      * @return user model
      */
-    function createUser($getInfo,$provider){
-
-        $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->first();
+    function createUser($getInfo, $provider, $domain){
+        if ($provider === 'mastodon') {
+            $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->where('mastodon_server', MastodonServer::where('domain', $domain)->first()->id)->first();
+        } else {
+            $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->first();
+        }
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -109,11 +116,16 @@ class SocialController extends Controller
                 return redirect()->to('/dashboard')->withErrors(['msg', __('This Account is already connected to another user')]);
             }
         } elseif ($identifier === null) {
-            $user = User::create([
-                            'name' => $getInfo->name,
-                            'username' => $getInfo->nickname,
-                            'email' => $getInfo->email,
+            try{
+                $user = User::create([
+                                         'name' => $getInfo->name,
+                                         'username' => $getInfo->nickname,
+                                         'email' => $getInfo->email,
                                      ]);
+            }
+            catch (\Illuminate\Database\QueryException $exception) {
+                return null;
+            }
         } else {
             $user = User::where('id', $identifier->user_id)->first();
         }
@@ -128,6 +140,7 @@ class SocialController extends Controller
         }
         if ($provider === 'mastodon') {
             $socialProfile->mastodon_token = $getInfo->token;
+            $socialProfile->mastodon_server = MastodonServer::where('domain', $domain)->first()->id;
         }
 
         $user->socialProfile()->save($socialProfile);
