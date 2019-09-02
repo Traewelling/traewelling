@@ -11,6 +11,9 @@
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
+// Sites
+@import "components/about";
+
 // Leaflet
 @import "~leaflet/dist/leaflet.css";
 @import "./components/statusMap";

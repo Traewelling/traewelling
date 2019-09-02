@@ -17118,6 +17118,16 @@ a.text-dark:focus {
   }
 }
 
+#about-page .blockquote,
+#about-page p.lead {
+  margin-bottom: 2em;
+}
+
+#about-page .blockquote strong,
+#about-page p.lead strong {
+  font-weight: 600;
+}
+
 .status .map {
   width: 100%;
   height: 210px;
