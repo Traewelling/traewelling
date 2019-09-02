@@ -24,11 +24,23 @@
                             </tr>
                         </thead>
                         @foreach($stopovers as $stop)
-                            <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
+                            @if(@$stop['cancelled'] == 'true')
+                                <tr>
+                                    <td>{{ $stop['stop']['name'] }}</td>
+                                    <td><span class="text-danger">{{ __('Stop cancelled') }}</span></td>
+                                    <td>{{ $stop['departurePlatform'] }}</td>
+                            @else
+                                <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
                                 <td>{{ $stop['stop']['name'] }}</td>
-                                <td>{{ __('arr') }} {{ date('H:i', strtotime($stop['arrival'])) }} @if(isset($stop['arrivalDelay']))<small>(+{{ $stop['arrivalDelay']/60 }})</small>@endif<br>
-                                {{ __('dep') }} {{ date('H:i', strtotime($stop['departure'])) }} @if(isset($stop['departureDelay']))<small>(+{{ $stop['departureDelay']/60 }})</small>@endif</td>
+                                <td>@if($stop['arrival'] != null)
+                                        {{ __('arr') }} {{ date('H:i', strtotime($stop['arrival'])) }} @if(isset($stop['arrivalDelay']))<small>(+{{ $stop['arrivalDelay']/60 }})</small>@endif
+                                    @endif<br>
+                                    @if($stop['departure'] != null)
+                                        {{ __('dep') }} {{ date('H:i', strtotime($stop['departure'])) }} @if(isset($stop['departureDelay']))<small>(+{{ $stop['departureDelay']/60 }})</small>@endif
+                                    @endif
+                                </td>
                                 <td>{{ $stop['departurePlatform'] }}</td>
+                            @endif
                             </tr>
                             @endforeach
                     </table>
