@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainCheckin extends Model
 {
-    public function Status () {
-        return $this->hasOne('App\Status');
+    public function status () {
+        return $this->belongsTo('App\Status');
     }
 
     public function getOrigin () {
@@ -45,7 +45,7 @@ class TrainCheckin extends Model
             if (isset($f->properties->id) && $f->properties->id == $destination) {
                 break;
             }
-            
+
         }
 
         return json_encode($coords);
