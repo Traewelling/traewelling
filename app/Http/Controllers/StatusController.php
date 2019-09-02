@@ -134,7 +134,7 @@ class StatusController extends Controller
     public function exportCSV(Request $request) {
         $begin = $request->input('begin');
         $end = $request->input('end');
-        
+
         if(!$this->isValidDate($begin) || !$this->isValidDate($end)) {
             return redirect(route('export.landing'));
         }
@@ -143,12 +143,9 @@ class StatusController extends Controller
 
         $user = Auth::user();
 
-        $trainCheckins = DB::table('train_checkins')
-            ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
-            ->select('train_checkins.*', 'statuses.user_id')
-            ->whereBetween('train_checkins.departure', [$begin, $endInclLastOfMonth])
-            ->orWhereBetween('train_checkins.arrival', [$begin, $endInclLastOfMonth])
-            ->take(100)->get();
+        $trainCheckins = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->whereBetween('arrival', [$begin, $endInclLastOfMonth])->orwhereBetween('departure', [$begin, $endInclLastOfMonth])->get();
 
         $return = $this->writeLine(
             ["Status-ID",           "Zugart",
@@ -161,7 +158,7 @@ class StatusController extends Controller
         );
 
         foreach ($trainCheckins as $t) {
-            if ($t->user_id !== $user->id) {
+            if ($t->status->user_id != $user->id) {
                 continue;
             }
 
@@ -177,13 +174,13 @@ class StatusController extends Controller
                 $destination->name, $destination->latitude . ", " . $destination->longtitude,
                 $t->arrival, $interval->h . ":" . $interval->i,
                 $t->distance, $t->points,
-                Status::find($t->status_id)->first()->body, ""
+                $t->status->body, ""
             ];
             $return .= $this->writeLine($checkin);
         }
 
         return Response::make($return, 200, [
-        'Content-type' => 'text/csv', 
+        'Content-type' => 'text/csv',
         'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
         'Content-Length' => strlen($return)
         ]);
