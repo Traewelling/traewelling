@@ -38,6 +38,10 @@ class Controller extends BaseController
     }
 
     function distanceCalculation($longitude_a, $latitude_a, $longitude_b, $latitude_b, $decimals = 3) {
+        if ($longitude_a === $longitude_b && $latitude_a === $latitude_b) {
+            return 0.0;
+        }
+
         $EQUATORIAL_RADIUS_KM = 6378.137;
 
         $pi = pi();

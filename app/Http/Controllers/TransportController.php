@@ -65,7 +65,7 @@ class TransportController extends Controller
     public function trainStationboard(Request $request) {
 
         if (!isset($request->when)) {
-            $request->when = time();
+            $request->when = strtotime('-5 minutes');
         }
             $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when);
             $departures = $departuresArray[1];
@@ -79,7 +79,7 @@ class TransportController extends Controller
         $ibnrObject = json_decode($this->TrainAutocomplete($station)->content());
         $ibnr = $ibnrObject{0}->id;
 
-        $response = $client->request('GET', "stations/$ibnr/departures?when=$when");
+        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15");
         $json =  json_decode($response->getBody()->getContents());
 
         return [$ibnrObject{0}, $json];
@@ -109,7 +109,13 @@ class TransportController extends Controller
 
         $hafas = $this->getHAFAStrip($request['tripID'], '')->getAttributes();
 
-        $factor = DB::table('pointscalculation')->where([['type', 'train'], ['transport_type', $hafas['category']]])->first()->value;
+        $factor = DB::table('pointscalculation')->where([['type', 'train'], ['transport_type', $hafas['category']]])->first();
+
+        if ($factor === null) {
+            $factor = 1;
+        } else {
+            $factor = $factor->value;
+        }
 
         $stopovers = json_decode($hafas['stopovers'], true);
 
@@ -118,7 +124,7 @@ class TransportController extends Controller
 
         $polyline = $this->polyline($request->start, $request->destination, json_decode($hafas['polyline'], true));
 
-        $distance = 0;
+        $distance = 0.0;
         foreach ($polyline as $key=>$point) {
             if ($key === 0) {
                 continue;
@@ -146,9 +152,11 @@ class TransportController extends Controller
         $trainCheckin->points = $factor + ceil($distance / 10);
 
         //check if there are colliding checkins
-        $between = TrainCheckin::where('userid', $request->user()->id)->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival])->first();
-
-        dump($between);
+        $between = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        })->where(function($query) use ($trainCheckin) {
+            $query->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival]);
+        })->first();
         if(!empty($between)) {
             return redirect()->route('dashboard')->withErrors('You have an overlapping checkin: <a href="'.url('/status/'.$between->id).'">'.$between->id.'</a>');
         }
