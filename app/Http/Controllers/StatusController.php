@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Like;
 use App\Status;
+use App\HafasTrip;
+use App\TrainCheckin;
+use App\TrainStations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class StatusController extends Controller
 {
@@ -107,4 +110,82 @@ class StatusController extends Controller
         return response('Like not found', 404);
     }
 
+    public function exportLanding() {
+        return view('export')->with([
+            'begin_of_month' => (new \DateTime("first day of this month"))->format("Y-m-d"),
+            'end_of_month' => (new \DateTime("last day of this month"))->format("Y-m-d")
+        ]);
+    }
+
+    private function isValidDate($date): Bool {
+        try {
+            $d = new \DateTime($date);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return false;
+        }
+        return $date === $d->format("Y-m-d");
+    }
+
+    private function writeLine($array): String {
+        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
+    }
+
+    public function exportCSV(Request $request) {
+        $begin = $request->input('begin');
+        $end = $request->input('end');
+        
+        if(!$this->isValidDate($begin) || !$this->isValidDate($end)) {
+            return redirect(route('export.landing'));
+        }
+
+        $endInclLastOfMonth = (new \DateTime($end))->add(new \DateInterval("P1D"))->format("Y-m-d");
+
+        $user = Auth::user();
+
+        $trainCheckins = DB::table('train_checkins')
+            ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+            ->select('train_checkins.*', 'statuses.user_id')
+            ->whereBetween('train_checkins.departure', [$begin, $endInclLastOfMonth])
+            ->orWhereBetween('train_checkins.arrival', [$begin, $endInclLastOfMonth])
+            ->take(100)->get();
+
+        $return = $this->writeLine(
+            ["Status-ID",           "Zugart",
+            "Zugnummer",            "Abfahrtsort",
+            "Abfahrtskoordinaten",  "Abfahrtszeit",
+            "Ankunftsort",          "Ankunftskoordinaten",
+            "Ankunftszeit",         "Reisezeit",
+            "Kilometer",            "Punkte",
+            "Status",               "Zwischenhalte"]
+        );
+
+        foreach ($trainCheckins as $t) {
+            if ($t->user_id !== $user->id) {
+                continue;
+            }
+
+            $hafas = HafasTrip::where('trip_id', $t->trip_id)->first();
+            $origin = TrainStations::where('ibnr', $t->origin)->first();
+            $destination = TrainStations::where('ibnr', $t->destination)->first();
+
+            $interval = (new \DateTime($t->departure))->diff(new \DateTime($t->arrival));
+
+            $checkin = [$t->status_id, $hafas->category,
+                $hafas->linename, $origin->name,
+                $origin->latitude . ", " . $origin->longtitude, $t->departure,
+                $destination->name, $destination->latitude . ", " . $destination->longtitude,
+                $t->arrival, $interval->h . ":" . $interval->i,
+                $t->distance, $t->points,
+                Status::find($t->status_id)->first()->body, ""
+            ];
+            $return .= $this->writeLine($checkin);
+        }
+
+        return Response::make($return, 200, [
+        'Content-type' => 'text/csv', 
+        'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
+        'Content-Length' => strlen($return)
+        ]);
+    }
 }

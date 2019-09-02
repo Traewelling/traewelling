@@ -91,6 +91,15 @@ Route::middleware(['auth'])->group(function() {
         'uses' => 'StatusController@destroyLike',
         'as'   => 'like.destroy',
     ]);
+    
+    Route::get('/export', [
+        'uses' => 'StatusController@exportLanding',
+        'as'   => 'export.landing',
+    ]);
+    Route::get('/exportCSV', [
+        'uses' => 'StatusController@exportCSV',
+        'as'   => 'export.csv',
+    ]);
 
     Route::post('/createfollow', [
         'uses' => 'UserController@CreateFollow',

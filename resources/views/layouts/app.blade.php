@@ -135,6 +135,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">Profile</a>
                                     <a class="dropdown-item" href="{{ route('settings') }}">{{ __('Settings') }}</a>
+                                    <a class="dropdown-item" href="{{ route('export.landing') }}">{{ __('Export') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
