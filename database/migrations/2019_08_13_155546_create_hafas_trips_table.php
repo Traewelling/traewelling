@@ -22,7 +22,7 @@ class CreateHafasTripsTable extends Migration
             $table->integer('origin')
                 ->references('ibnr')->on('train_stations');
             $table->integer('destination')
-                ->reference('ibnr')->on('train_stations');
+                ->references('ibnr')->on('train_stations');
             $table->json('stopovers');
             $table->json('polyline');
             $table->timestampTz('departure')->nullable();
