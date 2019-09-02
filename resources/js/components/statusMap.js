@@ -1,7 +1,11 @@
 require("leaflet/dist/leaflet.js");
 
 Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
-    var map = L.map(elem, {zoomControl: false});
+    var map = L.map(elem, {
+        zoomControl: false,
+        dragging: false,
+        tap: false
+    });
     console.log(elem);
 
     L.tileLayer(
