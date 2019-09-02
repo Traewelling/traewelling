@@ -185,4 +185,12 @@ class StatusController extends Controller
         'Content-Length' => strlen($return)
         ]);
     }
+
+    public function getActiveStatuses() {
+        $statuses = Status::with('trainCheckin')->whereHas('trainCheckin', function ($query) {
+            $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+        })->get();
+
+        return Response::json(array('data' => $statuses));;
+    }
 }

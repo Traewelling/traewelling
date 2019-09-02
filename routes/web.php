@@ -95,7 +95,7 @@ Route::middleware(['auth'])->group(function() {
         'uses' => 'StatusController@destroyLike',
         'as'   => 'like.destroy',
     ]);
-    
+
     Route::get('/export', [
         'uses' => 'StatusController@exportLanding',
         'as'   => 'export.landing',
@@ -113,6 +113,11 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/destroyfollow', [
         'uses' => 'UserController@DestroyFollow',
         'as'   => 'follow.destroy',
+    ]);
+
+    Route::get('/statuses/active', [
+        'uses' => 'StatusController@getActiveStatuses',
+        'as'   => 'statuses.active',
     ]);
 
     Route::get('/transport/train/autocomplete/{station}', [
