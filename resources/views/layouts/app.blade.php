@@ -112,6 +112,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('statuses.active') }}">Unterwegs</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
