@@ -95,7 +95,7 @@ Route::middleware(['auth'])->group(function() {
         'uses' => 'StatusController@destroyLike',
         'as'   => 'like.destroy',
     ]);
-    
+
     Route::get('/export', [
         'uses' => 'StatusController@exportLanding',
         'as'   => 'export.landing',
@@ -156,4 +156,9 @@ Route::get('/profile/{username}', [
 Route::get('/userimage/{filename}', [
     'uses' => 'UserController@getUserImage',
     'as'   => 'account.image'
+]);
+
+Route::get('/leaderboard', [
+    'uses' => 'UserController@getLeaderboard',
+    'as'   => 'leaderboard',
 ]);
