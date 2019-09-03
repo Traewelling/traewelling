@@ -189,8 +189,14 @@ class StatusController extends Controller
     public function getActiveStatuses() {
         $statuses = Status::with('trainCheckin')->whereHas('trainCheckin', function ($query) {
             $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
-        })->get();
+        })->get()->sortByDesc(function ($status, $key) {
+            return $status->trainCheckin->departure;
+        });
 
-        return Response::json(array('data' => $statuses));;
+        $polylines = $statuses->map(function($s) {
+            return $s->trainCheckin->getMapLines();
+        });
+
+        return view('activejourneys', ['statuses' => $statuses, 'polylines' => $polylines]);
     }
 }
