@@ -1,12 +1,19 @@
 require("leaflet/dist/leaflet.js");
 
 Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
+    /**
+     * The status map is used in dashboard and when viewing a single status.
+     * Some map options like zooming should only be enabled in status view,
+     * thus `includes/status.blade.php` sets data-showmapcontrols if the
+     * request is `/status/{id}`.
+     */
+    const mapInStatusView = elem.dataset.showmapcontrols == " 1 ";
+
     var map = L.map(elem, {
-        zoomControl: false,
-        dragging: false,
-        tap: false
+        zoomControl: mapInStatusView,
+        dragging: mapInStatusView,
+        tap: mapInStatusView
     });
-    console.log(elem);
 
     L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
@@ -25,8 +32,10 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
 
     map.fitBounds(polyline.getBounds());
 
-    map.dragging.disable();
-    map.touchZoom.disable();
-    map.doubleClickZoom.disable();
-    map.scrollWheelZoom.disable();
+    if (!mapInStatusView) {
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+    }
 });
