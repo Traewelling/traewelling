@@ -49507,12 +49507,18 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 __webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
 
 Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem) {
+  /**
+   * The status map is used in dashboard and when viewing a single status.
+   * Some map options like zooming should only be enabled in status view,
+   * thus `includes/status.blade.php` sets data-showmapcontrols if the
+   * request is `/status/{id}`.
+   */
+  var mapInStatusView = elem.dataset.showmapcontrols == " 1 ";
   var map = L.map(elem, {
-    zoomControl: false,
-    dragging: false,
-    tap: false
+    zoomControl: mapInStatusView,
+    dragging: mapInStatusView,
+    tap: mapInStatusView
   });
-  console.log(elem);
   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: "abcd",
@@ -49530,10 +49536,13 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem)
     weight: 5
   }).addTo(map);
   map.fitBounds(polyline.getBounds());
-  map.dragging.disable();
-  map.touchZoom.disable();
-  map.doubleClickZoom.disable();
-  map.scrollWheelZoom.disable();
+
+  if (!mapInStatusView) {
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+  }
 });
 
 /***/ }),

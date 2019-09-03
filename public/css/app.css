@@ -17134,3 +17134,7 @@ a.text-dark:focus {
   overflow: hidden;
 }
 
+.status .map.large {
+  height: 280px;
+}
+
