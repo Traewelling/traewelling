@@ -163,6 +163,13 @@ class TransportController extends Controller
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
+        $user = $request->user();
+        $user->train_distance += $trainCheckin->distance;
+        $user->train_duration += (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->points += $trainCheckin->points;
+
+        $user->update();
+
         return redirect()->route('dashboard')->with('message', 'Checked in with ' . $trainCheckin->points . ' Points!');
     }
 

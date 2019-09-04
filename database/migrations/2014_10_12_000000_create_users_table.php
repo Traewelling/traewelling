@@ -20,6 +20,9 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->float('train_distance')->default(0.00);
+            $table->unsignedInteger('train_duration')->default(0); //travel_time
+            $table->unsignedInteger('points')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -65,7 +65,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|max:120'
         ]);
-        $user = Auth::user();
+        $user = User::where('id', Auth::user()->id)->first();
         $user->name = $request['name'];
         $user->update();
         $file = $request->file('image');
@@ -120,6 +120,23 @@ class UserController extends Controller
             return response()->json(['message' => 'This follow has been destroyed.'], 200);
         }
         return response()->json(['message' => 'This follow does not exist.'], 409);
+    }
+
+    public function getLeaderboard(Request $request) {
+        $user = Auth::user();
+        $friends = null;
+
+        if ($user != null) {
+            $userIds = $user->follows()->pluck('follow_id');
+            $userIds[] = $user->id;
+            $friends = User::select('username', 'train_duration', 'train_distance', 'points')->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
+        }
+        $users = User::select('username', 'train_duration', 'train_distance', 'points')->orderby('points', 'desc')->limit(20)->get();
+        $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->orderby('train_distance', 'desc')->limit(20)->get();
+
+
+
+        return view('leaderboard', compact('users', 'friends', 'kilometers'));
     }
 
 }

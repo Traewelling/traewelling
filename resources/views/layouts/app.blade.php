@@ -79,7 +79,7 @@
             color: rgb(192, 57, 43) !important;;
         }
 
-        .navbar-light .navbar-nav .nav-link {
+        .navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .nav-link.active {
             color: rgb(192, 57, 43) !important;
         }
 
@@ -109,8 +109,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
+                        <li class="nav-item {{ request()->is('dashboard/*') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('leaderboard') }}">Leaderboard</a>
                         </li>
                     </ul>
 

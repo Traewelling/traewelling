@@ -55,11 +55,19 @@ class StatusController extends Controller
 
     public function DeleteStatus(Request $request) {
         $status = Status::find($request['statusId']);
-        if (Auth::user() != $status->user) {
+        $trainCheckin = $status->trainCheckin()->first();
+        $user = Auth::user();
+        if ($user != $status->user) {
             return redirect()->back()->with('error', __('You \'re not permitted to do this'));
         }
+
+        $user->train_distance -= $trainCheckin->distance;
+        $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->points -= $trainCheckin->points;
+
+        $user->update();
         $status->delete();
-        $status->trainCheckin()->delete();
+        $trainCheckin->delete();
         return response()->json(['message' => 'Status successfully deleted.'], 200);
     }
 
