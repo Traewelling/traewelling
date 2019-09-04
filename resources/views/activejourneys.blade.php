@@ -53,7 +53,7 @@ window.addEventListener("load", () => {
                 <?php $hafas = $s->trainCheckin->getHafasTrip()->first() ?>
                 polyline: <?php echo $hafas->polyline ?>,
                 stopovers: <?php echo $hafas->stopovers ?>,
-                percentage: {{ percentage_now_to_trip_duration($s->trainCheckin) }},
+                percentage: 0,
             },
         @endforeach
     ];
