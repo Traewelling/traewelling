@@ -193,4 +193,18 @@ class StatusController extends Controller
         'Content-Length' => strlen($return)
         ]);
     }
+
+    public function getActiveStatuses() {
+        $statuses = Status::with('trainCheckin')->whereHas('trainCheckin', function ($query) {
+            $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+        })->get()->sortByDesc(function ($status, $key) {
+            return $status->trainCheckin->departure;
+        });
+
+        $polylines = $statuses->map(function($s) {
+            return $s->trainCheckin->getMapLines();
+        });
+
+        return view('activejourneys', ['statuses' => $statuses, 'polylines' => $polylines]);
+    }
 }

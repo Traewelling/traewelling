@@ -115,6 +115,11 @@ Route::middleware(['auth'])->group(function() {
         'as'   => 'follow.destroy',
     ]);
 
+    Route::get('/statuses/active', [
+        'uses' => 'StatusController@getActiveStatuses',
+        'as'   => 'statuses.active',
+    ]);
+
     Route::get('/transport/train/autocomplete/{station}', [
         'uses'  => 'TransportController@TrainAutocomplete',
         'as'    => 'transport.train.autocomplete',

@@ -115,6 +115,9 @@
                         <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('leaderboard') }}">Leaderboard</a>
                         </li>
+                        <li class="nav-item {{ request()->is('statuses/active') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('statuses.active') }}">Unterwegs</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

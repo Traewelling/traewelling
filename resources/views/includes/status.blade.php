@@ -1,11 +1,10 @@
 <div class="card status mt-3" data-statusid="{{ $status->id }}">
+    @if (Route::current()->uri == "status/{id}")
     <div class="card-img-top">
-        <div 
-            id="map-{{ $status->id }}"
-            class="map statusMap @if (\Request::is('status/*'))  large  @endif"
-            data-polygon="{{ $status->trainCheckin->getMapLines() }}"
-            data-showmapcontrols="@if (\Request::is('status/*')) 1 @endif"></div>
+        <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-21by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
     </div>
+    @endif
+
     <div class="card-body">
         <ul class="timeline">
             <li>
@@ -21,6 +20,14 @@
                 <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }} Uhr</span>
             </li>
         </ul>
+    </div>
+    <div class="progress">
+        <?php
+        $departure = strtotime($status->trainCheckin->departure);
+        $arrival = strtotime($status->trainCheckin->arrival);
+        $percentage = 100 * (time() - $departure) / ($arrival - $departure);
+        ?>
+        <div class="progress-bar" role="progressbar" style="width: {{$percentage}}%" aria-valuenow="{{$percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ $status->created_at }}</a></span>
