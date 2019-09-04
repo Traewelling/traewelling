@@ -1,6 +1,6 @@
 <div class="card status mt-3" data-statusid="{{ $status->id }}">
     <div class="card-img-top">
-        <div id="map-{{ $status->id }}" class="map statusMap" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
+        <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-21by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
     </div>
     <div class="card-body">
         <ul class="timeline">

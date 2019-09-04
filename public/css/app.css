@@ -17130,7 +17130,6 @@ a.text-dark:focus {
 
 .status .map {
   width: 100%;
-  height: 210px;
   overflow: hidden;
 }
 
@@ -17143,9 +17142,8 @@ a.text-dark:focus {
 .status .progress .progress-bar {
   background: #c0392b;
 }
+
 #activeJourneys #map {
-  width: 100%;
-  height: 400px;
   overflow: hidden;
 }
 

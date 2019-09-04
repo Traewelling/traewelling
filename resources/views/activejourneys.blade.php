@@ -9,7 +9,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8" id="activeJourneys">
 
-                <div id="map"></div>
+                <div id="map" class="embed-responsive embed-responsive-16by9"></div>
                 <script>
 window.addEventListener("load", () => {
     var map = L.map(document.getElementById('map'), {
