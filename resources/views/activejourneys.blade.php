@@ -28,22 +28,6 @@ window.addEventListener("load", () => {
     ).addTo(map);
 
 
-    // const journeys = [
-    // @foreach($polylines as $p)
-    //     {{$p}},
-    // @endforeach
-    // ];
-
-    // journeys.forEach(j => {
-    //     const latlngs = j.map(([a, b]) => [b, a]);
-    //     var polyline = L.polyline(latlngs)
-    //         .setStyle({
-    //             color: "rgb(192, 57, 43)",
-    //             weight: 5
-    //         })
-    //         .addTo(map);
-    // });
-
     const statuses = [
         @foreach($statuses as $s)
             {
@@ -179,37 +163,6 @@ window.addEventListener("load", () => {
             }
         }
 
-        // console.log(behindUs);
-
-        // let polylineIndex = 0;
-        // let stopoversIndex = -1;
-        // let isOnTrip = false;
-
-        // for (let polylineIndex = 0; polylineIndex < s.polyline.features.length; polylineIndex++) {
-        //     if(!typeof s.polyline.features[polylineIndex].properties.id == 'undefined')
-        //         console.log(s.polyline.features[polylineIndex].properties.id);
-        //     console.log(s.stopovers[stopoversIndex + 1].stop.id);
-        //     if(s.polyline.features[polylineIndex].properties.id == s.stopovers[stopoversIndex + 1].stop.id) {
-        //         // The features arrived at a new stopover!
-        //         stopoversIndex++;
-        //     }
-
-        //     if(s.stopovers[stopoversIndex].stop.id == s.origin) { // We found the start of the statuses trip
-        //         isOnTrip = true;   
-        //     }
-        //     if(isOnTrip) {
-        //         console.log("?");
-        //         if(behindUs.filter( b => b.stop.id == s.stopovers[stopoversIndex].stop.id) > -1) {
-        //             console.log("!");
-                    
-        //         }
-        //     }
-
-
-        //     if(s.stopovers[stopoversIndex].stop.id == s.checkinDestination) {// We found the end of the statuses trip
-        //         isOnTrip = false;
-        //     }
-        // }
     });
 });
                 </script>
