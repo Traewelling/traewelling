@@ -172,7 +172,7 @@ window.addEventListener("load", () => {
                     .setStyle({
                         color: isSeen
                             ? "rgb(192, 57, 43)"
-                            : "rgb(43, 138, 192)",
+                            : "#B8B8B8",
                         weight: 5
                     })
                     .addTo(map);
