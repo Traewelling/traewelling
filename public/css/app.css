@@ -17134,6 +17134,15 @@ a.text-dark:focus {
   overflow: hidden;
 }
 
+.status .progress {
+  height: 0.3rem;
+  background: rgba(0, 0, 0, 0.125);
+  border-radius: 0;
+}
+
+.status .progress .progress-bar {
+  background: #c0392b;
+}
 #activeJourneys #map {
   width: 100%;
   height: 400px;

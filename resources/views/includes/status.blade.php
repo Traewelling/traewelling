@@ -18,6 +18,14 @@
             </li>
         </ul>
     </div>
+    <div class="progress">
+        <?php
+        $departure = strtotime($status->trainCheckin->departure);
+        $arrival = strtotime($status->trainCheckin->arrival);
+        $percentage = 100 * (time() - $departure) / ($arrival - $departure);
+        ?>
+        <div class="progress-bar" role="progressbar" style="width: {{$percentage}}%" aria-valuenow="{{$percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ $status->created_at }}</a></span>
         <a href="#" class="like">{{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'Like' : 'Dislike'}}</a>

@@ -3,3 +3,14 @@
     height: 210px;
     overflow: hidden;
 }
+
+.status .progress {
+    height: 0.3rem;
+    // background: lighten(rgb(192, 57, 43), 50%);
+    background: rgba(0, 0, 0, 0.125);
+    border-radius: 0;
+
+    .progress-bar {
+        background: rgb(192, 57, 43);
+    }
+}
