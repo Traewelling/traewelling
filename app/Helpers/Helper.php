@@ -23,3 +23,12 @@ function get_current_git_commit_message( $branch='master' ) {
         return false;
     }
 }
+
+
+function percentage_now_to_trip_duration($trainCheckin) {
+    $departure = strtotime($trainCheckin->departure);
+    $arrival = strtotime($trainCheckin->arrival);
+
+    return 100 * (time() - $departure) / ($arrival - $departure);
+
+}
