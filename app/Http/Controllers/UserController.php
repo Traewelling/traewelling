@@ -84,7 +84,7 @@ class UserController extends Controller
 
     public function getProfilePage($username) {
         $user = User::where('username', $username)->first();
-        $statuses = $user->statuses()->get();
+        $statuses = $user->statuses()->orderBy('created_at', 'DESC')->get();
         return view('profile', ['username' => $username, 'statuses' => $statuses, 'user' => $user]);
     }
 
