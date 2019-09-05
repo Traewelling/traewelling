@@ -84,7 +84,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Abort') }}</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">{{ __('Abort') }}</button>
                     <button type="button" class="btn btn-primary" id="checkinButton">{{ __('Check in!') }}</button>
                 </div>
             </div>

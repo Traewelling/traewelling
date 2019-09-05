@@ -10,7 +10,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <header><h3>Profile of {{ $user->username }}</h3></header>
-                @if($user != Auth::user())
+                @if($user != Auth::user() && Auth::check())
                 <form action="{{ Auth::user()->follows->where('follow_id', $user->id)->first() === null ? route('follow.create') : route('follow.destroy') }}" method="post">
                     <button type="submit" class="btn btn-primary">{{ Auth::user()->follows->where('follow_id', $user->id)->first() === null ? 'Follow' : 'Unfollow' }}</button>
                     <input type="hidden" value="{{ $user->id }}" name="follow_id">

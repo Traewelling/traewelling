@@ -9,7 +9,11 @@
 @import "variables";
 
 // Bootstrap
-@import "~bootstrap/scss/bootstrap";
+//@import "~bootstrap/scss/bootstrap";
+// mdbootstrap pro
+@import '~mdbootstrap/css/mdb.css';
+@import '~mdbootstrap/css/bootstrap.css';
+@import '~mdbootstrap/scss/mdb';
 
 // Sites
 @import "components/about";

@@ -85,8 +85,8 @@
                 top: 0px;
                 left: 0px;
                 z-index: 2;
-                background: rgb(192,57,43);
-                opacity: 0.5;
+                background-image: linear-gradient(#d4353e, #a20b12);
+                opacity: 0.8;
             }
         </style>
     </head>
@@ -121,6 +121,10 @@
                     <a href="{{ url('/auth/redirect/twitter') }}">Twitter</a>
                     <a href="{{ url('/auth/redirect/Github') }}">Github</a>
                     <a href="{{ url('/login') }}">Mastodon</a>
+                </div>
+                <div class="links">
+                    <a href="{{ url('/leaderboard') }}">Leaderboard</a>
+                    <a href="{{ url('/statuses/active') }}">Travelling</a>
                 </div>
             </div>
         </div>

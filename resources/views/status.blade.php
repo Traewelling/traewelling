@@ -11,5 +11,6 @@
                 @include('includes.status')
             </div>
         </div>
+        @include('includes.edit-modal')
     </div><!--- /container -->
 @endsection

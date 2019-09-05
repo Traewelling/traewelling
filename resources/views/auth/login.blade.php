@@ -71,16 +71,16 @@
                             <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
-                                        <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary"><i class="fab fa-twitter"></i> Twitter</a>
+                                        <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary"><i class="fab fa-twitter"></i> Twitter</a>
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <a href="{{ url('/auth/redirect/github') }}" class="btn btn-primary"><i class="fab fa-github"></i> Github</a>
+                                        <a href="{{ url('/auth/redirect/github') }}" class="btn btn-sm btn-primary"><i class="fab fa-github"></i> Github</a>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <div class="input-group">
                                             <input type="text" name="domain" placeholder="Instance URL" aria-describedby="button-addon4" class="form-control">
                                             <div id="button-addon4" class="input-group-append">
-                                                <button type="submit" class="btn btn-primary"><i class="fab fa-mastodon"></i> Mastodon</button>
+                                                <button type="submit" class="btn btn-sm btn-primary"><i class="fab fa-mastodon"></i> Mastodon</button>
                                             </div>
                                         </div>
                                     </div>

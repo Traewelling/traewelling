@@ -13,11 +13,11 @@
                         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab" aria-controls="home" aria-selected="true">{{ __('Top 20') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab" aria-controls="profile" aria-selected="false">{{ __('Top 20 Kilometers') }}</a>
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab" aria-controls="profile" aria-selected="false">{{ __('Kilometers') }}</a>
                     </li>
                     @if($friends != null)
                     <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#top20f" role="tab" aria-controls="contact" aria-selected="false">{{ __('Top 20 Friends') }}</a>
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#top20f" role="tab" aria-controls="contact" aria-selected="false">{{ __('Friends') }}</a>
                     </li>
                     @endif
                 </ul>

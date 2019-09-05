@@ -31,6 +31,26 @@ Route::get('/about', function() {
     return view('about');
 })->name('about');
 
+Route::get('/profile/{username}', [
+    'uses' => 'UserController@getProfilePage',
+    'as'   => 'account.show'
+]);
+
+Route::get('/userimage/{filename}', [
+    'uses' => 'UserController@getUserImage',
+    'as'   => 'account.image'
+]);
+
+Route::get('/leaderboard', [
+    'uses' => 'UserController@getLeaderboard',
+    'as'   => 'leaderboard',
+]);
+
+Route::get('/statuses/active', [
+    'uses' => 'StatusController@getActiveStatuses',
+    'as'   => 'statuses.active',
+]);
+
 Auth::routes();
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
@@ -115,10 +135,6 @@ Route::middleware(['auth'])->group(function() {
         'as'   => 'follow.destroy',
     ]);
 
-    Route::get('/statuses/active', [
-        'uses' => 'StatusController@getActiveStatuses',
-        'as'   => 'statuses.active',
-    ]);
 
     Route::get('/transport/train/autocomplete/{station}', [
         'uses'  => 'TransportController@TrainAutocomplete',
@@ -152,18 +168,3 @@ Route::middleware(['auth'])->group(function() {
 
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');
-
-Route::get('/profile/{username}', [
-    'uses' => 'UserController@getProfilePage',
-    'as'   => 'account.show'
-]);
-
-Route::get('/userimage/{filename}', [
-    'uses' => 'UserController@getUserImage',
-    'as'   => 'account.image'
-]);
-
-Route::get('/leaderboard', [
-    'uses' => 'UserController@getLeaderboard',
-    'as'   => 'leaderboard',
-]);

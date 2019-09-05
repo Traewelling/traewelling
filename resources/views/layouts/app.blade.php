@@ -76,28 +76,20 @@
             background: #f5f5f5;
         }
         .text-trwl {
-            color: rgb(192, 57, 43) !important;;
+            color: rgb(199, 39, 48) !important;;
+        }
+        .bg-trwl {
+            background-color: #c72730 !important;
         }
 
-        .navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .nav-link.active {
-            color: rgb(192, 57, 43) !important;
-        }
-
-        .navbar-light .navbar-brand {
-            color: rgb(192, 57, 43) !important;
+        .navbar-dark .navbar-brand {
             font-weight: bold !important;
         }
-
-        .top-border {
-            border-top: 5px solid rgb(192, 57, 43);
-            margin-top: -11px;
-        }
-
     </style>
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white">
+        <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -109,9 +101,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
+                        @if (Auth::check())
                         <li class="nav-item {{ request()->is('dashboard/*') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         </li>
+                        @endif
                         <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
                             <a class="nav-link" href="{{ route('leaderboard') }}">Leaderboard</a>
                         </li>
@@ -133,7 +127,7 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown top-border">
+                            <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
@@ -171,6 +165,7 @@
                     / <a href="{{ route('imprint') }}">{{ __('Imprint') }}</a>
                     / <a href="{{ route('privacy') }}">{{ __('Privacy') }}</a>
                     / <a href="{{ route('about') }}">{{ __('About')}}</a>
+                    / <a href="{{ route('globaldashboard') }}">{{ __('Global Dashboard')}}</a>
                 </p>
                 <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in Baden') !!}</p>
                 <p>&copy; 2019 Tr&auml;welling</p>

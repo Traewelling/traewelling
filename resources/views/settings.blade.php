@@ -87,17 +87,17 @@
                             <td>Twitter</td>
                             @if ($user->socialProfile->twitter_id != null)
                                 <td>{{ __('Connected') }}</td>
-                                <td><a href="#" data-provider="twitter" class="btn btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
+                                <td><a href="#" data-provider="twitter" class="btn btn-sm btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
                             @else
                                 <td>{{ __('Not Connected') }}</td>
-                                <td><a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-primary">{{ __('Connect') }}</a></td>
+                                <td><a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">{{ __('Connect') }}</a></td>
                             @endif
                         </tr>
                         <tr>
                             <td>Mastodon</td>
                             @if ($user->socialProfile->mastodon_id != null)
                                 <td>{{ __('Connected') }}</td>
-                                <td><a href="#" data-provider="mastodon" class="btn btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
+                                <td><a href="#" data-provider="mastodon" class="btn btn-sm btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
                             @else
 
                                 <td>{{ __('Not Connected') }}</td>
@@ -106,7 +106,7 @@
                                     <div class="input-group">
                                         <input type="text" name="domain" placeholder="Instance URL" aria-describedby="button-addon4" class="form-control">
                                         <div id="button-addon4" class="input-group-append">
-                                            <button type="submit" class="btn btn-primary"><i class="fab fa-mastodon"></i> {{ __('Connect') }}</button>
+                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fab fa-mastodon"></i> {{ __('Connect') }}</button>
                                         </div>
                                     </div>
                                     </form>
@@ -117,10 +117,10 @@
                             <td>Github</td>
                             @if ($user->socialProfile->github_id != null)
                                 <td>{{ __('Connected') }}</td>
-                                <td><a href="#" data-provider="github" class="btn btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
+                                <td><a href="#" data-provider="github" class="btn btn-sm btn-outline-danger disconnect">{{ __('Disconnect') }}</a></td>
                             @else
                                 <td>{{ __('Not Connected') }}</td>
-                                <td><a href="{{ url('/auth/redirect/github') }}" class="btn btn-primary">{{ __('Connect') }}</a></td>
+                                <td><a href="{{ url('/auth/redirect/github') }}" class="btn btn-sm btn-primary">{{ __('Connect') }}</a></td>
                             @endif
                         </tr>
 
