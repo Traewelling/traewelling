@@ -21,6 +21,9 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/typeaheadjs.css') }}" rel="stylesheet">
     <style>
+        body {
+            background: rgb(248, 250, 252);
+        }
         .product-icon {
             width: 1em;
             height: 1em;
