@@ -5,9 +5,8 @@
     <div class="container">
     <div class="row justify-content-center">
         <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when)]) }}" alt="-15 Minutes" class="btn btn-secondary"><i class="fas fa-arrow-circle-left"></i></a>
-            <!-- <a href="" class="btn btn-secondary">...</a>-->
-            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when)]) }}" alt="+15 Minutes" class="btn btn-secondary"><i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when)]) }}" alt="-15 Minutes" class="btn btn-outline-dark"><i class="fas fa-arrow-circle-left"></i></a>
+            <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when)]) }}" alt="+15 Minutes" class="btn btn-outline-dark"><i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="row justify-content-center mt-3">

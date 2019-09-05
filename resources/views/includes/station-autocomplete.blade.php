@@ -9,7 +9,7 @@
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
                         <input type="text" id="station-autocomplete" name="station" class="form-control mb-2 mr-sm-2" aria-label="Text input with dropdown button" placeholder="Station" @isset(request()->station) value="{{request()->station}}" @endisset>
 
-                        <button class="btn btn-outline-secondary" type="Submit">submit</button>
+                        <button class="btn btn-outline-primary float-right" type="Submit">submit</button>
                     </form>
                 </div>
             </div>

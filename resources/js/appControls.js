@@ -5,11 +5,8 @@ $(document).on("click", ".edit", function(event) {
     console.log("edit");
     event.preventDefault();
 
-    statusBodyElement = event.target.parentNode.parentNode.childNodes[0];
-    console.log(statusBodyElement);
-    var statusBody = statusBodyElement.textContent;
-
-    statusId = event.target.parentNode.parentNode.dataset["statusid"];
+    statusBody = event.target.parentNode.parentNode.parentNode.dataset['body'];
+    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
     $("#status-body").val(statusBody);
     $("#edit-modal").modal();
 });
@@ -17,14 +14,14 @@ $(document).on("click", ".edit", function(event) {
 $(document).on("click", ".delete", function(event) {
     console.log("delete");
     event.preventDefault();
-    statusId = event.target.parentNode.parentNode.dataset["statusid"];
+    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
     console.log(statusId);
     $.ajax({
         method: "DELETE",
         url: urlDelete,
         data: {statusId: statusId, _token: token}
     }).done(function(msg) {
-        event.target.parentNode.parentNode.parentNode.remove();
+        window.location.replace('/dashboard');
     });
 });
 
@@ -34,8 +31,7 @@ $(document).on("click", "#modal-save", function() {
         url: urlEdit,
         data: {body: $("#status-body").val(), statusId: statusId, _token: token}
     }).done(function(msg) {
-        $(statusBodyElement).text(msg["new_body"]);
-        $("#edit-modal").modal("hide");
+        window.location.reload();
     });
 });
 
@@ -44,13 +40,13 @@ $(document).on("click", ".like", function(event) {
 
     statusId = event.target.parentNode.parentNode.dataset["statusid"];
     console.log(statusId);
-    if (event.target.innerText == "Like") {
+    if (event.target.className == "like far fa-heart") {
         $.ajax({
             method: "POST",
             url: urlLike,
             data: {statusId: statusId, _token: token}
         }).done(function() {
-            event.target.innerText = "Dislike";
+            event.target.className = "like fas fa-heart";
         });
     } else {
         $.ajax({
@@ -58,7 +54,7 @@ $(document).on("click", ".like", function(event) {
             url: urlDislike,
             data: {statusId: statusId, _token: token}
         }).done(function() {
-            event.target.innerText = "Like";
+            event.target.className = "like far fa-heart";
         });
     }
 });
