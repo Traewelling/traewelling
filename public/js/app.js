@@ -69781,6 +69781,37 @@ $(document).on("click", ".like", function (event) {
     });
   }
 });
+$(document).on("click", ".follow", function (event) {
+  event.preventDefault();
+  userId = event.target.dataset["userid"];
+  console.log(userId);
+
+  if (event.target.dataset["following"] == "no") {
+    $.ajax({
+      method: "POST",
+      url: urlFollow,
+      data: {
+        follow_id: userId,
+        _token: token
+      }
+    }).done(function () {
+      event.target.dataset["following"] = "yes";
+      event.target.innerText = "Unfollow";
+    });
+  } else {
+    $.ajax({
+      method: "POST",
+      url: urlUnfollow,
+      data: {
+        follow_id: userId,
+        _token: token
+      }
+    }).done(function () {
+      event.target.dataset["following"] = "no";
+      event.target.innerText = "Follow";
+    });
+  }
+});
 $(document).on("click", ".disconnect", function (event) {
   event.preventDefault();
   var provider = event.target.dataset["provider"];

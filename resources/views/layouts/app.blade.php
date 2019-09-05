@@ -277,6 +277,8 @@
         var urlLike = '{{ route('like.create') }}';
         var urlDislike = '{{ route('like.destroy') }}';
         var urlDisconnect = '{{ route('provider.destroy') }}';
+        var urlFollow = '{{ route('follow.create') }}';
+        var urlUnfollow = '{{ route('follow.destroy') }}';
     </script>
 </body>
 </html>
