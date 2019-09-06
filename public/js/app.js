@@ -69704,6 +69704,8 @@ window.onload = function () {
   __webpack_require__(/*! ./components/statusMap.js */ "./resources/js/components/statusMap.js");
 };
 
+__webpack_require__(/*! ./components/timepicker.js */ "./resources/js/components/timepicker.js");
+
 /***/ }),
 
 /***/ "./resources/js/appControls.js":
@@ -70018,6 +70020,59 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem)
 
 /***/ }),
 
+/***/ "./resources/js/components/timepicker.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/timepicker.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+window.addEventListener("load", function () {
+  var invalidBox = document.createElement("div");
+  var input = document.getElementById("timepicker");
+  input.value = document.getElementById("reqTime").innerText;
+  document.getElementById("timepicker-button").addEventListener("click", function () {
+    var cl = document.getElementById("timepicker-form").classList;
+    cl.remove("opacity-null");
+    cl.add("animated");
+    cl.add("bounceIn");
+    document.getElementById("timepicker-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      changeTime();
+    });
+    input.addEventListener("keyup", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        changeTime();
+      }
+    });
+
+    var changeTime = function changeTime() {
+      invalidBox.classList.add("d-none");
+      input.classList.remove("is-invalid");
+      var r = /^(\d{2})\:*(\d{2})$/;
+      var matches = Array.from(input.value.matchAll(r))[0];
+
+      if (typeof matches != "undefined" && matches[1] >= 0 && matches[1] < 24 && matches[2] >= 0 && matches[2] < 60) {
+        var d = new Date();
+        d.setHours(matches[1], matches[2]);
+        var ts = Math.floor(d.getTime() / 1000);
+        window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", ts);
+      } else {
+        invalidBox.classList.add("invalid-feedback");
+        invalidBox.classList.add("animated");
+        invalidBox.classList.add("fadeIn");
+        invalidBox.classList.remove("d-none");
+        invalidBox.innerText = window.invalidHHMMdate;
+        document.getElementById("timepicker-form").children[0].appendChild(invalidBox);
+        input.classList.add("is-invalid");
+      }
+    };
+  });
+});
+
+/***/ }),
+
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -70036,8 +70091,8 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem)
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
