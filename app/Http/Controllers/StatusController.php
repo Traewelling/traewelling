@@ -24,7 +24,7 @@ class StatusController extends Controller
         $user = Auth::user();
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        $statuses = Status::whereIn('user_id', $userIds)->latest()->get();
+        $statuses = Status::whereIn('user_id', $userIds)->latest()->simplePaginate(15);
 
         if ($statuses->isEmpty()) {
             return redirect()->route('globaldashboard');
@@ -34,7 +34,7 @@ class StatusController extends Controller
     }
 
     public function getGlobalDashboard() {
-        $statuses = Status::orderBy('created_at', 'desc')->latest()->get();
+        $statuses = Status::orderBy('created_at', 'desc')->latest()->simplePaginate(15);
 
         return view('dashboard', ['statuses' => $statuses]);
     }
