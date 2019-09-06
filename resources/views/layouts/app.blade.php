@@ -14,8 +14,7 @@
     <script src="{{ asset('js/typeahead.bundle.min.js') }}"></script>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -88,6 +87,10 @@
         .navbar-dark .navbar-brand {
             font-weight: bold !important;
         }
+
+        .dropdown-menu {
+            z-index: 2000;
+        }
     </style>
 </head>
 <body>
@@ -131,7 +134,7 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
@@ -240,7 +243,7 @@
             touchmoved = false;
         });
 
-        $(document).on('click touchstart', '.train-destinationrow', function() {
+        $(document).on('click touchend', '.train-destinationrow', function() {
             var tripID = $(this).parent().parent().data('tripid');
             var start = $(this).parent().parent().data('start');
             var destination = $(this).data('ibnr');
