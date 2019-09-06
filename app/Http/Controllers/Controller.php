@@ -31,7 +31,10 @@ class Controller extends BaseController
                 $offset[1] = $key;
             }
         }
-        $offset[1] = $offset[1] - sizeof($polyline) + 1;
+        if ($offset[1] != key(array_slice($polyline, -1, 1, true))) {
+            $offset[1] = $offset[1] - sizeof($polyline) + 1;
+        }
+
         $polyline = array_slice($polyline, $offset[0], $offset[1]);
 
         return $polyline;
