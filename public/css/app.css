@@ -35632,6 +35632,36 @@ ul.stepper li.completed a .label {
   font-weight: 600;
 }
 
+#timepicker-wrapper .btn-rounded:first-child {
+  border-top-left-radius: 10em;
+  border-bottom-left-radius: 10em;
+}
+
+#timepicker-wrapper .btn-rounded:last-child {
+  border-top-right-radius: 10em;
+  border-bottom-right-radius: 10em;
+}
+
+#timepicker-wrapper .btn {
+  box-shadow: none !important;
+}
+
+#timepicker-wrapper .text-white {
+  color: white;
+  text-transform: uppercase;
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 0.81rem;
+}
+
+#timepicker-wrapper #timepicker {
+  width: 10ch;
+}
+
+#timepicker-wrapper #timepicker-form.opacity-null {
+  opacity: 0;
+}
+
 .status .map {
   width: 100%;
   overflow: hidden;

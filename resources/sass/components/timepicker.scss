@@ -1,0 +1,29 @@
+#timepicker-wrapper {
+    .btn-rounded:first-child {
+        border-top-left-radius: 10em;
+        border-bottom-left-radius: 10em;
+    }
+    .btn-rounded:last-child {
+        border-top-right-radius: 10em;
+        border-bottom-right-radius: 10em;
+    }
+    .btn {
+        box-shadow: none !important;
+    }
+    .text-white {
+        color: white;
+        text-transform: uppercase;
+        word-wrap: break-word;
+        white-space: normal;
+        font-size: 0.81rem;
+    }
+
+    #timepicker {
+        width: 10ch;
+    }
+    #timepicker-form {
+        &.opacity-null {
+            opacity: 0;
+        }
+    }
+}
