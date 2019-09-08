@@ -51,7 +51,7 @@ Route::get('/statuses/active', [
     'as'   => 'statuses.active',
 ]);
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
@@ -64,6 +64,11 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/destroy/provider', [
         'uses'  => 'SocialController@destroyProvider',
         'as'    => 'provider.destroy',
+    ]);
+
+    Route::post('/settings/password', [
+        'uses' => 'UserController@updatePassword',
+        'as'   => 'password.change',
     ]);
 
     Route::post('/settings', [

@@ -139,13 +139,14 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">Profile</a>
-                                    <a class="dropdown-item" href="{{ route('settings') }}">{{ __('Settings') }}</a>
-                                    <a class="dropdown-item" href="{{ route('export.landing') }}">{{ __('Export') }}</a>
+                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}"><i class="fas fa-user"></i> Profile</a>
+                                    <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('Export') }}</a>
+                                    <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('Settings') }}</a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

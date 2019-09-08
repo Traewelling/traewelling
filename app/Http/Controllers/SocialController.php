@@ -86,7 +86,7 @@ class SocialController extends Controller
             return redirect()->to('/login')->withErrors([ __('There has been an error creating your account.')]);
         }
         if(!Auth::check()) {
-            auth()->login($user);
+            auth()->login($user, true);
         }
 
         return redirect()->to('/dashboard');
@@ -152,6 +152,7 @@ class SocialController extends Controller
     public function destroyProvider(Request $request) {
         $providerField = "{$request->provider}_id";
         $user = Auth::user();
+
         $SocialLoginProfile = SocialLoginProfile::where('user_id', $user->id)->first();
         if ($SocialLoginProfile === null) {
             return response('Your user does not have a Social Login provider', 404);
