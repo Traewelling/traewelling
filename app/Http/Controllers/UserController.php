@@ -18,7 +18,7 @@ class UserController extends Controller
     public function updateSettings(Request $request) {
         $user = Auth::user();
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', 'Alpha'],
+            'name' => ['required', 'string', 'max:50'],
         ]);
         if ($user->username != $request->username) {
             $this->validate($request,['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
