@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Jenssegers\Agent\Agent;
 
 
@@ -16,12 +17,37 @@ class UserController extends Controller
 {
     public function updateSettings(Request $request) {
         $user = Auth::user();
-
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255', 'Alpha'],
+        ]);
+        if ($user->username != $request->username) {
+            $this->validate($request,['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
+        }
+        if ($user->email != $request->email) {
+            $this->validate($request, ['email' => ['required', 'string', 'email', 'max:255', 'unique:users']]);
+            $user->email_verified_at = null;
+        }
         $user->email = $request->email;
         $user->username = $request->username;
         $user->name = $request->name;
         $user->save();
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
+
         return $this->getAccount();
+    }
+
+    public function updatePassword(Request $request) {
+        $user = Auth::user();
+        if (Hash::check($request->currentpassword, $user->password)) {
+            $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return redirect()->back()->with('info', 'Password changed');
+        }
+        return redirect()->back()->withErrors('Wrong password!');
     }
 
     //Return Settings-page

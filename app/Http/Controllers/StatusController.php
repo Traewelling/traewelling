@@ -26,6 +26,10 @@ class StatusController extends Controller
         $userIds[] = $user->id;
         $statuses = Status::whereIn('user_id', $userIds)->latest()->simplePaginate(15);
 
+        if (!$user->hasVerifiedEmail() && $user->email != null) {
+            \Session::flash('message', 'You have not verified your mail yet! <a href="'.route('verification.resend').'">Resend link</a>');
+        }
+
         if ($statuses->isEmpty()) {
             return redirect()->route('globaldashboard');
         }
