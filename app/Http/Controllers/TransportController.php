@@ -67,19 +67,38 @@ class TransportController extends Controller
         if (!isset($request->when)) {
             $request->when = strtotime('-5 minutes');
         }
-            $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when);
+        if (!isset($request->travelType)) {
+            $request->travelType = null;
+        }
+            $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when, $request->travelType);
             $departures = $departuresArray[1];
             $station = $departuresArray[0];
 
         return view('stationboard', compact('station', 'departures', 'request'));
     }
 
-    function getTrainDepartures($station, $when='now') {
+    function getTrainDepartures($station, $when='now', $trainType=null) {
         $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
         $ibnrObject = json_decode($this->TrainAutocomplete($station)->content());
         $ibnr = $ibnrObject{0}->id;
+        $trainTypes = array(
+            'suburban' => 'false',
+            'subway' => 'false',
+            'tram' => 'false',
+            'bus' => 'false',
+            'ferry' => 'false',
+            'express' => 'false',
+            'regional' => 'false',
+        );
+        $appendix = '';
 
-        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15");
+
+        if ($trainType != null) {
+            $trainTypes[$trainType] = 'true';
+            $appendix = '&'.http_build_query($trainTypes);
+        }
+
+        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
         $json =  json_decode($response->getBody()->getContents());
 
         return [$ibnrObject{0}, $json];
