@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\MastodonServer;
+use Mastodon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\HafasTrip;
@@ -188,6 +190,27 @@ class TransportController extends Controller
         $user->points += $trainCheckin->points;
 
         $user->update();
+
+        if (isset($request->toot_check)) {
+            $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
+
+            Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+
+            $post_text = "I'm in " .  $hafas['linename'] . " towards " . $destinationStation->name . '! ';
+            $post_url = url("/status/{$trainCheckin->status_id}");
+
+            if (isset($status->body)) {
+                $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ') #NowTräwelling ';
+                $appendix_length = strlen($appendix) + 30;
+                $post_text = substr($status->body, 0, 280 - $appendix_length);
+                if (strlen($post_text) != strlen($status->body)) {
+                    $post_text.='...';
+                }
+                $post_text .= $appendix;
+            }
+
+            $response = Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+        }
 
         return redirect()->route('dashboard')->with('message', 'Checked in with ' . $trainCheckin->points . ' Points!');
     }

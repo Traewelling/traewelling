@@ -16,7 +16,7 @@
         "laravel/socialite": "^4.1",
         "laravel/tinker": "^1.0",
         "revolution/laravel-mastodon-api": "^2.0",
-        "revolution/socialite-mastodon": "^1.2"
+        "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
