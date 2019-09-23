@@ -55,8 +55,6 @@ return [
         'client_id'     => env('MASTODON_ID'),
         'client_secret' => env('MASTODON_SECRET'),
         'redirect'      => env('MASTODON_REDIRECT'),
-        //'read', 'write', 'follow'
-        'scope'         => ['write'],
     ],
 
     'github' => [

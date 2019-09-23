@@ -66,16 +66,16 @@
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
                         <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="customCheck1">
-                            <label class="custom-control-label" for="customCheck1">Tweet</label>
+                            <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
+                            <label class="custom-control-label" for="tweet_check">Tweet</label>
                         </div>
                         <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="customCheck2">
-                            <label class="custom-control-label" for="customCheck2">Toot</label>
+                            <input type="checkbox" class="custom-control-input" id="toot_check" name="toot_check">
+                            <label class="custom-control-label" for="toot_check">Toot</label>
                         </div>
                         <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="customCheck3">
-                            <label class="custom-control-label" for="customCheck3">#dbl</label>
+                            <input type="checkbox" class="custom-control-input" id="business_check" name="business_check">
+                            <label class="custom-control-label" for="business_check">Business</label>
                         </div>
                         <input type="hidden" id="input-tripID" name="tripID" value="">
                         <input type="hidden" id="input-destination" name="destination" value="">

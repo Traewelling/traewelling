@@ -36,7 +36,7 @@ class SocialController extends Controller
 
             if (empty($server)) {
                 //create new app
-                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'read write');
+                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
 
                 //save app info
                 $server = MastodonServer::create([
@@ -161,5 +161,15 @@ class SocialController extends Controller
         $user->socialProfile()->save($SocialLoginProfile);
 
         return response('Social Login Provider has been deleted', 200);
+    }
+
+    public function testMastodon() {
+        $user = Auth::user();
+        $socialProfile = $user->socialProfile;
+        $mastodonDomain = MastodonServer::where('id', $socialProfile->mastodon_server)->first()->domain;
+
+        Mastodon::domain($mastodonDomain)->token($socialProfile->mastodon_token);
+        $response = Mastodon::createStatus('test1');
+        dd($response);
     }
 }
