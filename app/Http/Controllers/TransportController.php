@@ -205,6 +205,13 @@ class TransportController extends Controller
 
             $origin = $this->getTrainStation($json->origin->id, $json->origin->name, $json->origin->location->latitude, $json->origin->location->longitude);
             $destination = $this->getTrainStation($json->destination->id, $json->destination->name, $json->destination->location->latitude, $json->destination->location->longitude);
+            if ($json->line->name === null) {
+                $json->line->name = $json->line->fahrtNr;
+            }
+
+            if ($json->line->id === null) {
+                $json->line->id = '';
+            }
 
             $trip->trip_id = $tripID;
             $trip->category = $json->line->product;

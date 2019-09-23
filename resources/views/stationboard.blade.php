@@ -46,13 +46,13 @@
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
-                        <tr class="trainrow" data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name }}" data-start="{{ $departure->stop->id }}">
+                        <tr class="trainrow" data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}" data-start="{{ $departure->stop->id }}">
                             <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                     <img class="product-icon" src="{{ asset('img/'.$departure->line->product.'.svg') }}">
                                 @else
                                     <i class="fa fa-train"></i>
                                 @endif</td>
-                            <td>{{ $departure->line->name }}</td>
+                            <td>{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}</td>
                             <td>{{ $departure->direction }}</td>
                             <td>{{ date('H:i', strtotime($departure->when)) }} Uhr @if(isset($departure->delay))<small>+{{ $departure->delay / 60 }}</small>@endif</td>
                         </tr>
