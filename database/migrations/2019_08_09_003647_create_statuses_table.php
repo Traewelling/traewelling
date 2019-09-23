@@ -19,6 +19,7 @@ class CreateStatusesTable extends Migration
             $table->text('body')->nullable();
             $table->integer('user_id')->unsigned()
                 ->references('id')->on('users');
+            $table->boolean('business')->nullable();
 
         });
     }
