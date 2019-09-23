@@ -69725,22 +69725,6 @@ $(document).on("click", ".edit", function (event) {
   $("#status-body").val(statusBody);
   $("#edit-modal").modal();
 });
-$(document).on("click", ".delete", function (event) {
-  console.log("delete");
-  event.preventDefault();
-  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
-  console.log(statusId);
-  $.ajax({
-    method: "DELETE",
-    url: urlDelete,
-    data: {
-      statusId: statusId,
-      _token: token
-    }
-  }).done(function (msg) {
-    window.location.replace('/dashboard');
-  });
-});
 $(document).on("click", "#modal-save", function () {
   $.ajax({
     method: "POST",
@@ -69752,6 +69736,23 @@ $(document).on("click", "#modal-save", function () {
     }
   }).done(function (msg) {
     window.location.reload();
+  });
+});
+$(document).on("click", ".delete", function (event) {
+  event.preventDefault();
+  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+  $("#delete-modal").modal();
+});
+$(document).on("click", "#modal-delete", function () {
+  $.ajax({
+    method: "DELETE",
+    url: urlDelete,
+    data: {
+      statusId: statusId,
+      _token: token
+    }
+  }).done(function (msg) {
+    window.location.replace('/dashboard');
   });
 });
 $(document).on("click", ".like", function (event) {
@@ -70091,8 +70092,8 @@ window.addEventListener("load", function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
