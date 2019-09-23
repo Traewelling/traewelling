@@ -182,8 +182,8 @@ class StatusController extends Controller
 
             $checkin = [$t->status_id, $hafas->category,
                 $hafas->linename, $origin->name,
-                $origin->latitude . ", " . $origin->longtitude, $t->departure,
-                $destination->name, $destination->latitude . ", " . $destination->longtitude,
+                $origin->latitude . ", " . $origin->longitude, $t->departure,
+                $destination->name, $destination->latitude . ", " . $destination->longitude,
                 $t->arrival, $interval->h . ":" . $interval->i,
                 $t->distance, $t->points,
                 $t->status->body, ""

@@ -214,7 +214,7 @@ class TransportController extends Controller
             if (isset($request->tweet_check)) {
                 $connection = new TwitterOAuth(env('TWITTER_ID'), env('TWITTER_SECRET'), $user->socialProfile->twitter_token, $user->socialProfile->twitter_tokenSecret);
 
-                $connection->post("statuses/update", ["status" => $post_text . $post_url, 'lat' => $originStation->latitude, 'lon' => $originStation->longtitude]);
+                $connection->post("statuses/update", ["status" => $post_text . $post_url, 'lat' => $originStation->latitude, 'lon' => $originStation->longitude]);
             }
         }
 
@@ -268,7 +268,7 @@ class TransportController extends Controller
             $station->ibnr = $ibnr;
             $station->name = $name;
             $station->latitude = $latitude;
-            $station->longtitude = $longitude;
+            $station->longitude = $longitude;
             $station->save();
         }
         return $station;
