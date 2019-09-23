@@ -16,5 +16,6 @@
             </div>
         </div>
         @include('includes.edit-modal')
+        @include('includes.delete-modal')
     </div><!--- /container -->
 @endsection

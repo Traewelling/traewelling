@@ -11,20 +11,6 @@ $(document).on("click", ".edit", function(event) {
     $("#edit-modal").modal();
 });
 
-$(document).on("click", ".delete", function(event) {
-    console.log("delete");
-    event.preventDefault();
-    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
-    console.log(statusId);
-    $.ajax({
-        method: "DELETE",
-        url: urlDelete,
-        data: {statusId: statusId, _token: token}
-    }).done(function(msg) {
-        window.location.replace('/dashboard');
-    });
-});
-
 $(document).on("click", "#modal-save", function() {
     $.ajax({
         method: "POST",
@@ -32,6 +18,23 @@ $(document).on("click", "#modal-save", function() {
         data: {body: $("#status-body").val(), statusId: statusId, _token: token}
     }).done(function(msg) {
         window.location.reload();
+    });
+});
+
+$(document).on("click", ".delete", function(event) {
+    event.preventDefault();
+
+    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+    $("#delete-modal").modal();
+});
+
+$(document).on("click", "#modal-delete", function() {
+    $.ajax({
+        method: "DELETE",
+        url: urlDelete,
+        data: {statusId: statusId, _token: token}
+    }).done(function(msg) {
+        window.location.replace('/dashboard');
     });
 });
 
