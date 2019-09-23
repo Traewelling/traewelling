@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\MastodonServer;
 use Mastodon;
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\HafasTrip;
@@ -191,11 +192,7 @@ class TransportController extends Controller
 
         $user->update();
 
-        if (isset($request->toot_check)) {
-            $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
-
-            Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-
+        if ((isset($request->toot_check) || isset($request->tweet_check)) && env('POST_SOCIAL') === TRUE) {
             $post_text = "I'm in " .  $hafas['linename'] . " towards " . $destinationStation->name . '! ';
             $post_url = url("/status/{$trainCheckin->status_id}");
 
@@ -209,7 +206,16 @@ class TransportController extends Controller
                 $post_text .= $appendix;
             }
 
-            $response = Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+            if (isset($request->toot_check)) {
+                $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
+                Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+                Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+            }
+            if (isset($request->tweet_check)) {
+                $connection = new TwitterOAuth(env('TWITTER_ID'), env('TWITTER_SECRET'), $user->socialProfile->twitter_token, $user->socialProfile->twitter_tokenSecret);
+
+                $connection->post("statuses/update", ["status" => $post_text . $post_url, 'lat' => $originStation->latitude, 'lon' => $originStation->longtitude]);
+            }
         }
 
         return redirect()->route('dashboard')->with('message', 'Checked in with ' . $trainCheckin->points . ' Points!');
