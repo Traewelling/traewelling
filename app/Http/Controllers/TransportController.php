@@ -66,6 +66,9 @@ class TransportController extends Controller
     }
 
     public function trainStationboard(Request $request) {
+        if (empty($request->station)) {
+            return redirect()->back()->with('error', __('You need to provide a station name!'));
+        }
 
         if (!isset($request->when)) {
             $request->when = strtotime('-5 minutes');
@@ -103,6 +106,7 @@ class TransportController extends Controller
 
         $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
         $json =  json_decode($response->getBody()->getContents());
+
 
         return [$ibnrObject{0}, $json];
     }
