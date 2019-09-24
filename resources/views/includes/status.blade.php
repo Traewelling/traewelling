@@ -30,8 +30,14 @@
         <div class="progress-bar" role="progressbar" style="width: {{$percentage}}%" aria-valuenow="{{$percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
     <div class="card-footer text-muted interaction">
-        <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a></span>
+        <span class="float-right">
+            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a>
+        </span>
         <ul class="list-inline">
+            <li class="list-inline-item">
+                <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image">
+            
+            </li>
             @if(Auth::check())
             <li class="list-inline-item">
                 <a href="#" class="like {{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}"></a>
