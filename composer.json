@@ -12,6 +12,7 @@
         "abraham/twitteroauth": "^1.0",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
+        "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "5.8.*",
         "laravel/socialite": "^4.1",
