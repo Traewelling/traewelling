@@ -31,13 +31,21 @@
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a></span>
-        @if(Auth::check())
-        <a href="#" class="like {{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}"></a>
-        @endif
-        @if(Auth::user() == $status->user)
-            |
-            <a href="#" class="edit"><i class="fas fa-edit"></i></a> |
-            <a href="#" class="delete"><i class="fas fa-trash"></i></a>
-        @endif
+        <ul class="list-inline">
+            @if(Auth::check())
+            <li class="list-inline-item">
+                <a href="#" class="like {{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}"></a>
+            </li>
+            @endif
+            @if(Auth::user() == $status->user)
+            <li class="list-inline-item">
+                <a href="#" class="edit"><i class="fas fa-edit"></i></a>
+            </li>
+            
+            <li class="list-inline-item">
+                <a href="#" class="delete"><i class="fas fa-trash"></i></a>
+            </li>
+            @endif
+        </ul>
     </div>
 </div>

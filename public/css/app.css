@@ -35681,6 +35681,20 @@ ul.stepper li.completed a .label {
   background: #c0392b;
 }
 
+.status .list-inline {
+  margin-bottom: 0;
+}
+
+.status .list-inline .list-inline-item:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.status .list-inline .list-inline-item:not(:last-child)::after {
+  content: "|";
+  margin-left: 0.5rem;
+  color: rgba(0, 0, 0, 0.125);
+}
+
 #activeJourneys #map {
   overflow: hidden;
 }
