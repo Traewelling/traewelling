@@ -5,21 +5,27 @@
     </div>
     @endif
 
-    <div class="card-body">
-        <ul class="timeline">
-            <li>
-                <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
-                <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }} Uhr</span>
-                <p class="train-status"><i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}</p>
-                @if(!empty($status->body))
-                    <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
-                @endif
-            </li>
-            <li>
-                <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
-                <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }} Uhr</span>
-            </li>
-        </ul>
+    <div class="card-body row">
+        <div class="col-2 image-box pr-0">
+            <a href="{{ route('account.show', ['username' => $status->user->username]) }}"><img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image"></a>
+        </div>
+
+        <div class="col-10 pl-0">
+            <ul class="timeline">
+                <li>
+                    <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }} Uhr</span>
+                    <p class="train-status"><i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}</p>
+                    @if(!empty($status->body))
+                        <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
+                    @endif
+                </li>
+                <li>
+                    <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }} Uhr</span>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="progress">
         <?php
