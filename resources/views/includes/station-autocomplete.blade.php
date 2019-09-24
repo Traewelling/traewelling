@@ -13,14 +13,14 @@
                         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseExample">Filter</button>
                         <div class="collapse" id="collapseFilter">
                             <div class="mt-3 d-flex justify-content-center">
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="ferry">Ferry</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="bus">Bus</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="tram">Tram</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="subway">Subway</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="suburban">Suburban</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="regional">Regional</button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="express">Expres</button>
+                                <div class="btn-group flex-wrap btn-group-sm" role="group" aria-label="Basic example">
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="ferry">{{ __('Ferry') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="bus">{{ __('Bus') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="tram">{{ __('Tram') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="subway">{{ __('Subway') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="suburban">{{ __('Suburban') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="regional">{{ __('Regional') }}</button>
+                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="express">{{ __('Express') }}</button>
                                 </div>
                             </div>
                         </div>

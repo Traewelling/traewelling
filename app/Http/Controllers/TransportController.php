@@ -66,6 +66,9 @@ class TransportController extends Controller
     }
 
     public function trainStationboard(Request $request) {
+        if (empty($request->ŝtation)) {
+            return redirect()->back()->with('error', __('You need to provide a station name!'));
+        }
 
         if (!isset($request->when)) {
             $request->when = strtotime('-5 minutes');
