@@ -2,6 +2,10 @@ vendor/
 node_modules/
 npm-debug.log
 
+# Profile pictures
+public/uploads/avatars
+!public/uploads/avatars/user.jpg
+
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
