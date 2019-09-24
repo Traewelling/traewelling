@@ -8,8 +8,26 @@
                 <div class="card-header">{{ __('Settings') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('settings') }}">
+                    <form enctype="multipart/form-data" method="POST" action="{{ route('settings') }}">
                         @csrf
+
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Profile Picture') }}</label>
+
+                            <div class="col-md-6">
+
+                                <div class="custom-file">
+                                    <input type="file" name="avatar" class="custom-file-input" id="customFile">
+                                    <label class="custom-file-label" for="customFile">{{ __('Choose file') }}</label>
+                                </div>
+
+                                @error('username')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>

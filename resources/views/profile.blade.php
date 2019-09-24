@@ -7,7 +7,7 @@
 @section('content')
     <div class="jumbotron mt-n4" style="background-image: url(https://mobile.traewelling.de/src/img/cover.png);background-position: center;">
         <div class="container">
-            <img src="https://placekitten.com/200/200" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
+            <img src="/uploads/avatars/{{ $user->avatar }}" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
                     <h2 class="card-title h1-responsive font-bold">
                         <strong>{{ __('Statistics for ') }} {{ $user->name }}</strong> <small class="font-weight-light">{{ '@'.$user->username }}</small>
                         @if($user != Auth::user() && Auth::check())

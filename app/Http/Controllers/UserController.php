@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Jenssegers\Agent\Agent;
-
+use Image;
 
 class UserController extends Controller
 {
@@ -19,6 +19,7 @@ class UserController extends Controller
         $user = Auth::user();
         $this->validate($request, [
             'name' => ['required', 'string', 'max:50'],
+            'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
             $this->validate($request,['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
@@ -27,6 +28,17 @@ class UserController extends Controller
             $this->validate($request, ['email' => ['required', 'string', 'email', 'max:255', 'unique:users']]);
             $user->email_verified_at = null;
         }
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $filename = $user->name . time() . '.' . $avatar->getClientOriginalExtension();
+            Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+
+            if ($user->avatar != 'user.jpg') {
+                File::delete(public_path('/uploads/avatars/' . $user->avatar));
+            }
+            $user->avatar = $filename;
+        }
+
         $user->email = $request->email;
         $user->username = $request->username;
         $user->name = $request->name;
