@@ -19,6 +19,21 @@
         }
     }
 
+    .image-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            max-width: 100%;
+            border-radius: 50%;
+        }
+    }
+    .profile-image {
+        height: 2em;
+        border-radius: 50%;
+    }
+
     .list-inline {
         margin-bottom: 0;
 

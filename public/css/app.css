@@ -35715,6 +35715,22 @@ ul.stepper li.completed a .label {
   background: #c0392b;
 }
 
+.status .image-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status .image-box img {
+  max-width: 100%;
+  border-radius: 50%;
+}
+
+.status .profile-image {
+  height: 2em;
+  border-radius: 50%;
+}
+
 .status .list-inline {
   margin-bottom: 0;
 }
