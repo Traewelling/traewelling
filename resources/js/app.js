@@ -37,6 +37,7 @@ const app = new Vue({
 });
 
 window.onload = function() {
+    require("bootstrap-cookie-alert/cookiealert");
     require("./components/statusMap.js");
 };
 
