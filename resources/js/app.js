@@ -39,6 +39,7 @@ const app = new Vue({
 window.onload = function() {
     require("bootstrap-cookie-alert/cookiealert");
     require("./components/statusMap.js");
+    require("./components/progressbar.js");
 };
 
 require("./components/timepicker.js");
