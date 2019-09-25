@@ -63,159 +63,182 @@ window.addEventListener("load", () => {
         return d;
     }
 
-    const tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
-    const now = new Date(Date.now() - tzoffset).toISOString();
-
-    console.log(statuses);
-    
-    statuses.forEach(s => {
-        let i = 0; let j = 0;
-        s.stops = s.stops.filter(s => !s.cancelled)
-            .map(s => {
-            s.stop.id = i++ + "_" + s.stop.id;
-            return s;
-        });
-        s.polyline.features = s.polyline.features.map(f => {
-            if(typeof f.properties.id == "undefined") {
-                return f;
-            }
-            f.properties.id = j++ + "_" + f.properties.id;
-            return f;
-        });
-        const behindUs = s.stops
-            .filter(
-                b =>
-                    (b.departure != null && b.departure < now) ||
-                    (b.arrival != null && b.arrival < now)
-            )
-            .map(b => b.stop.id);
-        const infrontofUs = s.stops
-            .filter(
-                (b => b.arrival != null && b.arrival > now) ||
-                    (b => b.departure != null && b.departure > now)
-            )
-            .map(b => b.stop.id);
-
-        console.log(behindUs, infrontofUs);
-
-        const justInfrontofUs = s.stops[behindUs.length].stop.id;
-        // The last station is relevant for us, but we can't act with it like any other station before.
-        const justBehindUs = behindUs.pop();
-
-
-        console.log("justInfrontofUs", justInfrontofUs);
-        console.log("justBehindUs", justBehindUs);
+    const updateMap = () => {
 
         /**
-         * This piece calculates the distance between the last and the
-         *  upcoming train station, so we can interpolate between them.
+         * First of all: Delete all polylines that already exist on the map
          */
-        let isInterestingBit = false;
-        let stopDistLastToNext = 0;
-        for (let i = 0; i < s.polyline.features.length - 1; i++) {
-            if (s.polyline.features[i].properties.id == justBehindUs) {
-                isInterestingBit = true;
-            }
-            if (isInterestingBit) {
-                stopDistLastToNext += distance(
-                    s.polyline.features[i].geometry.coordinates[1],
-                    s.polyline.features[i].geometry.coordinates[0],
-                    s.polyline.features[i + 1].geometry.coordinates[1],
-                    s.polyline.features[i + 1].geometry.coordinates[0]
-                );
-            }
-            if (s.polyline.features[i].properties.id == justInfrontofUs) {
-                isInterestingBit = false;
+        console.log(map);
+        for(i in map._layers) {
+            if(map._layers[i]._path != undefined) {
+                try {
+                    map.removeLayer(map._layers[i]);
+                }
+                catch(e) {
+                    console.log("problem with " + e + map._layers[i]);
+                }
             }
         }
-        console.log(stopDistLastToNext);
 
-        /**
-         * Here, we describe how far we are between the last and the upcoming stop.
-         */
-        const stationWeJustLeft = s.stops.find(b => b.stop.id == justBehindUs);
-        const leaveTime = new Date(stationWeJustLeft.departure).getTime();
-        const stationNextUp = s.stops.find(b => b.stop.id == justInfrontofUs);
-        const arriveTime = new Date(stationNextUp.departure).getTime();
-        const nowTime = new Date().getTime();
-        s.percentage = (nowTime - leaveTime) / (arriveTime - leaveTime);
+        const tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+        const now = new Date(Date.now() - tzoffset).toISOString();
 
-        /**
-         * Now, let's get through all polylines.
-         */
-        let sI = -1; // ID of the last visited Station
-
-        // Since we traverse through all polygons, we need to check, if we're
-        // actually on the train.
-        let inTheTrain = false;
-
-        // This is the distance that between the last station and the polygon that
-        // we're traversing through. We just change the value, once we're in the
-        //interesting piece of the journey.
-        let polyDistSinceStop = 0;
-        console.log("Features", s.polyline.features);
-        console.log("Stops", s.stops);
+        console.log(statuses);
         
-        
-        console.log(s.polyline.features.map(f => f.properties.id).filter(x => typeof x != "undefined"));
-        for (let i = 0; i < s.polyline.features.length - 1; i++) {
-            // console.log(s.polyline.features[i].properties.id)
-            if (
-                s.polyline.features[i].properties.id == s.stops[sI + 1].stop.id
-            ) {
-                sI += 1;
-            }
-            console.log(s.polyline.features[i].properties.id + "==" + s.stops[sI].stop.id);
-            
+        statuses.forEach(s => {
+            let i = 0; let j = 0;
+            s.stops = s.stops.filter(s => !s.cancelled)
+                .map(s => {
+                s.stop.id = i++ + "_" + s.stop.id;
+                return s;
+            });
+            s.polyline.features = s.polyline.features.map(f => {
+                if(typeof f.properties.id == "undefined") {
+                    return f;
+                }
+                f.properties.id = j++ + "_" + f.properties.id;
+                return f;
+            });
+            const behindUs = s.stops
+                .filter(
+                    b =>
+                        (b.departure != null && b.departure < now) ||
+                        (b.arrival != null && b.arrival < now)
+                )
+                .map(b => b.stop.id);
+            const infrontofUs = s.stops
+                .filter(
+                    (b => b.arrival != null && b.arrival > now) ||
+                        (b => b.departure != null && b.departure > now)
+                )
+                .map(b => b.stop.id);
 
-            if (s.stops[sI].stop.id.endsWith(s.origin)) {
-                inTheTrain = true;
-            }
+            // console.log(behindUs, infrontofUs);
 
-            if (inTheTrain) {
-                let isSeen = true;
+            const justInfrontofUs = s.stops[behindUs.length].stop.id;
+            // The last station is relevant for us, but we can't act with it like any other station before.
+            const justBehindUs = behindUs.pop();
 
-                if (justBehindUs == s.stops[sI].stop.id) {
-                    // The interesting part.
-                    polyDistSinceStop += distance(
+
+            // console.log("justInfrontofUs", justInfrontofUs);
+            // console.log("justBehindUs", justBehindUs);
+
+            /**
+             * This piece calculates the distance between the last and the
+             *  upcoming train station, so we can interpolate between them.
+             */
+            let isInterestingBit = false;
+            let stopDistLastToNext = 0;
+            for (let i = 0; i < s.polyline.features.length - 1; i++) {
+                if (s.polyline.features[i].properties.id == justBehindUs) {
+                    isInterestingBit = true;
+                }
+                if (isInterestingBit) {
+                    stopDistLastToNext += distance(
                         s.polyline.features[i].geometry.coordinates[1],
                         s.polyline.features[i].geometry.coordinates[0],
                         s.polyline.features[i + 1].geometry.coordinates[1],
                         s.polyline.features[i + 1].geometry.coordinates[0]
                     );
-
-                    isSeen =
-                        polyDistSinceStop / stopDistLastToNext < s.percentage;
-                } else if (behindUs.indexOf(s.stops[sI].stop.id) > -1) {
-                    console.log(s.stops[sI].stop.id, behindUs.indexOf(s.stops[sI].stop.id))
-                    isSeen = true;
-                } else if (infrontofUs.indexOf(s.stops[sI].stop.id) > -1) {
-                    isSeen = false;
                 }
+                if (s.polyline.features[i].properties.id == justInfrontofUs) {
+                    isInterestingBit = false;
+                }
+            }
+            // console.log(stopDistLastToNext);
 
-                console.log(isSeen ? "rot": "blau");
+            /**
+             * Here, we describe how far we are between the last and the upcoming stop.
+             */
+            const stationWeJustLeft = s.stops.find(b => b.stop.id == justBehindUs);
+            const leaveTime = new Date(stationWeJustLeft.departure).getTime();
+            const stationNextUp = s.stops.find(b => b.stop.id == justInfrontofUs);
+            const arriveTime = new Date(stationNextUp.departure).getTime();
+            const nowTime = new Date().getTime();
+            s.percentage = (nowTime - leaveTime) / (arriveTime - leaveTime);
+
+            /**
+             * Now, let's get through all polylines.
+             */
+            let sI = -1; // ID of the last visited Station
+
+            // Since we traverse through all polygons, we need to check, if we're
+            // actually on the train.
+            let inTheTrain = false;
+
+            // This is the distance that between the last station and the polygon that
+            // we're traversing through. We just change the value, once we're in the
+            //interesting piece of the journey.
+            let polyDistSinceStop = 0;
+            // console.log("Features", s.polyline.features);
+            // console.log("Stops", s.stops);
+            
+            
+            // console.log(s.polyline.features.map(f => f.properties.id).filter(x => typeof x != "undefined"));
+            for (let i = 0; i < s.polyline.features.length - 1; i++) {
+                // console.log(s.polyline.features[i].properties.id)
+                if (
+                    s.polyline.features[i].properties.id == s.stops[sI + 1].stop.id
+                ) {
+                    sI += 1;
+                }
+                // console.log(s.polyline.features[i].properties.id + "==" + s.stops[sI].stop.id);
                 
 
+                if (s.stops[sI].stop.id.endsWith(s.origin)) {
+                    inTheTrain = true;
+                }
 
-                var polyline = L.polyline([
-                    swapC(s.polyline.features[i].geometry.coordinates),
-                    swapC(s.polyline.features[i + 1].geometry.coordinates)
-                ])
-                    .setStyle({
-                        color: isSeen
-                            ? "rgb(192, 57, 43)"
-                            : "#B8B8B8",
-                        weight: 5
-                    })
-                    .addTo(map);
-            }
+                if (inTheTrain) {
+                    let isSeen = true;
 
-            if (s.stops[sI].stop.id.endsWith(s.destination)) {
-                // After the last station on the trip, we don't need to traverse our polygons anymore.
-                break;
+                    if (justBehindUs == s.stops[sI].stop.id) {
+                        // The interesting part.
+                        polyDistSinceStop += distance(
+                            s.polyline.features[i].geometry.coordinates[1],
+                            s.polyline.features[i].geometry.coordinates[0],
+                            s.polyline.features[i + 1].geometry.coordinates[1],
+                            s.polyline.features[i + 1].geometry.coordinates[0]
+                        );
+
+                        isSeen =
+                            polyDistSinceStop / stopDistLastToNext < s.percentage;
+                    } else if (behindUs.indexOf(s.stops[sI].stop.id) > -1) {
+                        // console.log(s.stops[sI].stop.id, behindUs.indexOf(s.stops[sI].stop.id))
+                        isSeen = true;
+                    } else if (infrontofUs.indexOf(s.stops[sI].stop.id) > -1) {
+                        isSeen = false;
+                    }
+
+                    // console.log(isSeen ? "rot": "blau");
+                    
+
+
+                    var polyline = L.polyline([
+                        swapC(s.polyline.features[i].geometry.coordinates),
+                        swapC(s.polyline.features[i + 1].geometry.coordinates)
+                    ])
+                        .setStyle({
+                            color: isSeen
+                                ? "rgb(192, 57, 43)"
+                                : "#B8B8B8",
+                            weight: 5
+                        })
+                        .addTo(map);
+                }
+
+                if (s.stops[sI].stop.id.endsWith(s.destination)) {
+                    // After the last station on the trip, we don't need to traverse our polygons anymore.
+                    break;
+                }
             }
-        }
-    });
+        });
+    
+    };
+    updateMap();
+    setInterval(() => {
+        updateMap();
+    }, 5 * 1000);
 });
                 </script>
 
