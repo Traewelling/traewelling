@@ -35692,6 +35692,11 @@ ul.stepper li.completed a .label {
   border-radius: 50%;
 }
 
+.status .profile-image {
+  height: 2em;
+  border-radius: 50%;
+}
+
 .status .list-inline {
   margin-bottom: 0;
 }
