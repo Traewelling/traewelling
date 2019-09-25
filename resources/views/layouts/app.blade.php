@@ -180,6 +180,15 @@
             </div>
         </footer>
     </div>
+
+    <div class="alert text-center cookiealert" role="alert">
+        <b>Do you like cookies?</b> &#x1F36A; Wir nutzen Cookies für unser Login-System. <a href="{{route('privacy')}}">Mehr erfahren</a>
+
+        <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+            Okay
+        </button>
+    </div>
+
     <script>
         var traincomplete = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),

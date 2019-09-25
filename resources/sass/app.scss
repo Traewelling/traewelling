@@ -21,5 +21,8 @@
 
 // Leaflet
 @import "~leaflet/dist/leaflet.css";
+
+// Components
 @import "./components/status";
 @import "./components/activeJourneys";
+@import "~bootstrap-cookie-alert/cookiealert.css";
