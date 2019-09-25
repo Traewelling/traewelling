@@ -6,11 +6,13 @@
     @endif
 
     <div class="card-body row">
-        <div class="col-2 image-box pr-0">
-            <a href="{{ route('account.show', ['username' => $status->user->username]) }}"><img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image"></a>
+        <div class="col-2 image-box pr-0 d-none d-lg-flex">
+            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+                <img src="/uploads/avatars/{{ $status->user->avatar }}">
+            </a>
         </div>
 
-        <div class="col-10 pl-0">
+        <div class="col pl-0">
             <ul class="timeline">
                 <li>
                     <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
@@ -40,9 +42,10 @@
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a>
         </span>
         <ul class="list-inline">
-            <li class="list-inline-item">
-                <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image">
-            
+            <li class="list-inline-item d-lg-none">
+                <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+                    <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image">
+                </a>
             </li>
             @if(Auth::check())
             <li class="list-inline-item">
