@@ -38,6 +38,7 @@ const app = new Vue({
 
 window.onload = function() {
     require("./components/statusMap.js");
+    require("./components/progressbar.js");
 };
 
 require("./components/timepicker.js");

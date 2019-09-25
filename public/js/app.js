@@ -69702,6 +69702,8 @@ var app = new Vue({
 
 window.onload = function () {
   __webpack_require__(/*! ./components/statusMap.js */ "./resources/js/components/statusMap.js");
+
+  __webpack_require__(/*! ./components/progressbar.js */ "./resources/js/components/progressbar.js");
 };
 
 __webpack_require__(/*! ./components/timepicker.js */ "./resources/js/components/timepicker.js");
@@ -69960,6 +69962,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/progressbar.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/progressbar.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+Array.from(document.getElementsByClassName("progress-time")).forEach(function (element) {
+  var begin = parseInt(element.attributes.getNamedItem("aria-valuemin").nodeValue);
+  var end = parseInt(element.attributes.getNamedItem("aria-valuemax").nodeValue);
+  var interval = setInterval(function () {
+    var now = Math.floor(new Date().getTime() / 1000);
+    element.attributes["aria-valuenow"] = now;
+    var percentage = Math.round(100 * (now - begin) / (end - begin));
+    element.style.width = percentage + "%"; // We don't need to revisit all the progress-bars all the time, if the trip already ended.
+
+    if (now > end) {
+      clearInterval(interval);
+    }
+  }, 5 * 1000);
+});
 
 /***/ }),
 

@@ -27,7 +27,7 @@
         $arrival = strtotime($status->trainCheckin->arrival);
         $percentage = 100 * (time() - $departure) / ($arrival - $departure);
         ?>
-        <div class="progress-bar" role="progressbar" style="width: {{$percentage}}%" aria-valuenow="{{$percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar progress-time" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ time() }}" aria-valuemin="{{ $departure }}" aria-valuemax="{{ $arrival }}"></div>
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right"><a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a></span>
