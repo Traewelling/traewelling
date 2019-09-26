@@ -9,13 +9,12 @@
         <div class="row">
             <div class="col-md-12">
                 <h1>Application Status <code>{{ substr(get_current_git_commit(), 0, 6) }}</code></h1>
-
                 
                 <div class="row pb-4">
                     <div class="col">
                         <dd>Registered Users</dd>
-                        <dt class="display-4">32 <small>users</small></dt>
-                        <span class="good">+13</span> last week
+                        <dt class="display-4">{{$users}} <small>users</small></dt>
+                        <span class="good">+{{$users_last_week}}</span> last week
                     </div>
                     <div class="col">
                         <dd>Trips</dd>
