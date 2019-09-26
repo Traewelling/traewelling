@@ -173,6 +173,7 @@
                     / <a href="{{ route('imprint') }}">{{ __('Imprint') }}</a>
                     / <a href="{{ route('privacy') }}">{{ __('Privacy') }}</a>
                     / <a href="{{ route('about') }}">{{ __('About')}}</a>
+                    / <a href="{{ route('appStatus') }}">{{ __('Application Status')}}</a>
                     / <a href="{{ route('globaldashboard') }}">{{ __('Global Dashboard')}}</a>
                 </p>
                 <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in Baden') !!}</p>
