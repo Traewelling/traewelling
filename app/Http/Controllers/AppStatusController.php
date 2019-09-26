@@ -35,6 +35,19 @@ class AppStatusController extends Controller
         $users = User::all();
         $trips = TrainCheckin::all();
 
+
+        $db_size = DB::table('information_schema.TABLES')
+            ->select(DB::raw('SUM(data_length + index_length) as size'))
+            ->where('table_schema', '=', "trwl")
+            ->first()->size;
+        $hafas_trip_size = DB::table('information_schema.TABLES')
+            ->select(DB::raw('data_length + index_length as size'))
+            ->where('table_schema', '=', "trwl")
+            ->where('table_name', '=', 'hafas_trips')
+            ->first()->size;
+        // $hafas_trip_size = DB::table('information_schema.TABLES')->select( DB::raw('(data_length + index_length) as size FROM information_schema.TABLES WHERE table_schema = "trwl" AND table_name = "hafas_trips"'))->toSql();//get()['size'];
+        
+
         return view('appstatus', [
             'all_users' => $users->count(),
             'users_last_week' => self::lastWeek($users)->count(),
@@ -61,7 +74,8 @@ class AppStatusController extends Controller
             'time_last_month' => TrainCheckin::select(DB::raw('SUM(TIME_TO_SEC(arrival) - TIME_TO_SEC(departure)) AS timediff'))->whereRaw('created_at > NOW() - INTERVAL 1 MONTH')->get()[0]["timediff"],
             'time_month_before' => TrainCheckin::select(DB::raw('SUM(TIME_TO_SEC(arrival) - TIME_TO_SEC(departure)) AS timediff'))->whereRaw('created_at < NOW() - INTERVAL 1 MONTH AND created_at > NOW() - INTERVAL 2 MONTH')->get()[0]["timediff"],
 
-            
+            'db_size' => $db_size,
+            'hafas_trip_size' => $hafas_trip_size,
         ]);
     }
 }

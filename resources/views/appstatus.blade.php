@@ -116,13 +116,26 @@
                 </div>
 
                 <div class="row pb-4">
+                    <?php
+                    function toMiB($in) {
+                        if($in > 1024 * 1024 * 1024) {
+                            return round(100 * $in / (1024 * 1024 * 1024)) / 100 . '<small>GiB</small>';
+                        }
+                        if($in > 1024 * 1024) {
+                            return round(100 * $in / (1024 * 1024)) / 100 . '<small>MiB</small>';
+                        }
+                        if($in > 1024) {
+                            return $in / 1024 . '<small>KiB</small>';
+                        }
+                    }
+                    ?>
                     <div class="col">
                         <dd>Database size</dd>
-                        <dt class="display-4">4.2 <small>MiB</small></dt>
+                        <dt class="display-4">{!! toMiB($db_size) !!}</dt>
                     </div>
                     <div class="col">
                         <dd><code>hafas_trip</code> table</dd>
-                        <dt class="display-4">2.4 <small>MiB</small></dt>
+                        <dt class="display-4">{!! toMiB($hafas_trip_size) !!}</dt>
                     </div>
                 </div>
             </div>
