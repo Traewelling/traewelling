@@ -35753,3 +35753,32 @@ ul.stepper li.completed a .label {
   display: none;
 }
 
+#appstatus {
+  text-align: center;
+}
+
+#appstatus dd {
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 0.5ch;
+  margin-bottom: 0rem;
+}
+
+#appstatus dd strong {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+#appstatus dt small {
+  font-weight: 200;
+}
+
+#appstatus .good {
+  color: #38c172;
+}
+
+#appstatus .bad {
+  color: #e3342f;
+}
+
