@@ -10,16 +10,46 @@
             <div class="col-md-12">
                 <h1>Application Status <code>{{ substr(get_current_git_commit(), 0, 6) }}</code></h1>
                 
+                <?php
+                
+
+                function fmt($i) {
+                    return number_format($i, 0, ',', '.');
+                }
+                function formatNumber($i, $unit = "") {
+                    $number = fmt($i);
+
+                    return '<span class="' . ($i < 0 ? 'bad' : 'good' . '">+')  . $number . '<small>' . $unit . '</small></span>';
+                }
+
+                function fmtInterval($secs) {
+                    // 5<small>h</small> 10<small>m</small>
+                    $mins = $secs / 60;
+                    $hours = floor($mins / 60);
+                    $mins = $mins - 60 * $hours;
+
+                    return (($hours > 0) ? $hours . "<small>h</small> " : "")
+                      . $mins . "<small>m</small>";
+                }
+                function fmtIntervalSpan($secs) {
+                    $begin = '<span class="good">+';
+                    if ($secs < 0) {
+                        $begin = '<span class="bad">-';
+                    }
+                    return $begin . fmtInterval(abs($secs)) . '</span>';
+                }
+                ?>
+
                 <div class="row pb-4">
                     <div class="col">
                         <dd>Registered Users</dd>
-                        <dt class="display-4">{{$users}} <small>users</small></dt>
-                        <span class="good">+{{$users_last_week}}</span> last week
+                        <dt class="display-4">{{fmt($all_users)}} <small>users</small></dt>
+                        {!! formatNumber($users_last_week) !!} last week
                     </div>
                     <div class="col">
                         <dd>Trips</dd>
-                        <dt class="display-4">3.200 <small>trips</small></dt>
-                        <span class="good">+58</span> last week
+                        <dt class="display-4">{{fmt($all_trips)}} <small>trips</small></dt>
+                        {!! formatNumber($trips_last_week) !!} last week
                     </div>
                 </div>
                 <div class="row d-none d-sm-flex">
@@ -36,52 +66,52 @@
                 <div class="row pt-4 pb-4">
                     <div class="col-sm-4">
                         <dd>last 24 hours</dd>
-                        <dt class="display-4">15 <small>trips</small></dt>
-                        <span class="bad">-2</span> compared to day before
+                        <dt class="display-4">{{fmt($trips_last_day)}} <small>trips</small></dt>
+                        {!! formatNumber($trips_day_before) !!} compared to day before
                     </div>
                     <div class="col-sm-4">
                         <dd>last 24 hours</dd>
-                        <dt class="display-4">1.259<small>km</small></dt>
-                        <span class="good">+30km</span> compared to day before
+                        <dt class="display-4">{{fmt($distance_last_day)}}<small>km</small></dt>
+                        {!! formatNumber($distance_day_before, "km") !!}  compared to day before
                     </div>
                     <div class="col-sm-4">
                         <dd>last 24 hours</dd>
-                        <dt class="display-4">5<small>h</small> 10<small>m</small></dt>
-                        <span class="bad">-43m</span> compared to day before
+                        <dt class="display-4">{!! fmtInterval($time_last_day) !!}</dt>
+                        {!! fmtIntervalSpan($time_last_day) !!} compared to day before
                     </div>
                 </div>
                 <div class="row pt-4 pb-4">
                     <div class="col-sm-4">
                         <dd>last week</dd>
-                        <dt class="display-4">58 <small>trips</small></dt>
-                        <span class="good">+13</span> compared to week before
+                        <dt class="display-4">{{fmt($trips_last_week)}} <small>trips</small></dt>
+                        {!! formatNumber($trips_week_before) !!} compared to week before
                     </div>
                     <div class="col-sm-4">
                         <dd>last week</dd>
-                        <dt class="display-4">5.801<small>km</small></dt>
-                        <span class="good">+94km</span> compared to week before
+                        <dt class="display-4">{{fmt($distance_last_week)}}<small>km</small></dt>
+                        {!! formatNumber($distance_week_before, "km") !!}  compared to day before
                     </div>
                     <div class="col-sm-4">
                         <dd>last week</dd>
-                        <dt class="display-4">34<small>h</small> 20<small>m</small></dt>
-                        <span class="bad">-2h 54m</span> compared to week before
+                        <dt class="display-4">{!! fmtInterval($time_last_week) !!}</dt>
+                        {!! fmtIntervalSpan($time_last_week) !!} compared to week before
                     </div>
                 </div>
                 <div class="row pt-4 pb-4">
                     <div class="col-sm-4">
                         <dd>last month</dd>
-                        <dt class="display-4">238 <small>trips</small></dt>
-                        <span class="good">+67</span> compared to month before
+                        <dt class="display-4">{{fmt($trips_last_month)}} <small>trips</small></dt>
+                        {!! formatNumber($trips_month_before) !!} compared to month before
                     </div>
                     <div class="col-sm-4">
                         <dd>last month</dd>
-                        <dt class="display-4">35.794<small>km</small></dt>
-                        <span class="good">+308km</span> compared to month before
+                        <dt class="display-4">{{fmt($distance_last_month)}}<small>km</small></dt>
+                        {!! formatNumber($distance_month_before, "km") !!}  compared to day before
                     </div>
                     <div class="col-sm-4">
                         <dd>last month</dd>
-                        <dt class="display-4">156<small>h</small> 12<small>m</small></dt>
-                        <span class="good">+44h 38m</span> compared to month before
+                        <dt class="display-4">{!! fmtInterval($time_last_month) !!}</dt>
+                        {!! fmtIntervalSpan($time_last_month) !!} compared to month before
                     </div>
                 </div>
 
