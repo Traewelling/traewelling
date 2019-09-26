@@ -38,11 +38,11 @@ class AppStatusController extends Controller
 
         $db_size = DB::table('information_schema.TABLES')
             ->select(DB::raw('SUM(data_length + index_length) as size'))
-            ->where('table_schema', '=', "trwl")
+            ->where('table_schema', '=', env("DB_DATABASE"))
             ->first()->size;
         $hafas_trip_size = DB::table('information_schema.TABLES')
             ->select(DB::raw('data_length + index_length as size'))
-            ->where('table_schema', '=', "trwl")
+            ->where('table_schema', '=', env("DB_DATABASE"))
             ->where('table_name', '=', 'hafas_trips')
             ->first()->size;
         // $hafas_trip_size = DB::table('information_schema.TABLES')->select( DB::raw('(data_length + index_length) as size FROM information_schema.TABLES WHERE table_schema = "trwl" AND table_name = "hafas_trips"'))->toSql();//get()['size'];
