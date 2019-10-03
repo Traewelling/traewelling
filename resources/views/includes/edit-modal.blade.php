@@ -11,6 +11,10 @@
                         <label for="status-body">Edit the status</label>
                         <textarea class="form-control" name="status-body" id="status-body" rows="5"></textarea>
                     </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="business_check" name="business_check" {{ false ? 'checked' : ''}}> <!--status.business-->
+                        <label for="business_check" class="form-check-label">{{__('stationboard.check-business')}}?</label>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

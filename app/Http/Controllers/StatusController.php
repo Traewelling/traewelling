@@ -45,10 +45,12 @@ class StatusController extends Controller
 
     public function CreateStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'max:280',
+            'business_check' => 'max:2',
         ]);
         $status = new Status();
         $status->body = $request['body'];
+        $status->business = $request['business_check'] == "on" ? 1 : 0;
         $message = 'There was an error.';
         if ($request->user()->statuses()->save($status)) {
             $message = 'Status successfully created!';
@@ -77,13 +79,15 @@ class StatusController extends Controller
 
     public function EditStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'max:280',
+            'business_check' => 'max:2',
         ]);
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {
             return redirect()->back();
         }
         $status->body = $request['body'];
+        $status->business = $request['business_check'] == 'on'  ? 1 : 0;
         $status->update();
         return response()->json(['new_body' => $status->body], 200);
     }
