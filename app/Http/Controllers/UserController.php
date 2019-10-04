@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Follow;
+use App\SocialLoginProfile;
+use App\Status;
+use App\HafasTrip;
+use App\TrainCheckin;
+use App\Like;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +99,25 @@ class UserController extends Controller
         foreach ($user->sessions as $session) {
             $session->delete();
         }
+        return redirect()->route('welcome');
+    }
+
+    public function destroyUser(Request $request) {
+        $user = Auth::user();
+
+        
+        foreach(Status::where('user_id', $user->id)->get() as $status) {
+            TrainCheckin::where('status_id', $status->id)->delete();
+            $status->likes()->delete();
+            $status->delete();
+        }
+
+        SocialLoginProfile::where('user_id', $user->id)->delete();
+        Follow::where('user_id', $user->id)->orWhere('follow_id', $user->id)->delete();
+
+
+        $user->delete();
+
         return redirect()->route('welcome');
     }
 

@@ -244,6 +244,34 @@
                     <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger" role="button">{{ __('Delete all sessions') }}</a>
                 </div>
             </div>
+
+            <div class="card mt-3">
+                <div class="card-header">Account löschen</div>
+                <div class="card-body">
+                    <a class="btn btn-block btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('Delete my account') }}</a>
+
+                    
+                    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Account löschen</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Bei Bestätigung werden alle mit dem Account verknüpften Daten auf {{env('APP_NAME')}} unwiderruflich gelöscht.<br /> Tweets und Toots, die über {{env('APP_NAME')}} gesendet wurden, werden nicht gelöscht. 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-grey" data-dismiss="modal">Zurück</button>
+                                    <a href="{{ route('account.destroy') }}" role="button" class="btn btn-red">Wirklich löschen</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

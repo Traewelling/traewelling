@@ -76,6 +76,11 @@ Route::middleware(['auth'])->group(function() {
         'as'   => 'settings',
     ]);
 
+    Route::get('/destroy', [
+        'uses' => 'UserController@destroyUser',
+        'as'   => 'account.destroy',
+    ]);
+
     Route::get('/dashboard', [
         'uses' => 'StatusController@getDashboard',
         'as'   => 'dashboard',
