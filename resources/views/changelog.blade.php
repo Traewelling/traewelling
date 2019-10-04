@@ -11,7 +11,6 @@
                 <h1>Changelog</h1>
                 <h5>{{ get_current_git_commit() }}</h5>
                 <pre>{{ get_current_git_commit_message() }}</pre>
-                <p><a href="{{ route('appStatus') }}">{{ __('Application Status')}}</a></p>
             </div>
         </div>
     </div><!--- /container -->
