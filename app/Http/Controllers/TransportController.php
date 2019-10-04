@@ -130,7 +130,8 @@ class TransportController extends Controller
 
     public function trainCheckin(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'max:280',
+            'business_check' => 'max:2'
         ]);
 
         $hafas = $this->getHAFAStrip($request['tripID'], '')->getAttributes();
@@ -166,6 +167,7 @@ class TransportController extends Controller
 
         $status = new Status();
         $status->body = $request['body'];
+        $status->business = isset($request['business_check']) && $request['business_check'] == 'on';
 
         $trainCheckin = new TrainCheckin;
         $trainCheckin->trip_id = $request['tripID'];

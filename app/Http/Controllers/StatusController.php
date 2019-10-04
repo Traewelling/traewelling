@@ -45,10 +45,12 @@ class StatusController extends Controller
 
     public function CreateStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'max:280',
+            'business_check' => 'max:2',
         ]);
         $status = new Status();
         $status->body = $request['body'];
+        $status->business = $request['business_check'] == "on" ? 1 : 0;
         $message = 'There was an error.';
         if ($request->user()->statuses()->save($status)) {
             $message = 'Status successfully created!';
@@ -77,13 +79,15 @@ class StatusController extends Controller
 
     public function EditStatus(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280'
+            'body' => 'max:280',
+            'business_check' => 'max:2',
         ]);
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {
             return redirect()->back();
         }
         $status->body = $request['body'];
+        $status->business = $request['business_check'] == 'on'  ? 1 : 0;
         $status->update();
         return response()->json(['new_body' => $status->body], 200);
     }
@@ -140,15 +144,20 @@ class StatusController extends Controller
     }
 
     private function writeLine($array): String {
-        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
+        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
 
     public function exportCSV(Request $request) {
         $begin = $request->input('begin');
         $end = $request->input('end');
-
         if(!$this->isValidDate($begin) || !$this->isValidDate($end)) {
-            return redirect(route('export.landing'));
+            return redirect(route('export.landing'))->with(['message' => "Das sind keine validen Daten!"]);
+        }
+
+        $private = $request->input('private-trips', false) == 'true';
+        $business = $request->input('business-trips', false) == 'true';
+        if(!$private && !$business) {
+            return redirect(route('export.landing'))->with(['message' => "Weder Business-, noch Privat-Reisen? Das gibt nichts!"]);
         }
 
         $endInclLastOfMonth = (new \DateTime($end))->add(new \DateInterval("P1D"))->format("Y-m-d");
@@ -166,13 +175,21 @@ class StatusController extends Controller
             "Ankunftsort",          "Ankunftskoordinaten",
             "Ankunftszeit",         "Reisezeit",
             "Kilometer",            "Punkte",
-            "Status",               "Zwischenhalte"]
+            "Status",               "Business-Reise",
+            "Zwischenhalte"]
         );
 
         foreach ($trainCheckins as $t) {
             if ($t->status->user_id != $user->id) {
                 continue;
             }
+            if (!(
+                ($business && $t->status->business)
+                ||
+                ($private && !$t->status->business))
+                ) {
+                continue;
+            } 
 
             $hafas = HafasTrip::where('trip_id', $t->trip_id)->first();
             $origin = TrainStations::where('ibnr', $t->origin)->first();
@@ -186,7 +203,8 @@ class StatusController extends Controller
                 $destination->name, $destination->latitude . ", " . $destination->longitude,
                 $t->arrival, $interval->h . ":" . $interval->i,
                 $t->distance, $t->points,
-                $t->status->body, ""
+                $t->status->body, $t->status->business,
+                ""
             ];
             $return .= $this->writeLine($checkin);
         }
