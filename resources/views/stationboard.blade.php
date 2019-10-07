@@ -19,7 +19,7 @@
                             <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('Set time')}}</a>
                     </div>
                     <script>
-                    window.changeTimeLink = "{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => 'REPLACEME' ]) }}";
+                    window.changeTimeLink = "{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'travelType' => $request->travelType, 'when' => 'REPLACEME' ]) }}";
                     </script>
                 </div>
             </div>

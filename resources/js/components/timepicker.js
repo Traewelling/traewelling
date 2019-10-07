@@ -38,6 +38,7 @@ window.addEventListener("load", () => {
                  window.location = window.changeTimeLink
                      .replace("&amp;", "&")
                      .replace("&amp;", "&")
+                     .replace("&amp;", "&")
                      .replace("REPLACEME", unixTimestamp);
             };
         });

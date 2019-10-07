@@ -70150,7 +70150,7 @@ window.addEventListener("load", function () {
       input.classList.remove("is-invalid");
       var date = new Date(input.value);
       var unixTimestamp = Math.floor(date.getTime() / 1000);
-      window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
+      window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
     };
   });
 });
