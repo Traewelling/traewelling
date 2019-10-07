@@ -6,9 +6,9 @@
     <div id="timepicker-wrapper">
         <div class="row justify-content-center">
             <div class="btn-group" role="group">
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when)]) }}" alt="-15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
+                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="-15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
                 <a href="#" id="timepicker-reveal" alt="Datetime picker" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when)]) }}" alt="+15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="+15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="row justify-content-center">
