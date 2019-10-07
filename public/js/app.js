@@ -69784,8 +69784,8 @@ var statusBodyElement = null;
 $(document).on("click", ".edit", function (event) {
   console.log("edit");
   event.preventDefault();
-  statusBody = event.target.parentNode.parentNode.parentNode.dataset['body'];
-  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
+  statusBody = document.getElementById('status-' + statusId).dataset['body'];
   $("#status-body").val(statusBody);
   $("#edit-modal").modal();
 });
@@ -69804,7 +69804,7 @@ $(document).on("click", "#modal-save", function () {
 });
 $(document).on("click", ".delete", function (event) {
   event.preventDefault();
-  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
   $("#delete-modal").modal();
 });
 $(document).on("click", "#modal-delete", function () {
@@ -69821,7 +69821,7 @@ $(document).on("click", "#modal-delete", function () {
 });
 $(document).on("click", ".like", function (event) {
   event.preventDefault();
-  statusId = event.target.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
   console.log(statusId);
 
   if (event.target.className == "like far fa-heart") {
@@ -69892,6 +69892,9 @@ $(document).on("click", ".disconnect", function (event) {
   }).done(function () {
     location.reload();
   });
+});
+$(document).on("click", "#timepicker-button", function (event) {
+  event.preventDefault();
 });
 
 /***/ }),
@@ -70117,14 +70120,21 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem)
 /***/ (function(module, exports) {
 
 window.addEventListener("load", function () {
-  var invalidBox = document.createElement("div");
   var input = document.getElementById("timepicker");
-  input.value = document.getElementById("reqTime").innerText;
-  document.getElementById("timepicker-button").addEventListener("click", function () {
-    var cl = document.getElementById("timepicker-form").classList;
-    cl.remove("opacity-null");
-    cl.add("animated");
-    cl.add("bounceIn");
+  document.getElementById("timepicker-reveal").addEventListener("click", function () {
+    var reveal = document.getElementById("timepicker-form").classList;
+
+    if (reveal.contains("opacity-null") || reveal.contains("bounceOut")) {
+      reveal.remove("opacity-null");
+      reveal.remove("bounceOut");
+      reveal.add("animated");
+      reveal.add("bounceIn");
+    } else {
+      reveal.remove("bounceIn");
+      reveal.add("bounceOut");
+      reveal.add("animated");
+    }
+
     document.getElementById("timepicker-button").addEventListener("click", function (e) {
       e.preventDefault();
       changeTime();
@@ -70137,25 +70147,10 @@ window.addEventListener("load", function () {
     });
 
     var changeTime = function changeTime() {
-      invalidBox.classList.add("d-none");
       input.classList.remove("is-invalid");
-      var r = /^(\d{2})\:*(\d{2})$/;
-      var matches = Array.from(input.value.matchAll(r))[0];
-
-      if (typeof matches != "undefined" && matches[1] >= 0 && matches[1] < 24 && matches[2] >= 0 && matches[2] < 60) {
-        var d = new Date();
-        d.setHours(matches[1], matches[2]);
-        var ts = Math.floor(d.getTime() / 1000);
-        window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", ts);
-      } else {
-        invalidBox.classList.add("invalid-feedback");
-        invalidBox.classList.add("animated");
-        invalidBox.classList.add("fadeIn");
-        invalidBox.classList.remove("d-none");
-        invalidBox.innerText = window.invalidHHMMdate;
-        document.getElementById("timepicker-form").children[0].appendChild(invalidBox);
-        input.classList.add("is-invalid");
-      }
+      var date = new Date(input.value);
+      var unixTimestamp = Math.floor(date.getTime() / 1000);
+      window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
     };
   });
 });
@@ -70180,8 +70175,8 @@ window.addEventListener("load", function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

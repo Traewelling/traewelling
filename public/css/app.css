@@ -35688,10 +35688,6 @@ ul.stepper li.completed a .label {
   font-size: 0.81rem;
 }
 
-#timepicker-wrapper #timepicker {
-  width: 10ch;
-}
-
 #timepicker-wrapper #timepicker-form.opacity-null {
   opacity: 0;
 }

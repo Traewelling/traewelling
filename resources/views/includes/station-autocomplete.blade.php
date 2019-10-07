@@ -8,7 +8,7 @@
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
                         <input type="text" id="station-autocomplete" name="station" class="form-control mb-2 mr-sm-2" aria-label="Text input with dropdown button" placeholder="Station" @isset(request()->station) value="{{request()->station}}" @endisset>
-
+                        <input type="hidden" name="when" value="{{$request->when}}">
                         <button class="btn btn-outline-primary float-right" type="Submit">submit</button>
                         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseExample">Filter</button>
                         <div class="collapse" id="collapseFilter">
