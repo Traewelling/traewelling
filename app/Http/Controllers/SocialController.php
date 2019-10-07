@@ -116,9 +116,6 @@ class SocialController extends Controller
                 return redirect()->to('/dashboard')->withErrors(['msg', __('This Account is already connected to another user')]);
             }
         } elseif ($identifier === null) {
-            if (User::where('name', $getInfo->name)->get() != null ) {
-                $getInfo->nickname = $getInfo->nickname.rand(1,20);
-            }
             try{
                 $user = User::create([
                                          'name' => $getInfo->name,
@@ -164,5 +161,15 @@ class SocialController extends Controller
         $user->socialProfile()->save($SocialLoginProfile);
 
         return response('Social Login Provider has been deleted', 200);
+    }
+
+    public function testMastodon() {
+        $user = Auth::user();
+        $socialProfile = $user->socialProfile;
+        $mastodonDomain = MastodonServer::where('id', $socialProfile->mastodon_server)->first()->domain;
+
+        Mastodon::domain($mastodonDomain)->token($socialProfile->mastodon_token);
+        $response = Mastodon::createStatus('test1');
+        dd($response);
     }
 }
