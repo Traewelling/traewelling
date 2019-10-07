@@ -5,8 +5,8 @@ $(document).on("click", ".edit", function(event) {
     console.log("edit");
     event.preventDefault();
 
-    statusBody = event.target.parentNode.parentNode.parentNode.dataset['body'];
-    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+    statusId = event.target.parentElement.dataset["statusid"];
+    statusBody = document.getElementById('status-'+statusId).dataset['body'];
     $("#status-body").val(statusBody);
     $("#edit-modal").modal();
 });
@@ -24,7 +24,7 @@ $(document).on("click", "#modal-save", function() {
 $(document).on("click", ".delete", function(event) {
     event.preventDefault();
 
-    statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+    statusId = event.target.parentElement.dataset["statusid"];
     $("#delete-modal").modal();
 });
 
@@ -41,7 +41,7 @@ $(document).on("click", "#modal-delete", function() {
 $(document).on("click", ".like", function(event) {
     event.preventDefault();
 
-    statusId = event.target.parentNode.parentNode.dataset["statusid"];
+    statusId = event.target.parentElement.dataset["statusid"];
     console.log(statusId);
     if (event.target.className == "like far fa-heart") {
         $.ajax({

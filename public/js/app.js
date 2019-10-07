@@ -69784,8 +69784,8 @@ var statusBodyElement = null;
 $(document).on("click", ".edit", function (event) {
   console.log("edit");
   event.preventDefault();
-  statusBody = event.target.parentNode.parentNode.parentNode.dataset['body'];
-  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
+  statusBody = document.getElementById('status-' + statusId).dataset['body'];
   $("#status-body").val(statusBody);
   $("#edit-modal").modal();
 });
@@ -69804,7 +69804,7 @@ $(document).on("click", "#modal-save", function () {
 });
 $(document).on("click", ".delete", function (event) {
   event.preventDefault();
-  statusId = event.target.parentNode.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
   $("#delete-modal").modal();
 });
 $(document).on("click", "#modal-delete", function () {
@@ -69821,7 +69821,7 @@ $(document).on("click", "#modal-delete", function () {
 });
 $(document).on("click", ".like", function (event) {
   event.preventDefault();
-  statusId = event.target.parentNode.parentNode.dataset["statusid"];
+  statusId = event.target.parentElement.dataset["statusid"];
   console.log(statusId);
 
   if (event.target.className == "like far fa-heart") {
@@ -70180,8 +70180,8 @@ window.addEventListener("load", function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

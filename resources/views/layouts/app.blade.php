@@ -285,7 +285,7 @@
             $('#checkinForm').submit();
         });
 
-        var token = '{{ Session::token() }}';
+        var token = '{{ csrf_token() }}';
         var urlEdit = '{{ route('edit') }}';
         var urlDelete = '{{ route('status.delete') }}';
         var urlLike = '{{ route('like.create') }}';
