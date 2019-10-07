@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="business_check" name="business_check" {{ false ? 'checked' : ''}}> <!--status.business-->
-                        <label for="business_check" class="form-check-label">{{__('stationboard.check-business')}}?</label>
+                        <label for="business_check" class="form-check-label">{{__('stationboard.check-business')}}</label>
                     </div>
                 </form>
             </div>

@@ -1,4 +1,4 @@
-<div class="card status mt-3" data-statusid="{{ $status->id }}" data-body="{{ $status->body }}">
+<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}">
     @if (Route::current()->uri == "status/{id}")
     <div class="card-img-top">
         <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-21by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
@@ -54,16 +54,16 @@
             </li>
             @if(Auth::check())
             <li class="list-inline-item">
-                <a href="#" class="like {{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}"></a>
+                <a href="#" class="like {{ $status->likes->where('user_id', Auth::user()->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}" data-statusid="{{ $status->id }}"></a>
             </li>
             @endif
             @if(Auth::user() == $status->user)
             <li class="list-inline-item">
-                <a href="#" class="edit"><i class="fas fa-edit"></i></a>
+                <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
             </li>
-            
+
             <li class="list-inline-item">
-                <a href="#" class="delete"><i class="fas fa-trash"></i></a>
+                <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
             </li>
             @endif
         </ul>

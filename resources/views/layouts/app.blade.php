@@ -175,7 +175,7 @@
                     / <a href="{{ route('about') }}">{{ __('About')}}</a>
                     / <a href="{{ route('globaldashboard') }}">{{ __('Global Dashboard')}}</a>
                 </p>
-                <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in Baden') !!}</p>
+                <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in the European Union') !!}</p>
                 <p>&copy; 2019 Tr&auml;welling</p>
             </div>
         </footer>
@@ -285,7 +285,7 @@
             $('#checkinForm').submit();
         });
 
-        var token = '{{ Session::token() }}';
+        var token = '{{ csrf_token() }}';
         var urlEdit = '{{ route('edit') }}';
         var urlDelete = '{{ route('status.delete') }}';
         var urlLike = '{{ route('like.create') }}';
