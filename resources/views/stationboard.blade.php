@@ -7,21 +7,18 @@
         <div class="row justify-content-center">
             <div class="btn-group" role="group">
                 <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when)]) }}" alt="-15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
-                <span id="timepicker-button" alt="Datetime picker" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></span>
+                <a href="#" id="timepicker-reveal" alt="Datetime picker" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
                 <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when)]) }}" alt="+15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="row justify-content-center">
             <div class="form-inline opacity-null" id="timepicker-form">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="timepicker" placeholder="HH:MM" />
+                    <input type="datetime-local" class="form-control" id="timepicker"  value="{{  date("Y-m-d\TH:i") }}" />
                     <div class="input-group-append">
-                        <div class="input-group-text btn-primary">
-                            <a href="#" class="text-white" id="timepicker-button">{{__('Set time')}}</a>
-                        </div>
+                            <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('Set time')}}</a>
                     </div>
                     <script>
-                    window.invalidHHMMdate = "{{__('Bitte in HH:MM angeben.')}}";
                     window.changeTimeLink = "{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => 'REPLACEME' ]) }}";
                     </script>
                 </div>
@@ -32,7 +29,7 @@
         <div class="col-md-8">
 
             <div class="card">
-                <div class="card-header">{{ $station->name }} <small><i class="far fa-clock fa-sm"></i> <span id="reqTime">{{ date('H:i', $request->when) }}</span> {{ date('(Y-m-d)', $request->when) }}</small></div>
+                <div class="card-header">{{ $station->name }} <small><i class="far fa-clock fa-sm"></i> {{ date('H:i (Y-m-d)', $request->when) }}</small></div>
 
                 <div class="card-body p-0">
 

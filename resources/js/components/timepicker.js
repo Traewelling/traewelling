@@ -1,15 +1,20 @@
 window.addEventListener("load", () => {
-    let invalidBox = document.createElement("div");
     let input = document.getElementById("timepicker");
-    input.value = document.getElementById("reqTime").innerText;
 
     document
-        .getElementById("timepicker-button")
+        .getElementById("timepicker-reveal")
         .addEventListener("click", () => {
-            let cl = document.getElementById("timepicker-form").classList;
-            cl.remove("opacity-null");
-            cl.add("animated");
-            cl.add("bounceIn");
+            let reveal = document.getElementById("timepicker-form").classList;
+            if (reveal.contains("opacity-null") || reveal.contains("bounceOut")) {
+                reveal.remove("opacity-null");
+                reveal.remove("bounceOut");
+                reveal.add("animated");
+                reveal.add("bounceIn");
+            } else {
+                reveal.remove("bounceIn");
+                reveal.add("bounceOut");
+                reveal.add("animated");
+            }
 
             document
                 .getElementById("timepicker-button")
@@ -25,38 +30,15 @@ window.addEventListener("load", () => {
             });
 
             const changeTime = () => {
-                invalidBox.classList.add("d-none");
                 input.classList.remove("is-invalid");
 
-                let r = /^(\d{2})\:*(\d{2})$/;
-                let matches = Array.from(input.value.matchAll(r))[0];
+                let date = new Date(input.value);
+                let unixTimestamp = Math.floor(date.getTime() / 1000);
 
-                if (
-                    typeof matches != "undefined" &&
-                    matches[1] >= 0 &&
-                    matches[1] < 24 &&
-                    matches[2] >= 0 &&
-                    matches[2] < 60
-                ) {
-                    let d = new Date();
-                    d.setHours(matches[1], matches[2]);
-                    let ts = Math.floor(d.getTime() / 1000);
-
-                    window.location = window.changeTimeLink
-                        .replace("&amp;", "&")
-                        .replace("&amp;", "&")
-                        .replace("REPLACEME", ts);
-                } else {
-                    invalidBox.classList.add("invalid-feedback");
-                    invalidBox.classList.add("animated");
-                    invalidBox.classList.add("fadeIn");
-                    invalidBox.classList.remove("d-none");
-                    invalidBox.innerText = window.invalidHHMMdate;
-                    document
-                        .getElementById("timepicker-form")
-                        .children[0].appendChild(invalidBox);
-                    input.classList.add("is-invalid");
-                }
+                 window.location = window.changeTimeLink
+                     .replace("&amp;", "&")
+                     .replace("&amp;", "&")
+                     .replace("REPLACEME", unixTimestamp);
             };
         });
 });

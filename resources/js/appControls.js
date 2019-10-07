@@ -100,3 +100,9 @@ $(document).on("click", ".disconnect", function(event) {
         location.reload();
     });
 });
+
+$(document).on("click", "#timepicker-button", function(event) {
+    event.preventDefault();
+
+
+})
