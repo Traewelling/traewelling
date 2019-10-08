@@ -1,6 +1,5 @@
 <?php
 return [
-    "--uhr" => "Uhr",
     "-on-" => " um ",
     "April" => "April",
     "August" => "August",

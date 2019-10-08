@@ -16,6 +16,7 @@ return [
     "new-checkin" => "New Checkin",
     "plus-15" => "+15 Minutes",
     "set-time" => "Set time",
+    "no-departures" => "Unfortunately there are currently no departures for this time / filter.",
     "station-placeholder" => "Station",
     "stop-cancelled" => "Stop cancelled",
     "stopover" => "Stop",

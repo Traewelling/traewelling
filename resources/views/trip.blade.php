@@ -33,10 +33,10 @@
                                 <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
                                 <td>{{ $stop['stop']['name'] }}</td>
                                 <td>@if($stop['arrival'] != null)
-                                        {{ __('stationboard.arr') }} {{ date('H:i', strtotime($stop['arrival'])) }}{{__('dates.--uhr')}} @if(isset($stop['arrivalDelay']))<small>(+{{ $stop['arrivalDelay']/60 }})</small>@endif
+                                        {{ __('stationboard.arr') }} @if(isset($stop['arrivalDelay'])){{ date('H:i', strtotime($stop['arrival'])-$stop['arrivalDelay']) }} <small>(<span class="traindelay">+{{ $stop['arrivalDelay']/60 }}</span>)</small>@else{{ date('H:i', strtotime($stop['arrival'])) }}@endif
                                     @endif<br>
                                     @if($stop['departure'] != null)
-                                        {{ __('stationboard.dep') }} {{ date('H:i', strtotime($stop['departure'])) }}{{__('dates.--uhr')}} @if(isset($stop['departureDelay']))<small>(+{{ $stop['departureDelay']/60 }})</small>@endif
+                                        {{ __('stationboard.dep') }} @if(isset($stop['departureDelay'])){{ date('H:i', strtotime($stop['departure'])-$stop['departureDelay']) }} <small>(<span class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>@else{{ date('H:i', strtotime($stop['departure'])) }}@endif
                                     @endif
                                 </td>
                                 <td>{{ $stop['departurePlatform'] }}</td>

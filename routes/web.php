@@ -31,10 +31,6 @@ Route::get('/privacy', function() {
     return view('privacy');
 })->name('privacy');
 
-Route::get('/changelog', function() {
-    return view('changelog');
-})->name('changelog');
-
 Route::get('/about', function() {
     return view('about');
 })->name('about');

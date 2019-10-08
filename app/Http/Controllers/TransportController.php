@@ -77,6 +77,7 @@ class TransportController extends Controller
             $request->travelType = null;
         }
             $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when, $request->travelType);
+
             $departures = $departuresArray[1];
             $station = $departuresArray[0];
 
@@ -98,7 +99,6 @@ class TransportController extends Controller
         );
         $appendix = '';
 
-
         if ($trainType != null) {
             $trainTypes[$trainType] = 'true';
             $appendix = '&'.http_build_query($trainTypes);
@@ -107,6 +107,14 @@ class TransportController extends Controller
         $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
         $json =  json_decode($response->getBody()->getContents());
 
+        //remove express trains in filtered results
+        if ($trainType != null && $trainType != 'express') {
+            foreach ($json as $key=>$item) {
+                if ($item->line->product != $trainType) {
+                    unset($json[$key]);
+                }
+            }
+        }
 
         return [$ibnrObject{0}, $json];
     }
