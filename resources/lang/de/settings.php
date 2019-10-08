@@ -1,0 +1,28 @@
+<?php
+return [
+    "action" => "Aktion",
+    "btn-update" => "Aktualisieren",
+    "choose-file" => "Bild auswählen",
+    "confirm-password" => "Passwort bestätigen",
+    "connect" => "Verbinden",
+    "connected" => "Verbunden",
+    "current-password" => "Aktuelles Passwort",
+    "delete-account" => "Account löschen",
+    "delete-account-btn-back" => "Zurück",
+    "delete-account-btn-confirm" => "Wirklich löschen",
+    "delete-account-verify" => "Bei Bestätigung werden alle mit dem Account verknüpften Daten auf :appname unwiderruflich gelöscht.<br /> Tweets und Toots, die über :appname gesendet wurden, werden nicht gelöscht.",
+    "deleteallsessions" => "Alle Sitzungen beenden",
+    "device" => "Gerät",
+    "disconnect" => "Verbindung lösen",
+    "ip" => "IP-Adresse",
+    "lastactivity" => "Letzte Aktivität",
+    "new-password" => "Neues Passwort",
+    "notconnected" => "Nicht verbunden",
+    "picture" => "Profilbild",
+    "platform" => "Plattform",
+    "service" => "Dienst",
+    "title-loginservices" => "Verbundene Dienste",
+    "title-password" => "Passwort",
+    "title-profile" => "Profil-Einstellungen",
+    "title-sessions" => "Sitzungen"
+];

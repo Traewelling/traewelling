@@ -109,14 +109,14 @@
                     <ul class="navbar-nav mr-auto">
                         @if (Auth::check())
                         <li class="nav-item {{ request()->is('dashboard/*') ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                            <a class="nav-link" href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                         </li>
                         @endif
                         <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ route('leaderboard') }}">Leaderboard</a>
+                            <a class="nav-link" href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
                         </li>
                         <li class="nav-item {{ request()->is('statuses/active') ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ route('statuses.active') }}">Unterwegs</a>
+                            <a class="nav-link" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                         </li>
                     </ul>
 
@@ -125,11 +125,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('menu.login') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('menu.register') }}</a>
                                 </li>
                             @endif
                         @else
@@ -139,14 +139,14 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}"><i class="fas fa-user"></i> Profile</a>
-                                    <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('Export') }}</a>
-                                    <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('Settings') }}</a>
+                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}"><i class="fas fa-user"></i> {{ __('menu.profile') }}</a>
+                                    <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('menu.export') }}</a>
+                                    <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
+                                        <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -168,24 +168,30 @@
         </main>
         <footer class="footer mt-auto py-3">
             <div class="container">
+                <p class="text-muted mb-0 float-right">
+                    |
+                    @foreach(config('app.locales') as $key=>$lang)
+                        <a href="{{ route('lang', ['lang' => $key]) }}">{{ $lang }}</a> |
+                    @endforeach
+                </p>
                 <p class="text-muted mb-0">
                     <a href="{{ route('changelog') }}">{{ substr(get_current_git_commit(), 0, -35) }}</a>
-                    / <a href="{{ route('imprint') }}">{{ __('Imprint') }}</a>
-                    / <a href="{{ route('privacy') }}">{{ __('Privacy') }}</a>
-                    / <a href="{{ route('about') }}">{{ __('About')}}</a>
-                    / <a href="{{ route('globaldashboard') }}">{{ __('Global Dashboard')}}</a>
+                    / <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
+                    / <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
+                    / <a href="{{ route('about') }}">{{ __('menu.about')}}</a>
+                    / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
                 </p>
-                <p class="mb-0">{!! __('Developed with <i class="fas fa-heart fa-sm" style="color: Tomato;""></i> in the European Union') !!}</p>
+                <p class="mb-0">{!! __('menu.developed') !!}</p>
                 <p>&copy; 2019 Tr&auml;welling</p>
             </div>
         </footer>
     </div>
 
     <div class="alert text-center cookiealert" role="alert">
-        <b>Do you like cookies?</b> &#x1F36A; Wir nutzen Cookies für unser Login-System. <a href="{{route('privacy')}}">Mehr erfahren</a>
+        <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }} <a href="{{route('privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
 
         <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
-            Okay
+            {{ __('messages.cookie-notice-button') }}
         </button>
     </div>
 

@@ -16,20 +16,23 @@
             <ul class="timeline">
                 <li>
                     <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }} Uhr</span>
+                    
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}{{__('dates.--uhr')}}</span>
+                    
                     <p class="train-status">
                         <i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}
                         @if($status->business)
                             <i class="pl-2 fas fa-briefcase"></i>
                         @endif
                     </p>
+
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
                     @endif
                 </li>
                 <li>
                     <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }} Uhr</span>
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}{{__('dates.--uhr')}}</span>
                 </li>
             </ul>
         </div>
@@ -44,7 +47,7 @@
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right">
-            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a> on <a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a>
+            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a>{{__('dates.-on-')}}<a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a>
         </span>
         <ul class="list-inline">
             <li class="list-inline-item d-lg-none">

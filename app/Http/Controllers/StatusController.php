@@ -27,7 +27,11 @@ class StatusController extends Controller
         $statuses = Status::whereIn('user_id', $userIds)->latest()->simplePaginate(15);
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
-            \Session::flash('message', 'You have not verified your mail yet! <a href="'.route('verification.resend').'">Resend link</a>');
+            \Session::flash('message',
+                __('controller.status.email-not-verified',
+                    ['url' => route('verification.resend')]
+                )
+            );
         }
 
         if ($statuses->isEmpty()) {
@@ -53,7 +57,7 @@ class StatusController extends Controller
         $status->business = $request['business_check'] == "on" ? 1 : 0;
         $message = 'There was an error.';
         if ($request->user()->statuses()->save($status)) {
-            $message = 'Status successfully created!';
+            $message = __('controller.status.create-success');
         }
 
         return redirect()->route('dashboard')->with(['message' => $message]);
@@ -64,7 +68,7 @@ class StatusController extends Controller
         $trainCheckin = $status->trainCheckin()->first();
         $user = Auth::user();
         if ($user != $status->user) {
-            return redirect()->back()->with('error', __('You \'re not permitted to do this'));
+            return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
 
         $user->train_distance -= $trainCheckin->distance;
@@ -74,7 +78,7 @@ class StatusController extends Controller
         $user->update();
         $status->delete();
         $trainCheckin->delete();
-        return response()->json(['message' => 'Status successfully deleted.'], 200);
+        return response()->json(['message' => __('controller.status.delete-ok')], 200);
     }
 
     public function EditStatus(Request $request) {
@@ -103,14 +107,14 @@ class StatusController extends Controller
         $like = $user->likes()->where('status_id', $statusID)->first();
 
         if ($like) {
-            return response('Like already exists', 409);
+            return response(__('controller.status.like-already'), 409);
         }
 
         $like = new Like();
         $like->user_id = $user->id;
         $like->status_id = $status->id;
         $like->save();
-        return response('Like created', 201);
+        return response(__('controller.status.like-ok'), 201);
     }
 
     public function destroyLike(Request $request) {
@@ -120,10 +124,10 @@ class StatusController extends Controller
 
         if ($like) {
             $like->delete();
-            return response('Like deleted', 200);
+            return response(__('controller.status.like-deleted'), 200);
         }
 
-        return response('Like not found', 404);
+        return response(__('controller.status.like-not-found'), 404);
     }
 
     public function exportLanding() {
@@ -151,13 +155,13 @@ class StatusController extends Controller
         $begin = $request->input('begin');
         $end = $request->input('end');
         if(!$this->isValidDate($begin) || !$this->isValidDate($end)) {
-            return redirect(route('export.landing'))->with(['message' => "Das sind keine validen Daten!"]);
+            return redirect(route('export.landing'))->with(['message' => __('controller.status.export-invalid-dates')]);
         }
 
         $private = $request->input('private-trips', false) == 'true';
         $business = $request->input('business-trips', false) == 'true';
         if(!$private && !$business) {
-            return redirect(route('export.landing'))->with(['message' => "Weder Business-, noch Privat-Reisen? Das gibt nichts!"]);
+            return redirect(route('export.landing'))->with(['message' => __('controller.status.export-neither-business')]);
         }
 
         $endInclLastOfMonth = (new \DateTime($end))->add(new \DateInterval("P1D"))->format("Y-m-d");

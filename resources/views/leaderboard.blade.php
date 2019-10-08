@@ -10,14 +10,14 @@
             <div class="col-md-8">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab" aria-controls="home" aria-selected="true">{{ __('Top 20') }}</a>
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab" aria-controls="home" aria-selected="true">{{ __('leaderboard.top20') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab" aria-controls="profile" aria-selected="false">{{ __('Kilometers') }}</a>
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab" aria-controls="profile" aria-selected="false">{{ __('leaderboard.distance') }}</a>
                     </li>
                     @if($friends != null)
                     <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#top20f" role="tab" aria-controls="contact" aria-selected="false">{{ __('Friends') }}</a>
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#top20f" role="tab" aria-controls="contact" aria-selected="false">{{ __('leaderboard.friends') }}</a>
                     </li>
                     @endif
                 </ul>
@@ -26,11 +26,11 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <td>{{ __('Rank') }}</td>
-                                <td>{{ __('User') }}</td>
-                                <td>{{ __('Duration') }}</td>
-                                <td>{{ __('Distance') }}</td>
-                                <td>{{ __('Points') }}</td>
+                                <td>{{ __('leaderboard.rank') }}</td>
+                                <td>{{ __('leaderboard.user') }}</td>
+                                <td>{{ __('leaderboard.duration') }}</td>
+                                <td>{{ __('leaderboard.distance') }}</td>
+                                <td>{{ __('leaderboard.points') }}</td>
                             </tr>
                             </thead>
                             @foreach($users as $key=>$user)
@@ -48,11 +48,11 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <td>{{ __('Rank') }}</td>
-                                <td>{{ __('User') }}</td>
-                                <td>{{ __('Duration') }}</td>
-                                <td>{{ __('Distance') }}</td>
-                                <td>{{ __('Points') }}</td>
+                                <td>{{ __('leaderboard.rank') }}</td>
+                                <td>{{ __('leaderboard.user') }}</td>
+                                <td>{{ __('leaderboard.duration') }}</td>
+                                <td>{{ __('leaderboard.distance') }}</td>
+                                <td>{{ __('leaderboard.points') }}</td>
                             </tr>
                             </thead>
                             @foreach($kilometers as $key=>$user)
@@ -71,11 +71,11 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <td>{{ __('Rank') }}</td>
-                                <td>{{ __('User') }}</td>
-                                <td>{{ __('Duration') }}</td>
-                                <td>{{ __('Distance') }}</td>
-                                <td>{{ __('Points') }}</td>
+                                <td>{{ __('leaderboard.rank') }}</td>
+                                <td>{{ __('leaderboard.user') }}</td>
+                                <td>{{ __('leaderboard.duration') }}</td>
+                                <td>{{ __('leaderboard.distance') }}</td>
+                                <td>{{ __('leaderboard.points') }}</td>
                             </tr>
                             </thead>
                             @foreach($friends as $key=>$user)
@@ -91,33 +91,7 @@
                     </div>
                     @endif
                 </div>
-
-
-
             </div>
         </div>
-
-        <div class="modal fade" tabindex="-1" role="dialog" id="edit-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Edit status</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="status-body">Edit the status</label>
-                                <textarea class="form-control" name="status-body" id="status-body" rows="5"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="modal-save">Save changes</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
     </div><!--- /container -->
 @endsection
