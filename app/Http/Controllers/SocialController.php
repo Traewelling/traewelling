@@ -83,7 +83,7 @@ class SocialController extends Controller
         $getInfo = Socialite::driver($provider)->user();
         $user = $this->createUser($getInfo, $provider, $domain);
         if ($user === null) {
-            return redirect()->to('/login')->withErrors([ __('There has been an error creating your account.')]);
+            return redirect()->to('/login')->withErrors([ __('controller.social.create-error')]);
         }
         if(!Auth::check()) {
             auth()->login($user, true);
@@ -113,7 +113,7 @@ class SocialController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             if ($identifier != null) {
-                return redirect()->to('/dashboard')->withErrors(['msg', __('This Account is already connected to another user')]);
+                return redirect()->to('/dashboard')->withErrors(['msg', __('controller.social.already-connected-error')]);
             }
         } elseif ($identifier === null) {
             try{
@@ -155,12 +155,12 @@ class SocialController extends Controller
 
         $SocialLoginProfile = SocialLoginProfile::where('user_id', $user->id)->first();
         if ($SocialLoginProfile === null) {
-            return response('Your user does not have a Social Login provider', 404);
+            return response(__('controller.social.delete-never-connected'), 404);
         }
         $SocialLoginProfile->{$providerField} = '';
         $user->socialProfile()->save($SocialLoginProfile);
 
-        return response('Social Login Provider has been deleted', 200);
+        return response(__('controller.social.deleted'), 200);
     }
 
     public function testMastodon() {

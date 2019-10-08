@@ -6,9 +6,9 @@
     <div id="timepicker-wrapper">
         <div class="row justify-content-center">
             <div class="btn-group" role="group">
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="-15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
-                <a href="#" id="timepicker-reveal" alt="Datetime picker" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="+15 Minutes" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('-15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
+                <span id="timepicker-button" alt="{{__('stationboard.dt-picker')}}" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></span>
+                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'when' => strtotime('+15 Minutes', $request->when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -16,7 +16,7 @@
                 <div class="input-group">
                     <input type="datetime-local" class="form-control" id="timepicker"  value="{{  date("Y-m-d\TH:i") }}" />
                     <div class="input-group-append">
-                            <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('Set time')}}</a>
+                        <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('stationboard.set-time')}}</a> 
                     </div>
                     <script>
                     window.changeTimeLink = "{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $request->station, 'travelType' => $request->travelType, 'when' => 'REPLACEME' ]) }}";
@@ -37,9 +37,9 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Line</th>
-                                <th>Destination</th>
-                                <th>Departure</th>
+                                <th>{{__('stationboard.line')}}</th>
+                                <th>{{__('stationboard.destination')}}</th>
+                                <th>{{__('stationboard.dep-time')}}</th>
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
@@ -51,7 +51,7 @@
                                 @endif</td>
                             <td>{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}</td>
                             <td>{{ $departure->direction }}</td>
-                            <td>{{ date('H:i', strtotime($departure->when)) }} Uhr @if(isset($departure->delay))<small>+{{ $departure->delay / 60 }}</small>@endif</td>
+                            <td>{{ date('H:i', strtotime($departure->when)) }}{{__('dates.--uhr')}} @if(isset($departure->delay))<small>+{{ $departure->delay / 60 }}</small>@endif</td>
                         </tr>
                     @endforeach
                     </table>

@@ -62,9 +62,9 @@ class UserController extends Controller
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
             $user->password = Hash::make($request->password);
             $user->save();
-            return redirect()->back()->with('info', 'Password changed');
+            return redirect()->back()->with('info', __('controller.user.password-changed-ok'));
         }
-        return redirect()->back()->withErrors('Wrong password!');
+        return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
     //Return Settings-page
@@ -155,14 +155,14 @@ class UserController extends Controller
         $user = Auth::user();
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
-            return response()->json(['message' => 'This follow already exists.'], 409);
+            return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
         } else {
             $follow = new Follow();
         }
         $follow->user_id = $user->id;
         $follow->follow_id = $follow_id;
         $follow->save();
-        return response()->json(['message' => 'Followed user.'], 201);
+        return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
 
     public function DestroyFollow(Request $request) {
@@ -171,12 +171,12 @@ class UserController extends Controller
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
             if (Auth::user() != $follow->user) {
-                return response()->json(['message' => 'This action is not permitted.'], 403);
+                return response()->json(['message' => __('controller.user.follow-delete-not-permitted')], 403);
             }
             $follow->delete();
-            return response()->json(['message' => 'This follow has been destroyed.'], 200);
+            return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
         }
-        return response()->json(['message' => 'This follow does not exist.'], 409);
+        return response()->json(['message' => __('controller.user.follow-404')], 409);
     }
 
     public function getLeaderboard(Request $request) {

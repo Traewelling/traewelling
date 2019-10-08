@@ -67,7 +67,7 @@ class TransportController extends Controller
 
     public function trainStationboard(Request $request) {
         if (empty($request->station)) {
-            return redirect()->back()->with('error', __('You need to provide a station name!'));
+            return redirect()->back()->with('error', __('controller.transport.no-name-given'));
         }
 
         if (!isset($request->when)) {
@@ -119,7 +119,7 @@ class TransportController extends Controller
         $stopovers = json_decode($train['stopovers'],true);
         $offset = $this->searchForId($request->start, $stopovers);
         if ($offset === null) {
-            return redirect()->back()->with('error', __('Start-ID is not in stopovers.'));
+            return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
         $stopovers = array_slice($stopovers, $offset + 1);
         $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
@@ -186,7 +186,7 @@ class TransportController extends Controller
             $query->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival]);
         })->first();
         if(!empty($between)) {
-            return redirect()->route('dashboard')->withErrors('You have an overlapping checkin: <a href="'.url('/status/'.$between->id).'">'.$between->id.'</a>');
+            return redirect()->route('dashboard')->withErrors(__('controller.transport.overlapping-checkin', ['url' => url('/status/'.$between->id), 'id' => $between->id]));
         }
 
         $request->user()->statuses()->save($status)->trainCheckin()->save($trainCheckin);
@@ -224,7 +224,7 @@ class TransportController extends Controller
             }
         }
 
-        return redirect()->route('dashboard')->with('message', 'Checked in with ' . $trainCheckin->points . ' Points!');
+        return redirect()->route('dashboard')->with('message', __('controller.transport.checkin-ok', ['pts' => $trainCheckin->points]));
     }
 
     function getHAFAStrip($tripID, $lineName) {
