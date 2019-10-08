@@ -11,7 +11,7 @@
                 <?php
                 $dtObj = new \DateTime($status->trainCheckin->departure);
                 ?>
-                <h5>{{__($dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__($dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
+                <h5>{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
                 @include('includes.status')
             </div>
         </div>

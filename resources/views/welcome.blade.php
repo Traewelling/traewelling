@@ -101,12 +101,12 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/dashboard') }}">Home</a>
+                        <a href="{{ url('/dashboard') }}">{{__('menu.dashboard')}}</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+                        <a href="{{ route('login') }}">{{__('menu.login')}}</a>
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                            <a href="{{ route('register') }}">{{__('menu.register')}}</a>
                         @endif
                     @endauth
                 </div>
@@ -123,8 +123,8 @@
                     <a href="{{ url('/login') }}">Mastodon</a>
                 </div>
                 <div class="links">
-                    <a href="{{ url('/leaderboard') }}">Leaderboard</a>
-                    <a href="{{ url('/statuses/active') }}">Travelling</a>
+                    <a href="{{ url('/leaderboard') }}">{{__('menu.leaderboard')}}</a>
+                    <a href="{{ url('/statuses/active') }}">{{__('menu.active')}}</a>
                 </div>
             </div>
         </div>

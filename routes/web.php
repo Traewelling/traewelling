@@ -11,9 +11,17 @@
 |
 */
 
+
+
+Route::get('/lang/{lang?}', function($lang=NULL){
+    Session::put('language', $lang);
+    return Redirect::back();
+})->name('lang');
+
 Route::get('/', function () {
     return view('welcome');
 })->middleware('guest')->name('welcome');
+
 
 Route::get('/imprint', function() {
     return view('imprint');
