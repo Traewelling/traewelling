@@ -22,7 +22,11 @@
 
                 <p>Quelle: <a href="https://www.e-recht24.de">eRecht24</a></p>
 
-                This page uses Nunito Regular – Copyright 2014 The Nunito Project Authors (contact@sansoxygen.com)
+
+                <h3>Thanks</h3>
+                <p>This page uses Nunito Regular – Copyright 2014 The Nunito Project Authors (contact@sansoxygen.com)</p>
+
+                <p>This page uses data from OpenStreetMap, a free project with the aim of collecting freely utilisable geo-data and making it available in a database for general use (open data). In order to display the map to you, information about use of the website including your IP address is communicated to OpenStreetMap. These services are operated by OpenStreetMap Foundation (OSMF), 132 Maney Hill Road, Sutton Coldfield, West Midlands, B72 1JU, United Kingdom, on behalf of the OSM community.</p>
             </div>
         </div>
     </div><!--- /container -->

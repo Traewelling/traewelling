@@ -32,6 +32,9 @@
                     Bei der Nutzung von <a href="http://traewelling.de">traewelling.de</a> werden automatisch öffentliche Daten aus Twitter abgerufen und bei <a href="http://traewelling.de">traewelling.de</a> gespeichert, ebenso werden Checkins auf <a href="http://traewelling.de">traewelling.de</a> automatisch an Twitter weitergeleitet und dort gemäß der Datenschutzerklärung von Twitter (<a href="http://twitter.com/privacy">http://twitter.com/privacy</a>) verarbeitet. <a href="http://Traewelling.de">Traewelling.de</a> hat keinen Einfluss auf die Verarbeitung durch Twitter.<br>
                     Twitter ist ein Angebot von Twitter Inc., 795 Folsom St., Suite 600, San Francisco, CA 94107, USA.<br>
                     Ihre Datenschutzeinstellungen bei Twitter können Sie in den Konto-Einstellungen unter <a href="http://twitter.com/account/settings">http://twitter.com/account/settings</a> ändern. Bei Fragen wenden Sie sich an <a href="mailto:privacy@twitter.com">privacy@twitter.com</a>.</p>
+                <h2><a id="Verknpfung_mit_OSM"></a>Verknüpfung mit Carto</h2>
+                <p>Um Karten-Inhalte darzustellen, verwenden wir den Kartendienst <a href="https://carto.com/">Carto</a>. <a href="http://traewelling.de">traewelling.de</a> teilt mit dem Kartendienst, welche Kartenkacheln geladen werden sollen. Der Kartendienst ist über folgende Adresse erreichbar: CARTO, Attention: Legal, 201 Moore Street, Brooklyn, NY 11206, United States of America, privacyshield@carto.com. Weitere Informationen entnehmen Sie der Datenschutzerklärung des Anbieters: <a href="https://carto.com/privacy/">https://carto.com/privacy/</a>
+                
                 <h2><a id="Datenverwaltung_durch_traewellingde_22"></a>Datenverwaltung durch <a href="http://traewelling.de">traewelling.de</a></h2>
                 <p><a href="http://traewelling.de">traewelling.de</a> speichert und verarbeitet personenbezogene Daten ausschließlich auf Servern in der Bundesrepublik Deutschland.</p>
                 <p>Der Nutzer kann die Daten jederzeit vollständig einsehen und löschen. Alle Checkins sind öffentlich im Internet für jeden Internetnutzer einsehbar.</p>
@@ -52,6 +55,15 @@
                 <p>Alle Nutzer von <a href="http://traewelling.de">traewelling.de</a> haben das Recht, von <a href="http://traewelling.de">traewelling.de</a> Auskunft über die zu ihrer Person gespeicherten Daten zu verlangen, sowie das Recht auf Berichtigung, Sperrung oder Löschung dieser Daten. Soweit die verantwortliche Stelle der Datenverarbeitung der Veranstalter ist, wenden Sie sich an diesen. In allen anderen Fällen wenden Sie sich bei Fragen, Auskünften oder Widerrufserklärungen bitte an <a href="mailto:datenschutz@traewelling.de">datenschutz@traewelling.de</a>.</p>
                 <h2><a id="Beschwerderecht_bei_der_zustndigen_Aufsichtsbehrde_49"></a>Beschwerderecht bei der zuständigen Aufsichtsbehörde</h2>
                 <p>Im Falle datenschutzrechtlicher Verstöße steht dem Betroffenen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu. Zuständige Aufsichtsbehörde in datenschutzrechtlichen Fragen ist der Landesdatenschutzbeauftragte des Bundeslandes, in dem der Veranstalter seinen Sitz hat. Eine Liste der Datenschutzbeauftragten sowie deren Kontaktdaten können folgendem Link entnommen werden: <a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html">https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html</a> .</p>
+                <h2><a id="Recht_auf_Lschen">Recht auf Löschen</h2>
+                <p>Benutzer unserer Applikation haben die Möglichkeit, Ihr Profil zu löschen. Die entsprechenden Buttons liegen unter <a href="{{route('settings')}}">Einstellungen > Account löschen</a>. Beim Bestätigen dieses Buttons werden folgende Daten gelöscht:</p>
+                <ul>
+                    <li>Generelle Benutzerdaten (Name, Passwort, E-Mail-Adresse, Tokens für Social Media-Verbindungen)</li>
+                    <li>Folge-Verbindungen zu anderen Benutzern der Plattform {{env('APP_NAME')}}</li>
+                    <li>Status-Meldungen (eigene Nachricht, Business-Häkchen)</li>
+                    <li>Check-Ins (Einstieg, Ausstieg, Datum der Reise, Distanz und Dauer, etc.)</li>
+                </ul>
+                <p>Ausdrücklich <em>nicht</em> gelöscht werden: Tweets und Toots, die auf externen Plattformen geteilt wurden, und gespeicherte Daten aus der HAFAS-Datenbank, da mehrere Nutzer in einen Zug einsteigen können.</p>
                 <br>
             </div>
         </div>
