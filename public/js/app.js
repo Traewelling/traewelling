@@ -69770,6 +69770,27 @@ window.onload = function () {
 
 __webpack_require__(/*! ./components/timepicker.js */ "./resources/js/components/timepicker.js");
 
+window.onload = function () {
+  var delays = document.getElementsByClassName('traindelay');
+
+  for (var i = 0; i < delays.length; i++) {
+    var delay = delays[i].innerText;
+    delay.slice(1);
+
+    if (delay <= 3) {
+      delays[i].classList.add("text-success");
+    }
+
+    if (delay > 3 && delay < 10) {
+      delays[i].classList.add("text-warning");
+    }
+
+    if (delay >= 10) {
+      delays[i].classList.add("text-danger");
+    }
+  }
+};
+
 /***/ }),
 
 /***/ "./resources/js/appControls.js":
@@ -70175,8 +70196,8 @@ window.addEventListener("load", function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

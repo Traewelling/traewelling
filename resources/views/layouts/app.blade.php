@@ -168,21 +168,22 @@
         </main>
         <footer class="footer mt-auto py-3">
             <div class="container">
-                <p class="text-muted mb-0 float-right">
+                <div class="text-muted mb-0 float-right">
                     |
                     @foreach(config('app.locales') as $key=>$lang)
                         <a href="{{ route('lang', ['lang' => $key]) }}">{{ $lang }}</a> |
                     @endforeach
-                </p>
+
+                </div>
                 <p class="text-muted mb-0">
-                    <a href="{{ route('changelog') }}">{{ substr(get_current_git_commit(), 0, -35) }}</a>
-                    / <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
-                    / <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
-                    / <a href="{{ route('about') }}">{{ __('menu.about')}}</a>
+                    <a href="{{ route('about') }}">{{ __('menu.about')}}</a>
                     / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
+                    / <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
+                    / <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
                 </p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
-                <p>&copy; 2019 Tr&auml;welling</p>
+                <p class="mb-0">&copy; 2019 Tr&auml;welling</p>
+                <p class="mb-0 text-muted small">commit: {{ get_current_git_commit() }}</p>
             </div>
         </footer>
     </div>

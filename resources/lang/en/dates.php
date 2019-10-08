@@ -1,6 +1,5 @@
 <?php
 return [
-    "--uhr" => "o'clock",
     "-on-" => " on ",
     "April" => "April",
     "August" => "August",

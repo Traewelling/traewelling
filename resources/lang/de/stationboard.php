@@ -16,6 +16,7 @@ return [
     "new-checkin" => "Neuer Checkin",
     "plus-15" => "+15 Minuten",
     "set-time" => "Zeit setzen",
+    "no-departures" => "Für diese Uhrzeit/diesen Filter gibt es derzeit leider keine Abfahrten.",
     "station-placeholder" => "Haltestelle",
     "stop-cancelled" => "Halt entfällt",
     "stopover" => "Station",
