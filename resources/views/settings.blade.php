@@ -245,7 +245,7 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
+            <div class="card mt-3" id="deleteAccount">
                 <div class="card-header">Account löschen</div>
                 <div class="card-body">
                     <a class="btn btn-block btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('Delete my account') }}</a>
