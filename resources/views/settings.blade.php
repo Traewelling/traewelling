@@ -248,7 +248,7 @@
             <div class="card mt-3">
                 <div class="card-header">{{ __('settings.delete-account') }}</div>
                 <div class="card-body">
-                    <a class="btn btn-block btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('Delete my account') }}</a>
+                    <a class="btn btn-block btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
 
 
                     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
