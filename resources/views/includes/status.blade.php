@@ -16,9 +16,9 @@
             <ul class="timeline">
                 <li>
                     <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
-                    
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}{{__('dates.--uhr')}}</span>
-                    
+
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
+
                     <p class="train-status">
                         <i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}
                         @if($status->business)
@@ -32,7 +32,7 @@
                 </li>
                 <li>
                     <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}{{__('dates.--uhr')}}</span>
+                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                 </li>
             </ul>
         </div>
