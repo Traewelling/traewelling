@@ -11,14 +11,12 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/typeahead.bundle.min.js') }}"></script>
-
+    
     <!-- Fonts -->
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/typeaheadjs.css') }}" rel="stylesheet">
     <style>
         body {
             background: rgb(248, 250, 252);
@@ -197,56 +195,6 @@
     </div>
 
     <script>
-        var traincomplete = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: {
-                url: '{{ url('transport/train/autocomplete') }}/%QUERY',
-                wildcard: '%QUERY'
-            }
-        });
-
-        var buscomplete = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: {
-                url: '{{ url('transport/bus/autocomplete') }}/%QUERY',
-                wildcard: '%QUERY'
-            }
-        });
-
-        $('#station-autocomplete').typeahead({
-            highlight: true
-        },
-            {
-                name: 'trains',
-                display: 'name',
-                source: traincomplete,
-                templates: {
-                    suggestion: function (data) {
-                        return '<strong><strong>' + data.name + '</strong> | Flixbus</strong>';
-                    }
-                }
-            },
-            {
-                name: 'busses',
-                display: 'name',
-                source: buscomplete,
-                templates: {
-                    suggestion: function (data) {
-                        return '<strong><strong>' + data.name + '</strong> | Flixbus</strong>';
-                    }
-                }
-            }).on('typeahead:select', function(ev, suggestion) {
-                if(suggestion.provider === 'busses') {
-                    var autocompleteAction = '{{ route('busses.stationboard') }}';
-                } else {
-                    var autocompleteAction = '{{ route('trains.stationboard') }}';
-                }
-
-                $('#autocomplete-form').attr('action', autocompleteAction);
-        });
-
         var touchmoved;
         $(document).on('click touchstart', '.trainrow', function() {
             var lineName = $(this).data('linename');

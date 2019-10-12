@@ -1,0 +1,12 @@
+.awesomplete {
+    display: block;
+
+    // Das kann man nochmal ändern, aber vielleicht lassen wir das halt auch einfach auf Default.
+    // & > ul > li[aria-selected="true"] {
+    //     background: rgb(122, 195, 255);
+    // }
+
+    mark {
+        padding-right: 0px;
+    }
+}
