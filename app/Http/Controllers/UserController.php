@@ -104,8 +104,10 @@ class UserController extends Controller
 
     public function destroyUser(Request $request) {
         $user = Auth::user();
-
         
+        if ($user->avatar != 'user.jpg') {
+            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        }
         foreach(Status::where('user_id', $user->id)->get() as $status) {
             TrainCheckin::where('status_id', $status->id)->delete();
             $status->likes()->delete();
@@ -114,7 +116,6 @@ class UserController extends Controller
 
         SocialLoginProfile::where('user_id', $user->id)->delete();
         Follow::where('user_id', $user->id)->orWhere('follow_id', $user->id)->delete();
-
 
         $user->delete();
 
