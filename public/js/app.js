@@ -70280,6 +70280,8 @@ __webpack_require__(/*! ./appControls */ "./resources/js/appControls.js");
 
 __webpack_require__(/*! awesomplete/awesomplete */ "./node_modules/awesomplete/awesomplete.js");
 
+__webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
+
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
  * The following block of code may be used to automatically register your
@@ -70301,14 +70303,13 @@ Vue.component("example-component", __webpack_require__(/*! ./components/ExampleC
 var app = new Vue({
   el: "#app"
 });
-
-window.onload = function () {
+window.addEventListener("load", function () {
   __webpack_require__(/*! bootstrap-cookie-alert/cookiealert */ "./node_modules/bootstrap-cookie-alert/cookiealert.js");
 
   __webpack_require__(/*! ./components/statusMap.js */ "./resources/js/components/statusMap.js");
 
   __webpack_require__(/*! ./components/progressbar.js */ "./resources/js/components/progressbar.js");
-};
+});
 
 __webpack_require__(/*! ./components/timepicker.js */ "./resources/js/components/timepicker.js");
 
@@ -70622,7 +70623,7 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
   !*** ./resources/js/components/statusMap.js ***!
   \**********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -70631,8 +70632,6 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-__webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
 
 Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem) {
   /**

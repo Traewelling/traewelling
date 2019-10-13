@@ -8,6 +8,7 @@ require("jquery");
 require("./bootstrap");
 require("./appControls");
 require("awesomplete/awesomplete");
+require("leaflet/dist/leaflet.js");
 window.Vue = require("vue");
 
 /**
@@ -36,11 +37,11 @@ const app = new Vue({
     el: "#app"
 });
 
-window.onload = function() {
+window.addEventListener("load", function() {
     require("bootstrap-cookie-alert/cookiealert");
     require("./components/statusMap.js");
     require("./components/progressbar.js");
-};
+});
 
 require("./components/timepicker.js");
 
