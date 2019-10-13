@@ -1,5 +1,3 @@
-require("leaflet/dist/leaflet.js");
-
 Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
     /**
      * The status map is used in dashboard and when viewing a single status.
