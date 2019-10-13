@@ -18,77 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
-        body {
-            background: rgb(248, 250, 252);
-        }
-        .product-icon {
-            width: 1em;
-            height: 1em;
-        }
-
-        ul.timeline {
-            list-style-type: none;
-            position: relative;
-        }
-        ul.timeline:before {
-            content: ' ';
-            background: #d4d9df;
-            display: inline-block;
-            position: absolute;
-            left: 29px;
-            width: 2px;
-            height: 100%;
-            z-index: 400;
-        }
-        ul.timeline:last-child {
-            background: transparent !important;
-        }
-        ul.timeline > li {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-        ul.timeline > li:before {
-            content: ' ';
-            background: white;
-            display: inline-block;
-            position: absolute;
-            border-radius: 50%;
-            border: 3px solid rgb(192, 57, 43);
-            left: 20px;
-            width: 20px;
-            height: 20px;
-            z-index: 400;
-        }
-
-        ul.timeline > li:last-child {
-            line-height: 1;
-        }
-
-        p.status-body:before,
-        p.train-status:before {
-            font-family: FontAwesome;
-            display: inline-block;
-            padding-right: 6px;
-            vertical-align: middle;
-        }
-
-        .connection {
-            background: #f5f5f5;
-        }
-        .text-trwl {
-            color: rgb(199, 39, 48) !important;;
-        }
-        .bg-trwl {
-            background-color: #c72730 !important;
-        }
-
-        .navbar-dark .navbar-brand {
-            font-weight: bold !important;
-        }
-
-        .dropdown-menu {
-            z-index: 2000;
-        }
+        /* Moved to resources/sass/site.scss */
     </style>
 </head>
 <body>
@@ -195,58 +125,19 @@
     </div>
 
     <script>
-        var touchmoved;
-        $(document).on('click touchstart', '.trainrow', function() {
-            var lineName = $(this).data('linename');
-            var tripID = $(this).data('tripid');
-            var start = $(this).data('start');
-            if(touchmoved != true) {
-                window.location = '{{ route('trains.trip') }}?tripID=' + tripID + '&lineName=' + lineName + '&start=' + start;
-            }
-        }).on('touchmove', function(e){
-            touchmoved = true;
-        }).on('touchstart', function(){
-            touchmoved = false;
-        });
-
-        $(document).on('click touchend', '.train-destinationrow', function() {
-            var tripID = $(this).parent().parent().data('tripid');
-            var start = $(this).parent().parent().data('start');
-            var destination = $(this).data('ibnr');
-            var stopname = $(this).data('stopname');
-            var linename = $(this).parent().parent().data('linename');
-            if(touchmoved != true) {
-                $('#checkinModal').modal('show', function (event) {
-                    var modal = $(this)
-                    modal.find('.modal-title').html(linename + ' <i class="fas fa-arrow-alt-circle-right"></i> ' + stopname);
-                    modal.find('#input-tripID').val(tripID);
-                    modal.find('#input-destination').val(destination);
-                    modal.find('#input-start').val(start);
-                });
-
-            }
-        }).on('touchmove', function(e){
-            touchmoved = true;
-        }).on('touchstart', function(){
-            touchmoved = false;
-        });
-
-        $('#checkinModal').on('show.bs.modal', function (event) {
-            $(event.relatedTarget)
-        });
-
-        $('#checkinButton').click(function(e){
-            e.preventDefault();
-            $('#checkinForm').submit();
-        });
-
+        /**
+         * Let's only keep the JS here that is needed, e.g. Routes or CSRF tokens and put the rest
+         * in the compontents folder. I moved the touch controls that were here and are needed for
+         * checkin into components/stationboard.js.
+         */
         var token = '{{ csrf_token() }}';
-        var urlEdit = '{{ route('edit') }}';
         var urlDelete = '{{ route('status.delete') }}';
-        var urlLike = '{{ route('like.create') }}';
-        var urlDislike = '{{ route('like.destroy') }}';
         var urlDisconnect = '{{ route('provider.destroy') }}';
+        var urlDislike = '{{ route('like.destroy') }}';
+        var urlEdit = '{{ route('edit') }}';
         var urlFollow = '{{ route('follow.create') }}';
+        var urlLike = '{{ route('like.create') }}';
+        var urlTrainTrip = '{{ route('trains.trip') }}';
         var urlUnfollow = '{{ route('follow.destroy') }}';
     </script>
 </body>
