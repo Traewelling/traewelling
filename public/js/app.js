@@ -70306,33 +70306,14 @@ var app = new Vue({
 window.addEventListener("load", function () {
   __webpack_require__(/*! bootstrap-cookie-alert/cookiealert */ "./node_modules/bootstrap-cookie-alert/cookiealert.js");
 
-  __webpack_require__(/*! ./components/statusMap.js */ "./resources/js/components/statusMap.js");
+  __webpack_require__(/*! ./components/progressbar */ "./resources/js/components/progressbar.js");
 
-  __webpack_require__(/*! ./components/progressbar.js */ "./resources/js/components/progressbar.js");
+  __webpack_require__(/*! ./components/stationboard */ "./resources/js/components/stationboard.js");
+
+  __webpack_require__(/*! ./components/statusMap */ "./resources/js/components/statusMap.js");
+
+  __webpack_require__(/*! ./components/timepicker */ "./resources/js/components/timepicker.js");
 });
-
-__webpack_require__(/*! ./components/timepicker.js */ "./resources/js/components/timepicker.js");
-
-window.onload = function () {
-  var delays = document.getElementsByClassName("traindelay");
-
-  for (var i = 0; i < delays.length; i++) {
-    var delay = delays[i].innerText;
-    delay.slice(1);
-
-    if (delay <= 3) {
-      delays[i].classList.add("text-success");
-    }
-
-    if (delay > 3 && delay < 10) {
-      delays[i].classList.add("text-warning");
-    }
-
-    if (delay >= 10) {
-      delays[i].classList.add("text-danger");
-    }
-  }
-};
 
 /***/ }),
 
@@ -70615,6 +70596,34 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
     }
   }, 5 * 1000);
 });
+
+/***/ }),
+
+/***/ "./resources/js/components/stationboard.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/stationboard.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var delays = document.getElementsByClassName("traindelay");
+
+for (var i = 0; i < delays.length; i++) {
+  var delay = delays[i].innerText;
+  delay.slice(1);
+
+  if (delay <= 3) {
+    delays[i].classList.add("text-success");
+  }
+
+  if (delay > 3 && delay < 10) {
+    delays[i].classList.add("text-warning");
+  }
+
+  if (delay >= 10) {
+    delays[i].classList.add("text-danger");
+  }
+}
 
 /***/ }),
 
