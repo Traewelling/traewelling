@@ -22,7 +22,8 @@ return [
         "checkin-ok" => "Eingecheckt mit :pts Punkten!",
         "no-name-given" => "Du musst einen Stationsnamen angeben!",
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
-        "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>"
+        "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>",
+        "also-in-train" => ":people ist auch in diesem Zug.|Auch in diesem Zug sind: :people"
     ],
     "user" => [
         "follow-404" => "Dieser Follow existierte gar nicht.",

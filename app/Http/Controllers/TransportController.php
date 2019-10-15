@@ -232,7 +232,31 @@ class TransportController extends Controller
             }
         }
 
-        return redirect()->route('dashboard')->with('message', __('controller.transport.checkin-ok', ['pts' => $trainCheckin->points]));
+        // check for other people on this train
+        $alsoOnThisTrain = [];
+        $corresponding = TrainCheckin::where([
+            ['trip_id', '=', $trainCheckin->trip_id],
+            ['status_id', '!=', $status->id]
+        ])->get()
+            ->filter(function ($t) use ($trainCheckin) {
+                return ($t->arrival > $trainCheckin->departure) && ($t->departure < $trainCheckin->arrival);
+            });
+
+        foreach ($corresponding as $t) {
+            $u = $t->status->user;
+            $alsoOnThisTrain[] = "<a href=\"" . route('account.show',  ['username' => $u->username]) . "\">" . $u->name . " (@" . $u->username . ")</a>";
+        }
+
+        $concatSameTrain = implode(', ', $alsoOnThisTrain);
+        if (!empty($concatSameTrain)) {
+            $concatSameTrain = "<br />" . trans_choice('controller.transport.also-in-train', count($alsoOnThisTrain), ['people' => $concatSameTrain]);
+        }
+
+        return redirect()->route('dashboard')->with(
+            'message',
+            __('controller.transport.checkin-ok', ['pts' => $trainCheckin->points])
+                . $concatSameTrain
+        );
     }
 
     function getHAFAStrip($tripID, $lineName) {
