@@ -3,6 +3,7 @@ return [
     "abort" => "Abbrechen",
     "about" => "Über Träwelling",
     "active" => "Unterwegs",
+    "blog" => "Blog",
     "dashboard" => "Dashboard",
     "developed" => "Entwickelt mit <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in der Europäischen Union",
     "discard" => "Ohne Speichern zurück",

@@ -35916,6 +35916,10 @@ p.train-status:before {
   border-radius: 50%;
 }
 
+.status img {
+  max-width: 100%;
+}
+
 .status .list-inline {
   margin-bottom: 0;
 }

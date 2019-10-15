@@ -61,6 +61,18 @@ Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 Route::get('/status/{id}', 'StatusController@getStatus');
 
+Route::get('/blog', [
+    'uses'  => 'BlogController@all',
+    'as'    => 'blog.all'
+]);
+Route::get('/blog/{slug}', [
+    'uses'  => 'BlogController@show',
+    'as'    => 'blog.show'
+]);
+Route::get('/blog/cat/{cat}', [
+    'uses'  => 'BlogController@category',
+    'as'    => 'blog.category'
+]);
 
 
 Route::middleware(['auth'])->group(function() {
