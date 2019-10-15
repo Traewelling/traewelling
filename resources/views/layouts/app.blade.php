@@ -108,6 +108,7 @@
                     / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
                     / <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
                     / <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
+                    / <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a>
                 </p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
                 <p class="mb-0">&copy; 2019 Tr&auml;welling</p>

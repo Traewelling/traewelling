@@ -3,6 +3,7 @@ return [
     "abort" => "Abort",
     "about" => "About",
     "active" => "En Route",
+    "blog" => "Blog",
     "dashboard" => "Dashboard",
     "developed" => "Developed with <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in the European Union",
     "discard" => "Discard changes",
