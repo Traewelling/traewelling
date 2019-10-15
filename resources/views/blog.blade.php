@@ -14,6 +14,11 @@
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
             <h1><i class="fa fa-tag pr-2"></i>{{$category}}</h1>
             @endif
+
+            @if(count($blogposts) == 0)
+            <p class="text-center">Hier ist leider noch nicht viel.</p>
+            @endif
+
             @foreach($blogposts as $blogpost)
             <div class="card mb-4 status">
                 <div class="card-header">
