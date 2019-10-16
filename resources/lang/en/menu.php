@@ -6,7 +6,7 @@ return [
     "blog" => "Blog",
     "dashboard" => "Dashboard",
     "developed" => "Developed with <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in the European Union",
-    "discard" => "Discard changes",
+    "discard" => "Discard",
     "export" => "Export",
     "globaldashboard" => "Global Dashboard",
     "gohome" => "Go Home",
