@@ -19,12 +19,12 @@ class CreateSocialLoginProfilesTable extends Migration
                 ->references('id')->on('users');
             $table->string('github_id')->nullable();
             $table->string('twitter_id')->nullable();
-            $table->string('twitter_token')->nullable();
-            $table->string('twitter_tokenSecret')->nullable();
+            $table->text('twitter_token')->nullable();
+            $table->text('twitter_tokenSecret')->nullable();
             $table->string('mastodon_id')->nullable();
             $table->integer('mastodon_server')
                 ->references('id')->on('mastodon_servers')->nullable();
-            $table->string('mastodon_token')->nullable();
+            $table->text('mastodon_token')->nullable();
             $table->timestamps();
         });
     }

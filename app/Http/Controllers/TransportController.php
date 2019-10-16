@@ -207,7 +207,7 @@ class TransportController extends Controller
         $user->update();
 
         if ((isset($request->toot_check) || isset($request->tweet_check)) && env('POST_SOCIAL') === TRUE) {
-            $post_text = "I'm in " .  $hafas['linename'] . " towards " . $destinationStation->name . '! ';
+            $post_text = __('controller.transport.social-post', ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]);
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
