@@ -49,7 +49,8 @@
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
-                        <tr class="trainrow" data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}" data-start="{{ $departure->stop->id }}">
+                    
+                        <tr @if(!isset($departure->cancelled)) class="trainrow" @endif data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}" data-start="{{ $departure->stop->id }}">
                             <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                     <img class="product-icon" src="{{ asset('img/'.$departure->line->product.'.svg') }}">
                                 @else
@@ -57,7 +58,18 @@
                                 @endif</td>
                             <td>{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}</td>
                             <td>{{ $departure->direction }}</td>
-                            <td> @if(isset($departure->delay)){{ date('H:i', strtotime($departure->when) - $departure->delay) }} <small>(<span class="traindelay">+{{ $departure->delay / 60 }}</span>)</small> @else {{ date('H:i', strtotime($departure->when)) }}@endif</td>
+                            <td>
+                                @if(isset($departure->cancelled))
+                                    <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span>
+                                @else
+                                    @if(isset($departure->delay))
+                                        {{ date('H:i', strtotime($departure->when) - $departure->delay) }}
+                                        <small>(<span class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
+                                    @else
+                                    {{ date('H:i', strtotime($departure->when)) }}
+                                    @endif
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                     </table>

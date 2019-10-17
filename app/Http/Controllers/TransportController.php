@@ -78,8 +78,8 @@ class TransportController extends Controller
         }
             $departuresArray = $this->getTrainDepartures($request->get('station'), $request->when, $request->travelType);
 
-            $departures = $departuresArray[1];
             $station = $departuresArray[0];
+            $departures = $departuresArray[1];
 
         return view('stationboard', compact('station', 'departures', 'request'));
     }
@@ -116,7 +116,29 @@ class TransportController extends Controller
             }
         }
 
+        $json = self::sortByWhenOrScheduledWhen($json);
         return [$ibnrObject{0}, $json];
+    }
+
+    // Train with cancelled stops show up in the stationboard sometimes with when == 0.
+    // However, they will have a scheduledWhen. This snippet will sort the departures
+    // by actualWhen or use scheduledWhen if actual is empty.
+    public static function sortByWhenOrScheduledWhen(Array $departuresList): Array {
+        uasort($departuresList, function($a, $b) {
+            $dateA = $a->when;
+            if($dateA == null) {
+                $dateA = $a->scheduledWhen;
+            }
+
+            $dateB = $b->when;
+            if($dateB == null) {
+                $dateB = $b->scheduledWhen;
+            }
+
+            return ($dateA < $dateB) ? -1 : 1;
+        });
+
+        return $departuresList;
     }
 
     public function trainTrip(Request $request) {
