@@ -6,7 +6,7 @@ return [
     "blog" => "Blog",
     "dashboard" => "Dashboard",
     "developed" => "Entwickelt mit <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in der Europäischen Union",
-    "discard" => "Ohne Speichern zurück",
+    "discard" => "Abbrechen",
     "export" => "Exportieren",
     "globaldashboard" => "Globales Dashboard",
     "gohome" => "Zur Startseite",
