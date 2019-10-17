@@ -27,7 +27,7 @@
                             @if(@$stop['cancelled'] == 'true')
                                 <tr>
                                     <td>{{ $stop['stop']['name'] }}</td>
-                                    <td><span class="text-danger">{{ __('Stop cancelled') }}</span></td>
+                                    <td><span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;</td>
                                     <td>{{ $stop['departurePlatform'] }}</td>
                             @else
                                 <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
@@ -37,7 +37,7 @@
                                     @endif<br>
                                     @if($stop['departure'] != null)
                                         {{ __('stationboard.dep') }} @if(isset($stop['departureDelay'])){{ date('H:i', strtotime($stop['departure'])-$stop['departureDelay']) }} <small>(<span class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>@else{{ date('H:i', strtotime($stop['departure'])) }}@endif
-                                    @endif
+                                    @endif &nbsp;
                                 </td>
                                 <td>{{ $stop['departurePlatform'] }}</td>
                             @endif
