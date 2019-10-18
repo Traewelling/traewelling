@@ -14,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="form-inline opacity-null" id="timepicker-form">
                 <div class="input-group">
-                    <input type="datetime-local" class="form-control" id="timepicker"  value="{{  date("Y-m-d\TH:i") }}" />
+                    <input type="datetime-local" class="form-control" id="timepicker"  value="{{  date("Y-m-d\TH:i", $request->when) }}" />
                     <div class="input-group-append">
                         <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('stationboard.set-time')}}</a>
                     </div>

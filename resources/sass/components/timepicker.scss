@@ -1,4 +1,6 @@
 #timepicker-wrapper {
+    padding: 2rem 0;
+
     .btn-rounded:first-child {
         border-top-left-radius: 10em;
         border-bottom-left-radius: 10em;
@@ -18,10 +20,13 @@
         font-size: 0.81rem;
     }
 
-
     #timepicker-form {
         &.opacity-null {
-            opacity: 0;
+            display: none;
+
+            &.animated {
+                transition: 0.2s display ease-ease;
+            }
         }
     }
 }
