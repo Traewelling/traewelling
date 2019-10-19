@@ -58220,40 +58220,43 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(function (elem)
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-window.addEventListener("load", function () {
-  var input = document.getElementById("timepicker");
-  document.getElementById("timepicker-reveal").addEventListener("click", function () {
-    var reveal = document.getElementById("timepicker-form").classList;
+var input = document.getElementById("timepicker");
+console.log(input);
+document.getElementById("timepicker-reveal").addEventListener("click", function (e) {
+  e.preventDefault();
+  var reveal = document.getElementById("timepicker-form").classList;
 
-    if (reveal.contains("opacity-null") || reveal.contains("bounceOut")) {
-      reveal.remove("opacity-null");
-      reveal.remove("bounceOut");
-      reveal.add("animated");
-      reveal.add("bounceIn");
-    } else {
-      reveal.remove("bounceIn");
-      reveal.add("bounceOut");
-      reveal.add("animated");
-    }
+  if (reveal.contains("opacity-null") || reveal.contains("bounceOut")) {
+    reveal.remove("opacity-null");
+    reveal.remove("bounceOut");
+    reveal.add("animated");
+    reveal.add("bounceIn");
+  } else {
+    reveal.remove("bounceIn");
+    reveal.add("bounceOut");
+    reveal.add("animated");
+    setTimeout(function () {
+      reveal.add("opacity-null");
+    }, 1000);
+  }
 
-    document.getElementById("timepicker-button").addEventListener("click", function (e) {
-      e.preventDefault();
-      changeTime();
-    });
-    input.addEventListener("keyup", function (event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        changeTime();
-      }
-    });
-
-    var changeTime = function changeTime() {
-      input.classList.remove("is-invalid");
-      var date = new Date(input.value);
-      var unixTimestamp = Math.floor(date.getTime() / 1000);
-      window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
-    };
+  document.getElementById("timepicker-button").addEventListener("click", function (e) {
+    e.preventDefault();
+    changeTime();
   });
+  input.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      changeTime();
+    }
+  });
+
+  var changeTime = function changeTime() {
+    input.classList.remove("is-invalid");
+    var date = new Date(input.value);
+    var unixTimestamp = Math.floor(date.getTime() / 1000);
+    window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
+  };
 });
 
 /***/ }),

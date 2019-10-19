@@ -35847,6 +35847,10 @@ p.train-status:before {
   font-weight: 600;
 }
 
+#timepicker-wrapper {
+  padding: 2rem 0;
+}
+
 #timepicker-wrapper .btn-rounded:first-child {
   border-top-left-radius: 10em;
   border-bottom-left-radius: 10em;
@@ -35870,7 +35874,11 @@ p.train-status:before {
 }
 
 #timepicker-wrapper #timepicker-form.opacity-null {
-  opacity: 0;
+  display: none;
+}
+
+#timepicker-wrapper #timepicker-form.opacity-null.animated {
+  transition: 0.2s display ease-ease;
 }
 
 .awesomplete {
