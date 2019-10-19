@@ -81,6 +81,10 @@ class TransportController extends Controller
             $station = $departuresArray[0];
             $departures = $departuresArray[1];
 
+            if (empty($station->name)) {
+                return redirect()->back()->with('error', __('controller.transport.no-station-found'));
+            }
+
         return view('stationboard', compact('station', 'departures', 'request'));
     }
 
@@ -271,7 +275,7 @@ class TransportController extends Controller
 
         $concatSameTrain = implode(', ', $alsoOnThisTrain);
         if (!empty($concatSameTrain)) {
-            $concatSameTrain = "<br />" . trans_choice('controller.transport.also-in-train', count($alsoOnThisTrain), ['people' => $concatSameTrain]);
+            $concatSameTrain = "<br />" . trans_choice('controller.transport.also-in-connection', count($alsoOnThisTrain), ['people' => $concatSameTrain]);
         }
 
         return redirect()->route('dashboard')->with(
