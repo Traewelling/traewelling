@@ -23,7 +23,8 @@ return [
         "no-name-given" => "You need to provide a station name!",
         "not-in-stopovers" => "Start-ID is not in stopovers.",
         "overlapping-checkin" => "You have an overlapping checkin: <a href=\":url\">:id</a>",
-        "also-in-train" => ":people is also in this train.|Also in this train are: :people"
+        "also-in-train" => ":people is also in this train.|Also in this train are: :people",
+        "social-post" => "I'm in :LINENAME towards :Destination! ",
     ],
     "user" => [
         "follow-404" => "This follow does not exist.",
