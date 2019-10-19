@@ -2,6 +2,7 @@
  * Here, we include all of our external dependencies
  */
 require("jquery");
+window.bsCustomFileInput = require("mdbootstrap/js/modules/bs-custom-file-input");
 require("./bootstrap");
 require("./appControls");
 require("awesomplete/awesomplete");

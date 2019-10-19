@@ -1,5 +1,6 @@
 .awesomplete {
-    display: block;
+    display: flex;
+    flex-grow: 100;
 
     // Das kann man nochmal ändern, aber vielleicht lassen wir das halt auch einfach auf Default.
     // & > ul > li[aria-selected="true"] {
@@ -8,5 +9,25 @@
 
     mark {
         padding-right: 0px;
+    }
+
+    ul {
+        margin-top: calc(1.5em + 0.75rem + 10px);
+    }
+}
+
+#last-stations {
+    padding: 0 0 1.25rem;
+
+    .list-group-item.list-group-item-action {
+        &:first-child {
+            background: rgba(0, 0, 0, 0.03);
+            color: $black;
+        }
+        &:hover:not(:first-child) {
+            background: $blue;
+            color: $white;
+            transition: all 200ms ease-in;
+        }
     }
 }
