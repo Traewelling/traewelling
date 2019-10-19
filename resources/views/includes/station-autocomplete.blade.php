@@ -3,11 +3,33 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{__('stationboard.where-are-you')}}</div>
-
                 <div class="card-body">
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
-                        <input type="text" id="station-autocomplete" name="station" class="form-control mb-2 mr-sm-2" placeholder="{{ __('stationboard.station-placeholder') }}" @isset(request()->station) value="{{request()->station}}" @endisset>
+                        
+                        <?php
+                        $latest = \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user());
+                        ?>
+                        
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}" @isset(request()->station) value="{{request()->station}}" @endisset>
+                        
+                            @if($latest->count() > 0)
+                            <div class="input-group-append" id="history-button">
+                                <span class="input-group-text" id="basic-addon2">
+                                    <i class="fa fa-history"></i>
+                                </span>
+                            </div>
+                            @endif
+                        </div>
+                        
+                        <div class="list-group d-none" id="last-stations">
+                            <span class="list-group-item list-group-item-action disabled">Letzte Bahnhöfe</span>
+                            @foreach($latest as $station)
+                                <a href="#" data-station="{{ $station->name }}" class="station-name list-group-item list-group-item-action">{{ $station->name }}</a>
+                            @endforeach
+                        </div>
+
                         <input type="hidden" name="when" value="{{@$request->when}}">
                         <button class="btn btn-outline-primary float-right" type="Submit">{{__('stationboard.submit-search')}}</button>
                         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseExample">{{__('stationboard.filter-products')}}</button>
@@ -43,7 +65,7 @@ const popularStations = [
 ];
 
 const input = document.getElementById('station-autocomplete');
-var awesomplete = new Awesomplete(input, {
+window.awesomplete = new Awesomplete(input, {
     minChars: 2,
     autoFirst: true,
     list: popularStations,
@@ -58,7 +80,7 @@ input.addEventListener('keyup', (event) => {
     fetch("{{ url('transport/train/autocomplete') }}/" + encodeURI(input.value))
     .then(res => res.json())
     .then(json => {
-        awesomplete.list = json.map(d => { return {
+        window.awesomplete.list = json.map(d => { return {
             value: d.name,
             label: d.name + " | Deutsche Bahn",
         }; });

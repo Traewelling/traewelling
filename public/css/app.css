@@ -35882,11 +35882,31 @@ p.train-status:before {
 }
 
 .awesomplete {
-  display: block;
+  display: flex;
+  flex-grow: 100;
 }
 
 .awesomplete mark {
   padding-right: 0px;
+}
+
+.awesomplete ul {
+  margin-top: calc(1.5em + 0.75rem + 10px);
+}
+
+#last-stations {
+  padding: 0 0 1.25rem;
+}
+
+#last-stations .list-group-item.list-group-item-action:first-child {
+  background: rgba(0, 0, 0, 0.03);
+  color: #000;
+}
+
+#last-stations .list-group-item.list-group-item-action:hover:not(:first-child) {
+  background: #3490dc;
+  color: #fff;
+  transition: all 200ms ease-in;
 }
 
 .status .map {

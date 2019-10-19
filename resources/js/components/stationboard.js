@@ -1,3 +1,5 @@
+import {longStackSupport} from "q";
+
 let delays = document.getElementsByClassName("traindelay");
 for (let i = 0; i < delays.length; i++) {
     let delay = delays[i].innerText;
@@ -83,4 +85,20 @@ $("#checkinModal").on("show.bs.modal", function(event) {
 $("#checkinButton").click(function(e) {
     e.preventDefault();
     $("#checkinForm").submit();
+});
+
+if (document.getElementById("history-button")) {
+    document.getElementById("history-button").addEventListener("click", () => {
+        ["d-none", "animated", "fadeIn"].forEach(classname =>
+            document.getElementById("last-stations").classList.toggle(classname)
+        );
+    });
+}
+
+Array.from(document.getElementsByClassName("station-name")).forEach(link => {
+    link.addEventListener("click", e => {
+        document.getElementById("station-autocomplete").value =
+            e.target.dataset.station;
+        document.getElementById("autocomplete-form").submit();
+    });
 });
