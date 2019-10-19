@@ -49,7 +49,7 @@
                             </tr>
                         </thead>
                     @foreach($departures as $departure)
-                    
+
                         <tr @if(!isset($departure->cancelled)) class="trainrow" @endif data-tripID="{{ $departure->tripId }}" data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}" data-start="{{ $departure->stop->id }}">
                             <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                     <img class="product-icon" src="{{ asset('img/'.$departure->line->product.'.svg') }}">
