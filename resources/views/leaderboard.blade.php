@@ -23,7 +23,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="top20" role="tabpanel" aria-labelledby="home-tab">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                             <tr>
                                 <td>{{ __('leaderboard.rank') }}</td>
@@ -45,7 +45,7 @@
                         </table>
                     </div>
                     <div class="tab-pane fade" id="top20k" role="tabpanel" aria-labelledby="profile-tab">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                             <tr>
                                 <td>{{ __('leaderboard.rank') }}</td>
@@ -68,7 +68,7 @@
                     </div>
                     @if($friends != null)
                     <div class="tab-pane fade" id="top20f" role="tabpanel" aria-labelledby="contact-tab">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                             <tr>
                                 <td>{{ __('leaderboard.rank') }}</td>
