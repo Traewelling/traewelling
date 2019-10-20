@@ -47,7 +47,16 @@
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right">
-            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">{{ $status->user->username }}</a>{{__('dates.-on-')}}<a href="{{ url('/status/'.$status->id) }}">{{ date('H:i', strtotime($status->created_at)) }}</a>
+            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+                @if(Auth::user() == $status->user)
+                {{__('user.you')}}
+                @else
+                {{ $status->user->username }}
+                @endif
+            </a>{{__('dates.-on-')}}
+            <a href="{{ url('/status/'.$status->id) }}">
+                {{ date('H:i', strtotime($status->created_at)) }}
+            </a>
         </span>
         <ul class="list-inline">
             <li class="list-inline-item d-lg-none">

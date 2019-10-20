@@ -16,5 +16,6 @@ return [
     "register" => "Registrieren",
     "remember-me" => "Angemeldet bleiben",
     "reset-pw-link" => "Wiederherstellungs-Link schicken",
-    "username" => "Nutzername"
+    "username" => "Nutzername",
+    "you" => "Du"
 ];
