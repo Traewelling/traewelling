@@ -35837,6 +35837,46 @@ p.train-status:before {
   z-index: 2000;
 }
 
+/** For iPhone 5 and mobile devices <=320px, we need to drop some details. */
+
+@media screen and (max-width: 350px) {
+  .card {
+    border-radius: 0;
+    padding: 0 !important;
+  }
+
+  .card-body {
+    padding: 1.25rem 0 !important;
+  }
+
+  .col-md-8 {
+    padding: 0;
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  h5.mt-4 {
+    margin-left: 1.25rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 0;
+  }
+}
+
+@media screen and (max-width: 470px) {
+  span.footer-nav-link {
+    display: block;
+  }
+}
+
 #about-page .blockquote,
 #about-page p.lead {
   margin-bottom: 2em;
