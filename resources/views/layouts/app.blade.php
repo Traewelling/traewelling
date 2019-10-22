@@ -118,11 +118,11 @@
 
                 </div>
                 <p class="text-muted mb-0">
-                    <a href="{{ route('about') }}">{{ __('menu.about')}}</a>
-                    / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
-                    / <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
-                    / <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
-                    / <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a>
+                    <span class="footer-nav-link"><a href="{{ route('about') }}">{{ __('menu.about')}}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a></span>
                 </p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
                 <p class="mb-0">&copy; 2019 Tr&auml;welling</p>
