@@ -73,7 +73,11 @@ class StatusController extends Controller
 
         $user->train_distance -= $trainCheckin->distance;
         $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
-        $user->points -= $trainCheckin->points;
+
+
+        if (strtotime($trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
+            $user->points -= $trainCheckin->points;
+        }
 
         $user->update();
         $status->delete();
@@ -193,7 +197,7 @@ class StatusController extends Controller
                 ($private && !$t->status->business))
                 ) {
                 continue;
-            } 
+            }
 
             $hafas = HafasTrip::where('trip_id', $t->trip_id)->first();
             $origin = TrainStations::where('ibnr', $t->origin)->first();
