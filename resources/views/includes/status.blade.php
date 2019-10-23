@@ -1,8 +1,12 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}">
+    
     @if (Route::current()->uri == "status/{id}")
-    <div class="card-img-top">
-        <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-21by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
-    </div>
+        <?php $mapLines = $status->trainCheckin->getMapLines(); ?>
+        @if($mapLines != "[]")
+        <div class="card-img-top">
+            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-21by9" data-polygon="{{ $mapLines }}"></div>
+        </div>
+        @endif
     @endif
 
     <div class="card-body row">
