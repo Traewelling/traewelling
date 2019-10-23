@@ -26,6 +26,12 @@ class TrainCheckin extends Model
 
         $hafas = $this->getHafasTrip()->get()->get(0);
         $polyline = json_decode($hafas->polyline);
+        
+        // Bei manchen Posts ist das Feld leer.
+        if(!isset($polyline->features)) {
+            return json_encode([]);
+        }
+        
         $features = $polyline->features;
         $coords = [];
 
