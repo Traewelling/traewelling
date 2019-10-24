@@ -41,12 +41,14 @@
         </div>
     </div>
     <div class="progress">
-        <?php
-        $departure = strtotime($status->trainCheckin->departure);
-        $arrival = strtotime($status->trainCheckin->arrival);
-        $percentage = 100 * (time() - $departure) / ($arrival - $departure);
-        ?>
-        <div class="progress-bar progress-time" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ time() }}" aria-valuemin="{{ $departure }}" aria-valuemax="{{ $arrival }}"></div>
+        <div
+            class="progress-bar progress-time"
+            role="progressbar"
+            style="width: 0%"
+            aria-valuenow="{{ time() }}"
+            aria-valuemin="{{ strtotime($status->trainCheckin->departure) }}"
+            aria-valuemax="{{ strtotime($status->trainCheckin->arrival) }}"
+            ></div>
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-right">
