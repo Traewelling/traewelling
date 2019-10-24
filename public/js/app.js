@@ -60587,16 +60587,35 @@ if (token) {
 Array.from(document.getElementsByClassName("progress-time")).forEach(function (element) {
   var begin = parseInt(element.attributes.getNamedItem("aria-valuemin").nodeValue);
   var end = parseInt(element.attributes.getNamedItem("aria-valuemax").nodeValue);
-  var interval = setInterval(function () {
+
+  var update = function update() {
     var now = Math.floor(new Date().getTime() / 1000);
     element.attributes["aria-valuenow"] = now;
-    var percentage = Math.round(100 * (now - begin) / (end - begin));
+    var percentage = 0;
+
+    if (begin == end) {
+      // Edge Case for DIV/0
+      if (now < begin) {
+        // status is in the future
+        percentage = 0;
+      } else {
+        // status was in the past
+        // now > end, weil begin==end
+        percentage = 100;
+      }
+    } else {
+      percentage = Math.round(100 * (now - begin) / (end - begin));
+    }
+
     element.style.width = percentage + "%"; // We don't need to revisit all the progress-bars all the time, if the trip already ended.
 
     if (now > end) {
       clearInterval(interval);
     }
-  }, 5 * 1000);
+  };
+
+  var interval = setInterval(update, 5 * 1000);
+  update();
 });
 
 /***/ }),
@@ -60816,8 +60835,8 @@ if (document.getElementById("timepicker-reveal")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
