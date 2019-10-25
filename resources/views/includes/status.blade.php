@@ -60,7 +60,7 @@
         <ul class="list-inline">
             <li class="list-inline-item d-lg-none">
                 <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                    <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image">
+                    <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image" alt="{{__('settings.picture')}}">
                 </a>
             </li>
             @if(Auth::check())
