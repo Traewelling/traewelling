@@ -94,11 +94,3 @@ if (document.getElementById("history-button")) {
         );
     });
 }
-
-Array.from(document.getElementsByClassName("station-name")).forEach(link => {
-    link.addEventListener("click", e => {
-        document.getElementById("station-autocomplete").value =
-            e.target.dataset.station;
-        document.getElementById("autocomplete-form").submit();
-    });
-});
