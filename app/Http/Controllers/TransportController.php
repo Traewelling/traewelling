@@ -12,6 +12,7 @@ use App\TrainStations;
 use App\Status;
 use App\TrainCheckin;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransportController extends Controller
 {
@@ -351,4 +352,23 @@ class TransportController extends Controller
         });
     }
 
+
+    public function setHome(Request $request) {
+        // $ibnrObject = json_decode($this->TrainAutocomplete($request->ibnr)->content());
+
+        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
+        $response = $client->request('GET', "locations?query=$request->ibnr")->getBody()->getContents();
+        
+        Log::info($response);
+
+        $ibnrObject = json_decode($response);
+
+        $station = $this->getTrainStation($ibnrObject[0]->id, $ibnrObject[0]->name, $ibnrObject[0]->location->latitude, $ibnrObject[0]->location->longitude);
+        
+        $user = $request->user();
+        $user->home_id = $station->id;
+        $user->save();
+
+        return redirect()->back()->with(['message' => __('user.home-set', ['station' => $station->name])]);
+    }
 }

@@ -187,6 +187,11 @@ Route::middleware(['auth'])->group(function() {
         'as'    => 'trains.checkin'
     ]);
 
+    Route::get('/trains/setHome/{ibnr}', [
+        'uses'  => 'TransportController@setHome',
+        'as'    => 'user.setHome'
+    ]);
+
     Route::get('/busses/stationboard', [
         'uses'  => 'TransportController@trainStationboard',
         'as'    => 'busses.stationboard'

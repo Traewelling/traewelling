@@ -21,8 +21,20 @@
                                 </span>
                             </div>
                             @endif
+                                
+                            @php($user = Auth::user())
+                            @if($user->home)
+                            <div class="input-group-append" id="history-button">
+                                <span class="input-group-text" id="basic-addon2">
+                                    <i class="fa fa-home"></i>
+                                </span>
+                            </div>
+                            @endif
                         </div>
                         
+                        @php($user = Auth::user())
+                        <pre>{{json_encode($user->home == null) }}</pre>
+
                         <div class="list-group d-none" id="last-stations">
                             <span class="list-group-item list-group-item-action disabled">Letzte Bahnhöfe</span>
                             @foreach($latest as $station)

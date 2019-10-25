@@ -29,7 +29,12 @@
         <div class="col-md-8">
 
             <div class="card">
-                <div class="card-header">{{ $station->name }} <small><i class="far fa-clock fa-sm"></i> {{ date('H:i (Y-m-d)', $request->when) }}</small></div>
+                <div class="card-header">
+                    <div class="float-right">
+                        <a href="{{ route('user.setHome', ['ibnr' => $station->id]) }}"><i class="fa fa-home"></i></a>
+                    </div>
+                    {{ $station->name }} <small><i class="far fa-clock fa-sm"></i> {{ date('H:i (Y-m-d)', $request->when) }}</small>
+                </div>
 
                 <div class="card-body p-0">
                     @if(empty($departures))
