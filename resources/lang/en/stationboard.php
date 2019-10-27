@@ -21,5 +21,6 @@ return [
     "stop-cancelled" => "Stop cancelled",
     "stopover" => "Stop",
     "submit-search" => "Search",
-    "where-are-you" => "Where are you?"
+    "where-are-you" => "Where are you?",
+    "last-stations" => "Last stations",
 ];

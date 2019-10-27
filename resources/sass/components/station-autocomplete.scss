@@ -20,7 +20,11 @@
     padding: 0 0 1.25rem;
 
     .list-group-item.list-group-item-action {
-        &:first-child {
+        &:first-child:not(:last-child) {
+            border-bottom: 0;
+        }
+
+        &.title {
             background: rgba(0, 0, 0, 0.03);
             color: $black;
         }

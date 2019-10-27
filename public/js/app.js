@@ -60721,13 +60721,6 @@ if (document.getElementById("history-button")) {
   });
 }
 
-Array.from(document.getElementsByClassName("station-name")).forEach(function (link) {
-  link.addEventListener("click", function (e) {
-    document.getElementById("station-autocomplete").value = e.target.dataset.station;
-    document.getElementById("autocomplete-form").submit();
-  });
-});
-
 /***/ }),
 
 /***/ "./resources/js/components/statusMap.js":

@@ -17,5 +17,6 @@ return [
     "remember-me" => "Angemeldet bleiben",
     "reset-pw-link" => "Wiederherstellungs-Link schicken",
     "username" => "Nutzername",
-    "you" => "Du"
+    "you" => "Du",
+    "home-set" => "Deine Heimat ist nun :Station."
 ];

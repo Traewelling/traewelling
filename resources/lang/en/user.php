@@ -17,5 +17,6 @@ return [
     "remember-me" => "Remember me",
     "reset-pw-link" => "Send Password Reset Link",
     "username" => "Username",
-    "you" => "You"
+    "you" => "You",
+    "home-set" => "We set your home to :Station."
 ];

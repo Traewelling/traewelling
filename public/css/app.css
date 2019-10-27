@@ -35940,7 +35940,11 @@ p.train-status:before {
   padding: 0 0 1.25rem;
 }
 
-#last-stations .list-group-item.list-group-item-action:first-child {
+#last-stations .list-group-item.list-group-item-action:first-child:not(:last-child) {
+  border-bottom: 0;
+}
+
+#last-stations .list-group-item.list-group-item-action.title {
   background: rgba(0, 0, 0, 0.03);
   color: #000;
 }
