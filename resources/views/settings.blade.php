@@ -15,16 +15,17 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('settings.picture') }}</label>
 
                             <div class="col-md-6">
+                                <img src="/uploads/avatars/{{ $user->avatar }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" />
 
                                 <div class="custom-file">
-                                    <input type="file" name="avatar" class="custom-file-input" id="customFile">
-                                    <label class="custom-file-label" for="customFile">{{ __('settings.choose-file') }}</label>
+                                    <input type="file" name="avatar" class="custom-file-input" id="avatarUpload">
+                                    <label class="custom-file-label" for="avatarUpload" id="avatarUpload-filename">{{ __('settings.choose-file') }}</label>
                                 </div>
 
-                                @error('username')
+                                @error('avatar')
                                 <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
                             </div>
                         </div>

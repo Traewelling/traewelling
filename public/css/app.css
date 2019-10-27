@@ -35871,6 +35871,8 @@ p.train-status:before {
   }
 }
 
+/** This is useful for larger phones, too. */
+
 @media screen and (max-width: 470px) {
   span.footer-nav-link {
     display: block;

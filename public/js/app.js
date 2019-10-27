@@ -60384,6 +60384,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/statusMap */ "./resources/js/components/statusMap.js");
 
   __webpack_require__(/*! ./components/timepicker */ "./resources/js/components/timepicker.js");
+
+  __webpack_require__(/*! ./components/settings */ "./resources/js/components/settings.js");
 });
 
 /***/ }),
@@ -60617,6 +60619,23 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
   var interval = setInterval(update, 5 * 1000);
   update();
 });
+
+/***/ }),
+
+/***/ "./resources/js/components/settings.js":
+/*!*********************************************!*\
+  !*** ./resources/js/components/settings.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var avatarUpload = document.getElementById("avatarUpload");
+
+if (typeof avatarUpload != "undefined") {
+  avatarUpload.addEventListener("change", function () {
+    document.getElementById("avatarUpload-filename").nodeValue = avatarUpload.value;
+  });
+}
 
 /***/ }),
 
