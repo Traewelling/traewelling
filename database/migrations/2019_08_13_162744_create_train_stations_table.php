@@ -17,8 +17,8 @@ class CreateTrainStationsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('ibnr')->unique();
             $table->string('name');
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->decimal('latitude', 8, 6);
+            $table->decimal('longitude', 8, 6);
             $table->timestamps();
         });
     }
