@@ -65,14 +65,21 @@
                             <label for="message-text" class="col-form-label">{{__('stationboard.label-message')}}</label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
-                        <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
-                            <label class="custom-control-label" for="tweet_check">{{__('stationboard.check-tweet')}}</label>
-                        </div>
-                        <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="toot_check" name="toot_check">
-                            <label class="custom-control-label" for="toot_check">{{__('stationboard.check-toot')}}</label>
-                        </div>
+                        @php($user = Auth::user())
+                        @if ($user->socialProfile != null)
+                            @if ($user->socialProfile->twitter_id != null)                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
+                                <label class="custom-control-label" for="tweet_check">{{__('stationboard.check-tweet')}}</label>
+                            </div>
+                            @endif
+                            
+                            @if ($user->socialProfile->mastodon_id != null)
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" class="custom-control-input" id="toot_check" name="toot_check">
+                                <label class="custom-control-label" for="toot_check">{{__('stationboard.check-toot')}}</label>
+                            </div>
+                            @endif
+                        @endif
                         <div class="custom-control custom-checkbox custom-control-inline">
                             <input type="checkbox" class="custom-control-input" id="business_check" name="business_check">
                             <label class="custom-control-label" for="business_check">{{__('stationboard.check-business')}}</label>
