@@ -67,7 +67,8 @@
                         </div>
                         @php($user = Auth::user())
                         @if ($user->socialProfile != null)
-                            @if ($user->socialProfile->twitter_id != null)                            <div class="custom-control custom-checkbox custom-control-inline">
+                            @if ($user->socialProfile->twitter_id != null)                            
+                            <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
                                 <label class="custom-control-label" for="tweet_check">{{__('stationboard.check-tweet')}}</label>
                             </div>
