@@ -41,7 +41,7 @@ $(document).on("click", "#modal-delete", function() {
 $(document).on("click", ".like", function(event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset["statusid"];
+    statusId = event.target.dataset["statusid"];
     console.log(statusId);
     if (event.target.className == "like far fa-heart") {
         $.ajax({

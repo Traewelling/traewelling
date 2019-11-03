@@ -7,6 +7,7 @@ return [
         "deleted" => "Social Login Provider has been deleted"
     ],
     "status" => [
+        "status-not-found" => "Status not found",
         "create-success" => "Status successfully created!",
         "delete-ok" => "Status successfully deleted.",
         "email-not-verified" => "You have not verified your mail yet! <a href=\":url\">Resend link</a>",

@@ -95,17 +95,18 @@ class StatusController extends Controller
             return redirect()->back();
         }
         $status->body = $request['body'];
-        $status->business = $request['business_check'] == 'on'  ? 1 : 0;
+        $status->business = $request['business_check'] == 'on' ? 1 : 0;
         $status->update();
         return response()->json(['new_body' => $status->body], 200);
     }
 
     public function createLike(Request $request) {
         $statusID = $request->statusId;
+
         $status = Status::find($statusID);
 
         if (!$status) {
-            return 'no Status';
+            return response(__('controller.status.status-not-found'), 404);
         }
         $user = Auth::user();
         $like = $user->likes()->where('status_id', $statusID)->first();
