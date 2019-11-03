@@ -7,6 +7,7 @@ return [
         "deleted" => "Die Verbindung wurde aufgehoben."
     ],
     "status" => [
+        "status-not-found" => "Status nicht gefunden",
         "create-success" => "Status erstellt.",
         "delete-ok" => "Status gelöscht.",
         "email-not-verified" => "Du hast Deine Email-Adresse noch nicht verifiziert. Bestätigung <a href=\":url\">erneut senden</a>.",
