@@ -40,8 +40,14 @@ if (document.getElementById("timepicker-reveal")) {
             const changeTime = () => {
                 input.classList.remove("is-invalid");
 
-                let date = new Date(input.value);
-                let unixTimestamp = Math.floor(date.getTime() / 1000);
+                //This is so completely ugly. Mabe we should reconsider this with moment.js?
+                let splitDateTime = input.value.split("T");
+                let splitDate = splitDateTime[0].split('-');
+                let splitTime = splitDateTime[1].split(':');
+
+                let utcDate = Date.UTC(splitDate[0], splitDate[1]-1, splitDate[2], splitTime[0], splitTime[1], 0);
+                let offset = new Date(utcDate).getTimezoneOffset();
+                let unixTimestamp = Math.floor((utcDate/1000)+(offset*60));
 
                 window.location = window.changeTimeLink
                     .replace("&amp;", "&")
