@@ -1,7 +1,7 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}">
 
-    @if (empty($user))
-        <?php $user = Auth::user(); ?>
+    @if (empty($currentUser))
+        <?php $currentUser = Auth::user(); ?>
     @endif
 
     @if (Route::current()->uri == "status/{id}")
@@ -57,10 +57,14 @@
     <div class="card-footer text-muted interaction">
         <span class="float-right">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                @if($user->id == $status->user_id)
-                {{__('user.you')}}
+                @if(Auth::check())
+                    @if($currentUser->id == $status->user_id)
+                        {{__('user.you')}}
+                    @else
+                        {{ $status->user->username }}
+                    @endif
                 @else
-                {{ $status->user->username }}
+                    {{ $status->user->username }}
                 @endif
             </a>{{__('dates.-on-')}}
             <a href="{{ url('/status/'.$status->id) }}">
@@ -74,18 +78,18 @@
                 </a>
             </li>
             @if(Auth::check())
-            <li class="list-inline-item">
-                <a href="#" class="like {{ $status->likes->where('user_id', $user->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}" data-statusid="{{ $status->id }}"></a>
-            </li>
-            @endif
-            @if($user->id == $status->user_id)
-            <li class="list-inline-item">
-                <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
-            </li>
+                <li class="list-inline-item">
+                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}" data-statusid="{{ $status->id }}"></a>
+                </li>
+                @if($currentUser->id == $status->user_id)
+                    <li class="list-inline-item">
+                        <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
+                    </li>
 
-            <li class="list-inline-item">
-                <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
-            </li>
+                    <li class="list-inline-item">
+                        <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
+                    </li>
+                @endif
             @endif
         </ul>
     </div>

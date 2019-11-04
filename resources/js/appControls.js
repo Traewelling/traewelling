@@ -15,7 +15,7 @@ $(document).on("click", "#modal-save", function() {
     $.ajax({
         method: "POST",
         url: urlEdit,
-        data: {body: $("#status-body").val(), statusId: statusId, _token: token}
+        data: {body: $("#status-body").val(), statusId: statusId, businessCheck: $("#business_check:checked").length, _token: token}
     }).done(function(msg) {
         window.location.reload();
     });

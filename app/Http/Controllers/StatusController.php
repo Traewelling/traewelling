@@ -88,14 +88,14 @@ class StatusController extends Controller
     public function EditStatus(Request $request) {
         $this->validate($request, [
             'body' => 'max:280',
-            'business_check' => 'max:2',
+            'businessCheck' => 'max:1',
         ]);
         $status = Status::find($request['statusId']);
         if (Auth::user() != $status->user) {
             return redirect()->back();
         }
         $status->body = $request['body'];
-        $status->business = $request['business_check'] == 'on' ? 1 : 0;
+        $status->business = $request['businessCheck'] >= 1 ? 1 : 0;
         $status->update();
         return response()->json(['new_body' => $status->body], 200);
     }

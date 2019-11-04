@@ -60414,6 +60414,7 @@ $(document).on("click", "#modal-save", function () {
     data: {
       body: $("#status-body").val(),
       statusId: statusId,
+      businessCheck: $("#business_check:checked").length,
       _token: token
     }
   }).done(function (msg) {
@@ -60819,9 +60820,14 @@ if (document.getElementById("timepicker-reveal")) {
     });
 
     var changeTime = function changeTime() {
-      input.classList.remove("is-invalid");
-      var date = new Date(input.value);
-      var unixTimestamp = Math.floor(date.getTime() / 1000);
+      input.classList.remove("is-invalid"); //This is so completely ugly. Mabe we should reconsider this with moment.js?
+
+      var splitDateTime = input.value.split("T");
+      var splitDate = splitDateTime[0].split('-');
+      var splitTime = splitDateTime[1].split(':');
+      var utcDate = Date.UTC(splitDate[0], splitDate[1] - 1, splitDate[2], splitTime[0], splitTime[1], 0);
+      var offset = new Date(utcDate).getTimezoneOffset();
+      var unixTimestamp = Math.floor(utcDate / 1000 + offset * 60);
       window.location = window.changeTimeLink.replace("&amp;", "&").replace("&amp;", "&").replace("&amp;", "&").replace("REPLACEME", unixTimestamp);
     };
   });
