@@ -27,9 +27,9 @@ Route::get('/imprint', function() {
     return view('imprint');
 })->name('imprint');
 
-Route::get('/privacy', function() {
-    return view('privacy');
-})->name('privacy');
+Route::get('/privacy', [
+    'uses' => 'PrivacyAgreementController@intercept'
+])->name('privacy');
 
 Route::get('/about', function() {
     return view('about');
@@ -75,7 +75,7 @@ Route::get('/blog/cat/{cat}', [
 ]);
 
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/destroy/provider', [
         'uses'  => 'SocialController@destroyProvider',
@@ -115,6 +115,16 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/delsession', [
         'uses' => 'UserController@deleteSession',
         'as'   => 'delsession',
+    ]);
+
+    Route::get('/gdpr-intercept', [
+        'uses' => 'PrivacyAgreementController@intercept',
+        'as'   => 'gdpr.intercept'
+    ]);
+
+    Route::post('/gdpr-ack', [
+        'uses' => 'PrivacyAgreementController@ack',
+        'as'   => 'gdpr.ack'
     ]);
 
     Route::post('/createstatus', [

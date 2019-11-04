@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\SocialLoginProfile;
+use App\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use DB;
@@ -32,6 +34,17 @@ class Kernel extends ConsoleKernel
             DB::table('users')->update(array('points' => '0'));
         })->weeklyOn(5, '03:14')
             ->runInBackground();
+
+        //delete new users without GDPR Agreement
+        $schedule->call(function() {
+            $privacyUsers = USER::where('privacy_ack_at', null)->get();
+            foreach($privacyUsers as $user) {
+                if ($user->created_at < date('Y-m-d H:i:s', strtotime('-1 day'))) {
+                    SocialLoginProfile::where('user_id', $user->id)->delete();
+                    $user->delete();
+                }
+            }
+        })->daily()->runInBackground();
     }
 
     /**

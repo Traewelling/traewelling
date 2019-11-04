@@ -41,6 +41,13 @@
                 top: 18px;
             }
 
+            .bottom-center {
+                z-index: 3;
+                position: absolute;
+                bottom: 18px;
+                text-align: center;
+            }
+
             .content {
                 z-index: 3;
                 text-align: center;
@@ -126,6 +133,12 @@
                     <a href="{{ url('/leaderboard') }}">{{__('menu.leaderboard')}}</a>
                     <a href="{{ url('/statuses/active') }}">{{__('menu.active')}}</a>
                 </div>
+            </div>
+
+            <div class="bottom-center links" style="">
+                <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
+
+                <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
             </div>
         </div>
     </body>

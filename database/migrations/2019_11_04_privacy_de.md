@@ -1,4 +1,4 @@
-# Allgemeiner Hinweis und Pflichtinformationen
+# Allgemeiner Hinweis und Pflicht&shy;informationen
 
 ## Benennung der verantwortlichen Stelle
 
@@ -29,19 +29,20 @@ Aufsichtsbehörde bezüglich datenschutzrechtlicher Fragen ist der
 Landesdatenschutzbeauftragte des Bundeslandes Baden-Württemberg.
 
 Kontaktdaten des Landesdatenschutzbeauftragten (Stand 03.11.2019):
+
 > Dr. Stefan Brink<br>
 > Postfach 10 29 32<br>
 > 70025 Stuttgart<br>
->  
+>
 > oder:
->  
+>
 > Königstraße 10a<br>
 > 70173 Stuttgart<br>
->    
+>
 > Telefon: 07 11/61 55 41-0<br>
 > Telefax: 07 11/61 55 41-15<br>
-> 
-><https://www.baden-wuerttemberg.datenschutz.de/kontakt-aufnehmen/>
+>
+> <https://www.baden-wuerttemberg.datenschutz.de/kontakt-aufnehmen/>
 
 ## Recht auf Datenübertragbarkeit
 
@@ -58,9 +59,9 @@ Derzeit besteht die Möglichkeit, die von Ihnen erstellten Status direkt maschin
 Sie haben jederzeit im Rahmen der geltenden gesetzlichen Bestimmungen das Recht
 auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten,
 Herkunft der Daten, deren Empfänger und den Zweck der Datenverarbeitung und ggf.
-ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten. 
+ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten.
 
-Ausdrücklich *nicht* gelöscht werden: Tweets und Toots, die auf externen Plattformen geteilt wurden.
+Ausdrücklich _nicht_ gelöscht werden: Tweets und Toots, die auf externen Plattformen geteilt wurden.
 
 Sofern Sie sich beim Löschen Ihres Accounts entscheiden, die Status nicht zu löschen, bestehen diese anonymisiert fort und sind nicht weiter auf Sie zurückzuführen. Ein Nachträgliches Löschen der Status ist nach Löschen des Accounts nicht mehr möglich.
 
@@ -113,7 +114,7 @@ Datenverarbeitung bleibt vom Widerruf unberührt.
 
 Wir speichern die bei der Registrierung erfassten Daten während des Zeitraums,
 den Sie auf unserer Website registriert sind, maximal aber bis einschließlich
-Ende des Beta-Tests am 18.11.2019. Ihre Daten werden bei Löschen des Benutzerkontos, 
+Ende des Beta-Tests am 18.11.2019. Ihre Daten werden bei Löschen des Benutzerkontos,
 oder spätestens zum Ende des Beta-Tests gelöscht. Gesetzliche Aufbewahrungsfristen bleiben unberührt.
 
 ## Speicherdauer von Beiträgen und Kommentaren
@@ -126,13 +127,14 @@ werden musste.
 Die Speicherung der Beiträge und Kommentare erfolgt auf Grundlage Ihrer
 Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Ein Widerruf Ihrer bereits erteilten
 Einwilligung ist jederzeit möglich. Für den Widerruf genügt eine formlose
-Mitteilung per E-Mail. Ebenfalls stellt die Löschung des Accounts einen Widerruf dar. 
+Mitteilung per E-Mail. Ebenfalls stellt die Löschung des Accounts einen Widerruf dar.
 Die Rechtmäßigkeit bereits erfolgter
 Datenverarbeitungsvorgänge bleibt vom Widerruf unberührt.
 
-Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem 
-Löschungsverlangen kann nicht entsprochen werden, sofern ein Ausnahmetatbestand 
+Ihre Daten werden möglicherweise länger als angegeben verarbeitet bzw. einem
+Löschungsverlangen kann nicht entsprochen werden, sofern ein Ausnahmetatbestand
 der DS-GVO zutrifft, insbesondere einer der in Art. 17 Abs. 3 DS-GVO aufgeführten Gründe.
+
 ## Abonnieren von Beiträgen und Kommentaren
 
 Sie können als Nutzer unserer Website nach erfolgter Anmeldung Beiträge und
@@ -171,14 +173,16 @@ Analyse-Funktionen) erfolgt, werden diese in dieser Datenschutzerklärung separa
 behandelt.
 
 ## Übermittlung von Daten an Dritte
+
 Da es die zentrale Funktion von Träwelling ist, auf Träwelling veröffentlichte Daten auf anderen Sozialen Netzwerken bereitzustellen, werden alle Reisedaten (Checkins) automatisch an den vom Nutzer ausgewählten Dienstleister (Mastodon und/oder Twitter) weitergeleitet und dort veröffentlicht.
 Des weiteren gibt Träwelling personenbezogene Daten an Behörden, andere staatliche Stellen oder Privatpersonen weiter, wenn dazu auf Grund von gesetzlichen Bestimmungen, Gerichtsentscheidungen oder behördlichen Anordnungen eine Verpflichtung besteht.
 Träwelling kann Dritte mit der Erhebung, Speicherung und Nutzung von personenbezogenen Daten beauftragen (Auftragsverarbeitung). In diesem Fall bleibt Träwelling weiterhin verantwortliche Stelle. Diese Dritten unterliegen denselben Datenschutzbestimmungen wie Träwelling.
 
 ## Signle-Sign-On-Anmeldung
+
 Als "Single-Sign-On" bzw. "Signle-Sign-On-Anmeldung"/"-Authentifizierung" werden Vorgänge bezeichnet, die es Nutzern erlauben, sich mit Hilfe eines Kontos bei einem Anbieter bzw. Dienstleister für Single-Sign-On-Verfahren (bspw. ein soziales Netzwerk), auch bei unserem Onlineangebot anzumeld3en. Voraussetzung hierfür it, dass die Nutzer beim jeweiligen Anbieter registriert sind und bei dem Single-Sign-On-Anbieter bereits angemeldet sind und die Single-Sign-On-Anmeldung über eine Schaltfläche bestätigen.
 
-Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter. Im Rahmen einer solchen Authentifikation erhalten wir eine Nutzer-ID mit der Information, dass der Nutzer unter dieser Nutzer-ID beim jeweiligen Anbieter angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle“). Sowie in den Fällen von Mastodon und Twitter Tokens, welche uns ermöglichen, Status im jeweiligen sozialen Netzwerk zu veröffentlichen, lesen, manipulieren und löschen. Ob uns zusätzliche Daten übermittelt werden, hängt  von dem genutzten Single-Sign-On-Verfahren ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben. Es können je nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse und der Benutzername. Das im Rahmen des Single-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder einsehbar, noch wird es von uns gespeichert.
+Die Authentifikation erfolgt direkt beim jeweiligen Single-Sign-On-Anbieter. Im Rahmen einer solchen Authentifikation erhalten wir eine Nutzer-ID mit der Information, dass der Nutzer unter dieser Nutzer-ID beim jeweiligen Anbieter angemeldet ist und eine für uns für andere Zwecke nicht weiter nutzbare ID (sog "User Handle“). Sowie in den Fällen von Mastodon und Twitter Tokens, welche uns ermöglichen, Status im jeweiligen sozialen Netzwerk zu veröffentlichen, lesen, manipulieren und löschen. Ob uns zusätzliche Daten übermittelt werden, hängt von dem genutzten Single-Sign-On-Verfahren ab, von den gewählten Datenfreigaben im Rahmen der Authentifizierung und zudem davon, welche Daten Nutzer in den Privatsphäre- oder sonstigen Einstellungen des Nutzerkontos beim Single-Sign-On-Anbieter freigegeben haben. Es können je nach Single-Sign-On-Anbieter und der Wahl der Nutzer verschiedene Daten sein, in der Regel sind es die E-Mail-Adresse und der Benutzername. Das im Rahmen des Single-Verfahrens eingegebene Kennwort beim Anbieter ist für uns weder einsehbar, noch wird es von uns gespeichert.
 
 Nutzer werden gebeten, zu beachten, dass die bei uns hinterlegten Daten automatisch mit ihrem Nutzerkonto beim Single-Sign-On-Anbieter abgeglichen werden können, dies jedoch nicht immer der Fall ist. Ändern sich z.B. die E-Mail-Adressen der Nutzer, müssen sie diese manuell in ihrem Nutzerkonto bei uns ändern.
 
@@ -186,22 +190,21 @@ Die Single-Sign-On-Anmeldung können wir, sofern mit den Nutzern vereinbart, im 
 
 Sollten sich Nutzer entscheiden, die Verknüpfung beim Single-Sign-On-Anbieter nicht mehr für das Single-Sign-On-Verfahren nutzen zu wollen, müssen sie diese Verbindung innerhalb ihres Nutzerkontos beim Single-Sign-On-Anbieter und in Ihren Einstellungen auf unserer Seite aufheben. Möchten Nutzer deren Daten bei uns löschen, müssen sie ihre Registrierung bei uns kündigen.
 
- * Verarbeitete Datenarten: Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern).
- * Betroffene Personen: Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).
- * Zwecke der Verarbeitung: Vertragliche Leistungen und Service, Anmeldeverfahren.
- * Rechtsgrundlagen: Einwilligung (Art. 6 Abs. 1 S. 1 lit. a DSGVO), Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).
+-   Verarbeitete Datenarten: Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern).
+-   Betroffene Personen: Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).
+-   Zwecke der Verarbeitung: Vertragliche Leistungen und Service, Anmeldeverfahren.
+-   Rechtsgrundlagen: Einwilligung (Art. 6 Abs. 1 S. 1 lit. a DSGVO), Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).
 
 ## Eingesetzte Dienste und Diensteanbieter:
 
- * Twitter Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: Twitter Inc., 1355 Market Street, Suite 900, San Francisco, CA 94103, USA; Website: <https://twitter.com>; Datenschutzerklärung: <https://twitter.com/de/privacy>; Privacy Shield (Gewährleistung Datenschutzniveau bei Verarbeitung von Daten in den USA): <https://www.privacyshield.gov/participant?id=a2zt0000000TORzAAO>; Widerspruchsmöglichkeit (Opt-Out): <https://twitter.com/personalization>.   
- * GitHub Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA; Website: <https://github.com>; Datenschutzerklärung: <https://help.github.com/en/github/site-policy/github-privacy-statement>; Widerspruchsmöglichkeit (Opt-Out): <https://github.com/settings/applications>.
- * Mastodon Signle-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
- 
+-   Twitter Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: Twitter Inc., 1355 Market Street, Suite 900, San Francisco, CA 94103, USA; Website: <https://twitter.com>; Datenschutzerklärung: <https://twitter.com/de/privacy>; Privacy Shield (Gewährleistung Datenschutzniveau bei Verarbeitung von Daten in den USA): <https://www.privacyshield.gov/participant?id=a2zt0000000TORzAAO>; Widerspruchsmöglichkeit (Opt-Out): <https://twitter.com/personalization>.
+-   GitHub Single-Sign-On: Authentifizierungsdienst; Dienstanbieter: GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA; Website: <https://github.com>; Datenschutzerklärung: <https://help.github.com/en/github/site-policy/github-privacy-statement>; Widerspruchsmöglichkeit (Opt-Out): <https://github.com/settings/applications>.
+-   Mastodon Signle-Sign-On: Authentifizierungsdienst; Dienstanbieter: Dieser ist abhängig zur von Ihnen angegebenen Domain. Für weitere Informationen zu Dienstanbieter, Datenschutzerklärung und Widerspruchsmöglichkeit federierter Mastodon-Server, wenden Sie sich bitte an Ihren Mastodon-Anbieter.
+
 ### OpenStreetMap/Carto
+
 Diese Seite nutzt über eine API das Open-Source-Mapping-Werkzeug „OpenStreetMap“ (OSM). Anbieter ist die [OpenStreetMap Foundation](https://wiki.osmfoundation.org/wiki/Main_Page). Zur Nutzung der Funktionen von OpenStreetMap ist es notwendig, Ihre IP Adresse zu speichern. Diese Informationen werden in der Regel an einen Server von OpenStreetMap übertragen und dort gespeichert. Der Anbieter dieser Seite hat keinen Einfluss auf diese Datenübertragung. Die Nutzung von OpenStreetMap erfolgt im Interesse einer ansprechenden Darstellung unserer Online-Angebote und an einer leichten Auffindbarkeit der von uns auf der Website angegebenen Orte. Dies stellt ein berechtigtes Interesse im Sinne von Art. 6 Abs. 1 lit. f DSGVO dar. Mehr Informationen zum Umgang mit Nutzerdaten finden Sie in der [Datenschutzseite von OpenStreetMap](https://wiki.openstreetmap.org/wiki/Privacy_Policy) und hier <http://wiki.openstreetmap.org/wiki/Legal_FAQ>.
 
 Um Karten-Inhalte darzustellen, verwenden wir den Kartendienst [Carto](https://carto.com/). Träwelling teilt mit dem Kartendienst, welche Kartenkacheln geladen werden sollen. Der Kartendienst ist über folgende Adresse erreichbar: CARTO, Attention: Legal, 201 Moore Street, Brooklyn, NY 11206, United States of America, privacyshield@carto.com. Weitere Informationen entnehmen Sie der Datenschutzerklärung des Anbieters: <https://carto.com/privacy/>
 
-
 Quelle: Datenschutz-Konfigurator von mein-datenschutzbeauftragter.de
-
