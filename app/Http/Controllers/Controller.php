@@ -11,7 +11,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    function searchForId($id, $array) {
+    public static function searchForId($id, $array) {
         foreach ($array as $key => $val) {
             if ($val['stop']['id'] === $id) {
                 return $key;
@@ -20,7 +20,7 @@ class Controller extends BaseController
         return null;
     }
 
-    function polyline($idStart, $idStop, $polyline) {
+    public static function polyline($idStart, $idStop, $polyline) {
         $polyline = $polyline['features'];
         $offset = [];
         foreach ($polyline as $key => $val) {
@@ -40,7 +40,7 @@ class Controller extends BaseController
         return $polyline;
     }
 
-    function distanceCalculation($longitude_a, $latitude_a, $longitude_b, $latitude_b, $decimals = 3) {
+    public static function distanceCalculation($longitude_a, $latitude_a, $longitude_b, $latitude_b, $decimals = 3) {
         if ($longitude_a === $longitude_b && $latitude_a === $latitude_b) {
             return 0.0;
         }
@@ -55,5 +55,19 @@ class Controller extends BaseController
         $distance = acos (sin ($latA) * sin ($latB) + cos ($latA) * cos ($latB) * cos ($lonB - $lonA)) * $EQUATORIAL_RADIUS_KM;
 
         return round($distance, $decimals);
+    }
+
+    public function isValidDate($date): Bool {
+        try {
+            $d = new \DateTime($date);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return false;
+        }
+        return $date === $d->format("Y-m-d");
+    }
+
+    public function writeLine($array): String {
+        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
 }

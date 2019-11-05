@@ -14,148 +14,94 @@ use Illuminate\Support\Facades\Response;
 
 class StatusController extends Controller
 {
-    public function getStatus($id) {
-        $status = Status::where('id', $id)->first();
-
-        return view('status', compact('status'));
+    public static function getStatus($id) {
+        return Status::where('id', $id)->first();
     }
 
-    public function getDashboard() {
-        $user = Auth::user();
+    public static function getActiveStatuses() {
+        $statuses = Status::with('trainCheckin')
+            ->whereHas('trainCheckin', function ($query) {
+                $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+            })
+            ->get()
+            ->sortByDesc(function ($status, $key) {
+                return $status->trainCheckin->departure;
+            });
+        $polylines = $statuses->map(function($status) {
+            return $status->trainCheckin->getMapLines();
+        });
+        return ['statuses' => $statuses, 'polylines' => $polylines];
+    }
+
+    public static function getDashboard($user) {
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
         $statuses = Status::whereIn('user_id', $userIds)->latest()->simplePaginate(15);
 
-        if (!$user->hasVerifiedEmail() && $user->email != null) {
-            \Session::flash('message',
-                __('controller.status.email-not-verified',
-                    ['url' => route('verification.resend')]
-                )
-            );
-        }
-
-        if ($statuses->isEmpty()) {
-            return redirect()->route('globaldashboard');
-        }
-
-        return view('dashboard', ['statuses' => $statuses]);
+        return $statuses;
     }
 
-    public function getGlobalDashboard() {
-        $statuses = Status::orderBy('created_at', 'desc')->latest()->simplePaginate(15);
-
-        return view('dashboard', ['statuses' => $statuses]);
+    public static function getGlobalDashboard() {
+        return Status::orderBy('created_at', 'desc')->latest()->simplePaginate(15);
     }
 
-    public function CreateStatus(Request $request) {
-        $this->validate($request, [
-            'body' => 'max:280',
-            'business_check' => 'max:2',
-        ]);
-        $status = new Status();
-        $status->body = $request['body'];
-        $status->business = $request['business_check'] == "on" ? 1 : 0;
-        $message = 'There was an error.';
-        if ($request->user()->statuses()->save($status)) {
-            $message = __('controller.status.create-success');
-        }
-
-        return redirect()->route('dashboard')->with(['message' => $message]);
-    }
-
-    public function DeleteStatus(Request $request) {
-        $status = Status::find($request['statusId']);
+    public static function DeleteStatus($user, $statusId) {
+        $status = Status::find($statusId);
         $trainCheckin = $status->trainCheckin()->first();
-        $user = Auth::user();
         if ($user != $status->user) {
-            return redirect()->back()->with('error', __('controller.status.not-permitted'));
+            return false;
         }
-
         $user->train_distance -= $trainCheckin->distance;
         $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
 
-
+        //Don't subtract points, if status outside of current point calculation
         if (strtotime($trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
             $user->points -= $trainCheckin->points;
         }
-
         $user->update();
         $status->delete();
         $trainCheckin->delete();
-        return response()->json(['message' => __('controller.status.delete-ok')], 200);
+        return true;
     }
 
-    public function EditStatus(Request $request) {
-        $this->validate($request, [
-            'body' => 'max:280',
-            'businessCheck' => 'max:1',
-        ]);
-        $status = Status::find($request['statusId']);
-        if (Auth::user() != $status->user) {
-            return redirect()->back();
+    public static function EditStatus($user, $statusId, $body, $businessCheck) {
+        $status = Status::find($statusId);
+        if ($user != $status->user) {
+            return false;
         }
-        $status->body = $request['body'];
-        $status->business = $request['businessCheck'] >= 1 ? 1 : 0;
+        $status->body = $body;
+        $status->business = $businessCheck >= 1 ? 1 : 0;
         $status->update();
-        return response()->json(['new_body' => $status->body], 200);
+        return $status->body;
     }
 
-    public function createLike(Request $request) {
-        $statusID = $request->statusId;
-
-        $status = Status::find($statusID);
-
+    public static function CreateLike($user, $statusId) {
+        $status = Status::find($statusId);
         if (!$status) {
-            return response(__('controller.status.status-not-found'), 404);
+            return null;
         }
-        $user = Auth::user();
-        $like = $user->likes()->where('status_id', $statusID)->first();
-
+        $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
-            return response(__('controller.status.like-already'), 409);
+            return false;
         }
 
         $like = new Like();
         $like->user_id = $user->id;
         $like->status_id = $status->id;
         $like->save();
-        return response(__('controller.status.like-ok'), 201);
+        return true;
     }
 
-    public function destroyLike(Request $request) {
-        $statusID = $request->statusId;
-        $user = Auth::user();
-        $like = $user->likes()->where('status_id', $statusID)->first();
-
+    public static function DestroyLike($user, $statusId) {
+        $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
             $like->delete();
-            return response(__('controller.status.like-deleted'), 200);
+            return true;
         }
-
-        return response(__('controller.status.like-not-found'), 404);
+        return false;
     }
-
-    public function exportLanding() {
-        return view('export')->with([
-            'begin_of_month' => (new \DateTime("first day of this month"))->format("Y-m-d"),
-            'end_of_month' => (new \DateTime("last day of this month"))->format("Y-m-d")
-        ]);
-    }
-
-    private function isValidDate($date): Bool {
-        try {
-            $d = new \DateTime($date);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            return false;
-        }
-        return $date === $d->format("Y-m-d");
-    }
-
-    private function writeLine($array): String {
-        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
-    }
-
+    //ToDo
+    //this needs to be rewritten. Maybe use a library?
     public function exportCSV(Request $request) {
         $begin = $request->input('begin');
         $end = $request->input('end');
@@ -223,19 +169,5 @@ class StatusController extends Controller
         'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
         'Content-Length' => strlen($return)
         ]);
-    }
-
-    public function getActiveStatuses() {
-        $statuses = Status::with('trainCheckin')->whereHas('trainCheckin', function ($query) {
-            $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
-        })->get()->sortByDesc(function ($status, $key) {
-            return $status->trainCheckin->departure;
-        });
-
-        $polylines = $statuses->map(function($s) {
-            return $s->trainCheckin->getMapLines();
-        });
-
-        return view('activejourneys', ['statuses' => $statuses, 'polylines' => $polylines]);
     }
 }

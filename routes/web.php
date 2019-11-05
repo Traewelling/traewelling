@@ -36,22 +36,17 @@ Route::get('/about', function() {
 })->name('about');
 
 Route::get('/profile/{username}', [
-    'uses' => 'UserController@getProfilePage',
+    'uses' => 'FrontendUserController@getProfilePage',
     'as'   => 'account.show'
 ]);
 
-Route::get('/userimage/{filename}', [
-    'uses' => 'UserController@getUserImage',
-    'as'   => 'account.image'
-]);
-
 Route::get('/leaderboard', [
-    'uses' => 'UserController@getLeaderboard',
+    'uses' => 'FrontendUserController@getLeaderboard',
     'as'   => 'leaderboard',
 ]);
 
 Route::get('/statuses/active', [
-    'uses' => 'StatusController@getActiveStatuses',
+    'uses' => 'FrontendStatusController@getActiveStatuses',
     'as'   => 'statuses.active',
 ]);
 
@@ -59,7 +54,7 @@ Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
-Route::get('/status/{id}', 'StatusController@getStatus');
+Route::get('/status/{id}', 'FrontendStatusController@getStatus');
 
 Route::get('/blog', [
     'uses'  => 'BlogController@all',
@@ -87,34 +82,36 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'password.change',
     ]);
 
-    Route::post('/settings', [
-        'uses' => 'UserController@updateSettings',
-        'as'   => 'settings',
-    ]);
-
-    Route::get('/destroy', [
-        'uses' => 'UserController@destroyUser',
-        'as'   => 'account.destroy',
-    ]);
-
-    Route::get('/dashboard', [
-        'uses' => 'StatusController@getDashboard',
-        'as'   => 'dashboard',
-    ]);
-
-    Route::get('/dashboard/global', [
-        'uses' => 'StatusController@getGlobalDashboard',
-        'as'   => 'globaldashboard',
-    ]);
-
+    //this has too much dumb logic, that it'll remain inside of the UserController...
+    //will leave settings inside of UserController...
     Route::get('/settings', [
         'uses' => 'UserController@getAccount',
         'as'   => 'settings',
     ]);
 
-    Route::get('/delsession', [
+    Route::post('/settings', [
+        'uses' => 'UserController@updateSettings',
+        'as'   => 'settings',
+    ]);
+
+    Route::get('/settings/destroy', [
+        'uses' => 'UserController@destroyUser',
+        'as'   => 'account.destroy',
+    ]);
+
+    Route::get('/settings/delsession', [
         'uses' => 'UserController@deleteSession',
         'as'   => 'delsession',
+    ]);
+
+    Route::get('/dashboard', [
+        'uses' => 'FrontendStatusController@getDashboard',
+        'as'   => 'dashboard',
+    ]);
+
+    Route::get('/dashboard/global', [
+        'uses' => 'FrontendStatusController@getGlobalDashboard',
+        'as'   => 'globaldashboard',
     ]);
 
     Route::get('/gdpr-intercept', [
@@ -127,33 +124,28 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'gdpr.ack'
     ]);
 
-    Route::post('/createstatus', [
-        'uses' => 'StatusController@CreateStatus',
-        'as'   => 'status.create',
-    ]);
-
     Route::delete('/destroystatus', [
-        'uses' => 'StatusController@DeleteStatus',
+        'uses' => 'FrontendStatusController@DeleteStatus',
         'as'   => 'status.delete',
     ]);
 
     Route::post('/edit', [
-        'uses' => 'StatusController@EditStatus',
+        'uses' => 'FrontendStatusController@EditStatus',
         'as' => 'edit',
     ]);
 
     Route::post('/createlike', [
-        'uses' => 'StatusController@createLike',
+        'uses' => 'FrontendStatusController@CreateLike',
         'as'   => 'like.create',
     ]);
 
     Route::post('/destroylike', [
-        'uses' => 'StatusController@destroyLike',
+        'uses' => 'FrontendStatusController@DestroyLike',
         'as'   => 'like.destroy',
     ]);
 
     Route::get('/export', [
-        'uses' => 'StatusController@exportLanding',
+        'uses' => 'FrontendStatusController@exportLanding',
         'as'   => 'export.landing',
     ]);
     Route::get('/exportCSV', [
@@ -162,48 +154,48 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     ]);
 
     Route::post('/createfollow', [
-        'uses' => 'UserController@CreateFollow',
+        'uses' => 'FrontendUserController@CreateFollow',
         'as'   => 'follow.create',
     ]);
 
     Route::post('/destroyfollow', [
-        'uses' => 'UserController@DestroyFollow',
+        'uses' => 'FrontendUserController@DestroyFollow',
         'as'   => 'follow.destroy',
     ]);
 
 
     Route::get('/transport/train/autocomplete/{station}', [
-        'uses'  => 'TransportController@TrainAutocomplete',
+        'uses'  => 'FrontendTransportController@TrainAutocomplete',
         'as'    => 'transport.train.autocomplete',
     ]);
 
     Route::get('/transport/bus/autocomplete/{station}', [
-        'uses'  => 'TransportController@BusAutocomplete',
+        'uses'  => 'FrontendTransportController@BusAutocomplete',
         'as'    => 'transport.bus.autocomplete',
     ]);
 
     Route::get('/trains/stationboard', [
-        'uses'  => 'TransportController@trainStationboard',
+        'uses'  => 'FrontendTransportController@TrainStationboard',
         'as'    => 'trains.stationboard',
     ]);
 
     Route::get('/trains/trip', [
-        'uses'  => 'TransportController@trainTrip',
+        'uses'  => 'FrontendTransportController@TrainTrip',
         'as'    => 'trains.trip'
     ]);
 
     Route::post('/trains/checkin', [
-        'uses'  => 'TransportController@trainCheckin',
+        'uses'  => 'FrontendTransportController@TrainCheckin',
         'as'    => 'trains.checkin'
     ]);
 
     Route::get('/trains/setHome/{ibnr}', [
-        'uses'  => 'TransportController@setHome',
+        'uses'  => 'FrontendTransportController@setHome',
         'as'    => 'user.setHome'
     ]);
 
     Route::get('/busses/stationboard', [
-        'uses'  => 'TransportController@trainStationboard',
+        'uses'  => 'FrontendTransportController@trainStationboard',
         'as'    => 'busses.stationboard'
     ]);
 

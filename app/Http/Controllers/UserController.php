@@ -104,7 +104,7 @@ class UserController extends Controller
 
     public function destroyUser(Request $request) {
         $user = Auth::user();
-        
+
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
         }
@@ -140,47 +140,39 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public function getUserImage($filename){
-        $file = Storage::disk('local')->get($filename);
-        return new Response($file, 200);
-    }
-
-    public function getProfilePage($username) {
+    public static function getProfilePage($username) {
         $user = User::where('username', $username)->first();
+        if ($user === null) {
+            return null;
+        }
         $statuses = $user->statuses()->orderBy('created_at', 'DESC')->paginate(15);
-        return view('profile', ['username' => $username, 'statuses' => $statuses, 'user' => $user]);
+
+        return ['username' => $username, 'statuses' => $statuses, 'user' => $user];
+
     }
 
-    public function CreateFollow(Request $request) {
-        $follow_id = $request['follow_id'];
-        $user = Auth::user();
+    public static function CreateFollow($user, $follow_id) {
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
-            return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
-        } else {
-            $follow = new Follow();
+            return false;
         }
+        $follow = new Follow();
+
         $follow->user_id = $user->id;
         $follow->follow_id = $follow_id;
         $follow->save();
-        return response()->json(['message' => __('controller.user.follow-ok')], 201);
+        return true;
     }
 
-    public function DestroyFollow(Request $request) {
-        $follow_id = $request['follow_id'];
-        $user = Auth::user();
-        $follow = $user->follows()->where('follow_id', $follow_id)->first();
+    public static function DestroyFollow($user, $follow_id) {
+        $follow = $user->follows()->where('follow_id', $follow_id)->where('user_id', $user->id)->first();
         if ($follow) {
-            if (Auth::user() != $follow->user) {
-                return response()->json(['message' => __('controller.user.follow-delete-not-permitted')], 403);
-            }
             $follow->delete();
-            return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
+            return true;
         }
-        return response()->json(['message' => __('controller.user.follow-404')], 409);
     }
 
-    public function getLeaderboard(Request $request) {
+    public static function getLeaderboard() {
         $user = Auth::user();
         $friends = null;
 
@@ -193,8 +185,7 @@ class UserController extends Controller
         $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->orderby('train_distance', 'desc')->limit(20)->get();
 
 
-
-        return view('leaderboard', compact('users', 'friends', 'kilometers'));
+        return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
 }
