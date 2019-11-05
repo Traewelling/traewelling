@@ -25,7 +25,7 @@ class CreateTrainCheckinsTable extends Migration
                 ->references('ibnr')->on('train_stations');
             $table->integer('distance');
             $table->timestampTz('departure');
-            $table->timestampTz('arrival');
+            $table->timestampTz('arrival')->nullable();
             $table->integer('points')->nullable();
             $table->integer('delay')->nullable();
             $table->timestamps();
