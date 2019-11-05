@@ -150,23 +150,33 @@ class TransportController extends Controller
         ];
     }
 
-    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check) {
-        $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
+    private static function CalculateTrainPoints($distance, $category, $departure, $delay) {
         $factor = DB::table('pointscalculation')
             ->where([
-                ['type', 'train'],
-                ['transport_type', $hafas['category']
-            ]])
+                        ['type', 'train'],
+                        ['transport_type', $category
+                        ]])
             ->first();
-            $factor = $factor->value;
-        if ($factor === null) {
-            $factor = 1;
+        $factor = $factor->value;
+        if ($factor === null) { $factor = 1; }
+        $time = strtotime($departure);
+        $points = $factor + ceil($distance / 10);
+        if ($time < strtotime('+20 minutes') && $time > strtotime('-20 minutes')) {
+            return $points;
         }
+
+        if ($time < strtotime('+1 hour') && $time > strtotime('-1 hour')) {
+            return ceil($points * 0.25);
+        }
+        return 1;
+    }
+
+    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check) {
+        $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
         $stopovers = json_decode($hafas['stopovers'], true);
         $offset1 = self::searchForId($start, $stopovers);
         $offset2 = self::searchForId($destination, $stopovers);
         $polyline = self::polyline($start, $destination, json_decode($hafas['polyline'], true));
-
         $distance = 0.0;
         foreach ($polyline as $key=>$point) {
             if ($key === 0) { continue; }
@@ -192,6 +202,12 @@ class TransportController extends Controller
             $destinationAttributes['stop']['location']['latitude'],
             $destinationAttributes['stop']['location']['longitude']
         );
+        $points = self::CalculateTrainPoints(
+            $distance,
+            $hafas['category'],
+            $stopovers[$offset1]['departure'],
+            $hafas['delay']
+        );
 
         $status = new Status();
         $status->body = $body;
@@ -205,7 +221,7 @@ class TransportController extends Controller
         $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
         $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
         $trainCheckin->delay = $hafas['delay'];
-        $trainCheckin->points = $factor + ceil($distance / 10);
+        $trainCheckin->points = $points;
 
         //check if there are colliding checkins
         $overlap = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
