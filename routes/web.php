@@ -69,7 +69,30 @@ Route::get('/blog/cat/{cat}', [
     'as'    => 'blog.category'
 ]);
 
+/** 
+ * These routes can be used by logged in users although they have not signed the privacy policy yet.
+ */
+Route::middleware(['auth'])->group(function() {
+    Route::get('/gdpr-intercept', [
+        'uses' => 'PrivacyAgreementController@intercept',
+        'as'   => 'gdpr.intercept'
+    ]);
 
+    Route::post('/gdpr-ack', [
+        'uses' => 'PrivacyAgreementController@ack',
+        'as'   => 'gdpr.ack'
+    ]);
+
+    Route::get('/settings/destroy', [
+        'uses' => 'UserController@destroyUser',
+        'as'   => 'account.destroy',
+    ]);
+
+});
+
+/**
+ * All of these routes can only be used by fully registered users.
+ */
 Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/destroy/provider', [
@@ -94,11 +117,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'settings',
     ]);
 
-    Route::get('/settings/destroy', [
-        'uses' => 'UserController@destroyUser',
-        'as'   => 'account.destroy',
-    ]);
-
     Route::get('/settings/delsession', [
         'uses' => 'UserController@deleteSession',
         'as'   => 'delsession',
@@ -112,16 +130,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/dashboard/global', [
         'uses' => 'FrontendStatusController@getGlobalDashboard',
         'as'   => 'globaldashboard',
-    ]);
-
-    Route::get('/gdpr-intercept', [
-        'uses' => 'PrivacyAgreementController@intercept',
-        'as'   => 'gdpr.intercept'
-    ]);
-
-    Route::post('/gdpr-ack', [
-        'uses' => 'PrivacyAgreementController@ack',
-        'as'   => 'gdpr.ack'
     ]);
 
     Route::delete('/destroystatus', [
