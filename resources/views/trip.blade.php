@@ -14,8 +14,8 @@
                     {{ $train['linename'] }} <i class="fas fa-arrow-alt-circle-right"></i> {{$destination}}
                 </div>
 
-                <div class="card-body p-0">
-                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive m-0" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
+                <div class="card-body p-0 table-responsive">
+                    <table id="my-table-id" class="table table-dark table-borderless table-hover m-0" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
                         <thead>
                             <tr>
                                 <th>{{__('stationboard.stopover')}}</th>
@@ -67,13 +67,13 @@
                         </div>
                         @php($user = Auth::user())
                         @if ($user->socialProfile != null)
-                            @if ($user->socialProfile->twitter_id != null)                            
+                            @if ($user->socialProfile->twitter_id != null)
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
                                 <label class="custom-control-label" for="tweet_check">{{__('stationboard.check-tweet')}}</label>
                             </div>
                             @endif
-                            
+
                             @if ($user->socialProfile->mastodon_id != null)
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="toot_check" name="toot_check">
