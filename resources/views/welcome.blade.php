@@ -4,10 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ env('APP_NAME') }}</title>
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
         <style>
@@ -121,7 +121,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    {{ env('APP_NAME') }}
+                    {{ config('app.name', 'Laravel') }}
                 </div>
 
                 <div class="links">
