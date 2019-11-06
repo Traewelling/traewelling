@@ -37,13 +37,13 @@
 
                 <div class="card-body p-0">
                     @if(empty($departures))
-                        <table class="table table-dark table-borderless table-responsive-lg m-0">
+                        <table class="table table-dark table-borderless table-responsive m-0">
                             <tr>
                                 <td>{{ __('stationboard.no-departures') }}</td>
                             </tr>
                         </table>
                     @else
-                    <table class="table table-dark table-borderless table-hover table-responsive-lg m-0">
+                    <table class="table table-dark table-borderless table-hover table-responsive m-0">
                         <thead>
                             <tr>
                                 <th></th>

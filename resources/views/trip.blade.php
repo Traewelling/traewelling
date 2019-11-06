@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive-lg m-0" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
+                    <table id="my-table-id" class="table table-dark table-borderless table-hover table-responsive m-0" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
                         <thead>
                             <tr>
                                 <th>{{__('stationboard.stopover')}}</th>

@@ -72,3 +72,6 @@ p.train-status:before {
 .dropdown-menu {
     z-index: 2000;
 }
+.nav-tabs {
+    border-bottom: 0; // Fix double line in Leaderboards.
+}
