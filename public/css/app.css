@@ -35837,6 +35837,10 @@ p.train-status:before {
   z-index: 2000;
 }
 
+.nav-tabs {
+  border-bottom: 0;
+}
+
 /** For iPhone 5 and mobile devices <=320px, we need to drop some details. */
 
 @media screen and (max-width: 350px) {
