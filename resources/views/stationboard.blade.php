@@ -35,15 +35,15 @@
                     {{ $station['name'] }} <small><i class="far fa-clock fa-sm"></i>{{ date('H:i (Y-m-d)', $when) }}</small>
                 </div>
 
-                <div class="card-body p-0">
+                <div class="card-body p-0 table-responsive">
                     @if(empty($departures))
-                        <table class="table table-dark table-borderless table-responsive m-0">
+                        <table class="table table-dark table-borderless m-0">
                             <tr>
                                 <td>{{ __('stationboard.no-departures') }}</td>
                             </tr>
                         </table>
                     @else
-                    <table class="table table-dark table-borderless table-hover table-responsive m-0">
+                    <table class="table table-dark table-borderless table-hover m-0">
                         <thead>
                             <tr>
                                 <th></th>
