@@ -13,6 +13,23 @@ Die verantwortliche Stelle entscheidet allein oder gemeinsam mit anderen über
 die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z.B. Namen,
 Kontaktdaten o. Ä.).
 
+## Welche Daten werden erhoben?
+* Email Adresse
+* Nutzername (Pseudonym)
+* Anzeigename
+* Profilbild
+* Social Media Handle von SSO-Providern
+* User-ID von SSO-Providern
+* Authentifizierungs-Tokens von SSO-Providern
+* IP-Adresse
+* User-Agent (Informationen über das genutzte Client-Programm)
+* Standortdaten (Zur Bestimmung der nächsten Haltestelle)
+* Reisedaten
+  * Start-/Zielort
+  * Strecke
+  * Abfahrts-/Ankunftszeit
+  * Verkehrsmittel
+
 ## Widerruf Ihrer Einwilligung zur Datenverarbeitung
 
 Nur mit Ihrer ausdrücklichen Einwilligung sind einige Vorgänge der
