@@ -206,12 +206,26 @@
                         <tr>
                             <td>Twitter</td>
                             <td>{{ __('settings.notconnected') }}</td>
-                            <td><a href="{{ url('/auth/redirect/twitter') }}">{{ __('settings.connect') }}</a></td>
+                            <td><a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
                         </tr>
                         <tr>
                             <td>Mastodon</td>
                             <td>{{ __('settings.notconnected') }}</td>
-                            <td><a href="">{{ __('settings.connect') }}</a></td>
+                            <td>
+                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
+                                <div class="input-group">
+                                    <input type="text" name="domain" placeholder="{{ __('user.mastodon-instance-url') }}" aria-describedby="button-addon4" class="form-control">
+                                    <div id="button-addon4" class="input-group-append">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fab fa-mastodon"></i> {{ __('settings.connect') }}</button>
+                                    </div>
+                                </div>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Github</td>
+                            <td>{{ __('settings.notconnected') }}</td>
+                            <td><a href="{{ url('/auth/redirect/github') }}" class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
                         </tr>
                     @endif
                     </table>
