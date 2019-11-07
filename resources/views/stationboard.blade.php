@@ -60,7 +60,10 @@
                                 @else
                                     <i class="fa fa-train"></i>
                                 @endif</td>
-                            <td>{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}</td>
+                            <td>
+                                @php($lineNr = $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr)
+                                {!! str_replace(" ", "&nbsp;", $lineNr) !!}
+                            </td>
                             <td>{{ $departure->direction }}</td>
                             <td>
                                 @if(isset($departure->cancelled))
