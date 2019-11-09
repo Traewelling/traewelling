@@ -6,14 +6,14 @@
                 <div class="card-body">
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
-                        
+
                         @php($latest = \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user()))
                         @php($user = Auth::user())
-                        
+
                         <div class="input-group mb-2 mr-sm-2">
                             @php($user = Auth::user())
                             <input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}" @isset(request()->station) value="{{request()->station}}" @endisset>
-                        
+
                             @if($latest->count() > 0 || $user->home)
                             <div class="input-group-append" id="history-button" title="{{__('stationboard.last-stations')}}">
                                 <span class="input-group-text" id="basic-addon2">
@@ -31,7 +31,7 @@
                                     <i class="fa fa-home mr-2"></i> {{ $station->name }}
                                 </a>
                             @endif
-                            
+
                             @if($latest->count())
                             <span class="list-group-item title list-group-item-action disabled">{{__('stationboard.last-stations')}}</span>
                             @endif
@@ -95,7 +95,7 @@ input.addEventListener('keyup', (event) => {
     .then(json => {
         window.awesomplete.list = json.map(d => { return {
             value: d.name,
-            label: d.name + " | Deutsche Bahn",
+            label: d.name + "",
         }; });
     })
     .catch(error => console.error(error));
