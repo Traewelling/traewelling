@@ -128,15 +128,15 @@
                 <div class="text-muted mb-0 float-right">
                     |
                     @foreach(config('app.locales') as $key=>$lang)
-                        <a href="{{ route('lang', ['lang' => $key]) }}">{{ $lang }}</a> |
+                        <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |
                     @endforeach
 
                 </div>
                 <p class="text-muted mb-0">
-                    <span class="footer-nav-link"><a href="{{ route('about') }}">{{ __('menu.about')}}</a></span>
+                    <span class="footer-nav-link"><a href="{{ route('static.about') }}">{{ __('menu.about')}}</a></span>
                     <span class="footer-nav-link">/ <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a></span>
-                    <span class="footer-nav-link">/ <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a></span>
-                    <span class="footer-nav-link">/ <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a></span>
+                    <span class="footer-nav-link">/ <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a></span>
                     <span class="footer-nav-link">/ <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a></span>
                 </p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
@@ -147,7 +147,7 @@
     </div>
 
     <div class="alert text-center cookiealert" role="alert">
-        <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }} <a href="{{route('privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
+        <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }} <a href="{{route('static.privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
 
         <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
             {{ __('messages.cookie-notice-button') }}
