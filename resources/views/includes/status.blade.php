@@ -27,7 +27,14 @@
                     <span class="text-trwl">{{ $status->trainCheckin->getOrigin->name }} </span>
 
                     <p class="train-status">
-                        <i class="fas fa-subway"></i> {{ $status->trainCheckin->getHafasTrip->linename }}
+                        @php($hafas = $status->trainCheckin->getHafasTrip)
+                        
+                        @if (file_exists(public_path('img/'.$hafas->category.'.svg')))
+                            <img class="product-icon" src="{{ asset('img/'.$hafas->category.'.svg') }}">
+                        @else
+                            <i class="fa fa-train"></i>
+                        @endif
+                        {{ $hafas->linename }}
                         @if($status->business)
                             <i class="pl-2 fas fa-briefcase"></i>
                         @endif
