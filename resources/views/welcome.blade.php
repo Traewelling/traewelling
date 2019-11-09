@@ -136,9 +136,9 @@
             </div>
 
             <div class="bottom-center links" style="">
-                <a href="{{ route('privacy') }}">{{ __('menu.privacy') }}</a>
+                <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
 
-                <a href="{{ route('imprint') }}">{{ __('menu.imprint') }}</a>
+                <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a>
             </div>
         </div>
     </body>

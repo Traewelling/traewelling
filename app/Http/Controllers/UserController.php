@@ -99,7 +99,7 @@ class UserController extends Controller
         foreach ($user->sessions as $session) {
             $session->delete();
         }
-        return redirect()->route('welcome');
+        return redirect()->route('static.welcome');
     }
 
     public function destroyUser(Request $request) {
@@ -119,7 +119,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('welcome');
+        return redirect()->route('static.welcome');
     }
 
     //Save Changes on Settings-Page

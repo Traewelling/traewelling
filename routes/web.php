@@ -13,27 +13,31 @@
 
 
 
-Route::get('/lang/{lang?}', function($lang=NULL){
-    Session::put('language', $lang);
-    return Redirect::back();
-})->name('lang');
+Route::get('/lang/{lang?}', [
+    'uses' => 'FrontendStaticController@changeLanguage',
+    'as' => 'static.lang'
+]);
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('guest')->name('welcome');
+Route::get('/', [
+    'uses' => 'FrontendStaticController@showFrontpage',
+    'as' => 'static.welcome',
+    'middleware' =>'guest'
+]);
 
-
-Route::get('/imprint', function() {
-    return view('imprint');
-})->name('imprint');
+Route::get('/imprint', [
+    'uses' => 'FrontendStaticController@showImprint',
+    'as' => 'static.imprint'
+]);
 
 Route::get('/privacy', [
-    'uses' => 'PrivacyAgreementController@intercept'
-])->name('privacy');
+    'uses' => 'PrivacyAgreementController@intercept',
+    'as' => 'static.privacy'
+]);
 
-Route::get('/about', function() {
-    return view('about');
-})->name('about');
+Route::get('/about', [
+    'uses' => 'FrontendStaticController@showAbout',
+    'as' => 'static.about'
+]);
 
 Route::get('/profile/{username}', [
     'uses' => 'FrontendUserController@getProfilePage',
@@ -69,7 +73,7 @@ Route::get('/blog/cat/{cat}', [
     'as'    => 'blog.category'
 ]);
 
-/** 
+/**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
 Route::middleware(['auth'])->group(function() {
