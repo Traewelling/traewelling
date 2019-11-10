@@ -4,7 +4,7 @@ return [
     "duration" => "Reisedauer",
     "friends" => "Freunde",
     "points" => "Punkte",
-    "rank" => "Platzierung",
+    "rank" => "Rang",
     "top20" => "Top 20",
     "user" => "Name"
 ];
