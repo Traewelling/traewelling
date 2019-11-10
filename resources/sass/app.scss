@@ -1,5 +1,4 @@
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Nunito");
 @import "~@fortawesome/fontawesome-free/scss/brands";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
@@ -14,6 +13,10 @@
 @import "~mdbootstrap/css/mdb.css";
 @import "~mdbootstrap/css/bootstrap.css";
 @import "~mdbootstrap/scss/mdb";
+body {
+    font-family: "Nunito", sans-serif;
+    font-weight: 300;
+}
 
 // Overall site layout
 @import "site";
@@ -34,3 +37,4 @@
 @import "./components/status";
 @import "./components/activeJourneys";
 @import "~bootstrap-cookie-alert/cookiealert.css";
+@import "./components/image-box";

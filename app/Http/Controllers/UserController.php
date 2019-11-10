@@ -16,10 +16,37 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Jenssegers\Agent\Agent;
-use Image;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UserController extends Controller
 {
+    public static function getProfilePicture($username) {
+        $user = User::where('username', $username)->first();
+        if (empty($user)) {
+            return null;
+        }
+        try {
+            $ext = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
+            $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
+        } catch(\Exception $e) {
+            $user->avatar = 'user.jpg';
+        }
+
+        if ($user->avatar === 'user.jpg') {
+            $hash = 0;
+            for ($i = 0; $i < strlen($username); $i++) {
+                $hash = ord(substr($username, $i, 1)) + (($hash << 5) -$hash);
+            }
+
+            $hex = dechex($hash & 0x00FFFFFF);
+
+            $picture = Image::canvas(512, 512, $hex)->insert(public_path('/uploads/avatars/user.png'))->encode('png')->getEncoded();
+            $ext = 'png';
+        }
+
+        return ['picture' => $picture, 'extension' => $ext];
+    }
+
     public function updateSettings(Request $request) {
         $user = Auth::user();
         $this->validate($request, [

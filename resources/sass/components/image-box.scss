@@ -1,0 +1,10 @@
+.image-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        max-width: 100%;
+        border-radius: 50%;
+    }
+}

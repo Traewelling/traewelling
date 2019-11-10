@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
 use Illuminate\Http\Response;
@@ -22,6 +23,18 @@ class FrontendUserController extends Controller
             'username' => $profilePage['username'],
             'statuses' => $profilePage['statuses'],
             'user' => $profilePage['user']]);
+    }
+
+    public function getProfilePicture($username) {
+        $profilePicture = UserBackend::getProfilePicture($username);
+
+        if($profilePicture === null) {
+            abort(404);
+        }
+
+        return response($profilePicture['picture'])
+            ->header('Content-Type', 'image/'. $profilePicture['extension'])
+            ->header('Cache-Control', 'public, no-transform, max-age:900');
     }
 
     public function getLeaderboard() {

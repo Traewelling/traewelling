@@ -44,6 +44,11 @@ Route::get('/profile/{username}', [
     'as'   => 'account.show'
 ]);
 
+Route::get('/profile/{username}/profilepicture', [
+    'uses' => 'FrontendUserController@getProfilePicture',
+    'as'   => 'account.showProfilePicture'
+]);
+
 Route::get('/leaderboard', [
     'uses' => 'FrontendUserController@getLeaderboard',
     'as'   => 'leaderboard',
