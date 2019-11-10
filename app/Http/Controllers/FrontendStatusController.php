@@ -22,10 +22,9 @@ class FrontendStatusController extends Controller
             );
         }
         if ($statuses->isEmpty() || $follows->isEmpty()) {
-            if (Session::has('message') && Session::has('success')) {
+            if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
-                    ->with('message', Session::get('message'))
-                    ->with('success', Session::get('success'));
+                    ->with('checkin-success', Session::get('checkin-success'));
             }
             return redirect()->route('globaldashboard');
         }

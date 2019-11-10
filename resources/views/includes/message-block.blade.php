@@ -63,16 +63,16 @@
             </button>
             <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
             <p>{{ __('controller.transport.checkin-ok', ['lineName' => $message['lineName']]) }}</p>
-            @if($message['alsoOnThisConnection'] != [])
+            @if($message['alsoOnThisConnection']->count() >= 1)
                 <p>{{ __('controller.transport.also-in-connection') }}</p>
                 <ul>
                 @foreach($message['alsoOnThisConnection'] as $person)
-                        <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">@ {{ $person->status->user->username }}</a></li>
+                        <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">{{ '@' . $person->status->user->username }}</a></li>
                 @endforeach
                 </ul>
             @endif
             <hr>
-            <p class="mb-0">Dauer: <b>{{ gmdate('H:i', $message['duration']) }}</b>h — Distanz: <b>{{ $message['distance'] }}</b>km — Punkte: <b>{{ $message['points'] }}</b></p>
+            <p class="mb-0">Dauer: <b>{{ gmdate('H:i', $message['duration']) }}</b> h — Distanz: <b>{{ $message['distance'] }}</b> km — Punkte: <b>{{ $message['points'] }}</b></p>
         </div>
     @endif
     <div id="alert_placeholder"></div>
