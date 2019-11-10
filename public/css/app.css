@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
+@charset "UTF-8";
 /*!
  * Material Design for Bootstrap 4
  * Version: MDB FREE 4.8.9
@@ -35759,6 +35759,11 @@ ul.stepper li.completed a .label {
 }
 
 body {
+  font-family: "Nunito", sans-serif;
+  font-weight: 300;
+}
+
+body {
   background: #f8fafc;
 }
 
@@ -35978,17 +35983,6 @@ p.train-status:before {
   background: #c0392b;
 }
 
-.status .image-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status .image-box img {
-  max-width: 100%;
-  border-radius: 50%;
-}
-
 .status .profile-image {
   height: 2em;
   border-radius: 50%;
@@ -36018,5 +36012,16 @@ p.train-status:before {
 
 #activeJourneys .statusMap {
   display: none;
+}
+
+.image-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-box img {
+  max-width: 100%;
+  border-radius: 50%;
 }
 

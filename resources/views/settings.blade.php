@@ -15,8 +15,9 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('settings.picture') }}</label>
 
                             <div class="col-md-6">
-                                <img src="/uploads/avatars/{{ $user->avatar }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" />
-
+                                <div class="image-box">
+                                    <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" />
+                                </div>
                                 <div class="custom-file">
                                     <input type="file" name="avatar" class="custom-file-input" id="avatarUpload">
                                     <label class="custom-file-label" for="avatarUpload" id="avatarUpload-filename">{{ __('settings.choose-file') }}</label>

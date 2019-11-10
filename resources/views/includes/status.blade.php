@@ -16,7 +16,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pr-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                <img src="/uploads/avatars/{{ $status->user->avatar }}">
+                <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}">
             </a>
         </div>
 
@@ -28,7 +28,7 @@
 
                     <p class="train-status">
                         @php($hafas = $status->trainCheckin->getHafasTrip)
-                        
+
                         @if (file_exists(public_path('img/'.$hafas->category.'.svg')))
                             <img class="product-icon" src="{{ asset('img/'.$hafas->category.'.svg') }}">
                         @else
@@ -81,7 +81,7 @@
         <ul class="list-inline">
             <li class="list-inline-item d-lg-none">
                 <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                    <img src="/uploads/avatars/{{ $status->user->avatar }}" class="profile-image" alt="{{__('settings.picture')}}">
+                    <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}" class="profile-image" alt="{{__('settings.picture')}}">
                 </a>
             </li>
             @if(Auth::check())

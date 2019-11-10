@@ -56069,7 +56069,7 @@ $(document).on("click", ".disconnect", function (event) {
       location.reload();
     },
     error: function error(request, status, _error) {
-      bootstrap_alert.warning(request.responseText);
+      bootstrap_alert.error(request.responseText);
     }
   });
 });
