@@ -55941,6 +55941,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/timepicker */ "./resources/js/components/timepicker.js");
 
   __webpack_require__(/*! ./components/settings */ "./resources/js/components/settings.js");
+
+  __webpack_require__(/*! ./components/alert */ "./resources/js/components/alert.js");
 });
 
 /***/ }),
@@ -56062,9 +56064,13 @@ $(document).on("click", ".disconnect", function (event) {
     data: {
       provider: provider,
       _token: token
+    },
+    success: function success() {
+      location.reload();
+    },
+    error: function error(request, status, _error) {
+      bootstrap_alert.warning(request.responseText);
     }
-  }).done(function () {
-    location.reload();
   });
 });
 $(document).on("click", "#timepicker-button", function (event) {
@@ -56130,6 +56136,37 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/alert.js":
+/*!******************************************!*\
+  !*** ./resources/js/components/alert.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+bootstrap_alert = function bootstrap_alert() {};
+
+bootstrap_alert.warning = function (message) {
+  window.scrollTo(0, 0);
+  $('#alert_placeholder').append('<div class="alert alert-warning alert-block"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
+};
+
+bootstrap_alert.danger = function (message) {
+  window.scrollTo(0, 0);
+  $('#alert_placeholder').append('<div class="alert alert-danger alert-block"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
+};
+
+bootstrap_alert.success = function (message) {
+  window.scrollTo(0, 0);
+  $('#alert_placeholder').append('<div class="alert alert-success alert-block"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
+};
+
+bootstrap_alert.info = function (message) {
+  window.scrollTo(0, 0);
+  $('#alert_placeholder').append('<div class="alert alert-info alert-block"><a class="close" data-dismiss="alert">×</a><span>' + message + '</span></div>');
+};
 
 /***/ }),
 

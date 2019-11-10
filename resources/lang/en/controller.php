@@ -4,6 +4,7 @@ return [
         "already-connected-error" => "This Account is already connected to another user",
         "create-error" => "There has been an error creating your account.",
         "delete-never-connected" => "Your user does not have a Social Login provider",
+        "delete-set-password" => "You need to set a password before deleting a SSO-Provider to prevent you from locking yourself out.",
         "deleted" => "Social Login Provider has been deleted"
     ],
     "status" => [

@@ -95,9 +95,13 @@ $(document).on("click", ".disconnect", function(event) {
     $.ajax({
         method: "POST",
         url: urlDisconnect,
-        data: {provider: provider, _token: token}
-    }).done(function() {
-        location.reload();
+        data: {provider: provider, _token: token},
+        success: function() {
+            location.reload();
+        },
+        error: function(request, status, error) {
+            bootstrap_alert.error(request.responseText);
+        }
     });
 });
 

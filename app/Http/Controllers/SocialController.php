@@ -113,7 +113,7 @@ class SocialController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             if ($identifier != null) {
-                return redirect()->to('/dashboard')->withErrors(['msg', __('controller.social.already-connected-error')]);
+                return redirect()->to('/dashboard')->withErrors([__('controller.social.already-connected-error')]);
             }
         } elseif ($identifier === null) {
             try{
@@ -152,6 +152,9 @@ class SocialController extends Controller
     public function destroyProvider(Request $request) {
         $providerField = "{$request->provider}_id";
         $user = Auth::user();
+        if ($user->password === null) {
+            return response(__('controller.social.delete-set-password'), 406);
+        }
 
         $SocialLoginProfile = SocialLoginProfile::where('user_id', $user->id)->first();
         if ($SocialLoginProfile === null) {

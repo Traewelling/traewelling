@@ -18,4 +18,5 @@ window.addEventListener("load", () => {
     require("./components/statusMap");
     require("./components/timepicker");
     require("./components/settings");
+    require("./components/alert");
 });

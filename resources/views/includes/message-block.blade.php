@@ -52,6 +52,7 @@
             </button>
         </div>
     @endif
+    <div id="alert_placeholder"></div>
         </div>
     </div>
 </div>
