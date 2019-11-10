@@ -10,6 +10,7 @@ class FrontendStatusController extends Controller
 {
     public function getDashboard() {
         $user = Auth::user();
+        $follows = $user->follows()->get();
         $statuses = StatusBackend::getDashboard($user);
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
@@ -19,7 +20,7 @@ class FrontendStatusController extends Controller
                             )
             );
         }
-        if ($statuses->isEmpty()) {
+        if ($statuses->isEmpty() || $follows->isEmpty()) {
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', ['statuses' => $statuses]);
