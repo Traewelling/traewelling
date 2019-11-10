@@ -40,7 +40,7 @@ class UserController extends Controller
 
             $hex = dechex($hash & 0x00FFFFFF);
 
-            $picture = Image::canvas(512, 512, $hex)->insert(public_path('/uploads/avatars/user.png'))->encode('png')->getEncoded();
+            $picture = Image::canvas(512, 512, $hex)->insert(public_path('/img/user.png'))->encode('png')->getEncoded();
             $ext = 'png';
         }
 
