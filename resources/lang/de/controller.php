@@ -21,12 +21,12 @@ return [
         "not-permitted" => "DAS darfst Du nicht."
     ],
     "transport" => [
-        "checkin-ok" => "Eingecheckt mit :pts Punkten!",
-        "checkin-meta" => "Deine Fahrzeit beträgt :duration mit einer Strecke von :distance km!",
+        "checkin-heading" => "Eingecheckt",
+        "checkin-ok" => "Du hast erfolgreich in :lineName eingecheckt!",
         "no-name-given" => "Du musst einen Stationsnamen angeben!",
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
         "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>",
-        "also-in-connection" => ":people ist auch in dieser Verbindung.|Auch in dieser Verbindung sind: :people",
+        "also-in-connection" => "Auch in dieser Verbindung sind:",
         "social-post" => "Ich bin gerade in :LINENAME nach :Destination! ",
         "no-station-found" => "Für diese Suche wurde keine Haltestelle gefunden.",
     ],

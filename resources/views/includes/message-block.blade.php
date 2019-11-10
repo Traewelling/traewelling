@@ -52,6 +52,29 @@
             </button>
         </div>
     @endif
+
+    @if(Session::has('checkin-success'))
+        @php
+            $message = Session::get('checkin-success');
+        @endphp
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
+            <p>{{ __('controller.transport.checkin-ok', ['lineName' => $message['lineName']]) }}</p>
+            @if($message['alsoOnThisConnection'] != [])
+                <p>{{ __('controller.transport.also-in-connection') }}</p>
+                <ul>
+                @foreach($message['alsoOnThisConnection'] as $person)
+                        <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">@ {{ $person->status->user->username }}</a></li>
+                @endforeach
+                </ul>
+            @endif
+            <hr>
+            <p class="mb-0">Dauer: <b>{{ gmdate('H:i', $message['duration']) }}</b>h — Distanz: <b>{{ $message['distance'] }}</b>km — Punkte: <b>{{ $message['points'] }}</b></p>
+        </div>
+    @endif
     <div id="alert_placeholder"></div>
         </div>
     </div>

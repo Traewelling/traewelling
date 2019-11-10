@@ -283,7 +283,7 @@ class TransportController extends Controller
         }
 
         // check for other people on this train
-        $corresponding = TrainCheckin::where([
+        $alsoOnThisConnection = TrainCheckin::where([
             ['trip_id', '=', $trainCheckin->trip_id],
             ['status_id', '!=', $status->id]
         ])->get()
@@ -294,7 +294,8 @@ class TransportController extends Controller
         return [
             'success' => true,
             'points' => $trainCheckin->points,
-            'alsoOnThisTrain' => $corresponding,
+            'alsoOnThisConnection' => $alsoOnThisConnection,
+            'lineName' => $hafas['linename'],
             'distance' => $trainCheckin->distance,
             'duration' => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)
         ];
