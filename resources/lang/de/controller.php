@@ -21,6 +21,7 @@ return [
     ],
     "transport" => [
         "checkin-ok" => "Eingecheckt mit :pts Punkten!",
+        "checkin-meta" => "Deine Fahrzeit beträgt :duration mit einer Strecke von :distance km!",
         "no-name-given" => "Du musst einen Stationsnamen angeben!",
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
         "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>",

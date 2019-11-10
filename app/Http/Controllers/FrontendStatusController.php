@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\StatusController as StatusBackend;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class FrontendStatusController extends Controller
 {
@@ -21,6 +22,11 @@ class FrontendStatusController extends Controller
             );
         }
         if ($statuses->isEmpty() || $follows->isEmpty()) {
+            if (Session::has('message') && Session::has('success')) {
+                return redirect()->route('globaldashboard')
+                    ->with('message', Session::get('message'))
+                    ->with('success', Session::get('success'));
+            }
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', ['statuses' => $statuses]);

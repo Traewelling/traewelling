@@ -291,7 +291,13 @@ class TransportController extends Controller
                 return ($t->arrival > $trainCheckin->departure) && ($t->departure < $trainCheckin->arrival);
             });
 
-        return ['success' => true, 'points' => $trainCheckin->points, 'alsoOnThisTrain' => $corresponding];
+        return [
+            'success' => true,
+            'points' => $trainCheckin->points,
+            'alsoOnThisTrain' => $corresponding,
+            'distance' => $trainCheckin->distance,
+            'duration' => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)
+        ];
     }
 
     private static function getHAFAStrip($tripID, $lineName) {

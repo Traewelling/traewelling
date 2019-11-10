@@ -109,10 +109,13 @@ class FrontendTransportController extends Controller
                     );
             }
             return redirect()->route('dashboard')->with(
-                'message',
+                'success',
                 __('controller.transport.checkin-ok', ['pts' => $TrainCheckinResponse['points']])
                 . $concatSameTrain
-            );
+            )->with('message', __('controller.transport.checkin-meta', [
+                'distance' => $TrainCheckinResponse['distance'],
+                'duration' => gmdate('H:i', $TrainCheckinResponse['duration'])
+            ]));
         }
 
 
