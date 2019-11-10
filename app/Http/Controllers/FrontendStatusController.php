@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\StatusController as StatusBackend;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class FrontendStatusController extends Controller
 {
     public function getDashboard() {
         $user = Auth::user();
+        $follows = $user->follows()->get();
         $statuses = StatusBackend::getDashboard($user);
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
@@ -19,7 +21,11 @@ class FrontendStatusController extends Controller
                             )
             );
         }
-        if ($statuses->isEmpty()) {
+        if ($statuses->isEmpty() || $follows->isEmpty()) {
+            if (Session::has('checkin-success')) {
+                return redirect()->route('globaldashboard')
+                    ->with('checkin-success', Session::get('checkin-success'));
+            }
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', ['statuses' => $statuses]);

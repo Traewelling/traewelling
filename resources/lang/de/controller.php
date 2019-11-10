@@ -4,6 +4,7 @@ return [
         "already-connected-error" => "Dieser Account ist bereits mit einem anderen Nutzer verknüpft.",
         "create-error" => "Es gab ein Problem beim Erstellen Deines Accounts.",
         "delete-never-connected" => "Du hast keinen Social-Login-Provider.",
+        "delete-set-password" => "Bevor du einen SSO-Provider löschst, musst du ein Passwort festlegen, um dich nicht auszusperren.",
         "deleted" => "Die Verbindung wurde aufgehoben."
     ],
     "status" => [
@@ -20,11 +21,12 @@ return [
         "not-permitted" => "DAS darfst Du nicht."
     ],
     "transport" => [
-        "checkin-ok" => "Eingecheckt mit :pts Punkten!",
+        "checkin-heading" => "Eingecheckt",
+        "checkin-ok" => "Du hast erfolgreich in :lineName eingecheckt!",
         "no-name-given" => "Du musst einen Stationsnamen angeben!",
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
         "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>",
-        "also-in-connection" => ":people ist auch in dieser Verbindung.|Auch in dieser Verbindung sind: :people",
+        "also-in-connection" => "Auch in dieser Verbindung sind:",
         "social-post" => "Ich bin gerade in :LINENAME nach :Destination! ",
         "no-station-found" => "Für diese Suche wurde keine Haltestelle gefunden.",
     ],

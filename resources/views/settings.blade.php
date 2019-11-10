@@ -39,7 +39,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">@</span>
                                     </div>
-                                    <input id="name" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ $user->username }}" required autofocus>
+                                    <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ $user->username }}" required autofocus>
                                 </div>
 
                                 @error('username')
@@ -95,12 +95,12 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('password.change') }}">
                         @csrf
-
+                        <input type="hidden" name="username" autocomplete="username">
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('settings.current-password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="currentpassword" type="password" class="form-control @error('currentpassword') is-invalid @enderror" name="currentpassword" required>
+                                <input id="currentpassword" type="password" class="form-control @error('currentpassword') is-invalid @enderror" name="currentpassword" autocomplete="current-password" required>
 
                                 @error('currentpassword')
                                 <span class="invalid-feedback" role="alert">
@@ -114,7 +114,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('settings.new-password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" required>
 
                                 @error('password')
                                 <span class="invalid-feedback" role="alert">
@@ -127,7 +127,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation" required>
+                                <input id="password-confirm" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation" autocomplete="new-password" required>
 
                                 @error('password')
                                 <span class="invalid-feedback" role="alert">

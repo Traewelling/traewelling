@@ -83,39 +83,17 @@ class FrontendTransportController extends Controller
                     'controller.transport.overlapping-checkin',
                     ['url' => url('/status/'.$TrainCheckinResponse['overlap']->id), 'id' => $TrainCheckinResponse['overlap']->id]
                 ));
-
         }
 
         if ($TrainCheckinResponse['success'] === true) {
-            $alsoOnThisTrain = [];
-
-            foreach ($TrainCheckinResponse['alsoOnThisTrain'] as $traveler) {
-                $user = $traveler->status->user;
-                $alsoOnThisTrain[] =
-                    "<a href=\"" .
-                    route('account.show',  ['username' => $user->username]) .
-                    "\">" .
-                    $user->name .
-                    " (@" . $user->username . ")</a>";
-            }
-            $concatSameTrain = implode(', ', $alsoOnThisTrain);
-            if (!empty($concatSameTrain)) {
-                $concatSameTrain =
-                    "<br />" .
-                    trans_choice(
-                        'controller.transport.also-in-connection',
-                        count($TrainCheckinResponse['alsoOnThisTrain']),
-                        ['people' => $concatSameTrain]
-                    );
-            }
-            return redirect()->route('dashboard')->with(
-                'message',
-                __('controller.transport.checkin-ok', ['pts' => $TrainCheckinResponse['points']])
-                . $concatSameTrain
-            );
+            return redirect()->route('dashboard')->with('checkin-success', [
+                'distance' => $TrainCheckinResponse['distance'],
+                'duration' => $TrainCheckinResponse['duration'],
+                'points' => $TrainCheckinResponse['points'],
+                'lineName' => $TrainCheckinResponse['lineName'],
+                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection']
+            ]);
         }
-
-
     }
 
     public function SetHome(Request $request) {

@@ -5,7 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
+                    <div class="float-right">
+                        <a href="#" class="train-destinationrow" data-ibnr="{{end($stopovers)['stop']['id']}}" data-stopname="{{end($stopovers)['stop']['name']}}"><i class="fa fa-fast-forward"></i></a>
+                    </div>
                     @if (file_exists(public_path('img/'.$train['category'].'.svg')))
                         <img class="product-icon" src="{{ asset('img/'.$train['category'].'.svg') }}">
                     @else
