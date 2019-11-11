@@ -100,7 +100,7 @@ $(document).on("click", ".disconnect", function(event) {
             location.reload();
         },
         error: function(request, status, error) {
-            bootstrap_alert.error(request.responseText);
+            bootstrap_alert.danger(request.responseText);
         }
     });
 });
