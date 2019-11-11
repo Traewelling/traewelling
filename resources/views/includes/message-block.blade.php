@@ -61,7 +61,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
-            <p>{{ __('controller.transport.checkin-ok', ['lineName' => $message['lineName']]) }}</p>
+            <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', $message['lineName']), ['lineName' => $message['lineName']]) }}</p>
             @if($message['alsoOnThisConnection']->count() >= 1)
                 <p>{{ __('controller.transport.also-in-connection') }}</p>
                 <ul>
