@@ -63,7 +63,7 @@ class FrontendTransportController extends Controller
             'body' => 'max:280',
             'business_check' => 'max:2',
             'tweet_check' => 'max:2',
-            'toot_check' => 'max:2'
+            'toot_check' => 'max:2',
         ]);
         $TrainCheckinResponse = TransportBackend::TrainCheckin(
             $request->tripID,

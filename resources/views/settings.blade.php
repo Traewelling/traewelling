@@ -79,6 +79,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="custom-control custom-checkbox custom-control-inline">
+                                    <input id="always_dbl" type="checkbox" class="custom-control-input @error('always_dbl') is-invalid @enderror" name="always_dbl" {{ $user->always_dbl ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="always_dbl">{{ __('user.always-dbl') }}</label>
+                                </div>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

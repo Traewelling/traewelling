@@ -18,5 +18,6 @@ return [
     "reset-pw-link" => "Wiederherstellungs-Link schicken",
     "username" => "Nutzername",
     "you" => "Du",
-    "home-set" => "Deine Heimat ist nun :Station."
+    "home-set" => "Deine Heimat ist nun :Station.",
+    "always-dbl" => "Mit #dbl twittern?"
 ];
