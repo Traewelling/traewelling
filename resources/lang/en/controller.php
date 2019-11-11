@@ -22,7 +22,7 @@ return [
     ],
     "transport" => [
         "checkin-heading" => "Checked in!",
-        "checkin-ok" => "You've successfully checked into :lineName!",
+        "checkin-ok" => "You've successfully checked into :lineName!|You've successfully checked into line :lineName!",
         "no-name-given" => "You need to provide a station name!",
         "not-in-stopovers" => "Start-ID is not in stopovers.",
         "overlapping-checkin" => "You have an overlapping checkin: <a href=\":url\">:id</a>",

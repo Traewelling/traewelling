@@ -22,7 +22,7 @@ return [
     ],
     "transport" => [
         "checkin-heading" => "Eingecheckt",
-        "checkin-ok" => "Du hast erfolgreich in :lineName eingecheckt!",
+        "checkin-ok" => "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
         "no-name-given" => "Du musst einen Stationsnamen angeben!",
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
         "overlapping-checkin" => "Du hast bereits einen Check-In: <a href=\":url\">#:id</a>",
