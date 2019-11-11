@@ -22,9 +22,10 @@
                         @endif
                     </h2>
                     <h2>
-                        <span class="font-weight-bold">{{ round($user->train_distance, 2) }}</span><span class="small font-weight-lighter">km</span>&nbsp;
-                        <span class="font-weight-bold">{{ date('H:i', mktime(0,$user->train_duration)) }}</span><span class="small font-weight-lighter">h</span>&nbsp;
-                        <span class="font-weight-bold">{{ $user->points }}</span><span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>&nbsp;
+                        <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ round($user->train_distance, 2) }}</span><span class="small font-weight-lighter">km</span>
+                        @php($duration = $user->train_duration)
+                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;@if($duration > 60){{ intdiv($duration, 60) }}<span class="small font-weight-lighter">h</span>@endif {{ $duration % (60) }}<span class="small font-weight-lighter">min</span></span>
+                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                     </h2>
             </div>
         </div>
