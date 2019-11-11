@@ -83,6 +83,7 @@
                                 <label class="custom-control-label" for="toot_check">{{__('stationboard.check-toot')}}</label>
                             </div>
                             @endif
+
                         @endif
                         <div class="custom-control custom-checkbox custom-control-inline">
                             <input type="checkbox" class="custom-control-input" id="business_check" name="business_check">

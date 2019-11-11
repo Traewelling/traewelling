@@ -247,10 +247,12 @@ class TransportController extends Controller
                 'controller.transport.social-post',
                 ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]
             );
+            
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
-                $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ') #NowTräwelling ';
+                $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ") #NowTräwelling ";
+                
                 $appendix_length = strlen($appendix) + 30;
                 $post_text = substr($status->body, 0, 280 - $appendix_length);
                 if (strlen($post_text) != strlen($status->body)) {
@@ -271,6 +273,10 @@ class TransportController extends Controller
                     $user->socialProfile->twitter_token,
                     $user->socialProfile->twitter_tokenSecret
                 );
+                // #dbl only works on Twitter.
+                if($user->always_dbl) {
+                    $post_text .= "#dbl ";
+                }
                 $connection->post(
                     "statuses/update",
                     [

@@ -18,5 +18,6 @@ return [
     "reset-pw-link" => "Send Password Reset Link",
     "username" => "Username",
     "you" => "You",
-    "home-set" => "We set your home to :Station."
+    "home-set" => "We set your home to :Station.",
+    "always-dbl" => "Tweet with #dbl?"
 ];
