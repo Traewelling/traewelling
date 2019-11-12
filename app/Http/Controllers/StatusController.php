@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Response;
 class StatusController extends Controller
 {
     public static function getStatus($id) {
-        return Status::where('id', $id)->first();
+        return Status::where('id', $id)->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
     }
 
     public static function getActiveStatuses() {
