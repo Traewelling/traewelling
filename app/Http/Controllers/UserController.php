@@ -60,16 +60,6 @@ class UserController extends Controller
             $this->validate($request, ['email' => ['required', 'string', 'email', 'max:255', 'unique:users']]);
             $user->email_verified_at = null;
         }
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $filename = $user->name . time() . '.' . $avatar->getClientOriginalExtension();
-            Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
-
-            if ($user->avatar != 'user.jpg') {
-                File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            }
-            $user->avatar = $filename;
-        }
 
         $user->email = $request->email;
         $user->username = $request->username;
@@ -95,7 +85,20 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public function uploadImage() {
+    public function uploadImage(Request $request) {
+        $user = Auth::user();
+
+        $avatar = $request->input('image');
+
+        $filename = $user->name . time() . '.png'; // Croppie always uploads a png
+        Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+
+        if ($user->avatar != 'user.jpg') {
+            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        }
+        $user->avatar = $filename;
+        $user->save();
+
         return response()->json(['status' => ':ok']);
     }
 

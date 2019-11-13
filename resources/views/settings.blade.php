@@ -115,8 +115,11 @@
                                         <input type="file" id="image">
                                     </p>
 
+                                    <div class="d-none text-trwl text-center" id="upload-error" role="alert">{{ __('settings.something-wrong') }}</div>
+
                                     <div id="upload-demo" class="d-none"></div>
-                                    <button class="btn btn-primary btn-block upload-image">{{__('settings.upload-image')}}</button>
+                                    <button class="btn btn-primary btn-block upload-image d-none" id="upload-button">{{__('settings.upload-image')}}</button>
+
                                     <script>
                                         $.ajaxSetup({
                                             headers: {
@@ -141,6 +144,7 @@
 
                                         $('#image').on('change', function () { 
                                             $('#upload-demo').removeClass('d-none');
+                                            $("#upload-button").removeClass('d-none');
 
                                             var reader = new FileReader();
                                             reader.onload = function (e) {
@@ -162,10 +166,13 @@
                                                     url: "{{route('settings.upload-image')}}",
                                                     type: "POST",
                                                     data: {"image":img},
-                                                    error: function (data) {
+                                                    success: function (data) {
                                                         // Bestehendes Bild noch ändern
                                                         $("#theProfilePicture").attr('src', img);
                                                         $("#uploadAvatarModal").modal('hide');
+                                                    },
+                                                    error: function () {
+                                                        $("#upload-error").removeClass('d-none');
                                                     }
                                                 });
                                             });

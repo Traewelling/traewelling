@@ -21,6 +21,7 @@ return [
     "picture" => "Profilbild",
     "platform" => "Plattform",
     "service" => "Dienst",
+    "something-wrong" => "Etwas ist schief gelaufen. :(",
     "title-loginservices" => "Verbundene Dienste",
     "title-password" => "Passwort",
     "title-profile" => "Profil-Einstellungen",
