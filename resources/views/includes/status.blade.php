@@ -23,6 +23,7 @@
         <div class="col pl-0">
             <ul class="timeline">
                 <li>
+                    <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
                     <span class="text-trwl clearfix">{{ $status->trainCheckin->getOrigin->name }} </span>
                     <p class="train-status text-muted">
@@ -49,6 +50,7 @@
                     @endif
                 </li>
                 <li>
+                    <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                     <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
                 </li>
