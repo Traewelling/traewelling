@@ -35777,17 +35777,6 @@ ul.timeline {
   position: relative;
 }
 
-ul.timeline:before {
-  content: " ";
-  background: #d4d9df;
-  display: inline-block;
-  position: absolute;
-  left: 29px;
-  width: 2px;
-  height: 100%;
-  z-index: 400;
-}
-
 ul.timeline:last-child {
   background: transparent !important;
 }
@@ -35797,9 +35786,9 @@ ul.timeline > li {
   padding-left: 20px;
 }
 
-ul.timeline > li:before {
+ul.timeline > li > i {
   content: " ";
-  background: white;
+  background: #fff;
   display: inline-block;
   position: absolute;
   border-radius: 50%;
@@ -35807,6 +35796,17 @@ ul.timeline > li:before {
   left: 20px;
   width: 20px;
   height: 20px;
+  z-index: 400;
+}
+
+ul.timeline > li:first-child:before {
+  content: " ";
+  background: #d4d9df;
+  display: inline-block;
+  left: 29px;
+  width: 2px;
+  height: 90%;
+  position: absolute;
   z-index: 400;
 }
 
