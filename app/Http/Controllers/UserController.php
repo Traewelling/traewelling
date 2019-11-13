@@ -95,6 +95,10 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
+    public function uploadImage() {
+        return response()->json(['status' => ':ok']);
+    }
+
     //Return Settings-page
     public function getAccount() {
         $user = Auth::user();

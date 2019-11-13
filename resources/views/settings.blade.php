@@ -14,14 +14,12 @@
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('settings.picture') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 text-center">
                                 <div class="image-box">
-                                    <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" />
+                                    <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" id="theProfilePicture" />
                                 </div>
-                                <div class="custom-file">
-                                    <input type="file" name="avatar" class="custom-file-input" id="avatarUpload">
-                                    <label class="custom-file-label" for="avatarUpload" id="avatarUpload-filename">{{ __('settings.choose-file') }}</label>
-                                </div>
+
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
 
                                 @error('avatar')
                                 <span class="invalid-feedback" role="alert">
@@ -101,8 +99,85 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="modal fade" id="uploadAvatarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="mb-0">{{__('settings.upload-image')}}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        <strong>{{__('settings.choose-file')}}: </strong>
+                                        <input type="file" id="image">
+                                    </p>
+
+                                    <div id="upload-demo" class="d-none"></div>
+                                    <button class="btn btn-primary btn-block upload-image">{{__('settings.upload-image')}}</button>
+                                    <script>
+                                        $.ajaxSetup({
+                                            headers: {
+                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                            }
+                                        });
+
+                                        var resize = $('#upload-demo').croppie({
+                                            enableExif: true,
+                                            enableOrientation: true,    
+                                            viewport: { // Default { width: 100, height: 100, type: 'square' } 
+                                                width: 200,
+                                                height: 200,
+                                                type: 'circle' //square
+                                            },
+                                            boundary: {
+                                                width: 300,
+                                                height: 300
+                                            }
+                                        });
+
+
+                                        $('#image').on('change', function () { 
+                                            $('#upload-demo').removeClass('d-none');
+
+                                            var reader = new FileReader();
+                                            reader.onload = function (e) {
+                                            resize.croppie('bind', {
+                                                    url: e.target.result
+                                                }).then(function(){
+                                                    console.log('jQuery bind complete');
+                                                });
+                                            }
+                                            reader.readAsDataURL(this.files[0]);
+                                        });
+
+                                        $('.upload-image').on('click', function (ev) {
+                                            resize.croppie('result', {
+                                                type: 'canvas',
+                                                size: 'viewport'
+                                            }).then(function (img) {
+                                                $.ajax({
+                                                    url: "{{route('settings.upload-image')}}",
+                                                    type: "POST",
+                                                    data: {"image":img},
+                                                    error: function (data) {
+                                                        // Bestehendes Bild noch ändern
+                                                        $("#theProfilePicture").attr('src', img);
+                                                        $("#uploadAvatarModal").modal('hide');
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <!-- Password -->
             <div class="card mt-3">
                 <div class="card-header">{{ __('settings.title-password') }}</div>
@@ -167,7 +242,7 @@
                 <div class="card-header">{{ __('settings.title-loginservices') }}</div>
 
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-responsive">
                         <thead>
                             <tr>
                                 <th>{{ __('settings.service') }}</th>
@@ -252,7 +327,7 @@
                 <div class="card-header">{{ __('settings.title-sessions') }}</div>
 
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-responsive">
                         <thead>
                         <tr>
                             <th>{{ __('settings.device') }}</th>
@@ -271,14 +346,14 @@
                         @endforeach
 
                     </table>
-                    <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger" role="button">{{ __('settings.deleteallsessions') }}</a>
+                    <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger mx-0" role="button">{{ __('settings.deleteallsessions') }}</a>
                 </div>
             </div>
 
             <div class="card mt-3">
                 <div class="card-header">{{ __('settings.delete-account') }}</div>
                 <div class="card-body">
-                    <a class="btn btn-block btn-outline-danger" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
+                    <a class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
 
 
                     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

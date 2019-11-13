@@ -29,6 +29,10 @@ body {
 // Leaflet
 @import "~leaflet/dist/leaflet.css";
 
+// Croppie
+@import "~croppie/croppie.css";
+@import "./components/settings";
+
 // Station Autocomplete
 @import "~awesomplete/awesomplete.css";
 @import "components/station-autocomplete";

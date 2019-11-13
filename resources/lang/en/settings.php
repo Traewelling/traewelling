@@ -24,5 +24,6 @@ return [
     "title-loginservices" => "Connected Services",
     "title-password" => "Password",
     "title-profile" => "Profile Settings",
-    "title-sessions" => "Sessions"
+    "title-sessions" => "Sessions",
+    "upload-image" => "Upload profile avatar"
 ];
