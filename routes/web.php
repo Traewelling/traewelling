@@ -125,6 +125,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'uses' => 'UserController@updateSettings',
         'as'   => 'settings',
     ]);
+    Route::post('/settings/uploadProfileImage', [
+        'uses' => 'UserController@uploadImage',
+        'as'   => 'settings.upload-image'
+    ]);
 
     Route::get('/settings/delsession', [
         'uses' => 'UserController@deleteSession',

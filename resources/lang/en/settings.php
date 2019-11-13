@@ -21,8 +21,10 @@ return [
     "picture" => "Profile Picture",
     "platform" => "Platform",
     "service" => "Service",
+    "something-wrong" => "Something wen't wrong :(",
     "title-loginservices" => "Connected Services",
     "title-password" => "Password",
     "title-profile" => "Profile Settings",
-    "title-sessions" => "Sessions"
+    "title-sessions" => "Sessions",
+    "upload-image" => "Upload profile avatar"
 ];

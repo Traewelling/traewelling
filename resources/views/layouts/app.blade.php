@@ -161,6 +161,7 @@
          * checkin into components/stationboard.js.
          */
         var token = '{{ csrf_token() }}';
+        var urlAvatarUpload = '{{route('settings.upload-image')}}';
         var urlDelete = '{{ route('status.delete') }}';
         var urlDisconnect = '{{ route('provider.destroy') }}';
         var urlDislike = '{{ route('like.destroy') }}';

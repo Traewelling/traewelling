@@ -28,6 +28,7 @@
         "awesomplete": "^1.1.5",
         "bootstrap": "^4.3.1",
         "bootstrap-cookie-alert": "^1.1.1",
+        "croppie": "^2.6.4",
         "font-awesome": "^4.7.0",
         "leaflet": "^1.5.1",
         "mdbootstrap": "^4.8.9"
