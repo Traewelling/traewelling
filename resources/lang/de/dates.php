@@ -1,6 +1,8 @@
 <?php
 return [
     "-on-" => " um ",
+    "decimal_point" => ",",
+    "thousands_sep" => ".",
     "April" => "April",
     "August" => "August",
     "December" => "Dezember",
