@@ -7,7 +7,6 @@ require("./bootstrap");
 require("./appControls");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
-require("croppie/croppie");
 
 /**
  * Once the page is loaded, we can load our frontend components.

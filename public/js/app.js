@@ -57559,8 +57559,6 @@ __webpack_require__(/*! ./appControls */ "./resources/js/appControls.js");
 __webpack_require__(/*! awesomplete/awesomplete */ "./node_modules/awesomplete/awesomplete.js");
 
 __webpack_require__(/*! leaflet/dist/leaflet.js */ "./node_modules/leaflet/dist/leaflet.js");
-
-__webpack_require__(/*! croppie/croppie */ "./node_modules/croppie/croppie.js");
 /**
  * Once the page is loaded, we can load our frontend components.
  */
@@ -57855,15 +57853,67 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
   !*** ./resources/js/components/settings.js ***!
   \*********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-var avatarUpload = document.getElementById("avatarUpload");
+__webpack_require__(/*! croppie/croppie */ "./node_modules/croppie/croppie.js");
 
-if (typeof avatarUpload != "undefined") {
-  avatarUpload.addEventListener("change", function () {
-    document.getElementById("avatarUpload-filename").nodeValue = avatarUpload.value;
+var resize = $("#upload-demo").croppie({
+  enableExif: true,
+  enableOrientation: true,
+  viewport: {
+    // Default { width: 100, height: 100, type: 'square' }
+    width: 200,
+    height: 200,
+    type: "circle" //square
+
+  },
+  boundary: {
+    width: 300,
+    height: 300
+  }
+});
+$("#image").on("change", function () {
+  $("#upload-demo").removeClass("d-none");
+  $("#upload-button").removeClass("d-none");
+  var reader = new FileReader();
+
+  reader.onload = function (e) {
+    resize.croppie("bind", {
+      url: e.target.result
+    }).then(function () {
+      console.log("jQuery bind complete");
+    });
+  };
+
+  reader.readAsDataURL(this.files[0]);
+});
+$(".upload-image").on("click", function (ev) {
+  resize.croppie("result", {
+    type: "canvas",
+    size: "viewport"
+  }).then(function (img) {
+    $.ajaxSetup({
+      headers: {
+        "X-CSRF-TOKEN": token
+      }
+    });
+    $.ajax({
+      url: urlAvatarUpload,
+      type: "POST",
+      data: {
+        image: img
+      },
+      success: function success(data) {
+        // Bestehendes Bild noch ändern
+        $("#theProfilePicture").attr("src", img);
+        $("#uploadAvatarModal").modal("hide");
+      },
+      error: function error() {
+        $("#upload-error").removeClass("d-none");
+      }
+    });
   });
-}
+});
 
 /***/ }),
 
