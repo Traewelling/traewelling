@@ -41,7 +41,7 @@
                             @endif
                         </span>
                         @php($duration = strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure))
-                        <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{$status->trainCheckin->distance}}<small>km</small></span>
+                        <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;@if($duration > 60*60){{ intdiv($duration, 60*60) }}<small>h</small>@endif {{ intdiv($duration % (60*60), 60) }}<small>min</small></span>
                     </p>
                     

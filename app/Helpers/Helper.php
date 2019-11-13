@@ -23,3 +23,12 @@ function get_current_git_commit_message( $branch='master' ) {
         return false;
     }
 }
+
+/**
+ * @see https://stackoverflow.com/a/437642
+ */
+function number($number, $decimals=2) {
+    return number_format($number, $decimals,
+               __('dates.decimal_point'),
+               __('dates.thousands_sep'));
+ }
