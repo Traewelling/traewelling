@@ -364,13 +364,11 @@ class TransportController extends Controller
         return TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })
-        ->distinct('destination')
         ->orderBy('created_at', 'DESC')
-        ->take(5)
         ->get()
         ->map(function($t) {
             return TrainStations::where("ibnr", $t->destination)->first();
-        });
+        })->unique()->take(5);
     }
 
     public static function SetHome($user, $ibnr) {
