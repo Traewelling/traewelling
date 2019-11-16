@@ -233,4 +233,7 @@ window.addEventListener("load", () => {
             </div>
         </div>
     </div><!--- /container -->
+    
+    @include('includes.edit-modal')
+    @include('includes.delete-modal')
 @endsection
