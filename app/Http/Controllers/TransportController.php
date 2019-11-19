@@ -19,8 +19,8 @@ class TransportController extends Controller
      * the required format for MySQL inserts.
      * @return String
      */
-    public static function dateToMySQLEscape(String $in): String {
-        return date("Y-m-d H:i:s", strtotime($in));
+    public static function dateToMySQLEscape(String $in, $delaySeconds = 0): String {
+        return date("Y-m-d H:i:s", strtotime($in) - $delaySeconds);
     }
 
     public static function TrainAutocomplete($station) {
@@ -218,8 +218,8 @@ class TransportController extends Controller
         $trainCheckin->origin = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
         $trainCheckin->distance = $distance;
-        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
-        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
+        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure'], $stopovers[$offset1]['departureDelay'] ?? 0);
+        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival'], $stopovers[$offset2]['arrivalDelay'] ?? 0);
         $trainCheckin->delay = $hafas['delay'];
         $trainCheckin->points = $points;
 
@@ -336,8 +336,8 @@ class TransportController extends Controller
             $trip->destination = $destination->ibnr;
             $trip->stopovers = json_encode($json->stopovers);
             $trip->polyline = json_encode($json->polyline);
-            $trip->departure = self::dateToMySQLEscape($json->departure);
-            $trip->arrival = self::dateToMySQLEscape($json->arrival);
+            $trip->departure = self::dateToMySQLEscape($json->departure, $json->departureDelay ?? 0);
+            $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
             }
