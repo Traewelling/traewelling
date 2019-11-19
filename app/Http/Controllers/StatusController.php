@@ -164,10 +164,12 @@ class StatusController extends Controller
             $return .= $this->writeLine($checkin);
         }
 
-        return Response::make($return, 200, [
+        $return_8859_1 = iconv("UTF-8", "ISO-8859-1", $return);
+
+        return Response::make($return_8859_1, 200, [
         'Content-type' => 'text/csv',
         'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
-        'Content-Length' => strlen($return)
+        'Content-Length' => strlen($return_8859_1)
         ]);
     }
 }
