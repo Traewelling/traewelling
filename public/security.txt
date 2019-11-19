@@ -1,0 +1,9 @@
+Contact: mailto:levin@herrlev.in
+Encryption: https://herrlev.in/pgp_key.asc
+
+Contact: mailto:jannik@outlook.com
+Encryption: https://blog.iamjannik.me/2017/pgp/
+
+Contact: https://traewelling.de/imprint
+Preferred-Languages: de, en
+Canonical: https://traewelling.de/security.txt
