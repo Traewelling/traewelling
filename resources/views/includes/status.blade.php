@@ -40,9 +40,9 @@
                                 <i class="pl-2 fas fa-briefcase"></i>
                             @endif
                         </span>
-                        @php($duration = strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure))
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;@if($duration > 60*60){{ intdiv($duration, 60*60) }}<small>h</small>@endif {{ intdiv($duration % (60*60), 60) }}<small>min</small></span>
+                        @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
+                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
                     </p>
                     
                     @if(!empty($status->body))
