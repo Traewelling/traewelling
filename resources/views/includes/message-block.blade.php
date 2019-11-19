@@ -72,7 +72,7 @@
             @endif
             <hr>
             <p class="mb-0">
-                <i class="fa fa-stopwatch d-inline"></i>&nbsp;<b>@if($message['duration'] > 3600){{ intdiv($message['duration'], 3600) }}<small>h</small>@endif {{ intdiv($message['duration'] % 3600, 60) }}<small>min</small></b>
+                <i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($message['duration'])) !!}</b>
                 — <i class="fa fa-route d-inline"></i>&nbsp;<b>{{ number($message['distance']) }}<small>km</small></b>
                 — <i class="fa fa-dice-d20 d-inline"></i>&nbsp;<b>{{ $message['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
             </p>
