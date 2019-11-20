@@ -8,10 +8,13 @@ function get_git_HEAD() {
 }
 
 function get_current_git_commit() {
-
-    if ($hash = file_get_contents(base_path() . '/.git/' . get_git_HEAD())) {
-        return $hash;
-    } else {
+    try {
+        if ($hash = file_get_contents(base_path() . '/.git/' . get_git_HEAD())) {
+            return $hash;
+        } else {
+            return false;
+        }
+    } catch(Exception $e) {
         return false;
     }
 }
