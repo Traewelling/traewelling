@@ -63,9 +63,9 @@ class TransportController extends Controller
         if ($when === null) {
             $when = strtotime('-5 minutes');
         }
-        $departuresArray = self::getTrainDepartures($station, $when, $travelType);
-        $station = $departuresArray[0];
-        $departures = $departuresArray[1];
+        $ibnrObject = self::TrainAutocomplete($station);
+        $departures = self::getTrainDepartures($ibnrObject[0]['id'], $when, $travelType);
+        $station = $ibnrObject[0];
 
         if (empty($station['name'])) {
             return null;
@@ -73,10 +73,20 @@ class TransportController extends Controller
         return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
 
-    private static function getTrainDepartures($station, $when='now', $trainType=null) {
+    public static function FastTripAccess($departure, $lineName, $number, $when) {
+        $departuresArray = self::getTrainDepartures($departure, $when);
+        foreach ($departuresArray as $departure) {
+            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
+                return $departure;
+            }
+        }
+        return null;
+    }
+
+    private static function getTrainDepartures($ibnr, $when='now', $trainType=null) {
         $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
-        $ibnrObject = self::TrainAutocomplete($station);
-        $ibnr = $ibnrObject[0]['id'];
+        //$ibnrObject = self::TrainAutocomplete($station);
+        //$ibnr = $ibnrObject[0]['id'];
         $trainTypes = array(
             'suburban' => 'false',
             'subway' => 'false',
@@ -104,7 +114,7 @@ class TransportController extends Controller
             }
         }
         $json = self::sortByWhenOrScheduledWhen($json);
-        return [$ibnrObject[0], $json];
+        return $json;
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.

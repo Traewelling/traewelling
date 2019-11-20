@@ -205,6 +205,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'    => 'trains.trip'
     ]);
 
+    Route::get('/trains/fast', [
+        'uses'  => 'FrontendTransportController@FastTripAccess',
+        'as'    => 'trains.fast'
+    ]);
+
     Route::post('/trains/checkin', [
         'uses'  => 'FrontendTransportController@TrainCheckin',
         'as'    => 'trains.checkin'

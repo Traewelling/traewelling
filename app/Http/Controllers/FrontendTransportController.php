@@ -108,4 +108,12 @@ class FrontendTransportController extends Controller
         return redirect()->back()->with(['message' => __('user.home-set', ['station' => $SetHomeResponse])]);
     }
 
+    public function FastTripAccess(Request $request) {
+        $FastTripResponse = TransportBackend::FastTripAccess($request->start, $request->lineName, $request->number, $request->when);
+        if ($FastTripResponse === null) {
+            abort(404);
+        }
+        return redirect()->route('trains.trip', ['tripID'=>$FastTripResponse->tripId,'lineName'=>$FastTripResponse->line->name,'start'=>$request->start]);
+    }
+
 }
