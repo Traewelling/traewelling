@@ -85,10 +85,7 @@
                             @endif
 
                         @endif
-                        <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input" id="business_check" name="business_check">
-                            <label class="custom-control-label" for="business_check">{{__('stationboard.check-business')}}</label>
-                        </div>
+                        <input type="hidden" id="business_check" name="business_check" value="">
                         <input type="hidden" id="input-tripID" name="tripID" value="">
                         <input type="hidden" id="input-destination" name="destination" value="">
                         <input type="hidden" id="input-start" name="start" value="">

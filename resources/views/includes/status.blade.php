@@ -35,11 +35,6 @@
                                 <i class="fa fa-train d-inline"></i>
                             @endif {{ $hafas->linename }}
                         </span>
-                        <span>
-                            @if($status->business)
-                                <i class="pl-2 fas fa-briefcase"></i>
-                            @endif
-                        </span>
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
                         @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>

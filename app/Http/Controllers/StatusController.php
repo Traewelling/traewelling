@@ -130,7 +130,7 @@ class StatusController extends Controller
             "Ankunftsort",          "Ankunftskoordinaten",
             "Ankunftszeit",         "Reisezeit",
             "Kilometer",            "Punkte",
-            "Status",               "Business-Reise",
+            "Status",              // "Business-Reise",
             "Zwischenhalte"]
         );
 
@@ -138,13 +138,13 @@ class StatusController extends Controller
             if ($t->status->user_id != $user->id) {
                 continue;
             }
-            if (!(
-                ($business && $t->status->business)
-                ||
-                ($private && !$t->status->business))
-                ) {
-                continue;
-            }
+            // if (!(
+            //     ($business && $t->status->business)
+            //     ||
+            //     ($private && !$t->status->business))
+            //     ) {
+            //     continue;
+            // }
 
             $hafas = HafasTrip::where('trip_id', $t->trip_id)->first();
             $origin = TrainStations::where('ibnr', $t->origin)->first();
@@ -158,7 +158,7 @@ class StatusController extends Controller
                 $destination->name, $destination->latitude . ", " . $destination->longitude,
                 $t->arrival, $interval->h . ":" . $interval->i,
                 $t->distance, $t->points,
-                $t->status->body, $t->status->business,
+                $t->status->body, // $t->status->business,
                 ""
             ];
             $return .= $this->writeLine($checkin);
@@ -171,5 +171,9 @@ class StatusController extends Controller
         'Content-Disposition' => sprintf('attachment; filename="traewelling_export_%s_to_%s.csv"', $begin, $end),
         'Content-Length' => strlen($return_8859_1)
         ]);
+    }
+    
+    public function writeLine($array): String {
+        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
 }
