@@ -17,7 +17,6 @@ class CreateSocialLoginProfilesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()
                 ->references('id')->on('users');
-            $table->string('github_id')->nullable();
             $table->string('twitter_id')->nullable();
             $table->text('twitter_token')->nullable();
             $table->text('twitter_tokenSecret')->nullable();
