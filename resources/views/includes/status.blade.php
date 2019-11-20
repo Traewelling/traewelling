@@ -80,14 +80,17 @@
             </a>
         </span>
         <ul class="list-inline">
+            @if($currentUser->id == $status->user_id && $status->likes->count() == 0)
             <li class="list-inline-item d-lg-none">
                 <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                     <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}" class="profile-image" alt="{{__('settings.picture')}}">
                 </a>
             </li>
+            @endif
             @if(Auth::check())
                 <li class="list-inline-item">
-                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}" data-statusid="{{ $status->id }}"></a>
+                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
+                    <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)
                     <li class="list-inline-item">
@@ -101,4 +104,28 @@
             @endif
         </ul>
     </div>
+
+    @if(Route::current()->uri == "status/{id}")
+        @foreach($status->likes as $like)
+        <div class="card-footer text-muted clearfix">
+            <div class="col-xs-2">
+                <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
+                    <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}" class="profile-image float-left" alt="{{__('settings.picture')}}">
+                </a>
+            </div>
+            <div class="col-xs-10">
+                <span class="like-text pl-2 d-table-cell">
+                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
+                        {{$like->user->username}}
+                    </a>
+                    @if($like->user == $status->user)
+                        {{ __('user.liked-own-status') }}
+                    @else
+                        {{ __('user.liked-status') }}
+                    @endif
+                </span>
+            </div>
+        </div>
+        @endforeach
+    @endif
 </div>

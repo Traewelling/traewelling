@@ -57595,7 +57595,7 @@ $(document).on("click", ".edit", function (event) {
   console.log("edit");
   event.preventDefault();
   statusId = event.target.parentElement.dataset["statusid"];
-  statusBody = document.getElementById('status-' + statusId).dataset['body'];
+  statusBody = document.getElementById("status-" + statusId).dataset["body"];
   $("#status-body").val(statusBody);
   $("#edit-modal").modal();
 });
@@ -57627,15 +57627,16 @@ $(document).on("click", "#modal-delete", function () {
       _token: token
     }
   }).done(function (msg) {
-    window.location.replace('/dashboard');
+    window.location.replace("/dashboard");
   });
 });
 $(document).on("click", ".like", function (event) {
   event.preventDefault();
   statusId = event.target.dataset["statusid"];
-  console.log(statusId);
+  var $likecount = document.getElementById("like-count-" + statusId);
+  var count = parseInt($likecount.innerText);
 
-  if (event.target.className == "like far fa-heart") {
+  if (event.target.className == "like far fa-star") {
     $.ajax({
       method: "POST",
       url: urlLike,
@@ -57644,7 +57645,14 @@ $(document).on("click", ".like", function (event) {
         _token: token
       }
     }).done(function () {
-      event.target.className = "like fas fa-heart";
+      event.target.className = "like fas fa-star";
+      $likecount.innerText = ++count;
+
+      if (count == 0) {
+        $likecount.classList.add("d-none");
+      } else {
+        $likecount.classList.remove("d-none");
+      }
     });
   } else {
     $.ajax({
@@ -57655,7 +57663,14 @@ $(document).on("click", ".like", function (event) {
         _token: token
       }
     }).done(function () {
-      event.target.className = "like far fa-heart";
+      event.target.className = "like far fa-star";
+      $likecount.innerText = --count;
+
+      if (count == 0) {
+        $likecount.classList.add("d-none");
+      } else {
+        $likecount.classList.remove("d-none");
+      }
     });
   }
 });
@@ -58130,8 +58145,8 @@ if (document.getElementById("timepicker-reveal")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
