@@ -26,6 +26,10 @@ class FrontendStatusController extends Controller
                 return redirect()->route('globaldashboard')
                     ->with('checkin-success', Session::get('checkin-success'));
             }
+            if (Session::has('error')) {
+                return redirect()->route('globaldashboard')
+                    ->with('error', Session::get('error'));
+            }
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', ['statuses' => $statuses]);
