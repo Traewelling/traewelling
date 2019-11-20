@@ -20,6 +20,7 @@ class CreateStatusesTable extends Migration
             $table->integer('user_id')->unsigned()
                 ->references('id')->on('users');
             $table->boolean('business')->nullable();
+            $table->string('type')->default('hafas');
 
         });
     }
