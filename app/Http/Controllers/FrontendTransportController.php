@@ -79,10 +79,14 @@ class FrontendTransportController extends Controller
         if ($TrainCheckinResponse['success'] === false) {
             return redirect()
                 ->route('dashboard')
-                ->withErrors(__(
-                    'controller.transport.overlapping-checkin',
-                    ['url' => url('/status/'.$TrainCheckinResponse['overlap']->id), 'id' => $TrainCheckinResponse['overlap']->id]
-                ));
+                ->with('error', __(
+                        'controller.transport.overlapping-checkin',
+                        [
+                            'url' => url('/status/'.$TrainCheckinResponse['overlap']->id),
+                            'id' => $TrainCheckinResponse['overlap']->id,
+                            'linename' => $TrainCheckinResponse['overlap']->getHafasTrip()->first()->linename
+                        ]
+                    ));
         }
 
         if ($TrainCheckinResponse['success'] === true) {

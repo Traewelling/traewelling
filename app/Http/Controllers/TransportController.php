@@ -24,7 +24,7 @@ class TransportController extends Controller
     }
 
     public static function TrainAutocomplete($station) {
-        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
+        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
         if ($response->getBody()->getContents() <= 2 ) {
             $response = $client->request('GET', "locations?query=$station");
@@ -74,7 +74,7 @@ class TransportController extends Controller
     }
 
     private static function getTrainDepartures($station, $when='now', $trainType=null) {
-        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
+        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
         $ibnrObject = self::TrainAutocomplete($station);
         $ibnr = $ibnrObject[0]['id'];
         $trainTypes = array(
@@ -224,11 +224,15 @@ class TransportController extends Controller
         $trainCheckin->points = $points;
 
         //check if there are colliding checkins
+        $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
+        $overlapArrival = self::dateToMySQLEscape($trainCheckin->arrival, 120);
+
         $overlap = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->where(function($query) use ($trainCheckin) {
-            $query->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])
-                ->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival]);
+        })->where(function($query) use ($overlapArrival, $overlapDeparture) {
+            $query->where([['arrival', '>', $overlapDeparture], ['departure', '<', $overlapDeparture]])
+                ->orwhere([['arrival', '>', $overlapArrival], ['departure', '<', $overlapArrival]])
+                ->orwhere([['departure', '>', $overlapDeparture], ['arrival', '<', $overlapArrival]]);
         })->first();
         if(!empty($overlap)) {
             return ['success' => false, 'overlap' => $overlap];
@@ -247,12 +251,12 @@ class TransportController extends Controller
                 'controller.transport.social-post',
                 ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]
             );
-            
+
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
                 $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ") #NowTräwelling ";
-                
+
                 $appendix_length = strlen($appendix) + 30;
                 $post_text = substr($status->body, 0, 280 - $appendix_length);
                 if (strlen($post_text) != strlen($status->body)) {
@@ -313,7 +317,7 @@ class TransportController extends Controller
         if ($trip === null) {
             $trip = new HafasTrip;
 
-            $client = new Client(['base_uri' => env('DB_REST', 'http://localhost:3000/')]);
+            $client = new Client(['base_uri' => env('DB_REST', 'http://uranium.herrlev.in:3000/')]);
             $response = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
             $json = json_decode($response->getBody()->getContents());
 
@@ -336,7 +340,7 @@ class TransportController extends Controller
             $trip->destination = $destination->ibnr;
             $trip->stopovers = json_encode($json->stopovers);
             $trip->polyline = json_encode($json->polyline);
-            $trip->departure = self::dateToMySQLEscape($json->departure, $json->departureDelay ?? 0);
+            $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture, $json->departureDelay ?? 0);
             $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
