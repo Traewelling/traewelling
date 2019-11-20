@@ -51,13 +51,13 @@ $(document).on("click", ".like", function(event) {
     var $likecount = document.getElementById("like-count-" + statusId);
     var count = parseInt($likecount.innerText);
 
-    if (event.target.className == "like far fa-heart") {
+    if (event.target.className == "like far fa-star") {
         $.ajax({
             method: "POST",
             url: urlLike,
             data: { statusId: statusId, _token: token }
         }).done(function() {
-            event.target.className = "like fas fa-heart";
+            event.target.className = "like fas fa-star";
             $likecount.innerText = ++count;
 
             if (count == 0) {
@@ -72,7 +72,7 @@ $(document).on("click", ".like", function(event) {
             url: urlDislike,
             data: { statusId: statusId, _token: token }
         }).done(function() {
-            event.target.className = "like far fa-heart";
+            event.target.className = "like far fa-star";
             $likecount.innerText = --count;
 
             if (count == 0) {

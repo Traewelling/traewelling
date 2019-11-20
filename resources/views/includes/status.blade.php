@@ -94,7 +94,7 @@
             @endif
             @if(Auth::check())
                 <li class="list-inline-item">
-                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-heart' : 'fas fa-heart'}}" data-statusid="{{ $status->id }}"></a>
+                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)
