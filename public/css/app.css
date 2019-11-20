@@ -36253,6 +36253,10 @@ p.train-status:before {
   color: rgba(0, 0, 0, 0.125);
 }
 
+.status .like-text {
+  line-height: 2em;
+}
+
 #activeJourneys #map {
   overflow: hidden;
 }

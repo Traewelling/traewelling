@@ -19,5 +19,7 @@ return [
     "username" => "Username",
     "you" => "You",
     "home-set" => "We set your home to :Station.",
-    "always-dbl" => "Tweet with #dbl?"
+    "always-dbl" => "Tweet with #dbl?",
+    "liked-status" => "likes this status.",
+    "liked-own-status" => "likes their own status."
 ];
