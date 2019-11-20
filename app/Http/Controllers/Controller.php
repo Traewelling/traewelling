@@ -52,7 +52,7 @@ class Controller extends BaseController
         $lonA = $longitude_a / 180 * $pi;
         $latB = $latitude_b  / 180 * $pi;
         $lonB = $longitude_b / 180 * $pi;
-        $distance = acos (sin ($latA) * sin ($latB) + cos ($latA) * cos ($latB) * cos ($lonB - $lonA)) * $EQUATORIAL_RADIUS_KM;
+        $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA)) * $EQUATORIAL_RADIUS_KM;
 
         return round($distance, $decimals);
     }
@@ -67,7 +67,4 @@ class Controller extends BaseController
         return $date === $d->format("Y-m-d");
     }
 
-    public function writeLine($array): String {
-        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
-    }
 }

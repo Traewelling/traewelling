@@ -61,7 +61,7 @@ class FrontendTransportController extends Controller
     public function TrainCheckin(Request $request) {
         $this->validate($request, [
             'body' => 'max:280',
-            'business_check' => 'max:2',
+            'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
             'tweet_check' => 'max:2',
             'toot_check' => 'max:2',
         ]);
