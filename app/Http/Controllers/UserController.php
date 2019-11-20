@@ -76,7 +76,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request) {
         $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password)) {
+        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
             $user->password = Hash::make($request->password);
             $user->save();

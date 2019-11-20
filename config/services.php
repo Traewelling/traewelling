@@ -56,10 +56,4 @@ return [
         'client_secret' => env('MASTODON_SECRET'),
         'redirect'      => env('MASTODON_REDIRECT'),
     ],
-
-    'github' => [
-        'client_id'     => env('GITHUB_ID'),
-        'client_secret' => env('GITHUB_SECRET'),
-        'redirect'      => env('GITHUB_REDIRECT')
-    ]
 ];

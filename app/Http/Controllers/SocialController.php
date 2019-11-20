@@ -55,7 +55,11 @@ class SocialController extends Controller
             session(['mastodon_server' => $server]);
 
         }
-        return Socialite::driver($provider)->redirect();
+        try {
+            return Socialite::driver($provider)->redirect();
+        } catch (\Exception $e) {
+            abort(404);
+        }
     }
 
     /**
