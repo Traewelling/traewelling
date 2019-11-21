@@ -57634,6 +57634,7 @@ $(document).on("click", ".like", function (event) {
   event.preventDefault();
   statusId = event.target.dataset["statusid"];
   var $likecount = document.getElementById("like-count-" + statusId);
+  var $smallavatar = document.getElementById("avatar-small-" + statusId);
   var count = parseInt($likecount.innerText);
 
   if (event.target.className == "like far fa-star") {
@@ -57650,8 +57651,16 @@ $(document).on("click", ".like", function (event) {
 
       if (count == 0) {
         $likecount.classList.add("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.remove("d-none");
+        }
       } else {
         $likecount.classList.remove("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.add("d-none");
+        }
       }
     });
   } else {
@@ -57668,8 +57677,16 @@ $(document).on("click", ".like", function (event) {
 
       if (count == 0) {
         $likecount.classList.add("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.remove("d-none");
+        }
       } else {
         $likecount.classList.remove("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.add("d-none");
+        }
       }
     });
   }
