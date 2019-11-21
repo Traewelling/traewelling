@@ -22,6 +22,10 @@ class SocialController extends Controller
      */
     public function redirect($provider, Request $request) {
 
+        if(substr($request->input('domain'), 0, 8) !== "https://") {
+            $request->request->set('domain', "https://" . $request->input('domain'));
+        }
+
         $this->validate($request, [
             'domain' => 'url'
         ]);
