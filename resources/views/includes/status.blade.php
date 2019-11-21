@@ -68,7 +68,7 @@
             ></div>
     </div>
     <div class="card-footer text-muted interaction">
-        <span class="float-right">
+        <span class="float-right like-text">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 @if(Auth::check())
                     @if($currentUser->id == $status->user_id)
@@ -85,24 +85,25 @@
             </a>
         </span>
         <ul class="list-inline">
-            @if($currentUser->id == $status->user_id && $status->likes->count() == 0)
-            <li class="list-inline-item d-lg-none">
+            @if($currentUser->id == $status->user_id && $status->likes->count() > 0)
+            @else
+            <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}" data-selflike="{{ $currentUser->id == $status->user_id }}">
                 <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                     <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}" class="profile-image" alt="{{__('settings.picture')}}">
                 </a>
             </li>
             @endif
             @if(Auth::check())
-                <li class="list-inline-item">
+                <li class="list-inline-item like-text">
                     <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)
-                    <li class="list-inline-item">
+                    <li class="list-inline-item like-text">
                         <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
                     </li>
 
-                    <li class="list-inline-item">
+                    <li class="list-inline-item like-text">
                         <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
                     </li>
                 @endif
