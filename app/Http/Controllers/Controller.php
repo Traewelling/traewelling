@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PolyLine;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -20,8 +21,12 @@ class Controller extends BaseController
         return null;
     }
 
-    public static function polyline($idStart, $idStop, $polyline) {
-        $polyline = $polyline['features'];
+    public static function polyline($idStart, $idStop, $hash) {
+        $polyline = PolyLine::where('hash', $hash)->first();
+        if ($polyline === null) {
+            return null;
+        }
+        $polyline = json_decode($polyline->polyline, true)['features'];
         $offset = [];
         foreach ($polyline as $key => $val) {
             if (isset($val['properties']['id']) && $val['properties']['id'] === $idStart) {

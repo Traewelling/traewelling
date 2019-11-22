@@ -24,14 +24,24 @@ class TrainCheckin extends Model
 
     public function getMapLines() {
 
-        $hafas = $this->getHafasTrip()->get()->get(0);
+        $hafas = $this->getHafasTrip()->first()->getPolyLine()->first();
+        if ($hafas === null) {
+            $origin = $this->getOrigin()->first();
+            $destination = $this->getDestination()->first();
+            $route = [];
+            $route[0] = [$origin->longitude, $origin->latitude];
+            $route[1] = [$destination->longitude, $destination->latitude];
+            return json_encode($route);
+        }
+
+
         $polyline = json_decode($hafas->polyline);
-        
+
         // Bei manchen Posts ist das Feld leer.
         if(!isset($polyline->features)) {
             return json_encode([]);
         }
-        
+
         $features = $polyline->features;
         $coords = [];
 
@@ -53,7 +63,6 @@ class TrainCheckin extends Model
             }
 
         }
-
         return json_encode($coords);
     }
 }
