@@ -21,5 +21,6 @@ return [
     "home-set" => "We set your home to :Station.",
     "always-dbl" => "Tweet with #dbl?",
     "liked-status" => "likes this status.",
-    "liked-own-status" => "likes their own status."
+    "liked-own-status" => "likes their own status.",
+    "invalid-mastodon" => ":domain doesn't seem to be a Mastodon instance."
 ];

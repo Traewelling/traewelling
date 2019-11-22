@@ -10,6 +10,7 @@ use App\User;
 use App\MastodonServer;
 use Auth;
 use Mastodon;
+use GuzzleHttp\Exception\ClientException;
 
 class SocialController extends Controller
 {
@@ -22,7 +23,9 @@ class SocialController extends Controller
      */
     public function redirect($provider, Request $request) {
 
-        if(substr($request->input('domain'), 0, 8) !== "https://") {
+        // If a user tries to login with mastodon and the domain doesn't start with https,
+        // then add a 'https://' beforehand.
+        if($provider === 'mastodon' && substr($request->input('domain'), 0, 8) !== "https://") {
             $request->request->set('domain', "https://" . $request->input('domain'));
         }
 
@@ -39,15 +42,19 @@ class SocialController extends Controller
             $server = MastodonServer::where('domain', $domain)->first();
 
             if (empty($server)) {
-                //create new app
-                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
+                try {
+                    //create new app
+                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
 
-                //save app info
-                $server = MastodonServer::create([
-                                             'domain'        => $domain,
-                                             'client_id'     => $info['client_id'],
-                                             'client_secret' => $info['client_secret'],
-                                         ]);
+                    //save app info
+                    $server = MastodonServer::create([
+                                                'domain'        => $domain,
+                                                'client_id'     => $info['client_id'],
+                                                'client_secret' => $info['client_secret'],
+                                            ]);
+                } catch(ClientException $e) {
+                    return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+                } 
             }
 
             //change config
