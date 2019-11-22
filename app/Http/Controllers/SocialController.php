@@ -22,7 +22,9 @@ class SocialController extends Controller
      */
     public function redirect($provider, Request $request) {
 
-        if(substr($request->input('domain'), 0, 8) !== "https://") {
+        // If a user tries to login with mastodon and the domain doesn't start with https,
+        // then add a 'https://' beforehand.
+        if($provider === 'mastodon' && substr($request->input('domain'), 0, 8) !== "https://") {
             $request->request->set('domain', "https://" . $request->input('domain'));
         }
 
