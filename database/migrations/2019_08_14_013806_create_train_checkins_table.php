@@ -19,9 +19,9 @@ class CreateTrainCheckinsTable extends Migration
                 ->references('id')->on('statuses')->unique();
             $table->string('trip_id')
                 ->references('trip_id')->on('hafas_trips');
-            $table->integer('origin')
+            $table->string('origin')
                 ->references('ibnr')->on('train_stations');
-            $table->integer('destination')
+            $table->string('destination')
                 ->references('ibnr')->on('train_stations');
             $table->integer('distance');
             $table->timestampTz('departure');
