@@ -24,7 +24,8 @@ class CreateHafasTripsTable extends Migration
             $table->string('destination')
                 ->references('ibnr')->on('train_stations');
             $table->json('stopovers')->nullable();
-            $table->json('polyline')->nullable();
+            $table->json('polyline')->nullable()
+                ->references('hash')->on('poly_lines');
             $table->timestampTz('departure')->nullable();
             $table->timestampTz('arrival')->nullable();
             $table->integer('delay')->nullable();

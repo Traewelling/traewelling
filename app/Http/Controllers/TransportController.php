@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MastodonServer;
+use App\PolyLine;
 use Mastodon;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use GuzzleHttp\Client;
@@ -186,20 +187,28 @@ class TransportController extends Controller
         $stopovers = json_decode($hafas['stopovers'], true);
         $offset1 = self::searchForId($start, $stopovers);
         $offset2 = self::searchForId($destination, $stopovers);
-        $polyline = self::polyline($start, $destination, json_decode($hafas['polyline'], true));
-        $distance = 0.0;
-        foreach ($polyline as $key=>$point) {
-            if ($key === 0) { continue; }
-            $distance += self::distanceCalculation(
-                $point['geometry']['coordinates'][0],
-                $point['geometry']['coordinates'][1],
-                $polyline[$key-1]['geometry']['coordinates'][0],
-                $polyline[$key-1]['geometry']['coordinates'][1]
-            );
-            //I really don't know what i did here or if there's a better version for this but fuck it, it's 5am and it works.
-        }
+        $polyline = self::polyline($start, $destination, $hafas['polyline']);
         $originAttributes = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
+
+        $distance = self::distanceCalculation($originAttributes['stop']['location']['latitude'],
+                                              $originAttributes['stop']['location']['longitude'],
+                                              $destinationAttributes['stop']['location']['latitude'],
+                                              $destinationAttributes['stop']['location']['longitude']);
+        if ($polyline !== null) {
+            $distance = 0.0;
+            foreach ($polyline as $key=>$point) {
+                if ($key === 0) { continue; }
+                $distance += self::distanceCalculation(
+                    $point['geometry']['coordinates'][0],
+                    $point['geometry']['coordinates'][1],
+                    $polyline[$key-1]['geometry']['coordinates'][0],
+                    $polyline[$key-1]['geometry']['coordinates'][1]
+                );
+                //I really don't know what i did here or if there's a better version for this but fuck it, it's 5am and it works.
+            }
+        }
+
         $originStation = self::getTrainStation(
             $originAttributes['stop']['id'],
             $originAttributes['stop']['name'],
@@ -341,6 +350,7 @@ class TransportController extends Controller
             if ($json->line->id === null) {
                 $json->line->id = '';
             }
+            $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
 
             $trip->trip_id = $tripID;
             $trip->category = $json->line->product;
@@ -349,7 +359,7 @@ class TransportController extends Controller
             $trip->origin = $origin->ibnr;
             $trip->destination = $destination->ibnr;
             $trip->stopovers = json_encode($json->stopovers);
-            $trip->polyline = json_encode($json->polyline);
+            $trip->polyline = $polyLineHash;
             $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture, $json->departureDelay ?? 0);
             $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
@@ -357,7 +367,6 @@ class TransportController extends Controller
             }
             $trip->save();
         }
-
         return $trip;
     }
 
@@ -372,6 +381,18 @@ class TransportController extends Controller
             $station->save();
         }
         return $station;
+    }
+
+    private static function getPolylineHash($polyline) {
+        $hash = md5($polyline);
+        $dbPolyline = PolyLine::where('hash', $hash)->first();
+        if ($dbPolyline === null) {
+            $newPolyline = new PolyLine;
+            $newPolyline->hash = $hash;
+            $newPolyline->polyline = $polyline;
+            $newPolyline->save();
+        }
+        return $hash;
     }
 
     public static function getLatestArrivals($user) {
