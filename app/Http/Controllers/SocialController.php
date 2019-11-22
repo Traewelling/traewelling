@@ -10,6 +10,7 @@ use App\User;
 use App\MastodonServer;
 use Auth;
 use Mastodon;
+use GuzzleHttp\Exception\ClientException;
 
 class SocialController extends Controller
 {
@@ -41,15 +42,19 @@ class SocialController extends Controller
             $server = MastodonServer::where('domain', $domain)->first();
 
             if (empty($server)) {
-                //create new app
-                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
+                try {
+                    //create new app
+                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
 
-                //save app info
-                $server = MastodonServer::create([
-                                             'domain'        => $domain,
-                                             'client_id'     => $info['client_id'],
-                                             'client_secret' => $info['client_secret'],
-                                         ]);
+                    //save app info
+                    $server = MastodonServer::create([
+                                                'domain'        => $domain,
+                                                'client_id'     => $info['client_id'],
+                                                'client_secret' => $info['client_secret'],
+                                            ]);
+                } catch(ClientException $e) {
+                    return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+                } 
             }
 
             //change config
