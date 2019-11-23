@@ -44,7 +44,7 @@ class SocialController extends Controller
             if (empty($server)) {
                 try {
                     //create new app
-                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
+                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME', 'Traewelling'), env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'), 'write read');
 
                     //save app info
                     $server = MastodonServer::create([
@@ -54,7 +54,7 @@ class SocialController extends Controller
                                             ]);
                 } catch(ClientException $e) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
-                } 
+                }
             }
 
             //change config
@@ -131,6 +131,10 @@ class SocialController extends Controller
                 return redirect()->to('/dashboard')->withErrors([__('controller.social.already-connected-error')]);
             }
         } elseif ($identifier === null) {
+            $existingUser = User::where('username', $getInfo->nickname)->first();
+            if ($existingUser !== null) {
+                $getInfo->nickname = $getInfo->nickname . rand(1,200);
+            }
             try{
                 $user = User::create([
                                          'name' => $getInfo->name,

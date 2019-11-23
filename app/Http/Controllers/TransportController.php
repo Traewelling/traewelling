@@ -162,14 +162,16 @@ class TransportController extends Controller
     }
 
     private static function CalculateTrainPoints($distance, $category, $departure, $delay) {
-        $factor = DB::table('pointscalculation')
+        $factorDB = DB::table('pointscalculation')
             ->where([
                         ['type', 'train'],
                         ['transport_type', $category
                         ]])
             ->first();
-        $factor = $factor->value;
-        if ($factor === null) { $factor = 1; }
+            $factor = 1;
+        if ($factorDB != null) {
+            $factor = $factor->value;
+        }
         $time = strtotime($departure);
         $points = $factor + ceil($distance / 10);
         if ($time < strtotime('+20 minutes') && $time > strtotime('-20 minutes')) {
