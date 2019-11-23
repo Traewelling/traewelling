@@ -19,4 +19,5 @@ window.addEventListener("load", () => {
     require("./components/timepicker");
     require("./components/settings");
     require("./components/alert");
+    require("./components/pwa_fix");
 });
