@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#c72730">
+        <meta name="name" content="{{ config('app.name') }}">
         <link rel="author" href="/humans.txt">
         <meta name="copyright" content="Träwelling Team">
         <meta name="description" content="{{__('about.block1')}}">

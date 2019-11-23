@@ -57578,6 +57578,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/settings */ "./resources/js/components/settings.js");
 
   __webpack_require__(/*! ./components/alert */ "./resources/js/components/alert.js");
+
+  __webpack_require__(/*! ./components/pwa_fix */ "./resources/js/components/pwa_fix.js");
 });
 
 /***/ }),
@@ -57880,6 +57882,24 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
 
 /***/ }),
 
+/***/ "./resources/js/components/pwa_fix.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/pwa_fix.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var a = document.getElementsByTagName("a");
+
+for (var i = 0; i < a.length; i++) {
+  a[i].onclick = function () {
+    window.location = this.getAttribute("href");
+    return false;
+  };
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/settings.js":
 /*!*********************************************!*\
   !*** ./resources/js/components/settings.js ***!
@@ -58162,8 +58182,8 @@ if (document.getElementById("timepicker-reveal")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -95,11 +95,11 @@
                                     <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('menu.export') }}</a>
                                     <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <button class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
-                                    </a>
+                                    </button>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
