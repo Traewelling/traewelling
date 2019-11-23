@@ -170,7 +170,7 @@ class TransportController extends Controller
             ->first();
             $factor = 1;
         if ($factorDB != null) {
-            $factor = $factor->value;
+            $factor = $factorDB->value;
         }
         $time = strtotime($departure);
         $points = $factor + ceil($distance / 10);
