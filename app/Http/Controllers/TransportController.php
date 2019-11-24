@@ -25,7 +25,7 @@ class TransportController extends Controller
     }
 
     public static function TrainAutocomplete($station) {
-        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
+        $client = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
         if ($response->getBody()->getContents() <= 2 ) {
             $response = $client->request('GET', "locations?query=$station");
@@ -42,7 +42,7 @@ class TransportController extends Controller
     }
 
     public static function BusAutocomplete($station) {
-        $client = new Client(['base_uri' => env('FLIX_REST','https://1.flixbus.transport.rest/')]);
+        $client = new Client(['base_uri' => config('trwl.flix_rest')]);
         $response = $client->request('GET', "stations/?query=$station");
         $json = $response->getBody()->getContents();
         $array = json_decode($json, true);
@@ -85,7 +85,7 @@ class TransportController extends Controller
     }
 
     private static function getTrainDepartures($ibnr, $when='now', $trainType=null) {
-        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
+        $client = new Client(['base_uri' => config('trwl.db_rest')]);
         //$ibnrObject = self::TrainAutocomplete($station);
         //$ibnr = $ibnrObject[0]['id'];
         $trainTypes = array(
@@ -266,8 +266,7 @@ class TransportController extends Controller
         $user->points += $trainCheckin->points;
 
         $user->update();
-
-        if ((isset($toot_check) || isset($tweet_check)) && env('POST_SOCIAL') === TRUE) {
+        if ((isset($toot_check) || isset($tweet_check)) && config('trwl.post_social') === TRUE) {
             $post_text = __(
                 'controller.transport.social-post',
                 ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]
@@ -293,8 +292,8 @@ class TransportController extends Controller
             }
             if (isset($tweet_check)) {
                 $connection = new TwitterOAuth(
-                    env('TWITTER_ID'),
-                    env('TWITTER_SECRET'),
+                    config('trwl.twitter_id'),
+                    config('trwl.twitter_secret'),
                     $user->socialProfile->twitter_token,
                     $user->socialProfile->twitter_tokenSecret
                 );
@@ -338,7 +337,7 @@ class TransportController extends Controller
         if ($trip === null) {
             $trip = new HafasTrip;
 
-            $client = new Client(['base_uri' => env('DB_REST', 'http://uranium.herrlev.in:3000/')]);
+            $client = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
             $json = json_decode($response->getBody()->getContents());
 
@@ -409,7 +408,7 @@ class TransportController extends Controller
     }
 
     public static function SetHome($user, $ibnr) {
-        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
+        $client = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "locations?query=$ibnr")->getBody()->getContents();
         $ibnrObject = json_decode($response);
 
