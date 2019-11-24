@@ -300,7 +300,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    {!! __('settings.delete-account-verify', ['appname' => env('APP_NAME')])  !!}
+                                    {!! __('settings.delete-account-verify', ['appname' => config('app.name')])  !!}
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal">{{ __('settings.delete-account-btn-back') }}</button>

@@ -44,7 +44,7 @@ class SocialController extends Controller
             if (empty($server)) {
                 try {
                     //create new app
-                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME', 'Traewelling'), env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'), 'write read');
+                    $info = Mastodon::domain($domain)->createApp(config('trwl.mastodon_appname'), config('mastodon_redirect'), 'write read');
 
                     //save app info
                     $server = MastodonServer::create([
