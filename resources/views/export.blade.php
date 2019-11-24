@@ -26,17 +26,10 @@
                                 </div>
                             </div>
                             <div class="row pt-2">
-                                <div class="col">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="private-trips" name="private-trips" value="true" checked>
-                                        <label class="custom-control-label" for="private-trips">{{ __('transport_types.privatePlural') }}</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="business-trips" name="business-trips" value="true" checked>
-                                        <label class="custom-control-label" for="business-trips">{{ __('transport_types.businessPlural') }}</label>
-                                    </div>
-                                </div>
-                                <div class="col">
+                                <input type="checkbox" class="custom-control-input" id="private-trips" name="private-trips" value="true" checked>
+                                <input type="checkbox" class="custom-control-input" id="business-trips" name="business-trips" value="false" checked>
+                                        
+                                <div class="col text-right">
                                     <input type="submit" value="{{ __('export.submit') }}" class="btn btn-primary m-0">
                                 </div>
                             </div>

@@ -15,7 +15,7 @@ class CreateTrainStationsTable extends Migration
     {
         Schema::create('train_stations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('ibnr')->unique();
+            $table->string('ibnr')->unique();
             $table->string('name');
             $table->decimal('latitude', 8, 6);
             $table->decimal('longitude', 8, 6);

@@ -31,28 +31,19 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#c72730">
     <meta name="name" content="{{ config('app.name') }}">
+    <link rel="author" href="/humans.txt">
+    <meta name="copyright" content="Träwelling Team">
+    <meta name="description" content="{{__('about.block1')}}">
+    <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
+    <meta name="audience" content="Travellers">
+    <meta name="robots" content="index, nofollow">
+    <meta name="DC.Rights" content="Träwelling Team">
+    <meta name="DC.Description" content="{{__('about.block1')}}">
+    <meta name="DC.Language" content="de">
+
     <style>
         /* Moved to resources/sass/site.scss */
     </style>
-    <!-- Matomo -->
-    <script type="text/javascript">
-        var _paq = window._paq || [];
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-        @php($user = Auth::user())
-        @if($user != null)
-        _paq.push(['setUserId', '{{$user->username}}']);
-        @endif
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-            var u="//matomo.trwl.pw/";
-            _paq.push(['setTrackerUrl', u+'matomo.php']);
-            _paq.push(['setSiteId', '1']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-        })();
-    </script>
-    <!-- End Matomo Code -->
 </head>
 <body>
     <div id="app">
@@ -104,11 +95,11 @@
                                     <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('menu.export') }}</a>
                                     <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <button class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
-                                    </a>
+                                    </button>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf

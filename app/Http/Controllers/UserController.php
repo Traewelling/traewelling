@@ -76,7 +76,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request) {
         $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password)) {
+        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
             $user->password = Hash::make($request->password);
             $user->save();
@@ -214,10 +214,10 @@ class UserController extends Controller
         if ($user != null) {
             $userIds = $user->follows()->pluck('follow_id');
             $userIds[] = $user->id;
-            $friends = User::select('username', 'train_duration', 'train_distance', 'points')->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
+            $friends = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
         }
-        $users = User::select('username', 'train_duration', 'train_distance', 'points')->orderby('points', 'desc')->limit(20)->get();
-        $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->orderby('train_distance', 'desc')->limit(20)->get();
+        $users = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('points', 'desc')->limit(20)->get();
+        $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('train_distance', 'desc')->limit(20)->get();
 
 
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];

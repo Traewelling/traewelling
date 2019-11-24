@@ -25,7 +25,7 @@ return [
         "checkin-ok" => "You've successfully checked into :lineName!|You've successfully checked into line :lineName!",
         "no-name-given" => "You need to provide a station name!",
         "not-in-stopovers" => "Start-ID is not in stopovers.",
-        "overlapping-checkin" => "You have an overlapping checkin: <a href=\":url\">:id</a>",
+        "overlapping-checkin" => "You have an overlapping checkin with connection :linename: <a href=\":url\">#:id</a>",
         "also-in-connection" => "Also in this connection are:",
         "social-post" => "I'm in :LINENAME towards :Destination! #NowTräwelling ",
         "no-station-found" => "No station has been found for this search.",

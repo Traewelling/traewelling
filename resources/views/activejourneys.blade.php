@@ -35,14 +35,14 @@ window.addEventListener("load", () => {
                 origin: {{$s->trainCheckin->origin}},
                 destination: {{$s->trainCheckin->destination}},
                 <?php $hafas = $s->trainCheckin->getHafasTrip()->first() ?>
-                polyline: <?php echo $hafas->polyline ?>,
+                polyline: <?php echo $hafas->getPolyLine()->first()->polyline ?>,
                 stops: <?php echo $hafas->stopovers ?>,
                 percentage: 0,
             },
         @endforeach
     ];
 
-    
+
     const swapC = ([lng, lat]) => [lat, lng];
 
     /**
@@ -91,10 +91,10 @@ window.addEventListener("load", () => {
             });
 
             // Statuses with empty polylines (e.g. migrated or broken) stop right here and don't throw more errors than needed.
-            if(typeof s.polyline.features == "undefined") {  
+            if(typeof s.polyline.features == "undefined") {
                 return;
             }
-            
+
             s.polyline.features = s.polyline.features.map(f => {
                 if(typeof f.properties.id == "undefined") {
                     return f;
@@ -166,14 +166,14 @@ window.addEventListener("load", () => {
             // we're traversing through. We just change the value, once we're in the
             //interesting piece of the journey.
             let polyDistSinceStop = 0;
-            
+
             for (let i = 0; i < s.polyline.features.length - 1; i++) {
                 if (
                     s.polyline.features[i].properties.id == s.stops[sI + 1].stop.id
                 ) {
                     sI += 1;
                 }
-            
+
                 if (s.stops[sI].stop.id.endsWith(s.origin)) {
                     inTheTrain = true;
                 }
@@ -197,7 +197,7 @@ window.addEventListener("load", () => {
                     } else if (infrontofUs.indexOf(s.stops[sI].stop.id) > -1) {
                         isSeen = false;
                     }
-        
+
                     var polyline = L.polyline([
                         swapC(s.polyline.features[i].geometry.coordinates),
                         swapC(s.polyline.features[i + 1].geometry.coordinates)
@@ -217,7 +217,7 @@ window.addEventListener("load", () => {
                 }
             }
         });
-    
+
     };
     updateMap();
     setInterval(() => {
@@ -233,7 +233,7 @@ window.addEventListener("load", () => {
             </div>
         </div>
     </div><!--- /container -->
-    
+
     @include('includes.edit-modal')
     @include('includes.delete-modal')
 @endsection

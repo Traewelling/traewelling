@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAlwaysDblBooleanToUsersTable extends Migration
+class CreatePolyLinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddAlwaysDblBooleanToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('always_dbl')->default(false);
+        Schema::create('poly_lines', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('hash')
+                ->references('polyline')->on('hafas_trips');
+            $table->json('polyline');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddAlwaysDblBooleanToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('poly_lines');
     }
 }

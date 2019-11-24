@@ -42,7 +42,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
-                                    <td>{{ date('H:i', mktime(0,$user->train_duration)) }}</td>
+                                    <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ $user->train_distance }} km</td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
@@ -64,7 +64,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
-                                    <td>{{ date('H:i', mktime(0,$user->train_duration)) }}</td>
+                                    <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ $user->train_distance }} km</td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
@@ -87,7 +87,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
-                                    <td>{{ date('H:i', mktime(0,$user->train_duration)) }}</td>
+                                    <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ $user->train_distance }} km</td>
                                     <td>{{ $user->points }}</td>
                                 </tr>

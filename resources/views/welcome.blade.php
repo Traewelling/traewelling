@@ -5,6 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#c72730">
+        <meta name="name" content="{{ config('app.name') }}">
+        <link rel="author" href="/humans.txt">
+        <meta name="copyright" content="Träwelling Team">
+        <meta name="description" content="{{__('about.block1')}}">
+        <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
+        <meta name="audience" content="Travellers">
+        <meta name="robots" content="index, nofollow">
+        <meta name="DC.Rights" content="Träwelling Team">
+        <meta name="DC.Description" content="{{__('about.block1')}}">
+        <meta name="DC.Language" content="de">
+
 
         <!-- Fonts -->
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
@@ -96,22 +109,6 @@
                 opacity: 0.8;
             }
         </style>
-
-        <!-- Matomo -->
-        <script type="text/javascript">
-            var _paq = window._paq || [];
-            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-            _paq.push(['trackPageView']);
-            _paq.push(['enableLinkTracking']);
-            (function() {
-                var u="//matomo.trwl.pw/";
-                _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '1']);
-                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-            })();
-        </script>
-        <!-- End Matomo Code -->
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -142,11 +139,11 @@
 
                 <div class="links">
                     <a href="{{ url('/auth/redirect/twitter') }}">Twitter</a>
-                    <a href="{{ url('/auth/redirect/Github') }}">Github</a>
                     <a href="{{ url('/login') }}">Mastodon</a>
                 </div>
                 <div class="links">
                     <a href="{{ url('/leaderboard') }}">{{__('menu.leaderboard')}}</a>
+                    <a href="{{ route('static.about') }}">{{ __('menu.about')}}</a>
                     <a href="{{ url('/statuses/active') }}">{{__('menu.active')}}</a>
                 </div>
             </div>

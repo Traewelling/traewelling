@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\PolyLine;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -20,8 +21,12 @@ class Controller extends BaseController
         return null;
     }
 
-    public static function polyline($idStart, $idStop, $polyline) {
-        $polyline = $polyline['features'];
+    public static function polyline($idStart, $idStop, $hash) {
+        $polyline = PolyLine::where('hash', $hash)->first();
+        if ($polyline === null) {
+            return null;
+        }
+        $polyline = json_decode($polyline->polyline, true)['features'];
         $offset = [];
         foreach ($polyline as $key => $val) {
             if (isset($val['properties']['id']) && $val['properties']['id'] === $idStart) {
@@ -52,7 +57,7 @@ class Controller extends BaseController
         $lonA = $longitude_a / 180 * $pi;
         $latB = $latitude_b  / 180 * $pi;
         $lonB = $longitude_b / 180 * $pi;
-        $distance = acos (sin ($latA) * sin ($latB) + cos ($latA) * cos ($latB) * cos ($lonB - $lonA)) * $EQUATORIAL_RADIUS_KM;
+        $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA)) * $EQUATORIAL_RADIUS_KM;
 
         return round($distance, $decimals);
     }
@@ -67,7 +72,4 @@ class Controller extends BaseController
         return $date === $d->format("Y-m-d");
     }
 
-    public function writeLine($array): String {
-        return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
-    }
 }

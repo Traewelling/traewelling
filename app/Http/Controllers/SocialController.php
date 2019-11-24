@@ -10,6 +10,7 @@ use App\User;
 use App\MastodonServer;
 use Auth;
 use Mastodon;
+use GuzzleHttp\Exception\ClientException;
 
 class SocialController extends Controller
 {
@@ -21,6 +22,12 @@ class SocialController extends Controller
      * @return redirect
      */
     public function redirect($provider, Request $request) {
+
+        // If a user tries to login with mastodon and the domain doesn't start with https,
+        // then add a 'https://' beforehand.
+        if($provider === 'mastodon' && substr($request->input('domain'), 0, 8) !== "https://") {
+            $request->request->set('domain', "https://" . $request->input('domain'));
+        }
 
         $this->validate($request, [
             'domain' => 'url'
@@ -35,15 +42,19 @@ class SocialController extends Controller
             $server = MastodonServer::where('domain', $domain)->first();
 
             if (empty($server)) {
-                //create new app
-                $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME'), env('MASTODON_REDIRECT'), 'write read');
+                try {
+                    //create new app
+                    $info = Mastodon::domain($domain)->createApp(env('MASTODON_APPNAME', 'Traewelling'), env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'), 'write read');
 
-                //save app info
-                $server = MastodonServer::create([
-                                             'domain'        => $domain,
-                                             'client_id'     => $info['client_id'],
-                                             'client_secret' => $info['client_secret'],
-                                         ]);
+                    //save app info
+                    $server = MastodonServer::create([
+                                                'domain'        => $domain,
+                                                'client_id'     => $info['client_id'],
+                                                'client_secret' => $info['client_secret'],
+                                            ]);
+                } catch(ClientException $e) {
+                    return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+                }
             }
 
             //change config
@@ -55,7 +66,11 @@ class SocialController extends Controller
             session(['mastodon_server' => $server]);
 
         }
-        return Socialite::driver($provider)->redirect();
+        try {
+            return Socialite::driver($provider)->redirect();
+        } catch (\Exception $e) {
+            abort(404);
+        }
     }
 
     /**
@@ -116,6 +131,13 @@ class SocialController extends Controller
                 return redirect()->to('/dashboard')->withErrors([__('controller.social.already-connected-error')]);
             }
         } elseif ($identifier === null) {
+            $existingUser = User::where('username', $getInfo->nickname)->first();
+            $errorCount = 0;
+            while ($errorCount < 10 && $existingUser !== null) {
+                $getInfo->nickname = $getInfo->nickname . rand(1,10);
+                $existingUser = User::where('username', $getInfo->nickname)->first();
+                $errorCount++;
+            }
             try{
                 $user = User::create([
                                          'name' => $getInfo->name,

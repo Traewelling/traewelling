@@ -11,7 +11,6 @@ class SocialLoginProfile extends Model
 
     protected $fillable = [
         'user_id',
-        'github_id',
         'twitter_id',
         'mastodon_id',
         'mastodon_server'

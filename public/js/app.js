@@ -57578,6 +57578,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/settings */ "./resources/js/components/settings.js");
 
   __webpack_require__(/*! ./components/alert */ "./resources/js/components/alert.js");
+
+  __webpack_require__(/*! ./components/pwa_fix */ "./resources/js/components/pwa_fix.js");
 });
 
 /***/ }),
@@ -57595,7 +57597,7 @@ $(document).on("click", ".edit", function (event) {
   console.log("edit");
   event.preventDefault();
   statusId = event.target.parentElement.dataset["statusid"];
-  statusBody = document.getElementById('status-' + statusId).dataset['body'];
+  statusBody = document.getElementById("status-" + statusId).dataset["body"];
   $("#status-body").val(statusBody);
   $("#edit-modal").modal();
 });
@@ -57627,15 +57629,17 @@ $(document).on("click", "#modal-delete", function () {
       _token: token
     }
   }).done(function (msg) {
-    window.location.replace('/dashboard');
+    window.location.replace("/dashboard");
   });
 });
 $(document).on("click", ".like", function (event) {
   event.preventDefault();
   statusId = event.target.dataset["statusid"];
-  console.log(statusId);
+  var $likecount = document.getElementById("like-count-" + statusId);
+  var $smallavatar = document.getElementById("avatar-small-" + statusId);
+  var count = parseInt($likecount.innerText);
 
-  if (event.target.className == "like far fa-heart") {
+  if (event.target.className == "like far fa-star") {
     $.ajax({
       method: "POST",
       url: urlLike,
@@ -57644,7 +57648,22 @@ $(document).on("click", ".like", function (event) {
         _token: token
       }
     }).done(function () {
-      event.target.className = "like fas fa-heart";
+      event.target.className = "like fas fa-star";
+      $likecount.innerText = ++count;
+
+      if (count == 0) {
+        $likecount.classList.add("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.remove("d-none");
+        }
+      } else {
+        $likecount.classList.remove("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.add("d-none");
+        }
+      }
     });
   } else {
     $.ajax({
@@ -57655,7 +57674,22 @@ $(document).on("click", ".like", function (event) {
         _token: token
       }
     }).done(function () {
-      event.target.className = "like far fa-heart";
+      event.target.className = "like far fa-star";
+      $likecount.innerText = --count;
+
+      if (count == 0) {
+        $likecount.classList.add("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.remove("d-none");
+        }
+      } else {
+        $likecount.classList.remove("d-none");
+
+        if ($smallavatar.dataset["selflike"] == "1") {
+          $smallavatar.classList.add("d-none");
+        }
+      }
     });
   }
 });
@@ -57813,17 +57847,17 @@ bootstrap_alert.info = function (message) {
 /***/ (function(module, exports) {
 
 Array.from(document.getElementsByClassName("progress-time")).forEach(function (element) {
-  var begin = parseInt(element.attributes.getNamedItem("aria-valuemin").nodeValue);
-  var end = parseInt(element.attributes.getNamedItem("aria-valuemax").nodeValue);
+  var departure = element.dataset.valuemin;
+  var arrival = element.dataset.valuemax;
 
   var update = function update() {
     var now = Math.floor(new Date().getTime() / 1000);
-    element.attributes["aria-valuenow"] = now;
+    element.dataset.now = now;
     var percentage = 0;
 
-    if (begin == end) {
+    if (departure == arrival) {
       // Edge Case for DIV/0
-      if (now < begin) {
+      if (now < arrival) {
         // status is in the future
         percentage = 0;
       } else {
@@ -57832,12 +57866,12 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
         percentage = 100;
       }
     } else {
-      percentage = Math.round(100 * (now - begin) / (end - begin));
+      percentage = 100 * ((now - departure) / (arrival - departure));
     }
 
     element.style.width = percentage + "%"; // We don't need to revisit all the progress-bars all the time, if the trip already ended.
 
-    if (now > end) {
+    if (now > arrival) {
       clearInterval(interval);
     }
   };
@@ -57845,6 +57879,24 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
   var interval = setInterval(update, 5 * 1000);
   update();
 });
+
+/***/ }),
+
+/***/ "./resources/js/components/pwa_fix.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/pwa_fix.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var a = document.getElementsByTagName("a");
+
+for (var i = 0; i < a.length; i++) {
+  a[i].onclick = function () {
+    window.location = this.getAttribute("href");
+    return false;
+  };
+}
 
 /***/ }),
 
@@ -58130,8 +58182,8 @@ if (document.getElementById("timepicker-reveal")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -10,4 +10,7 @@ class HafasTrip extends Model
         'trip_id', 'category', 'number', 'linename', 'origin', 'destination', 'departure', 'arrival', 'stopovers'
     ];
 */
+    public function getPolyLine() {
+        return $this->hasOne('App\PolyLine', 'hash', 'polyline');
+    }
 }

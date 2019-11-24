@@ -61,7 +61,7 @@ class FrontendTransportController extends Controller
     public function TrainCheckin(Request $request) {
         $this->validate($request, [
             'body' => 'max:280',
-            'business_check' => 'max:2',
+            'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
             'tweet_check' => 'max:2',
             'toot_check' => 'max:2',
         ]);
@@ -79,10 +79,14 @@ class FrontendTransportController extends Controller
         if ($TrainCheckinResponse['success'] === false) {
             return redirect()
                 ->route('dashboard')
-                ->withErrors(__(
-                    'controller.transport.overlapping-checkin',
-                    ['url' => url('/status/'.$TrainCheckinResponse['overlap']->id), 'id' => $TrainCheckinResponse['overlap']->id]
-                ));
+                ->with('error', __(
+                        'controller.transport.overlapping-checkin',
+                        [
+                            'url' => url('/status/'.$TrainCheckinResponse['overlap']->id),
+                            'id' => $TrainCheckinResponse['overlap']->id,
+                            'linename' => $TrainCheckinResponse['overlap']->getHafasTrip()->first()->linename
+                        ]
+                    ));
         }
 
         if ($TrainCheckinResponse['success'] === true) {
@@ -102,6 +106,14 @@ class FrontendTransportController extends Controller
             return redirect()->back();
         }
         return redirect()->back()->with(['message' => __('user.home-set', ['station' => $SetHomeResponse])]);
+    }
+
+    public function FastTripAccess(Request $request) {
+        $FastTripResponse = TransportBackend::FastTripAccess($request->start, $request->lineName, $request->number, $request->when);
+        if ($FastTripResponse === null) {
+            abort(404);
+        }
+        return redirect()->route('trains.trip', ['tripID'=>$FastTripResponse->tripId,'lineName'=>$FastTripResponse->line->name,'start'=>$request->start]);
     }
 
 }

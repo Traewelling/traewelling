@@ -13,12 +13,16 @@ class BlogController extends Controller {
     }
 
     public function show(String $slug) {
-        $blogposts = Blogpost::where("slug", $slug)->firstOrFail();
+        $blogposts = Blogpost::where("slug", $slug)->simplePaginate(1);
+
+        if ($blogposts->count() == 0) {
+            abort(404);
+        }
 
         return view('blog', ['blogposts' => $blogposts, "page" => "single"]);
     }
     public function category(String $cat) {
-        $blogposts = Blogpost::where("category", $cat)->simplePaginate(5);
+        $blogposts = Blogpost::where("category", $cat)->orderBy('published_at', 'desc')->simplePaginate(5);
 
         if ($blogposts->count() == 0) {
             abort(404);

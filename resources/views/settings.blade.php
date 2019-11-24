@@ -19,7 +19,7 @@
                                     <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" id="theProfilePicture" />
                                 </div>
 
-                                <a class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
 
                                 @error('avatar')
                                 <span class="invalid-feedback" role="alert">
@@ -138,7 +138,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('settings.current-password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="currentpassword" type="password" class="form-control @error('currentpassword') is-invalid @enderror" name="currentpassword" autocomplete="current-password" required>
+                                <input id="currentpassword" type="password" class="form-control @error('currentpassword') is-invalid @enderror" name="currentpassword" autocomplete="current-password">
 
                                 @error('currentpassword')
                                 <span class="invalid-feedback" role="alert">
@@ -219,26 +219,17 @@
                                 <td>{{ __('settings.notconnected') }}</td>
                                 <td>
                                     <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                    <div class="input-group">
-                                        <input type="text" name="domain" placeholder="{{ __('user.mastodon-instance-url') }}" aria-describedby="button-addon4" class="form-control">
-                                        <div id="button-addon4" class="input-group-append">
-                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fab fa-mastodon"></i> {{ __('settings.connect') }}</button>
-                                        </div>
-                                    </div>
+                                            <div class="input-group mt-0">
+                                                <input type="text"  name="domain" class="form-control" placeholder="{{__('user.mastodon-instance-url')}}" aria-describedby="button-addon4">
+                                                <div id="button-addon4" class="input-group-append">
+                                                    <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i class="fab fa-mastodon"></i> {{ __('settings.connect') }}</button>
+                                                </div>
+                                            </div>
                                     </form>
                                 </td>
                             @endif
                         </tr>
                         <tr>
-                            <td>Github</td>
-                            @if ($user->socialProfile->github_id != null)
-                                <td>{{ __('settings.connected') }}</td>
-                                <td><a href="#" data-provider="github" class="btn btn-sm btn-outline-danger disconnect">{{ __('settings.disconnect') }}</a></td>
-                            @else
-                                <td>{{ __('settings.notconnected') }}</td>
-                                <td><a href="{{ url('/auth/redirect/github') }}" class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
-                            @endif
-                        </tr>
 
                     @else
                         <tr>
@@ -251,19 +242,14 @@
                             <td>{{ __('settings.notconnected') }}</td>
                             <td>
                                 <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                <div class="input-group">
-                                    <input type="text" name="domain" placeholder="{{ __('user.mastodon-instance-url') }}" aria-describedby="button-addon4" class="form-control">
-                                    <div id="button-addon4" class="input-group-append">
-                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fab fa-mastodon"></i> {{ __('settings.connect') }}</button>
+                                    <div class="input-group mt-0">
+                                        <input type="text"  name="domain" class="form-control" placeholder="{{__('user.mastodon-instance-url')}}" aria-describedby="button-addon4">
+                                        <div id="button-addon4" class="input-group-append">
+                                            <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i class="fab fa-mastodon"></i> {{ __('settings.connect') }}</button>
+                                        </div>
                                     </div>
-                                </div>
                                 </form>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Github</td>
-                            <td>{{ __('settings.notconnected') }}</td>
-                            <td><a href="{{ url('/auth/redirect/github') }}" class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
                         </tr>
                     @endif
                     </table>
@@ -301,7 +287,7 @@
             <div class="card mt-3">
                 <div class="card-header">{{ __('settings.delete-account') }}</div>
                 <div class="card-body">
-                    <a class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
+                    <button class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</button>
 
 
                     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

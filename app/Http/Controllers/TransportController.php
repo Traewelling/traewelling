@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MastodonServer;
+use App\PolyLine;
 use Mastodon;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use GuzzleHttp\Client;
@@ -19,12 +20,12 @@ class TransportController extends Controller
      * the required format for MySQL inserts.
      * @return String
      */
-    public static function dateToMySQLEscape(String $in): String {
-        return date("Y-m-d H:i:s", strtotime($in));
+    public static function dateToMySQLEscape(String $in, $delaySeconds = 0): String {
+        return date("Y-m-d H:i:s", strtotime($in) - $delaySeconds);
     }
 
     public static function TrainAutocomplete($station) {
-        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
+        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
         if ($response->getBody()->getContents() <= 2 ) {
             $response = $client->request('GET', "locations?query=$station");
@@ -63,9 +64,9 @@ class TransportController extends Controller
         if ($when === null) {
             $when = strtotime('-5 minutes');
         }
-        $departuresArray = self::getTrainDepartures($station, $when, $travelType);
-        $station = $departuresArray[0];
-        $departures = $departuresArray[1];
+        $ibnrObject = self::TrainAutocomplete($station);
+        $departures = self::getTrainDepartures($ibnrObject[0]['id'], $when, $travelType);
+        $station = $ibnrObject[0];
 
         if (empty($station['name'])) {
             return null;
@@ -73,10 +74,20 @@ class TransportController extends Controller
         return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
 
-    private static function getTrainDepartures($station, $when='now', $trainType=null) {
-        $client = new Client(['base_uri' => env('DB_REST','https://2.db.transport.rest/')]);
-        $ibnrObject = self::TrainAutocomplete($station);
-        $ibnr = $ibnrObject[0]['id'];
+    public static function FastTripAccess($departure, $lineName, $number, $when) {
+        $departuresArray = self::getTrainDepartures($departure, $when);
+        foreach ($departuresArray as $departure) {
+            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
+                return $departure;
+            }
+        }
+        return null;
+    }
+
+    private static function getTrainDepartures($ibnr, $when='now', $trainType=null) {
+        $client = new Client(['base_uri' => env('DB_REST','http://uranium.herrlev.in:3000/')]);
+        //$ibnrObject = self::TrainAutocomplete($station);
+        //$ibnr = $ibnrObject[0]['id'];
         $trainTypes = array(
             'suburban' => 'false',
             'subway' => 'false',
@@ -104,7 +115,7 @@ class TransportController extends Controller
             }
         }
         $json = self::sortByWhenOrScheduledWhen($json);
-        return [$ibnrObject[0], $json];
+        return $json;
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
@@ -151,14 +162,16 @@ class TransportController extends Controller
     }
 
     private static function CalculateTrainPoints($distance, $category, $departure, $delay) {
-        $factor = DB::table('pointscalculation')
+        $factorDB = DB::table('pointscalculation')
             ->where([
                         ['type', 'train'],
                         ['transport_type', $category
                         ]])
             ->first();
-        $factor = $factor->value;
-        if ($factor === null) { $factor = 1; }
+            $factor = 1;
+        if ($factorDB != null) {
+            $factor = $factorDB->value;
+        }
         $time = strtotime($departure);
         $points = $factor + ceil($distance / 10);
         if ($time < strtotime('+20 minutes') && $time > strtotime('-20 minutes')) {
@@ -176,20 +189,28 @@ class TransportController extends Controller
         $stopovers = json_decode($hafas['stopovers'], true);
         $offset1 = self::searchForId($start, $stopovers);
         $offset2 = self::searchForId($destination, $stopovers);
-        $polyline = self::polyline($start, $destination, json_decode($hafas['polyline'], true));
-        $distance = 0.0;
-        foreach ($polyline as $key=>$point) {
-            if ($key === 0) { continue; }
-            $distance += self::distanceCalculation(
-                $point['geometry']['coordinates'][0],
-                $point['geometry']['coordinates'][1],
-                $polyline[$key-1]['geometry']['coordinates'][0],
-                $polyline[$key-1]['geometry']['coordinates'][1]
-            );
-            //I really don't know what i did here or if there's a better version for this but fuck it, it's 5am and it works.
-        }
+        $polyline = self::polyline($start, $destination, $hafas['polyline']);
         $originAttributes = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
+
+        $distance = self::distanceCalculation($originAttributes['stop']['location']['latitude'],
+                                              $originAttributes['stop']['location']['longitude'],
+                                              $destinationAttributes['stop']['location']['latitude'],
+                                              $destinationAttributes['stop']['location']['longitude']);
+        if ($polyline !== null) {
+            $distance = 0.0;
+            foreach ($polyline as $key=>$point) {
+                if ($key === 0) { continue; }
+                $distance += self::distanceCalculation(
+                    $point['geometry']['coordinates'][0],
+                    $point['geometry']['coordinates'][1],
+                    $polyline[$key-1]['geometry']['coordinates'][0],
+                    $polyline[$key-1]['geometry']['coordinates'][1]
+                );
+                //I really don't know what i did here or if there's a better version for this but fuck it, it's 5am and it works.
+            }
+        }
+
         $originStation = self::getTrainStation(
             $originAttributes['stop']['id'],
             $originAttributes['stop']['name'],
@@ -218,17 +239,21 @@ class TransportController extends Controller
         $trainCheckin->origin = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
         $trainCheckin->distance = $distance;
-        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure']);
-        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival']);
+        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure'], $stopovers[$offset1]['departureDelay'] ?? 0);
+        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival'], $stopovers[$offset2]['arrivalDelay'] ?? 0);
         $trainCheckin->delay = $hafas['delay'];
         $trainCheckin->points = $points;
 
         //check if there are colliding checkins
+        $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
+        $overlapArrival = self::dateToMySQLEscape($trainCheckin->arrival, 120);
+
         $overlap = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->where(function($query) use ($trainCheckin) {
-            $query->whereBetween('arrival', [$trainCheckin->departure, $trainCheckin->arrival])
-                ->orwhereBetween('departure', [$trainCheckin->departure, $trainCheckin->arrival]);
+        })->where(function($query) use ($overlapArrival, $overlapDeparture) {
+            $query->where([['arrival', '>', $overlapDeparture], ['departure', '<', $overlapDeparture]])
+                ->orwhere([['arrival', '>', $overlapArrival], ['departure', '<', $overlapArrival]])
+                ->orwhere([['departure', '>', $overlapDeparture], ['arrival', '<', $overlapArrival]]);
         })->first();
         if(!empty($overlap)) {
             return ['success' => false, 'overlap' => $overlap];
@@ -247,12 +272,12 @@ class TransportController extends Controller
                 'controller.transport.social-post',
                 ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]
             );
-            
+
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
                 $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ") #NowTräwelling ";
-                
+
                 $appendix_length = strlen($appendix) + 30;
                 $post_text = substr($status->body, 0, 280 - $appendix_length);
                 if (strlen($post_text) != strlen($status->body)) {
@@ -313,7 +338,7 @@ class TransportController extends Controller
         if ($trip === null) {
             $trip = new HafasTrip;
 
-            $client = new Client(['base_uri' => env('DB_REST', 'http://localhost:3000/')]);
+            $client = new Client(['base_uri' => env('DB_REST', 'http://uranium.herrlev.in:3000/')]);
             $response = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
             $json = json_decode($response->getBody()->getContents());
 
@@ -327,6 +352,7 @@ class TransportController extends Controller
             if ($json->line->id === null) {
                 $json->line->id = '';
             }
+            $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
 
             $trip->trip_id = $tripID;
             $trip->category = $json->line->product;
@@ -335,15 +361,14 @@ class TransportController extends Controller
             $trip->origin = $origin->ibnr;
             $trip->destination = $destination->ibnr;
             $trip->stopovers = json_encode($json->stopovers);
-            $trip->polyline = json_encode($json->polyline);
-            $trip->departure = self::dateToMySQLEscape($json->departure);
-            $trip->arrival = self::dateToMySQLEscape($json->arrival);
+            $trip->polyline = $polyLineHash;
+            $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture, $json->departureDelay ?? 0);
+            $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
             }
             $trip->save();
         }
-
         return $trip;
     }
 
@@ -358,6 +383,18 @@ class TransportController extends Controller
             $station->save();
         }
         return $station;
+    }
+
+    private static function getPolylineHash($polyline) {
+        $hash = md5($polyline);
+        $dbPolyline = PolyLine::where('hash', $hash)->first();
+        if ($dbPolyline === null) {
+            $newPolyline = new PolyLine;
+            $newPolyline->hash = $hash;
+            $newPolyline->polyline = $polyline;
+            $newPolyline->save();
+        }
+        return $hash;
     }
 
     public static function getLatestArrivals($user) {
