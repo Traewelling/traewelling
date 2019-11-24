@@ -57847,17 +57847,17 @@ bootstrap_alert.info = function (message) {
 /***/ (function(module, exports) {
 
 Array.from(document.getElementsByClassName("progress-time")).forEach(function (element) {
-  var begin = parseInt(element.attributes.getNamedItem("aria-valuemin").nodeValue);
-  var end = parseInt(element.attributes.getNamedItem("aria-valuemax").nodeValue);
+  var departure = element.dataset.valuemin;
+  var arrival = element.dataset.valuemax;
 
   var update = function update() {
     var now = Math.floor(new Date().getTime() / 1000);
-    element.attributes["aria-valuenow"] = now;
+    element.dataset.now = now;
     var percentage = 0;
 
-    if (begin == end) {
+    if (departure == arrival) {
       // Edge Case for DIV/0
-      if (now < begin) {
+      if (now < arrival) {
         // status is in the future
         percentage = 0;
       } else {
@@ -57866,12 +57866,12 @@ Array.from(document.getElementsByClassName("progress-time")).forEach(function (e
         percentage = 100;
       }
     } else {
-      percentage = Math.round(100 * (now - begin) / (end - begin));
+      percentage = 100 * ((now - departure) / (arrival - departure));
     }
 
     element.style.width = percentage + "%"; // We don't need to revisit all the progress-bars all the time, if the trip already ended.
 
-    if (now > end) {
+    if (now > arrival) {
       clearInterval(interval);
     }
   };
