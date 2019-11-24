@@ -83,13 +83,13 @@
 
 
             @if(Auth::check())
-                @if($currentUser->id !== $status->user_id && $status->likes->count() == 0)
-                    <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}" data-selflike="{{ $currentUser->id == $status->user_id }}">
+                <li class="
+                @if($currentUser->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}" data-selflike="{{ $currentUser->id == $status->user_id }}">
                         <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                             <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}" class="profile-image" alt="{{__('settings.picture')}}">
                         </a>
                     </li>
-                @endif
+
                 <li class="list-inline-item like-text">
                     <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
