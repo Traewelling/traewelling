@@ -19,7 +19,7 @@
                                     <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2" id="theProfilePicture" />
                                 </div>
 
-                                <a class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
 
                                 @error('avatar')
                                 <span class="invalid-feedback" role="alert">
@@ -287,7 +287,7 @@
             <div class="card mt-3">
                 <div class="card-header">{{ __('settings.delete-account') }}</div>
                 <div class="card-body">
-                    <a class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
+                    <button class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal" data-target="#deleteUserModal">{{ __('settings.delete-account') }}</button>
 
 
                     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
