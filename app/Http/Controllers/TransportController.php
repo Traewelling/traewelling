@@ -267,11 +267,11 @@ class TransportController extends Controller
 
         $user->update();
         if ((isset($toot_check) || isset($tweet_check)) && config('trwl.post_social') === TRUE) {
-            $post_text = __(
-                'controller.transport.social-post',
-                ['linename' => $hafas['linename'], 'destination' => $destinationStation->name]
-            );
-
+            $post_text = trans_choice(
+                             'controller.transport.social-post',
+                                      preg_match('/\s/', $hafas['linename']),
+                                      ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name]
+                         );
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
