@@ -27,7 +27,7 @@ return [
         "not-in-stopovers" => "Die Start-ID ist nicht in den Zwischenstops.",
         "overlapping-checkin" => "Du hast bereits einen Check-In in Verbindung :linename: <a href=\":url\">#:id</a>",
         "also-in-connection" => "Auch in dieser Verbindung sind:",
-        "social-post" => "Ich bin gerade in :LINENAME nach :Destination! #NowTräwelling ",
+        "social-post" => "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
         "no-station-found" => "Für diese Suche wurde keine Haltestelle gefunden.",
     ],
     "user" => [
