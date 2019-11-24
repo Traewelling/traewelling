@@ -31,11 +31,20 @@ window.addEventListener("load", () => {
     const statuses = [
         @foreach($statuses as $s)
             {
+            @php
+                $hafas = $s->trainCheckin->getHafasTrip()->first();
+                $poly = $hafas->getPolyLine()->first();
+                $polyline = "''";
+                if ($poly != null) {
+                        $polyline = $poly->polyline;
+                }
+            @endphp
+
                 id: {{$s->id}},
                 origin: {{$s->trainCheckin->origin}},
                 destination: {{$s->trainCheckin->destination}},
                 <?php $hafas = $s->trainCheckin->getHafasTrip()->first() ?>
-                polyline: <?php echo $hafas->getPolyLine()->first()->polyline ?>,
+                polyline: <?php echo $polyline ?>,
                 stops: <?php echo $hafas->stopovers ?>,
                 percentage: 0,
             },
