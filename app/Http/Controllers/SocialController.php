@@ -132,8 +132,11 @@ class SocialController extends Controller
             }
         } elseif ($identifier === null) {
             $existingUser = User::where('username', $getInfo->nickname)->first();
-            if ($existingUser !== null) {
-                $getInfo->nickname = $getInfo->nickname . rand(1,200);
+            $errorCount = 0;
+            while ($errorCount < 10 && $existingUser !== null) {
+                $getInfo->nickname = $getInfo->nickname . rand(1,10);
+                $existingUser = User::where('username', $getInfo->nickname)->first();
+                $errorCount++;
             }
             try{
                 $user = User::create([
