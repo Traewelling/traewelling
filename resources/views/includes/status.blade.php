@@ -57,9 +57,9 @@
             class="progress-bar progress-time"
             role="progressbar"
             style="width: 0%"
-            aria-valuenow="{{ time() }}"
-            aria-valuemin="{{ strtotime($status->trainCheckin->departure) }}"
-            aria-valuemax="{{ strtotime($status->trainCheckin->arrival) }}"
+            data-valuenow="{{ time() }}"
+            data-valuemin="{{ strtotime($status->trainCheckin->departure) }}"
+            data-valuemax="{{ strtotime($status->trainCheckin->arrival) }}"
             ></div>
     </div>
     <div class="card-footer text-muted interaction">
