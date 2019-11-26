@@ -36245,6 +36245,7 @@ p.train-status:before {
 
 .status .list-inline .like {
   color: #f5a530;
+  cursor: pointer;
 }
 
 .status .list-inline .list-inline-item:not(:last-child) {
