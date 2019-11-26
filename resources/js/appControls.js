@@ -44,8 +44,6 @@ $(document).on("click", "#modal-delete", function() {
 });
 
 $(document).on("click", ".like", function(event) {
-    event.preventDefault();
-
     statusId = event.target.dataset["statusid"];
 
     var $likecount = document.getElementById("like-count-" + statusId);
@@ -58,7 +56,7 @@ $(document).on("click", ".like", function(event) {
             url: urlLike,
             data: { statusId: statusId, _token: token }
         }).done(function() {
-            event.target.className = "like fas fa-star";
+            event.target.className = "like fas fa-star animated bounceIn";
             $likecount.innerText = ++count;
 
             if (count == 0) {
@@ -95,6 +93,9 @@ $(document).on("click", ".like", function(event) {
             }
         });
     }
+
+    event.preventDefault();
+    event.stopPropagation();
 });
 
 $(document).on("click", ".follow", function(event) {

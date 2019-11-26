@@ -91,7 +91,7 @@
                     </li>
 
                 <li class="list-inline-item like-text">
-                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
+                    <span class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)
