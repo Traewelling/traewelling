@@ -36101,7 +36101,7 @@ p.train-status:before {
     padding: 0 !important;
   }
 
-  .card-body {
+  .card-body:not(.table-responsive) {
     padding: 1.25rem 0 !important;
   }
 
