@@ -25,7 +25,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
-                    <span class="text-trwl clearfix">{{ $status->trainCheckin->getOrigin->name }} </span>
+                    {!! stationLink($status->trainCheckin->getOrigin->name) !!}
                     <p class="train-status text-muted">
                         @php($hafas = $status->trainCheckin->getHafasTrip)
                         <span>
@@ -47,7 +47,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
-                    <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
+                    {!! stationLink($status->trainCheckin->getDestination->name) !!}
                 </li>
             </ul>
         </div>
