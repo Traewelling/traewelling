@@ -47,6 +47,9 @@ class StatusController extends Controller
 
     public static function DeleteStatus($user, $statusId) {
         $status = Status::find($statusId);
+        if ($status === null) {
+            return null;
+        }
         $trainCheckin = $status->trainCheckin()->first();
         if ($user != $status->user) {
             return false;
@@ -66,6 +69,9 @@ class StatusController extends Controller
 
     public static function EditStatus($user, $statusId, $body, $businessCheck) {
         $status = Status::find($statusId);
+        if ($status === null) {
+            return null;
+        }
         if ($user != $status->user) {
             return false;
         }
