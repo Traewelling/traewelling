@@ -29,7 +29,7 @@ class StatusController extends ResponseController
 
     public function show (Request $request, $id) {
         $StatusResponse = StatusBackend::getStatus($id);
-        return sendResponse($StatusResponse);
+        return $this->sendResponse($StatusResponse);
     }
 
     public function update (Request $request, $id) {
@@ -50,7 +50,7 @@ class StatusController extends ResponseController
             return $this->sendError('Not found');
         }
         if ($EditStatusResponse === false) {
-            return $this->sendError(__('controller.status.not-permitted'), 403)
+            return $this->sendError(__('controller.status.not-permitted'), 403);
         }
         return $this->sendResponse(['newBody' => $EditStatusResponse]);
     }
@@ -62,7 +62,7 @@ class StatusController extends ResponseController
             return $this->sendError('Not found');
         }
         if ($DeleteStatusResponse === false) {
-            return $this->sendError(__('controller.status.not-permitted'), 403)
+            return $this->sendError(__('controller.status.not-permitted'), 403);
         }
         return $this->sendResponse(__('controller.status.delete-ok'));
     }

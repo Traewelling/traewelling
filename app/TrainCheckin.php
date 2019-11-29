@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainCheckin extends Model
 {
+    protected $hidden = ['created_at', 'updated_at'];
     public function status () {
         return $this->belongsTo('App\Status');
     }

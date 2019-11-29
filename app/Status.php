@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Status extends Model
 {
+    protected $hidden = ['user_id', 'business'];
     public function user() {
         return $this->belongsTo('App\User');
     }
