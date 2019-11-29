@@ -36,13 +36,13 @@ class StatusController extends Controller
     public static function getDashboard($user) {
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        $statuses = Status::whereIn('user_id', $userIds)->latest()->simplePaginate(15);
+        $statuses = Status::whereIn('user_id', $userIds)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->latest()->simplePaginate(15);
 
         return $statuses;
     }
 
     public static function getGlobalDashboard() {
-        return Status::orderBy('created_at', 'desc')->latest()->simplePaginate(15);
+        return Status::orderBy('created_at', 'desc')->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->latest()->simplePaginate(15);
     }
 
     public static function DeleteStatus($user, $statusId) {
