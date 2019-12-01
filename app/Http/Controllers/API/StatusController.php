@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Http\Controllers\UserController as UserBackend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Validator;
 
 class StatusController extends ResponseController
 {
+
     public function enRoute (Request $request) {
         $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
         $response = [];
@@ -20,19 +22,32 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
+
     public function index (Request $request) {
         $validator = Validator::make($request->all(), [
-            'aroundDate' => 'date',
-            'age' => 'in:older,newer',
             'maxStatuses' => 'integer',
-            'user' => 'integer'
+            'username' => 'string|required_if:view,user',
+            'view' => 'in:user,global,personal'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
 
-        $statuses = StatusBackend::getGlobalDashboard();
+            $view = 'global';
+        if (!empty($request->view)) {
+            $view = $request->view;
+        }
+        $statuses = ['statuses' => ''];
+        if ($view === 'global') {
+            $statuses['statuses'] = StatusBackend::getGlobalDashboard();
+        }
+        if ($view === 'personal') {
+            $statuses['statuses'] = StatusBackend::getDashboard(Auth::user());
+        }
+        if ($view === 'user') {
+            $statuses = UserBackend::getProfilePage($request->username);
+        }
         return response()->json($statuses);
     }
 

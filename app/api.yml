@@ -14,7 +14,7 @@ paths:
   /statuses/enroute/:
     get:
       tags: [Statuses]
-      summary: Retrieves a list of statuses.
+      summary: Retrieves a list of all active statuses.
       responses:
         200:
           description: OK.
@@ -28,6 +28,74 @@ paths:
         401:
           description: Unauthorized.
             Will be returned by the server if no user was logged in.
+
+  /statuses/:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Statuses]
+      summary: Retrieves the dashboard
+      parameters:
+        - in: query
+          name: view
+          schema:
+            type: string
+            enum: [global, personal, user]
+            default: global
+          description: Filters the list of statuses so that it will either return the
+            global view (i.e. all public statuses == global dashboard), just the statuses
+            of the current user’s follows (i.e. the user’s dashboard).
+        - in: query
+          name: username
+          schema:
+            $ref: '#/components/schemas/username'
+          description: Only required if the “view” parameter is set to “user”. If that is
+            the case this parameter takes the ID of the user to fetch statuses for.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            example: 1
+          description: Needed to show next or previous page of pagination
+      responses:
+        200:
+          description: OK.
+            The returned array may be empty if there are no active statuses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        401:
+          description: Unauthorized.
+            Will be returned by the server if no user was logged in.
+
+  /statuses/{id}:
+    get:
+      tags: [Statuses]
+      summary: Retrieves a single status.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to show.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        401:
+          description: Unauthorized.
+            Will be returned by the server if no user was logged in.
+        404:
+          description: No status found.
 
 components:
   securitySchemes:
@@ -171,6 +239,9 @@ components:
     userId:
       type: integer
       example: 1
+    username:
+      type: string
+      example: "testuser"
     timestamp:
       type: string
       pattern: "YYYY-MM-DD hh:mm:ss"
