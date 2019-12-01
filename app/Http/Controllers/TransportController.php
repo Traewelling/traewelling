@@ -285,41 +285,45 @@ class TransportController extends Controller
                 $post_text .= $appendix;
             }
 
-            if (isset($toot_check)) {
+            if (isset($toot_check) && $user->socialProfile) {
                 $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
-                Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
-            }
-            if (isset($tweet_check)) {
-                $connection = new TwitterOAuth(
-                    config('trwl.twitter_id'),
-                    config('trwl.twitter_secret'),
-                    $user->socialProfile->twitter_token,
-                    $user->socialProfile->twitter_tokenSecret
-                );
-                // #dbl only works on Twitter.
-                if($user->always_dbl) {
-                    $post_text .= "#dbl ";
+                if ($mastodonDomain != null) {
+                    Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
                 }
-                $connection->post(
-                    "statuses/update",
-                    [
-                        "status" => $post_text . $post_url,
-                        'lat' => $originStation->latitude,
-                        'lon' => $originStation->longitude
-                    ]
-                );
+            }
+            if (isset($tweet_check) && $user->socialProfile) {
+                if ($user->socialProfile->twitter_token != null && $user->socialProfile->twitter_tokenSecret != null) {
+                    $connection = new TwitterOAuth(
+                        config('trwl.twitter_id'),
+                        config('trwl.twitter_secret'),
+                        $user->socialProfile->twitter_token,
+                        $user->socialProfile->twitter_tokenSecret
+                    );
+                    // #dbl only works on Twitter.
+                    if($user->always_dbl) {
+                        $post_text .= "#dbl ";
+                    }
+                    $connection->post(
+                        "statuses/update",
+                        [
+                            "status" => $post_text . $post_url,
+                            'lat' => $originStation->latitude,
+                            'lon' => $originStation->longitude
+                        ]
+                    );
+                }
             }
         }
 
         // check for other people on this train
+
         $alsoOnThisConnection = TrainCheckin::where([
             ['trip_id', '=', $trainCheckin->trip_id],
-            ['status_id', '!=', $status->id]
-        ])->get()
-            ->filter(function ($t) use ($trainCheckin) {
-                return ($t->arrival > $trainCheckin->departure) && ($t->departure < $trainCheckin->arrival);
-            });
+            ['status_id', '!=', $status->id],
+            ['arrival', '>', $trainCheckin->departure],
+            ['departure', '<', $trainCheckin->arrival]
+        ])->get()->pluck('status.user');
 
         return [
             'success' => true,

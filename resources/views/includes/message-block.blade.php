@@ -65,7 +65,7 @@
                 <p>{{ __('controller.transport.also-in-connection') }}</p>
                 <ul>
                 @foreach($message['alsoOnThisConnection'] as $person)
-                        <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">{{ '@' . $person->status->user->username }}</a></li>
+                        <li><a href="{{ route('account.show', ['username' => $person->username]) }}">{{ '@' . $person->username }}</a></li>
                 @endforeach
                 </ul>
             @endif

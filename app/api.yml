@@ -9,6 +9,13 @@ info:
 servers:
   - url: "https://testing.traewelling.de/api/v0" #TODO: Need a production server path
 
+tags:
+  - name: "Statuses"
+    description: Query, add, update, and delete statuses
+  - name: "Check-in"
+    description: Routes required to complete a full check-in workflow.
+  - name: "User profile"
+    description: Routes for editing the current user’s profile.
 
 paths:
   /statuses/enroute/:
@@ -26,9 +33,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          description: Unauthorized.
-            Will be returned by the server if no user was logged in.
-
+          $ref: '#/components/responses/UnauthorizedError'
   /statuses/:
     get:
       security:
@@ -67,10 +72,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequestError'
         401:
-          description: Unauthorized.
-            Will be returned by the server if no user was logged in.
-
+          $ref: '#/components/responses/UnauthorizedError'
   /statuses/{id}:
     get:
       tags: [Statuses]
@@ -91,11 +96,334 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequestError'
         401:
-          description: Unauthorized.
-            Will be returned by the server if no user was logged in.
+          $ref: '#/components/responses/UnauthorizedError'
         404:
-          description: No status found.
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      security:
+        - bearerAuth: []
+      tags: [Statuses]
+      summary: Update a status that the current user had posted previously.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              maxLength: 280
+        description: The new status text to set in the status with the given ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to modify.
+      responses:
+        200:
+          description: OK.
+            The status object has been modified on the server (i.e. the status text was
+            changed). The response contains the modified version of the status.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Statuses]
+      summary: Removes a status that the current user had posted previously.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to delete.
+      responses:
+        204:
+          description: No content.
+            The status with the given ID has been deleted. Nothing further needs to be said, so
+            the response will not have any content.
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+  /trains/autocomplete/{query}:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Retrieves a list of stations.
+      description: This endpoint can be called multiple times in succession when searching
+        stations by name to provide suggestions for the user to select from. Please provide
+        at least 3 characters when retrieving suggestions. Otherwise, only call this endpoint
+        with less than 3 characters if the user explicitly requested a search.
+      parameters:
+        - in: path
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The ID of the status to modify.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/querystation'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /trains/stationboard:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Retrieves departures for a station.
+      parameters:
+        - in: query
+          name: station
+          schema:
+            type: string
+          required: true
+          description: The name of the train station
+        - in: query
+          name: when
+          schema:
+            type: string
+            example: 1575232872
+          required: false
+          description: The time of the query
+        - in: query
+          name: travelType
+          schema:
+            type: string
+            enum: [nationalExpress, national, regionalExp, regional, suburban, bus, ferry, subway, tram, taxi]
+          required: false
+          description: Filter of transport types
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  station:
+                    $ref: '#/components/schemas/querystation'
+                  when:
+                    type: number
+                    description: UNIX-Timestamp
+                    example: 1575230596
+                  departures:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/db_rest_departure'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /trains/trip:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Retrieves departures for a station.
+      parameters:
+        - in: query
+          name: tripID
+          schema:
+            type: string
+            example: "1|463098|0|80|1122019"
+          required: true
+          description: Trip ID of the train
+        - in: query
+          name: lineName
+          schema:
+            type: string
+            example: "S 32"
+          required: true
+          description: Linename of train
+        - in: query
+          name: start
+          schema:
+            type: string
+            example: "8000191"
+          required: true
+          description: Starting point of the trip
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  station:
+                    $ref: '#/components/schemas/querystation'
+                  start:
+                    type: string
+                    example: "Karlsruhe Hbf"
+                  destination:
+                    type: string
+                    example: "Menzingen(Baden)"
+                  train:
+                    $ref: '#/components/schemas/hafas_trip'
+                  stopovers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/db_rest_stopover'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /trains/checkin:
+    post:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Adds a train-status for the current user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tripID:
+                  allOf:
+                    - $ref: '#/components/schemas/trip_id'
+                  required:
+                    - tripID
+                start:
+                  allOf:
+                    - $ref: '#/components/schemas/ibnr'
+                  required:
+                    - start
+                destination:
+                  allOf:
+                    - $ref: '#/components/schemas/ibnr'
+                  required:
+                    - destintation
+                body:
+                  type: string
+                  maxLength: 280
+                  example: "This is my first checkin!"
+                tweet:
+                  type: boolean
+                toot:
+                  type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: number
+                    example: 16.152
+                    description: Travel distance in kilometers
+                  duration:
+                    type: number
+                    example: 900
+                    description: Travel time in Seconds
+                  points:
+                    type: number
+                    example: 1
+                  lineName:
+                    type: string
+                    example: "S 32"
+                  alsoOnThisConnection:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                    description: Array of users that are also on the same connection
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /trains/latest:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Shows the last 5 stations the logged in user arrived at.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/station'
+  /trains/home:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Retrieves the home-station for logged in user.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/station'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      security:
+        - bearerAuth: []
+      tags: [Check-in]
+      summary: Sets the home-station for logged in user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ibnr:
+                  type: number
+                  example: 8123
+                  required:
+                    - ibnr
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Ost.Punkt 812 km"
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+
 
 components:
   securitySchemes:
@@ -103,6 +431,20 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized.
+        Will be returned by the server if no user was logged in.
+    NotFoundError:
+      description: Not found
+        The parameters in the request were valid, but the server did not find a corresponding object.
+    ForbiddenError:
+      description: Forbidden
+        The logged in user is not permitted to perform this action. (e.g. edit a status of another user.)
+    BadRequestError:
+      description: Bad Request
+        The parameters are wrong or not given.
 
   schemas:
     Status:
@@ -125,7 +467,6 @@ components:
           $ref: '#/components/schemas/User'
         train_checkin:
           $ref: '#/components/schemas/train_checkin'
-
     User:
       type: object
       properties:
@@ -147,7 +488,165 @@ components:
         points:
           type: integer
           example: "66"
-
+    db_rest_stopover:
+      type: object
+      properties:
+        stop:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "stop"
+            id:
+              type: string
+              example: "8000191"
+            name:
+              type: string
+              example: "Karlsruhe Hbf"
+            location:
+              $ref: '#/components/schemas/hafas_location'
+            products:
+              $ref: '#/components/schemas/hafas_products'
+        arrival:
+          type: string
+          example: "2019-12-01T21:56:00+01:00"
+        arrivalDelay:
+          type: string
+          example: "60"
+        arrivalPlattform:
+          type: string
+          example: "1"
+        departure:
+          type: string
+          example: "2019-12-01T21:56:00+01:00"
+        departureDelay:
+          type: string
+          example: "60"
+        departurePlatform:
+          type: string
+          example: "1"
+    db_rest_departure:
+      type: object
+      properties:
+        trip_id:
+          $ref: '#/components/schemas/trip_id'
+        stop:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "stop"
+            id:
+              $ref: '#/components/schemas/ibnr'
+            name:
+              type: string
+              description: Name of Station
+              example: "Karlsruhe Bahnhofsvorplatz"
+            location:
+              $ref: '#/components/schemas/hafas_location'
+            products:
+              $ref: '#/components/schemas/hafas_products'
+            station:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: "station"
+                id:
+                  type: string
+                  example: "8000191"
+                name:
+                  type: string
+                  example: "Karlsruhe Hbf"
+                location:
+                  $ref: '#/components/schemas/hafas_location'
+                products:
+                  $ref: '#/components/schemas/hafas_products'
+            when:
+              type: string
+              example: "2019-12-01T21:03:00+01:00"
+            directoin:
+              type: string
+              example: "3 Tivoli"
+            line:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: "line"
+                id:
+                  type: string
+                  example: "re-6"
+                fahrtNr:
+                  type: string
+                  example: "12042"
+                name:
+                  type: string
+                  example: "RE 6"
+                public:
+                  type: boolean
+                  example: true
+                operator:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: "operator"
+                    id:
+                      type: string
+                      example: "db-regio-ag-mitte"
+                    name:
+                      type: string
+                      example: "DB Regio AG Mitte"
+                additionalName:
+                  type: string
+                  example: "RE 6"
+            remarks:
+              type: string
+              description: actually array but almost always empty. Don't know what it does.
+            delay:
+              type: string
+              example: "60"
+              description: Delay in seconds
+            platform:
+              type: string
+    hafas_location:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "location"
+        id:
+          $ref: '#/components/schemas/ibnr'
+        latitude:
+          type: number
+          example: 48.994348
+        longitude:
+          type: number
+          example: 8.399583
+    hafas_products:
+      type: object
+      properties:
+        nationalExpress:
+          type: boolean
+        national:
+          type: boolean
+        regionalExp:
+          type: boolean
+        regional:
+          type: boolean
+        suburban:
+          type: boolean
+        bus:
+          type: boolean
+        ferry:
+          type: boolean
+        subway:
+          type: boolean
+        tram:
+          type: boolean
+        taxi:
+          type: boolean
     train_checkin:
       type: object
       properties:
@@ -177,8 +676,6 @@ components:
           example: "0"
         hafas_trip:
           $ref: '#/components/schemas/hafas_trip'
-
-
     hafas_trip:
       type: object
       properties:
@@ -209,8 +706,6 @@ components:
         delay:
           type: integer
           example: "0"
-
-
     station:
       type: object
       properties:
@@ -230,6 +725,17 @@ components:
           type: number
           format: float
           example: 48.994348
+    querystation:
+      type: object
+      properties:
+        ibnr:
+          $ref: '#/components/schemas/ibnr'
+        name:
+          type: string
+          example: "Karlsruhe Bahnhofsvorplatz"
+        provider:
+          type: string
+          example: "train"
     status_id:
       type: integer
       example: 10
@@ -262,4 +768,3 @@ components:
       type: string
       format: hash
       example: "cac715508e44ae253f424562fe5d286e"
-

@@ -84,7 +84,7 @@ class FrontendTransportController extends Controller
                         [
                             'url' => url('/status/'.$TrainCheckinResponse['overlap']->id),
                             'id' => $TrainCheckinResponse['overlap']->id,
-                            'linename' => $TrainCheckinResponse['overlap']->getHafasTrip()->first()->linename
+                            'linename' => $TrainCheckinResponse['overlap']->HafasTrip()->first()->linename
                         ]
                     ));
         }

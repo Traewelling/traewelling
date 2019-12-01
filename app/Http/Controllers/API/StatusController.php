@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
@@ -57,7 +56,7 @@ class StatusController extends ResponseController
     }
 
     public function update (Request $request, $id) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'body' => 'max:280',
             'business' => 'integer',
         ]);
