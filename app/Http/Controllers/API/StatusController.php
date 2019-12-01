@@ -11,6 +11,15 @@ use Validator;
 
 class StatusController extends ResponseController
 {
+    public function enRoute (Request $request) {
+        $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
+        $response = [];
+        if ($ActiveStatusesResponse['statuses'] !== null) {
+            $response = ['statuses' => $ActiveStatusesResponse['statuses'], 'polylines' => $ActiveStatusesResponse['polylines']];
+        }
+        return $this->sendResponse($response);
+    }
+
     public function index (Request $request) {
         $validator = Validator::make($request->all(), [
             'aroundDate' => 'date',
@@ -19,7 +28,7 @@ class StatusController extends ResponseController
             'user' => 'integer'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
 

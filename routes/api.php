@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::group([ 'prefix' => 'v0'], function (){
+        Route::get('statuses/enroute', 'API\StatusController@enroute');
     Route::group(['middleware' => ['guest:api']], function () {
              Route::post('login', 'API\AuthController@login');
        Route::group(['prefix' => 'auth'], function () {

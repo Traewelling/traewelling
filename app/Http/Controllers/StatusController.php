@@ -27,6 +27,9 @@ class StatusController extends Controller
             ->sortByDesc(function ($status, $key) {
                 return $status->trainCheckin->departure;
             });
+        if ($statuses === null) {
+            return null;
+        }
         $polylines = $statuses->map(function($status) {
             return $status->trainCheckin->getMapLines();
         });
@@ -178,7 +181,7 @@ class StatusController extends Controller
         'Content-Length' => strlen($return_8859_1)
         ]);
     }
-    
+
     public function writeLine($array): String {
         return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
