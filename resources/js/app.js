@@ -7,6 +7,7 @@ require("./bootstrap");
 require("./appControls");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
+require("chart.js/dist/Chart");
 
 /**
  * Once the page is loaded, we can load our frontend components.
@@ -20,4 +21,5 @@ window.addEventListener("load", () => {
     require("./components/settings");
     require("./components/alert");
     require("./components/pwa_fix");
+    require("./components/usageBoard");
 });

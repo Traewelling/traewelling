@@ -102,4 +102,12 @@ class FrontendStatusController extends Controller
         $StatusResponse = StatusBackend::getStatus($id);
         return view('status', ['status' => $StatusResponse]);
     }
+
+    public function usageboard() {
+        $statusesByDay = StatusController::usageByDay();
+        $userRegistrationsByDay = UserController::registerByDay();
+        $hafasTripsByDay = TransportController::usageByDay();
+
+        return view('usageboard', ['statusesByDay' => $statusesByDay, 'userRegistrationsByDay' => $userRegistrationsByDay, 'hafasTripsByDay' => $hafasTripsByDay]);
+    }
 }

@@ -428,4 +428,23 @@ class TransportController extends Controller
         }
         return $station->name;
     }
+
+    public static function usageByDay() {
+        
+        $hafas = DB::table('hafas_trips')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as hafas_trips'))
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->get(14)
+            ->map(function($line) {
+                $query = DB::select('SELECT COUNT(*) AS c FROM poly_lines WHERE DATE(created_at) = ?', [$line->date]);
+                $line->polylines = $query[0]->c;
+
+                return $line;
+            });
+        
+            
+            
+        return $hafas;
+    }
 }
