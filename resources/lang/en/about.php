@@ -1,11 +1,11 @@
 <?php
 return [
     "basepoints" => "Base points",
-    "block1" => "Träwelling is a free check-in service that lets you tell your friends where you are and where you can keep your logbook. In short, you can check into trains and get points for it. ",
+    "block1" => "Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it.",
     "calculation" => "The distance is rounded to the nearest 10km and then divided by 10. Afterwards the base points are added.<br/>10 + round up(143/10) = 10 + 15 = 25</code> &nbsp;points, for a S-Bahn trip of 8km there is <code>2 + round up(8/10) = 2 + 1 = 3</code>&nbsp;points.",
     "express" => "InterCity, EuroCity",
     "faq-heading" => "Frequently asked questions",
-    "feature-missing" => "In this version of Träwelling we'll start from scratch &ndash; it may be that little-used functions are not yet implemented. If you would like to suggest a feature, just send an email to",
+    "feature-missing" => "In this version of Träwelling we'll start from scratch – and may have missed little-used functions. If you would like to suggest a feature, just send an email to",
     "feature-missing-heading" => "Something's missing! Why was this feature removed?",
     "heading" => "About us",
     "international" => "InterCityExpress, TGV, RailJet",
