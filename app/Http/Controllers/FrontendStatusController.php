@@ -103,7 +103,11 @@ class FrontendStatusController extends Controller
         return view('status', ['status' => $StatusResponse]);
     }
 
-    public function usageboard() {
+    public function usageboard(Request $request) {
+        if($request->input('auth_key') != sha1("This is bad security, but it's an okay prototype until we have a better way of working with user roles.")) {
+            abort(401); // Unauthorized
+        }
+
         $statusesByDay = StatusController::usageByDay();
         $userRegistrationsByDay = UserController::registerByDay();
         $hafasTripsByDay = TransportController::usageByDay();

@@ -15,7 +15,9 @@
                 class="date-canvas"
                 data-json='{!! json_encode($statusesByDay) !!}'
                 data-title="Statuses per Day"
-                data-keys='occurs'></canvas>
+                data-keys='occurs'
+                height="300"
+                ></canvas>
         </div>
         <div class="col">
             <canvas
@@ -23,7 +25,9 @@
                 class="date-canvas"
                 data-json='{!! json_encode($userRegistrationsByDay) !!}'
                 data-title="User Registrations per Day"
-                data-keys='occurs'></canvas>
+                data-keys='occurs'
+                height="300"
+                ></canvas>
         </div>
         <div class="col">
             <canvas
@@ -31,7 +35,9 @@
                 class="date-canvas"
                 data-json='{!! json_encode($hafasTripsByDay) !!}'
                 data-title="HafasTrips,Polylines"
-                data-keys='hafas_trips,polylines'></canvas>
+                data-keys='hafas_trips,polylines'
+                height="300"
+                ></canvas>
         </div>
     </div>
 </div>
