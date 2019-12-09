@@ -57580,6 +57580,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/alert */ "./resources/js/components/alert.js");
 
   __webpack_require__(/*! ./components/pwa_fix */ "./resources/js/components/pwa_fix.js");
+
+  __webpack_require__(/*! ./components/usageBoard */ "./resources/js/components/usageBoard.js");
 });
 
 /***/ }),
@@ -58163,6 +58165,47 @@ if (document.getElementById("timepicker-reveal")) {
     };
   });
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/usageBoard.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/usageBoard.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var timeFormat = "YYYY-MM-DD";
+var colors = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)'];
+var colorindex = 0;
+Array.from(document.getElementsByClassName("date-canvas")).forEach(function (canvas) {
+  var data = Array.from(JSON.parse(canvas.dataset["json"])).sort(function (a, b) {
+    return a.date > b.date;
+  });
+  var config = {
+    type: "line",
+    data: {
+      labels: data.map(function (data) {
+        return data.date;
+      }),
+      datasets: canvas.dataset.keys.split(',').map(function (key, index) {
+        var color = colors[colorindex++ % colors.length];
+        console.log(colors);
+        return {
+          label: canvas.dataset.title.split(',')[index],
+          data: data.map(function (date) {
+            return date[key];
+          }),
+          borderColor: color,
+          backgroundColor: "rgba(0,0,0,0)" // transparent
+
+        };
+      })
+    }
+  };
+  var ctx = canvas.getContext("2d");
+  window.myLine = new Chart(ctx, config);
+});
 
 /***/ }),
 

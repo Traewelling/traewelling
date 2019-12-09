@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Jenssegers\Agent\Agent;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -223,4 +224,12 @@ class UserController extends Controller
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
+    public static function registerByDay() {
+        $q = DB::table('users')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as occurs'))
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->get(14);
+        return $q;
+    }
 }
