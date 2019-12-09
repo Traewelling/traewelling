@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="jumbotron mt-n4" style="background-image: url(https://mobile.traewelling.de/src/img/cover.png);background-position: center;">
+    <div class="jumbotron mt-n4" style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
                     <h2 class="card-title h1-responsive font-bold">

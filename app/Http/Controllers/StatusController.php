@@ -176,4 +176,13 @@ class StatusController extends Controller
     public function writeLine($array): String {
         return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
+
+    public static function usageByDay() {
+        $q = DB::table('statuses')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as occurs'))
+            ->groupBy('date')
+            ->orderBy('date', 'DESC')
+            ->get(14);
+        return $q;
+    }
 }

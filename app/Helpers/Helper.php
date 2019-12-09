@@ -64,3 +64,19 @@ function durationToSpan($duration): String {
 
     return $return;
 }
+
+function stationLink($name): String {
+    $urlname = $name;
+    
+    switch($name) {
+        // Those are stations that you can ride to but you can't search for them.
+        case "Köln Messe/Deutz Gl. 9-10":
+        case "Köln Messe/Deutz Gl.11-12":
+            $urlname = "Köln Messe/Deutz";
+        break;
+    }
+
+    $return = '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) . '" class="text-trwl clearfix">' . $name . '</a>';
+
+    return $return;
+}

@@ -13,7 +13,7 @@ composer:
     paths:
       - vendor/
   cache:
-    key: ${CI_COMMIT_REF_NAME}_composer
+    key: trwl_composer
     paths:
       - vendor/
 
@@ -30,10 +30,9 @@ npm:
       - public/css/
       - public/js/
   cache:
-    key: ${CI_COMMIT_REF_NAME}_npm
+    key: trwl_npm
     paths:
       - node_modules/
-
 
 phpunit:
   stage: test
