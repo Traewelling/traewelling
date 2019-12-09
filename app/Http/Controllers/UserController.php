@@ -229,7 +229,8 @@ class UserController extends Controller
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as occurs'))
             ->groupBy('date')
             ->orderBy('date', 'DESC')
-            ->get(14);
+            ->take(14)
+            ->get();
         return $q;
     }
 }
