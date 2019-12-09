@@ -25,7 +25,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
-                    <span class="text-trwl clearfix">{{ $status->trainCheckin->getOrigin->name }} </span>
+                    {!! stationLink($status->trainCheckin->getOrigin->name) !!}
                     <p class="train-status text-muted">
                         @php($hafas = $status->trainCheckin->getHafasTrip)
                         <span>
@@ -47,7 +47,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
-                    <span class="text-trwl">{{ $status->trainCheckin->getDestination->name }}</span>
+                    {!! stationLink($status->trainCheckin->getDestination->name) !!}
                 </li>
             </ul>
         </div>
@@ -91,7 +91,7 @@
                     </li>
 
                 <li class="list-inline-item like-text">
-                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
+                    <span class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)

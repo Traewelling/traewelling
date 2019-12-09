@@ -229,5 +229,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'uses'  => 'SocialController@testMastodon',
     ]);
 
+    Route::get('/usage', [
+        'uses'  => 'FrontendStatusController@usageboard',
+        'as'    => 'usage'
+    ]);
+
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

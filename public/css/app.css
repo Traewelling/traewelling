@@ -36101,7 +36101,7 @@ p.train-status:before {
     padding: 0 !important;
   }
 
-  .card-body {
+  .card-body:not(.table-responsive) {
     padding: 1.25rem 0 !important;
   }
 
@@ -36245,6 +36245,7 @@ p.train-status:before {
 
 .status .list-inline .like {
   color: #f5a530;
+  cursor: pointer;
 }
 
 .status .list-inline .list-inline-item:not(:last-child) {

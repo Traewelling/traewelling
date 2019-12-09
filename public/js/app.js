@@ -57580,6 +57580,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/alert */ "./resources/js/components/alert.js");
 
   __webpack_require__(/*! ./components/pwa_fix */ "./resources/js/components/pwa_fix.js");
+
+  __webpack_require__(/*! ./components/usageBoard */ "./resources/js/components/usageBoard.js");
 });
 
 /***/ }),
@@ -57633,7 +57635,6 @@ $(document).on("click", "#modal-delete", function () {
   });
 });
 $(document).on("click", ".like", function (event) {
-  event.preventDefault();
   statusId = event.target.dataset["statusid"];
   var $likecount = document.getElementById("like-count-" + statusId);
   var $smallavatar = document.getElementById("avatar-small-" + statusId);
@@ -57648,7 +57649,7 @@ $(document).on("click", ".like", function (event) {
         _token: token
       }
     }).done(function () {
-      event.target.className = "like fas fa-star";
+      event.target.className = "like fas fa-star animated bounceIn";
       $likecount.innerText = ++count;
 
       if (count == 0) {
@@ -57692,6 +57693,9 @@ $(document).on("click", ".like", function (event) {
       }
     });
   }
+
+  event.preventDefault();
+  event.stopPropagation();
 });
 $(document).on("click", ".follow", function (event) {
   event.preventDefault();
@@ -58164,6 +58168,47 @@ if (document.getElementById("timepicker-reveal")) {
 
 /***/ }),
 
+/***/ "./resources/js/components/usageBoard.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/usageBoard.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var timeFormat = "YYYY-MM-DD";
+var colors = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)'];
+var colorindex = 0;
+Array.from(document.getElementsByClassName("date-canvas")).forEach(function (canvas) {
+  var data = Array.from(JSON.parse(canvas.dataset["json"])).sort(function (a, b) {
+    return a.date > b.date;
+  });
+  var config = {
+    type: "line",
+    data: {
+      labels: data.map(function (data) {
+        return data.date;
+      }),
+      datasets: canvas.dataset.keys.split(',').map(function (key, index) {
+        var color = colors[colorindex++ % colors.length];
+        console.log(colors);
+        return {
+          label: canvas.dataset.title.split(',')[index],
+          data: data.map(function (date) {
+            return date[key];
+          }),
+          borderColor: color,
+          backgroundColor: "rgba(0,0,0,0)" // transparent
+
+        };
+      })
+    }
+  };
+  var ctx = canvas.getContext("2d");
+  window.myLine = new Chart(ctx, config);
+});
+
+/***/ }),
+
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -58182,8 +58227,8 @@ if (document.getElementById("timepicker-reveal")) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/herrlevin_/Dev/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /c/laragon/www/trwl/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /c/laragon/www/trwl/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
