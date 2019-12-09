@@ -435,7 +435,8 @@ class TransportController extends Controller
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as hafas_trips'))
             ->groupBy('date')
             ->orderBy('date', 'DESC')
-            ->get(14)
+            ->take(14)
+            ->get()
             ->map(function($line) {
                 $query = DB::select('SELECT COUNT(*) AS c FROM poly_lines WHERE DATE(created_at) = ?', [$line->date]);
                 $line->polylines = $query[0]->c;
