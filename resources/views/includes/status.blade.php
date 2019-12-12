@@ -43,6 +43,26 @@
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
                     @endif
+
+                    @php($t = time())
+                    @if($t > strtotime($status->trainCheckin->departure) && $t < strtotime($status->trainCheckin->arrival))
+                    
+                    <?php
+                    $stops = json_decode($hafas->stopovers);
+                    $nextStopIndex = count($stops) - 1;
+
+                    // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+                    for ($i=count($stops)-1; $i > 0; $i--) { 
+                        $arrival = $stops[$i]->arrival;
+                        if($arrival != null && strtotime($arrival) > $t) {
+                            $nextStopIndex = $i;
+                            continue;
+                        }
+                        break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+                    }
+                    ?>
+                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink($stops[$nextStopIndex]->stop->name) !!}</p>
+                    @endif
                 </li>
                 <li>
                     <i>&nbsp;</i>
