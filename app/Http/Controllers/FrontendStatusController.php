@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\StatusController as StatusBackend;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -108,10 +109,59 @@ class FrontendStatusController extends Controller
             abort(401); // Unauthorized
         }
 
-        $statusesByDay = StatusController::usageByDay();
-        $userRegistrationsByDay = UserController::registerByDay();
-        $hafasTripsByDay = TransportController::usageByDay();
+        $begin = Carbon::now()->copy()->addDays(-14);
+        $end = Carbon::now();
 
-        return view('usageboard', ['statusesByDay' => $statusesByDay, 'userRegistrationsByDay' => $userRegistrationsByDay, 'hafasTripsByDay' => $hafasTripsByDay]);
+        if($request->input('begin') != "") {
+            $begin = Carbon::createFromFormat("Y-m-d", $request->input('begin'));
+        }
+        if($request->input('end') != "") {
+            $end = Carbon::createFromFormat("Y-m-d", $request->input('end'));
+        }
+
+        if($begin->isAfter($end)) {
+            return redirect()->back()->with('error', $begin->format('Y-m-d') . ' ist vor ' . $end->format('Y-m-d') . '. Das darf nicht.');
+        }
+        if($end->isFuture()) {
+            $end = Carbon::now();
+        }
+
+        $dates = [];
+        $statusesByDay = [];
+        $userRegistrationsByDay = [];
+        $hafasTripsByDay = [];
+
+        // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
+        $dateIterator = $end->copy()->addDays(1);
+        $i = 0; $datediff = $end->diffInDays($begin);
+        while($i < $datediff) {
+            $i++;
+            $dateIterator->addDays(-1);
+            $dates[] = $dateIterator->format("Y-m-d");
+
+            $statusesByDay[] = StatusController::usageByDay($dateIterator);
+            $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
+
+            // Wenn keine Stati passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
+            if($statusesByDay[count($statusesByDay) - 1]->occurs == 0) { // Heute keine Stati
+                $hafasTripsByDay[] = (object) [];
+            } else {
+                $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
+            }
+        }
+
+        if(empty($dates)) {
+            $dates = [$begin->format("Y-m-d")];
+        }
+
+        return view('usageboard', [
+            'auth_key' => $request->input("auth_key"),
+            'begin' => $begin->format("Y-m-d"),
+            'end' => $end->format("Y-m-d"),
+            'dates' => $dates,
+            'statusesByDay' => $statusesByDay,
+            'userRegistrationsByDay' => $userRegistrationsByDay,
+            'hafasTripsByDay' => $hafasTripsByDay
+        ]);
     }
 }

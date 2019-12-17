@@ -7,6 +7,7 @@ use App\Status;
 use App\HafasTrip;
 use App\TrainCheckin;
 use App\TrainStations;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -172,18 +173,17 @@ class StatusController extends Controller
         'Content-Length' => strlen($return_8859_1)
         ]);
     }
-    
+
     public function writeLine($array): String {
         return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
     }
 
-    public static function usageByDay() {
+    public static function usageByDay(Carbon $date) {
         $q = DB::table('statuses')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as occurs'))
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->take(14)
-            ->get();
+            ->select(DB::raw('count(*) as occurs'))
+            ->where("created_at", ">=", $date->copy()->startOfDay())
+            ->where("created_at", "<=", $date->copy()->endOfDay())
+            ->first();
         return $q;
     }
 }
