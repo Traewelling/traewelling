@@ -9,6 +9,7 @@ use App\Status;
 use App\HafasTrip;
 use App\TrainCheckin;
 use App\Like;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -224,13 +225,12 @@ class UserController extends Controller
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
-    public static function registerByDay() {
+    public static function registerByDay(Carbon $date) {
         $q = DB::table('users')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as occurs'))
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->take(14)
-            ->get();
+            ->select(DB::raw('count(*) as occurs'))
+            ->where("created_at", ">=", $date->copy()->startOfDay())
+            ->where("created_at", "<=", $date->copy()->endOfDay())
+            ->first();
         return $q;
     }
 }

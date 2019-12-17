@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
+use App\HafasTrip;
 use App\MastodonServer;
 use App\PolyLine;
-use Mastodon;
-use Abraham\TwitterOAuth\TwitterOAuth;
-use GuzzleHttp\Client;
-use App\HafasTrip;
-use App\TrainStations;
 use App\Status;
 use App\TrainCheckin;
+use App\TrainStations;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Mastodon;
 
 class TransportController extends Controller
 {
@@ -429,23 +430,53 @@ class TransportController extends Controller
         return $station->name;
     }
 
-    public static function usageByDay() {
-        
+    public static function usageByDay(Carbon $date) {
         $hafas = DB::table('hafas_trips')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as hafas_trips'))
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->take(14)
-            ->get()
-            ->map(function($line) {
-                $query = DB::select('SELECT COUNT(*) AS c FROM poly_lines WHERE DATE(created_at) = ?', [$line->date]);
-                $line->polylines = $query[0]->c;
+            ->select(DB::raw('count(*) as occurs'))
+            ->where("created_at", ">=", $date->copy()->startOfDay())
+            ->where("created_at", "<=", $date->copy()->endOfDay())
+            ->first();
 
-                return $line;
-            });
-        
-            
-            
-        return $hafas;
+        $returnArray = ["hafas" => $hafas->occurs];
+
+        /** Shortcut, wenn eh nichts passiert ist. */
+        if($hafas->occurs == 0) {
+            return $returnArray;
+        }
+
+        $polylines  = DB::table('poly_lines')
+            ->select(DB::raw('count(*) as occurs'))
+            ->where("created_at", ">=", $date->copy()->startOfDay())
+            ->where("created_at", "<=", $date->copy()->endOfDay())
+            ->first();
+        $returnArray['polylines'] = $polylines->occurs;
+
+        $transportTypes = ['nationalExpress',
+            'national',
+            'express',
+            'regionalExp',
+            'regional',
+            'suburban',
+            'bus',
+            'tram',
+            'subway',
+            'ferry',];
+
+//        foreach($transportTypes as $transport) {
+        $seenCheckins = 0;
+        for ($i = 0; $seenCheckins < $hafas->occurs && $i < count($transportTypes); $i++) {
+            $transport = $transportTypes[$i];
+
+             $returnArray[$transport] = DB::table('hafas_trips')
+                ->select(DB::raw('count(*) as occurs'))
+                ->where("created_at", ">=", $date->copy()->startOfDay())
+                ->where("created_at", "<=", $date->copy()->endOfDay())
+                ->where('category', '=', $transport)
+                ->first()
+                ->occurs;
+             $seenCheckins += $returnArray[$transport];
+        }
+
+        return $returnArray;
     }
 }
