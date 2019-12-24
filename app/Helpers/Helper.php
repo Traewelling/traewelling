@@ -68,11 +68,16 @@ function durationToSpan($duration): String {
 function stationLink($name): String {
     $urlname = $name;
     
-    switch($name) {
+    switch(true) {
         // Those are stations that you can ride to but you can't search for them.
-        case "Köln Messe/Deutz Gl. 9-10":
-        case "Köln Messe/Deutz Gl.11-12":
+        case $name == "Köln Messe/Deutz Gl. 9-10":
+        case $name == "Köln Messe/Deutz Gl.11-12":
             $urlname = "Köln Messe/Deutz";
+        break;
+
+        // Hamburg's Landungsbrücken has three bridges [1..3], but you cannot search for them.
+        case preg_match('/Landungsbr.*cken Br.*cke \d/i', $name) > 0:
+            $urlname = "Landungsbrücken, Hamburg";
         break;
     }
 
