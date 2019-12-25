@@ -57582,6 +57582,8 @@ window.addEventListener("load", function () {
   __webpack_require__(/*! ./components/pwa_fix */ "./resources/js/components/pwa_fix.js");
 
   __webpack_require__(/*! ./components/usageBoard */ "./resources/js/components/usageBoard.js");
+
+  __webpack_require__(/*! ./components/station-autocomplete */ "./resources/js/components/station-autocomplete.js");
 });
 
 /***/ }),
@@ -57973,6 +57975,52 @@ $(".upload-image").on("click", function (ev) {
 
 /***/ }),
 
+/***/ "./resources/js/components/station-autocomplete.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/station-autocomplete.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// Hier kommen jetzt die 25 größten Städte Deutschlands rein, damit die Maschine
+// schon mal was zum Zeigen hat, auch wenn noch kein AJAX-Request passiert ist.
+// Liste: https://de.wikipedia.org/wiki/Liste_der_Gro%C3%9Fst%C3%A4dte_in_Deutschland#Tabelle
+var popularStations = ['Hamburg Hbf', 'Berlin Hbf', 'München Hbf', 'Köln Hbf', 'Frankfurt(Main)Hbf', 'Stuttgart Hbf', 'Düsseldorf Hbf', 'Leipzig Hbf', 'Dortmund Hbf', 'Essen Hbf', 'Bremen Hbf', 'Dresden Hbf', 'Hannover Hbf', 'Nürnberg Hbf', 'Duisburg Hbf', 'Bochum Hbf', 'Wuppertal Hbf', 'Bielefeld Hbf', 'Bonn Hbf', 'Münster Hbf', 'Karlsruhe Hbf', 'Mannheim Hbf', 'Augsburg Hbf', 'Wiesbaden Hbf', 'Mönchengladbach Hbf'];
+
+(function () {
+  var input = document.getElementById('station-autocomplete');
+
+  if (input == null) {
+    return;
+  }
+
+  window.awesomplete = new Awesomplete(input, {
+    minChars: 2,
+    autoFirst: true,
+    list: popularStations
+  });
+  input.addEventListener('keyup', function (event) {
+    if (input.value.length < 5) return; // Hier können wir dann auch irgendwann die Flixbus-API einbauen,
+    // finds ohne getrackte Flixbusse eher sinnlos.
+    // Hier ist nur Bahn-Stuff
+
+    fetch(urlAutocomplete + "/" + encodeURI(input.value)).then(function (res) {
+      return res.json();
+    }).then(function (json) {
+      window.awesomplete.list = json.map(function (d) {
+        return {
+          value: d.name,
+          label: d.name + ""
+        };
+      });
+    })["catch"](function (error) {
+      return console.error(error);
+    });
+  });
+})();
+
+/***/ }),
+
 /***/ "./resources/js/components/stationboard.js":
 /*!*************************************************!*\
   !*** ./resources/js/components/stationboard.js ***!
@@ -58179,22 +58227,18 @@ var timeFormat = "YYYY-MM-DD";
 var colors = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)'];
 var colorindex = 0;
 Array.from(document.getElementsByClassName("date-canvas")).forEach(function (canvas) {
-  var data = Array.from(JSON.parse(canvas.dataset["json"])).sort(function (a, b) {
-    return a.date > b.date;
-  });
+  var labels = JSON.parse(canvas.dataset.labels);
+  var data = JSON.parse(canvas.dataset.json);
   var config = {
     type: "line",
     data: {
-      labels: data.map(function (data) {
-        return data.date;
-      }),
+      labels: labels,
       datasets: canvas.dataset.keys.split(',').map(function (key, index) {
         var color = colors[colorindex++ % colors.length];
-        console.log(colors);
         return {
           label: canvas.dataset.title.split(',')[index],
           data: data.map(function (date) {
-            return date[key];
+            return typeof date[key] == "undefined" ? 0 : date[key];
           }),
           borderColor: color,
           backgroundColor: "rgba(0,0,0,0)" // transparent

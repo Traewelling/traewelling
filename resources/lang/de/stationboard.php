@@ -22,5 +22,6 @@ return [
     "stopover" => "Station",
     "submit-search" => "Suchen",
     "where-are-you" => "Wo bist Du?",
-    "last-stations" => "Letzte Stationen"
+    "last-stations" => "Letzte Stationen",
+    "next-stop" => "Nächster Halt"
 ];

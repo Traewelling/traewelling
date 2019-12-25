@@ -36046,6 +36046,12 @@ ul.timeline > li > i {
   z-index: 400;
 }
 
+ul.timeline > li > i.fa.fa-calendar-day {
+  color: #c0392b;
+  text-align: center;
+  border-color: transparent;
+}
+
 ul.timeline > li:first-child:before {
   content: " ";
   background: #d4d9df;
@@ -36057,7 +36063,7 @@ ul.timeline > li:first-child:before {
   z-index: 400;
 }
 
-ul.timeline > li:last-child {
+ul.timeline > li:last-child:not(:has(> i.fa.fa-calendar-day)) {
   line-height: 1;
 }
 
@@ -36283,5 +36289,11 @@ p.train-status:before {
 
 .croppie-container {
   height: auto;
+}
+
+#event-header h2 {
+  font-size: 145%;
+  margin-bottom: 0;
+  line-height: 1.5;
 }
 

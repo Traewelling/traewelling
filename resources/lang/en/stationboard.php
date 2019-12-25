@@ -23,4 +23,5 @@ return [
     "submit-search" => "Search",
     "where-are-you" => "Where are you?",
     "last-stations" => "Last stations",
+    "next-stop" => "Next stop"
 ];
