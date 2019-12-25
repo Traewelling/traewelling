@@ -13,6 +13,8 @@
         @endif
     @endif
 
+    @php($event = $status->event())
+
     <div class="card-body row">
         <div class="col-2 image-box pr-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
@@ -38,6 +40,11 @@
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
                         @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
+                        
+                        @if($event != null)
+                            <br class="d-sm-none">
+                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a></span>
+                        @endif
                     </p>
 
                     @if(!empty($status->body))
@@ -69,6 +76,12 @@
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                     {!! stationLink($status->trainCheckin->getDestination->name) !!}
                 </li>
+                @if($event != null)
+                <!-- <li class="calendar-button">
+                    <i class="fa fa-calendar-day"></i>
+                    <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a>
+                </li> -->
+                @endif
             </ul>
         </div>
     </div>

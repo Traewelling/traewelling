@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\HafasTrip;
 use App\Like;
 use App\Status;
-use App\HafasTrip;
 use App\TrainCheckin;
 use App\TrainStations;
 use Carbon\Carbon;
@@ -32,6 +32,15 @@ class StatusController extends Controller
             return $status->trainCheckin->getMapLines();
         });
         return ['statuses' => $statuses, 'polylines' => $polylines];
+    }
+
+    public static function getStatusesByEvent(int $eventId) {
+        return Status::with('trainCheckin')
+            ->where('event_id', '=', $eventId)
+            ->get()
+            ->sortByDesc(function ($status, $key) {
+                return $status->trainCheckin->departure;
+            });
     }
 
     public static function getDashboard($user) {

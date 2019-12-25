@@ -58,6 +58,10 @@ Route::get('/statuses/active', [
     'uses' => 'FrontendStatusController@getActiveStatuses',
     'as'   => 'statuses.active',
 ]);
+Route::get('/statuses/event/{event}', [
+    'uses'  => 'FrontendStatusController@statusesByEvent',
+    'as'    => 'statuses.byEvent'
+]);
 
 Auth::routes(['verify' => true]);
 
@@ -96,7 +100,46 @@ Route::middleware(['auth'])->group(function() {
         'uses' => 'UserController@destroyUser',
         'as'   => 'account.destroy',
     ]);
+});
 
+/**
+ * Routes for the admins.
+ */
+Route::middleware(['auth', 'userrole:5'])->group(function() {
+    
+    Route::get('/usage', [
+        'uses'  => 'FrontendStatusController@usageboard',
+        'as'    => 'usage'
+    ]);
+
+    Route::get('/events', [
+        'uses'  => 'FrontendEventController@index',
+        'as'    => 'events.all'
+    ]);
+
+    Route::get('/events/new', [
+        'uses'  => 'FrontendEventController@newForm',
+        'as'    => 'events.newform'
+    ]);
+
+    Route::post('/events/new', [
+        'uses'  => 'FrontendEventController@store',
+        'as'    => 'events.store'
+    ]);
+
+    Route::get('/events/{slug}/delete', [
+        'uses'  => 'FrontendEventController@destroy',
+        'as'    => 'events.delete'
+    ]);
+
+    Route::get('/events/{slug}', [
+        'uses'  => 'FrontendEventController@show',
+        'as'    => 'events.show'
+    ]);
+    Route::put('/events/{slug}', [
+        'uses'  => 'FrontendEventController@update',
+        'as'    => 'events.update'
+    ]);
 });
 
 /**
@@ -228,11 +271,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/mastodon/test', [
         'uses'  => 'SocialController@testMastodon',
     ]);
-
-    Route::get('/usage', [
-        'uses'  => 'FrontendStatusController@usageboard',
-        'as'    => 'usage'
-    ]);
-
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

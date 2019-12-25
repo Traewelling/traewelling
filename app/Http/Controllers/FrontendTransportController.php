@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\TransportController as TransportBackend;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FrontendTransportController extends Controller
@@ -64,6 +64,7 @@ class FrontendTransportController extends Controller
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
             'tweet_check' => 'max:2',
             'toot_check' => 'max:2',
+            'event' => 'integer'
         ]);
         $TrainCheckinResponse = TransportBackend::TrainCheckin(
             $request->tripID,
@@ -73,7 +74,8 @@ class FrontendTransportController extends Controller
             Auth::user(),
             $request->business_check,
             $request->tweet_check,
-            $request->toot_check
+            $request->toot_check,
+            $request->event
             );
 
         if ($TrainCheckinResponse['success'] === false) {
@@ -95,7 +97,8 @@ class FrontendTransportController extends Controller
                 'duration' => $TrainCheckinResponse['duration'],
                 'points' => $TrainCheckinResponse['points'],
                 'lineName' => $TrainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection']
+                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection'],
+                'event' => $TrainCheckinResponse['event']
             ]);
         }
     }

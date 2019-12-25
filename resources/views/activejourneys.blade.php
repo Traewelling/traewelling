@@ -8,6 +8,7 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8" id="activeJourneys">
+                <h4>{{ __('menu.active') }}</h4>
 
                 <div id="map" class="embed-responsive embed-responsive-1by1"></div>
                 <script>
@@ -232,6 +233,43 @@ window.addEventListener("load", () => {
     setInterval(() => {
         updateMap();
     }, 5 * 1000);
+
+
+    /////////// Events ///////////
+
+    const icon = L.divIcon({
+        html: '<i class="fa fa-calendar-day" style="line-height: 48px; font-size: 36px;"></i>',
+        iconSize: [48,48],
+        className: 'text-trwl text-center'
+    });
+
+    const events = [
+        @foreach($events as $event)
+        {
+            "name": "{{$event->name}}",
+            "host": "{{$event->host}}",
+            "url": "{{$event->url}}",
+            "begin": "{{ date("Y-m-d", strtotime($event->begin)) }}",
+            "end": "{{ date("Y-m-d", strtotime($event->end)) }}",
+            "ts": {!! $event->getTrainStation() !!},
+            "mapLink": "{{ route('statuses.byEvent', ['event' => $event->slug]) }}",
+            "closestLink": `{!! stationLink($event->getTrainstation()->name) !!}`
+        },
+        @endforeach
+    ];
+
+    events.forEach((event) => {
+        var marker = L.marker([event.ts.latitude, event.ts.longitude], {
+            title: event.name,
+            icon: icon
+        }).addTo(map);
+
+        marker.bindPopup(`<strong><a href="${event.url}">${event.name}</a></strong><br />
+<i class="fa fa-user-clock"></i> ${event.host}<br />
+<i class="fa fa-calendar-day"></i> ${event.begin} - ${event.end}<br />
+<a href="${event.mapLink}">Alle Reisen zum Event anzeigen</a><br />
+${event.closestLink}`);
+    });
 });
                 </script>
 

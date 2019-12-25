@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Event;
+use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -96,7 +98,30 @@ class FrontendStatusController extends Controller
 
     public function getActiveStatuses() {
         $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
-        return view('activejourneys', ['statuses' => $ActiveStatusesResponse['statuses'], 'polylines' => $ActiveStatusesResponse['polylines']]);
+        $ActiveEvents = EventBackend::activeEvents();
+        return view('activejourneys', [
+            'statuses' => $ActiveStatusesResponse['statuses'],
+            'polylines' => $ActiveStatusesResponse['polylines'],
+            'events' => $ActiveEvents,
+            'event' => null
+        ]);
+    }
+
+    public function statusesByEvent(String $event) {
+        $events = Event::where('slug', '=', $event)->get();
+        if($events->count() == 0) {
+            abort(404);
+        }
+
+        $e = $events->get(0);
+
+        $statusesResponse = StatusBackend::getStatusesByEvent($e->id);
+
+        return view('eventsMap', [
+            'statuses' => $statusesResponse,
+            'events' => $events,
+            'event' => $e,
+        ]);
     }
 
     public function getStatus($id) {

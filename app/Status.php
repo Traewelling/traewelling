@@ -19,4 +19,11 @@ class Status extends Model
         return $this->hasOne('App\TrainCheckin');
     }
 
+    public function event() {
+        if($this->event_id == null) {
+            return null;
+        }
+        return Event::find($this->event_id);
+    }
+
 }
