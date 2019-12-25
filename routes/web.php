@@ -105,8 +105,8 @@ Route::middleware(['auth'])->group(function() {
 /**
  * Routes for the admins.
  */
-Route::middleware(['auth', 'userrole:5'])->group(function() {
-    
+Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
+
     Route::get('/usage', [
         'uses'  => 'FrontendStatusController@usageboard',
         'as'    => 'usage'

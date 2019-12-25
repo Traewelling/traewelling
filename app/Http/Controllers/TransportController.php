@@ -257,9 +257,9 @@ class TransportController extends Controller
 
         // Let's connect our statuses and the events
         $event = null;
-        if($eventId != 0) {
+        if($eventId !== 0) {
             $event = Event::find($eventId);
-            if($event == null) abort(404);
+            if($event === null) abort(404);
             if(Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
                 $status->event_id = $event->id;
             }
@@ -279,22 +279,22 @@ class TransportController extends Controller
                                       preg_match('/\s/', $hafas['linename']),
                                       ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name]
                          );
-            if ($event != null) {
+            if ($event !== null) {
                 $post_text = trans_choice(
                     'controller.transport.social-post-with-event',
                     preg_match('/\s/', $hafas['linename']),
                     ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name, 'hashtag' => $event->hashtag]
                 );
             }
-            
+
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
                 $eventIntercept = "";
-                if($event != null) {
+                if($event !== null) {
                     $eventIntercept = __('controller.transport.social-post-for') . '#' . $event->hashtag;
                 }
-                
+
                 $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . $eventIntercept . ") #NowTräwelling ";
 
                 $appendix_length = strlen($appendix) + 30;

@@ -10,8 +10,6 @@
 
     <form method="get" class="row">
         @csrf
-        <input type="hidden" name="auth_key" value="{{ $auth_key }}">
-
         <div class="col-6 col-md-4">
             <label for="begin">{{__('export.begin')}}:</label>
             <input name="begin" type="date" value="{{ $begin }}" class="form-control">

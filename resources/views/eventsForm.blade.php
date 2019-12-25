@@ -59,7 +59,7 @@
             <div class="form-group row">
                 <label for="nearest_station_name" class="col-md-4 col-form-label text-md-right">{{ __('events.closestStation') }}:</label>
                 <div class="col-md-6 text-left" id="autocomplete-form">
-                    <input type="text" id="station-autocomplete" name="nearest_station_name" class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}" value="{{ $event->getTrainStation()->name }}" >
+                    <input type="text" id="station-autocomplete" name="nearest_station_name" class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}" value="{{ $event->getTrainStation()->name }}" required>
                 </div>
             </div>
             <div class="form-group text-center">
@@ -73,7 +73,7 @@
             </div>
         </form>
     </div>
-    
+
     <div class="modal fade" tabindex="-1" role="dialog" id="delete-modal-{{ $event->id }}">
         <div class="modal-dialog">
             <div class="modal-content">
