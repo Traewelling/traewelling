@@ -165,6 +165,7 @@
         var urlLike = '{{ route('like.create') }}';
         var urlTrainTrip = '{{ route('trains.trip') }}';
         var urlUnfollow = '{{ route('follow.destroy') }}';
+        var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
     </script>
 </body>
 </html>

@@ -38,7 +38,7 @@ function number($number, $decimals=2) {
 
 /**
  * Calculate hours and minutes from a given duration in seconds.
- * 
+ *
  * @param int $seconds How long in seconds?
  * @return array with `hours`, `minutes` and `showHours`.
  */
@@ -49,7 +49,7 @@ function secondsToDuration($seconds): array {
         "hours" => intdiv($seconds, $secondsInAnHour),
         "minutes" => intdiv($seconds % $secondsInAnHour, 60),
         "showHours" => $seconds > $secondsInAnHour
-    ]; 
+    ];
 }
 
 /**
@@ -57,7 +57,7 @@ function secondsToDuration($seconds): array {
  */
 function durationToSpan($duration): String {
     $return = $duration["minutes"] . "<small>min</small>";
-    
+
     if($duration["showHours"]) {
         $return = $duration["hours"] . "<small>h</small>&nbsp;" . $return;
     }
@@ -65,10 +65,10 @@ function durationToSpan($duration): String {
     return $return;
 }
 
-function stationLink($name): String {
+function stationLink($name, $classes = "text-trwl clearfix"): String {
     $urlname = $name;
-    
-    switch(true) {
+
+    switch($name) {
         // Those are stations that you can ride to but you can't search for them.
         case $name == "Köln Messe/Deutz Gl. 9-10":
         case $name == "Köln Messe/Deutz Gl.11-12":
@@ -81,7 +81,7 @@ function stationLink($name): String {
         break;
     }
 
-    $return = '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) . '" class="text-trwl clearfix">' . $name . '</a>';
+    $return = '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) . '" class="' . $classes . '">' . $name . '</a>';
 
     return $return;
 }

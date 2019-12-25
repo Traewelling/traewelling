@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Event;
 use App\HafasTrip;
 use App\MastodonServer;
 use App\PolyLine;
@@ -185,7 +186,7 @@ class TransportController extends Controller
         return 1;
     }
 
-    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check) {
+    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check, $eventId) {
         $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
         $stopovers = json_decode($hafas['stopovers'], true);
         $offset1 = self::searchForId($start, $stopovers);
@@ -213,16 +214,10 @@ class TransportController extends Controller
         }
 
         $originStation = self::getTrainStation(
-            $originAttributes['stop']['id'],
-            $originAttributes['stop']['name'],
-            $originAttributes['stop']['location']['latitude'],
-            $originAttributes['stop']['location']['longitude']
+            $originAttributes['stop']['id'], $originAttributes['stop']['name'], $originAttributes['stop']['location']['latitude'], $originAttributes['stop']['location']['longitude']
         );
         $destinationStation = self::getTrainStation(
-            $destinationAttributes['stop']['id'],
-            $destinationAttributes['stop']['name'],
-            $destinationAttributes['stop']['location']['latitude'],
-            $destinationAttributes['stop']['location']['longitude']
+            $destinationAttributes['stop']['id'], $destinationAttributes['stop']['name'], $destinationAttributes['stop']['location']['latitude'], $destinationAttributes['stop']['location']['longitude']
         );
         $points = self::CalculateTrainPoints(
             $distance,
@@ -260,7 +255,18 @@ class TransportController extends Controller
             return ['success' => false, 'overlap' => $overlap];
         }
 
+        // Let's connect our statuses and the events
+        $event = null;
+        if($eventId != 0) {
+            $event = Event::find($eventId);
+            if($event == null) abort(404);
+            if(Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
+                $status->event_id = $event->id;
+            }
+        }
+
         $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
+
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
@@ -273,10 +279,23 @@ class TransportController extends Controller
                                       preg_match('/\s/', $hafas['linename']),
                                       ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name]
                          );
+            if ($event != null) {
+                $post_text = trans_choice(
+                    'controller.transport.social-post-with-event',
+                    preg_match('/\s/', $hafas['linename']),
+                    ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name, 'hashtag' => $event->hashtag]
+                );
+            }
+            
             $post_url = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
-                $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . ") #NowTräwelling ";
+                $eventIntercept = "";
+                if($event != null) {
+                    $eventIntercept = __('controller.transport.social-post-for') . '#' . $event->hashtag;
+                }
+                
+                $appendix = " (@ " . $hafas['linename'] . ' ➜ ' . $destinationStation->name . $eventIntercept . ") #NowTräwelling ";
 
                 $appendix_length = strlen($appendix) + 30;
                 $post_text = substr($status->body, 0, 280 - $appendix_length);
@@ -328,7 +347,8 @@ class TransportController extends Controller
             'alsoOnThisConnection' => $alsoOnThisConnection,
             'lineName' => $hafas['linename'],
             'distance' => $trainCheckin->distance,
-            'duration' => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)
+            'duration' => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure),
+            'event'    => $event ?? null
         ];
     }
 
@@ -372,7 +392,7 @@ class TransportController extends Controller
         return $trip;
     }
 
-    private static function getTrainStation ($ibnr, $name, $latitude, $longitude) {
+    public static function getTrainStation ($ibnr, $name, $latitude, $longitude) {
         $station = TrainStations::where('ibnr', $ibnr)->first();
         if ($station === null) {
             $station = New TrainStations;
@@ -414,10 +434,7 @@ class TransportController extends Controller
         $ibnrObject = json_decode($response);
 
         $station = self::getTrainStation(
-            $ibnrObject[0]->id,
-            $ibnrObject[0]->name,
-            $ibnrObject[0]->location->latitude,
-            $ibnrObject[0]->location->longitude
+            $ibnrObject[0]->id, $ibnrObject[0]->name, $ibnrObject[0]->location->latitude, $ibnrObject[0]->location->longitude
         );
 
         $user->home_id = $station->id;
@@ -462,7 +479,6 @@ class TransportController extends Controller
             'subway',
             'ferry',];
 
-//        foreach($transportTypes as $transport) {
         $seenCheckins = 0;
         for ($i = 0; $seenCheckins < $hafas->occurs && $i < count($transportTypes); $i++) {
             $transport = $transportTypes[$i];

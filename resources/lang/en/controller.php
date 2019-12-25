@@ -28,6 +28,8 @@ return [
         "overlapping-checkin" => "You have an overlapping checkin with connection :linename: <a href=\":url\">#:id</a>",
         "also-in-connection" => "Also in this connection are:",
         "social-post" => "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
+        "social-post-with-event" => "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
+        "social-post-for" => " for ",
         "no-station-found" => "No station has been found for this search.",
     ],
     "user" => [
