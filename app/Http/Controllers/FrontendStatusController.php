@@ -130,10 +130,6 @@ class FrontendStatusController extends Controller
     }
 
     public function usageboard(Request $request) {
-        if($request->input('auth_key') != sha1("This is bad security, but it's an okay prototype until we have a better way of working with user roles.")) {
-            abort(401); // Unauthorized
-        }
-
         $begin = Carbon::now()->copy()->addDays(-14);
         $end = Carbon::now();
 
@@ -180,7 +176,6 @@ class FrontendStatusController extends Controller
         }
 
         return view('usageboard', [
-            'auth_key' => $request->input("auth_key"),
             'begin' => $begin->format("Y-m-d"),
             'end' => $end->format("Y-m-d"),
             'dates' => $dates,
