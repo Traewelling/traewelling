@@ -214,10 +214,16 @@ class TransportController extends Controller
         }
 
         $originStation = self::getTrainStation(
-            $originAttributes['stop']['id'], $originAttributes['stop']['name'], $originAttributes['stop']['location']['latitude'], $originAttributes['stop']['location']['longitude']
+            $originAttributes['stop']['id'],
+            $originAttributes['stop']['name'],
+            $originAttributes['stop']['location']['latitude'],
+            $originAttributes['stop']['location']['longitude']
         );
         $destinationStation = self::getTrainStation(
-            $destinationAttributes['stop']['id'], $destinationAttributes['stop']['name'], $destinationAttributes['stop']['location']['latitude'], $destinationAttributes['stop']['location']['longitude']
+            $destinationAttributes['stop']['id'],
+            $destinationAttributes['stop']['name'],
+            $destinationAttributes['stop']['location']['latitude'],
+            $destinationAttributes['stop']['location']['longitude']
         );
         $points = self::CalculateTrainPoints(
             $distance,
@@ -266,7 +272,6 @@ class TransportController extends Controller
         }
 
         $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
-
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
@@ -434,7 +439,10 @@ class TransportController extends Controller
         $ibnrObject = json_decode($response);
 
         $station = self::getTrainStation(
-            $ibnrObject[0]->id, $ibnrObject[0]->name, $ibnrObject[0]->location->latitude, $ibnrObject[0]->location->longitude
+            $ibnrObject[0]->id,
+            $ibnrObject[0]->name,
+            $ibnrObject[0]->location->latitude,
+            $ibnrObject[0]->location->longitude
         );
 
         $user->home_id = $station->id;
