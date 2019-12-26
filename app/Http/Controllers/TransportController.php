@@ -263,7 +263,7 @@ class TransportController extends Controller
 
         // Let's connect our statuses and the events
         $event = null;
-        if($eventId !== 0) {
+        if($eventId != 0) {
             $event = Event::find($eventId);
             if($event === null) abort(404);
             if(Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
