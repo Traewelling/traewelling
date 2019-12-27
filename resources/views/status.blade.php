@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Privacy
+    Status
 @endsection
 
 @section('content')

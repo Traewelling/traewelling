@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Events
+    Event: {{$event->name}}
 @endsection
 
 @section('content')

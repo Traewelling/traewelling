@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@section('title')
+    RIS
+@endsection
 @section('content')
     @include('includes.station-autocomplete')
     <div class="container">

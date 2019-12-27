@@ -1,4 +1,13 @@
 @extends('layouts.app')
+@section('title')
+@if($page == "home")
+    {{__('menu.blog')}}
+@elseif($page == "single")
+    {{ $blogposts[0]->title }}
+@elseif($page == "category")
+    {{__('menu.blog')}}: {{ $category }}
+@endif
+@endsection
 @section('content')
     <div class="container blog">
     <div class="row justify-content-center">

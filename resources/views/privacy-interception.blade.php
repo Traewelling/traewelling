@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{__('privacy.title') }}
+    {{ html_entity_decode(__('privacy.title')) }}
 @endsection
 
 @section('content')
