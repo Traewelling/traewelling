@@ -36046,12 +36046,6 @@ ul.timeline > li > i {
   z-index: 400;
 }
 
-ul.timeline > li > i.fa.fa-calendar-day {
-  color: #c0392b;
-  text-align: center;
-  border-color: transparent;
-}
-
 ul.timeline > li:first-child:before {
   content: " ";
   background: #d4d9df;
@@ -36063,7 +36057,7 @@ ul.timeline > li:first-child:before {
   z-index: 400;
 }
 
-ul.timeline > li:last-child:not(:has(> i.fa.fa-calendar-day)) {
+ul.timeline > li:last-child {
   line-height: 1;
 }
 
