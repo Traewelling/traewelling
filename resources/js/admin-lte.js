@@ -11,7 +11,7 @@ try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap');
+    require("./../../node_modules/mdbootstrap/js/bootstrap.js");
     require('admin-lte');
 } catch (e) {}
 

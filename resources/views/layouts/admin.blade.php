@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title') | Admin | {{ config('app.name') }}</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -13,7 +14,7 @@
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="main-header navbar navbar-expand navbar-red navbar-dark">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -32,7 +33,8 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf                                    </form>
+                    @csrf
+                </form>
             </li>
         </ul>
     </nav>
@@ -42,14 +44,17 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="index3.html" class="brand-link">
-            <img src="{{ asset('img/logo.svg') }}" alt="{{ config('app.name') }} Logo" class="brand-image" style="opacity: .8">
-            <span class="brand-text font-weight-light">AdminLTE 3</span>
+            <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo" class="brand-image" style="opacity: .8">
+            <span class="brand-text font-weight-light">&nbsp;</span>
         </a>
 
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="pull-left image">
+                    <img src="{{ route('account.showProfilePicture', ['username' => Auth::user()->username]) }}" class="img-circle" alt="User Image">
+                </div>
                 <div class="info">
                     <a href="#" class="d-block">Hallo, {{ Auth::user()->name }}!</a>
                 </div>
@@ -61,11 +66,12 @@
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->is('admin') ? 'active' : '' }}">
                             <i class="fas fa-tachometer-alt"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
+                    <!--
                     <li class="nav-item has-treeview {{ request()->is('admin/user*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('admin/user*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users"></i>
@@ -84,26 +90,28 @@
                             </li>
                         </ul>
                     </li>
-
-                    <li class="nav-item has-treeview {{ request()->is('admin/server*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('admin/server*') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-server"></i>
-                            <p>Servers <i class="right fas fa-angle-left"></i></p>
+                    -->
+                    <li class="nav-item has-treeview {{ request()->is('admin/event*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('admin/event*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-calendar-alt"></i>
+                            <p>Events <i class="right fas fa-angle-left"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
+
                             <li class="nav-item">
-                                <a href="#" class="nav-link {{ request()->is('admin/servers') ? 'active' : '' }}">
+                                <a href="{{ route('events.all') }}" class="nav-link {{ request()->is('admin/events') ? 'active' : '' }}">
                                     <i class="fas fa-list nav-icon"></i>
                                     <p>List</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link {{ request()->is('admin/server') ? 'active' : '' }}">
-                                    <i class="fas fa-plus nav-icon"></i> <p>Add</p>
+                                <a href="{{ route('events.newform') }}" class="nav-link {{ request()->is('admin/events/new') ? 'active' : '' }}">
+                                    <i class="fas fa-plus nav-icon"></i> <p>{{ __('events.new') }}</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
+                    <!--
                     <li class="nav-item has-treeview {{ request()->is('admin/camera*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('admin/camera*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-camera"></i>
@@ -123,6 +131,7 @@
                             </li>
                         </ul>
                     </li>
+                    -->
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
@@ -166,12 +175,6 @@
             <p>Sidebar content</p>
         </div>
     </aside>
-
-    <footer class="main-footer">
-        <div class="float-right d-none d-sm-inline">
-        </div>
-        <strong>Copyright &copy; {{ date('Y') }} <a href="https://lrl-systems.de/">LRL Systems</a>.</strong> All rights reserved.
-    </footer>
 </div>
 <script src="{{ asset('js/admin.js') }}"></script>
 </body>
