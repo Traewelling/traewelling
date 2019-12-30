@@ -37,10 +37,9 @@ class StatusController extends Controller
     public static function getStatusesByEvent(int $eventId) {
         return Status::with('trainCheckin')
             ->where('event_id', '=', $eventId)
-            ->get()
-            ->sortByDesc(function ($status, $key) {
-                return $status->trainCheckin->departure;
-            });
+            ->orderBy('created_at', 'desc')
+            ->latest()
+            ->simplePaginate(15);
     }
 
     public static function getDashboard($user) {
