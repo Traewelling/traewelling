@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    FAQ
+    FAQ - {{ __('about.faq-heading') }}
 @endsection
 
 @section('content')

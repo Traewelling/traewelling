@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title')
+    {{ $train['linename'] }} -> {{$destination}}
+@endsection
 @section('content')
     <div class="container">
     <div class="row justify-content-center">
