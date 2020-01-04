@@ -17463,7 +17463,8 @@ a.text-dark:hover, a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
-}/* required styles */
+}
+/*# sourceMappingURL=bootstrap.css.map *//* required styles */
 
 .leaflet-pane,
 .leaflet-tile,
@@ -18191,6 +18192,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 			background: hsl(86, 100%, 21%);
 			color: inherit;
 		}
+/*# sourceMappingURL=awesomplete.css.map */
 /*
  * Bootstrap Cookie Alert by Wruczek
  * https://github.com/Wruczek/Bootstrap-Cookie-Alert
@@ -36046,12 +36048,6 @@ ul.timeline > li > i {
   z-index: 400;
 }
 
-ul.timeline > li > i.fa.fa-calendar-day {
-  color: #c0392b;
-  text-align: center;
-  border-color: transparent;
-}
-
 ul.timeline > li:first-child:before {
   content: " ";
   background: #d4d9df;
@@ -36063,7 +36059,7 @@ ul.timeline > li:first-child:before {
   z-index: 400;
 }
 
-ul.timeline > li:last-child:not(:has(> i.fa.fa-calendar-day)) {
+ul.timeline > li:last-child {
   line-height: 1;
 }
 
