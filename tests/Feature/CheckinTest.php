@@ -74,10 +74,11 @@ class CheckinTest extends TestCase {
     }
 
     /**
-     * This is a lengthy test which does a lot of this and touches many endpoints. FIRST it will
-     * find an ICE train that leaving Frankfurt/Main Airport. If there is none that suits us,
-     * because of night or because every single train has a problem (storm or something), this test
-     * is skipped. (SECOND)
+     * This is a lengthy test which does a lot of this and touches many endpoints. FIRST, it will
+     * find an ICE train that leaving Frankfurt/Main Airport at 10:00 the next day. This way, we 
+     * can try to get "okayish" trains (cancels are not published this far in the future, in most
+     * cases anyway). SECOND, if there is no train that suits us, because of night or because every
+     * single train has a problem (storm or something), this test is skipped.
      * As the THIRD preperation, we try to receive some trip information so we can find a stop to
      * drive to.
      * 
@@ -91,7 +92,7 @@ class CheckinTest extends TestCase {
      */
     public function testCheckin() {
         // First: Get a train that's fine for our stuff
-        $now = new \DateTime();
+        $now = new \DateTime("+1 day 8:00");
         $stationname = "Frankfurt(M) Flughafen Fernbf"; $ibnr = "8070003";
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
