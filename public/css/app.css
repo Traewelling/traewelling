@@ -36014,6 +36014,7 @@ body {
 
 body {
   background: #f8fafc;
+  overflow-x: hidden;
 }
 
 .product-icon {
