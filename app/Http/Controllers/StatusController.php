@@ -173,7 +173,7 @@ class StatusController extends Controller
             $return .= $this->writeLine($checkin);
         }
 
-        $return_8859_1 = iconv("UTF-8", "ISO-8859-1", $return);
+        $return_8859_1 = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $return);
 
         return Response::make($return_8859_1, 200, [
         'Content-type' => 'text/csv',
