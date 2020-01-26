@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title')
+    {{ $train['linename'] }} -> {{$destination}}
+@endsection
 @section('content')
     <div class="container">
     <div class="row justify-content-center">
@@ -83,8 +86,30 @@
                                 <label class="custom-control-label" for="toot_check">{{__('stationboard.check-toot')}}</label>
                             </div>
                             @endif
-
                         @endif
+
+                        @php($events = App\Http\Controllers\EventController::activeEvents())
+                        @if($events->count() == 1)
+                            @php($e = $events[0])
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="event_check" name="event" value="{{ $e->id }}">
+                                <label class="custom-control-label" for="event_check">{{ __('events.on-my-way-to', ['name' => $e->name]) }}</label>
+                            </div>
+                        @elseif($events->count() > 1)
+                            <div class="form-group">
+                                <label for="event-dropdown" class="col-form-label">{{__('events.on-my-way-dropdown')}}</label>
+                                <select class="form-control" id="event-dropdown" name="event">
+                                    <option value="0" selected>{{ __('events.no-event-dropdown') }}</option>
+                                    @foreach($events as $event)
+                                        <option value="{{ $event->id }}">{{ $event->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <input type="hidden" name="event" value="0">
+                        @endif
+
+
                         <input type="hidden" id="business_check" name="business_check" value="">
                         <input type="hidden" id="input-tripID" name="tripID" value="">
                         <input type="hidden" id="input-destination" name="destination" value="">

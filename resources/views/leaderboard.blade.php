@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Dashboard
+    {{ __('menu.leaderboard') }}
 @endsection
 
 @section('content')
@@ -43,7 +43,7 @@
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                    <td>{{ $user->train_distance }} km</td>
+                                    <td>{{ number($user->train_distance) }}<small>km</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
@@ -65,7 +65,7 @@
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                    <td>{{ $user->train_distance }} km</td>
+                                    <td>{{ number($user->train_distance) }}<small>km</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
@@ -88,7 +88,7 @@
                                     <td>{{ $key+1 }}</td>
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                    <td>{{ $user->train_distance }} km</td>
+                                    <td>{{ number($user->train_distance) }}<small>km</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach

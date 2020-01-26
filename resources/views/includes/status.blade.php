@@ -13,6 +13,8 @@
         @endif
     @endif
 
+    @php($event = $status->event())
+
     <div class="card-body row">
         <div class="col-2 image-box pr-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
@@ -25,7 +27,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
-                    <span class="text-trwl clearfix">{{ $status->trainCheckin->Origin->name }} </span>
+                    {!! stationLink($status->trainCheckin->getOrigin->name) !!}
                     <p class="train-status text-muted">
                         @php($hafas = $status->trainCheckin->HafasTrip)
                         <span>
@@ -38,10 +40,35 @@
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
                         @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
+
+                        @if($event != null)
+                            <br class="d-sm-none">
+                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a></span>
+                        @endif
                     </p>
 
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
+                    @endif
+
+                    @php($t = time())
+                    @if($t > strtotime($status->trainCheckin->departure) && $t < strtotime($status->trainCheckin->arrival))
+
+                    <?php
+                    $stops = json_decode($hafas->stopovers);
+                    $nextStopIndex = count($stops) - 1;
+
+                    // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+                    for ($i=count($stops)-1; $i > 0; $i--) {
+                        $arrival = $stops[$i]->arrival;
+                        if($arrival != null && strtotime($arrival) > $t) {
+                            $nextStopIndex = $i;
+                            continue;
+                        }
+                        break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+                    }
+                    ?>
+                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink($stops[$nextStopIndex]->stop->name) !!}</p>
                     @endif
                 </li>
                 <li>
@@ -49,6 +76,12 @@
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                     <span class="text-trwl">{{ $status->trainCheckin->Destination->name }}</span>
                 </li>
+                @if($event != null)
+                <!-- <li class="calendar-button">
+                    <i class="fa fa-calendar-day"></i>
+                    <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a>
+                </li> -->
+                @endif
             </ul>
         </div>
     </div>
@@ -91,7 +124,7 @@
                     </li>
 
                 <li class="list-inline-item like-text">
-                    <a href="#" class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></a>
+                    <span class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if($currentUser->id == $status->user_id)

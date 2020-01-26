@@ -69,6 +69,14 @@
                 @endforeach
                 </ul>
             @endif
+            @if($message['event'])
+                <p>
+                    {!!  __('events.on-your-way', [
+                        "name" => $message['event']['name'],
+                        "url" => route('statuses.byEvent', ['event' => $message['event']['slug']])
+                    ]) !!}
+                </p>
+            @endif
             <hr>
             <p class="mb-0">
                 <i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($message['duration'])) !!}</b>

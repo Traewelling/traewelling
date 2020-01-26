@@ -1,11 +1,11 @@
 <?php
 return [
     "basepoints" => "Basispunkte",
-    "block1" => "Träwelling ist ein kostenloser Check-in Service, mit dem du deinen Freunden mitteilen kannst, wo du gerade mit der  unterwegs bist und Fahrtenbuch führen kannst. Kurz gesagt: Man kann in Züge einchecken und bekommt dafür Punkte.",
+    "block1" => "Träwelling ist ein kostenloser Check-in Service, mit dem du deinen Freunden mitteilen kannst, wo du gerade mit öffentlichen Verkehrsmitteln unterwegs bist und Fahrtenbuch führen kannst. Kurz gesagt: Man kann in Züge einchecken und bekommt dafür Punkte.",
     "calculation" => "Die Entfernung wird auf die nächsten 10km gerundet und dann durch 10 geteilt. Anschließend werden die Basispunkte addiert.<br />Eine ICE-Reise von 143km bringt dir also <code>10 + aufrunden(143/10) = 10 + 15 = 25</code>&nbsp;Punkte, für eine S-Bahn-Fahrt von 8km gibt es <code>2 + aufrunden(8/10) = 2 + 1 = 3</code>&nbsp;Punkte.",
     "express" => "InterCity, EuroCity",
     "faq-heading" => "Häufig gestellte Fragen",
-    "feature-missing" => "In dieser Version von Träwelling fangen wir einmal ganz von vorne an &ndash; dabei kann es sein, dass wenig-verwendete Funktionen noch nicht implementiert sind. Wenn Du ein Feature vorschlagen möchtest, schreib einfach eine E-Mail an",
+    "feature-missing" => "In dieser Version von Träwelling fangen wir einmal ganz von vorne an – dabei kann es sein, dass wenig-verwendete Funktionen noch nicht implementiert sind. Wenn Du ein Feature vorschlagen möchtest, schreib einfach eine E-Mail an",
     "feature-missing-heading" => "Da fehlt etwas! Wieso wurde dieses Feature entfernt?",
     "heading" => "Über uns",
     "international" => "InterCityExpress, TGV, RailJet",

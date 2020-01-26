@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\HafasTrip;
 use App\Like;
 use App\Status;
-use App\HafasTrip;
 use App\TrainCheckin;
 use App\TrainStations;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,14 @@ class StatusController extends Controller
             return $status->trainCheckin->getMapLines();
         });
         return ['statuses' => $statuses, 'polylines' => $polylines];
+    }
+
+    public static function getStatusesByEvent(int $eventId) {
+        return Status::with('trainCheckin')
+            ->where('event_id', '=', $eventId)
+            ->orderBy('created_at', 'desc')
+            ->latest()
+            ->simplePaginate(15);
     }
 
     public static function getDashboard($user) {
@@ -184,5 +193,14 @@ class StatusController extends Controller
 
     public function writeLine($array): String {
         return vsprintf("\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\"%s\"\t\n", $array);
+    }
+
+    public static function usageByDay(Carbon $date) {
+        $q = DB::table('statuses')
+            ->select(DB::raw('count(*) as occurs'))
+            ->where("created_at", ">=", $date->copy()->startOfDay())
+            ->where("created_at", "<=", $date->copy()->endOfDay())
+            ->first();
+        return $q;
     }
 }

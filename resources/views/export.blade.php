@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Imprint
+    {{__('export.title')}}
 @endsection
 
 @section('content')
