@@ -169,7 +169,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'settings',
     ]);
     Route::post('/settings/uploadProfileImage', [
-        'uses' => 'UserController@uploadImage',
+        'uses' => 'FrontendUserController@updateProfilePicture',
         'as'   => 'settings.upload-image'
     ]);
 

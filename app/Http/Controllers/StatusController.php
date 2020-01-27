@@ -19,15 +19,25 @@ class StatusController extends Controller
         return Status::where('id', $id)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
     }
 
-    public static function getActiveStatuses() {
-        $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')
-            ->whereHas('trainCheckin', function ($query) {
-                $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
-            })
-            ->get()
-            ->sortByDesc(function ($status, $key) {
-                return $status->trainCheckin->departure;
-            });
+    public static function getActiveStatuses($userid=null) {
+        if ($userid === null) {
+            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')
+                ->whereHas('trainCheckin', function ($query) {
+                    $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+                })
+                ->get()
+                ->sortByDesc(function ($status, $key) {
+                    return $status->trainCheckin->departure;
+                });
+        } else {
+            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')
+                ->whereHas('trainCheckin', function ($query) {
+                    $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+                })
+                ->where('user_id', $userid)
+                ->first();
+            return $statuses;
+        }
         if ($statuses === null) {
             return null;
         }

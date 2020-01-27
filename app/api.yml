@@ -423,6 +423,99 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
 
+  /user/profilepicture:
+    put:
+      security:
+        - bearerAuth: []
+      tags: [User profile]
+      summary: Sets/updates the profile picture of the logged in user.
+      requestBody:
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+          image/png:
+            schema:
+              type: string
+              format: binary
+        description: An image to be used as the new avatar for the current user.
+      responses:
+        200:
+          description: OK.
+            The avatar was successfully uploaded.
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/displayname:
+    put:
+      security:
+        - bearerAuth: []
+      tags: [User profile]
+      summary: Updates the dipslay name of the current user.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: The new display name to be used for the current user.
+      responses:
+        200:
+          description: OK.
+            The displayName of the current user was changed.
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+  /user/{username}:
+    get:
+      tags: [User profile]
+      summary: Gets User profile
+      parameters:
+        - in: path
+          name: username
+          schema:
+            $ref: '#/components/schemas/username'
+          required: true
+          description: The username of the requested user.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Userprofile'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+
+  /user/{username}/active:
+    get:
+      tags: [User profile]
+      summary: Gets active status of user.
+      parameters:
+        - in: path
+          name: username
+          schema:
+            $ref: '#/components/schemas/username'
+          required: true
+          description: The username of the requested user.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+        204:
+          description: No Content
+        400:
+          $ref: '#/components/responses/BadRequestError'
+
 
 
 components:
@@ -447,6 +540,15 @@ components:
         The parameters are wrong or not given.
 
   schemas:
+    Userprofile:
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/username'
+        statuses:
+          $ref: '#/components/schemas/Status'
+        user:
+          $ref: '#/components/schemas/User'
     Status:
       type: object
       properties:

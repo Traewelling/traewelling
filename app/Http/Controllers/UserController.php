@@ -87,10 +87,8 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public function uploadImage(Request $request) {
+    public static function updateProfilePicture($avatar) {
         $user = Auth::user();
-
-        $avatar = $request->input('image');
 
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
         Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
@@ -101,7 +99,7 @@ class UserController extends Controller
         $user->avatar = $filename;
         $user->save();
 
-        return response()->json(['status' => ':ok']);
+        return ['status' => ':ok'];
     }
 
     //Return Settings-page
@@ -168,12 +166,6 @@ class UserController extends Controller
         $user = User::where('id', Auth::user()->id)->first();
         $user->name = $request['name'];
         $user->update();
-        $file = $request->file('image');
-        $filename = $request['name'].'-'.$user->id.'.jpg';
-
-        if ($file) {
-            Storage::disk('local')->put($filename, File::get($file));
-        }
         return redirect()->route('account');
     }
 
@@ -233,4 +225,19 @@ class UserController extends Controller
             ->first();
         return $q;
     }
+
+    public static function updateDisplayName($displayname) {
+        $request = new Request(['displayname' => $displayname]);
+        $validator = Validator::make($request->all(), [
+            'displayname' => 'required|max:120'
+        ]);
+        if($validator->fails()){
+            abort(400);
+        }
+        $user = User::where('id', Auth::user()->id)->first();
+        $user->name = $displayname;
+        $user->save();
+    }
+
+
 }

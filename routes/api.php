@@ -27,6 +27,10 @@ Route::group([ 'prefix' => 'v0'], function (){
             Route::post('signup', 'API\AuthController@signup');
             Route::get('logout', 'API\AuthController@logout')->middleware('guest:api');
         });
+        Route::group(['prefix' => 'user'], function() {
+            Route::get('{username}', 'API\UserController@show');
+            Route::get('{username}/active', 'API\UserController@active');
+        });
     });
     // All protected routes
     Route::group(['middleware' => 'auth:api'], function() {
@@ -44,6 +48,10 @@ Route::group([ 'prefix' => 'v0'], function (){
             Route::get('latest', 'API\TransportController@TrainLatestArrivals');
             Route::get('home', 'API\TransportController@getHome');
             Route::put('home', 'API\TransportController@setHome');
+        });
+        Route::group(['prefix' => 'user'], function() {
+            Route::put('profilepicture', 'API\UserController@PutProfilepicture');
+            Route::put('displayname', 'API\UserController@PutDisplayname');
         });
     });
 });
