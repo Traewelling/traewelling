@@ -13,23 +13,20 @@ const colors = [
 let colorindex = 0;
 
 Array.from(document.getElementsByClassName("date-canvas")).forEach((canvas) => {
-    const data = Array.from(JSON.parse(canvas.dataset["json"])).sort(
-        (a, b) => a.date > b.date
-    );
+    const labels = JSON.parse(canvas.dataset.labels);
+    const data = JSON.parse(canvas.dataset.json);
 
-    
-    var config = {
+    const config = {
         type: "line",
         data: {
-            labels: data.map(data => data.date),
+            labels: labels,
             datasets: canvas.dataset.keys.split(',').map((key, index) => {
                 const color = colors[colorindex++ % colors.length];
-                console.log(colors);
 
                 return {
                     label: canvas.dataset.title.split(',')[index],
-                    data: data.map(date => date[key]),
-                    
+                    data: data.map(date => typeof date[key] === "undefined" ? 0 : date[key]),
+
                     borderColor: color,
                     backgroundColor: `rgba(0,0,0,0)` // transparent
                 };
@@ -37,6 +34,6 @@ Array.from(document.getElementsByClassName("date-canvas")).forEach((canvas) => {
         }
     };
 
-    var ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
     window.myLine = new Chart(ctx, config);
 });

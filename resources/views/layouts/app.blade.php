@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -163,6 +163,7 @@
         var urlLike = '{{ route('like.create') }}';
         var urlTrainTrip = '{{ route('trains.trip') }}';
         var urlUnfollow = '{{ route('follow.destroy') }}';
+        var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
     </script>
 </body>
 </html>

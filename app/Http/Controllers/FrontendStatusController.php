@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Event;
+use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -95,7 +98,30 @@ class FrontendStatusController extends Controller
 
     public function getActiveStatuses() {
         $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
-        return view('activejourneys', ['statuses' => $ActiveStatusesResponse['statuses'], 'polylines' => $ActiveStatusesResponse['polylines']]);
+        $ActiveEvents = EventBackend::activeEvents();
+        return view('activejourneys', [
+            'statuses' => $ActiveStatusesResponse['statuses'],
+            'polylines' => $ActiveStatusesResponse['polylines'],
+            'events' => $ActiveEvents,
+            'event' => null
+        ]);
+    }
+
+    public function statusesByEvent(String $event) {
+        $events = Event::where('slug', '=', $event)->get();
+        if($events->count() == 0) {
+            abort(404);
+        }
+
+        $e = $events->get(0);
+
+        $statusesResponse = StatusBackend::getStatusesByEvent($e->id);
+
+        return view('eventsMap', [
+            'statuses' => $statusesResponse,
+            'events' => $events,
+            'event' => $e,
+        ]);
     }
 
     public function getStatus($id) {
@@ -104,14 +130,58 @@ class FrontendStatusController extends Controller
     }
 
     public function usageboard(Request $request) {
-        if($request->input('auth_key') != sha1("This is bad security, but it's an okay prototype until we have a better way of working with user roles.")) {
-            abort(401); // Unauthorized
+        $begin = Carbon::now()->copy()->addDays(-14);
+        $end = Carbon::now();
+
+        if($request->input('begin') != "") {
+            $begin = Carbon::createFromFormat("Y-m-d", $request->input('begin'));
+        }
+        if($request->input('end') != "") {
+            $end = Carbon::createFromFormat("Y-m-d", $request->input('end'));
         }
 
-        $statusesByDay = StatusController::usageByDay();
-        $userRegistrationsByDay = UserController::registerByDay();
-        $hafasTripsByDay = TransportController::usageByDay();
+        if($begin->isAfter($end)) {
+            return redirect()->back()->with('error', $begin->format('Y-m-d') . ' ist vor ' . $end->format('Y-m-d') . '. Das darf nicht.');
+        }
+        if($end->isFuture()) {
+            $end = Carbon::now();
+        }
 
-        return view('usageboard', ['statusesByDay' => $statusesByDay, 'userRegistrationsByDay' => $userRegistrationsByDay, 'hafasTripsByDay' => $hafasTripsByDay]);
+        $dates = [];
+        $statusesByDay = [];
+        $userRegistrationsByDay = [];
+        $hafasTripsByDay = [];
+
+        // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
+        $dateIterator = $end->copy()->addDays(1);
+        $i = 0; $datediff = $end->diffInDays($begin);
+        while($i < $datediff) {
+            $i++;
+            $dateIterator->addDays(-1);
+            $dates[] = $dateIterator->format("Y-m-d");
+
+            $statusesByDay[] = StatusController::usageByDay($dateIterator);
+            $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
+
+            // Wenn keine Stati passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
+            if($statusesByDay[count($statusesByDay) - 1]->occurs == 0) { // Heute keine Stati
+                $hafasTripsByDay[] = (object) [];
+            } else {
+                $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
+            }
+        }
+
+        if(empty($dates)) {
+            $dates = [$begin->format("Y-m-d")];
+        }
+
+        return view('admin.usageboard', [
+            'begin' => $begin->format("Y-m-d"),
+            'end' => $end->format("Y-m-d"),
+            'dates' => $dates,
+            'statusesByDay' => $statusesByDay,
+            'userRegistrationsByDay' => $userRegistrationsByDay,
+            'hafasTripsByDay' => $hafasTripsByDay
+        ]);
     }
 }

@@ -54,6 +54,14 @@ class HelperMethodTest extends TestCase
             
             // Ausland?
             'Wien Meidling' => 'Wien Meidling',
+            
+            // Hamburg nummeriert seine Landungsbrücken irgendwie durch, aber nur für Fähren,
+            // S-/U-/Busse sind normal oder nochmal komisch.
+            'Landungsbrücken, Hamburg' => 'Landungsbrücken, Hamburg',
+            'Landungsbrücken Brücke 1, Hamburg' => 'Landungsbrücken, Hamburg',
+            'Landungsbrücken Brücke 1' => 'Landungsbrücken, Hamburg',
+            'Landungsbrücken Brücke 2, Hamburg' => 'Landungsbrücken, Hamburg',
+            'Landungsbrücken Brücke 3, Hamburg' => 'Landungsbrücken, Hamburg',
         ] as $name => $alternatedTo) {
             $link = stationLink($name);
 
