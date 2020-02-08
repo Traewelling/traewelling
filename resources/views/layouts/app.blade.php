@@ -41,9 +41,7 @@
     <meta name="DC.Description" content="{{__('about.block1')}}">
     <meta name="DC.Language" content="de">
 
-    <style>
-        /* Moved to resources/sass/site.scss */
-    </style>
+@yield('metadata')
 </head>
 <body>
     <div id="app">

@@ -12,12 +12,14 @@ class CheckinTest extends TestCase {
     
     use RefreshDatabase;
 
+    private $plus_one_day_then_8pm = "+1 day 8:00";
+
     /**
      * Use the stationboard api and check if it works.
      * @test
      */
     public function stationboardTest() {
-        $requestDate = new \DateTime();
+        $requestDate = new \DateTime($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf"; $ibnr = 8000105; // This station has departures throughout the night.
         $trainStationboard = TransportController::TrainStationboard($stationname, $requestDate->format('U'));
         $station = $trainStationboard['station'];
@@ -92,7 +94,7 @@ class CheckinTest extends TestCase {
      */
     public function testCheckin() {
         // First: Get a train that's fine for our stuff
-        $now = new \DateTime("+1 day 8:00");
+        $now = new \DateTime($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(M) Flughafen Fernbf"; $ibnr = "8070003";
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
