@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -41,9 +41,7 @@
     <meta name="DC.Description" content="{{__('about.block1')}}">
     <meta name="DC.Language" content="de">
 
-    <style>
-        /* Moved to resources/sass/site.scss */
-    </style>
+@yield('metadata')
 </head>
 <body>
     <div id="app">

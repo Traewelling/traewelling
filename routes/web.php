@@ -107,9 +107,9 @@ Route::middleware(['auth'])->group(function() {
  */
 Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
 
-    Route::get('/usage', [
+    Route::get('/', [
         'uses'  => 'FrontendStatusController@usageboard',
-        'as'    => 'usage'
+        'as'    => 'admin.dashboard'
     ]);
 
     Route::get('/events', [

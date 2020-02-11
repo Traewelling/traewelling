@@ -20,6 +20,5 @@ window.addEventListener("load", () => {
     require("./components/settings");
     require("./components/alert");
     require("./components/pwa_fix");
-    require("./components/usageBoard");
     require("./components/station-autocomplete");
 });

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Dashboard
+{{ $event->name }}
 @endsection
 
 @section('content')
@@ -26,7 +26,12 @@
                             )
                         ) !!}</span>
                         <br class="d-block d-sm-none">
-                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-user"></i>&nbsp;{{ $event->host }} <a href="{{ $event->url }}" class="text-white"><i class="fa fa-link text-white"></i> {{ $event->url }}</a></span>
+                        <span class="font-weight-bold pl-sm-2">
+                            <i class="fa fa-user"></i>&nbsp;{{ $event->host }}
+                        </span>
+                        <span class="font-weight-bold pl-sm-2">
+                            <i class="fa fa-link text-white"></i>&nbsp;<a href="{{ $event->url }}" class="text-white">{{ parse_url($event->url)['host'] }}</a>
+                        </span>
                     </h2>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold"><i class="fa fa-train"></i></span>

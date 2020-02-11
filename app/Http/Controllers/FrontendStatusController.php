@@ -175,7 +175,7 @@ class FrontendStatusController extends Controller
             $dates = [$begin->format("Y-m-d")];
         }
 
-        return view('usageboard', [
+        return view('admin.usageboard', [
             'begin' => $begin->format("Y-m-d"),
             'end' => $end->format("Y-m-d"),
             'dates' => $dates,

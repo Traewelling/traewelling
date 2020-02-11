@@ -18,7 +18,7 @@ class FrontendEventController extends Controller {
 
         $t = time();
 
-        return view('event', [
+        return view('admin.event', [
             'upcoming' => $events->filter(function($e) use ($t) { return $t < strtotime($e->begin); }),
             'live' => $events->filter(function($e) use ($t) { return strtotime($e->begin) <= $t && strtotime($e->end) >= $t; }),
             'past' => $events->filter(function($e) use ($t) { return $t > strtotime($e->end); }),
@@ -26,7 +26,7 @@ class FrontendEventController extends Controller {
     }
 
     public function newForm() {
-        return view('eventsForm', ['event' => new Event(), 'isNew' => true]);
+        return view('admin.eventsForm', ['event' => new Event(), 'isNew' => true]);
     }
 
     // New Event
@@ -44,7 +44,7 @@ class FrontendEventController extends Controller {
     public function show(String $slug) {
         $event = EventBackend::getBySlug($slug);
 
-        return view('eventsForm', ['event' => $event, 'isNew' => false]);
+        return view('admin.eventsForm', ['event' => $event, 'isNew' => false]);
     }
 
     public function destroy(Request $request, String $slug) {
