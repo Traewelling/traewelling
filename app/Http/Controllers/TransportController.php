@@ -388,7 +388,7 @@ class TransportController extends Controller
             $trip->stopovers = json_encode($json->stopovers);
             $trip->polyline = $polyLineHash;
             $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture, $json->departureDelay ?? 0);
-            $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
+            $trip->arrival = self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
             }
