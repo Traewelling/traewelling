@@ -311,29 +311,37 @@ class TransportController extends Controller
             }
 
             if (isset($toot_check)) {
-                $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
-                Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                try {
+                    $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
+                    Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                } catch (\Exception $exception) {
+                    //maybe think about implementing a message so that the user will be informed about "no toot sent"
+                }
             }
             if (isset($tweet_check)) {
-                $connection = new TwitterOAuth(
-                    config('trwl.twitter_id'),
-                    config('trwl.twitter_secret'),
-                    $user->socialProfile->twitter_token,
-                    $user->socialProfile->twitter_tokenSecret
-                );
-                // #dbl only works on Twitter.
-                if($user->always_dbl) {
-                    $post_text .= "#dbl ";
+                try {
+                    $connection = new TwitterOAuth(
+                        config('trwl.twitter_id'),
+                        config('trwl.twitter_secret'),
+                        $user->socialProfile->twitter_token,
+                        $user->socialProfile->twitter_tokenSecret
+                    );
+                    // #dbl only works on Twitter.
+                    if($user->always_dbl) {
+                        $post_text .= "#dbl ";
+                    }
+                    $connection->post(
+                        "statuses/update",
+                        [
+                            "status" => $post_text . $post_url,
+                            'lat' => $originStation->latitude,
+                            'lon' => $originStation->longitude
+                        ]
+                    );
+                } catch (\Exception $exception) {
+                    //maybe think about implementing a message so that the user will be informed about "no tweet sent"
                 }
-                $connection->post(
-                    "statuses/update",
-                    [
-                        "status" => $post_text . $post_url,
-                        'lat' => $originStation->latitude,
-                        'lon' => $originStation->longitude
-                    ]
-                );
             }
         }
 
