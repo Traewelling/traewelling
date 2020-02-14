@@ -5,7 +5,7 @@ return [
     "active" => "Unterwegs",
     "blog" => "Blog",
     "dashboard" => "Dashboard",
-    "developed" => "Entwickelt mit <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in der Europäischen Union",
+    "developed" => "Entwickelt mit <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"\"></i> in der Europäischen Union. <a href='https://github.com/traewelling/traewelling'>Quellcode</a> lizensiert unter <a href='https://www.gnu.org/licenses/agpl-3.0.html'>AGPLv3</a>.",
     "discard" => "Abbrechen",
     "export" => "Exportieren",
     "globaldashboard" => "Globales Dashboard",
