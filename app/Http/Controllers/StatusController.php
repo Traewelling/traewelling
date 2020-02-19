@@ -118,7 +118,7 @@ class StatusController extends Controller
         $endInclLastOfMonth = (new \DateTime($end_date))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
         $user = Auth::user();
-        $trainCheckins = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->where('user_id', $user->id)
+        $trainCheckins = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.hafastrip')->where('user_id', $user->id)
             ->whereHas('trainCheckin', function ($query) use ($start_date, $endInclLastOfMonth){
                 $query->whereBetween('arrival', [$start_date, $endInclLastOfMonth]);
                 $query->orwhereBetween('departure', [$start_date, $endInclLastOfMonth]);
@@ -129,8 +129,8 @@ class StatusController extends Controller
             $interval = (new \DateTime($t->trainCheckin->departure))->diff(new \DateTime($t->trainCheckin->arrival));
             $export = array_merge($export, array([
                 (String)$t->id,
-                $t->trainCheckin->HAFASTrip->category,
-                $t->trainCheckin->HAFASTrip->linename,
+                $t->trainCheckin->hafastrip->category,
+                $t->trainCheckin->hafastrip->linename,
                 $t->trainCheckin->Origin->name,
                 $t->trainCheckin->Origin->latitude. ', ' .$t->trainCheckin->Origin->longitude,
                 $t->trainCheckin->departure,
