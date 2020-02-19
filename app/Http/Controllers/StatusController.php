@@ -17,11 +17,11 @@ use Barryvdh\DomPDF\Facade as PDF;
 class StatusController extends Controller
 {
     public static function getStatus($id) {
-        return Status::where('id', $id)->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
+        return Status::where('id', $id)->with('trainCheckin', 'user', 'event')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
     }
 
     public static function getActiveStatuses() {
-        $statuses = Status::with('trainCheckin')
+        $statuses = Status::with('trainCheckin', 'trainCheckin.hafastrip', 'trainCheckin.hafastrip.getPolyline')
             ->whereHas('trainCheckin', function ($query) {
                 $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
             })

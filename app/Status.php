@@ -22,10 +22,7 @@ class Status extends Model
     }
 
     public function event() {
-        if($this->event_id === null) {
-            return null;
-        }
-        return Event::find($this->event_id);
+        return $this->hasOne('App\Event', 'id', 'event_id');
     }
 
 }
