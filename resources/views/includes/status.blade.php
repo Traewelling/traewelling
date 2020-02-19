@@ -27,9 +27,9 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
-                    {!! stationLink($status->trainCheckin->getOrigin->name) !!}
+                    {!! stationLink($status->trainCheckin->Origin->name) !!}
                     <p class="train-status text-muted">
-                        @php($hafas = $status->trainCheckin->getHafasTrip)
+                        @php($hafas = $status->trainCheckin->HafasTrip)
                         <span>
                             @if (file_exists(public_path('img/'.$hafas->category.'.svg')))
                                 <img class="product-icon" src="{{ asset('img/'.$hafas->category.'.svg') }}">
@@ -40,7 +40,7 @@
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
                         @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
-                        
+
                         @if($event != null)
                             <br class="d-sm-none">
                             <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a></span>
@@ -53,13 +53,13 @@
 
                     @php($t = time())
                     @if($t > strtotime($status->trainCheckin->departure) && $t < strtotime($status->trainCheckin->arrival))
-                    
+
                     <?php
                     $stops = json_decode($hafas->stopovers);
                     $nextStopIndex = count($stops) - 1;
 
                     // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
-                    for ($i=count($stops)-1; $i > 0; $i--) { 
+                    for ($i=count($stops)-1; $i > 0; $i--) {
                         $arrival = $stops[$i]->arrival;
                         if($arrival != null && strtotime($arrival) > $t) {
                             $nextStopIndex = $i;
@@ -74,7 +74,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
-                    {!! stationLink($status->trainCheckin->getDestination->name) !!}
+                    {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
                 @if($event != null)
                 <!-- <li class="calendar-button">

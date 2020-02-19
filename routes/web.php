@@ -212,9 +212,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'uses' => 'FrontendStatusController@exportLanding',
         'as'   => 'export.landing',
     ]);
-    Route::get('/exportCSV', [
-        'uses' => 'StatusController@exportCSV',
-        'as'   => 'export.csv',
+    Route::get('/export-generate', [
+        'uses' => 'FrontendStatusController@export',
+        'as'   => 'export.generate',
     ]);
 
     Route::post('/createfollow', [

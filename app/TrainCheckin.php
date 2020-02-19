@@ -6,28 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainCheckin extends Model
 {
+    protected $hidden = ['created_at', 'updated_at'];
+
     public function status () {
         return $this->belongsTo('App\Status');
     }
 
-    public function getOrigin () {
+    public function Origin () {
         return $this->hasOne('App\TrainStations','ibnr', 'origin');
     }
 
-    public function getDestination () {
+    public function Destination () {
         return $this->hasOne('App\TrainStations', 'ibnr' ,'destination');
 }
 
-    public function getHafasTrip() {
+    public function HafasTrip() {
         return $this->hasone('App\HafasTrip', 'trip_id', 'trip_id');
     }
 
     public function getMapLines() {
 
-        $hafas = $this->getHafasTrip()->first()->getPolyLine()->first();
+        $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
         if ($hafas === null) {
-            $origin = $this->getOrigin()->first();
-            $destination = $this->getDestination()->first();
+            $origin = $this->Origin()->first();
+            $destination = $this->Destination()->first();
             $route = [];
             $route[0] = [$origin->longitude, $origin->latitude];
             $route[1] = [$destination->longitude, $destination->latitude];

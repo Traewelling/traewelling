@@ -62,14 +62,4 @@ class Controller extends BaseController
         return round($distance, $decimals);
     }
 
-    public function isValidDate($date): Bool {
-        try {
-            $d = new \DateTime($date);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            return false;
-        }
-        return $date === $d->format("Y-m-d");
-    }
-
 }

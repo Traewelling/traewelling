@@ -1,11 +1,11 @@
 @extends('layouts.app')
 <?php
 $title = __('status.ogp-title', ['name' => $status->user->username]);
-$description = trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->getHafasTrip->linename), [
-    'linename' => $status->trainCheckin->getHafasTrip->linename,
+$description = trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
+    'linename' => $status->trainCheckin->HafasTrip->linename,
     'distance' => $status->trainCheckin->distance,
-    'destination' => $status->trainCheckin->getDestination->name,
-    'origin' => $status->trainCheckin->getOrigin->name
+    'destination' => $status->trainCheckin->Destination->name,
+    'origin' => $status->trainCheckin->Origin->name
 ]);
 $image = route('account.showProfilePicture', ['username' => $status->user->username]);
 ?>
