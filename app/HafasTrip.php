@@ -13,4 +13,6 @@ class HafasTrip extends Model
     public function getPolyLine() {
         return $this->hasOne('App\PolyLine', 'hash', 'polyline');
     }
+
+    protected $hidden = ['created_at', 'updated_at', 'polyline'];
 }

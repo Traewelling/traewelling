@@ -42,7 +42,7 @@ class CheckinTest extends TestCase {
     /**
      * @var string Hafas is weird and it's trip ids are shorter the first 9 days of the month.
      */
-    private $HAFAS_ID_DATE = 'jmY';
+    private static $HAFAS_ID_DATE = 'jmY';
 
     /**
      * Check if the given Hafas Trip was correct. Can be used from several test functions.
@@ -54,7 +54,7 @@ class CheckinTest extends TestCase {
      * @return Boolean If all checks were resolved positively. Assertions to be made on the caller
      * side to provide a coherent amount of assertions.
      */
-    private function isCorrectHafasTrip($hafastrip, $requestDate): bool {
+    public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
         $requestDateMinusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
         $requestDatePlusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
 
@@ -62,9 +62,9 @@ class CheckinTest extends TestCase {
         $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
         
         $rightDate = in_array(1, [
-            substr_count($hafastrip->tripId, $requestDateMinusOneDay->format($this->HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDate->format($this->HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDatePlusOneDay->format($this->HAFAS_ID_DATE))
+            substr_count($hafastrip->tripId, $requestDateMinusOneDay->format(self::$HAFAS_ID_DATE)),
+            substr_count($hafastrip->tripId, $requestDate->format(self::$HAFAS_ID_DATE)),
+            substr_count($hafastrip->tripId, $requestDatePlusOneDay->format(self::$HAFAS_ID_DATE))
         ]);
 
         $ret = $fourPipes && $rightDate;
