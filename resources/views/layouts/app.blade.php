@@ -44,16 +44,104 @@
 @yield('metadata')
 </head>
 <body>
+    <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog" aria-labelledby="notifications-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Notifications</h4>
+                    <button type="button" class="close" id="mark-read" aria-label="Mark all read"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div id="notifications-list">
+                        <div class="row unread warning">
+                            <div class="col-1 align-left">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="col-8 align-middle">
+                                <p class="lead">
+                                    Your check-in has not been shared to Mastodon.
+                                </p>
+                                It looks like your Mastodon instance was not available when we tried to toot.
+                            </div>
+                            <div class="col-3 text-right">
+                                <button type="button" class="interact" aria-label="Mark as read">
+                                    <span aria-hidden="true"><i class="far fa-envelope"></i></span>
+                                </button>
+                                <div class="text-muted"> 1m ago</div>
+                            </div>
+                        </div>
+                        <div class="row unread info">
+                            <div class="col-1 align-left">
+                                <i class="fas fa-train"></i>
+                            </div>
+                            <div class="col-8 align-middle">
+                                <p class="lead">
+                                    @HerrLevin_ is in your connection.
+                                </p>
+                                They are on <strong>ICE 619</strong> from <strong>Frankfurt(Flughafen) Fernbf.</strong> to <strong>Karlsruhe Hbf</strong>.
+                            </div>
+                            <div class="col-3 text-right">
+                                <button type="button" class="interact" aria-label="Mark as read">
+                                    <span aria-hidden="true"><i class="far fa-envelope"></i></span>
+                                </button>
+                                <div class="text-muted">14h ago</div>
+                            </div>
+                        </div>
+                        <div class="row info">
+                            <div class="col-1 align-left">
+                                <i class="fas fa-train"></i>
+                            </div>
+                            <div class="col-8 align-middle">
+                                <p class="lead">
+                                    @aledjones is in your connection.
+                                </p>
+                                They are on <strong>NWB RE 10</strong> from <strong>Weeze</strong> to <strong>Krefeld-Oppum</strong>.
+                            </div>
+                            <div class="col-3 text-right">
+                                <button type="button" class="interact" aria-label="Mark as read">
+                                    <span aria-hidden="true"><i class="far fa-envelope-open"></i></span>
+                                </button>
+                                <div class="text-muted">2d ago</div>
+                            </div>
+                        </div>
+                        <div class="row info">
+                            <div class="col-1 align-left">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="col-8 align-middle">
+                                <p class="lead">
+                                    Your check-in has not been shared to Twitter.
+                                </p>
+                                Twitter has sent an <code>401 Unauthorized</code> when we tried to tweet - please consider reconnecting Träwelling to Twitter.
+                            </div>
+                            <div class="col-3 text-right">
+                                <button type="button" class="interact" aria-label="Mark as read">
+                                    <span aria-hidden="true"><i class="far fa-envelope-open"></i></span>
+                                </button>
+                                <div class="text-muted">5d ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="navbar-toggler">
+                    <button class="navbar-toggler" type="button" data-toggle="modal" data-target="#notifications-board" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Show notifications') }}">
+                        <span class="fa fa-bell"></span>
+                    </button>
 
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
@@ -83,6 +171,11 @@
                                 </li>
                             @endif
                         @else
+                            <li class="nav-item d-none d-md-inline-block">
+                                <a href="#" class="nav-link" data-toggle="modal" data-target="#notifications-board">
+                                    <span class="fa fa-bell"></span>
+                                </a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
