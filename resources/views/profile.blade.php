@@ -10,14 +10,12 @@
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
                     <h2 class="card-title h1-responsive font-bold">
                         <strong>{{ __('profile.statistics-for') }} {{ $user->name }}</strong> <small class="font-weight-light">{{ '@'.$user->username }}</small>
-                        @php($visitor = Auth::user())
-                        @if($visitor != null)
+                        @if($visitor)
                             @if($user != $visitor && Auth::check())
-                                <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
                                 @if(Auth::user()->follows->where('follow_id', $user->id)->first() === null)
-                                data-following="no">{{__('profile.follow')}}</a>
+                                    <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                 @else
-                                    data-following="yes">{{__('profile.unfollow')}}</a>
+                                    <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}" data-following="yes">{{__('profile.unfollow')}}</a>
                                 @endif
                             @else
                                 <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
@@ -50,7 +48,7 @@
                         $d = $newD;
                         $dtObj = new \DateTime($status->trainCheckin->departure);
                         ?>
-                        <h5 class="mt-4">{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
+                        <h5 class="mt-4">{{formatNewDay($dtObj) }}</h5>
                     @endif
                     @include('includes.status')
                 @endforeach

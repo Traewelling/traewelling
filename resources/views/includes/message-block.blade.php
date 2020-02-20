@@ -52,36 +52,33 @@
     @endif
 
     @if(Session::has('checkin-success'))
-        @php
-            $message = Session::get('checkin-success');
-        @endphp
         <div class="alert alert-success" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
-            <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', $message['lineName']), ['lineName' => $message['lineName']]) }}</p>
-            @if($message['alsoOnThisConnection']->count() >= 1)
+            <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', Session::get('checkin-success')['lineName']), ['lineName' => Session::get('checkin-success')['lineName']]) }}</p>
+            @if(Session::get('checkin-success')['alsoOnThisConnection']->count() >= 1)
                 <p>{{ __('controller.transport.also-in-connection') }}</p>
                 <ul>
-                @foreach($message['alsoOnThisConnection'] as $person)
+                @foreach(Session::get('checkin-success')['alsoOnThisConnection'] as $person)
                         <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">{{ '@' . $person->status->user->username }}</a></li>
                 @endforeach
                 </ul>
             @endif
-            @if($message['event'])
+            @if(Session::get('checkin-success')['event'])
                 <p>
                     {!!  __('events.on-your-way', [
-                        "name" => $message['event']['name'],
-                        "url" => route('statuses.byEvent', ['event' => $message['event']['slug']])
+                        "name" => Session::get('checkin-success')['event']['name'],
+                        "url" => route('statuses.byEvent', ['event' => Session::get('checkin-success')['event']['slug']])
                     ]) !!}
                 </p>
             @endif
             <hr>
             <p class="mb-0">
-                <i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($message['duration'])) !!}</b>
-                — <i class="fa fa-route d-inline"></i>&nbsp;<b>{{ number($message['distance']) }}<small>km</small></b>
-                — <i class="fa fa-dice-d20 d-inline"></i>&nbsp;<b>{{ $message['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
+                <i class="fa fa-stopwatch d-inline"></i>&nbsp;<b>{!! durationToSpan(secondsToDuration(Session::get('checkin-success')['duration'])) !!}</b>
+                — <i class="fa fa-route d-inline"></i>&nbsp;<b>{{ number(Session::get('checkin-success')['distance']) }}<small>km</small></b>
+                — <i class="fa fa-dice-d20 d-inline"></i>&nbsp;<b>{{ Session::get('checkin-success')['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
             </p>
         </div>
     @endif

@@ -17,7 +17,7 @@
                             $day = $newDay;
                             $dtObj = new \DateTime($status->trainCheckin->departure);
                             ?>
-                            <h5 class="mt-4">{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
+                            <h5 class="mt-4">{{ formatNewDay($dtObj) }}</h5>
                         @endif
 
                         @include('includes.status')

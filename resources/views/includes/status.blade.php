@@ -1,15 +1,12 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}">
 
     @if (Route::current()->uri == "status/{id}")
-        <?php $mapLines = $status->trainCheckin->getMapLines(); ?>
-        @if($mapLines != "[]")
+        @if($status->trainCheckin->HafasTrip->polyline)
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $mapLines }}"></div>
+            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $mapLines = $status->trainCheckin->getMapLines() }}"></div>
         </div>
         @endif
     @endif
-
-    @php($status->event = $status->event)
 
     <div class="card-body row">
         <div class="col-2 image-box pr-0 d-none d-lg-flex">
@@ -46,22 +43,7 @@
                     @endif
 
                     @if(time() > strtotime($status->trainCheckin->departure) && time() < strtotime($status->trainCheckin->arrival))
-
-                    <?php
-                    $stops = json_decode($status->trainCheckin->HafasTrip->stopovers);
-                    $nextStopIndex = count($stops) - 1;
-
-                    // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
-                    for ($i=count($stops)-1; $i > 0; $i--) {
-                        $arrival = $stops[$i]->arrival;
-                        if($arrival != null && strtotime($arrival) > $t) {
-                            $nextStopIndex = $i;
-                            continue;
-                        }
-                        break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
-                    }
-                    ?>
-                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink($stops[$nextStopIndex]->stop->name) !!}</p>
+                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink(nextStation($status)) !!}</p>
                     @endif
                 </li>
                 <li>

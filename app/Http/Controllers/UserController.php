@@ -146,13 +146,14 @@ class UserController extends Controller
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
         }
         foreach(Status::where('user_id', $user->id)->get() as $status) {
-            TrainCheckin::where('status_id', $status->id)->delete();
+            $status->trainCheckin->delete();
             $status->likes()->delete();
             $status->delete();
         }
 
-        SocialLoginProfile::where('user_id', $user->id)->delete();
-        Follow::where('user_id', $user->id)->orWhere('follow_id', $user->id)->delete();
+        $user->socialProfile()->delete();
+        $user->follows()->delete();
+        $user->followers()->delete();
 
         $user->delete();
 
@@ -216,21 +217,19 @@ class UserController extends Controller
         if ($user != null) {
             $userIds = $user->follows()->pluck('follow_id');
             $userIds[] = $user->id;
-            $friends = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
+            $friends = User::where('points', '<>', 0)->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
         }
-        $users = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('points', 'desc')->limit(20)->get();
-        $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('train_distance', 'desc')->limit(20)->get();
+        $users = User::where('points', '<>', 0)->orderby('points', 'desc')->limit(20)->get();
+        $kilometers = User::where('points', '<>', 0)->orderby('train_distance', 'desc')->limit(20)->get();
 
 
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
     public static function registerByDay(Carbon $date) {
-        $q = DB::table('users')
-            ->select(DB::raw('count(*) as occurs'))
-            ->where("created_at", ">=", $date->copy()->startOfDay())
+        $q = User::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->first();
+            ->count();
         return $q;
     }
 }

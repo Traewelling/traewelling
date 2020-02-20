@@ -71,7 +71,6 @@
                             <label for="message-text" class="col-form-label">{{__('stationboard.label-message')}}</label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
-                        @php($user = Auth::user())
                         @if ($user->socialProfile != null)
                             @if ($user->socialProfile->twitter_id != null)
                             <div class="custom-control custom-checkbox custom-control-inline">
@@ -88,12 +87,10 @@
                             @endif
                         @endif
 
-                        @php($events = App\Http\Controllers\EventController::activeEvents())
                         @if($events->count() == 1)
-                            @php($e = $events[0])
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="event_check" name="event" value="{{ $e->id }}">
-                                <label class="custom-control-label" for="event_check">{{ __('events.on-my-way-to', ['name' => $e->name]) }}</label>
+                                <input type="checkbox" class="custom-control-input" id="event_check" name="event" value="{{ $events[0]->id }}">
+                                <label class="custom-control-label" for="event_check">{{ __('events.on-my-way-to', ['name' => $events[0]->name]) }}</label>
                             </div>
                         @elseif($events->count() > 1)
                             <div class="form-group">

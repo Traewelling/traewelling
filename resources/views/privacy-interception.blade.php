@@ -66,16 +66,7 @@
             @endif
 
             <div class="privacy">
-                @php($body = "")
-                @switch(Lang::locale())
-                    @case("de")
-                        @php($body = $agreement->body_md_de)
-                        @break
-                    @case("en")
-                        @php($body = $agreement->body_md_en)
-                        @break
-                @endswitch
-                {!! Markdown::parse($body) !!}
+                {!! Markdown::parse($agreement->{'body_md_'.Lang::locale()}) !!}
             </div>
         </div>
     </div>

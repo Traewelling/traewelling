@@ -138,9 +138,23 @@ class FrontendStatusController extends Controller
 
     public function getStatus($id) {
         $StatusResponse = StatusBackend::getStatus($id);
-        $user = Auth::user();
-        $time = time();
-        return view('status', ['status' => $StatusResponse, 'currentUser' => Auth::user()]);
+
+        $t = time();
+
+        return view('status', [
+            'status' => $StatusResponse,
+            'currentUser' => Auth::user(),
+            'time' => $t,
+            'title' => __('status.ogp-title', ['name' => $StatusResponse->user->username]),
+            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $StatusResponse->trainCheckin->HafasTrip->linename), [
+                'linename' => $StatusResponse->trainCheckin->HafasTrip->linename,
+                'distance' => $StatusResponse->trainCheckin->distance,
+                'destination' => $StatusResponse->trainCheckin->Destination->name,
+                'origin' => $StatusResponse->trainCheckin->Origin->name
+            ]),
+            'image' => route('account.showProfilePicture', ['username' => $StatusResponse->user->username]),
+            'dtObj' => new \DateTime($StatusResponse->trainCheckin->departure),
+        ]);
     }
 
     public function usageboard(Request $request) {
@@ -176,9 +190,8 @@ class FrontendStatusController extends Controller
 
             $statusesByDay[] = StatusController::usageByDay($dateIterator);
             $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
-
             // Wenn keine Stati passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
-            if($statusesByDay[count($statusesByDay) - 1]->occurs == 0) { // Heute keine Stati
+            if($statusesByDay[count($statusesByDay) - 1] == 0) { // Heute keine Stati
                 $hafasTripsByDay[] = (object) [];
             } else {
                 $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);

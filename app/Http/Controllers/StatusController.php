@@ -56,21 +56,20 @@ class StatusController extends Controller
     }
 
     public static function DeleteStatus($user, $statusId) {
-        $status = Status::find($statusId);
-        $trainCheckin = $status->trainCheckin()->first();
+        $status = Status::with('trainCheckin')->find($statusId);
         if ($user != $status->user) {
             return false;
         }
-        $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->train_distance -= $status->trainCheckin->distance;
+        $user->train_duration -= (strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)) / 60;
 
         //Don't subtract points, if status outside of current point calculation
-        if (strtotime($trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
-            $user->points -= $trainCheckin->points;
+        if (strtotime($status->trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
+            $user->points -= $status->trainCheckin->points;
         }
         $user->update();
+        $status->trainCheckin->delete();
         $status->delete();
-        $trainCheckin->delete();
         return true;
     }
 
@@ -195,11 +194,9 @@ class StatusController extends Controller
     }
 
     public static function usageByDay(Carbon $date) {
-        $q = DB::table('statuses')
-            ->select(DB::raw('count(*) as occurs'))
-            ->where("created_at", ">=", $date->copy()->startOfDay())
+        $q = Status::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->first();
+            ->count();
         return $q;
     }
 }
