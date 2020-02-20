@@ -17,11 +17,9 @@
         }
     }
 
-    .modal-body {
+    .modal-body#notifications-list {
         padding: 0;
-    }
 
-    #notifications-list {
         .row {
             background-color: white;
             padding: 1rem 0;
@@ -32,7 +30,7 @@
                 &.warning {
                     background-color: lighten($bahnrot, 40%);
                 }
-                &.info {
+                &.neutral {
                     background-color: lighten($blue, 40%);
                 }
             }
@@ -59,10 +57,14 @@
                 -moz-appearance: none;
                 font-size: 1.25rem;
             }
+            strong {
+                font-weight: bold;
+            }
         }
-        strong {
-            font-weight: bold;
-        }
+    }
+
+    #notifications-empty {
+        padding: 2rem 0;
     }
 }
 

@@ -7,6 +7,7 @@ use App\Like;
 use App\Status;
 use App\TrainCheckin;
 use App\TrainStations;
+use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,6 +100,7 @@ class StatusController extends Controller
         $like->user_id = $user->id;
         $like->status_id = $status->id;
         $like->save();
+        $status->user->notify(new StatusLiked($user, $status));
         return true;
     }
 

@@ -271,5 +271,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/mastodon/test', [
         'uses'  => 'SocialController@testMastodon',
     ]);
+
+    Route::get('/notifications/latest', [
+        'uses'  => 'NotificationController@latest'
+    ]);
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

@@ -48,81 +48,12 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Notifications</h4>
-                    <button type="button" class="close" id="mark-read" aria-label="Mark all read"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
+                    <h4 class="modal-title">{{ __('notifications.title') }}</h4>
+                    <button type="button" class="close" id="mark-read" aria-label="{{ __('notifications.mark-all-read') }}"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="modal-body">
-                    <div id="notifications-list">
-                        <div class="row unread warning">
-                            <div class="col-1 align-left">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="col-8 align-middle">
-                                <p class="lead">
-                                    Your check-in has not been shared to Mastodon.
-                                </p>
-                                It looks like your Mastodon instance was not available when we tried to toot.
-                            </div>
-                            <div class="col-3 text-right">
-                                <button type="button" class="interact" aria-label="Mark as read">
-                                    <span aria-hidden="true"><i class="far fa-envelope"></i></span>
-                                </button>
-                                <div class="text-muted"> 1m ago</div>
-                            </div>
-                        </div>
-                        <div class="row unread info">
-                            <div class="col-1 align-left">
-                                <i class="fas fa-train"></i>
-                            </div>
-                            <div class="col-8 align-middle">
-                                <p class="lead">
-                                    @HerrLevin_ is in your connection.
-                                </p>
-                                They are on <strong>ICE 619</strong> from <strong>Frankfurt(Flughafen) Fernbf.</strong> to <strong>Karlsruhe Hbf</strong>.
-                            </div>
-                            <div class="col-3 text-right">
-                                <button type="button" class="interact" aria-label="Mark as read">
-                                    <span aria-hidden="true"><i class="far fa-envelope"></i></span>
-                                </button>
-                                <div class="text-muted">14h ago</div>
-                            </div>
-                        </div>
-                        <div class="row info">
-                            <div class="col-1 align-left">
-                                <i class="fas fa-train"></i>
-                            </div>
-                            <div class="col-8 align-middle">
-                                <p class="lead">
-                                    @aledjones is in your connection.
-                                </p>
-                                They are on <strong>NWB RE 10</strong> from <strong>Weeze</strong> to <strong>Krefeld-Oppum</strong>.
-                            </div>
-                            <div class="col-3 text-right">
-                                <button type="button" class="interact" aria-label="Mark as read">
-                                    <span aria-hidden="true"><i class="far fa-envelope-open"></i></span>
-                                </button>
-                                <div class="text-muted">2d ago</div>
-                            </div>
-                        </div>
-                        <div class="row info">
-                            <div class="col-1 align-left">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="col-8 align-middle">
-                                <p class="lead">
-                                    Your check-in has not been shared to Twitter.
-                                </p>
-                                Twitter has sent an <code>401 Unauthorized</code> when we tried to tweet - please consider reconnecting Träwelling to Twitter.
-                            </div>
-                            <div class="col-3 text-right">
-                                <button type="button" class="interact" aria-label="Mark as read">
-                                    <span aria-hidden="true"><i class="far fa-envelope-open"></i></span>
-                                </button>
-                                <div class="text-muted">5d ago</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body" id="notifications-list">
+                    <div id="notifications-empty" class="text-center text-muted">{{ __('notifications.empty') }}<br />¯\_(ツ)_/¯</div>
                 </div>
             </div>
         </div>

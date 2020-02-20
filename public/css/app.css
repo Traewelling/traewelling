@@ -36312,35 +36312,35 @@ p.train-status:before {
   font-size: 0.6em;
 }
 
-#notifications-board .modal-body {
+#notifications-board .modal-body#notifications-list {
   padding: 0;
 }
 
-#notifications-board #notifications-list .row {
+#notifications-board .modal-body#notifications-list .row {
   background-color: white;
   padding: 1rem 0;
   border-bottom: 0.5rem solid #f8fafc;
   margin: 0;
 }
 
-#notifications-board #notifications-list .row.unread.warning {
+#notifications-board .modal-body#notifications-list .row.unread.warning {
   background-color: #f2c9c5;
 }
 
-#notifications-board #notifications-list .row.unread.info {
+#notifications-board .modal-body#notifications-list .row.unread.neutral {
   background-color: #e2effa;
 }
 
-#notifications-board #notifications-list .row p.lead {
+#notifications-board .modal-body#notifications-list .row p.lead {
   margin-bottom: 0.5rem;
 }
 
-#notifications-board #notifications-list .row p.lead i {
+#notifications-board .modal-body#notifications-list .row p.lead i {
   padding-right: 0.5rem;
 }
 
-#notifications-board #notifications-list .row .col-1 i,
-#notifications-board #notifications-list .row .interact {
+#notifications-board .modal-body#notifications-list .row .col-1 i,
+#notifications-board .modal-body#notifications-list .row .interact {
   font-weight: 700;
   line-height: 1;
   color: #343a40;
@@ -36353,8 +36353,12 @@ p.train-status:before {
   font-size: 1.25rem;
 }
 
-#notifications-board #notifications-list strong {
+#notifications-board .modal-body#notifications-list .row strong {
   font-weight: bold;
+}
+
+#notifications-board #notifications-empty {
+  padding: 2rem 0;
 }
 
 .navbar div.navbar-toggler {
