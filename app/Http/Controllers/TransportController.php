@@ -163,26 +163,47 @@ class TransportController extends Controller
         ];
     }
 
-    private static function CalculateTrainPoints($distance, $category, $departure, $delay) {
+    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay, $now) {
         $factorDB = DB::table('pointscalculation')
             ->where([
                         ['type', 'train'],
                         ['transport_type', $category
                         ]])
             ->first();
-            $factor = 1;
+        
+        $factor = 1;
         if ($factorDB != null) {
             $factor = $factorDB->value;
         }
-        $time = strtotime($departure);
+        $arrivalTime = ( (is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
+        $departureTime = ( (is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points = $factor + ceil($distance / 10);
-        if ($time < strtotime('+20 minutes') && $time > strtotime('-20 minutes')) {
+        
+        /**
+         * Full points, 20min before the departure time or during the ride
+         *   D-20         D                      A
+         *    |           |                      |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        // print_r([$departureTime - 20*60 < $now, $now < $arrivalTime]);
+        if (($departureTime - 20*60) < $now && $now < $arrivalTime) {
             return $points;
         }
-
-        if ($time < strtotime('+1 hour') && $time > strtotime('-1 hour')) {
+        
+        /**
+         * Reduced points, one hour before departure and after arrival
+         * 
+         *   D-60         D          A          A+60
+         *    |           |          |           |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        if (($departureTime - 60*60) < $now && $now < ($arrivalTime + 60*60)) {
             return ceil($points * 0.25);
         }
+
+        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
         return 1;
     }
 
@@ -229,7 +250,9 @@ class TransportController extends Controller
             $distance,
             $hafas['category'],
             $stopovers[$offset1]['departure'],
-            $hafas['delay']
+            $stopovers[$offset2]['arrival'],
+            $hafas['delay'],
+            time()
         );
 
         $status = new Status();
@@ -311,29 +334,37 @@ class TransportController extends Controller
             }
 
             if (isset($toot_check)) {
-                $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
-                Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                try {
+                    $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
+                    Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                } catch (\Exception $exception) {
+                    //maybe think about implementing a message so that the user will be informed about "no toot sent"
+                }
             }
             if (isset($tweet_check)) {
-                $connection = new TwitterOAuth(
-                    config('trwl.twitter_id'),
-                    config('trwl.twitter_secret'),
-                    $user->socialProfile->twitter_token,
-                    $user->socialProfile->twitter_tokenSecret
-                );
-                // #dbl only works on Twitter.
-                if($user->always_dbl) {
-                    $post_text .= "#dbl ";
+                try {
+                    $connection = new TwitterOAuth(
+                        config('trwl.twitter_id'),
+                        config('trwl.twitter_secret'),
+                        $user->socialProfile->twitter_token,
+                        $user->socialProfile->twitter_tokenSecret
+                    );
+                    // #dbl only works on Twitter.
+                    if($user->always_dbl) {
+                        $post_text .= "#dbl ";
+                    }
+                    $connection->post(
+                        "statuses/update",
+                        [
+                            "status" => $post_text . $post_url,
+                            'lat' => $originStation->latitude,
+                            'lon' => $originStation->longitude
+                        ]
+                    );
+                } catch (\Exception $exception) {
+                    //maybe think about implementing a message so that the user will be informed about "no tweet sent"
                 }
-                $connection->post(
-                    "statuses/update",
-                    [
-                        "status" => $post_text . $post_url,
-                        'lat' => $originStation->latitude,
-                        'lon' => $originStation->longitude
-                    ]
-                );
             }
         }
 

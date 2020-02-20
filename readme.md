@@ -22,7 +22,8 @@ We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends 
 * PHP 7.2 (or higher)
 * Composer
 * NodeJS and npm
-* A database of choice, e.g. MariaDB or SQLite
+* A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
+* A local instance of [db-rest v3](https://github.com/derhuerst/db-rest/tree/3)
 
 After setting up those things, you can clone the repository and get the dependencies:
 
@@ -61,3 +62,5 @@ If you add code:
 * If you work on the front page (see screenshot above), please consider updating the screenshot.
 * Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to have half-baked languages that have missing strings after a while.
 * Please consider adding unit and integration tests, especially if you're adding new features.
+
+We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you are required to publish changes that you make to this software. Please refrain from creating your own public instance of Träwelling, instead try to create a better version for everyone.

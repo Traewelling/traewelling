@@ -11,7 +11,7 @@
                 <h1><i class="fa fa-save"></i> {{__('export.title')}}</h1>
                 <p class="lead">{{__('export.lead')}}</p>
 
-                <form method="GET" action="{{ route('export.csv') }}">
+                <form method="GET" action="{{ route('export.generate') }}">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -28,9 +28,19 @@
                             <div class="row pt-2">
                                 <input type="checkbox" class="custom-control-input" id="private-trips" name="private-trips" value="true" checked>
                                 <input type="checkbox" class="custom-control-input" id="business-trips" name="business-trips" value="false" checked>
-                                        
+
                                 <div class="col text-right">
-                                    <input type="submit" value="{{ __('export.submit') }}" class="btn btn-primary m-0">
+                                    <div class="btn-group">
+                                        <button id="export_submit" type="submit" class="btn btn-primary" name="filetype" value="pdf">{{ __('export.submit') }}</button>
+                                        <button type="button" class="btn btn-primary dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <button type="submit" name="filetype" value="csv" class="dropdown-item" href="#">.csv</button>
+                                            <button type="submit" name="filetype" value="json" class="dropdown-item" href="#">.json</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
