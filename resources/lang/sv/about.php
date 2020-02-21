@@ -14,7 +14,7 @@ return [
     "name" => "Namnet är en anspelning på det välkända <i>\"Senk ju för träwelling wis Deutsche Bahn\"</i>, som du kanske ha hört på nästan varje fjärrtrafiktåg av Deutsche Bahn.",
     "name-heading" => "Varifrån kommer namnet?",
     "no-train" => "Vi använder ett programming interface från Deutsche Bahn, där inte alla erbjudanden visas direkt. Tyvärr finns det inte mycket vi kan göra om ditt tåg inte är där.",
-    "no-train-heading" => "Varför visas inte min tåg?",
+    "no-train-heading" => "Varför visas inte mitt tåg?",
     "points-heading" => "Hur beräknas poänger?",
     "points1" => "Poängen består av produktklass och avstånd av din resa.",
     "productclass" => "produktklass",
