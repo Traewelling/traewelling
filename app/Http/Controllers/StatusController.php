@@ -100,7 +100,7 @@ class StatusController extends Controller
         $like->user_id = $user->id;
         $like->status_id = $status->id;
         $like->save();
-        $status->user->notify(new StatusLiked($user, $status));
+        $status->user->notify(new StatusLiked($like));
         return true;
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Exceptions\ShouldDeleteNotificationException;
+use App\Like;
 use App\Status;
 use App\User;
 use Illuminate\Bus\Queueable;
@@ -13,32 +15,15 @@ use Illuminate\Notifications\Messages\MailMessage;
 class StatusLiked extends Notification {
     use Queueable;
 
-    public $sender;
-    public $status;
-
-    /**
-     * Hide certain fields from appearing in JSON
-     */
-    protected $hidden = [
-        "locale",
-        "connection",
-        "queue",
-        "chainConnection",
-        "chainQueue",
-        "delay",
-        "chained"
-    ];
+    public $like;
 
     /**
      * Create a new notification instance
      *
-     * @param User Who liked the status?
-     * @param Status Which status was liked?
      * @return void
      */
-    public function __construct(User $sender = null, Status $status = null) {
-        $this->sender = $sender;
-        $this->status = $status;
+    public function __construct(Like $like = null) {
+        $this->like = $like;
     }
 
     /**
@@ -61,15 +46,23 @@ class StatusLiked extends Notification {
     public function toArray($notifiable)
     {
         return [
-            'sender_id' => $this->sender->id,
-            'status_id' => $this->status->id
+            'like_id' => $this->like->id,
         ];
     }
 
     public static function render($notification) {
         $data = $notification->data;
-        $sender = User::findOrFail($data['sender_id']);
-        $status = Status::findOrFail($data['status_id']);
+        
+        try {
+            $like = Like::findOrFail($data['like_id']);
+            $sender = User::findOrFail($like->user_id);
+            $status = Status::findOrFail($like->status_id);
+        } catch(ModelNotFoundException $e) {
+            // Either the status was unliked, or the sender has deleted its account,
+            // or the status was deleted. Eitherway, we don't need the notification anymore.
+            throw new ShouldDeleteNotificationException();
+        }
+
         $hafas = $status->trainCheckin->hafasTrip;
         
         return view("includes.notification", [
