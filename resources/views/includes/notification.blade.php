@@ -6,7 +6,7 @@
         <p class="lead">
             {!! $lead !!}
         </p>
-        {!! $notice !!}
+        {!! $notice !!}&nbsp;
     </a>
     <div class="col-3 text-right">
         <button type="button" class="interact" aria-label="{{ $read ? __('notifications.mark-as-unread') : __('notifications.mark-as-read') }}">

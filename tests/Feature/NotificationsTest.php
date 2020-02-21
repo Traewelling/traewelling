@@ -116,4 +116,45 @@ class NotificationsTest extends TestCase {
         $notifications->assertJsonCount(0); // no likes left
     }
     
+
+    /** @test */
+    public function following_a_user_should_spawn_a_notification() {
+        // Given: Users Alice and Bob
+        $alice = $this->user;
+        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+
+        // When: Alice follows Bob
+        $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
+        $follow->assertStatus(201);
+
+        // Then: Bob should see that in their notifications
+        $notifications = $this->actingAs($bob)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(1); // one follow
+        $notifications->assertJsonFragment([
+            'type' => "App\\Notifications\\UserFollowed",
+            'notifiable_type' => "App\\User",
+            'notifiable_id' => (string) $bob->id
+        ]);
+    }
+
+    /** @test */
+    public function unfollowing_bob_should_remove_the_notification() {
+        // Given: Users Alice and Bob and Alice follows Bob
+        $alice = $this->user;
+        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+        $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
+        $follow->assertStatus(201);
+
+        // When: Alice unfollows Bob
+        $unfollow = $this->actingAs($alice)->post(route('follow.destroy'), ['follow_id' => $bob->id]);
+        $unfollow->assertStatus(200);
+
+        // Then: Bob should not see that notification anymore
+        $notifications = $this->actingAs($bob)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(0); // no follow no more
+    }
 }

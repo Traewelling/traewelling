@@ -22,6 +22,7 @@ class NotificationController extends Controller {
                 }
             })
             // We don't need empty notifications
-            ->filter(function($notification_or_null) { return $notification_or_null != null; });
+            ->filter(function($notification_or_null) { return $notification_or_null != null; })
+            ->values();
     }
 }
