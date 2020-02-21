@@ -68,7 +68,8 @@ class UserFollowed extends Notification {
             "link" => route('account.show', ['username' => $sender->username]),
             'notice' => "",
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read' => $notification->read_at != null
+            'read' => $notification->read_at != null,
+            'notificationId' => $notification->id
         ])->render();
     }
 }

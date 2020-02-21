@@ -25,4 +25,16 @@ class NotificationController extends Controller {
             ->filter(function($notification_or_null) { return $notification_or_null != null; })
             ->values();
     }
+
+    public static function toggleReadState($id) {
+        $notification = Auth::user()->notifications->where('id', $id)->first();
+
+        if($notification->read_at == null) { // old state = unread
+            $notification->markAsRead();
+            return response("", 201); // new state = read, 201=created
+        } else { // old state = read
+            $notification->markAsUnread();
+            return response("", 202); // new state = unread, 202=accepted
+        }
+    }
 }

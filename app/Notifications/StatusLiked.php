@@ -79,7 +79,8 @@ class StatusLiked extends Notification {
                 ]
                 ),
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read' => $notification->read_at != null
+            'read' => $notification->read_at != null,
+            'notificationId' => $notification->id
 
         ])->render();
     }

@@ -18,4 +18,31 @@ fetch('/notifications/latest', {
         }, "");
 
         document.getElementById('notifications-list').insertAdjacentHTML('afterbegin', html);
+    })
+    .then(() => { // After the notification rows have been created, we can add eventlisteners for them
+        Array.from(document.getElementsByClassName('toggleReadState')).forEach(btn =>
+            btn.addEventListener('click', () => {
+
+                fetch('/notifications/toggleReadState/' + btn.dataset.id, {
+                    credentials: 'same-origin',
+                    method: 'POST',
+                    body: JSON.stringify({}),
+                    headers: {
+                        'X-CSRF-TOKEN': token
+                    }
+                })
+                    .then(res => {
+                        const icon = btn.getElementsByTagName('i')[0];
+                        const row = document.getElementById('notification-' + btn.dataset.id);
+
+                        if (res.status == 201) { // new state = read
+                            icon.classList.replace('fa-envelope', 'fa-envelope-open');
+                            row.classList.remove('unread');
+                        } else if (res.status == 202) { // new state = unread
+                            icon.classList.replace('fa-envelope-open', 'fa-envelope');
+                            row.classList.add('unread');
+                        }
+                    });
+            })
+        );
     });
