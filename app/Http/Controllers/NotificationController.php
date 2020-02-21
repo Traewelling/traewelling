@@ -28,6 +28,9 @@ class NotificationController extends Controller {
 
     public static function toggleReadState($id) {
         $notification = Auth::user()->notifications->where('id', $id)->first();
+        
+        // Might have cached the html property and would then try to shove it in the DB
+        if(isset($notification->html)) unset($notification->html);
 
         if($notification->read_at == null) { // old state = unread
             $notification->markAsRead();
@@ -36,5 +39,9 @@ class NotificationController extends Controller {
             $notification->markAsUnread();
             return response("", 202); // new state = unread, 202=accepted
         }
+    }
+
+    public function readAll() {
+        Auth::user()->unreadNotifications->markAsRead();
     }
 }

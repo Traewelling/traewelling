@@ -49,7 +49,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{ __('notifications.title') }}</h4>
-                    <button type="button" class="close" id="mark-read" aria-label="{{ __('notifications.mark-all-read') }}"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
+                    <div>
+                        <button type="button" class="close" id="mark-all-read" aria-label="{{ __('notifications.mark-all-read') }}"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
+                    </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body" id="notifications-list">

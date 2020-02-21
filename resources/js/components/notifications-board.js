@@ -32,17 +32,40 @@ fetch('/notifications/latest', {
                     }
                 })
                     .then(res => {
-                        const icon = btn.getElementsByTagName('i')[0];
-                        const row = document.getElementById('notification-' + btn.dataset.id);
-
-                        if (res.status == 201) { // new state = read
-                            icon.classList.replace('fa-envelope', 'fa-envelope-open');
-                            row.classList.remove('unread');
-                        } else if (res.status == 202) { // new state = unread
-                            icon.classList.replace('fa-envelope-open', 'fa-envelope');
-                            row.classList.add('unread');
-                        }
+                        toggleRead(btn.dataset.id, res.status == 201);
                     });
             })
         );
     });
+
+document.getElementById('mark-all-read').addEventListener('click', () => {
+    fetch('/notifications/readAll', {
+        credentials: 'same-origin',
+        method: 'POST',
+        body: JSON.stringify({}),
+        headers: {
+            'X-CSRF-TOKEN': token
+        }
+    }).then(() => {
+        Array.from(document.getElementsByClassName('toggleReadState')).forEach(btn => {
+            toggleRead(btn.dataset.id, true);
+        });
+    })
+});
+
+const toggleRead = (notificationId, isNewStateRead) => {
+    console.log(notificationId, isNewStateRead);
+    console.log("#notification-" + notificationId + " .toggleReadState i");
+
+
+    const icon = document.querySelector("#notification-" + notificationId + " .toggleReadState i");
+    const row = document.getElementById('notification-' + notificationId);
+
+    if (isNewStateRead) { // new state = read
+        icon.classList.replace('fa-envelope', 'fa-envelope-open');
+        row.classList.remove('unread');
+    } else { // new state = unread
+        icon.classList.replace('fa-envelope-open', 'fa-envelope');
+        row.classList.add('unread');
+    }
+};

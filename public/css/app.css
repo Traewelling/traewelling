@@ -36303,12 +36303,12 @@ p.train-status:before {
   float: none;
 }
 
-#notifications-board .modal-header .close#mark-read {
+#notifications-board .modal-header .close#mark-all-read {
   flex-grow: 1;
   text-align: left;
 }
 
-#notifications-board .modal-header .close#mark-read i.fas {
+#notifications-board .modal-header .close#mark-all-read i.fas {
   font-size: 0.6em;
 }
 

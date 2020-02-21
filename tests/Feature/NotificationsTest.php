@@ -157,4 +157,42 @@ class NotificationsTest extends TestCase {
         $notifications->assertOk();
         $notifications->assertJsonCount(0); // no follow no more
     }
+
+    /** @test */
+    public function mark_notification_as_read() {
+        // GIVEN: Alice has a notification (spawned via follow.create)
+        $follow = $this->actingAs($this->user)->post(route('follow.create'), ['follow_id' => $this->user->id]);
+        $follow->assertStatus(201);
+        // GIVEN: Alice receives the notification and it's unread
+        $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
+        $notification = json_decode($notReq->content())[0];
+        $this->assertTrue($notification->read_at == null);
+
+        // WHEN: toggleReadState is called
+        $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
+        $readReq->assertStatus(201); // Created
+        
+        // THEN: the notification isn't unread anymore
+        $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
+        $notification = json_decode($notReq->content())[0];
+        $this->assertFalse($notification->read_at == null);
+
+        // WHEN: toggleReadState is called again
+        $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
+        $readReq->assertStatus(202); // Created
+        
+        // THEN: the notification is unread again
+        $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
+        $notification = json_decode($notReq->content())[0];
+        $this->assertTrue($notification->read_at == null);
+
+        // WHEN: toggleReadState is called one last time
+        $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
+        $readReq->assertStatus(201); // Created
+        
+        // THEN: the notification is back to "Read" again
+        $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
+        $notification = json_decode($notReq->content())[0];
+        $this->assertFalse($notification->read_at == null);
+    }
 }
