@@ -67,7 +67,10 @@ Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
-Route::get('/status/{id}', 'FrontendStatusController@getStatus');
+Route::get('/status/{id}', [
+    'uses' => 'FrontendStatusController@getStatus',
+    'as' => 'statuses.get'
+]);
 
 Route::get('/blog', [
     'uses'  => 'BlogController@all',

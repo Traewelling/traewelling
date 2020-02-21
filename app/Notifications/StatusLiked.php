@@ -76,6 +76,7 @@ class StatusLiked extends Notification {
             'color' => "neutral",
             'icon' => "fas fa-heart",
             'lead' => __('notifications.statusLiked.lead', ['likerUsername' => $sender->username]),
+            "link" => route('statuses.get', ['id' => $status->id]),
             'notice' => trans_choice(
                 'notifications.statusLiked.notice',
                 preg_match('/\s/', $hafas->linename),

@@ -26,6 +26,10 @@
             border-bottom: 0.5rem solid $body-bg;
             margin: 0;
 
+            a {
+                color: $text-color;
+            }
+
             &.unread {
                 &.warning {
                     background-color: lighten($bahnrot, 40%);

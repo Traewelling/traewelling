@@ -36323,6 +36323,10 @@ p.train-status:before {
   margin: 0;
 }
 
+#notifications-board .modal-body#notifications-list .row a {
+  color: #212529;
+}
+
 #notifications-board .modal-body#notifications-list .row.unread.warning {
   background-color: #f2c9c5;
 }
