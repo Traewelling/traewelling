@@ -36376,3 +36376,9 @@ p.train-status:before {
   padding-right: 0;
 }
 
+.navbar .nav-item span.notifications-bell.fa,
+.navbar .nav-item span.notifications-bell.far {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+

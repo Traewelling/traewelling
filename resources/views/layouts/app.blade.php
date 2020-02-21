@@ -66,7 +66,7 @@
                 </a>
                 <div class="navbar-toggler">
                     <button class="navbar-toggler" type="button" data-toggle="modal" data-target="#notifications-board" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Show notifications') }}">
-                        <span class="fa fa-bell"></span>
+                        <span class="notifications-bell far fa-bell"></span>
                     </button>
 
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -104,7 +104,7 @@
                         @else
                             <li class="nav-item d-none d-md-inline-block">
                                 <a href="#" class="nav-link" data-toggle="modal" data-target="#notifications-board">
-                                    <span class="fa fa-bell"></span>
+                                    <span class="notifications-bell far fa-bell"></span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
@@ -117,11 +117,11 @@
                                     <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('menu.export') }}</a>
                                     <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
                                     <div class="dropdown-divider"></div>
-                                    <button class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
-                                    </button>
+                                    </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
