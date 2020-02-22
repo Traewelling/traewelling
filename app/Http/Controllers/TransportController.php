@@ -12,6 +12,7 @@ use App\TrainCheckin;
 use App\TrainStations;
 use App\Notifications\TwitterNotSend;
 use App\Notifications\MastodonNotSend;
+use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -381,7 +382,11 @@ class TransportController extends Controller
             ['status_id', '!=', $status->id]
         ])->get()
             ->filter(function ($t) use ($trainCheckin) {
-                return ($t->arrival > $trainCheckin->departure) && ($t->departure < $trainCheckin->arrival);
+                return ($t->arrival >= $trainCheckin->departure) && ($t->departure <= $trainCheckin->arrival);
+            })
+            ->each(function($t) use ($status, $hafas, $originStation, $destinationStation) {
+                $t->status->user->notify(new UserJoinedConnection($status->id, $hafas['linename'], $originStation->name, $destinationStation->name));
+                return $t;
             });
 
         return [

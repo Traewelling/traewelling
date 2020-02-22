@@ -6,6 +6,7 @@ use App\Http\Controllers\TransportController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Like;
 use App\Status;
+use App\TrainCheckin;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -27,7 +28,8 @@ class NotificationsTest extends TestCase {
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      */
-    protected function checkin($stationname, $ibnr, \DateTime $now) {
+    protected function checkin($stationname, $ibnr, \DateTime $now, User $user = null) {
+        if($user == null) { $user = $this->user; }
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
@@ -61,7 +63,7 @@ class NotificationsTest extends TestCase {
         );
         
         // WHEN: User tries to check-in
-        $response = $this->actingAs($this->user)
+        $response = $this->actingAs($user)
             ->post(route('trains.checkin'), [
                 'body' => 'Example Body',
                 'tripID' => $departure->tripId,
@@ -156,6 +158,44 @@ class NotificationsTest extends TestCase {
                               ->get(route('notifications.latest'));
         $notifications->assertOk();
         $notifications->assertJsonCount(0); // no follow no more
+    }
+
+    /** @test */
+    public function bob_joining_on_alices_connection_should_spawn_a_notification() {
+        // GIVEN: Alice checked-into a train.
+        $alice = factory(User::class)->create();
+        $response = $this->actingAs($alice)
+                        ->post('/gdpr-ack');
+        $now = new \DateTime("+2 day 8:00");
+        $this->checkin("Essen Hbf", "8000098", $now, $alice);
+
+        // WHEN: Bob also checks into the train
+        $bob = factory(User::class)->create();
+        $response = $this->actingAs($bob)
+                        ->post('/gdpr-ack');
+        $this->checkin("Essen Hbf", "8000098", $now, $bob);
+
+        // THEN: Alice should see that in their notification
+        $notifications = $this->actingAs($alice)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(1); // One other user on that train
+        $notifications->assertJsonFragment([
+            'type' => "App\\Notifications\\UserJoinedConnection",
+            'notifiable_type' => "App\\User",
+            'notifiable_id' => (string) $alice->id
+        ]);
+
+        /** Deleting A Status Should Remove The UserJoinedConnection Notification. */
+        
+        // WHEN: Bob deletes their status
+        $bob->statuses->first()->delete();
+
+        // THEN: The notification should be gone.
+        $notifications = $this->actingAs($alice)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(0); // no other user no more
     }
 
     /** @test */

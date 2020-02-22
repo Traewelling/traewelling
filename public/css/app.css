@@ -36357,7 +36357,8 @@ p.train-status:before {
   font-size: 1.25rem;
 }
 
-#notifications-board .modal-body#notifications-list .row strong {
+#notifications-board .modal-body#notifications-list .row strong,
+#notifications-board .modal-body#notifications-list .row b {
   font-weight: bold;
 }
 

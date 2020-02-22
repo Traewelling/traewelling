@@ -25,5 +25,9 @@ return [
             "429" => "It looks like we've been rate-limited by Twitter. (<code>429 Too Many Requests</code>)",
             "504" => "It looks like Twitter was having fun with whales when we tried to tweet your check-in. (<code>504 Bad Gateway</code>)",
         ]
+    ],
+    "userJoinedConnection" => [
+        "lead" => "<b>@:username</b> is in your connection!",
+        "notice" => "They are on <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.|They are on line <b>:linename</b> from <b>:origin</b> to <b>:destination</b>."
     ]
 ];

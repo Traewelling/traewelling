@@ -25,5 +25,9 @@ return [
             "429" => "Es scheint, dass Träwelling temporär von Twitter gesperrt wurde. (<code>429 Too Many Requests</code>)",
             "504" => "Twitter war down, als wir versucht haben, Deinen Check-In zu twittern. (<code>504 Bad Gateway</code>)",
         ]
+    ],
+    "userJoinedConnection" => [
+        "lead" => "<b>@:username</b> ist auch in Deiner Verbindung!",
+        "notice" => "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>."
     ]
 ];
