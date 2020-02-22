@@ -1,40 +1,41 @@
 @extends('layouts.admin')
 
 @section('title')
-    Usage
+    {{__('admin.usage')}}
 @endsection
 
 @section('content')
-<div class="card">
-    <div class="card-header">
-        <div class="card-title">Usage board</div>
-    </div>
-    <div class="card-body">
-        <form method="get" class="row">
-            @csrf
-            <div class="col-6 col-md-4">
-                <label for="begin">{{__('export.begin')}}:</label>
-                <input name="begin" type="date" value="{{ $begin }}" class="form-control">
-            </div>
-            <div class="col-6 col-md-4">
-                <label for="end">{{__('export.end')}}:</label>
-                <input name="end" type="date" value="{{ $end }}" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label for="btn">&nbsp;</label>
-                <input type="submit" id="btn btn-primary" value="Bereich auswählen" class="btn-primary form-control">
-            </div>
-        </form>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{__('admin.usage-board')}}</div>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row">
+                @csrf
+                <div class="col-6 col-md-4">
+                    <label for="begin">{{__('export.begin')}}:</label>
+                    <input name="begin" type="date" value="{{ $begin }}" class="form-control">
+                </div>
+                <div class="col-6 col-md-4">
+                    <label for="end">{{__('export.end')}}:</label>
+                    <input name="end" type="date" value="{{ $end }}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="btn">&nbsp;</label>
+                    <input type="submit" id="btn btn-primary" value="Bereich auswählen"
+                           class="btn-primary form-control">
+                </div>
+            </form>
 
-        <div class="row pt-4">
-            <div class="col-md-3">
-                <h5 class="text-center pt-3">Eingecheckte Verbindungen</h5>
-                <canvas
-                    id="statusesByDateCanvas"
-                    class="date-canvas"
-                    data-labels='{!! json_encode($dates) !!}'
-                    data-json='{!! json_encode($statusesByDay) !!}'
-                    data-title="# Statuses"
+            <div class="row pt-4">
+                <div class="col-md-3">
+                    <h5 class="text-center pt-3">Eingecheckte Verbindungen</h5>
+                    <canvas
+                        id="statusesByDateCanvas"
+                        class="date-canvas"
+                        data-labels='{!! json_encode($dates) !!}'
+                        data-json='{!! json_encode($statusesByDay) !!}'
+                        data-title="# Statuses"
                     data-keys='occurs'
                     height="300"
                     ></canvas>
