@@ -68,7 +68,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt"></i>
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
