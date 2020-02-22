@@ -341,9 +341,11 @@ class TransportController extends Controller
                 try {
                     $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
                     Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'private']);
+                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
                 } catch (RequestException $e) {
                     $user->notify(new MastodonNotSend($e->getResponse()->getStatusCode(), $status));
+                } catch (\Exception $e) {
+                    // Other exceptions are thrown into the void.
                 }
             }
             if (isset($tweet_check)) {
@@ -371,7 +373,8 @@ class TransportController extends Controller
                         $user->notify(new TwitterNotSend($connection->getLastHttpCode(), $status));
                     }
                 } catch (\Exception $exception) {
-                    // The Twitter adapter itself won't throw Exceptions
+                    // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+                    // However, we still want to continue if it explodes, thus why not catch exceptions here.
                 }
             }
         }

@@ -29,7 +29,8 @@ class NotificationController extends Controller {
     public static function toggleReadState($id) {
         $notification = Auth::user()->notifications->where('id', $id)->first();
         
-        // Might have cached the html property and would then try to shove it in the DB
+        // Might have cached the html property and would then try to shove it in the DB, mostly
+        // happened during tests.
         if(isset($notification->html)) unset($notification->html);
 
         if($notification->read_at == null) { // old state = unread

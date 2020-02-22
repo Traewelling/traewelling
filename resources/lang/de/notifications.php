@@ -28,6 +28,6 @@ return [
     ],
     "userJoinedConnection" => [
         "lead" => "<b>@:username</b> ist auch in Deiner Verbindung!",
-        "notice" => "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>."
+        "notice" => "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>."
     ]
 ];
