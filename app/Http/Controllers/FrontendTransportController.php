@@ -37,6 +37,7 @@ class FrontendTransportController extends Controller
             'departures' => $TrainStationboardResponse['departures'],
             'when' => $TrainStationboardResponse['when'],
             'request' => $request,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
         ]
         );
     }

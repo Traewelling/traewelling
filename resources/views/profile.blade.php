@@ -10,8 +10,8 @@
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
                     <h2 class="card-title h1-responsive font-bold">
                         <strong>{{ __('profile.statistics-for') }} {{ $user->name }}</strong> <small class="font-weight-light">{{ '@'.$user->username }}</small>
-                        @if($visitor)
-                            @if($user != $visitor && Auth::check())
+                        @if($currentUser)
+                            @if($user != $currentUser && Auth::check())
                                 @if(Auth::user()->follows->where('follow_id', $user->id)->first() === null)
                                     <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                 @else
@@ -40,16 +40,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
-                <?php $d = ""; ?>
                 @foreach($statuses as $status)
-                    <?php $newD = date('Y-m-d', strtotime($status->trainCheckin->departure)); ?>
-                    @if($newD != $d)
-                        <?php
-                        $d = $newD;
-                        $dtObj = new \DateTime($status->trainCheckin->departure);
-                        ?>
-                        <h5 class="mt-4">{{formatNewDay($dtObj) }}</h5>
-                    @endif
                     @include('includes.status')
                 @endforeach
 

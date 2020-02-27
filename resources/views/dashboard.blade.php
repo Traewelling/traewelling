@@ -9,17 +9,7 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                    <?php $day = ""; ?>
                     @foreach($statuses as $status)
-                        <?php $newDay = date('Y-m-d', strtotime($status->trainCheckin->departure)); ?>
-                        @if($newDay != $day)
-                            <?php
-                            $day = $newDay;
-                            $dtObj = new \DateTime($status->trainCheckin->departure);
-                            ?>
-                            <h5 class="mt-4">{{ formatNewDay($dtObj) }}</h5>
-                        @endif
-
                         @include('includes.status')
                 @endforeach
             </div>

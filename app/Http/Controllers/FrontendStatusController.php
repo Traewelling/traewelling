@@ -35,12 +35,20 @@ class FrontendStatusController extends Controller
             }
             return redirect()->route('globaldashboard');
         }
-        return view('dashboard', ['statuses' => $statuses, 'currentUser' => Auth::user()]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => $user,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals($user)
+        ]);
     }
 
     public function getGlobalDashboard() {
         $statuses = StatusBackend::getGlobalDashboard();
-        return view('dashboard', ['statuses' => $statuses, 'currentUser' => Auth::user()]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => Auth::user(),
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+        ]);
     }
 
     public function DeleteStatus(Request $request) {

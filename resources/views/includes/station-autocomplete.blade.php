@@ -7,8 +7,6 @@
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
 
-                        @php($latest = \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user()))
-
                         <div class="input-group mb-2 mr-sm-2">
                             <input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}" @isset(request()->station) value="{{request()->station}}" @endisset>
 
@@ -23,10 +21,9 @@
                         </div>
                         <div class="list-group d-none" id="last-stations">
                             @if(Auth::user()->home)
-                                @php($station = Auth::user()->home)
-                                <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ]) }}"
-                                    title="{{ $station->name }}" id="home-button" class="list-group-item list-group-item-action">
-                                    <i class="fa fa-home mr-2"></i> {{ $station->name }}
+                                <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => Auth::user()->home->name ]) }}"
+                                    title="{{ Auth::user()->home->name }}" id="home-button" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-home mr-2"></i> {{ Auth::user()->home->name }}
                                 </a>
                             @endif
 
