@@ -10,8 +10,12 @@ use App\PolyLine;
 use App\Status;
 use App\TrainCheckin;
 use App\TrainStations;
+use App\Notifications\TwitterNotSend;
+use App\Notifications\MastodonNotSend;
+use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\DB;
 use Mastodon;
 
@@ -338,8 +342,10 @@ class TransportController extends Controller
                     $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
                     Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
                     Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
-                } catch (\Exception $exception) {
-                    //maybe think about implementing a message so that the user will be informed about "no toot sent"
+                } catch (RequestException $e) {
+                    $user->notify(new MastodonNotSend($e->getResponse()->getStatusCode(), $status));
+                } catch (\Exception $e) {
+                    // Other exceptions are thrown into the void.
                 }
             }
             if (isset($tweet_check)) {
@@ -362,8 +368,13 @@ class TransportController extends Controller
                             'lon' => $originStation->longitude
                         ]
                     );
+
+                    if($connection->getLastHttpCode() != 200) {
+                        $user->notify(new TwitterNotSend($connection->getLastHttpCode(), $status));
+                    }
                 } catch (\Exception $exception) {
-                    //maybe think about implementing a message so that the user will be informed about "no tweet sent"
+                    // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+                    // However, we still want to continue if it explodes, thus why not catch exceptions here.
                 }
             }
         }
@@ -374,7 +385,11 @@ class TransportController extends Controller
             ['status_id', '!=', $status->id]
         ])->get()
             ->filter(function ($t) use ($trainCheckin) {
-                return ($t->arrival > $trainCheckin->departure) && ($t->departure < $trainCheckin->arrival);
+                return ($t->arrival >= $trainCheckin->departure) && ($t->departure <= $trainCheckin->arrival);
+            })
+            ->each(function($t) use ($status, $hafas, $originStation, $destinationStation) {
+                $t->status->user->notify(new UserJoinedConnection($status->id, $hafas['linename'], $originStation->name, $destinationStation->name));
+                return $t;
             });
 
         return [

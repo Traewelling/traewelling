@@ -67,7 +67,10 @@ Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
-Route::get('/status/{id}', 'FrontendStatusController@getStatus');
+Route::get('/status/{id}', [
+    'uses' => 'FrontendStatusController@getStatus',
+    'as' => 'statuses.get'
+]);
 
 Route::get('/blog', [
     'uses'  => 'BlogController@all',
@@ -270,6 +273,20 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/mastodon/test', [
         'uses'  => 'SocialController@testMastodon',
+    ]);
+
+    Route::get('/notifications/latest', [
+        'uses'  => 'NotificationController@latest',
+        'as'    => 'notifications.latest'
+    ]);
+
+    Route::post('/notifications/toggleReadState/{id}', [
+        'uses'  => 'NotificationController@toggleReadState',
+        'as'    => 'notifications.toggleReadState'
+    ]);
+    Route::post('/notifications/readAll', [
+        'uses'  => 'NotificationController@readAll',
+        'as'    => 'notifications.readAll'
     ]);
 });
 //Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');
