@@ -13,6 +13,7 @@ use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -154,6 +155,7 @@ class UserController extends Controller
 
         SocialLoginProfile::where('user_id', $user->id)->delete();
         Follow::where('user_id', $user->id)->orWhere('follow_id', $user->id)->delete();
+        DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
 
         $user->delete();
 

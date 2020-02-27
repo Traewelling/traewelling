@@ -8,9 +8,10 @@ use App\Like;
 use App\Status;
 use App\TrainCheckin;
 use App\User;
-use Tests\TestCase;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class NotificationsTest extends TestCase {
     use RefreshDatabase;
@@ -234,5 +235,37 @@ class NotificationsTest extends TestCase {
         $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
         $notification = json_decode($notReq->content())[0];
         $this->assertFalse($notification->read_at == null);
+    }
+
+    /** @test */
+    public function deleting_a_user_should_delete_its_notifications() {
+        // Given: Users Alice and Bob
+        $alice = $this->user;
+        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+
+        // When: Alice follows Bob
+        $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
+        $follow->assertStatus(201);
+
+        // Then: Bob should see that in their notifications
+        $notifications = $this->actingAs($bob)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(1); // one follow
+        $notifications->assertJsonFragment([
+            'type' => "App\\Notifications\\UserFollowed",
+            'notifiable_type' => "App\\User",
+            'notifiable_id' => (string) $bob->id
+        ]);        
+
+        // When: Bob deletes its account
+        $delete = $this->actingAs($bob)
+                       ->get(route('account.destroy'));
+        $delete->assertStatus(302);
+        $delete->assertRedirect('/');
+
+        // Then: The notification should be gone, hence the notifications table is empty
+        $notifications = DatabaseNotification::all();
+        $this->assertEquals(0, $notifications->count());
     }
 }
