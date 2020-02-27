@@ -43,7 +43,7 @@
                     @endif
 
                     @if(time() > strtotime($status->trainCheckin->departure) && time() < strtotime($status->trainCheckin->arrival))
-                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink(nextStation($status)) !!}</p>
+                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}</p>
                     @endif
                 </li>
                 <li>

@@ -219,4 +219,20 @@ class FrontendStatusController extends Controller
             'hafasTripsByDay' => $hafasTripsByDay
         ]);
     }
+
+    public static function nextStation(&$status) {
+        $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
+        $nextStopIndex = count($stops) - 1;
+
+        // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+        for ($i = count($stops) - 1; $i > 0; $i--) {
+            $arrival = $stops[$i]->arrival;
+            if ($arrival != NULL && strtotime($arrival) > time()) {
+                $nextStopIndex = $i;
+                continue;
+            }
+            break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+        }
+        return $stops[$nextStopIndex]->stop->name;
+    }
 }
