@@ -44,16 +44,37 @@
 @yield('metadata')
 </head>
 <body>
+    <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog" aria-labelledby="notifications-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ __('notifications.title') }}</h4>
+                    <div>
+                        <button type="button" class="close" id="mark-all-read" aria-label="{{ __('notifications.mark-all-read') }}"><span aria-hidden="true"><i class="fas fa-check-double"></i></button>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="notifications-list">
+                    <div id="notifications-empty" class="text-center text-muted">{{ __('notifications.empty') }}<br />¯\_(ツ)_/¯</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="navbar-toggler">
+                    <button class="navbar-toggler" type="button" data-toggle="modal" data-target="#notifications-board" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Show notifications') }}">
+                        <span class="notifications-bell far fa-bell"></span>
+                    </button>
 
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
@@ -83,6 +104,11 @@
                                 </li>
                             @endif
                         @else
+                            <li class="nav-item d-none d-md-inline-block">
+                                <a href="#" class="nav-link" data-toggle="modal" data-target="#notifications-board">
+                                    <span class="notifications-bell far fa-bell"></span>
+                                </a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>

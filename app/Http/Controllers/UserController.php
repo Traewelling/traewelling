@@ -9,9 +9,11 @@ use App\Status;
 use App\HafasTrip;
 use App\TrainCheckin;
 use App\Like;
+use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -154,6 +156,8 @@ class UserController extends Controller
         $user->socialProfile()->delete();
         $user->follows()->delete();
         $user->followers()->delete();
+        DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
+
 
         $user->delete();
 
@@ -189,6 +193,10 @@ class UserController extends Controller
 
     }
 
+    /**
+     * @param User The user who wants to see stuff in their timeline
+     * @param int The user id of the person who is followed
+     */
     public static function CreateFollow($user, $follow_id) {
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
@@ -199,9 +207,15 @@ class UserController extends Controller
         $follow->user_id = $user->id;
         $follow->follow_id = $follow_id;
         $follow->save();
+
+        User::find($follow_id)->notify(new UserFollowed($follow));
         return true;
     }
 
+    /**
+     * @param User The user who doesn't want to see stuff in their timeline anymore
+     * @param int The user id of the person who was followed and now isn't
+     */
     public static function DestroyFollow($user, $follow_id) {
         $follow = $user->follows()->where('follow_id', $follow_id)->where('user_id', $user->id)->first();
         if ($follow) {
