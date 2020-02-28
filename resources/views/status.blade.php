@@ -1,14 +1,4 @@
 @extends('layouts.app')
-<?php
-$title = __('status.ogp-title', ['name' => $status->user->username]);
-$description = trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
-    'linename' => $status->trainCheckin->HafasTrip->linename,
-    'distance' => $status->trainCheckin->distance,
-    'destination' => $status->trainCheckin->Destination->name,
-    'origin' => $status->trainCheckin->Origin->name
-]);
-$image = route('account.showProfilePicture', ['username' => $status->user->username]);
-?>
 
 @section('title'){{ $title }}@endsection
 
@@ -30,9 +20,6 @@ $image = route('account.showProfilePicture', ['username' => $status->user->usern
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <?php
-                $dtObj = new \DateTime($status->trainCheckin->departure);
-                ?>
                 <h5>{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
                 @include('includes.status')
             </div>

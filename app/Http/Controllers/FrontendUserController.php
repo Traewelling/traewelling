@@ -22,7 +22,8 @@ class FrontendUserController extends Controller
         return view('profile', [
             'username' => $profilePage['username'],
             'statuses' => $profilePage['statuses'],
-            'user' => $profilePage['user']]);
+            'user' => $profilePage['user'],
+            'currentUser' => Auth::user()]);
     }
 
     public function getProfilePicture($username) {

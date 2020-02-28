@@ -85,3 +85,10 @@ function stationLink($name, $classes = "text-trwl clearfix"): String {
 
     return $return;
 }
+
+function formatNewDay($DateObject) {
+
+
+
+    return __("dates." . $DateObject->format('l')) .', '. $DateObject->format('j').'. '.__("dates." . $DateObject->format('F')) .' '. $DateObject->format('Y');
+}

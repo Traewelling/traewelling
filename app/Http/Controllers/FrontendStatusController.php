@@ -35,12 +35,20 @@ class FrontendStatusController extends Controller
             }
             return redirect()->route('globaldashboard');
         }
-        return view('dashboard', ['statuses' => $statuses]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => $user,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals($user)
+        ]);
     }
 
     public function getGlobalDashboard() {
         $statuses = StatusBackend::getGlobalDashboard();
-        return view('dashboard', ['statuses' => $statuses]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => Auth::user(),
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+        ]);
     }
 
     public function DeleteStatus(Request $request) {
@@ -132,12 +140,29 @@ class FrontendStatusController extends Controller
             'statuses' => $statusesResponse,
             'events' => $events,
             'event' => $e,
+            'currentUser' => Auth::user(),
         ]);
     }
 
     public function getStatus($id) {
         $StatusResponse = StatusBackend::getStatus($id);
-        return view('status', ['status' => $StatusResponse]);
+
+        $t = time();
+
+        return view('status', [
+            'status' => $StatusResponse,
+            'currentUser' => Auth::user(),
+            'time' => $t,
+            'title' => __('status.ogp-title', ['name' => $StatusResponse->user->username]),
+            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $StatusResponse->trainCheckin->HafasTrip->linename), [
+                'linename' => $StatusResponse->trainCheckin->HafasTrip->linename,
+                'distance' => $StatusResponse->trainCheckin->distance,
+                'destination' => $StatusResponse->trainCheckin->Destination->name,
+                'origin' => $StatusResponse->trainCheckin->Origin->name
+            ]),
+            'image' => route('account.showProfilePicture', ['username' => $StatusResponse->user->username]),
+            'dtObj' => new \DateTime($StatusResponse->trainCheckin->departure),
+        ]);
     }
 
     public function usageboard(Request $request) {
@@ -173,9 +198,8 @@ class FrontendStatusController extends Controller
 
             $statusesByDay[] = StatusController::usageByDay($dateIterator);
             $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
-
             // Wenn keine Stati passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
-            if($statusesByDay[count($statusesByDay) - 1]->occurs == 0) { // Heute keine Stati
+            if($statusesByDay[count($statusesByDay) - 1] == 0) { // Heute keine Stati
                 $hafasTripsByDay[] = (object) [];
             } else {
                 $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
@@ -194,5 +218,21 @@ class FrontendStatusController extends Controller
             'userRegistrationsByDay' => $userRegistrationsByDay,
             'hafasTripsByDay' => $hafasTripsByDay
         ]);
+    }
+
+    public static function nextStation(&$status) {
+        $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
+        $nextStopIndex = count($stops) - 1;
+
+        // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+        for ($i = count($stops) - 1; $i > 0; $i--) {
+            $arrival = $stops[$i]->arrival;
+            if ($arrival != NULL && strtotime($arrival) > time()) {
+                $nextStopIndex = $i;
+                continue;
+            }
+            break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+        }
+        return $stops[$nextStopIndex]->stop->name;
     }
 }

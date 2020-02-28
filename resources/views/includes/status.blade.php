@@ -1,19 +1,12 @@
-<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}">
-
-    @if (empty($currentUser))
-        <?php $currentUser = Auth::user(); ?>
-    @endif
-
+<h5 class="mt-4 dateHeading"></h5>
+<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}" data-date="{{formatNewDay(new \DateTime($status->trainCheckin->departure)) }}">
     @if (Route::current()->uri == "status/{id}")
-        <?php $mapLines = $status->trainCheckin->getMapLines(); ?>
-        @if($mapLines != "[]")
+        @if($status->trainCheckin->HafasTrip->polyline)
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $mapLines }}"></div>
+            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
         </div>
         @endif
     @endif
-
-    @php($event = $status->event())
 
     <div class="card-body row">
         <div class="col-2 image-box pr-0 d-none d-lg-flex">
@@ -29,21 +22,19 @@
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
                     <p class="train-status text-muted">
-                        @php($hafas = $status->trainCheckin->HafasTrip)
                         <span>
-                            @if (file_exists(public_path('img/'.$hafas->category.'.svg')))
-                                <img class="product-icon" src="{{ asset('img/'.$hafas->category.'.svg') }}">
+                            @if (file_exists(public_path('img/'.$status->trainCheckin->HafasTrip->category.'.svg')))
+                                <img class="product-icon" src="{{ asset('img/'.$status->trainCheckin->HafasTrip->category.'.svg') }}">
                             @else
                                 <i class="fa fa-train d-inline"></i>
-                            @endif {{ $hafas->linename }}
+                            @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
+                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure))) !!}</span>
 
-                        @if($event != null)
+                        @if($status->event != null)
                             <br class="d-sm-none">
-                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a></span>
+                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
                         @endif
                     </p>
 
@@ -51,24 +42,8 @@
                         <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
                     @endif
 
-                    @php($t = time())
-                    @if($t > strtotime($status->trainCheckin->departure) && $t < strtotime($status->trainCheckin->arrival))
-
-                    <?php
-                    $stops = json_decode($hafas->stopovers);
-                    $nextStopIndex = count($stops) - 1;
-
-                    // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
-                    for ($i=count($stops)-1; $i > 0; $i--) {
-                        $arrival = $stops[$i]->arrival;
-                        if($arrival != null && strtotime($arrival) > $t) {
-                            $nextStopIndex = $i;
-                            continue;
-                        }
-                        break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
-                    }
-                    ?>
-                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink($stops[$nextStopIndex]->stop->name) !!}</p>
+                    @if(time() > strtotime($status->trainCheckin->departure) && time() < strtotime($status->trainCheckin->arrival))
+                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}</p>
                     @endif
                 </li>
                 <li>
@@ -76,10 +51,10 @@
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
-                @if($event != null)
+                @if($status->event != null)
                 <!-- <li class="calendar-button">
                     <i class="fa fa-calendar-day"></i>
-                    <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">{{ $event->name }}</a>
+                    <a href="{{ route('statuses.byEvent', ['slug' => $status->event->slug]) }}">{{ $status->event->name }}</a>
                 </li> -->
                 @endif
             </ul>

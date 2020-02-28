@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Controllers\EventController as EventBackend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +37,7 @@ class FrontendTransportController extends Controller
             'departures' => $TrainStationboardResponse['departures'],
             'when' => $TrainStationboardResponse['when'],
             'request' => $request,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
         ]
         );
     }
@@ -54,7 +56,9 @@ class FrontendTransportController extends Controller
             'train' => $TrainTripResponse['train'],
             'stopovers' => $TrainTripResponse['stopovers'],
             'destination' => $TrainTripResponse['destination'],
-            'start' => $TrainTripResponse['start']
+            'start' => $TrainTripResponse['start'],
+            'user' => Auth::user(),
+            'events' => EventBackend::activeEvents()
         ]);
     }
 

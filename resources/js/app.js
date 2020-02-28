@@ -21,5 +21,6 @@ window.addEventListener("load", () => {
     require("./components/stationboard");
     require("./components/statusMap");
     require("./components/timepicker");
+    require("./components/status");
     require("bootstrap-cookie-alert/cookiealert");
 });

@@ -92,8 +92,6 @@ class TransportController extends Controller
 
     private static function getTrainDepartures($ibnr, $when='now', $trainType=null) {
         $client = new Client(['base_uri' => config('trwl.db_rest')]);
-        //$ibnrObject = self::TrainAutocomplete($station);
-        //$ibnr = $ibnrObject[0]['id'];
         $trainTypes = array(
             'suburban' => 'false',
             'subway' => 'false',
@@ -174,7 +172,7 @@ class TransportController extends Controller
                         ['transport_type', $category
                         ]])
             ->first();
-        
+
         $factor = 1;
         if ($factorDB != null) {
             $factor = $factorDB->value;
@@ -182,7 +180,7 @@ class TransportController extends Controller
         $arrivalTime = ( (is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ( (is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points = $factor + ceil($distance / 10);
-        
+
         /**
          * Full points, 20min before the departure time or during the ride
          *   D-20         D                      A
@@ -194,10 +192,10 @@ class TransportController extends Controller
         if (($departureTime - 20*60) < $now && $now < $arrivalTime) {
             return $points;
         }
-        
+
         /**
          * Reduced points, one hour before departure and after arrival
-         * 
+         *
          *   D-60         D          A          A+60
          *    |           |          |           |
          * -----------------------------------------> t
@@ -502,25 +500,21 @@ class TransportController extends Controller
     }
 
     public static function usageByDay(Carbon $date) {
-        $hafas = DB::table('hafas_trips')
-            ->select(DB::raw('count(*) as occurs'))
-            ->where("created_at", ">=", $date->copy()->startOfDay())
+        $hafas = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->first();
+            ->count();
 
-        $returnArray = ["hafas" => $hafas->occurs];
+        $returnArray = ["hafas" => $hafas];
 
         /** Shortcut, wenn eh nichts passiert ist. */
-        if($hafas->occurs == 0) {
+        if($hafas == 0) {
             return $returnArray;
         }
 
-        $polylines  = DB::table('poly_lines')
-            ->select(DB::raw('count(*) as occurs'))
-            ->where("created_at", ">=", $date->copy()->startOfDay())
+        $polylines  = PolyLine::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->first();
-        $returnArray['polylines'] = $polylines->occurs;
+            ->count();
+        $returnArray['polylines'] = $polylines;
 
         $transportTypes = ['nationalExpress',
             'national',
@@ -534,16 +528,13 @@ class TransportController extends Controller
             'ferry',];
 
         $seenCheckins = 0;
-        for ($i = 0; $seenCheckins < $hafas->occurs && $i < count($transportTypes); $i++) {
+        for ($i = 0; $seenCheckins < $hafas && $i < count($transportTypes); $i++) {
             $transport = $transportTypes[$i];
 
-             $returnArray[$transport] = DB::table('hafas_trips')
-                ->select(DB::raw('count(*) as occurs'))
-                ->where("created_at", ">=", $date->copy()->startOfDay())
+             $returnArray[$transport] = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
                 ->where("created_at", "<=", $date->copy()->endOfDay())
                 ->where('category', '=', $transport)
-                ->first()
-                ->occurs;
+                ->count();
              $seenCheckins += $returnArray[$transport];
         }
 

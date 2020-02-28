@@ -18,11 +18,11 @@ use Barryvdh\DomPDF\Facade as PDF;
 class StatusController extends Controller
 {
     public static function getStatus($id) {
-        return Status::where('id', $id)->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
+        return Status::where('id', $id)->with('trainCheckin', 'user', 'event')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
     }
 
     public static function getActiveStatuses() {
-        $statuses = Status::with('trainCheckin')
+        $statuses = Status::with('trainCheckin', 'trainCheckin.hafastrip', 'trainCheckin.hafastrip.getPolyline')
             ->whereHas('trainCheckin', function ($query) {
                 $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
             })
@@ -57,21 +57,20 @@ class StatusController extends Controller
     }
 
     public static function DeleteStatus($user, $statusId) {
-        $status = Status::find($statusId);
-        $trainCheckin = $status->trainCheckin()->first();
+        $status = Status::with('trainCheckin')->find($statusId);
         if ($user != $status->user) {
             return false;
         }
-        $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->train_distance -= $status->trainCheckin->distance;
+        $user->train_duration -= (strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)) / 60;
 
         //Don't subtract points, if status outside of current point calculation
-        if (strtotime($trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
-            $user->points -= $trainCheckin->points;
+        if (strtotime($status->trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
+            $user->points -= $status->trainCheckin->points;
         }
         $user->update();
+        $status->trainCheckin->delete();
         $status->delete();
-        $trainCheckin->delete();
         return true;
     }
 
@@ -197,11 +196,9 @@ class StatusController extends Controller
     }
 
     public static function usageByDay(Carbon $date) {
-        $q = DB::table('statuses')
-            ->select(DB::raw('count(*) as occurs'))
-            ->where("created_at", ">=", $date->copy()->startOfDay())
+        $q = Status::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->first();
+            ->count();
         return $q;
     }
 }
