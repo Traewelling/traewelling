@@ -3,7 +3,7 @@
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $mapLines = $status->trainCheckin->getMapLines() }}"></div>
+            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9" data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
         </div>
         @endif
     @endif
