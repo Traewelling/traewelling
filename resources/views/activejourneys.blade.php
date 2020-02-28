@@ -35,8 +35,8 @@ window.addEventListener("load", () => {
                 id: {{$s->id}},
                 origin: {{$s->trainCheckin->origin}},
                 destination: {{$s->trainCheckin->destination}},
-                polyline: {!! $s->trainCheckin->hafastrip->getPolyline->polyline !!},
-                stops: {!! $s->trainCheckin->hafastrip->stopovers !!},
+                polyline: {!! $s->trainCheckin->hafastrip->getPolyline->polyline !!}, // Stored as JSON in DB
+                stops: {!! $s->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB
                 percentage: 0,
             },
         @endforeach
