@@ -14,7 +14,7 @@
             @endif
         </div>
         <div class="card-body">
-            <div class="col-sm-6 offset-sm-3">
+            <div class="col-md-6 offset-md-3">
                 <form class="container" method="POST" action="{{ ($event->id == 0) ? route('events.store') : route('events.update', ['slug' => $event->slug]) }}">
             @csrf
             @if($event->id != 0)

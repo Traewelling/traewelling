@@ -74,7 +74,7 @@
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
-                    <span class="text-trwl">{{ $status->trainCheckin->Destination->name }}</span>
+                    {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
                 @if($event != null)
                 <!-- <li class="calendar-button">

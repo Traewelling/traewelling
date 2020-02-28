@@ -1,72 +1,70 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Träwelling
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+> Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it.
 
-## About Laravel
+![Resources build with `prod`](https://github.com/Traewelling/traewelling/workflows/Resources%20build%20with%20%60prod%60/badge.svg)
+![Resources build with `dev`](https://github.com/Traewelling/traewelling/workflows/Resources%20build%20with%20%60dev%60/badge.svg)
+![Composer install and test Laravel](https://github.com/Traewelling/traewelling/workflows/Laravel/badge.svg)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Träwelling Screenshot](traewelling.jpg)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Check into trains and other public transport options in most of Europe
+* Track your work trips, e.g. for tax returns and travel expenses
+* Follow other people and see where they're going
+* Meet new friends who are on the same train
+* Find who's going to an event and is in your train
+* Automatic sharing to Twitter and Mastodon
+* Beautiful sharepics for e.g. Instagram Stories
+* All texts in German and English
 
-## Learning Laravel
+## Set up an instance
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1400 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* PHP 7.2 (or higher)
+* Composer
+* NodeJS and npm
+* A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
+* A local instance of [db-rest v3](https://github.com/derhuerst/db-rest/tree/3)
 
-## Laravel Sponsors
+After setting up those things, you can clone the repository and get the dependencies:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```sh
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
+Now, you can create your own environment configuration:
+
+```sh
+cp .env.example .env
+vi .env
+```
+
+Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter). While you will not need all of those, you can stumple into weird bugs.
+
+Then, generate some application keys and migrate the database to the latest level:
+
+```sh
+php artisan key:generate
+php artisan migrate
+```
+
+Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
+
+Use your webserver of choice or artisan (`php artisan serve`) to boot the application. You should see the Träwelling homepage.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions are more than welcome. Please open an issue for bugs or feature requests. If you want to implement the feature - great; if you don't want to, that's fine, too.
 
-## Security Vulnerabilities
+If you add code:
+* Please also commit the changes in the `public/` folder, just as `npm run dev` produces them. Yes, it's weird, but that's how we roll.
+* If you edit the language files, please check if your change is applicable for all languages.
+* If you work on the front page (see screenshot above), please consider updating the screenshot.
+* Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to have half-baked languages that have missing strings after a while.
+* Please consider adding unit and integration tests, especially if you're adding new features.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you are required to publish changes that you make to this software. Please refrain from creating your own public instance of Träwelling, instead try to create a better version for everyone.

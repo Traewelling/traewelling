@@ -96,6 +96,17 @@ class FrontendStatusController extends Controller
         ]);
     }
 
+    public function export(Request $request) {
+        $this->validate($request, [
+            'begin' => 'required|date|before_or_equal:end',
+            'end' => 'required|date|after_or_equal:begin',
+            'filetype' => 'required|in:json,csv,pdf'
+        ]);
+
+        $export = StatusBackend::ExportStatuses($request->input('begin'), $request->input('end'), $request->input('filetype'));
+        return $export;
+    }
+
     public function getActiveStatuses() {
         $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
         $ActiveEvents = EventBackend::activeEvents();

@@ -10,8 +10,12 @@ use App\PolyLine;
 use App\Status;
 use App\TrainCheckin;
 use App\TrainStations;
+use App\Notifications\TwitterNotSend;
+use App\Notifications\MastodonNotSend;
+use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\DB;
 use Mastodon;
 
@@ -163,26 +167,47 @@ class TransportController extends Controller
         ];
     }
 
-    private static function CalculateTrainPoints($distance, $category, $departure, $delay) {
+    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay, $now) {
         $factorDB = DB::table('pointscalculation')
             ->where([
                         ['type', 'train'],
                         ['transport_type', $category
                         ]])
             ->first();
-            $factor = 1;
+
+        $factor = 1;
         if ($factorDB != null) {
             $factor = $factorDB->value;
         }
-        $time = strtotime($departure);
+        $arrivalTime = ( (is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
+        $departureTime = ( (is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points = $factor + ceil($distance / 10);
-        if ($time < strtotime('+20 minutes') && $time > strtotime('-20 minutes')) {
+
+        /**
+         * Full points, 20min before the departure time or during the ride
+         *   D-20         D                      A
+         *    |           |                      |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        // print_r([$departureTime - 20*60 < $now, $now < $arrivalTime]);
+        if (($departureTime - 20*60) < $now && $now < $arrivalTime) {
             return $points;
         }
 
-        if ($time < strtotime('+1 hour') && $time > strtotime('-1 hour')) {
+        /**
+         * Reduced points, one hour before departure and after arrival
+         *
+         *   D-60         D          A          A+60
+         *    |           |          |           |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        if (($departureTime - 60*60) < $now && $now < ($arrivalTime + 60*60)) {
             return ceil($points * 0.25);
         }
+
+        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
         return 1;
     }
 
@@ -229,7 +254,9 @@ class TransportController extends Controller
             $distance,
             $hafas['category'],
             $stopovers[$offset1]['departure'],
-            $hafas['delay']
+            $stopovers[$offset2]['arrival'],
+            $hafas['delay'],
+            time()
         );
 
         $status = new Status();
@@ -311,14 +338,18 @@ class TransportController extends Controller
             }
 
             if (isset($toot_check) && $user->socialProfile) {
-                $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
-                if ($mastodonDomain != null) {
+                try {
+                    $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
                     Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
                     Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                } catch (RequestException $e) {
+                    $user->notify(new MastodonNotSend($e->getResponse()->getStatusCode(), $status));
+                } catch (\Exception $e) {
+                    // Other exceptions are thrown into the void.
                 }
             }
             if (isset($tweet_check) && $user->socialProfile) {
-                if ($user->socialProfile->twitter_token != null && $user->socialProfile->twitter_tokenSecret != null) {
+                try {
                     $connection = new TwitterOAuth(
                         config('trwl.twitter_id'),
                         config('trwl.twitter_secret'),
@@ -337,6 +368,13 @@ class TransportController extends Controller
                             'lon' => $originStation->longitude
                         ]
                     );
+
+                    if($connection->getLastHttpCode() != 200) {
+                        $user->notify(new TwitterNotSend($connection->getLastHttpCode(), $status));
+                    }
+                } catch (\Exception $exception) {
+                    // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+                    // However, we still want to continue if it explodes, thus why not catch exceptions here.
                 }
             }
         }
@@ -348,7 +386,11 @@ class TransportController extends Controller
             ['status_id', '!=', $status->id],
             ['arrival', '>', $trainCheckin->departure],
             ['departure', '<', $trainCheckin->arrival]
-        ])->get()->pluck('status.user');
+        ])->get()->pluck('status.user')
+            ->each(function($t) use ($status, $hafas, $originStation, $destinationStation) {
+                $t->status->user->notify(new UserJoinedConnection($status->id, $hafas['linename'], $originStation->name, $destinationStation->name));
+                return $t;
+            });
 
         return [
             'success' => true,
@@ -392,7 +434,7 @@ class TransportController extends Controller
             $trip->stopovers = json_encode($json->stopovers);
             $trip->polyline = $polyLineHash;
             $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture, $json->departureDelay ?? 0);
-            $trip->arrival = self::dateToMySQLEscape($json->arrival, $json->arrivalDelay ?? 0);
+            $trip->arrival = self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival, $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
             }
