@@ -2,29 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Follow;
-use App\SocialLoginProfile;
-use App\Status;
-use App\HafasTrip;
-use App\TrainCheckin;
-use App\Like;
 use App\Notifications\UserFollowed;
+use App\Status;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Jenssegers\Agent\Agent;
 
 class UserController extends Controller
 {
-    public static function getProfilePicture($username) {
+    public static function getProfilePicture($username)
+    {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
             return null;
@@ -32,14 +27,14 @@ class UserController extends Controller
         try {
             $ext = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
             $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $user->avatar = 'user.jpg';
         }
 
         if ($user->avatar === 'user.jpg') {
             $hash = 0;
             for ($i = 0; $i < strlen($username); $i++) {
-                $hash = ord(substr($username, $i, 1)) + (($hash << 5) -$hash);
+                $hash = ord(substr($username, $i, 1)) + (($hash << 5) - $hash);
             }
 
             $hex = dechex($hash & 0x00FFFFFF);
@@ -51,14 +46,27 @@ class UserController extends Controller
         return ['picture' => $picture, 'extension' => $ext];
     }
 
-    public function updateSettings(Request $request) {
+    public function deleteProfilePicture()
+    {
+        $user = Auth::user();
+        if ($user->avatar != 'user.jpg') {
+            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+            $user->avatar = 'user.jpg';
+            $user->save();
+        }
+
+        return redirect(route('settings'));
+    }
+
+    public function updateSettings(Request $request)
+    {
         $user = Auth::user();
         $this->validate($request, [
             'name' => ['required', 'string', 'max:50'],
             'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
-            $this->validate($request,['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
+            $this->validate($request, ['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
         }
         if ($user->email != $request->email) {
             $this->validate($request, ['email' => ['required', 'string', 'email', 'max:255', 'unique:users']]);
@@ -78,7 +86,8 @@ class UserController extends Controller
         return $this->getAccount();
     }
 
-    public function updatePassword(Request $request) {
+    public function updatePassword(Request $request)
+    {
         $user = Auth::user();
         if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
@@ -89,13 +98,14 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public function uploadImage(Request $request) {
+    public function uploadImage(Request $request)
+    {
         $user = Auth::user();
 
         $avatar = $request->input('image');
 
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
-        Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+        Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
 
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -107,10 +117,11 @@ class UserController extends Controller
     }
 
     //Return Settings-page
-    public function getAccount() {
+    public function getAccount()
+    {
         $user = Auth::user();
         $sessions = array();
-        foreach($user->sessions as $session) {
+        foreach ($user->sessions as $session) {
             $session_array = array();
             $result = new Agent();
             $result->setUserAgent($session->user_agent);
@@ -118,7 +129,7 @@ class UserController extends Controller
 
             if ($result->isphone()) {
                 $session_array['device'] = 'mobile-alt';
-            } elseif ( $result->isTablet()) {
+            } elseif ($result->isTablet()) {
                 $session_array['device'] = 'tablet';
             } else {
                 $session_array['device'] = 'desktop';
@@ -133,7 +144,8 @@ class UserController extends Controller
     }
 
     //delete sessions from user
-    public function deleteSession(Request $request) {
+    public function deleteSession(Request $request)
+    {
         $user = Auth::user();
         foreach ($user->sessions as $session) {
             $session->delete();
@@ -141,13 +153,14 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    public function destroyUser(Request $request) {
+    public function destroyUser(Request $request)
+    {
         $user = Auth::user();
 
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
         }
-        foreach(Status::where('user_id', $user->id)->get() as $status) {
+        foreach (Status::where('user_id', $user->id)->get() as $status) {
             $status->trainCheckin->delete();
             $status->likes()->delete();
             $status->delete();
@@ -165,7 +178,8 @@ class UserController extends Controller
     }
 
     //Save Changes on Settings-Page
-    public function SaveAccount(Request $request) {
+    public function SaveAccount(Request $request)
+    {
 
         $this->validate($request, [
             'name' => 'required|max:120'
@@ -174,7 +188,7 @@ class UserController extends Controller
         $user->name = $request['name'];
         $user->update();
         $file = $request->file('image');
-        $filename = $request['name'].'-'.$user->id.'.jpg';
+        $filename = $request['name'] . '-' . $user->id . '.jpg';
 
         if ($file) {
             Storage::disk('local')->put($filename, File::get($file));
@@ -182,7 +196,8 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public static function getProfilePage($username) {
+    public static function getProfilePage($username)
+    {
         $user = User::where('username', $username)->first();
         if ($user === null) {
             return null;
@@ -197,7 +212,8 @@ class UserController extends Controller
      * @param User The user who wants to see stuff in their timeline
      * @param int The user id of the person who is followed
      */
-    public static function CreateFollow($user, $follow_id) {
+    public static function CreateFollow($user, $follow_id)
+    {
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
             return false;
@@ -216,7 +232,8 @@ class UserController extends Controller
      * @param User The user who doesn't want to see stuff in their timeline anymore
      * @param int The user id of the person who was followed and now isn't
      */
-    public static function DestroyFollow($user, $follow_id) {
+    public static function DestroyFollow($user, $follow_id)
+    {
         $follow = $user->follows()->where('follow_id', $follow_id)->where('user_id', $user->id)->first();
         if ($follow) {
             $follow->delete();
@@ -224,7 +241,8 @@ class UserController extends Controller
         }
     }
 
-    public static function getLeaderboard() {
+    public static function getLeaderboard()
+    {
         $user = Auth::user();
         $friends = null;
 
@@ -240,7 +258,8 @@ class UserController extends Controller
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
-    public static function registerByDay(Carbon $date) {
+    public static function registerByDay(Carbon $date)
+    {
         $q = User::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
             ->count();
