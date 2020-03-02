@@ -21,12 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([ 'prefix' => 'v0'], function (){
         Route::get('statuses/enroute', 'API\StatusController@enroute');
     Route::group(['middleware' => ['guest:api']], function () {
-             Route::post('login', 'API\AuthController@login');
        Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login');
             Route::post('signup', 'API\AuthController@signup');
-            Route::get('logout', 'API\AuthController@logout')->middleware('guest:api');
-        });
+       });
         Route::group(['prefix' => 'user'], function() {
             Route::get('{username}', 'API\UserController@show');
             Route::get('{username}/active', 'API\UserController@active');
@@ -34,6 +32,7 @@ Route::group([ 'prefix' => 'v0'], function (){
     });
     // All protected routes
     Route::group(['middleware' => 'auth:api'], function() {
+        Route::post('auth/logout', 'API\AuthController@logout');
         Route::get('getuser', 'API\AuthController@getUser');
 
         // Controller for complete /statuses-stuff

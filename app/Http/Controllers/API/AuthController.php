@@ -24,7 +24,7 @@ class AuthController extends ResponseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError($validator->errors());
+            return $this->sendError($validator->errors(), 400);
         }
 
         $input = $request->all();
@@ -51,7 +51,7 @@ class AuthController extends ResponseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError($validator->errors());
+            return $this->sendError($validator->errors(), 400);
         }
 
         $credentials = request(['email', 'password']);
@@ -67,7 +67,6 @@ class AuthController extends ResponseController
     //logout
     public function logout(Request $request)
     {
-
         $isUser = $request->user()->token()->revoke();
         if($isUser){
             $success['message'] = "Successfully logged out.";
