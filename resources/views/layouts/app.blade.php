@@ -110,22 +110,32 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select" href="#"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                   v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}"><i class="fas fa-user"></i> {{ __('menu.profile') }}</a>
-                                    <a class="dropdown-item" href="{{ route('export.landing') }}"><i class="fas fa-save"></i> {{ __('menu.export') }}</a>
-                                    <a class="dropdown-item" href="{{ route('settings') }}"><i class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
+                                    <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}"><i
+                                            class="fas fa-user"></i> {{ __('menu.profile') }}</a>
+                                    <a class="dropdown-item" href="{{ route('export.landing') }}"><i
+                                            class="fas fa-save"></i> {{ __('menu.export') }}</a>
+                                    <a class="dropdown-item" href="{{ route('settings') }}"><i
+                                            class="fas fa-cog"></i> {{ __('menu.settings') }}</a>
+                                    @if(Auth::user()->role >=5)
+                                        <a class="dropdown-item" href="{{route('admin.dashboard')}}"><i
+                                                class="fas fa-tools"></i> {{__('menu.admin')}}</a>
+                                    @endif
                                     <div class="dropdown-divider"></div>
                                     <button class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
+                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
                                     </button>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                          style="display: none;">
                                         @csrf
                                     </form>
                                 </div>

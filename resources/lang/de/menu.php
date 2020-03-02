@@ -18,5 +18,6 @@ return [
     "privacy" => "Datenschutz",
     "profile" => "Profil",
     "register" => "Registrieren",
-    "settings" => "Einstellungen"
+    "settings" => "Einstellungen",
+    "admin" => "Admin-Panel"
 ];
