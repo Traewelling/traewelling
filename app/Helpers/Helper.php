@@ -48,7 +48,7 @@ function secondsToDuration($seconds): array {
     return [
         "hours" => intdiv($seconds, $secondsInAnHour),
         "minutes" => intdiv($seconds % $secondsInAnHour, 60),
-        "showHours" => $seconds > $secondsInAnHour
+        "showHours" => $seconds >= $secondsInAnHour
     ];
 }
 
