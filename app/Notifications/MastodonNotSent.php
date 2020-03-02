@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class TwitterNotSend extends Notification {
+class MastodonNotSent extends Notification {
     use Queueable;
 
     public $error;
@@ -34,23 +34,35 @@ class TwitterNotSend extends Notification {
         ];
     }
 
-    public static function render($notification) {
+    public static function detail($notification) {
         $data = $notification->data;
-        
+
         try {
             $status = Status::findOrFail($data['status_id']);
         } catch(ModelNotFoundException $e) {
             throw new ShouldDeleteNotificationException();
         }
+        $notification->detail = new \stdClass();
+        $notification->detail->status = $status;
+        return $notification->type;
+    }
 
-        $hafas = $status->trainCheckin->hafasTrip;
-        
+    public static function render($notification) {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+        $data = $notification->data;
+
+
         return view("includes.notification", [
             'color' => "warning",
             'icon' => "fas fa-exclamation-triangle",
-            'lead' => __('notifications.socialNotShared.lead', ['platform' => "Twitter"]),
-            "link" => route('statuses.get', ['id' => $status->id]),
-            'notice' => __('notifications.socialNotShared.twitter.' . $data['error']),
+            'lead' => __('notifications.socialNotShared.lead', ['platform' => "Mastodon"]),
+            "link" => route('statuses.get', ['id' => $detail->status->id]),
+            'notice' => __('notifications.socialNotShared.mastodon.' . $data['error']),
 
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read' => $notification->read_at != null,

@@ -49,9 +49,9 @@ class UserFollowed extends Notification {
         ];
     }
 
-    public static function render($notification) {
+    public static function detail($notification) {
         $data = $notification->data;
-        
+        $notification->detail = new \stdClass();
         try {
             $follow = Follow::findOrFail($data['follow_id']);
             $sender = User::findOrFail($follow->user_id);
@@ -60,12 +60,25 @@ class UserFollowed extends Notification {
             // we can delete the notification.
             throw new ShouldDeleteNotificationException();
         }
-        
+        $notification->detail->follow = $follow;
+        $notification->detail->sender = $sender;
+
+        return $notification->detail;
+    }
+
+    public static function render($notification) {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+
         return view("includes.notification", [
             'color' => "neutral",
             'icon' => "fas fa-user-friends",
-            'lead' => __('notifications.userFollowed.lead', ['followerUsername' => $sender->username]),
-            "link" => route('account.show', ['username' => $sender->username]),
+            'lead' => __('notifications.userFollowed.lead', ['followerUsername' => $detail->sender->username]),
+            "link" => route('account.show', ['username' => $detail->sender->username]),
             'notice' => "",
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read' => $notification->read_at != null,

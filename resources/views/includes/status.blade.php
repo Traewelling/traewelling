@@ -41,7 +41,7 @@
                         @php($dur = secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure)))
                         <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan($dur) !!}</span>
 
-                        @if($event != null)
+                        @if($event->first() != null)
                             <br class="d-sm-none">
                             <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">{{ $event->first()->name }}</a></span>
                         @endif
@@ -76,7 +76,7 @@
                     <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
-                @if($event != null)
+                @if($event->first() != null)
                 <!-- <li class="calendar-button">
                     <i class="fa fa-calendar-day"></i>
                     <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">{{ $event->first()->name }}</a>

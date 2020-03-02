@@ -58,22 +58,35 @@ class UserJoinedConnection extends Notification {
         ];
     }
 
-    public static function render($notification) {
+    public static function detail($notification) {
         $data = $notification->data;
-        
+        $notification->detail = new \stdClass();
         try {
             $status = status::findOrFail($data['status_id']);
         } catch(ModelNotFoundException $e) {
             throw new ShouldDeleteNotificationException();
         }
-        
+
+        $notification->detail->status = $status;
+        return $notification->detail;
+    }
+
+    public static function render($notification) {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+        $data = $notification->data;
+
         return view("includes.notification", [
             'color' => "neutral",
             'icon' => "fa fa-train",
-            'lead' => __('notifications.userJoinedConnection.lead', ['username' => $status->user->username]),
-            "link" => route('statuses.get', ['id' => $status->id]),
+            'lead' => __('notifications.userJoinedConnection.lead', ['username' => $detail->status->user->username]),
+            "link" => route('statuses.get', ['id' => $detail->status->id]),
             'notice' => trans_choice('notifications.userJoinedConnection.notice', preg_match('/\s/', $data['linename']), [
-                'username' => $status->user->username,
+                'username' => $detail->status->user->username,
                 'linename' => $data['linename'],
                 'origin' => $data['origin'],
                 'destination' => $data['destination']

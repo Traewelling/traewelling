@@ -10,8 +10,8 @@ use App\PolyLine;
 use App\Status;
 use App\TrainCheckin;
 use App\TrainStations;
-use App\Notifications\TwitterNotSend;
-use App\Notifications\MastodonNotSend;
+use App\Notifications\TwitterNotSent;
+use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -343,7 +343,7 @@ class TransportController extends Controller
                     Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
                     Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
                 } catch (RequestException $e) {
-                    $user->notify(new MastodonNotSend($e->getResponse()->getStatusCode(), $status));
+                    $user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
                 } catch (\Exception $e) {
                     // Other exceptions are thrown into the void.
                 }
@@ -370,7 +370,7 @@ class TransportController extends Controller
                     );
 
                     if($connection->getLastHttpCode() != 200) {
-                        $user->notify(new TwitterNotSend($connection->getLastHttpCode(), $status));
+                        $user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
                     }
                 } catch (\Exception $exception) {
                     // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.

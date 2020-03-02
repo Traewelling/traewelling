@@ -276,7 +276,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     ]);
 
     Route::get('/notifications/latest', [
-        'uses'  => 'NotificationController@latest',
+        'uses'  => 'NotificationController@renderLatest',
         'as'    => 'notifications.latest'
     ]);
 

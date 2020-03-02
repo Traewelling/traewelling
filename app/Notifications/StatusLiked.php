@@ -46,13 +46,15 @@ class StatusLiked extends Notification {
     public function toArray($notifiable)
     {
         return [
+            'status_id' => $this->like->status_id,
             'like_id' => $this->like->id,
+            'liked_by' => $this->like->user()->first()->id
         ];
     }
 
-    public static function render($notification) {
+    public static function detail($notification) {
         $data = $notification->data;
-        
+
         try {
             $like = Like::findOrFail($data['like_id']);
             $sender = User::findOrFail($like->user_id);
@@ -64,12 +66,28 @@ class StatusLiked extends Notification {
         }
 
         $hafas = $status->trainCheckin->hafasTrip;
-        
+
+        $notification->detail = new \stdClass();
+        $notification->detail->sender = $sender;
+        $notification->detail->status = $status;
+
+        return $notification->detail;
+    }
+
+    public static function render($notification) {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+        $hafas = $detail->status->trainCheckin->hafasTrip;
+
         return view("includes.notification", [
             'color' => "neutral",
             'icon' => "fas fa-heart",
-            'lead' => __('notifications.statusLiked.lead', ['likerUsername' => $sender->username]),
-            "link" => route('statuses.get', ['id' => $status->id]),
+            'lead' => __('notifications.statusLiked.lead', ['likerUsername' => $detail->sender->username]),
+            "link" => route('statuses.get', ['id' => $detail->status->id]),
             'notice' => trans_choice(
                 'notifications.statusLiked.notice',
                 preg_match('/\s/', $hafas->linename),

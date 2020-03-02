@@ -18,6 +18,8 @@ tags:
     description: Query, add, update, and delete statuses
   - name: "Check-in"
     description: Routes required to complete a full check-in workflow.
+  - name: "Notifications"
+    description: Notifications to keep the user updated about current events.
 
 paths:
   /auth/login:
@@ -103,7 +105,6 @@ paths:
                 $ref: '#/components/schemas/BearerToken'
         400:
           $ref: '#/components/responses/BadRequestError'
-
   /auth/logout:
     post:
       security:
@@ -124,6 +125,8 @@ paths:
                     example: Unauthenticated.
   /statuses/enroute/:
     get:
+      security:
+        - bearerAuth: []
       tags: [Statuses]
       summary: Retrieves a list of all active statuses.
       responses:
@@ -182,6 +185,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
   /statuses/event/{id}:
     get:
+      security:
+        - bearerAuth: []
       tags: [Statuses]
       summary: Shows all statuses for a specific event.
       parameters:
@@ -204,9 +209,10 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           $ref: '#/components/responses/NotFoundError'
-
   /statuses/{id}:
     get:
+      security:
+        - bearerAuth: []
       tags: [Statuses]
       summary: Retrieves a single status.
       parameters:
@@ -450,6 +456,7 @@ paths:
                     - destintation
                 body:
                   type: string
+                  nullable: true
                   maxLength: 280
                   example: "This is my first checkin!"
                 tweet:
@@ -547,7 +554,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-
   /user/profilepicture:
     put:
       security:
@@ -595,6 +601,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
   /user/{username}:
     get:
+      security:
+        - bearerAuth: []
       tags: [User profile]
       summary: Gets User profile
       parameters:
@@ -615,6 +623,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
   /user/{username}/active:
     get:
+      security:
+        - bearerAuth: []
       tags: [User profile]
       summary: Gets active status of user.
       parameters:
@@ -639,6 +649,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
   /getuser:
     get:
+      security:
+        - bearerAuth: []
       tags: [User profile]
       summary: Gets current user
       responses:
@@ -652,6 +664,68 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+  /notifications:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Notifications]
+      description: Gets latest notifications for user
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/notifications'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      security:
+        - bearerAuth: []
+      tags: [Notifications]
+      responses:
+        201:
+          description: new state = read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notifications'
+        202:
+          description: new state = unread
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notifications'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Notifications]
+      responses:
+        200:
+          description: OK. Notification has been deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notifications'
+
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+
+
 
 
 
@@ -685,6 +759,159 @@ components:
         token:
           type: string
           example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxYjIzZGFlNTc0YzlhOTk3MzQ5MTQwMWZhNjRkMmU2MzgwNGQ4MWJhOTI0MjRlMmQ2ZmYyZjIyZjFiZmU1ZDUyOTExZjE0N2M4YWM5MTI3In0.eyJhdWQiOiIzIiwianRpIjoiZDFiMjNkYWU1NzRjOWE5OTczNDkxNDAxZmE2NGQyZTYzODA0ZDgxYmE5MjQyNGUyZDZmZjJmMjJmMWJmZTVkNTI5MTFmMTQ3YzhhYzkxMjciLCJpYXQiOjE1ODI5MDIyMDIsIm5iZiI6MTU4MjkwMjIwMiwiZXhwIjoxNjE0NTI0NjAyLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.XWJcsbhgOQXqk-OrjKaRMRouo5AS4TkniyShH50O8K8KjaJYHP9Ltm3eMCpqarZpaBVucnsSKKimVVT9c1AD-Iq5n8AqZ3Mhgbh6Ik5-VqMAs89mLBwWj8seh_hgUmS0AqZMxUvkzZDpaU7Ub_EtoBUQ6l7up2tNXrA12mvg57LpvibWl6tXVLI2cBlEvNoTY3DPEjLFKMkdela7bhkoh4OAtJAnv1iNspuxcuhHp4PfgWlmaVGn4HdyfchNDJdSiWuiYy1LbRzpb9gdmmZtrDa--OfVRxodzE9sVIrLWXD_RRldejqyarbSke88ucMlALgCbBL88r00X2LEAXq565_s7ILbqEfVh1YN9ehfP8kCM9bf_Yop4G9QxgkO_xEhcv-Sj72rUph6TgS68QjEXculgizeVRTeCgW5X07UxCxy12jGuZMq3JjYU_kOmF1Sr79KSSZnFe27_f1kjbgEGSVwVKq_R4HcmM9ZGazpfbRPqaZnjUl3H5_0YAa7hZh0P1MYcJywx0tdY3inkZFBXhz1_3Xt6sULqlFRS4Lh0hP0o2E5jrCtVmeKGTgUvvbumEVyKpisjzpQK08i-rMSnYXSUbI6JNXc9z3PVgWzVt1lAdG66xNci7JQ3gdIoM4cQFBcGI8qQmfRMjvzXmmvoWY_hottmtOSK9AV_AP4zSw"
+    notifications:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "87eed448-6ddc-44bc-97c6-bb4fe2c8d9e0"
+        type:
+          type: string
+          enum:
+            - "App\\Notifications\\MastodonNotSent"
+            - "App\\Notifications\\StatusLiked"
+            - "App\\Notifications\\TwitterNotSent"
+            - "App\\Notifications\\UserFollowed"
+            - "App\\Notifications\\UserJoinedConnection"
+        notifiable_type:
+          type: string
+          enum:
+            - "App\\User"
+        notifiable_id:
+          type: string
+          example: "1"
+        data:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/notification_mastodon_not_sent_data'
+            - $ref: '#/components/schemas/notification_status_liked_data'
+            - $ref: '#/components/schemas/notification_twitter_not_sent_data'
+            - $ref: '#/components/schemas/notification_user_followed_data'
+            - $ref: '#/components/schemas/notification_user_joined_connection_data'
+        read_at:
+          type: string
+          nullable: true
+          example: "2020-02-29 13:37:00"
+        created_at:
+          type: string
+          example: "2020-02-29 13:37:00"
+        updated_at:
+          type: string
+          example: "2020-02-29 13:37:00"
+        detail:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/notification_mastodon_not_sent'
+            - $ref: '#/components/schemas/notification_status_liked'
+            - $ref: '#/components/schemas/notification_twitter_not_sent'
+            - $ref: '#/components/schemas/notification_user_followed'
+            - $ref: '#/components/schemas/notification_user_joined_connection'
+
+    notification_mastodon_not_sent:
+      type: object
+      description: "App\\Notifications\\MastodonNotSent"
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    notification_mastodon_not_sent_data:
+      type: object
+      description: "App\\Notifications\\MastodonNotSent"
+      properties:
+        error:
+          type: string
+          additionalProperties: true
+        status_id:
+          $ref: '#/components/schemas/status_id'
+    notification_twitter_not_sent:
+      type: object
+      description: "App\\Notifications\\TwitterNotSent"
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    notification_twitter_not_sent_data:
+      type: object
+      description: "App\\Notifications\\TwitterNotSent"
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    notification_status_liked:
+      type: object
+      description: "App\\Notifications\\StatusLiked"
+      properties:
+        follow:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 2
+            created_at:
+              type: string
+              example: "2020-02-29 13:37:00"
+            updated_at:
+              type: string
+              example: "2020-02-29 13:37:00"
+            user_id:
+              type: string
+              description: The user that created the follow.
+              example: "10"
+            follow:id:
+              description: The user that is followed.
+              type: string
+              example: "1"
+        sender:
+          $ref: '#/components/schemas/User'
+    notification_status_liked_data:
+      type: object
+      description: "App\\Notifications\\StatusLiked"
+      properties:
+        follow:
+          type: object
+          properties:
+            status_id:
+              $ref: '#/components/schemas/status_id'
+            like_id:
+              type: integer
+              example: 1
+            liked_by:
+              type: integer
+              example: 10
+        sender:
+          $ref: '#/components/schemas/User'
+    notification_user_followed:
+      type: object
+      description: "App\\Notifications\\UserFollowed"
+      properties:
+        sender:
+          $ref: '#/components/schemas/User'
+        status:
+          $ref: '#/components/schemas/Status'
+    notification_user_followed_data:
+      type: object
+      description: "App\\Notifications\\UserFollowed"
+      properties:
+        follow_id:
+          type: integer
+          example: 1
+    notification_user_joined_connection:
+      type: object
+      description: "App\\Notifications\\UserJoinedConnection"
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    notification_user_joined_connection_data:
+      type: object
+      description: "App\\Notifications\\UserJoinedConnection"
+      properties:
+        status_id:
+          $ref: '#/components/schemas/status_id'
+        linename:
+          $ref: '#/components/schemas/linename'
+        origin:
+          type: string
+          example: "Limurg Süd"
+        destination:
+          type: string
+          example: "Ulm Hbf"
     status_paginate:
       type: object
       properties:
@@ -745,6 +972,7 @@ components:
           example: "hafas"
         event_id:
           type: integer
+          nullable: true
           example: 1
         user:
           $ref: '#/components/schemas/User'
@@ -993,6 +1221,7 @@ components:
           example: "0"
     event:
       type: object
+      nullable: true
       properties:
         id:
           $ref: '#/components/schemas/event_id'
