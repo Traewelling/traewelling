@@ -144,7 +144,7 @@ class UserController extends Controller
     }
 
     //delete sessions from user
-    public function deleteSession(Request $request)
+    public function deleteSession()
     {
         $user = Auth::user();
         foreach ($user->sessions as $session) {
@@ -153,7 +153,7 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    public function destroyUser(Request $request)
+    public function destroyUser()
     {
         $user = Auth::user();
 
