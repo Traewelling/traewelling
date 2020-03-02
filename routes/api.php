@@ -19,24 +19,26 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::group([ 'prefix' => 'v0'], function (){
-        Route::get('statuses/enroute', 'API\StatusController@enroute');
     Route::group(['middleware' => ['guest:api']], function () {
        Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login');
             Route::post('signup', 'API\AuthController@signup');
        });
-        Route::group(['prefix' => 'user'], function() {
-            Route::get('{username}', 'API\UserController@show');
-            Route::get('{username}/active', 'API\UserController@active');
-        });
     });
     // All protected routes
     Route::group(['middleware' => 'auth:api'], function() {
         Route::post('auth/logout', 'API\AuthController@logout');
         Route::get('getuser', 'API\AuthController@getUser');
 
+        Route::group(['prefix' => 'user'], function() {
+            Route::get('{username}', 'API\UserController@show');
+            Route::get('{username}/active', 'API\UserController@active');
+        });
+
         // Controller for complete /statuses-stuff
         Route::resource('statuses', 'API\StatusController');
+        Route::get('statuses/event/{slug}', 'API\StatusController@getByEvent');
+        Route::get('statuses/enroute', 'API\StatusController@enroute');
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {

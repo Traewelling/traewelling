@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -21,6 +22,10 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
+    public function getByEvent(Request $request, $id) {
+        $EventStatusResponse = StatusBackend::getStatusesByEvent($id);
+        return $this->sendResponse($EventStatusResponse);
+    }
 
     public function index (Request $request) {
         $validator = Validator::make($request->all(), [
@@ -47,7 +52,7 @@ class StatusController extends ResponseController
         if ($view === 'user') {
             $statuses = UserBackend::getProfilePage($request->username);
         }
-        return response()->json($statuses);
+        return response()->json($statuses['statuses']);
     }
 
     public function show (Request $request, $id) {

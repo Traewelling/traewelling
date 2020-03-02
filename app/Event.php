@@ -20,6 +20,11 @@ class Event extends Model {
         'end'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     public function trainstation() {
         return $this->hasOne('App\TrainStations', 'trainstation', 'id');
     }

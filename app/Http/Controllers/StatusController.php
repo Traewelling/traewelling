@@ -18,12 +18,12 @@ use Barryvdh\DomPDF\Facade as PDF;
 class StatusController extends Controller
 {
     public static function getStatus($id) {
-        return Status::where('id', $id)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
+        return Status::where('id', $id)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
     }
 
     public static function getActiveStatuses($userid=null) {
         if ($userid === null) {
-            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')
+            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
@@ -32,7 +32,7 @@ class StatusController extends Controller
                     return $status->trainCheckin->departure;
                 });
         } else {
-            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')
+            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
@@ -50,7 +50,7 @@ class StatusController extends Controller
     }
 
     public static function getStatusesByEvent(int $eventId) {
-        return Status::with('trainCheckin')
+        return Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
             ->where('event_id', '=', $eventId)
             ->orderBy('created_at', 'desc')
             ->latest()
