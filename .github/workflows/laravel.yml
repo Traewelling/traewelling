@@ -6,19 +6,23 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-    - name: Generate key
-      run: php artisan key:generate
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit
+      - uses: actions/checkout@v1
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: Generate key
+        run: php artisan key:generate
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php vendor/bin/phpunit --coverage-clover build/coverage/xml
+      - name: Write Coverage to Codacy
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: php vendor/bin/codacycoverage clover build/coverage/xml
