@@ -12,13 +12,10 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/
 
-Route::group([ 'prefix' => 'v0'], function (){
+$domain = 'api.' . parse_url(config('app.url'), PHP_URL_HOST);
+
+Route::group([ 'domain' => $domain, 'prefix' => 'v0'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
        Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login');
@@ -39,6 +36,8 @@ Route::group([ 'prefix' => 'v0'], function (){
         Route::resource('statuses', 'API\StatusController');
         Route::get('statuses/event/{slug}', 'API\StatusController@getByEvent');
         Route::get('statuses/enroute', 'API\StatusController@enroute');
+
+        Route::resource('notifications', 'API\NotificationController');
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
