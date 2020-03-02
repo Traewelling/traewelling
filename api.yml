@@ -7,7 +7,8 @@ info:
     name: "Träwelling Dev Team"
     url: "https://gitlab.com/HerrLevin_/trwl"
 servers:
-  - url: "https://testing.traewelling.de/api/v0" #TODO: Need a production server path
+  - url: "https://testing.traewelling.de/api/v0"
+  - url: "https://api.traewelling.de/api/v0"
 
 tags:
   - name: "Auth"
