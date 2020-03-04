@@ -38,7 +38,7 @@ class NotificationsTest extends TestCase {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
         }
-        
+
         // Second: We don't like broken or cancelled trains.
         $i = 0;
         while (
@@ -55,14 +55,14 @@ class NotificationsTest extends TestCase {
         }
         $departure = $trainStationboard['departures'][$i];
         CheckinTest::isCorrectHafasTrip($departure, $now);
-        
+
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
             $departure->tripId,
             $departure->line->name,
             $departure->stop->location->id
         );
-        
+
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
             ->post(route('trains.checkin'), [
@@ -72,20 +72,20 @@ class NotificationsTest extends TestCase {
                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
             ]);
     }
-    
+
     /** @test */
     public function likes_appear_in_notifications() {
         // Given: There is a likable status
         $now = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
-        
+
         $status = $this->user->statuses->first();
 
         // When: Someone (e.g. the user itself) likes the status
         $like = $this->actingAs($this->user)
                      ->post(route('like.create'), ['statusId' => $status->id]);
         $like->assertStatus(201); // Created
-        
+
         // Then: The like appears in the notifications
         $notifications = $this->actingAs($this->user)
                               ->get(route('notifications.latest'));
@@ -103,12 +103,12 @@ class NotificationsTest extends TestCase {
         // Given: There is a likable status
         $now = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
-        
+
         $status = $this->user->statuses->first();
         $like = $this->actingAs($this->user)
                      ->post(route('like.create'), ['statusId' => $status->id]);
         $like->assertStatus(201); // Created
-        
+
         // When: The like is removed
         Like::first()->delete();
 
@@ -118,7 +118,7 @@ class NotificationsTest extends TestCase {
         $notifications->assertOk();
         $notifications->assertJsonCount(0); // no likes left
     }
-    
+
 
     /** @test */
     public function following_a_user_should_spawn_a_notification() {
@@ -188,7 +188,7 @@ class NotificationsTest extends TestCase {
         ]);
 
         /** Deleting A Status Should Remove The UserJoinedConnection Notification. */
-        
+
         // WHEN: Bob deletes their status
         $bob->statuses->first()->delete();
 
@@ -212,7 +212,7 @@ class NotificationsTest extends TestCase {
         // WHEN: toggleReadState is called
         $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
         $readReq->assertStatus(201); // Created
-        
+
         // THEN: the notification isn't unread anymore
         $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
         $notification = json_decode($notReq->content())[0];
@@ -221,7 +221,7 @@ class NotificationsTest extends TestCase {
         // WHEN: toggleReadState is called again
         $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
         $readReq->assertStatus(202); // Created
-        
+
         // THEN: the notification is unread again
         $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
         $notification = json_decode($notReq->content())[0];
@@ -230,7 +230,7 @@ class NotificationsTest extends TestCase {
         // WHEN: toggleReadState is called one last time
         $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notification->id]));
         $readReq->assertStatus(201); // Created
-        
+
         // THEN: the notification is back to "Read" again
         $notReq = $this->actingAs($this->user)->get(route('notifications.latest'));
         $notification = json_decode($notReq->content())[0];
@@ -256,7 +256,7 @@ class NotificationsTest extends TestCase {
             'type' => "App\\Notifications\\UserFollowed",
             'notifiable_type' => "App\\User",
             'notifiable_id' => (string) $bob->id
-        ]);        
+        ]);
 
         // When: Bob deletes its account
         $delete = $this->actingAs($bob)

@@ -29,13 +29,11 @@ class NotificationController extends Controller {
         return Auth::user()->notifications
             ->take(10)
             ->map(function($notification) {
-                try {
                     $notification->html = $notification->type::render($notification);
-                    return $notification;
-                } catch (ShouldDeleteNotificationException $e) {
-                    $notification->delete();
+                    if ($notification->html != null) {
+                        return $notification;
+                    }
                     return null;
-                }
             })
             // We don't need empty notifications
             ->filter(function($notification_or_null) { return $notification_or_null != null; })
@@ -48,17 +46,13 @@ class NotificationController extends Controller {
         // Might have cached the html property and would then try to shove it in the DB, mostly
         // happened during tests.
         if(isset($notification->html)) unset($notification->html);
-        try {
-            if($notification->read_at == null) { // old state = unread
-                $notification->markAsRead();
+         if($notification->read_at == null) { // old state = unread
+                auth()->user()->unreadNotifications->where('id', $notification->id)->markAsRead();
                 return Response::json($notification, 201); // new state = read, 201=created
             } else { // old state = read
-                $notification->markAsUnread();
+                auth()->user()->unreadNotifications->where('id', $notification->id)->markAsUnread();
                 return Response::json($notification, 202); // new state = unread, 202=accepted
             }
-        } catch (\Throwable $e) {
-            return Response::json([], 404);
-        }
     }
 
     public static function destroy($id) {
