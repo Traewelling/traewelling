@@ -76,4 +76,24 @@ class HelperMethodTest extends TestCase
             $response->assertSee($alternatedTo . ' <small><i class="far fa-clock fa-sm"></i>');
         }
     }
+
+    public function test_secondsToDuration_and_durationToSpan() {
+        $testcases = [
+            0  => "0<small>min</small>",
+            45 => "0<small>min</small>",
+            60 => "1<small>min</small>",
+            61 => "1<small>min</small>",
+            5*60 => "5<small>min</small>",
+            30*60 => "30<small>min</small>",
+            60*60 => "1<small>h</small>&nbsp;0<small>min</small>",
+            66*60 => "1<small>h</small>&nbsp;6<small>min</small>",
+            2*60*60 => "2<small>h</small>&nbsp;0<small>min</small>",
+            24*60*60 => "24<small>h</small>&nbsp;0<small>min</small>",
+            25*60*60 => "25<small>h</small>&nbsp;0<small>min</small>",
+        ];
+
+        foreach ($testcases as $input => $output) {
+            $this->assertEquals($output, durationToSpan(\secondsToDuration($input)));
+        }
+    }
 }
