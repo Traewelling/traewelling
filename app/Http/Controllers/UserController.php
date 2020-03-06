@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Follow;
+use App\HafasTrip;
+use App\Like;
+use App\MastodonServer;
+use App\Notifications\UserFollowed;
 use App\SocialLoginProfile;
 use App\Status;
-use App\HafasTrip;
 use App\TrainCheckin;
-use App\Like;
-use App\Notifications\UserFollowed;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Jenssegers\Agent\Agent;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Jenssegers\Agent\Agent;
+use Mastodon;
 
 class UserController extends Controller
 {
@@ -189,8 +192,39 @@ class UserController extends Controller
         }
         $statuses = $user->statuses()->orderBy('created_at', 'DESC')->paginate(15);
 
-        return ['username' => $username, 'statuses' => $statuses, 'user' => $user];
+        $twitterUrl = "";
+        $mastodonUrl = "";
 
+        try {
+            $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
+            $mastodonAccountInfo = Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token)
+                ->get("/accounts/" . $user->socialProfile->mastodon_id);
+            $mastodonUrl = $mastodonAccountInfo["url"];
+        } catch (Exception $e) {
+            // The connection might be broken, or the instance is down, or $user has removed the api rights but has not told us yet.
+        }
+        
+        try {
+            $connection = new TwitterOAuth(
+                config('trwl.twitter_id'),
+                config('trwl.twitter_secret'),
+                $user->socialProfile->twitter_token,
+                $user->socialProfile->twitter_tokenSecret
+            );
+
+            $getInfo = $connection->get('users/show', ['user_id' => $user->socialProfile->twitter_id]);
+            $twitterUrl = "https://twitter.com/" . $getInfo->screen_name;
+        } catch (Exception $e) {
+            // The big whale time or $user has removed the api rights but has not told us yet.
+        }
+
+        return [
+            'username' => $username,
+            'statuses' => $statuses,
+            'user' => $user,
+            'twitterUrl' => $twitterUrl,
+            'mastodonUrl' => $mastodonUrl
+        ];
     }
 
     /**

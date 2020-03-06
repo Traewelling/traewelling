@@ -14,7 +14,6 @@ class FrontendUserController extends Controller
 {
     public function getProfilePage($username) {
         $profilePage = UserBackend::getProfilePage($username);
-
         if ($profilePage === null) {
             abort(404);
         }
@@ -23,7 +22,10 @@ class FrontendUserController extends Controller
             'username' => $profilePage['username'],
             'statuses' => $profilePage['statuses'],
             'user' => $profilePage['user'],
-            'currentUser' => Auth::user()]);
+            'currentUser' => Auth::user(),
+            'twitterUrl' => $profilePage['twitterUrl'],
+            'mastodonUrl' => $profilePage['mastodonUrl']
+        ]);
     }
 
     public function getProfilePicture($username) {
