@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\TrainStations;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Transport\Transport;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 
 class TransportController extends ResponseController {
-    public function TrainAutocomplete(Request $request, $station) {
+    public function TrainAutocomplete($station) {
         $TrainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
         return $this->sendResponse($TrainAutocompleteResponse);
     }
@@ -88,14 +86,14 @@ class TransportController extends ResponseController {
         }
 
         $TrainCheckinResponse = TransportBackend::TrainCheckin(
-            $request->tripID,
-            $request->start,
-            $request->destination,
-            $request->body,
-            Auth::user(),
+            $request->input('tripID'),
+            $request->input('start'),
+            $request->input('destination'),
+            $request->input('body'),
+            auth()->user(),
             0,
-            $request->tweet,
-            $request->toot
+            $request->input('tweet'),
+            $request->input('toot')
         );
 
         if ($TrainCheckinResponse['success'] === false) {
@@ -114,16 +112,17 @@ class TransportController extends ResponseController {
                 'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection']
             ]);
         }
+        return $this->sendError('Unknown Error occured', 500);
     }
 
-    public function TrainLatestArrivals(Request $request){
-        $arrivals = TransportBackend::getLatestArrivals(Auth::user());
+    public function TrainLatestArrivals(){
+        $arrivals = TransportBackend::getLatestArrivals(auth()->user());
 
         return $this->sendResponse($arrivals);
     }
 
-    public function getHome(Request $request) {
-        return $this->sendResponse(Auth::user()->home);
+    public function getHome() {
+        return $this->sendResponse(auth()->user()->home);
     }
 
     public function setHome(Request $request) {

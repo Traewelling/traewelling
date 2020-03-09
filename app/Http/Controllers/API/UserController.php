@@ -10,18 +10,18 @@ use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends ResponseController
 {
-    public function show (Request $request, $username) {
+    public function show ($username) {
         $UserResponse = UserBackend::getProfilePage($username);
         return $this->sendResponse($UserResponse);
     }
 
-    public function active(Request $request, $username) {
+    public function active($username) {
         $user = User::where('username', $username)->firstOrFail();
         $StatusResponse = StatusBackend::getActiveStatuses($user->id);
         return $this->sendResponse($StatusResponse);
     }
 
-    public function avatar(Request $request, $username) {
+    public function avatar($username) {
         $ProfilePictureResponse = UserBackend::getProfilePicture($username);
         return $this->sendResponse($ProfilePictureResponse);
     }

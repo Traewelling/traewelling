@@ -4,16 +4,15 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
-use App\Status;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 
 class StatusController extends ResponseController
 {
 
-    public function enRoute (Request $request) {
+    public function enRoute () {
         $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
         $response = [];
         if ($ActiveStatusesResponse['statuses'] !== null) {
@@ -22,7 +21,7 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
-    public function getByEvent(Request $request, $id) {
+    public function getByEvent($id) {
         $EventStatusResponse = StatusBackend::getStatusesByEvent($id);
         return $this->sendResponse($EventStatusResponse);
     }
@@ -55,12 +54,12 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show (Request $request, $id) {
+    public function show ($id) {
         $StatusResponse = StatusBackend::getStatus($id);
         return $this->sendResponse($StatusResponse);
     }
 
-    public function update (Request $request, $id) {
+    public function update (Request $request) {
         $validator = Validator::make($request->all(), [
             'body' => 'max:280',
             'business' => 'integer',
@@ -83,7 +82,7 @@ class StatusController extends ResponseController
         return $this->sendResponse(['newBody' => $EditStatusResponse]);
     }
 
-    public function destroy (Request $request, $id) {
+    public function destroy ($id) {
         $DeleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $id);
 
         if ($DeleteStatusResponse === null) {

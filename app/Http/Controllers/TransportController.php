@@ -211,7 +211,7 @@ class TransportController extends Controller
         return 1;
     }
 
-    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check, $eventId) {
+    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check, $eventId=0) {
         $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
         $stopovers = json_decode($hafas['stopovers'], true);
         $offset1 = self::searchForId($start, $stopovers);

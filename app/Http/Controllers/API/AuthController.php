@@ -5,10 +5,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\User;
-use Validator;
 
 class AuthController extends ResponseController
 {
@@ -29,7 +28,8 @@ class AuthController extends ResponseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
+        $user = new User();
+        $user->create($input);
         if($user){
             $success['token'] =  $user->createToken('token')->accessToken;
             $success['message'] = "Registration successfull..";
