@@ -47,10 +47,12 @@ class NotificationController extends Controller {
         // happened during tests.
         if(isset($notification->html)) unset($notification->html);
          if($notification->read_at == null) { // old state = unread
-                auth()->user()->unreadNotifications->where('id', $notification->id)->markAsRead();
+                $notification = auth()->user()->unreadNotifications->where('id', $notification->id)->first();
+                $notification->markAsRead();
                 return Response::json($notification, 201); // new state = read, 201=created
             } else { // old state = read
-                auth()->user()->unreadNotifications->where('id', $notification->id)->markAsUnread();
+                $notification = auth()->user()->Notifications->where('id', $notification->id)->first();
+                $notification->markAsUnread();
                 return Response::json($notification, 202); // new state = unread, 202=accepted
             }
     }
