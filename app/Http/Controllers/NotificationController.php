@@ -48,17 +48,15 @@ class NotificationController extends Controller {
         // Might have cached the html property and would then try to shove it in the DB, mostly
         // happened during tests.
         if(isset($notification->html)) unset($notification->html);
-         if($notification->read_at == null) { // old state = unread
-            $notification = auth()->user()->unreadNotifications->where('id', $notification->id)->first();
+
+        if($notification->read_at == null) { // old state = unread
             $notification->markAsRead();
             return Response::json($notification, 201); // new state = read, 201=created
         } else { // old state = read
-            $notification = auth()->user()->Notifications->where('id', $notification->id)->first();
             $notification->markAsUnread();
             return Response::json($notification, 202); // new state = unread, 202=accepted
         }
     }
-
     public static function destroy($nottificationID)
     {
         try {
