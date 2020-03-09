@@ -561,15 +561,13 @@ class TransportController extends Controller
             return $returnArray;
         }
 
-        $polylines  = DB::table('poly_lines')
+        $polylines                = DB::table('poly_lines')
             ->select(DB::raw('count(*) as occurs'))
             ->where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
             ->first();
-
         $returnArray['polylines'] = $polylines->occurs;
-
-        $transportTypes = ['nationalExpress',
+        $transportTypes           = ['nationalExpress',
             'national',
             'express',
             'regionalExp',

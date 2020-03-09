@@ -135,8 +135,8 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus($id) {
-        $StatusResponse = StatusBackend::getStatus($id);
+    public function getStatus($statusId) {
+        $StatusResponse = StatusBackend::getStatus($statusId);
         return view('status', ['status' => $StatusResponse]);
     }
 

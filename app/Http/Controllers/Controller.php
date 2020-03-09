@@ -12,9 +12,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public static function searchForId($id, $array) {
+    public static function searchForId($stationId, $array) {
         foreach ($array as $key => $val) {
-            if ($val['stop']['id'] === $id) {
+            if ($val['stop']['id'] === $stationId) {
                 return $key;
             }
         }

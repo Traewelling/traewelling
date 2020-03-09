@@ -20,7 +20,7 @@ class TrainCheckin extends Model
 
     public function Destination()
     {
-        return $this->hasOne('App\TrainStations', 'ibnr' , 'destination');
+        return $this->hasOne('App\TrainStations', 'ibnr', 'destination');
     }
 
     public function HafasTrip()

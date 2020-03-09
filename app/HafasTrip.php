@@ -16,5 +16,4 @@ class HafasTrip extends Model
     {
         return $this->hasOne('App\PolyLine', 'hash', 'polyline');
     }
-
 }

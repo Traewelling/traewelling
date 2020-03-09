@@ -43,9 +43,9 @@ class NotificationController extends Controller
             ->values();
     }
 
-    public static function toggleReadState($id)
+    public static function toggleReadState($notificationId)
     {
-        $notification = Auth::user()->notifications->where('id', $id)->first();
+        $notification = Auth::user()->notifications->where('id', $notificationId)->first();
 
         // Might have cached the html property and would then try to shove it in the DB, mostly
         // happened during tests.

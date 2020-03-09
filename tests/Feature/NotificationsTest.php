@@ -154,7 +154,8 @@ class NotificationsTest extends TestCase
     {
         // Given: Users Alice and Bob and Alice follows Bob
         $alice = $this->user;
-        $bob   = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+        $bob   = factory(User::class)->create();
+        $this->actingAs($bob)->post('/gdpr-ack');
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
         $follow->assertStatus(201);
 
@@ -173,14 +174,14 @@ class NotificationsTest extends TestCase
     public function bob_joining_on_alices_connection_should_spawn_a_notification()
     {
         // GIVEN: Alice checked-into a train.
-        $alice = factory(User::class)->create();
+        $alice    = factory(User::class)->create();
         $response = $this->actingAs($alice)
                         ->post('/gdpr-ack');
-        $now   = new \DateTime("+2 day 8:00");
+        $now      = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
-        $bob = factory(User::class)->create();
+        $bob      = factory(User::class)->create();
         $response = $this->actingAs($bob)
                         ->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);

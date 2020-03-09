@@ -66,7 +66,7 @@
                 @if($t > strtotime($status->trainCheckin->departure) && $t < strtotime($status->trainCheckin->arrival))
 
                 <?php
-                $stops = json_decode($hafas->stopovers);
+                $stops         = json_decode($hafas->stopovers);
                 $nextStopIndex = count($stops) - 1;
 
                 // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.

@@ -121,7 +121,7 @@ class UserController extends Controller
     //Return Settings-page
     public function getAccount()
     {
-        $user = Auth::user();
+        $user     = Auth::user();
         $sessions = array();
         foreach($user->sessions as $session) {
             $sessionArray = array();
