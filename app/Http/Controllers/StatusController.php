@@ -17,19 +17,19 @@ use Barryvdh\DomPDF\Facade as PDF;
 
 class StatusController extends Controller
 {
-    public static function getStatus($id)
+    public static function getStatus($statusId)
     {
-        return Status::where('id', $id)->with('user',
-                                              'trainCheckin',
-                                              'trainCheckin.Origin',
-                                              'trainCheckin.Destination',
-                                              'trainCheckin.HafasTrip',
-                                              'event')->firstOrFail();
+        return Status::where('id', $statusId)->with('user',
+                                                    'trainCheckin',
+                                                    'trainCheckin.Origin',
+                                                    'trainCheckin.Destination',
+                                                    'trainCheckin.HafasTrip',
+                                                    'event')->firstOrFail();
     }
 
-    public static function getActiveStatuses($userid=null)
+    public static function getActiveStatuses($userId=null)
     {
-        if ($userid === null) {
+        if ($userId === null) {
             $statuses = Status::with('user',
                                      'trainCheckin',
                                      'trainCheckin.Origin',
@@ -55,7 +55,7 @@ class StatusController extends Controller
                     $query->where('departure', '<', date('Y-m-d H:i:s'))
                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
-                ->where('user_id', $userid)
+                ->where('user_id', $userId)
                 ->first();
             return $statuses;
         }
@@ -82,7 +82,8 @@ class StatusController extends Controller
             ->simplePaginate(15);
     }
 
-    public static function getDashboard($user) {
+    public static function getDashboard($user)
+    {
         $userIds   = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
         $statuses  = Status::whereIn('user_id', $userIds)
@@ -141,7 +142,7 @@ class StatusController extends Controller
         if ($user != $status->user) {
             return false;
         }
-        $status->body = $body;
+        $status->body     = $body;
         $status->business = $businessCheck >= 1 ? 1 : 0;
         $status->update();
         return $status->body;
@@ -158,8 +159,8 @@ class StatusController extends Controller
             return false;
         }
 
-        $like = new Like();
-        $like->user_id = $user->id;
+        $like            = new Like();
+        $like->user_id   = $user->id;
         $like->status_id = $status->id;
         $like->save();
         $status->user->notify(new StatusLiked($like));
@@ -183,7 +184,7 @@ class StatusController extends Controller
         }
         $endInclLastOfMonth = (new \DateTime($endDate))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
-        $user = Auth::user();
+        $user          = Auth::user();
         $trainCheckins = Status::with('user',
                                       'trainCheckin',
                                       'trainCheckin.Origin',
@@ -195,11 +196,12 @@ class StatusController extends Controller
                 $query->orwhereBetween('departure', [$startDate, $endInclLastOfMonth]);
             })
             ->get()->sortBy('trainCheckin.departure');
-        $export = array();
+        $export        = array();
+
         foreach ($trainCheckins as $t) {
             $interval = (new \DateTime($t->trainCheckin->departure))->diff(new \DateTime($t->trainCheckin->arrival));
-            $export = array_merge($export, array([
-                (String)$t->id,
+            $export   = array_merge($export, array([
+                (String) $t->id,
                 $t->trainCheckin->hafastrip->category,
                 $t->trainCheckin->hafastrip->linename,
                 $t->trainCheckin->Origin->name,
@@ -211,7 +213,7 @@ class StatusController extends Controller
                 $interval->h . ":" . sprintf('%02d', $interval->i),
                 $t->trainCheckin->distance,
                 $t->trainCheckin->points,
-                (String)$t->trainCheckin->body,
+                (String) $t->trainCheckin->body,
                 ''
             ]));
         }
@@ -222,21 +224,27 @@ class StatusController extends Controller
                                   'start_date' => $startDate,
                                   'end_date' => $endDate])
                 ->setPaper('a4', 'landscape');
-            return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf', $startDate, $endDate));
+            return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf',
+                                          $startDate,
+                                          $endDate));
         }
 
         if ($fileType == 'csv') {
-            $headers = [
+            $headers  = [
                 'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
                 'Content-type'        => 'text/csv',
-                'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.csv"', $startDate, $endDate),
+                'Content-Disposition' => sprintf('attachment; filename="' .
+                                                 config('app.name', 'Träwelling') .
+                                                 '_export_%s_to_%s.csv"',
+                                                 $startDate,
+                                                 $endDate),
                 'Expires'             => '0',
                 'Pragma'              => 'public'
             ];
             $callback = function() use ($export)
             {
-                $FH = fopen('php://output', 'w');
-                fputcsv($FH, ['Status-ID',
+                $fileStream = fopen('php://output', 'w');
+                fputcsv($fileStream, ['Status-ID',
                               'Zugart',
                               'Zugnummer',
                               'Abfahrtsort',
@@ -252,9 +260,9 @@ class StatusController extends Controller
                               'Zwischenhalte'
                 ], "\t");
                 foreach ($export as $t) {
-                    fputcsv($FH, $t, "\t");
+                    fputcsv($fileStream, $t, "\t");
                 }
-                fclose($FH);
+                fclose($fileStream);
             };
             return Response::stream($callback, 200, $headers);
         }
@@ -263,7 +271,11 @@ class StatusController extends Controller
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/json',
-            'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.json"', $startDate, $endDate),
+            'Content-Disposition' => sprintf('attachment; filename="' .
+                                             config('app.name', 'Träwelling') .
+                                             '_export_%s_to_%s.json"',
+                                             $startDate,
+                                             $endDate),
             'Expires'             => '0',
             'Pragma'              => 'public'
         ];

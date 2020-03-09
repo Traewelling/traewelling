@@ -22,17 +22,18 @@ class UserFollowed extends Notification
      *
      * @return void
      */
-    public function __construct(Follow $follow = null) {
+    public function __construct(Follow $follow = null)
+    {
         $this->follow = $follow;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function via($notifiable)
+    public function via()
     {
         return ['database'];
     }
@@ -40,10 +41,10 @@ class UserFollowed extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
             'follow_id' => $this->follow->id,
@@ -52,7 +53,7 @@ class UserFollowed extends Notification
 
     public static function detail($notification)
     {
-        $data = $notification->data;
+        $data                 = $notification->data;
         $notification->detail = new \stdClass();
         try {
             $follow = Follow::findOrFail($data['follow_id']);

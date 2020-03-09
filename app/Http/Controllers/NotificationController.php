@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
-class NotificationController extends Controller {
-
+class NotificationController extends Controller
+{
     public static function latest()
     {
         return Auth::user()->notifications
@@ -43,12 +43,15 @@ class NotificationController extends Controller {
             ->values();
     }
 
-    public static function toggleReadState($id) {
+    public static function toggleReadState($id)
+    {
         $notification = Auth::user()->notifications->where('id', $id)->first();
 
         // Might have cached the html property and would then try to shove it in the DB, mostly
         // happened during tests.
-        if(isset($notification->html)) unset($notification->html);
+        if(isset($notification->html)) {
+            unset($notification->html);
+        }
 
         if($notification->read_at == null) { // old state = unread
             $notification->markAsRead();

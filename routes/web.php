@@ -289,4 +289,3 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'    => 'notifications.readAll'
     ]);
 });
-//Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

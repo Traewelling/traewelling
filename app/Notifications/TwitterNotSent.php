@@ -17,17 +17,18 @@ class TwitterNotSent extends Notification
     public $error;
     public $status;
 
-    public function __construct($error, Status $status) {
-        $this->error = $error;
+    public function __construct($error, Status $status)
+    {
+        $this->error  = $error;
         $this->status = $status;
     }
 
-    public function via($notifiable)
+    public function via()
     {
         return ['database'];
     }
 
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
             'error' => $this->error,
@@ -37,7 +38,7 @@ class TwitterNotSent extends Notification
 
     public static function detail($notification)
     {
-        $data = $notification->data;
+        $data                 = $notification->data;
         $notification->detail = new \stdClass();
 
         try {

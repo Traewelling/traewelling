@@ -61,8 +61,8 @@ class StatusController extends ResponseController
 
     public function show ($statusId)
     {
-        $StatusResponse = StatusBackend::getStatus($statusId);
-        return $this->sendResponse($StatusResponse);
+        $statusResponse = StatusBackend::getStatus($statusId);
+        return $this->sendResponse($statusResponse);
     }
 
     public function update (Request $request)

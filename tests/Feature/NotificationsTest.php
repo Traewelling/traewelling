@@ -14,25 +14,30 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class NotificationsTest extends TestCase {
+class NotificationsTest extends TestCase
+{
     use RefreshDatabase;
 
     protected $user;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
 
         $this->user = factory(User::class)->create();
-        $response = $this->actingAs($this->user)
+        $response   = $this->actingAs($this->user)
                         ->post('/gdpr-ack');
     }
 
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      */
-    protected function checkin($stationname, $ibnr, \DateTime $now, User $user = null) {
+    protected function checkin($stationname, $ibnr, \DateTime $now, User $user = null)
+    {
         if($user == null) { $user = $this->user; }
-        $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
+        $trainStationboard = TransportController::TrainStationboard($stationname,
+                                                                    $now->format('U'),
+                                                                    'express');
 
         $countDepartures = count($trainStationboard['departures']);
         if($countDepartures == 0) {
@@ -42,15 +47,13 @@ class NotificationsTest extends TestCase {
 
         // Second: We don't like broken or cancelled trains.
         $i = 0;
-        while (
-              (isset($trainStationboard['departures'][$i]->cancelled)
-                && $trainStationboard['departures'][$i]->cancelled
-              )
-              || count($trainStationboard['departures'][$i]->remarks) != 0
-            ) {
+        while ((isset($trainStationboard['departures'][$i]->cancelled)
+                && $trainStationboard['departures'][$i]->cancelled)
+              || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
-                $this->markSkippedForMissingDependecy("Unable to find unbroken train. Is it stormy in $stationname?");
+                $this->markSkippedForMissingDependecy("Unable to find unbroken train.
+                Is it stormy in $stationname?");
                 return;
             }
         }
@@ -75,7 +78,8 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function likes_appear_in_notifications() {
+    public function likes_appear_in_notifications()
+    {
         // Given: There is a likable status
         $now = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
@@ -100,13 +104,14 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function removed_likes_dont_appear_in_notifications() {
+    public function removed_likes_dont_appear_in_notifications()
+    {
         // Given: There is a likable status
         $now = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
 
         $status = $this->user->statuses->first();
-        $like = $this->actingAs($this->user)
+        $like   = $this->actingAs($this->user)
                      ->post(route('like.create'), ['statusId' => $status->id]);
         $like->assertStatus(201); // Created
 
@@ -121,10 +126,12 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function following_a_user_should_spawn_a_notification() {
+    public function following_a_user_should_spawn_a_notification()
+    {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+        $bob   = factory(User::class)->create();
+        $this->actingAs($bob)->post('/gdpr-ack');
 
         // When: Alice follows Bob
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
@@ -143,10 +150,11 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function unfollowing_bob_should_remove_the_notification() {
+    public function unfollowing_bob_should_remove_the_notification()
+    {
         // Given: Users Alice and Bob and Alice follows Bob
         $alice = $this->user;
-        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+        $bob   = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
         $follow->assertStatus(201);
 
@@ -162,12 +170,13 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function bob_joining_on_alices_connection_should_spawn_a_notification() {
+    public function bob_joining_on_alices_connection_should_spawn_a_notification()
+    {
         // GIVEN: Alice checked-into a train.
         $alice = factory(User::class)->create();
         $response = $this->actingAs($alice)
                         ->post('/gdpr-ack');
-        $now = new \DateTime("+2 day 8:00");
+        $now   = new \DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
@@ -200,7 +209,8 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function mark_notification_as_read() {
+    public function mark_notification_as_read()
+    {
         // GIVEN: Alice has a notification (spawned via follow.create)
         $follow = $this->actingAs($this->user)->post(route('follow.create'), ['follow_id' => $this->user->id]);
         $follow->assertStatus(201);
@@ -229,10 +239,12 @@ class NotificationsTest extends TestCase {
     }
 
     /** @test */
-    public function deleting_a_user_should_delete_its_notifications() {
+    public function deleting_a_user_should_delete_its_notifications()
+    {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob = factory(User::class)->create(); $this->actingAs($bob)->post('/gdpr-ack');
+        $bob   = factory(User::class)->create();
+        $this->actingAs($bob)->post('/gdpr-ack');
 
         // When: Alice follows Bob
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);

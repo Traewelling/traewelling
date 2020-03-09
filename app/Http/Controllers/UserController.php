@@ -31,7 +31,7 @@ class UserController extends Controller
             return null;
         }
         try {
-            $ext = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
+            $ext     = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
             $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
         } catch(\Exception $e) {
             $user->avatar = 'user.jpg';
@@ -48,7 +48,7 @@ class UserController extends Controller
             $picture = Image::canvas(512, 512, $hex)
                 ->insert(public_path('/img/user.png'))
                 ->encode('png')->getEncoded();
-            $ext = 'png';
+            $ext     = 'png';
         }
 
         return ['picture' => $picture, 'extension' => $ext];
@@ -62,16 +62,24 @@ class UserController extends Controller
             'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
-            $this->validate($request,['username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users']]);
+            $this->validate($request, ['username' => ['required',
+                                                      'string',
+                                                      'max:25',
+                                                      'regex:/^[a-zA-Z0-9_]*$/',
+                                                      'unique:users']]);
         }
         if ($user->email != $request->email) {
-            $this->validate($request, ['email' => ['required', 'string', 'email', 'max:255', 'unique:users']]);
+            $this->validate($request, ['email' => ['required',
+                                                   'string',
+                                                   'email',
+                                                   'max:255',
+                                                   'unique:users']]);
             $user->email_verified_at = null;
         }
 
-        $user->email = $request->email;
-        $user->username = $request->username;
-        $user->name = $request->name;
+        $user->email      = $request->email;
+        $user->username   = $request->username;
+        $user->name       = $request->name;
         $user->always_dbl = $request->always_dbl == "on";
         $user->save();
 
@@ -117,19 +125,19 @@ class UserController extends Controller
         $sessions = array();
         foreach($user->sessions as $session) {
             $sessionArray = array();
-            $result = new Agent();
+            $result       = new Agent();
             $result->setUserAgent($session->user_agent);
             $sessionArray['platform'] = $result->platform();
 
             if ($result->isphone()) {
                 $sessionArray['device'] = 'mobile-alt';
-            } elseif ( $result->isTablet()) {
+            } elseif ($result->isTablet()) {
                 $sessionArray['device'] = 'tablet';
             } else {
                 $sessionArray['device'] = 'desktop';
             }
-            $sessionArray['id'] = $session->id;
-            $sessionArray['ip'] = $session->ip_address;
+            $sessionArray['id']   = $session->id;
+            $sessionArray['ip']   = $session->ip_address;
             $sessionArray['last'] = $session->last_activity;
             array_push($sessions, $sessionArray);
         }
@@ -176,7 +184,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|max:120'
         ]);
-        $user = User::where('id', Auth::user()->id)->first();
+        $user       = User::where('id', Auth::user()->id)->first();
         $user->name = $request['name'];
         $user->update();
         return redirect()->route('account');
@@ -228,7 +236,7 @@ class UserController extends Controller
 
     public static function getLeaderboard()
     {
-        $user = Auth::user();
+        $user    = Auth::user();
         $friends = null;
 
         if ($user != null) {

@@ -8,20 +8,23 @@ class Status extends Model
 {
     protected $hidden = ['user_id', 'business'];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany('App\Like');
     }
 
-    public function trainCheckin() {
+    public function trainCheckin()
+    {
         return $this->hasOne('App\TrainCheckin');
     }
 
-    public function event() {
+    public function event()
+    {
         return $this->hasOne('App\Event', 'id', 'event_id');
     }
-
 }

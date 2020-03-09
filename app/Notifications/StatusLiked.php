@@ -23,17 +23,18 @@ class StatusLiked extends Notification
      *
      * @return void
      */
-    public function __construct(Like $like = null) {
+    public function __construct(Like $like = null)
+    {
         $this->like = $like;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function via($notifiable)
+    public function via()
     {
         return ['database'];
     }
@@ -41,10 +42,10 @@ class StatusLiked extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
             'status_id' => $this->like->status_id,
@@ -58,7 +59,7 @@ class StatusLiked extends Notification
         $data = $notification->data;
 
         try {
-            $like = Like::findOrFail($data['like_id']);
+            $like   = Like::findOrFail($data['like_id']);
             $sender = User::findOrFail($like->user_id);
             $status = Status::findOrFail($like->status_id);
         } catch(ModelNotFoundException $e) {
@@ -66,8 +67,6 @@ class StatusLiked extends Notification
             // or the status was deleted. Eitherway, we don't need the notification anymore.
             throw new ShouldDeleteNotificationException();
         }
-
-        $hafas = $status->trainCheckin->hafasTrip;
 
         $notification->detail         = new \stdClass();
         $notification->detail->sender = $sender;
