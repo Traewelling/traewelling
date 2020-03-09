@@ -17,7 +17,7 @@ class UserController extends ResponseController
 
     public function active($username)
     {
-        $user = User::where('username', $username)->firstOrFail();
+        $user           = User::where('username', $username)->firstOrFail();
         $statusResponse = StatusBackend::getActiveStatuses($user->id);
         return $this->sendResponse($statusResponse);
     }
@@ -30,16 +30,15 @@ class UserController extends ResponseController
 
     public function PutProfilepicture(Request $request)
     {
-        $avatar = $request->getContent();
+        $avatar                 = $request->getContent();
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return $this->sendResponse($profilePictureResponse);
     }
 
     public function PutDisplayname(Request $request)
     {
-        $displayname = $request->getContent();
+        $displayname         = $request->getContent();
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
         return $this->sendResponse($displaynameResponse);
     }
-
 }

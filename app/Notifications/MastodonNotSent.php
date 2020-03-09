@@ -44,7 +44,7 @@ class MastodonNotSent extends Notification
         } catch(ModelNotFoundException $e) {
             throw new ShouldDeleteNotificationException();
         }
-        $notification->detail = new \stdClass();
+        $notification->detail         = new \stdClass();
         $notification->detail->status = $status;
         return $notification->type;
     }

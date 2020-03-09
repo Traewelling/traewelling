@@ -59,9 +59,9 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show ($statusID)
+    public function show ($statusId)
     {
-        $StatusResponse = StatusBackend::getStatus($statusID);
+        $StatusResponse = StatusBackend::getStatus($statusId);
         return $this->sendResponse($StatusResponse);
     }
 
@@ -89,8 +89,9 @@ class StatusController extends ResponseController
         return $this->sendResponse(['newBody' => $editStatusResponse]);
     }
 
-    public function destroy ($id) {
-        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $id);
+    public function destroy ($statusId)
+    {
+        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $statusId);
 
         if ($deleteStatusResponse === null) {
             return $this->sendError('Not found');

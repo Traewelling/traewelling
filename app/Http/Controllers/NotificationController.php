@@ -26,7 +26,8 @@ class NotificationController extends Controller {
             ->values();
     }
 
-    public function renderLatest() {
+    public function renderLatest()
+    {
         return Auth::user()->notifications
             ->take(10)
             ->map(function($notification) {

@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class TransportController extends ResponseController {
+class TransportController extends ResponseController
+{
     public function TrainAutocomplete($station)
     {
         $trainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
@@ -18,7 +19,16 @@ class TransportController extends ResponseController {
     {
         $validator = Validator::make($request->all(), [
             'station' => 'string|required',
-            'travelType' => 'string|in:nationalExpress,national,regionalExp,regional,suburban,bus,ferry,subway,tram,taxi'
+            'travelType' => 'string|in:nationalExpress,
+                                        national,
+                                        regionalExp,
+                                        regional,
+                                        suburban,
+                                        bus,
+                                        ferry,
+                                        subway,
+                                        tram,
+                                        taxi'
         ]);
 
         if ($validator->fails()) {

@@ -69,7 +69,7 @@ class StatusLiked extends Notification
 
         $hafas = $status->trainCheckin->hafasTrip;
 
-        $notification->detail = new \stdClass();
+        $notification->detail         = new \stdClass();
         $notification->detail->sender = $sender;
         $notification->detail->status = $status;
 

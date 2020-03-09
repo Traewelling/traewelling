@@ -116,29 +116,29 @@ class UserController extends Controller
         $user = Auth::user();
         $sessions = array();
         foreach($user->sessions as $session) {
-            $session_array = array();
+            $sessionArray = array();
             $result = new Agent();
             $result->setUserAgent($session->user_agent);
-            $session_array['platform'] = $result->platform();
+            $sessionArray['platform'] = $result->platform();
 
             if ($result->isphone()) {
-                $session_array['device'] = 'mobile-alt';
+                $sessionArray['device'] = 'mobile-alt';
             } elseif ( $result->isTablet()) {
-                $session_array['device'] = 'tablet';
+                $sessionArray['device'] = 'tablet';
             } else {
-                $session_array['device'] = 'desktop';
+                $sessionArray['device'] = 'desktop';
             }
-            $session_array['id'] = $session->id;
-            $session_array['ip'] = $session->ip_address;
-            $session_array['last'] = $session->last_activity;
-            array_push($sessions, $session_array);
+            $sessionArray['id'] = $session->id;
+            $sessionArray['ip'] = $session->ip_address;
+            $sessionArray['last'] = $session->last_activity;
+            array_push($sessions, $sessionArray);
         }
 
         return view('settings', compact('user', 'sessions'));
     }
 
     //delete sessions from user
-    public function deleteSession(Request $request)
+    public function deleteSession()
     {
         $user = Auth::user();
         foreach ($user->sessions as $session) {
@@ -147,7 +147,7 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    public function destroyUser(Request $request)
+    public function destroyUser()
     {
         $user = Auth::user();
 
@@ -198,19 +198,18 @@ class UserController extends Controller
      * @param User The user who wants to see stuff in their timeline
      * @param int The user id of the person who is followed
      */
-    public static function CreateFollow($user, $follow_id)
+    public static function CreateFollow($user, $followId)
     {
-        $follow = $user->follows()->where('follow_id', $follow_id)->first();
+        $follow = $user->follows()->where('follow_id', $followId)->first();
         if ($follow) {
             return false;
         }
-        $follow = new Follow();
-
-        $follow->user_id = $user->id;
-        $follow->follow_id = $follow_id;
+        $follow            = new Follow();
+        $follow->user_id   = $user->id;
+        $follow->follow_id = $followId;
         $follow->save();
 
-        User::find($follow_id)->notify(new UserFollowed($follow));
+        User::find($followId)->notify(new UserFollowed($follow));
         return true;
     }
 
@@ -218,9 +217,9 @@ class UserController extends Controller
      * @param User The user who doesn't want to see stuff in their timeline anymore
      * @param int The user id of the person who was followed and now isn't
      */
-    public static function DestroyFollow($user, $follow_id)
+    public static function DestroyFollow($user, $followId)
     {
-        $follow = $user->follows()->where('follow_id', $follow_id)->where('user_id', $user->id)->first();
+        $follow = $user->follows()->where('follow_id', $followId)->where('user_id', $user->id)->first();
         if ($follow) {
             $follow->delete();
             return true;
@@ -233,22 +232,22 @@ class UserController extends Controller
         $friends = null;
 
         if ($user != null) {
-            $userIds = $user->follows()->pluck('follow_id');
+            $userIds   = $user->follows()->pluck('follow_id');
             $userIds[] = $user->id;
-            $friends = User::select('username',
-                                    'train_duration',
-                                    'train_distance',
-                                    'points')
+            $friends   = User::select('username',
+                                      'train_duration',
+                                      'train_distance',
+                                      'points')
                 ->where('points', '<>', 0)
                 ->whereIn('id', $userIds)
                 ->orderby('points', 'desc')
                 ->limit(20)
                 ->get();
         }
-        $users = User::select('username',
-                              'train_duration',
-                              'train_distance',
-                              'points')
+        $users      = User::select('username',
+                                   'train_duration',
+                                   'train_distance',
+                                   'points')
             ->where('points', '<>', 0)
             ->orderby('points', 'desc')
             ->limit(20)
@@ -278,17 +277,15 @@ class UserController extends Controller
 
     public static function updateDisplayName($displayname)
     {
-        $request = new Request(['displayname' => $displayname]);
+        $request   = new Request(['displayname' => $displayname]);
         $validator = Validator::make($request->all(), [
             'displayname' => 'required|max:120'
         ]);
         if($validator->fails()){
             abort(400);
         }
-        $user = User::where('id', Auth::user()->id)->first();
+        $user       = User::where('id', Auth::user()->id)->first();
         $user->name = $displayname;
         $user->save();
     }
-
-
 }

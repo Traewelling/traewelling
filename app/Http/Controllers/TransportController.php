@@ -33,13 +33,13 @@ class TransportController extends Controller
 
     public static function TrainAutocomplete($station)
     {
-        $client = new Client(['base_uri' => config('trwl.db_rest')]);
+        $client   = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
         if ($response->getBody()->getContents() <= 2 ) {
             $response = $client->request('GET', "locations?query=$station");
         }
-        $json = $response->getBody()->getContents();
-        $array=json_decode($json, true);
+        $json  = $response->getBody()->getContents();
+        $array = json_decode($json, true);
         foreach(array_keys($array) as $key) {
             unset($array[$key]['type']);
             unset($array[$key]['location']);
@@ -51,10 +51,10 @@ class TransportController extends Controller
 
     public static function BusAutocomplete($station)
     {
-        $client = new Client(['base_uri' => config('trwl.flix_rest')]);
+        $client   = new Client(['base_uri' => config('trwl.flix_rest')]);
         $response = $client->request('GET', "stations/?query=$station");
-        $json = $response->getBody()->getContents();
-        $array = json_decode($json, true);
+        $json     = $response->getBody()->getContents();
+        $array    = json_decode($json, true);
 
         foreach(array_keys($array) as $key) {
             unset($array[$key]['relevance']);
@@ -76,7 +76,7 @@ class TransportController extends Controller
         }
         $ibnrObject = self::TrainAutocomplete($station);
         $departures = self::getTrainDepartures($ibnrObject[0]['id'], $when, $travelType);
-        $station = $ibnrObject[0];
+        $station    = $ibnrObject[0];
 
         if (empty($station['name'])) {
             return null;
@@ -155,17 +155,16 @@ class TransportController extends Controller
     public static function TrainTrip($tripId, $lineName, $start)
     {
 
-        $trip = self::getHAFAStrip($tripId, $lineName);
-
-        $train = $trip->getAttributes();
+        $trip      = self::getHAFAStrip($tripId, $lineName);
+        $train     = $trip->getAttributes();
         $stopovers = json_decode($train['stopovers'],true);
-        $offset = self::searchForId($start, $stopovers);
+        $offset    = self::searchForId($start, $stopovers);
         if ($offset === null) {
             return null;
         }
-        $stopovers = array_slice($stopovers, $offset + 1);
+        $stopovers   = array_slice($stopovers, $offset + 1);
         $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
-        $start = TrainStations::where('ibnr', $train['origin'])->first()->name;
+        $start       = TrainStations::where('ibnr', $train['origin'])->first()->name;
 
         return [
             'train' => $train,
@@ -175,8 +174,9 @@ class TransportController extends Controller
         ];
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay, $now)
+    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay)
     {
+        $now = time();
         $factorDB = DB::table('pointscalculation')
             ->where([
                         ['type', 'train'],
@@ -188,9 +188,9 @@ class TransportController extends Controller
         if ($factorDB != null) {
             $factor = $factorDB->value;
         }
-        $arrivalTime = ( (is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
+        $arrivalTime   = ( (is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ( (is_int($departure)) ? $departure : strtotime($departure)) + $delay;
-        $points = $factor + ceil($distance / 10);
+        $points        = $factor + ceil($distance / 10);
 
         /**
          * Full points, 20min before the departure time or during the ride
@@ -230,12 +230,12 @@ class TransportController extends Controller
                                         $tootCheck,
                                         $eventId=0)
     {
-        $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
-        $stopovers = json_decode($hafas['stopovers'], true);
-        $offset1 = self::searchForId($start, $stopovers);
-        $offset2 = self::searchForId($destination, $stopovers);
-        $polyline = self::polyline($start, $destination, $hafas['polyline']);
-        $originAttributes = $stopovers[$offset1];
+        $hafas                 = self::getHAFAStrip($tripId, '')->getAttributes();
+        $stopovers             = json_decode($hafas['stopovers'], true);
+        $offset1               = self::searchForId($start, $stopovers);
+        $offset2               = self::searchForId($destination, $stopovers);
+        $polyline              = self::polyline($start, $destination, $hafas['polyline']);
+        $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
 
         $distance = self::distanceCalculation($originAttributes['stop']['location']['latitude'],
@@ -273,8 +273,7 @@ class TransportController extends Controller
             $hafas['category'],
             $stopovers[$offset1]['departure'],
             $stopovers[$offset2]['arrival'],
-            $hafas['delay'],
-            time()
+            $hafas['delay']
         );
 
         $status = new Status();
@@ -282,14 +281,16 @@ class TransportController extends Controller
         $status->business = isset($businessCheck) && $businessCheck == 'on';
 
         $trainCheckin = new TrainCheckin;
-        $trainCheckin->trip_id = $tripId;
-        $trainCheckin->origin = $originStation->ibnr;
+        $trainCheckin->trip_id     = $tripId;
+        $trainCheckin->origin      = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
-        $trainCheckin->distance = $distance;
-        $trainCheckin->departure = self::dateToMySQLEscape($stopovers[$offset1]['departure'], $stopovers[$offset1]['departureDelay'] ?? 0);
-        $trainCheckin->arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival'], $stopovers[$offset2]['arrivalDelay'] ?? 0);
-        $trainCheckin->delay = $hafas['delay'];
-        $trainCheckin->points = $points;
+        $trainCheckin->distance    = $distance;
+        $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
+                                                             $stopovers[$offset1]['departureDelay'] ?? 0);
+        $trainCheckin->arrival     = self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
+                                                             $stopovers[$offset2]['arrivalDelay'] ?? 0);
+        $trainCheckin->delay       = $hafas['delay'];
+        $trainCheckin->points      = $points;
 
         //check if there are colliding checkins
         $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
@@ -323,7 +324,7 @@ class TransportController extends Controller
         $user->points += $trainCheckin->points;
 
         $user->update();
-        if ((isset($tootCheck) || isset($tweetCheck)) && config('trwl.post_social') === TRUE) {
+        if ((isset($tootCheck) || isset($tweetCheck)) && config('trwl.post_social') === true) {
             $post_text = trans_choice(
                              'controller.transport.social-post',
                                       preg_match('/\s/', $hafas['linename']),
@@ -337,7 +338,7 @@ class TransportController extends Controller
                 );
             }
 
-            $post_url = url("/status/{$trainCheckin->status_id}");
+            $postUrl = url("/status/{$trainCheckin->status_id}");
 
             if (isset($status->body)) {
                 $eventIntercept = "";
@@ -359,7 +360,7 @@ class TransportController extends Controller
                 try {
                     $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first()->domain;
                     Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                    Mastodon::createStatus($post_text . $post_url, ['visibility' => 'unlisted']);
+                    Mastodon::createStatus($post_text . $postUrl, ['visibility' => 'unlisted']);
                 } catch (RequestException $e) {
                     $user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
                 } catch (\Exception $e) {
@@ -381,7 +382,7 @@ class TransportController extends Controller
                     $connection->post(
                         "statuses/update",
                         [
-                            "status" => $post_text . $post_url,
+                            "status" => $post_text . $postUrl,
                             'lat' => $originStation->latitude,
                             'lon' => $originStation->longitude
                         ]
@@ -406,7 +407,10 @@ class TransportController extends Controller
             ['departure', '<', $trainCheckin->arrival]
         ])->get()->pluck('status.user')
             ->each(function($t) use ($status, $hafas, $originStation, $destinationStation) {
-                $t->notify(new UserJoinedConnection($status->id, $hafas['linename'], $originStation->name, $destinationStation->name));
+                $t->notify(new UserJoinedConnection($status->id,
+                                                    $hafas['linename'],
+                                                    $originStation->name,
+                                                    $destinationStation->name));
                 return $t;
             });
 
@@ -426,17 +430,14 @@ class TransportController extends Controller
         $trip = HafasTrip::where('trip_id', $tripID)->first();
 
         if ($trip === null) {
-            $trip = new HafasTrip;
-
-            $client = new Client(['base_uri' => config('trwl.db_rest')]);
-            $response = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
-            $json = json_decode($response->getBody()->getContents());
-
-
-            $origin = self::getTrainStation($json->origin->id,
-                                            $json->origin->name,
-                                            $json->origin->location->latitude,
-                                            $json->origin->location->longitude);
+            $trip        = new HafasTrip;
+            $client      = new Client(['base_uri' => config('trwl.db_rest')]);
+            $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
+            $json        = json_decode($response->getBody()->getContents());
+            $origin      = self::getTrainStation($json->origin->id,
+                                              $json->origin->name,
+                                              $json->origin->location->latitude,
+                                              $json->origin->location->longitude);
             $destination = self::getTrainStation($json->destination->id,
                                                  $json->destination->name,
                                                  $json->destination->location->latitude,
@@ -450,17 +451,17 @@ class TransportController extends Controller
             }
             $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
 
-            $trip->trip_id = $tripID;
-            $trip->category = $json->line->product;
-            $trip->number = $json->line->id;
-            $trip->linename = $json->line->name;
-            $trip->origin = $origin->ibnr;
-            $trip->destination = $destination->ibnr;
-            $trip->stopovers = json_encode($json->stopovers);
-            $trip->polyline = $polyLineHash;
-            $trip->departure = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
+            $trip->trip_id      = $tripID;
+            $trip->category     = $json->line->product;
+            $trip->number       = $json->line->id;
+            $trip->linename     = $json->line->name;
+            $trip->origin       = $origin->ibnr;
+            $trip->destination  = $destination->ibnr;
+            $trip->stopovers    = json_encode($json->stopovers);
+            $trip->polyline     = $polyLineHash;
+            $trip->departure    = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
                                                        $json->departureDelay ?? 0);
-            $trip->arrival = self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
+            $trip->arrival      = self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
                                                      $json->arrivalDelay ?? 0);
             if(isset($json->arrivalDelay)) {
                 $trip->delay = $json->arrivalDelay;
@@ -474,9 +475,9 @@ class TransportController extends Controller
         $station = TrainStations::where('ibnr', $ibnr)->first();
         if ($station === null) {
             $station = New TrainStations;
-            $station->ibnr = $ibnr;
-            $station->name = $name;
-            $station->latitude = $latitude;
+            $station->ibnr      = $ibnr;
+            $station->name      = $name;
+            $station->latitude  = $latitude;
             $station->longitude = $longitude;
             $station->save();
         }
@@ -488,8 +489,8 @@ class TransportController extends Controller
         $hash = md5($polyline);
         $dbPolyline = PolyLine::where('hash', $hash)->first();
         if ($dbPolyline === null) {
-            $newPolyline = new PolyLine;
-            $newPolyline->hash = $hash;
+            $newPolyline           = new PolyLine;
+            $newPolyline->hash     = $hash;
             $newPolyline->polyline = $polyline;
             $newPolyline->save();
         }

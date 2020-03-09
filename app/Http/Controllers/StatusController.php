@@ -41,7 +41,7 @@ class StatusController extends Controller
                           ->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
                 ->get()
-                ->sortByDesc(function ($status, $key) {
+                ->sortByDesc(function ($status) {
                     return $status->trainCheckin->departure;
                 });
         } else {
@@ -176,12 +176,12 @@ class StatusController extends Controller
         return false;
     }
 
-    public static function ExportStatuses($start_date, $end_date, $filetype, $private_trips=true, $business_trips=true)
+    public static function ExportStatuses($startDate, $endDate, $fileType, $privateTrips=true, $businessTrips=true)
     {
-        if(!$private_trips && !$business_trips) {
+        if(!$privateTrips && !$businessTrips) {
             abort(400, __('controller.status.export-neither-business'));
         }
-        $endInclLastOfMonth = (new \DateTime($end_date))->add(new \DateInterval("P1D"))->format("Y-m-d");
+        $endInclLastOfMonth = (new \DateTime($endDate))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
         $user = Auth::user();
         $trainCheckins = Status::with('user',
@@ -190,9 +190,9 @@ class StatusController extends Controller
                                       'trainCheckin.Destination',
                                       'trainCheckin.hafastrip')
             ->where('user_id', $user->id)
-            ->whereHas('trainCheckin', function ($query) use ($start_date, $endInclLastOfMonth){
-                $query->whereBetween('arrival', [$start_date, $endInclLastOfMonth]);
-                $query->orwhereBetween('departure', [$start_date, $endInclLastOfMonth]);
+            ->whereHas('trainCheckin', function ($query) use ($startDate, $endInclLastOfMonth){
+                $query->whereBetween('arrival', [$startDate, $endInclLastOfMonth]);
+                $query->orwhereBetween('departure', [$startDate, $endInclLastOfMonth]);
             })
             ->get()->sortBy('trainCheckin.departure');
         $export = array();
@@ -215,21 +215,21 @@ class StatusController extends Controller
                 ''
             ]));
         }
-        if ($filetype == 'pdf') {
+        if ($fileType == 'pdf') {
             $pdf = PDF::loadView('pdf.export-template',
                                  ['export' => $export,
                                   'name' => $user->name,
-                                  'start_date' => $start_date,
-                                  'end_date' => $end_date])
+                                  'start_date' => $startDate,
+                                  'end_date' => $endDate])
                 ->setPaper('a4', 'landscape');
-            return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf', $start_date, $end_date));
+            return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf', $startDate, $endDate));
         }
 
-        if ($filetype == 'csv') {
+        if ($fileType == 'csv') {
             $headers = [
                 'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
                 'Content-type'        => 'text/csv',
-                'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.csv"',$start_date, $end_date),
+                'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.csv"', $startDate, $endDate),
                 'Expires'             => '0',
                 'Pragma'              => 'public'
             ];
@@ -263,7 +263,7 @@ class StatusController extends Controller
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/json',
-            'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.json"', $start_date, $end_date),
+            'Content-Disposition' => sprintf('attachment; filename="' . config('app.name', 'Träwelling') . '_export_%s_to_%s.json"', $startDate, $endDate),
             'Expires'             => '0',
             'Pragma'              => 'public'
         ];
