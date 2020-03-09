@@ -8,24 +8,28 @@ class TrainCheckin extends Model
 {
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function status () {
+    public function status ()
+    {
         return $this->belongsTo('App\Status');
     }
 
-    public function Origin () {
+    public function Origin ()
+    {
         return $this->hasOne('App\TrainStations','ibnr', 'origin');
     }
 
-    public function Destination () {
+    public function Destination ()
+    {
         return $this->hasOne('App\TrainStations', 'ibnr' ,'destination');
 }
 
-    public function HafasTrip() {
+    public function HafasTrip()
+    {
         return $this->hasone('App\HafasTrip', 'trip_id', 'trip_id');
     }
 
-    public function getMapLines() {
-
+    public function getMapLines()
+    {
         $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
         if ($hafas === null) {
             $origin = $this->Origin()->first();

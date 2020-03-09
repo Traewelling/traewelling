@@ -17,24 +17,43 @@ use Barryvdh\DomPDF\Facade as PDF;
 
 class StatusController extends Controller
 {
-    public static function getStatus($id) {
-        return Status::where('id', $id)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')->firstOrFail(); //I'm not sure if that's the correct way to do. Will need to revisit this during API-Development.
+    public static function getStatus($id)
+    {
+        return Status::where('id', $id)->with('user',
+                                              'trainCheckin',
+                                              'trainCheckin.Origin',
+                                              'trainCheckin.Destination',
+                                              'trainCheckin.HafasTrip',
+                                              'event')->firstOrFail();
     }
 
-    public static function getActiveStatuses($userid=null) {
+    public static function getActiveStatuses($userid=null)
+    {
         if ($userid === null) {
-            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
+            $statuses = Status::with('user',
+                                     'trainCheckin',
+                                     'trainCheckin.Origin',
+                                     'trainCheckin.Destination',
+                                     'trainCheckin.HafasTrip',
+                                     'event')
                 ->whereHas('trainCheckin', function ($query) {
-                    $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+                    $query->where('departure', '<', date('Y-m-d H:i:s'))
+                          ->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
                 ->get()
                 ->sortByDesc(function ($status, $key) {
                     return $status->trainCheckin->departure;
                 });
         } else {
-            $statuses = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
+            $statuses = Status::with('user',
+                                     'trainCheckin',
+                                     'trainCheckin.Origin',
+                                     'trainCheckin.Destination',
+                                     'trainCheckin.HafasTrip',
+                                     'event')
                 ->whereHas('trainCheckin', function ($query) {
-                    $query->where('departure', '<', date('Y-m-d H:i:s'))->where('arrival', '>', date('Y-m-d H:i:s'));
+                    $query->where('departure', '<', date('Y-m-d H:i:s'))
+                        ->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
                 ->where('user_id', $userid)
                 ->first();
@@ -49,8 +68,14 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getStatusesByEvent(int $eventId) {
-        return Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event')
+    public static function getStatusesByEvent(int $eventId)
+    {
+        return Status::with('user',
+                            'trainCheckin',
+                            'trainCheckin.Origin',
+                            'trainCheckin.Destination',
+                            'trainCheckin.HafasTrip',
+                            'event')
             ->where('event_id', '=', $eventId)
             ->orderBy('created_at', 'desc')
             ->latest()
@@ -58,23 +83,39 @@ class StatusController extends Controller
     }
 
     public static function getDashboard($user) {
-        $userIds = $user->follows()->pluck('follow_id');
+        $userIds   = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        $statuses = Status::whereIn('user_id', $userIds)->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->latest()->simplePaginate(15);
+        $statuses  = Status::whereIn('user_id', $userIds)
+            ->with('user',
+                   'trainCheckin',
+                   'trainCheckin.Origin',
+                   'trainCheckin.Destination',
+                   'trainCheckin.HafasTrip')
+            ->latest()->simplePaginate(15);
 
         return $statuses;
     }
 
-    public static function getGlobalDashboard() {
-        return Status::orderBy('created_at', 'desc')->with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip')->latest()->simplePaginate(15);
+    public static function getGlobalDashboard()
+    {
+        return Status::orderBy('created_at', 'desc')
+            ->with('user',
+                   'trainCheckin',
+                   'trainCheckin.Origin',
+                   'trainCheckin.Destination',
+                   'trainCheckin.HafasTrip')
+            ->latest()->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId) {
+    public static function DeleteStatus($user, $statusId)
+    {
         $status = Status::find($statusId);
+
         if ($status === null) {
             return null;
         }
         $trainCheckin = $status->trainCheckin()->first();
+
         if ($user != $status->user) {
             return false;
         }
@@ -91,7 +132,8 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck) {
+    public static function EditStatus($user, $statusId, $body, $businessCheck)
+    {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -105,7 +147,8 @@ class StatusController extends Controller
         return $status->body;
     }
 
-    public static function CreateLike($user, $statusId) {
+    public static function CreateLike($user, $statusId)
+    {
         $status = Status::find($statusId);
         if (!$status) {
             return null;
@@ -123,7 +166,8 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function DestroyLike($user, $statusId) {
+    public static function DestroyLike($user, $statusId)
+    {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
             $like->delete();
@@ -132,14 +176,20 @@ class StatusController extends Controller
         return false;
     }
 
-    public static function ExportStatuses($start_date, $end_date, $filetype, $private_trips=true, $business_trips=true) {
+    public static function ExportStatuses($start_date, $end_date, $filetype, $private_trips=true, $business_trips=true)
+    {
         if(!$private_trips && !$business_trips) {
             abort(400, __('controller.status.export-neither-business'));
         }
         $endInclLastOfMonth = (new \DateTime($end_date))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
         $user = Auth::user();
-        $trainCheckins = Status::with('user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.hafastrip')->where('user_id', $user->id)
+        $trainCheckins = Status::with('user',
+                                      'trainCheckin',
+                                      'trainCheckin.Origin',
+                                      'trainCheckin.Destination',
+                                      'trainCheckin.hafastrip')
+            ->where('user_id', $user->id)
             ->whereHas('trainCheckin', function ($query) use ($start_date, $endInclLastOfMonth){
                 $query->whereBetween('arrival', [$start_date, $endInclLastOfMonth]);
                 $query->orwhereBetween('departure', [$start_date, $endInclLastOfMonth]);
@@ -166,7 +216,12 @@ class StatusController extends Controller
             ]));
         }
         if ($filetype == 'pdf') {
-            $pdf = PDF::loadView('pdf.export-template', ['export' => $export, 'name' => $user->name, 'start_date' => $start_date, 'end_date' => $end_date])->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('pdf.export-template',
+                                 ['export' => $export,
+                                  'name' => $user->name,
+                                  'start_date' => $start_date,
+                                  'end_date' => $end_date])
+                ->setPaper('a4', 'landscape');
             return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf', $start_date, $end_date));
         }
 
@@ -215,7 +270,8 @@ class StatusController extends Controller
         return Response::json($trainCheckins, 200, $headers);
     }
 
-    public static function usageByDay(Carbon $date) {
+    public static function usageByDay(Carbon $date)
+    {
         $q = DB::table('statuses')
             ->select(DB::raw('count(*) as occurs'))
             ->where("created_at", ">=", $date->copy()->startOfDay())

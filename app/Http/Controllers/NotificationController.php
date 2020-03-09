@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Response;
 
 class NotificationController extends Controller {
 
-    public static function latest() {
+    public static function latest()
+    {
         return Auth::user()->notifications
             ->take(10)->map(function($notification) {
                 try {
@@ -21,7 +22,7 @@ class NotificationController extends Controller {
                 }
             })
             // We don't need empty notifications
-            ->filter(function($notification_or_null) { return $notification_or_null != null; })
+            ->filter(function($notificationOrNull) { return $notificationOrNull != null; })
             ->values();
     }
 
@@ -29,14 +30,15 @@ class NotificationController extends Controller {
         return Auth::user()->notifications
             ->take(10)
             ->map(function($notification) {
-                    $notification->html = $notification->type::render($notification);
-                    if ($notification->html != null) {
-                        return $notification;
-                    }
-                    return null;
+                $notification->html = $notification->type::render($notification);
+
+                if ($notification->html != null) {
+                    return $notification;
+                }
+                return null;
             })
             // We don't need empty notifications
-            ->filter(function($notification_or_null) { return $notification_or_null != null; })
+            ->filter(function($notificationOrNull) { return $notificationOrNull != null; })
             ->values();
     }
 
@@ -47,19 +49,20 @@ class NotificationController extends Controller {
         // happened during tests.
         if(isset($notification->html)) unset($notification->html);
          if($notification->read_at == null) { // old state = unread
-                $notification = auth()->user()->unreadNotifications->where('id', $notification->id)->first();
-                $notification->markAsRead();
-                return Response::json($notification, 201); // new state = read, 201=created
-            } else { // old state = read
-                $notification = auth()->user()->Notifications->where('id', $notification->id)->first();
-                $notification->markAsUnread();
-                return Response::json($notification, 202); // new state = unread, 202=accepted
-            }
+            $notification = auth()->user()->unreadNotifications->where('id', $notification->id)->first();
+            $notification->markAsRead();
+            return Response::json($notification, 201); // new state = read, 201=created
+        } else { // old state = read
+            $notification = auth()->user()->Notifications->where('id', $notification->id)->first();
+            $notification->markAsUnread();
+            return Response::json($notification, 202); // new state = unread, 202=accepted
+        }
     }
 
-    public static function destroy($id) {
+    public static function destroy($nottificationID)
+    {
         try {
-            $notification = Auth::user()->notifications->where('id', $id)->first();
+            $notification = Auth::user()->notifications->where('id', $nottificationID)->first();
             $notification->delete();
         } catch (\Throwable $e) {
             return Response::json([], 404);
@@ -68,7 +71,8 @@ class NotificationController extends Controller {
         return Response::json($notification, 200);
     }
 
-    public function readAll() {
+    public function readAll()
+    {
         Auth::user()->unreadNotifications->markAsRead();
     }
 }

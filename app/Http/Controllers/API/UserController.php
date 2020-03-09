@@ -4,38 +4,42 @@ namespace App\Http\Controllers\API;
 
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends ResponseController
 {
-    public function show ($username) {
-        $UserResponse = UserBackend::getProfilePage($username);
-        return $this->sendResponse($UserResponse);
+    public function show ($username)
+    {
+        $userResponse = UserBackend::getProfilePage($username);
+        return $this->sendResponse($userResponse);
     }
 
-    public function active($username) {
+    public function active($username)
+    {
         $user = User::where('username', $username)->firstOrFail();
-        $StatusResponse = StatusBackend::getActiveStatuses($user->id);
-        return $this->sendResponse($StatusResponse);
+        $statusResponse = StatusBackend::getActiveStatuses($user->id);
+        return $this->sendResponse($statusResponse);
     }
 
-    public function avatar($username) {
-        $ProfilePictureResponse = UserBackend::getProfilePicture($username);
-        return $this->sendResponse($ProfilePictureResponse);
+    public function avatar($username)
+    {
+        $profilePictureResponse = UserBackend::getProfilePicture($username);
+        return $this->sendResponse($profilePictureResponse);
     }
 
-    public function PutProfilepicture(Request $request) {
+    public function PutProfilepicture(Request $request)
+    {
         $avatar = $request->getContent();
-        $ProfilePictureResponse = UserBackend::updateProfilePicture($avatar);
-        return $this->sendResponse($ProfilePictureResponse);
+        $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
+        return $this->sendResponse($profilePictureResponse);
     }
 
-    public function PutDisplayname(Request $request) {
+    public function PutDisplayname(Request $request)
+    {
         $displayname = $request->getContent();
-        $DisplaynameResponse = UserBackend::updateDisplayName($displayname);
-        return $this->sendResponse($DisplaynameResponse);
+        $displaynameResponse = UserBackend::updateDisplayName($displayname);
+        return $this->sendResponse($displaynameResponse);
     }
 
 }

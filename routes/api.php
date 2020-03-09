@@ -17,10 +17,10 @@ $domain = 'api.' . parse_url(config('app.url'), PHP_URL_HOST);
 
 Route::group([ 'domain' => $domain, 'prefix' => 'v0'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
-       Route::group(['prefix' => 'auth'], function () {
+        Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login');
             Route::post('signup', 'API\AuthController@signup');
-       });
+        });
     });
     // All protected routes
     Route::group(['middleware' => 'auth:api'], function() {

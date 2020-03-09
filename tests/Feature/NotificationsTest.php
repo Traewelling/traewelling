@@ -207,7 +207,7 @@ class NotificationsTest extends TestCase {
 
         // GIVEN: Alice receives the notification and it's unread
         $notificationPart1 = DatabaseNotification::all()->where('notifiable_id', $this->user->id)->first();
-        $notifyID = $notificationPart1->id;
+        $notifyID          = $notificationPart1->id;
         $this->assertTrue($notificationPart1->read_at == null);
 
         // THEN: toggleReadState is called so that the notification will be read

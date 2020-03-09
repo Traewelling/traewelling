@@ -63,10 +63,11 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function updateProfilePicture(Request $request) {
-        $avatar = $request->input('image');
-        $ProfilePictureResponse = UserBackend::updateProfilePicture($avatar);
-        return response()->json($ProfilePictureResponse);
+    public function updateProfilePicture(Request $request)
+    {
+        $avatar                 = $request->input('image');
+        $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
+        return response()->json($profilePictureResponse);
     }
 
 }

@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class StatusLiked extends Notification {
+class StatusLiked extends Notification
+{
     use Queueable;
 
     public $like;
@@ -52,7 +53,8 @@ class StatusLiked extends Notification {
         ];
     }
 
-    public static function detail($notification) {
+    public static function detail($notification)
+    {
         $data = $notification->data;
 
         try {
@@ -74,7 +76,8 @@ class StatusLiked extends Notification {
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification)
+    {
         try {
             $detail = Self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {

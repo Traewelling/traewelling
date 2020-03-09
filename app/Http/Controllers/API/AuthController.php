@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Validator;
@@ -26,16 +25,15 @@ class AuthController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $input = $request->all();
+        $input             = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = new User();
+        $user              = new User();
         $user->create($input);
         if($user){
-            $success['token'] =  $user->createToken('token')->accessToken;
+            $success['token']   =  $user->createToken('token')->accessToken;
             $success['message'] = "Registration successfull..";
             return $this->sendResponse($success);
-        }
-        else{
+        } else{
             $error = "Sorry! Registration is not successfull.";
             return $this->sendError($error, 401);
         }
@@ -59,8 +57,8 @@ class AuthController extends ResponseController
             $error = "Unauthorized";
             return $this->sendError($error, 401);
         }
-        $user = $request->user();
-        $success['token'] =  $user->createToken('token')->accessToken;
+        $user             = $request->user();
+        $success['token'] = $user->createToken('token')->accessToken;
         return $this->sendResponse($success);
     }
 

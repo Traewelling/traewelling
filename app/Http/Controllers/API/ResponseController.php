@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Controllers\Controller as Controller;
 
 class ResponseController extends Controller

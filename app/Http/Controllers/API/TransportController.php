@@ -7,14 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-
 class TransportController extends ResponseController {
-    public function TrainAutocomplete($station) {
-        $TrainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
-        return $this->sendResponse($TrainAutocompleteResponse);
+    public function TrainAutocomplete($station)
+    {
+        $trainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
+        return $this->sendResponse($trainAutocompleteResponse);
     }
 
-    public function TrainStationboard(Request $request) {
+    public function TrainStationboard(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'station' => 'string|required',
             'travelType' => 'string|in:nationalExpress,national,regionalExp,regional,suburban,bus,ferry,subway,tram,taxi'
@@ -24,27 +25,28 @@ class TransportController extends ResponseController {
             return $this->sendError($validator->errors(), 400);
         }
 
-        $TrainStationboardResponse = TransportBackend::TrainStationboard(
+        $trainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
             $request->when,
             $request->travelType
         );
-        if ($TrainStationboardResponse === false) {
+        if ($trainStationboardResponse === false) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
         }
-        if ($TrainStationboardResponse === null) {
+        if ($trainStationboardResponse === null) {
 
             return  $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
         return $this->sendResponse([
-                                      'station' => $TrainStationboardResponse['station'],
-                                      'when' => $TrainStationboardResponse['when'],
-                                      'departures' => $TrainStationboardResponse['departures']
+                                      'station' => $trainStationboardResponse['station'],
+                                      'when' => $trainStationboardResponse['when'],
+                                      'departures' => $trainStationboardResponse['departures']
                                   ]);
     }
 
-    public function TrainTrip(Request $request) {
+    public function TrainTrip(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'tripID' => 'required',
             'lineName' => 'required',
@@ -55,24 +57,25 @@ class TransportController extends ResponseController {
             return $this->sendError($validator->errors(), 400);
         }
 
-        $TrainTripResponse = TransportBackend::TrainTrip(
+        $trainTripResponse = TransportBackend::TrainTrip(
             $request->tripID,
             $request->lineName,
             $request->start
         );
-        if ($TrainTripResponse === null) {
+        if ($trainTripResponse === null) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
 
         return $this->sendResponse([
-            'start' => $TrainTripResponse['start'],
-            'destination' => $TrainTripResponse['destination'],
-            'train' => $TrainTripResponse['train'],
-            'stopovers' => $TrainTripResponse['stopovers']
+            'start' => $trainTripResponse['start'],
+            'destination' => $trainTripResponse['destination'],
+            'train' => $trainTripResponse['train'],
+            'stopovers' => $trainTripResponse['stopovers']
         ]);
     }
 
-    public function TrainCheckin(Request $request) {
+    public function TrainCheckin(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'tripID' => 'required',
             'start' => 'required',
@@ -85,7 +88,7 @@ class TransportController extends ResponseController {
             return $this->sendError($validator->errors(), 400);
         }
 
-        $TrainCheckinResponse = TransportBackend::TrainCheckin(
+        $trainCheckinResponse = TransportBackend::TrainCheckin(
             $request->input('tripID'),
             $request->input('start'),
             $request->input('destination'),
@@ -96,36 +99,39 @@ class TransportController extends ResponseController {
             $request->input('toot')
         );
 
-        if ($TrainCheckinResponse['success'] === false) {
+        if ($trainCheckinResponse['success'] === false) {
             return $this->sendError([
-                        'status_id' => $TrainCheckinResponse['overlap']->id,
-                        'lineName' => $TrainCheckinResponse['overlap']->HafasTrip()->first()->linename
+                        'status_id' => $trainCheckinResponse['overlap']->id,
+                        'lineName' => $trainCheckinResponse['overlap']->HafasTrip()->first()->linename
                     ], 409);
         }
 
-        if ($TrainCheckinResponse['success'] === true) {
+        if ($trainCheckinResponse['success'] === true) {
             return $this->sendResponse([
-                'distance' => $TrainCheckinResponse['distance'],
-                'duration' => $TrainCheckinResponse['duration'],
-                'points' => $TrainCheckinResponse['points'],
-                'lineName' => $TrainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection']
+                'distance' => $trainCheckinResponse['distance'],
+                'duration' => $trainCheckinResponse['duration'],
+                'points' => $trainCheckinResponse['points'],
+                'lineName' => $trainCheckinResponse['lineName'],
+                'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
             ]);
         }
         return $this->sendError('Unknown Error occured', 500);
     }
 
-    public function TrainLatestArrivals(){
+    public function TrainLatestArrivals()
+    {
         $arrivals = TransportBackend::getLatestArrivals(auth()->user());
 
         return $this->sendResponse($arrivals);
     }
 
-    public function getHome() {
+    public function getHome()
+    {
         return $this->sendResponse(auth()->user()->home);
     }
 
-    public function setHome(Request $request) {
+    public function setHome(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'ibnr' => 'required'
         ]);
@@ -133,7 +139,7 @@ class TransportController extends ResponseController {
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
-        $SetHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
-        return $this->sendResponse($SetHomeResponse);
+        $setHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
+        return $this->sendResponse($setHomeResponse);
     }
 }

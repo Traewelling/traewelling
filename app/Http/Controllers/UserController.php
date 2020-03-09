@@ -24,7 +24,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class UserController extends Controller
 {
-    public static function getProfilePicture($username) {
+    public static function getProfilePicture($username)
+    {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
             return null;
@@ -44,14 +45,17 @@ class UserController extends Controller
 
             $hex = dechex($hash & 0x00FFFFFF);
 
-            $picture = Image::canvas(512, 512, $hex)->insert(public_path('/img/user.png'))->encode('png')->getEncoded();
+            $picture = Image::canvas(512, 512, $hex)
+                ->insert(public_path('/img/user.png'))
+                ->encode('png')->getEncoded();
             $ext = 'png';
         }
 
         return ['picture' => $picture, 'extension' => $ext];
     }
 
-    public function updateSettings(Request $request) {
+    public function updateSettings(Request $request)
+    {
         $user = Auth::user();
         $this->validate($request, [
             'name' => ['required', 'string', 'max:50'],
@@ -78,7 +82,8 @@ class UserController extends Controller
         return $this->getAccount();
     }
 
-    public function updatePassword(Request $request) {
+    public function updatePassword(Request $request)
+    {
         $user = Auth::user();
         if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
@@ -89,7 +94,8 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public static function updateProfilePicture($avatar) {
+    public static function updateProfilePicture($avatar)
+    {
         $user = Auth::user();
 
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
@@ -105,7 +111,8 @@ class UserController extends Controller
     }
 
     //Return Settings-page
-    public function getAccount() {
+    public function getAccount()
+    {
         $user = Auth::user();
         $sessions = array();
         foreach($user->sessions as $session) {
@@ -131,7 +138,8 @@ class UserController extends Controller
     }
 
     //delete sessions from user
-    public function deleteSession(Request $request) {
+    public function deleteSession(Request $request)
+    {
         $user = Auth::user();
         foreach ($user->sessions as $session) {
             $session->delete();
@@ -139,7 +147,8 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    public function destroyUser(Request $request) {
+    public function destroyUser(Request $request)
+    {
         $user = Auth::user();
 
         if ($user->avatar != 'user.jpg') {
@@ -161,7 +170,8 @@ class UserController extends Controller
     }
 
     //Save Changes on Settings-Page
-    public function SaveAccount(Request $request) {
+    public function SaveAccount(Request $request)
+    {
 
         $this->validate($request, [
             'name' => 'required|max:120'
@@ -172,7 +182,8 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public static function getProfilePage($username) {
+    public static function getProfilePage($username)
+    {
         $user = User::where('username', $username)->first();
         if ($user === null) {
             return null;
@@ -183,11 +194,12 @@ class UserController extends Controller
 
     }
 
-    /** 
+    /**
      * @param User The user who wants to see stuff in their timeline
      * @param int The user id of the person who is followed
      */
-    public static function CreateFollow($user, $follow_id) {
+    public static function CreateFollow($user, $follow_id)
+    {
         $follow = $user->follows()->where('follow_id', $follow_id)->first();
         if ($follow) {
             return false;
@@ -197,16 +209,17 @@ class UserController extends Controller
         $follow->user_id = $user->id;
         $follow->follow_id = $follow_id;
         $follow->save();
-        
+
         User::find($follow_id)->notify(new UserFollowed($follow));
         return true;
     }
 
-    /** 
+    /**
      * @param User The user who doesn't want to see stuff in their timeline anymore
      * @param int The user id of the person who was followed and now isn't
      */
-    public static function DestroyFollow($user, $follow_id) {
+    public static function DestroyFollow($user, $follow_id)
+    {
         $follow = $user->follows()->where('follow_id', $follow_id)->where('user_id', $user->id)->first();
         if ($follow) {
             $follow->delete();
@@ -214,23 +227,47 @@ class UserController extends Controller
         }
     }
 
-    public static function getLeaderboard() {
+    public static function getLeaderboard()
+    {
         $user = Auth::user();
         $friends = null;
 
         if ($user != null) {
             $userIds = $user->follows()->pluck('follow_id');
             $userIds[] = $user->id;
-            $friends = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->whereIn('id', $userIds)->orderby('points', 'desc')->limit(20)->get();
+            $friends = User::select('username',
+                                    'train_duration',
+                                    'train_distance',
+                                    'points')
+                ->where('points', '<>', 0)
+                ->whereIn('id', $userIds)
+                ->orderby('points', 'desc')
+                ->limit(20)
+                ->get();
         }
-        $users = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('points', 'desc')->limit(20)->get();
-        $kilometers = User::select('username', 'train_duration', 'train_distance', 'points')->where('points', '<>', 0)->orderby('train_distance', 'desc')->limit(20)->get();
+        $users = User::select('username',
+                              'train_duration',
+                              'train_distance',
+                              'points')
+            ->where('points', '<>', 0)
+            ->orderby('points', 'desc')
+            ->limit(20)
+            ->get();
+        $kilometers = User::select('username',
+                                   'train_duration',
+                                   'train_distance',
+                                   'points')
+            ->where('points', '<>', 0)
+            ->orderby('train_distance', 'desc')
+            ->limit(20)
+            ->get();
 
 
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
-    public static function registerByDay(Carbon $date) {
+    public static function registerByDay(Carbon $date)
+    {
         $q = DB::table('users')
             ->select(DB::raw('count(*) as occurs'))
             ->where("created_at", ">=", $date->copy()->startOfDay())
@@ -239,7 +276,8 @@ class UserController extends Controller
         return $q;
     }
 
-    public static function updateDisplayName($displayname) {
+    public static function updateDisplayName($displayname)
+    {
         $request = new Request(['displayname' => $displayname]);
         $validator = Validator::make($request->all(), [
             'displayname' => 'required|max:120'

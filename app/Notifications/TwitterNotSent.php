@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class TwitterNotSent extends Notification {
+class TwitterNotSent extends Notification
+{
     use Queueable;
 
     public $error;
@@ -34,7 +35,8 @@ class TwitterNotSent extends Notification {
         ];
     }
 
-    public static function detail($notification) {
+    public static function detail($notification)
+    {
         $data = $notification->data;
         $notification->detail = new \stdClass();
 
@@ -48,7 +50,8 @@ class TwitterNotSent extends Notification {
         return $notification->type;
     }
 
-    public static function render($notification) {
+    public static function render($notification)
+    {
         try {
             $detail = Self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {

@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class UserJoinedConnection extends Notification {
+class UserJoinedConnection extends Notification
+{
     use Queueable;
 
     private $statusId;
@@ -58,7 +59,8 @@ class UserJoinedConnection extends Notification {
         ];
     }
 
-    public static function detail($notification) {
+    public static function detail($notification)
+    {
         $data = $notification->data;
         $notification->detail = new \stdClass();
         try {
@@ -71,7 +73,8 @@ class UserJoinedConnection extends Notification {
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification)
+    {
         try {
             $detail = Self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {

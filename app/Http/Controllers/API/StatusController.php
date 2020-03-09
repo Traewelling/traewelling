@@ -8,25 +8,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-
 class StatusController extends ResponseController
 {
 
-    public function enRoute () {
-        $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
-        $response = [];
-        if ($ActiveStatusesResponse['statuses'] !== null) {
-            $response = ['statuses' => $ActiveStatusesResponse['statuses'], 'polylines' => $ActiveStatusesResponse['polylines']];
+    public function enRoute ()
+    {
+        $activeStatusesResponse = StatusBackend::getActiveStatuses();
+        $response               = [];
+        if ($activeStatusesResponse['statuses'] !== null) {
+            $response = [
+                'statuses'  => $activeStatusesResponse['statuses'],
+                'polylines' => $activeStatusesResponse['polylines']
+            ];
         }
         return $this->sendResponse($response);
     }
 
-    public function getByEvent($id) {
-        $EventStatusResponse = StatusBackend::getStatusesByEvent($id);
-        return $this->sendResponse($EventStatusResponse);
+    public function getByEvent($eventID)
+    {
+        $eventStatusResponse = StatusBackend::getStatusesByEvent($eventID);
+        return $this->sendResponse($eventStatusResponse);
     }
 
-    public function index (Request $request) {
+    public function index (Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'maxStatuses' => 'integer',
             'username' => 'string|required_if:view,user',
@@ -54,12 +59,14 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show ($id) {
-        $StatusResponse = StatusBackend::getStatus($id);
+    public function show ($statusID)
+    {
+        $StatusResponse = StatusBackend::getStatus($statusID);
         return $this->sendResponse($StatusResponse);
     }
 
-    public function update (Request $request) {
+    public function update (Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'body' => 'max:280',
             'business' => 'integer',
@@ -67,28 +74,28 @@ class StatusController extends ResponseController
         if($validator->fails()){
             return $this->sendError($validator->errors(), 400);
         }
-        $EditStatusResponse = StatusBackend::EditStatus(
+        $editStatusResponse = StatusBackend::EditStatus(
             Auth::user(),
             $request['statusId'],
             $request['body'],
             $request['businessCheck']
         );
-        if ($EditStatusResponse === null) {
+        if ($editStatusResponse === null) {
             return $this->sendError('Not found');
         }
-        if ($EditStatusResponse === false) {
+        if ($editStatusResponse === false) {
             return $this->sendError(__('controller.status.not-permitted'), 403);
         }
-        return $this->sendResponse(['newBody' => $EditStatusResponse]);
+        return $this->sendResponse(['newBody' => $editStatusResponse]);
     }
 
     public function destroy ($id) {
-        $DeleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $id);
+        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $id);
 
-        if ($DeleteStatusResponse === null) {
+        if ($deleteStatusResponse === null) {
             return $this->sendError('Not found');
         }
-        if ($DeleteStatusResponse === false) {
+        if ($deleteStatusResponse === false) {
             return $this->sendError(__('controller.status.not-permitted'), 403);
         }
         return $this->sendResponse(__('controller.status.delete-ok'));

@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class MastodonNotSent extends Notification {
+class MastodonNotSent extends Notification
+{
     use Queueable;
 
     public $error;
@@ -34,7 +35,8 @@ class MastodonNotSent extends Notification {
         ];
     }
 
-    public static function detail($notification) {
+    public static function detail($notification)
+    {
         $data = $notification->data;
 
         try {
@@ -47,7 +49,8 @@ class MastodonNotSent extends Notification {
         return $notification->type;
     }
 
-    public static function render($notification) {
+    public static function render($notification)
+    {
         try {
             $detail = Self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {

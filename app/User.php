@@ -43,23 +43,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(SocialLoginProfile::class);
     }
 
-    public function statuses(){
+    public function statuses()
+    {
         return $this->hasMany('App\Status');
     }
 
-    public function home() {
+    public function home()
+    {
         return $this->hasOne('App\TrainStations', 'id', 'home_id');
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany('App\Like');
     }
 
-    public function follows() {
+    public function follows()
+    {
         return $this->hasMany('App\Follow');
     }
 
-    public function sessions() {
+    public function sessions()
+    {
         return $this->hasMany('App\Session');
     }
 

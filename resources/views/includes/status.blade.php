@@ -43,7 +43,12 @@
 
                         @if($event->first() != null)
                             <br class="d-sm-none">
-                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">{{ $event->first()->name }}</a></span>
+                            <span class="pl-sm-2">
+                                <i class="fa fa-calendar-day"></i>
+                                <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">
+                                    {{ $event->first()->name }}
+                                </a>
+                            </span>
                         @endif
                     </p>
 
@@ -79,7 +84,9 @@
                 @if($event->first() != null)
                 <!-- <li class="calendar-button">
                     <i class="fa fa-calendar-day"></i>
-                    <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">{{ $event->first()->name }}</a>
+                    <a href="{{ route('statuses.byEvent', ['slug' => $event->first()->slug]) }}">
+                        {{ $event->first()->name }}
+                    </a>
                 </li> -->
                 @endif
             </ul>
