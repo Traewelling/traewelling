@@ -210,15 +210,22 @@ class NotificationsTest extends TestCase {
         $notifyID = $notificationPart1->id;
         $this->assertTrue($notificationPart1->read_at == null);
 
-        // THEN: toggleReadState is called so that the notification will be read
+        // WHEN: toggleReadState is called
         $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notifyID]));
         $readReq->assertStatus(201); // Created
-
 
         // THEN: the notification is read
         $notificationPart2 = json_decode($readReq->content());
         $this->assertFalse($notificationPart2->read_at == null);
 
+        // WHEN: toggleReadState is called again
+        $unreadReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notifyID]));
+        $unreadReq->assertStatus(202); // Created
+
+        // THEN: the notification is marked as unread again
+        $notificationPart3 = json_decode($unreadReq->content());
+        // dd($notificationPart3);
+        $this->assertTrue($notificationPart3->read_at == null);
     }
 
     /** @test */
