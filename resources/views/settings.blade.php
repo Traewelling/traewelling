@@ -27,10 +27,11 @@
 
                                     <a href="#" class="btn btn-primary" data-toggle="modal"
                                        data-target="#uploadAvatarModal">{{__('settings.upload-image')}}</a>
-                                    @if($user->avatar != 'user.jpg')
-                                        <a href="#" class="btn btn-outline-danger btn-sm" data-toggle="modal"
-                                           data-target="#deleteProfilePictureModal">{{ __('settings.delete-profile-picture-btn') }}</a>
-                                    @endif
+                                    <a href="#" class="btn btn-outline-danger btn-sm
+                                       @if($user->avatar != 'user.jpg') d-none @endif"
+                                       data-toggle="modal"
+                                       data-target="#deleteProfilePictureModal"
+                                       >{{ __('settings.delete-profile-picture-btn') }}</a>
 
                                     @error('avatar')
                                     <span class="invalid-feedback" role="alert">
