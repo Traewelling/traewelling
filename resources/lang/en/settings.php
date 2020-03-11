@@ -11,7 +11,7 @@ return [
     "delete-profile-picture-btn" => "Delete profile picture",
     "delete-profile-picture-desc" => "You are about to delete your profile picture. This action <strong>cannot be undone</strong>. Are you sure you want to continue?",
     "delete-profile-picture-yes" => "Yes, delete it.",
-    "delete-profile-picture-no" => "No, take me back!",
+    "delete-profile-picture-no" => "Back",
     "delete-account" => "Delete account",
     "delete-account-btn-back" => "Back",
     "delete-account-btn-confirm" => "Really delete",
