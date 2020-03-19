@@ -142,6 +142,8 @@ paths:
                   $ref: '#/components/schemas/Status'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /statuses/:
     get:
       security:
@@ -184,6 +186,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+              $ref: '#/components/responses/GDPRError'
   /statuses/event/{id}:
     get:
       security:
@@ -210,6 +214,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+              $ref: '#/components/responses/GDPRError'
   /statuses/{id}:
     get:
       security:
@@ -236,6 +242,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+              $ref: '#/components/responses/GDPRError'
     put:
       security:
         - bearerAuth: []
@@ -274,6 +282,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+              $ref: '#/components/responses/GDPRError'
     delete:
       security:
         - bearerAuth: []
@@ -299,6 +309,8 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+            $ref: '#/components/responses/GDPRError'
   /trains/autocomplete/{query}:
     get:
       security:
@@ -327,6 +339,8 @@ paths:
                   $ref: '#/components/schemas/querystation'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /trains/stationboard:
     get:
       security:
@@ -374,6 +388,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /trains/trip:
     get:
       security:
@@ -495,6 +511,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /trains/latest:
     get:
       security:
@@ -555,6 +573,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /user/profilepicture:
     put:
       security:
@@ -580,6 +600,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /user/displayname:
     put:
       security:
@@ -600,6 +622,29 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         400:
           $ref: '#/components/responses/BadRequestError'
+        406:
+          $ref: '#/components/responses/GDPRError'
+  /user/accept_privacy:
+    put:
+      security:
+        - bearerAuth: []
+      tags: [User profile]
+      summary: Accepts the Privacy Agreement
+      responses:
+        202:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "privacy agreement successfully accepted"
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
   /user/{username}:
     get:
       security:
@@ -622,6 +667,10 @@ paths:
                 $ref: '#/components/schemas/Userprofile'
         400:
           $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /user/{username}/active:
     get:
       security:
@@ -648,6 +697,8 @@ paths:
           description: No Content
         400:
           $ref: '#/components/responses/BadRequestError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /getuser:
     get:
       security:
@@ -665,6 +716,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /notifications:
     get:
       security:
@@ -684,6 +737,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
     put:
       security:
         - bearerAuth: []
@@ -707,6 +762,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
     delete:
       security:
         - bearerAuth: []
@@ -725,6 +782,8 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         404:
           $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
 
 
 
@@ -752,6 +811,30 @@ components:
     BadRequestError:
       description: Bad Request
         The parameters are wrong or not given.
+    GDPRError:
+      description: Not Acceptable
+        The privacy agreement has not yet been accepted.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Privacy agreement not yet accepted!"
+              updated:
+                type: string
+                example: "2019-11-04 20:07:00"
+                description: Date and time when the privacy agreement has been updated
+              german:
+                type: string
+                description: German version of the privacy agreement in markdown.
+              english:
+                type: string
+                description: English version of the privacy agreement in markdown.
+
+
+
 
   schemas:
     BearerToken:

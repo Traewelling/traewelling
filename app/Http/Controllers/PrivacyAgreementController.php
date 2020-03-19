@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\PrivacyAgreement;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,14 @@ class PrivacyAgreementController extends Controller
         return view('privacy-interception', ['agreement' => $agreement, 'user' => $user]);
     }
 
-    public function ack() {
+    public function ack(Request $request) {
         $user = Auth::user();
         $user->privacy_ack_at = now();
         $user->save();
+        if($request->is('api*')) {
+            return response()->json(['message' => 'privacy agreement successfully accepted'], 202);
+        }
+
 
         return redirect("/");
     }

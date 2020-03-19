@@ -149,8 +149,8 @@ class FrontendStatusController extends Controller
 
     public function getStatus($statusId)
     {
-        $StatusResponse = StatusBackend::getStatus($statusId);
-        return view('status', ['status' => $StatusResponse]);
+        $statusResponse = StatusBackend::getStatus($statusId);
+        return view('status', ['status' => $statusResponse]);
     }
 
     public function usageboard(Request $request)
@@ -185,10 +185,10 @@ class FrontendStatusController extends Controller
 
         // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
         $dateIterator = $end->copy()->addDays(1);
-        $i            = 0;
+        $cnt            = 0;
         $datediff     = $end->diffInDays($begin);
-        while($i < $datediff) {
-            $i++;
+        while($cnt < $datediff) {
+            $cnt++;
             $dateIterator->addDays(-1);
             $dates[]                  = $dateIterator->format("Y-m-d");
             $statusesByDay[]          = StatusController::usageByDay($dateIterator);

@@ -13,17 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-$domain = 'api.' . parse_url(config('app.url'), PHP_URL_HOST);
-
-Route::group([ 'domain' => $domain, 'prefix' => 'v0'], function (){
+Route::group(['prefix' => 'v0'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
         Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login');
             Route::post('signup', 'API\AuthController@signup');
         });
     });
+    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api');
     // All protected routes
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy']], function() {
         Route::post('auth/logout', 'API\AuthController@logout');
         Route::get('getuser', 'API\AuthController@getUser');
 
