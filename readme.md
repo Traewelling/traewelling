@@ -1,12 +1,12 @@
-# Träwelling
+# [Träwelling](https://traewelling.de)
 
-> Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it.
+> Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it. Check it out at [traewelling.de](https://traewelling.de).
 
 ![Resources build with `prod`](https://github.com/Traewelling/traewelling/workflows/Resources%20build%20with%20%60prod%60/badge.svg)
 ![Resources build with `dev`](https://github.com/Traewelling/traewelling/workflows/Resources%20build%20with%20%60dev%60/badge.svg)
 ![Composer install and test Laravel](https://github.com/Traewelling/traewelling/workflows/Laravel/badge.svg)
 
-![Träwelling Screenshot](traewelling.jpg)
+[![Träwelling Screenshot](traewelling.jpg)](https://traewelling.de)
 
 ## Features
 
