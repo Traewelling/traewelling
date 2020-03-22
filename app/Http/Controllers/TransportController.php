@@ -30,6 +30,33 @@ class TransportController extends Controller
         return date("Y-m-d H:i:s", strtotime($in) - $delaySeconds);
     }
 
+    /**
+     * Search for stations in a stopover list
+     * 
+     * @param array The Stopovers List
+     * @param mixed $id Station Id
+     * @param string $departureTime - for origin stations, or null
+     * @param string $arrivalTime - for destination stations, or null
+     * 
+     * @return int The index of the found station in the stopovers list.
+     */
+    public static function stopoverIndexSearch($array, $id, $departureTime = null, $arrivalTime = null) {
+        $departureIsNull = $departureTime === null;
+        $arrivalIsNull = $arrivalTime === null;
+        
+        foreach ($array as $key => $val) {
+            $idMatches = $val['stop']['id'] === $id;
+            $departureTimeMatches = $departureIsNull || $val['departure'] === $departureTime;
+            $arrivalTimeMatches = $arrivalIsNull || $val['arrival'] === $arrivalTime;
+
+            if ($idMatches && $departureTimeMatches && $arrivalTimeMatches) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
     public static function TrainAutocomplete($station) {
         $client = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
@@ -149,19 +176,20 @@ class TransportController extends Controller
 
         $train = $trip->getAttributes();
         $stopovers = json_decode($train['stopovers'],true);
-        $offset = self::searchForId($start, $stopovers);
+        $offset = self::stopoverIndexSearch($stopovers, $start);
         if ($offset === null) {
             return null;
         }
-        $stopovers = array_slice($stopovers, $offset + 1);
+        $stopsAfterMe = array_slice($stopovers, $offset + 1);
         $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
         $start = TrainStations::where('ibnr', $train['origin'])->first()->name;
 
         return [
             'train' => $train,
-            'stopovers' => $stopovers,
+            'stopovers' => $stopsAfterMe,
             'destination' => $destination,
-            'start' => $start
+            'start' => $start,
+            'departureTime' => $stopovers[$offset]['departure']
         ];
     }
 
@@ -209,11 +237,11 @@ class TransportController extends Controller
         return 1;
     }
 
-    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check, $eventId) {
+    public static function TrainCheckin($tripId, $start, $destination, $body, $user, $business_check, $tweet_check, $toot_check, $eventId, $departureTime, $arrivalTime) {
         $hafas = self::getHAFAStrip($tripId, '')->getAttributes();
         $stopovers = json_decode($hafas['stopovers'], true);
-        $offset1 = self::searchForId($start, $stopovers);
-        $offset2 = self::searchForId($destination, $stopovers);
+        $offset1 = self::stopoverIndexSearch($stopovers, $start, $departureTime, null);
+        $offset2 = self::stopoverIndexSearch($stopovers, $destination, null, $arrivalTime);
         $polyline = self::polyline($start, $destination, $hafas['polyline']);
         $originAttributes = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
