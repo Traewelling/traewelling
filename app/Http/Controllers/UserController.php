@@ -105,7 +105,6 @@ class UserController extends Controller
     public static function updateProfilePicture($avatar)
     {
         $user = Auth::user();
-
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
         Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
 

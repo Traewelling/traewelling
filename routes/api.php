@@ -16,19 +16,19 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'v0'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
         Route::group(['prefix' => 'auth'], function () {
-            Route::post('login', 'API\AuthController@login');
-            Route::post('signup', 'API\AuthController@signup');
+            Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
+            Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
     });
-    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api');
+    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')->name('api.v0.user.accept_privacy');
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], function() {
-        Route::post('auth/logout', 'API\AuthController@logout');
+        Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
         Route::get('getuser', 'API\AuthController@getUser');
 
         Route::group(['prefix' => 'user'], function() {
-            Route::get('{username}', 'API\UserController@show');
-            Route::get('{username}/active', 'API\UserController@active');
+            Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
+            Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
         });
 
         // Controller for complete /statuses-stuff
@@ -49,7 +49,7 @@ Route::group(['prefix' => 'v0'], function (){
             Route::put('home', 'API\TransportController@setHome');
         });
         Route::group(['prefix' => 'user'], function() {
-            Route::put('profilepicture', 'API\UserController@PutProfilepicture');
+            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
             Route::put('displayname', 'API\UserController@PutDisplayname');
         });
     });

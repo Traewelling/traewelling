@@ -51,15 +51,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  token:
-                    $ref: '#/components/schemas/BearerToken'
-                  message:
-                    type: string
-                    example: Registration successfull..
+                $ref: '#/components/schemas/BearerToken'
+
         400:
           $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
   /auth/signup:
     post:
       tags: [Auth]
@@ -103,7 +100,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BearerToken'
+                allOf:
+                  - $ref: '#/components/schemas/BearerToken'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Registration successfull..
         400:
           $ref: '#/components/responses/BadRequestError'
   /auth/logout:
@@ -123,7 +126,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Unauthenticated.
+                    example: Successfully logged out.
   /statuses/enroute/:
     get:
       security:
@@ -187,7 +190,7 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
         406:
-              $ref: '#/components/responses/GDPRError'
+          $ref: '#/components/responses/GDPRError'
   /statuses/event/{id}:
     get:
       security:
@@ -215,7 +218,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
-              $ref: '#/components/responses/GDPRError'
+          $ref: '#/components/responses/GDPRError'
   /statuses/{id}:
     get:
       security:
@@ -243,7 +246,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
-              $ref: '#/components/responses/GDPRError'
+          $ref: '#/components/responses/GDPRError'
     put:
       security:
         - bearerAuth: []
@@ -283,7 +286,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
-              $ref: '#/components/responses/GDPRError'
+          $ref: '#/components/responses/GDPRError'
     delete:
       security:
         - bearerAuth: []
@@ -310,7 +313,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
-            $ref: '#/components/responses/GDPRError'
+          $ref: '#/components/responses/GDPRError'
   /trains/autocomplete/{query}:
     get:
       security:
@@ -801,7 +804,7 @@ components:
   responses:
     UnauthorizedError:
       description: Unauthorized.
-        Will be returned by the server if no user was logged in.
+        Will be returned by the server if no user was logged in or wrong credentials were supplied.
     NotFoundError:
       description: Not found
         The parameters in the request were valid, but the server did not find a corresponding object.
