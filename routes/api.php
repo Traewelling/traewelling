@@ -20,7 +20,8 @@ Route::group(['prefix' => 'v0'], function (){
             Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
     });
-    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')->name('api.v0.user.accept_privacy');
+    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
+        ->name('api.v0.user.accept_privacy');
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], function() {
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');

@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\TransportController;
 
 $factory->define(HafasTrip::class, function (Faker $faker) {
-    $stops = [
+    $stops     = [
         TrainStations::all()->random(),
         TrainStations::all()->random(),
         TrainStations::all()->random(),
-        TrainStations::all()->random()
+        TrainStations::all()->random(),
     ];
     $features  = [];
     $stopOvers = [];
-    $time = -15;
+    $time      = -15;
     foreach ($stops as $stop) {
         array_push($features, [
              'type'       => 'Feature',
@@ -52,7 +52,7 @@ $factory->define(HafasTrip::class, function (Faker $faker) {
                  ]
              ]
         ]);
-        array_push($stopOvers,[
+        array_push($stopOvers, [
             'stop'              => [
                 'type'     => 'stop',
                 'id'       => $stop->ibnr,
@@ -77,16 +77,16 @@ $factory->define(HafasTrip::class, function (Faker $faker) {
                 ],
             ],
             'arrival'           => date('Y-m-d\TH:i:s+01:00', strtotime($time . 'min')),
-            'arrivalDelay'      => NULL,
-            'arrivalPlatform'   => NULL,
+            'arrivalDelay'      => null,
+            'arrivalPlatform'   => null,
             'departure'         => date('Y-m-d\TH:i:s+01:00', strtotime($time . 'min')),
-            'departureDelay'    => NULL,
-            'departurePlatform' => NULL,
+            'departureDelay'    => null,
+            'departurePlatform' => null,
         ]);
         $time += 30;
     }
 
-    $polyline = json_encode(['type'     => 'FeatureCollection',
+    $polyline     = json_encode(['type'     => 'FeatureCollection',
                              'features' => $features]);
     $polylineHash = TransportController::getPolylineHash($polyline);
     return [

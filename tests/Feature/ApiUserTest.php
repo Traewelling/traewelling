@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -10,7 +12,8 @@ class ApiUserTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->loginGertrudAndAckGDPR();
     }
@@ -19,11 +22,18 @@ class ApiUserTest extends ApiTestCase
      * Create a user with the api
      * @test
      */
-    public function change_profile_picture() {
-        $file = UploadedFile::fake()->image('avatar.jpg');
+    public function change_profile_picture()
+    {
+        $file     = UploadedFile::fake()->image('avatar.jpg');
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
                                         'Accept'        => 'application/json'])
-            ->call('put', route('api.v0.user.profilepicture'), [], [], [], [],  'data:image/jpeg;base64,'.base64_encode(file_get_contents($file)));
+            ->call('put',
+                   route('api.v0.user.profilepicture'),
+                   [],
+                   [],
+                   [],
+                   [],
+                   'data:image/jpeg;base64,'.base64_encode(file_get_contents($file)));
         $response->assertOk();
         $user = User::where('username', 'Gertrud123')->first();
 
@@ -31,13 +41,19 @@ class ApiUserTest extends ApiTestCase
         $this->assertTrue(File::exists(public_path('/uploads/avatars/'.$profilePictureName)));
         //Wait 1 second so that timestamp is updated and upload second file and check if first file was deleted.
         sleep(1);
-        $file2 = UploadedFile::fake()->image('avatar.jpg');
+        $file2    = UploadedFile::fake()->image('avatar.jpg');
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
                                         'Accept'        => 'application/json'])
-            ->call('put', route('api.v0.user.profilepicture'), [], [], [], [],  'data:image/jpeg;base64,'.base64_encode(file_get_contents($file2)));
+            ->call('put',
+                   route('api.v0.user.profilepicture'),
+                   [],
+                   [],
+                   [],
+                   [],
+                   'data:image/jpeg;base64,'.base64_encode(file_get_contents($file2)));
         $response->assertOk();
 
-        $user = User::where('username', 'Gertrud123')->first();
+        $user                  = User::where('username', 'Gertrud123')->first();
         $newProfilePictureName = $user->avatar;
         //Check if old profile picture has been deleted
         $this->assertFalse(File::exists(public_path('/uploads/avatars/'.$profilePictureName)));
@@ -49,10 +65,17 @@ class ApiUserTest extends ApiTestCase
      * Update the display name via the api
      * @test
      */
-    public function update_displayname() {
+    public function update_displayname()
+    {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
                                         'Accept'        => 'application/json'])
-            ->call('put', route('api.v0.user.displayname'), [], [], [], [],  'Gertrud von Träwelling');
+            ->call('put',
+                   route('api.v0.user.displayname'),
+                   [],
+                   [],
+                   [],
+                   [],
+                   'Gertrud von Träwelling');
         $response->assertOk();
         $user = User::where('username', 'Gertrud123')->first();
         $this->assertTrue($user->name == 'Gertrud von Träwelling');
@@ -62,7 +85,8 @@ class ApiUserTest extends ApiTestCase
      * Retrieve a user profile
      * @test
      */
-    public function get_user_profile() {
+    public function get_user_profile()
+    {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->get(route('api.v0.user', ['username' => 'Gertrud123']));
         $response->assertOk();
@@ -95,7 +119,8 @@ class ApiUserTest extends ApiTestCase
      * Get current User
      * @test
      */
-    public function get_user() {
+    public function get_user()
+    {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->get(route('api.v0.getUser'));
         $response->assertOk();
@@ -114,7 +139,8 @@ class ApiUserTest extends ApiTestCase
      * Tests the current active status
      * @test
      */
-    public function get_active_checkin_for_user() {
+    public function get_active_checkin_for_user()
+    {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->get(route('api.v0.user.active', ['Username' => 'Gertrud123']));
         $response->assertOk();

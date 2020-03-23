@@ -11,7 +11,8 @@ class HafasTripSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\HafasTrip::class, 10)->create()->each(function ($trainStation) {
+        factory(App\HafasTrip::class, 10)->create()->each(function ($trainStation)
+        {
             $trainStation->save();
         });
     }

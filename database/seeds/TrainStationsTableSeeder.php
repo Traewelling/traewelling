@@ -15,5 +15,4 @@ class TrainStationsTableSeeder extends Seeder
             $trainStation->save();
         });
     }
-
 }

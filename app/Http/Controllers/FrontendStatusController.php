@@ -185,7 +185,7 @@ class FrontendStatusController extends Controller
 
         // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
         $dateIterator = $end->copy()->addDays(1);
-        $cnt            = 0;
+        $cnt          = 0;
         $datediff     = $end->diffInDays($begin);
         while($cnt < $datediff) {
             $cnt++;
