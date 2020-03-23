@@ -498,7 +498,7 @@ class TransportController extends Controller
         return $station;
     }
 
-    private static function getPolylineHash($polyline)
+    public static function getPolylineHash($polyline)
     {
         $hash       = md5($polyline);
         $dbPolyline = PolyLine::where('hash', $hash)->first();

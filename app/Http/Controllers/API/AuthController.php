@@ -27,8 +27,8 @@ class AuthController extends ResponseController
 
         $input             = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user              = new User();
-        $user->create($input);
+        $user              = new User($input);
+        $user->save();
         if($user){
             $success['token']   =  $user->createToken('token')->accessToken;
             $success['message'] = "Registration successfull..";

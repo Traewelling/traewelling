@@ -18,7 +18,7 @@ abstract class ApiTestCase extends BaseTestCase
         parent::setUp();
         $this->artisan('passport:install');
         $this->artisan('passport:keys', ['--no-interaction' => true]);
-        $this->artisan('db:seed',['--class' => 'UsersTableSeeder']);
+        $this->artisan('db:seed');
         $this->faker = Factory::create();
     }
 

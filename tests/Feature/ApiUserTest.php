@@ -45,19 +45,131 @@ class ApiUserTest extends ApiTestCase
 
     }
 
+    /**
+     * Update the display name via the api
+     * @test
+     */
     public function update_displayname() {
-        //ToDo
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+                                        'Accept'        => 'application/json'])
+            ->call('put', route('api.v0.user.displayname'), [], [], [], [],  'Gertrud von Träwelling');
+        $response->assertOk();
+        $user = User::where('username', 'Gertrud123')->first();
+        $this->assertTrue($user->name == 'Gertrud von Träwelling');
     }
 
+    /**
+     * Retrieve a user profile
+     * @test
+     */
     public function get_user_profile() {
-        //ToDo
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get(route('api.v0.user', ['username' => 'Gertrud123']));
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'username',
+            'statuses' => [
+                'current_page',
+                'data',
+                'first_page_url',
+                'from',
+                'last_page',
+                'last_page_url',
+                'next_page_url',
+                'path',
+                'per_page',
+                'prev_page_url',
+                'to'
+            ],
+            'user' => [
+                'id',
+                'name',
+                'username',
+                'train_distance',
+                'train_duration',
+                'points'
+            ]]);
     }
 
+    /**
+     * Get current User
+     * @test
+     */
     public function get_user() {
-        //ToDo
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get(route('api.v0.getUser'));
+        $response->assertOk();
+        $response->assertJsonStructure(['id',
+                                        'name',
+                                        'username',
+                                        'train_distance',
+                                        'train_duration',
+                                        'points']);
+        $this->assertTrue(json_decode($response->getContent())->username == 'Gertrud123');
+
+
     }
 
+    /**
+     * Tests the current active status
+     * @test
+     */
     public function get_active_checkin_for_user() {
-        //ToDo
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get(route('api.v0.user.active', ['Username' => 'Gertrud123']));
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'id',
+            'created_at',
+            'updated_at',
+            'body',
+            'type',
+            'event_id',
+            'user' => [
+                'id',
+                'name',
+                'username',
+                'train_distance',
+                'train_duration',
+                'points'
+            ],
+            'train_checkin' => [
+                'id',
+                'status_id',
+                'trip_id',
+                'origin' => [
+                    'id',
+                    'ibnr',
+                    'name',
+                    'latitude',
+                    'longitude'
+                ],
+                'destination' => [
+                    'id',
+                    'ibnr',
+                    'name',
+                    'latitude',
+                    'longitude'
+                ],
+                'distance',
+                'departure',
+                'arrival',
+                'points',
+                'delay',
+                'hafas_trip' => [
+                    'id',
+                    'trip_id',
+                    'category',
+                    'number',
+                    'linename',
+                    'origin',
+                    'destination',
+                    'stopovers',
+                    'departure',
+                    'arrival',
+                    'delay'
+                ]
+            ],
+            'event']);
     }
 }

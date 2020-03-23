@@ -24,7 +24,7 @@ Route::group(['prefix' => 'v0'], function (){
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], function() {
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
-        Route::get('getuser', 'API\AuthController@getUser');
+        Route::get('getuser', 'API\AuthController@getUser')->name('api.v0.getUser');
 
         Route::group(['prefix' => 'user'], function() {
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
@@ -50,7 +50,7 @@ Route::group(['prefix' => 'v0'], function (){
         });
         Route::group(['prefix' => 'user'], function() {
             Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
-            Route::put('displayname', 'API\UserController@PutDisplayname');
+            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
         });
     });
 });
