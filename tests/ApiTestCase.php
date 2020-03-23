@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class ApiTestCase extends BaseTestCase
 {
-    use CreatesApplication, DatabaseMigrations;
+    use CreatesApplication;
 
     protected $faker;
     public $mockConsoleOutput = false;
