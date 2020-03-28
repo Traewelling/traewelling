@@ -110,8 +110,8 @@ $(document).on("click", ".follow", function (event) {
             data: { follow_id: userId, _token: token }
         }).done(function () {
             event.target.dataset["following"] = "yes";
-            event.target.classList.add('btn-danger');
-            event.target.classList.remove('btn-primary');
+            event.target.classList.add("btn-danger");
+            event.target.classList.remove("btn-primary");
             event.target.innerText = window.translUnfollow;
         });
     } else {
@@ -121,8 +121,8 @@ $(document).on("click", ".follow", function (event) {
             data: { follow_id: userId, _token: token }
         }).done(function () {
             event.target.dataset["following"] = "no";
-            event.target.classList.add('btn-primary');
-            event.target.classList.remove('btn-danger');
+            event.target.classList.add("btn-primary");
+            event.target.classList.remove("btn-danger");
             event.target.innerText = window.translFollow;
         });
     }
