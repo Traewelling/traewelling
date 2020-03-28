@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -42,5 +43,22 @@ class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase {
 
     public function testAboutGet() {
         $response = $this->get('/about'); $response->assertOk();
+    }
+
+    public function testProfilePageGet() {
+        // GIVEN: A gdpr-acked user
+        $user = factory(User::class)->create();
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+
+        // WHEN: Someone visits the user's profile page
+        $response = $this->get(route('account.show', ["username" => $user->username]));
+
+        // THEN: The page is rendered and shows the user's name and username
+        $response->assertOk();
+        $response->assertSee($user->name);
+        $response->assertSee($user->username);
     }
 }
