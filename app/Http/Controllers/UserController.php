@@ -6,17 +6,13 @@ use App\User;
 use App\Follow;
 use App\SocialLoginProfile;
 use App\Status;
-use App\HafasTrip;
 use App\TrainCheckin;
-use App\Like;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -192,11 +188,16 @@ class UserController extends Controller
 
     public static function getProfilePage($username)
     {
-        $user = User::where('username', $username)->first();
+        $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
-        $statuses = $user->statuses()->orderBy('created_at', 'DESC')->paginate(15);
+        $statuses = $user->statuses()->with('user',
+        'trainCheckin',
+        'trainCheckin.Origin',
+        'trainCheckin.Destination',
+        'trainCheckin.HafasTrip',
+        'event')->orderBy('created_at', 'DESC')->paginate(15);
 
         return ['username' => $username, 'statuses' => $statuses, 'user' => $user];
 

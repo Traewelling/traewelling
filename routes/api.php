@@ -33,9 +33,9 @@ Route::group(['prefix' => 'v0'], function (){
         });
 
         // Controller for complete /statuses-stuff
-        Route::resource('statuses', 'API\StatusController');
-        Route::get('statuses/event/{slug}', 'API\StatusController@getByEvent');
-        Route::get('statuses/enroute', 'API\StatusController@enroute');
+        Route::get('statuses/enroute', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
+        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
+        Route::get('statuses/event/{slug}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
 
         Route::resource('notifications', 'API\NotificationController');
 

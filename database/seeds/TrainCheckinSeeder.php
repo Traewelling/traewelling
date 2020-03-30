@@ -3,7 +3,6 @@
 use App\HafasTrip;
 use Illuminate\Database\Seeder;
 use App\Http\Controllers\TransportController;
-use Faker\Generator as Faker;
 use App\User;
 
 class TrainCheckinSeeder extends Seeder
@@ -27,7 +26,7 @@ class TrainCheckinSeeder extends Seeder
                 0,
                 0,
                 0,
-                0
+                rand(0,1)
                 );
         }
     }

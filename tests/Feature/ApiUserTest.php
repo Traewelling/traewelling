@@ -88,7 +88,7 @@ class ApiUserTest extends ApiTestCase
     public function get_user_profile()
     {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get(route('api.v0.user', ['username' => 'Gertrud123']));
+            ->json(route('api.v0.user', ['username' => 'Gertrud123']));
         $response->assertOk();
         $response->assertJsonStructure([
             'username',
