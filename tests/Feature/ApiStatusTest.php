@@ -56,7 +56,6 @@ class ApiStatusTest extends ApiTestCase
         $response->assertOk();
 
 
-        dd(json_decode($response->getContent(),true)['data']);
         $this->assertFalse(empty(json_decode($response->getContent(),true)));
     }
 

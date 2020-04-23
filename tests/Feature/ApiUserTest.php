@@ -88,7 +88,7 @@ class ApiUserTest extends ApiTestCase
     public function get_user_profile()
     {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json(route('api.v0.user', ['username' => 'Gertrud123']));
+            ->json('GET', route('api.v0.user', ['username' => 'Gertrud123']));
         $response->assertOk();
         $response->assertJsonStructure([
             'username',
@@ -146,7 +146,7 @@ class ApiUserTest extends ApiTestCase
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(),true)));
         //Somehow this throws an error even though the structure is the same.
-        /*$response->assertJsonStructure([
+        $response->assertJsonStructure([
             'id',
             'created_at',
             'updated_at',
@@ -198,6 +198,6 @@ class ApiUserTest extends ApiTestCase
                     'delay'
                 ]
             ],
-            'event']);*/
+            'event']);
     }
 }

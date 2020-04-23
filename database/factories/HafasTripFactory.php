@@ -76,10 +76,10 @@ $factory->define(HafasTrip::class, function (Faker $faker) {
                     'taxi'            => $faker->boolean($chanceOfGettingTrue = 50),
                 ],
             ],
-            'arrival'           => date('Y-m-d\TH:i:s+01:00', strtotime($time . 'min')),
+            'arrival'           => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
             'arrivalDelay'      => null,
             'arrivalPlatform'   => null,
-            'departure'         => date('Y-m-d\TH:i:s+01:00', strtotime($time . 'min')),
+            'departure'         => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
             'departureDelay'    => null,
             'departurePlatform' => null,
         ]);

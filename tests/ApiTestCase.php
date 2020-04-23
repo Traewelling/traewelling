@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Faker\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class ApiTestCase extends BaseTestCase
@@ -39,4 +38,5 @@ abstract class ApiTestCase extends BaseTestCase
             ->json('PUT', route('api.v0.user.accept_privacy'));
 
     }
+
 }

@@ -41,13 +41,13 @@ Route::group(['prefix' => 'v0'], function (){
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
-            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete');
-            Route::get('stationboard', 'API\TransportController@TrainStationboard');
-            Route::get('trip', 'API\TransportController@TrainTrip');
-            Route::post('checkin', 'API\TransportController@TrainCheckin');
-            Route::get('latest', 'API\TransportController@TrainLatestArrivals');
-            Route::get('home', 'API\TransportController@getHome');
-            Route::put('home', 'API\TransportController@setHome');
+            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')->name('api.v0.checkin.train.autocomplete');
+            Route::get('stationboard', 'API\TransportController@TrainStationboard')->name('api.v0.checkin.train.stationboard');;
+            Route::get('trip', 'API\TransportController@TrainTrip')->name('api.v0.checkin.train.trip');
+            Route::post('checkin', 'API\TransportController@TrainCheckin')->name('api.v0.checkin.train.checkin');
+            Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');
+            Route::get('home', 'API\TransportController@getHome')->name('api.v0.checkin.train.home');
+            Route::put('home', 'API\TransportController@setHome')->name('api.v0.checkin.train.home');
         });
         Route::group(['prefix' => 'user'], function() {
             Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
