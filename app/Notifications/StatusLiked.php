@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class StatusLiked extends Notification {
+class StatusLiked extends Notification
+{
     use Queueable;
 
     public $like;
@@ -22,17 +23,18 @@ class StatusLiked extends Notification {
      *
      * @return void
      */
-    public function __construct(Like $like = null) {
+    public function __construct(Like $like = null)
+    {
         $this->like = $like;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function via($notifiable)
+    public function via()
     {
         return ['database'];
     }
@@ -40,21 +42,24 @@ class StatusLiked extends Notification {
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
+            'status_id' => $this->like->status_id,
             'like_id' => $this->like->id,
+            'liked_by' => $this->like->user()->first()->id
         ];
     }
 
-    public static function render($notification) {
+    public static function detail($notification)
+    {
         $data = $notification->data;
-        
+
         try {
-            $like = Like::findOrFail($data['like_id']);
+            $like   = Like::findOrFail($data['like_id']);
             $sender = User::findOrFail($like->user_id);
             $status = Status::findOrFail($like->status_id);
         } catch(ModelNotFoundException $e) {
@@ -63,13 +68,28 @@ class StatusLiked extends Notification {
             throw new ShouldDeleteNotificationException();
         }
 
-        $hafas = $status->trainCheckin->hafasTrip;
-        
+        $notification->detail         = new \stdClass();
+        $notification->detail->sender = $sender;
+        $notification->detail->status = $status;
+
+        return $notification->detail;
+    }
+
+    public static function render($notification)
+    {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+        $hafas = $detail->status->trainCheckin->hafasTrip;
+
         return view("includes.notification", [
             'color' => "neutral",
             'icon' => "fas fa-heart",
-            'lead' => __('notifications.statusLiked.lead', ['likerUsername' => $sender->username]),
-            "link" => route('statuses.get', ['id' => $status->id]),
+            'lead' => __('notifications.statusLiked.lead', ['likerUsername' => $detail->sender->username]),
+            "link" => route('statuses.get', ['id' => $detail->status->id]),
             'notice' => trans_choice(
                 'notifications.statusLiked.notice',
                 preg_match('/\s/', $hafas->linename),

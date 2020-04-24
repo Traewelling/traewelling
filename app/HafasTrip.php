@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class HafasTrip extends Model
 {
- /*   protected $fillable = [
+    /*   protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'origin', 'destination', 'departure', 'arrival', 'stopovers'
     ];
-*/
-    public function getPolyLine() {
+    */
+    protected $hidden = ['created_at', 'updated_at', 'polyline'];
+
+    public function getPolyLine()
+    {
         return $this->hasOne('App\PolyLine', 'hash', 'polyline');
     }
-
-    protected $hidden = ['created_at', 'updated_at', 'polyline'];
 }
