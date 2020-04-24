@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="Laravel Standards">
+<rule name="Laravel Standards">
     <description>The Laravel Coding Standards
     </description>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
     <rule ref="Generic.Classes.DuplicateClassName"/>
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
@@ -27,7 +29,7 @@
     <rule ref="Generic.Formatting.SpaceAfterCast"/>
     <rule ref="Generic.Functions.CallTimePassByReference"/>
     <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+    <rule ref="Generic.Functions.Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
     <rule ref="Generic.Metrics.CyclomaticComplexity">
         <properties>
             <property name="complexity" value="50"/>
@@ -60,7 +62,9 @@
     <rule ref="PSR2.ControlStructures.SwitchDeclaration"/>
     <rule ref="PSR2.Files.EndFileNewline"/>
     <rule ref="PSR2.Methods.MethodDeclaration"/>
-    <rule ref="PSR2.Namespaces.NamespaceDeclaration"/>
+    <rule ref="PSR2.Namespaces.NamespaceDeclaration">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
     <rule ref="PSR2.Namespaces.UseDeclaration"/>
     <rule ref="Zend.Files.ClosingTag"/>
-</ruleset>
+</rule>

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use DateTime;
 use Tests\ApiTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -33,15 +34,17 @@ class ApiCheckinTest extends ApiTestCase
      * @test
      */
     public function stationboardTest() {
-        $requestDate = new \DateTime($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(Main)Hbf"; $ibnr = 8000105;
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
-                                                                                     'when' => $requestDate->format('U')]);
+        $requestDate = new DateTime($this->plus_one_day_then_8pm);
+        $stationname = "Frankfurt(Main)Hbf";
+        $ibnr        = 8000105;
+        $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->json('GET',
+                   route('api.v0.checkin.train.stationboard'),
+                   ['station' => $stationname, 'when' => $requestDate->format('U')]);
         $response->assertOk();
         $jsonResponse = json_decode($response->getContent(), true);
-        $station = $jsonResponse['station'];
-        $departures = $jsonResponse['departures'];
+        $station      = $jsonResponse['station'];
+        $departures   = $jsonResponse['departures'];
 
 
 
@@ -61,14 +64,15 @@ class ApiCheckinTest extends ApiTestCase
      */
     public function testCheckin() {
         // First: Get a train
-        $now = new \DateTime($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(Main)Hbf"; $ibnr = 8000105;
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+        $now         = new DateTime($this->plus_one_day_then_8pm);
+        $stationname = "Frankfurt(Main)Hbf";
+        $ibnr        = 8000105;
+        $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
                 'when' => $now->format('U')]);
 
         $trainStationboard = json_decode($response->getContent(), true);
-        $countDepartures = count($trainStationboard['departures']);
+        $countDepartures   = count($trainStationboard['departures']);
         if($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
@@ -76,10 +80,8 @@ class ApiCheckinTest extends ApiTestCase
 
         // Second: We don't like broken or cancelled trains.
         $i = 0;
-        while (
-            (isset($trainStationboard['departures'][$i]['cancelled'])
-                && $trainStationboard['departures'][$i]['cancelled']
-            )
+        while ((isset($trainStationboard['departures'][$i]['cancelled'])
+                && $trainStationboard['departures'][$i]['cancelled'])
             || count($trainStationboard['departures'][$i]['remarks']) != 0
         ) {
             $i++;

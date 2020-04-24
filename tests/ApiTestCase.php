@@ -36,7 +36,5 @@ abstract class ApiTestCase extends BaseTestCase
         //Accept the privacy policy
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('PUT', route('api.v0.user.accept_privacy'));
-
     }
-
 }

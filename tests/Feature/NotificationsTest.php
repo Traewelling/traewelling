@@ -7,6 +7,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Like;
 use App\Status;
 use App\TrainCheckin;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Notifications\DatabaseNotification;
@@ -32,7 +33,7 @@ class NotificationsTest extends TestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      */
-    protected function checkin($stationname, $ibnr, \DateTime $now, User $user = null)
+    protected function checkin($stationname, $ibnr, DateTime $now, User $user = null)
     {
         if($user == null) { $user = $this->user; }
         $trainStationboard = TransportController::TrainStationboard($stationname,
@@ -52,7 +53,7 @@ class NotificationsTest extends TestCase
               || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
-                $this->markSkippedForMissingDependecy("Unable to find unbroken train.
+                $this->markTestSkipped("Unable to find unbroken train.
                 Is it stormy in $stationname?");
                 return;
             }
@@ -81,7 +82,7 @@ class NotificationsTest extends TestCase
     public function likes_appear_in_notifications()
     {
         // Given: There is a likable status
-        $now = new \DateTime("+2 day 8:00");
+        $now = new DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
 
         $status = $this->user->statuses->first();
@@ -107,7 +108,7 @@ class NotificationsTest extends TestCase
     public function removed_likes_dont_appear_in_notifications()
     {
         // Given: There is a likable status
-        $now = new \DateTime("+2 day 8:00");
+        $now = new DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now);
 
         $status = $this->user->statuses->first();
@@ -177,7 +178,7 @@ class NotificationsTest extends TestCase
         $alice    = factory(User::class)->create();
         $response = $this->actingAs($alice)
                         ->post('/gdpr-ack');
-        $now      = new \DateTime("+2 day 8:00");
+        $now      = new DateTime("+2 day 8:00");
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train

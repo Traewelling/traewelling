@@ -25,7 +25,7 @@ class ApiStatusTest extends ApiTestCase
             'Accept'        => 'application/json'])
             ->get(route('api.v0.statuses.enroute'));
         $response->assertOk();
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
 
     /**
@@ -39,14 +39,14 @@ class ApiStatusTest extends ApiTestCase
             ->get(route('api.v0.statuses.index'));
         $response->assertOk();
 
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
         //test page 2
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
             ->json('GET', route('api.v0.statuses.index'), ['page' => 2]);
         $response->assertOk();
 
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
 
         //test gertrud posts
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
@@ -56,7 +56,7 @@ class ApiStatusTest extends ApiTestCase
         $response->assertOk();
 
 
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
 
     /**
@@ -66,10 +66,10 @@ class ApiStatusTest extends ApiTestCase
     public function get_event_statuses() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.event',['id' => '1']));
+            ->get(route('api.v0.statuses.event', ['id' => '1']));
         $response->assertOk();
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
-        $firstTrain = json_decode($response->getContent(),true)['data'][0];
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
+        $firstTrain = json_decode($response->getContent(), true)['data'][0];
         $this->assertTrue($firstTrain['event']['id'] == 1);
         $this->assertTrue($firstTrain['event']['name'] == 'Jährliches Modelleisenbahntreffen ' . date('Y'));
         $this->assertTrue($firstTrain['event']['slug'] == 'Modellbahn' . date('y'));
@@ -83,15 +83,11 @@ class ApiStatusTest extends ApiTestCase
      * Test single status
      * @test
      */
-    public function get_status_by_id(){
+    public function get_status_by_id() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.show',['id' => '1']));
+            ->get(route('api.v0.statuses.show', ['id' => '1']));
         $response->assertOk();
-        $this->assertFalse(empty(json_decode($response->getContent(),true)));
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
-
-    /**
-     *
-     */
 }

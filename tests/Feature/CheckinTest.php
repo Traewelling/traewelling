@@ -3,11 +3,14 @@
 namespace Tests\Feature;
 
 use App\User;
+use DateTime;
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\TransportController;
 
-class CheckinTest extends TestCase {
+class CheckinTest extends TestCase
+{
 
     use RefreshDatabase;
 
@@ -17,12 +20,14 @@ class CheckinTest extends TestCase {
      * Use the stationboard api and check if it works.
      * @test
      */
-    public function stationboardTest() {
-        $requestDate = new \DateTime($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(Main)Hbf"; $ibnr = 8000105; // This station has departures throughout the night.
+    public function stationboardTest()
+    {
+        $requestDate       = new DateTime($this->plus_one_day_then_8pm);
+        $stationname       = "Frankfurt(Main)Hbf";
+        $ibnr              = 8000105; // This station has departures throughout the night.
         $trainStationboard = TransportController::TrainStationboard($stationname, $requestDate->format('U'));
-        $station = $trainStationboard['station'];
-        $departures = $trainStationboard['departures'];
+        $station           = $trainStationboard['station'];
+        $departures        = $trainStationboard['departures'];
 
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
@@ -55,10 +60,12 @@ class CheckinTest extends TestCase {
      * THEN You can see the status information.
      * @test
      */
-    public function testCheckin() {
+    public function testCheckin()
+    {
         // First: Get a train that's fine for our stuff
-        $now = new \DateTime($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(M) Flughafen Fernbf"; $ibnr = "8070003";
+        $now               = new DateTime($this->plus_one_day_then_8pm);
+        $stationname       = "Frankfurt(M) Flughafen Fernbf";
+        $ibnr              = "8070003";
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
@@ -69,12 +76,9 @@ class CheckinTest extends TestCase {
 
         // Second: We don't like broken or cancelled trains.
         $i = 0;
-        while (
-              (isset($trainStationboard['departures'][$i]->cancelled)
-                && $trainStationboard['departures'][$i]->cancelled
-              )
-              || count($trainStationboard['departures'][$i]->remarks) != 0
-            ) {
+        while ((isset($trainStationboard['departures'][$i]->cancelled)
+                && $trainStationboard['departures'][$i]->cancelled)
+              || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
@@ -92,7 +96,7 @@ class CheckinTest extends TestCase {
         );
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user = factory(User::class)->create();
+        $user     = factory(User::class)->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
@@ -129,21 +133,22 @@ class CheckinTest extends TestCase {
      * the footer sentences).
      * @test
      */
-    public function testCheckinSuccessFlash() {
+    public function testCheckinSuccessFlash()
+    {
         // GIVEN: A gdpr-acked user
-        $user = factory(User::class)->create();
+        $user     = factory(User::class)->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
-        $message = [
+        $message  = [
             "distance" => 72.096,
             "duration" => 1860,
             "points" => 18.0,
             "lineName" => "ICE 107",
-            "alsoOnThisConnection" => new \Illuminate\Database\Eloquent\Collection(),
+            "alsoOnThisConnection" => new Collection(),
             "event" => null
         ];
         $response = $this->actingAs($user)

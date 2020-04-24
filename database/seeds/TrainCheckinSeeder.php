@@ -1,7 +1,6 @@
 <?php
 
 use App\HafasTrip;
-use App\Status;
 use Illuminate\Database\Seeder;
 use App\Http\Controllers\TransportController;
 use App\User;
@@ -41,7 +40,7 @@ class TrainCheckinSeeder extends Seeder
             0,
             0,
             0,
-            rand(0,1)
+            rand(0, 1)
         );
     }
 }

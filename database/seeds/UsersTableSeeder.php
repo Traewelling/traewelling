@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,7 +16,7 @@ class UsersTableSeeder extends Seeder
         factory(App\User::class, 50)->create()->each(function ($u) {
             $u->save();
         });
-        $user = new \App\User([
+        $user = new User([
                           'username'          => 'Gertrud123',
                           'name'              => 'Gertrud',
                           'email'             => 'gertrud@traewelling.de',

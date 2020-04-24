@@ -15,8 +15,8 @@ class StatusTableSeeder extends Seeder
         factory(App\Status::class, 50)->create()->each(function ($u) {
             $u->save();
             DB::table('statuses')->insert([
-                'body' => rand(1,50),
-                'user_id' => rand(1,50),
+                'body' => rand(1, 50),
+                'user_id' => rand(1, 50),
             ]);
         });
     }

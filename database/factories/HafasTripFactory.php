@@ -1,10 +1,11 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/** @var Factory $factory */
 
 use App\HafasTrip;
 use App\TrainStations;
 use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\TransportController;
 
