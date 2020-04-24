@@ -8,7 +8,7 @@ public/uploads/avatars
 
 # Laravel 4 specific
 bootstrap/compiled.php
-bootstrap/cache
+bootstrap/cache/*
 app/storage/
 
 # Laravel 5 & Lumen specific
