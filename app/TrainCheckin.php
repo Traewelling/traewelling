@@ -8,31 +8,36 @@ class TrainCheckin extends Model
 {
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function status () {
+    public function status()
+    {
         return $this->belongsTo('App\Status');
     }
 
-    public function Origin () {
-        return $this->hasOne('App\TrainStations','ibnr', 'origin');
+    public function Origin()
+    {
+        return $this->hasOne('App\TrainStations', 'ibnr', 'origin');
     }
 
-    public function Destination () {
-        return $this->hasOne('App\TrainStations', 'ibnr' ,'destination');
-}
+    public function Destination()
+    {
+        return $this->hasOne('App\TrainStations', 'ibnr', 'destination');
+    }
 
-    public function HafasTrip () {
+    public function HafasTrip()
+    {
         return $this->hasone('App\HafasTrip', 'trip_id', 'trip_id');
     }
 
-    public function getMapLines() {
-
+    public function getMapLines()
+    {
         $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
         if ($hafas === null) {
-            $origin = $this->Origin()->first();
+            $origin      = $this->Origin()->first();
             $destination = $this->Destination()->first();
-            $route = [];
-            $route[0] = [$origin->longitude, $origin->latitude];
-            $route[1] = [$destination->longitude, $destination->latitude];
+            $route       = [];
+            $route[0]    = [$origin->longitude, $origin->latitude];
+            $route[1]    = [$destination->longitude, $destination->latitude];
+
             return json_encode($route);
         }
 
@@ -44,19 +49,17 @@ class TrainCheckin extends Model
             return json_encode([]);
         }
 
-        $features = $polyline->features;
-        $coords = [];
-
-        $origin = $this->origin;
-        $destination = $this->destination;
-
+        $features     = $polyline->features;
+        $coords       = [];
+        $origin       = $this->origin;
+        $destination  = $this->destination;
         $behindOrigin = false;
+
         foreach ($features as $f) {
             // Check if this point is the trips origin => Include this point!
             if ($behindOrigin || (isset($f->properties->id) && $f->properties->id == $origin)) {
                 $behindOrigin = true;
-
-                $coords[] = $f->geometry->coordinates;
+                $coords[]     = $f->geometry->coordinates;
             }
 
             // If this was the destination, don't loop any further.

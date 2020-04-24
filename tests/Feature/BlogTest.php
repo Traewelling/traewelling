@@ -5,14 +5,16 @@ namespace Tests\Feature;
 use App\Blogpost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use function substr_count;
 
 /**
  * All of these tests only work with the given blog post entries that the
  * migrations have put into the DB.
- * 
+ *
  * GIVEN: The existing posts in the database.
  */
-class BlogTest extends TestCase {
+class BlogTest extends TestCase
+{
     use RefreshDatabase;
 
     /** Get the number of posts from the response. */
@@ -26,7 +28,7 @@ class BlogTest extends TestCase {
     public function testBlogLandingPage() {
         $response = $this->get(route('blog.all'));
         $response->assertSuccessful();
-        
+
         // Paginating at 5, this should not exceed the 5
         $this->assertEquals($this->getBlogpostsCount($response), 5);
     }
@@ -45,9 +47,11 @@ class BlogTest extends TestCase {
         // This is likely to fail when we start to use the TAG icon with Category names in our blog posts.
         // In this case, please get add a space or a zero-width space (&#x200b;) between those words.
         // We assert that there will be a case of a TAG icon with the category name
-        $this->assertNotEquals(\substr_count($this->trimHtml($response), "<i class=\"fa fa-tag\"></i>Fehlerbehebung</a></li>"), 0);
+        $this->assertNotEquals(substr_count($this->trimHtml($response),
+                        "<i class=\"fa fa-tag\"></i>Fehlerbehebung</a></li>"), 0);
         // We assert that there won't be a TAG icon next to another category name.
-        $this->assertEquals(\substr_count($this->trimHtml($response), "<i class=\"fa fa-tag\"></i>Bekanntmachungen</a></li>"), 0);
+        $this->assertEquals(substr_count($this->trimHtml($response),
+                     "<i class=\"fa fa-tag\"></i>Bekanntmachungen</a></li>"), 0);
     }
 
     function trimHtml($response) {
