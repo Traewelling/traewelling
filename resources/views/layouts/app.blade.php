@@ -105,7 +105,7 @@
                             @endif
                         @else
                             <li class="nav-item d-none d-md-inline-block">
-                                <a href="#" class="nav-link" data-toggle="modal" data-target="#notifications-board">
+                                <a href="#" id="notifications-toggle" class="nav-link" data-toggle="modal" data-target="#notifications-board">
                                     <span class="notifications-bell far fa-bell"></span>
                                 </a>
                             </li>
