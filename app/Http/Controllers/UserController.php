@@ -218,6 +218,7 @@ class UserController extends Controller
         $twitterUrl  = "";
         $mastodonUrl = "";
 
+
         if ($user->socialProfile != null) {
             try {
                 $mastodonServer = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first();

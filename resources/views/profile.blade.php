@@ -11,12 +11,16 @@
                     <h2 class="card-title h1-responsive font-bold">
                         <strong>{{ __('profile.statistics-for') }} {{ $user->name }}</strong> <small class="font-weight-light">{{ '@'.$user->username }}</small>
                         @if($currentUser)
-                            @if($user != $currentUser && Auth::check())
+                            @if($user->id !== $currentUser->id && Auth::check())
                                 @if(Auth::user()->follows->where('follow_id', $user->id)->first() === null)
                                     <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                 @else
                                     <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}" data-following="yes">{{__('profile.unfollow')}}</a>
                                 @endif
+                                <script>
+                                    window.translFollow = "{{__('profile.follow')}}";
+                                    window.translUnfollow = "{{__('profile.unfollow')}}";
+                                </script>
                             @else
                                 <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
                             @endif
