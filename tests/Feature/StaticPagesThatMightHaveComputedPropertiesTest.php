@@ -9,40 +9,48 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * Load the publicly accessable files that any visitor can load without logging in.
  * For all of these tests:
- * 
+ *
  * GIVEN: Our codebase
  * WHEN: A non-logged-in user tries to reach those pages
  * THEN: Show them to the user.
  */
-class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase {
+class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase
+{
     use RefreshDatabase;
 
     public function testHomepageGet() {
-        $response = $this->get('/'); $response->assertOk();
+        $response = $this->get('/');
+        $response->assertOk();
     }
 
     public function testLoginGet() {
-        $response = $this->get('/login'); $response->assertOk();
+        $response = $this->get('/login');
+        $response->assertOk();
     }
 
     public function testRegisterGet() {
-        $response = $this->get('/register'); $response->assertOk();
+        $response = $this->get('/register');
+        $response->assertOk();
     }
 
     public function testLeaderboardGet() {
-        $response = $this->get('/leaderboard'); $response->assertOk();
+        $response = $this->get('/leaderboard');
+        $response->assertOk();
     }
 
     public function testImprintGet() {
-        $response = $this->get('/imprint'); $response->assertOk();
+        $response = $this->get('/imprint');
+        $response->assertOk();
     }
 
     public function testPrivacyGet() {
-        $response = $this->get('/privacy'); $response->assertOk();
+        $response = $this->get('/privacy');
+        $response->assertOk();
     }
 
     public function testAboutGet() {
-        $response = $this->get('/about'); $response->assertOk();
+        $response = $this->get('/about');
+        $response->assertOk();
     }
 
     public function testProfilePageGet() {
