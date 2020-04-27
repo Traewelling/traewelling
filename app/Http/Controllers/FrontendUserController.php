@@ -47,6 +47,7 @@ class FrontendUserController extends Controller
         $leaderboardResponse = UserBackend::getLeaderboard();
 
         return view('leaderboard', [
+            'usersCount' => count($leaderboardResponse['users']),
             'users' => $leaderboardResponse['users'],
             'friends' => $leaderboardResponse['friends'],
             'kilometers' => $leaderboardResponse['kilometers']
