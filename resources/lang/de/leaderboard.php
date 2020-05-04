@@ -1,6 +1,7 @@
 <?php
 return [
     "distance" => "Reiseentfernung",
+    "averagespeed" => "Schnelligkeit",
     "duration" => "Reisedauer",
     "friends" => "Freunde",
     "points" => "Punkte",

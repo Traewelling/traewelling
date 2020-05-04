@@ -49,6 +49,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function average_speed() {
+        return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
+    }
+
     public function socialProfile()
     {
         return $this->hasOne(SocialLoginProfile::class);
