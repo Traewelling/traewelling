@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class UserFollowed extends Notification {
+class UserFollowed extends Notification
+{
     use Queueable;
 
     public $follow;
@@ -21,17 +22,18 @@ class UserFollowed extends Notification {
      *
      * @return void
      */
-    public function __construct(Follow $follow = null) {
+    public function __construct(Follow $follow = null)
+    {
         $this->follow = $follow;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function via($notifiable)
+    public function via()
     {
         return ['database'];
     }
@@ -39,19 +41,20 @@ class UserFollowed extends Notification {
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
             'follow_id' => $this->follow->id,
         ];
     }
 
-    public static function render($notification) {
-        $data = $notification->data;
-        
+    public static function detail($notification)
+    {
+        $data                 = $notification->data;
+        $notification->detail = new \stdClass();
         try {
             $follow = Follow::findOrFail($data['follow_id']);
             $sender = User::findOrFail($follow->user_id);
@@ -60,12 +63,26 @@ class UserFollowed extends Notification {
             // we can delete the notification.
             throw new ShouldDeleteNotificationException();
         }
-        
+        $notification->detail->follow = $follow;
+        $notification->detail->sender = $sender;
+
+        return $notification->detail;
+    }
+
+    public static function render($notification)
+    {
+        try {
+            $detail = Self::detail($notification);
+        } catch (ShouldDeleteNotificationException $e) {
+            $notification->delete();
+            return null;
+        }
+
         return view("includes.notification", [
             'color' => "neutral",
             'icon' => "fas fa-user-friends",
-            'lead' => __('notifications.userFollowed.lead', ['followerUsername' => $sender->username]),
-            "link" => route('account.show', ['username' => $sender->username]),
+            'lead' => __('notifications.userFollowed.lead', ['followerUsername' => $detail->sender->username]),
+            "link" => route('account.show', ['username' => $detail->sender->username]),
             'notice' => "",
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read' => $notification->read_at != null,

@@ -5,18 +5,20 @@ namespace Tests\Feature;
 use App\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Route;
 use Tests\TestCase;
 
-class UserRoleMiddlewareTest extends TestCase {
+class UserRoleMiddlewareTest extends TestCase
+{
     use RefreshDatabase;
 
 
     protected function setUp(): void {
         parent::setUp();
 
-        \Route::middleware('userrole:0')->any('/_test/role_user', function () { return 'OK'; });
-        \Route::middleware('userrole:5')->any('/_test/role_mod', function () { return 'OK'; });
-        \Route::middleware('userrole:10')->any('/_test/role_admin', function () { return 'OK'; });
+        Route::middleware('userrole:0')->any('/_test/role_user', function () { return 'OK'; });
+        Route::middleware('userrole:5')->any('/_test/role_mod', function () { return 'OK'; });
+        Route::middleware('userrole:10')->any('/_test/role_admin', function () { return 'OK'; });
     }
 
     /**
@@ -48,7 +50,7 @@ class UserRoleMiddlewareTest extends TestCase {
      */
     public function normal_users_can_get_some_pages() {
         // Given: There's a user with role=0 (Normal user)
-        $user = factory(User::class)->create();
+        $user       = factory(User::class)->create();
         $user->role = 0;
 
         // When: Requesting any guest pages
@@ -76,7 +78,7 @@ class UserRoleMiddlewareTest extends TestCase {
      */
     public function moderators_can_get_some_pages() {
         // Given: There's a user with role=0 (Normal user)
-        $user = factory(User::class)->create();
+        $user       = factory(User::class)->create();
         $user->role = 5;
 
         // When: Requesting any guest pages
@@ -104,7 +106,7 @@ class UserRoleMiddlewareTest extends TestCase {
      */
     public function admins_can_get_all_pages() {
         // Given: There's a user with role=0 (Normal user)
-        $user = factory(User::class)->create();
+        $user       = factory(User::class)->create();
         $user->role = 10;
 
         // When: Requesting any guest pages

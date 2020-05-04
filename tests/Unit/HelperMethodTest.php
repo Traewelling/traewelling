@@ -2,18 +2,19 @@
 
 namespace Tests\Unit;
 
+use DOMDocument;
 use Tests\TestCase;
 use App;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class HelperMethodTest extends TestCase
 {
-    
+
     use RefreshDatabase;
 
     public function testNumberFunction() {
         App::setLocale('de');
-        
+
         // Thousands with a rounding decimal
         $this->assertEquals("1.000,23", number(1000.234));
 
@@ -35,14 +36,14 @@ class HelperMethodTest extends TestCase
     }
 
     public function testStationLink() {
-        
+
         $user = $this->createGDPRAckedUser();
-        $dom = new \DOMDocument;
+        $dom  = new DOMDocument;
 
         foreach([
             // First, start with something simple
             'Aachen Hbf' => 'Aachen Hbf',
-            
+
             // Umlaute, Sonderzeichen?
             'Köln Messe/Deutz' => 'Köln Messe/Deutz',
             // Da kann man zwar hinfahren, es ist aber keine echte Station und
@@ -51,10 +52,10 @@ class HelperMethodTest extends TestCase
 
             // Extrem lange Stationen?
             'Frankfurt am Main Flughafen Fernbahnhof' => 'Frankfurt am Main Flughafen Fernbahnhof',
-            
+
             // Ausland?
             'Wien Meidling' => 'Wien Meidling',
-            
+
             // Hamburg nummeriert seine Landungsbrücken irgendwie durch, aber nur für Fähren,
             // S-/U-/Busse sind normal oder nochmal komisch.
             'Landungsbrücken, Hamburg' => 'Landungsbrücken, Hamburg',
@@ -69,7 +70,7 @@ class HelperMethodTest extends TestCase
             $dom->loadHTML($link);
             $links = $dom->getElementsByTagName('a');
             $this->assertEquals(count($links), 1);
-            
+
             $response = $this->actingAs($user)
                             ->get($links[0]->getAttribute('href'));
             $response->assertSee('<input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="Haltestelle"  value="' . $alternatedTo . '" >');

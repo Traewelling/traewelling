@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: npm install
     - name: Run production build
-      run: npm run production  
+      run: npm run production
 
       env:
         CI: true
