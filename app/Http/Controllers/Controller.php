@@ -12,15 +12,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public static function searchForId($id, $array) {
-        foreach ($array as $key => $val) {
-            if ($val['stop']['id'] === $id) {
-                return $key;
-            }
-        }
-        return null;
-    }
-
     public static function polyline($idStart, $idStop, $hash) {
         $polyline = PolyLine::where('hash', $hash)->first();
         if ($polyline === null) {

@@ -63,6 +63,8 @@ class FrontendTransportController extends Controller
             'destination' => $TrainTripResponse['destination'],
             'events' => EventBackend::activeEvents(),
             'start' => $TrainTripResponse['start'],
+
+            'departure_time' => $TrainTripResponse['departureTime'],
             'stopovers' => $TrainTripResponse['stopovers'],
             'terminalStop' => $terminalStop,
             'train' => $TrainTripResponse['train'],
@@ -76,8 +78,11 @@ class FrontendTransportController extends Controller
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
             'tweet_check' => 'max:2',
             'toot_check' => 'max:2',
-            'event' => 'integer'
+            'event' => 'integer',
+            'departure_time' => 'size:25', // The Stopovers Timeformat is 2020-03-22T11:58:00+01:00
+            'arrival_time' => 'size:25', // The Stopovers Timeformat is 2020-03-22T11:58:00+01:00
         ]);
+
         $TrainCheckinResponse = TransportBackend::TrainCheckin(
             $request->tripID,
             $request->start,
@@ -87,7 +92,9 @@ class FrontendTransportController extends Controller
             $request->business_check,
             $request->tweet_check,
             $request->toot_check,
-            $request->event
+            $request->event,
+            $request->departure_time,
+            $request->arrival_time
             );
 
         if ($TrainCheckinResponse['success'] === false) {

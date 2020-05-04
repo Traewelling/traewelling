@@ -36,7 +36,7 @@
                                     <td><span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;</td>
                                     <td>{{ $stop['departurePlatform'] }}</td>
                             @else
-                                <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
+                                <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}" data-arrivaltime="{{ $stop['arrival'] }}">
                                 <td>{{ $stop['stop']['name'] }}</td>
                                 <td>@if($stop['arrival'] != null)
                                         {{ __('stationboard.arr') }}&nbsp;@if(isset($stop['arrivalDelay'])){{ date('H:i', strtotime($stop['arrival'])-$stop['arrivalDelay']) }}&nbsp;<small>(<span class="traindelay">+{{ $stop['arrivalDelay']/60 }}</span>)</small>@else{{ date('H:i', strtotime($stop['arrival'])) }}@endif
@@ -111,6 +111,8 @@
                         <input type="hidden" id="input-tripID" name="tripID" value="">
                         <input type="hidden" id="input-destination" name="destination" value="">
                         <input type="hidden" id="input-start" name="start" value="">
+                        <input type="hidden" id="input-departuretime" name="departure_time" value="{{ $departure_time }}" />
+                        <input type="hidden" id="input-arrivaltime" name="arrival_time" value="">
                         @csrf
                     </form>
                 </div>
