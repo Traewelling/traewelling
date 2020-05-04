@@ -45,7 +45,7 @@
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                    <td>{{ number($user->average_speed()) }}<small>km/h</small></td>
+                                    <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
@@ -69,7 +69,7 @@
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                    <td>{{ number($user->average_speed()) }}<small>km/h</small></td>
+                                    <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
