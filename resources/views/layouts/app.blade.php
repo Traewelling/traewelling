@@ -18,7 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
-    <link rel="shortcutt favicon" rel="{{ asset('images/icons/favicon.ico') }}">
+    <link rel="shortcut favicon" rel="{{ asset('images/icons/favicon.ico') }}">
     <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
     <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
 
@@ -41,7 +41,7 @@
     <meta name="DC.Description" content="{{__('about.block1')}}">
     <meta name="DC.Language" content="de">
 
-@yield('metadata')
+    @yield('metadata')
 </head>
 <body>
     <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog" aria-labelledby="notifications-modal" aria-hidden="true">
@@ -186,7 +186,7 @@
     <script>
         /**
          * Let's only keep the JS here that is needed, e.g. Routes or CSRF tokens and put the rest
-         * in the compontents folder. I moved the touch controls that were here and are needed for
+         * in the components folder. I moved the touch controls that were here and are needed for
          * checkin into components/stationboard.js.
          */
         var token = '{{ csrf_token() }}';

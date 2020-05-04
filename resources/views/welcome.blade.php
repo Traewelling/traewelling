@@ -18,9 +18,14 @@
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
 
+        <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
+        <link rel="shortcut favicon" rel="{{ asset('images/icons/favicon.ico') }}">
+        <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
+        <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
+
 
         <!-- Fonts -->
-    <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
+        <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
         <style>
