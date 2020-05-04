@@ -1,28 +1,9 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>{{ config('app.name', 'Laravel') }}</title>
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="theme-color" content="#c72730">
-        <meta name="name" content="{{ config('app.name') }}">
-        <link rel="author" href="/humans.txt">
-        <meta name="copyright" content="Träwelling Team">
-        <meta name="description" content="{{__('about.block1')}}">
-        <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
-        <meta name="audience" content="Travellers">
-        <meta name="robots" content="index, nofollow">
-        <meta name="DC.Rights" content="Träwelling Team">
-        <meta name="DC.Description" content="{{__('about.block1')}}">
-        <meta name="DC.Language" content="de">
 
-        <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
-        <link rel="shortcut favicon" rel="{{ asset('images/icons/favicon.ico') }}">
-        <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
-        <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
-
+        @include('layouts.app-head')
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
