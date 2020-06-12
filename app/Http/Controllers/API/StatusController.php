@@ -101,4 +101,16 @@ class StatusController extends ResponseController
         }
         return $this->sendResponse(__('controller.status.delete-ok'));
     }
+
+    public function createLike ($statusId) {
+        $like = StatusBackend::CreateLike(Auth::user(), $statusId);
+
+        return $this->sendResponse($like);
+    }
+
+    public function destroyLike ($statusId) {
+        $like = StatusBackend::DestroyLike(Auth::user(), $statusId);
+
+        return $this->sendResponse($like);
+    }
 }

@@ -578,6 +578,36 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         406:
           $ref: '#/components/responses/GDPRError'
+  /user/leaderboard:
+    get:
+      security:
+        -bearerAuth: []
+      tags: [User profile]
+      summary: Gets the current leaderboard for friends, kilometers and users.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usersCount:
+                    type: integer
+                    example: 20
+                  users:
+                    $ref: '#/components/schemas/leaderboardarray'
+                  friends:
+                    $ref: '#/components/schemas/leaderboardarray'
+                  kilometers:
+                    $ref: '#/components/schemas/leaderboardarray'
+
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /user/profilepicture:
     put:
       security:
@@ -1065,6 +1095,14 @@ components:
           type: integer
           nullable: true
           example: 1
+        likes_count:
+          type: string
+          example: "15"
+          description: Show how many accounts liked this status
+        liked:
+          type: boolean
+          example: true
+          description: Shows whether the user has liked this status.
         user:
           $ref: '#/components/schemas/User'
         train_checkin:
@@ -1085,13 +1123,13 @@ components:
         train_distance:
           type: number
           format: float
-          example: "454.59"
+          example: 454.59
         train_duration:
           type: integer
-          example: "317"
+          example: 317
         points:
           type: integer
-          example: "66"
+          example: 66
     db_rest_stopover:
       type: object
       properties:
@@ -1369,6 +1407,22 @@ components:
         provider:
           type: string
           example: "train"
+    leaderboardarray:
+      type: array
+      items:
+        type: object
+        properties:
+          username:
+            $ref: '#/components/schemas/username'
+          train_duration:
+            type: string
+            example: "90"
+          train_distance:
+            type: string
+            example: "26711.37"
+          points:
+            type: string
+            example: "1337"
     status_id:
       type: integer
       example: 10

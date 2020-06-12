@@ -24,7 +24,7 @@ class StatusController extends Controller
                                                     'trainCheckin.Origin',
                                                     'trainCheckin.Destination',
                                                     'trainCheckin.HafasTrip',
-                                                    'event')->firstOrFail();
+                                                    'event')->withCount('likes')->firstOrFail();
     }
 
     public static function getActiveStatuses($userId=null)
@@ -36,6 +36,7 @@ class StatusController extends Controller
                                      'trainCheckin.Destination',
                                      'trainCheckin.HafasTrip',
                                      'event')
+                ->withCount('likes')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))
                           ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -76,6 +77,7 @@ class StatusController extends Controller
                             'trainCheckin.Destination',
                             'trainCheckin.HafasTrip',
                             'event')
+            ->withCount('likes')
             ->where('event_id', '=', $eventId)
             ->orderBy('created_at', 'desc')
             ->latest()
@@ -92,6 +94,7 @@ class StatusController extends Controller
                    'trainCheckin.Origin',
                    'trainCheckin.Destination',
                    'trainCheckin.HafasTrip')
+            ->withCount('likes')
             ->latest()->simplePaginate(15);
 
         return $statuses;
@@ -105,6 +108,7 @@ class StatusController extends Controller
                    'trainCheckin.Origin',
                    'trainCheckin.Destination',
                    'trainCheckin.HafasTrip')
+            ->withCount('likes')
             ->latest()->simplePaginate(15);
     }
 
