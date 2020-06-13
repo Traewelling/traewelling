@@ -49,32 +49,27 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function average_speed() {
+    public function averageSpeed() {
         return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }
 
-    public function socialProfile()
-    {
+    public function socialProfile() {
         return $this->hasOne(SocialLoginProfile::class);
     }
 
-    public function statuses()
-    {
+    public function statuses() {
         return $this->hasMany('App\Status');
     }
 
-    public function home()
-    {
+    public function home() {
         return $this->hasOne('App\TrainStations', 'id', 'home_id');
     }
 
-    public function likes()
-    {
+    public function likes() {
         return $this->hasMany('App\Like');
     }
 
-    public function follows()
-    {
+    public function follows() {
         return $this->hasMany('App\Follow');
     }
 
