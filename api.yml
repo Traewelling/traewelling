@@ -8,7 +8,8 @@ info:
     url: "https://gitlab.com/HerrLevin_/trwl"
 servers:
   - url: "https://testing.traewelling.de/api/v0"
-  - url: "https://api.traewelling.de/api/v0"
+  - url: "https://traewelling.de/api/v0"
+  - url: "https://localhost:8000/api/v0"
 
 tags:
   - name: "Auth"
@@ -127,7 +128,7 @@ paths:
                   message:
                     type: string
                     example: Successfully logged out.
-  /statuses/enroute/:
+  /statuses/enroute/all/:
     get:
       security:
         - bearerAuth: []
@@ -314,6 +315,102 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         406:
           $ref: '#/components/responses/GDPRError'
+  /statuses/{id}/likes:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Statuses, Likes]
+      summary: Retrieves all likes for a specific status.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to show the likes for.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            example: 1
+          description: Needed to show next or previous page of pagination
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/likes_paginate'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
+  /statuses/{id}/like:
+    post:
+      security:
+        - bearerAuth: []
+      tags: [Statuses, Likes]
+      summary: Creates a like for a status.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to like
+      responses:
+        200:
+          description: OK.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true
+                description: Returns true, if like has been created, false if there's already a like
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
+    delete:
+      security:
+        - bearerAuth: []
+      tags: [Statuses, Likes]
+      summary: Deletes a like for a status.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            $ref: '#/components/schemas/status_id'
+          required: true
+          description: The ID of the status to unlike
+      responses:
+        200:
+          description: OK.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true
+                description: Returns true, if like has been deleted, false if there was no like to delete
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
+
+
+
   /trains/autocomplete/{query}:
     get:
       security:
@@ -581,7 +678,7 @@ paths:
   /user/leaderboard:
     get:
       security:
-        -bearerAuth: []
+        - bearerAuth: []
       tags: [User profile]
       summary: Gets the current leaderboard for friends, kilometers and users.
       responses:
@@ -1049,6 +1146,55 @@ components:
         next_page_url:
           type: string
           example: "https://api.traewelling.de/v0/statuses?page=2"
+        path:
+          type: string
+          example: "https://api.traewelling.de/v0/statuses"
+        per_page:
+          type: integer
+          example: 15
+        prev_page_url:
+          type: string
+          example: null
+        to:
+          type: integer
+          example: 15
+          description: Last element on page
+    likes_paginate:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              created_at:
+                $ref: '#/components/schemas/timestamp'
+              updated_at:
+                $ref: '#/components/schemas/timestamp'
+              user_id:
+                type: string
+                example: "1"
+              status_id:
+                type: string
+                example: "1"
+              user:
+                $ref: '#/components/schemas/User'
+        first_page_url:
+          type: string
+          example: "https://api.traewelling.de/v0/statuses/1/likes?page=1"
+        from:
+          type: integer
+          example: 1
+          description: Frist element on page
+        next_page_url:
+          type: string
+          example: "https://api.traewelling.de/v0/statuses/1/likes?page=2"
         path:
           type: string
           example: "https://api.traewelling.de/v0/statuses"

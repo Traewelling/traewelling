@@ -88,4 +88,46 @@ class ApiStatusTest extends ApiTestCase
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
+
+    /**
+     * Test the functionality of the create/destroy functionality of likes as well as the listing of likes for a status.
+     * @test
+     */
+    public function check_like_dislike_listlike_functionality() {
+        //First check if there are no likes for a status
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/json'])
+            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+        $response->assertOk();
+        $this->assertTrue(empty(json_decode($response->getContent())->data));
+
+        //Like the status
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/json'])
+            ->post(route('api.v0.statuses.like', ['id' => '1']));
+        $response->assertOk();
+        $this->assertTrue($response->getContent() == 'true');
+
+        //check if the like has been created
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/json'])
+            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+        $response->assertOk();
+        $this->assertFalse(empty(json_decode($response->getContent())->data));
+
+        //Delete the like
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/json'])
+            ->delete(route('api.v0.statuses.like', ['id' => '1']));
+        $response->assertOk();
+        $this->assertTrue($response->getContent() == 'true');
+
+        //check if the like has been deleted
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
+            'Accept'        => 'application/json'])
+            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+        $response->assertOk();
+        $this->assertTrue(empty(json_decode($response->getContent())->data));
+
+    }
 }

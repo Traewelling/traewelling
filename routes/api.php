@@ -36,13 +36,14 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
         });
 
         // Controller for complete /statuses-stuff
-        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
         Route::group(['prefix' => 'statuses'], function () {
-            Route::get('enroute', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
+            Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
             Route::get('event/{slug}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
-            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like.create');
-            Route::delete('{statusId}/like', 'API\StatusController@destroyLike')->name('api.v0.statuses.like.destroy');
+            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
+            Route::delete('{statusId}/like', 'API\StatusController@destroyLike')->name('api.v0.statuses.like');
+            Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
         });
+        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
 
         Route::resource('notifications', 'API\NotificationController');
 

@@ -103,14 +103,20 @@ class StatusController extends ResponseController
     }
 
     public function createLike ($statusId) {
-        $like = StatusBackend::CreateLike(Auth::user(), $statusId);
+        $createLikeResponse = StatusBackend::CreateLike(Auth::user(), $statusId);
 
-        return $this->sendResponse($like);
+        return $this->sendResponse($createLikeResponse);
     }
 
     public function destroyLike ($statusId) {
-        $like = StatusBackend::DestroyLike(Auth::user(), $statusId);
+        $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $statusId);
 
-        return $this->sendResponse($like);
+        return $this->sendResponse($destroyLikeResponse);
+    }
+
+    public function getLikes ($statusId) {
+        $getLikesResponse = StatusBackend::getLikes($statusId);
+
+        return $this->sendResponse($getLikesResponse);
     }
 }
