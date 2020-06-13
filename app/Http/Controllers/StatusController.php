@@ -58,6 +58,8 @@ class StatusController extends Controller
                 })
                 ->where('user_id', $userId)
                 ->first();
+            return $statuses;
+            //This line is important since we're using this method for two different purposes and I forgot that.
         }
         if ($statuses === null) {
             return null;
