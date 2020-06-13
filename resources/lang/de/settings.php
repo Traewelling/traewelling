@@ -31,5 +31,11 @@ return [
     "title-password" => "Passwort",
     "title-profile" => "Profil-Einstellungen",
     "title-sessions" => "Sitzungen",
-    "upload-image" => "Profilbild hochladen"
+    "upload-image" => "Profilbild hochladen",
+    "client-name" => "Dienst",
+    "created" => "Erstellt",
+    "updated" => "Geändert",
+    "expires" => "Läuft ab",
+    "deletetokenfor" => "Token invalidieren für:",
+    "title-tokens" => "API-Tokens"
 ];

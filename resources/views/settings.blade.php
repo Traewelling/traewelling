@@ -362,6 +362,37 @@
                     </div>
                 </div>
 
+                <!-- API Tokens -->
+                <div class="card mt-3">
+                    <div class="card-header">{{ __('settings.title-tokens') }}</div>
+
+                    <div class="card-body">
+                        <table class="table table-responsive">
+                            <thead>
+                            <tr>
+                                <th>{{ __('settings.client-name') }}</th>
+                                <th>{{ __('settings.created') }}</th>
+                                <th>{{ __('settings.updated') }}</th>
+                                <th>{{ __('settings.expires') }}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            @foreach($tokens as $token)
+                                <tr>
+                                    <td>{{ $token['clientName'] }}</td>
+                                    <td>{{ $token['created_at'] }}</td>
+                                    <td>{{ $token['updated_at'] }}</td>
+                                    <td>{{ $token['expires_at'] }}</td>
+                                    <td>
+                                        <a href="{{ route('deltoken', ['id' => $token['id']]) }}" alt="{{ __('settings.deletetokenfor') }}  {{ $token['clientName'] }}" class="btn btn-block btn-danger mx-0"
+                                           role="button"><i class="fas fa-trash"></i></a></td>
+                                </tr>
+                            @endforeach
+
+                        </table>
+                    </div>
+                </div>
+
                 <div class="card mt-3">
                     <div class="card-header">{{ __('settings.delete-account') }}</div>
                     <div class="card-body">

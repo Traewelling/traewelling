@@ -186,6 +186,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'delsession',
     ]);
 
+    Route::get('/settings/deltoken/{id}', [
+        'uses' => 'UserController@deleteToken',
+        'as'   => 'deltoken',
+    ]);
+
     Route::get('/dashboard', [
         'uses' => 'FrontendStatusController@getDashboard',
         'as'   => 'dashboard',

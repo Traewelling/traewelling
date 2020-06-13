@@ -31,5 +31,11 @@ return [
     "title-password" => "Password",
     "title-profile" => "Profile Settings",
     "title-sessions" => "Sessions",
-    "upload-image" => "Upload profile avatar"
+    "upload-image" => "Upload profile avatar",
+    "client-name" => "Service",
+    "created" => "Created",
+    "updated" => "Updated",
+    "expires" => "Expires",
+    "deletetokenfor" => "Invalidate token for:",
+    "title-tokens" => "API-Tokens"
 ];
