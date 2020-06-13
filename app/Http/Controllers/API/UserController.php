@@ -41,4 +41,15 @@ class UserController extends ResponseController
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
         return $this->sendResponse($displaynameResponse);
     }
+
+    public function getLeaderboard(Request $request) {
+        $leaderboardResponse = UserBackend::getLeaderboard();
+
+        return $this->sendResponse([
+            'usersCount' => count($leaderboardResponse['users']),
+            'users' => $leaderboardResponse['users'],
+            'friends' => $leaderboardResponse['friends'],
+            'kilometers' => $leaderboardResponse['kilometers']
+        ]);
+    }
 }

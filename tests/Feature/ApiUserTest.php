@@ -197,4 +197,23 @@ class ApiUserTest extends ApiTestCase
             ],
             'event']);
     }
+
+    /**
+     * Test the leaderboard endpoint
+     * @test
+     */
+    public function get_leaderboard() {
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get(route('api.v0.user.leaderboard'));
+
+        $response->assertOk();
+        $this->assertFalse(empty(json_decode($response->getContent(), true)));
+        $response->assertJsonStructure([
+            "usersCount",
+            "users",
+            "friends",
+            "kilometers"
+        ]);
+
+    }
 }

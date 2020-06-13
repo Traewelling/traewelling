@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
 use Intervention\Image\ImageManagerStatic as Image;
+use Laravel\Passport\Token;
 use Mastodon;
 
 class UserController extends Controller
@@ -136,6 +137,7 @@ class UserController extends Controller
     public function getAccount() {
         $user     = Auth::user();
         $sessions = array();
+        $tokens   = array();
         foreach($user->sessions as $session) {
             $sessionArray = array();
             $result       = new Agent();
@@ -155,7 +157,20 @@ class UserController extends Controller
             array_push($sessions, $sessionArray);
         }
 
-        return view('settings', compact('user', 'sessions'));
+        foreach($user->tokens as $token) {
+            if ($token->revoked != 1) {
+                $tokenInfo               = array();
+                $tokenInfo['id']         = $token->id;
+                $tokenInfo['clientName'] = $token->client->name;
+                $tokenInfo['created_at'] = (String) $token->created_at;
+                $tokenInfo['updated_at'] = (String) $token->updated_at;
+                $tokenInfo['expires_at'] = (String) $token->expires_at;
+
+                array_push($tokens, $tokenInfo);
+            }
+        }
+
+        return view('settings', compact('user', 'sessions', 'tokens'));
     }
 
     //delete sessions from user
@@ -165,6 +180,16 @@ class UserController extends Controller
             $session->delete();
         }
         return redirect()->route('static.welcome');
+    }
+
+    //delete a specific session for user
+    public function deleteToken($id) {
+        $user = Auth::user();
+        $token = Token::find($id);
+        if ($token->user == $user) {
+            $token->revoke();
+        }
+        return redirect()->route('settings');
     }
 
     public function destroyUser() {

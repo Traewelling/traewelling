@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'v0'], function (){
+Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
         Route::group(['prefix' => 'auth'], function () {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
@@ -28,14 +28,22 @@ Route::group(['prefix' => 'v0'], function (){
         Route::get('getuser', 'API\AuthController@getUser')->name('api.v0.getUser');
 
         Route::group(['prefix' => 'user'], function() {
+            Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
             Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
+            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
+            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
         });
 
         // Controller for complete /statuses-stuff
-        Route::get('statuses/enroute', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
+        Route::group(['prefix' => 'statuses'], function () {
+            Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
+            Route::get('event/{slug}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
+            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
+            Route::delete('{statusId}/like', 'API\StatusController@destroyLike')->name('api.v0.statuses.like');
+            Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
+        });
         Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
-        Route::get('statuses/event/{slug}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
 
         Route::resource('notifications', 'API\NotificationController');
 
@@ -48,10 +56,6 @@ Route::group(['prefix' => 'v0'], function (){
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');
             Route::get('home', 'API\TransportController@getHome')->name('api.v0.checkin.train.home');
             Route::put('home', 'API\TransportController@setHome')->name('api.v0.checkin.train.home');
-        });
-        Route::group(['prefix' => 'user'], function() {
-            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
-            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
         });
     });
 });

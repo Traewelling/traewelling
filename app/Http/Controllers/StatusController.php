@@ -24,7 +24,7 @@ class StatusController extends Controller
                                                     'trainCheckin.Origin',
                                                     'trainCheckin.Destination',
                                                     'trainCheckin.HafasTrip',
-                                                    'event')->firstOrFail();
+                                                    'event')->withCount('likes')->firstOrFail();
     }
 
     public static function getActiveStatuses($userId=null)
@@ -36,6 +36,7 @@ class StatusController extends Controller
                                      'trainCheckin.Destination',
                                      'trainCheckin.HafasTrip',
                                      'event')
+                ->withCount('likes')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))
                           ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -43,7 +44,7 @@ class StatusController extends Controller
                 ->get()
                 ->sortByDesc(function ($status) {
                     return $status->trainCheckin->departure;
-                });
+                })->values();
         } else {
             $statuses = Status::with('user',
                                      'trainCheckin',
@@ -58,6 +59,7 @@ class StatusController extends Controller
                 ->where('user_id', $userId)
                 ->first();
             return $statuses;
+            //This line is important since we're using this method for two different purposes and I forgot that.
         }
         if ($statuses === null) {
             return null;
@@ -65,7 +67,7 @@ class StatusController extends Controller
         $polylines = $statuses->map(function($status) {
             return $status->trainCheckin->getMapLines();
         });
-        return ['statuses' => $statuses, 'polylines' => $polylines];
+        return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
     }
 
     public static function getStatusesByEvent(int $eventId)
@@ -76,6 +78,7 @@ class StatusController extends Controller
                             'trainCheckin.Destination',
                             'trainCheckin.HafasTrip',
                             'event')
+            ->withCount('likes')
             ->where('event_id', '=', $eventId)
             ->orderBy('created_at', 'desc')
             ->latest()
@@ -92,6 +95,7 @@ class StatusController extends Controller
                    'trainCheckin.Origin',
                    'trainCheckin.Destination',
                    'trainCheckin.HafasTrip')
+            ->withCount('likes')
             ->latest()->simplePaginate(15);
 
         return $statuses;
@@ -105,6 +109,7 @@ class StatusController extends Controller
                    'trainCheckin.Origin',
                    'trainCheckin.Destination',
                    'trainCheckin.HafasTrip')
+            ->withCount('likes')
             ->latest()->simplePaginate(15);
     }
 
@@ -150,7 +155,7 @@ class StatusController extends Controller
 
     public static function CreateLike($user, $statusId)
     {
-        $status = Status::find($statusId);
+        $status = Status::findOrFail($statusId);
         if (!$status) {
             return null;
         }
@@ -175,6 +180,11 @@ class StatusController extends Controller
             return true;
         }
         return false;
+    }
+
+    public static function getLikes($statusId) {
+        $likes = Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
+        return $likes;
     }
 
     public static function ExportStatuses($startDate, $endDate, $fileType, $privateTrips=true, $businessTrips=true)
