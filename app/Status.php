@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Status extends Model
 {
     protected $hidden = ['user_id', 'business'];
+
+    protected $appends = ['favorited'];
 
     public function user() {
         return $this->belongsTo('App\User');
@@ -22,10 +25,11 @@ class Status extends Model
     }
 
     public function event() {
-        if($this->event_id === null) {
-            return null;
-        }
-        return Event::find($this->event_id);
+        return $this->hasOne('App\Event', 'id', 'event_id');
+    }
+
+    public function getFavoritedAttribute() {
+        return !!$this->likes->where('user_id', Auth::id())->first();
     }
 
 }

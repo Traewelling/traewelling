@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Controllers\EventController as EventBackend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +37,7 @@ class FrontendTransportController extends Controller
             'departures' => $TrainStationboardResponse['departures'],
             'when' => $TrainStationboardResponse['when'],
             'request' => $request,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
         ]
         );
     }
@@ -50,11 +52,21 @@ class FrontendTransportController extends Controller
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
 
+        // Find out where this train terminates and offer this as a "fast check-in" option.
+        $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
+        while($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
+            $terminalStopIndex--;
+        }
+        $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
+
         return view('trip', [
-            'train' => $TrainTripResponse['train'],
-            'stopovers' => $TrainTripResponse['stopovers'],
             'destination' => $TrainTripResponse['destination'],
-            'start' => $TrainTripResponse['start']
+            'events' => EventBackend::activeEvents(),
+            'start' => $TrainTripResponse['start'],
+            'stopovers' => $TrainTripResponse['stopovers'],
+            'terminalStop' => $terminalStop,
+            'train' => $TrainTripResponse['train'],
+            'user' => Auth::user(),
         ]);
     }
 

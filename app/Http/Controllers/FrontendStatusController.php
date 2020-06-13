@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Session;
 class FrontendStatusController extends Controller
 {
     public function getDashboard() {
-        $user = Auth::user();
-        $follows = $user->follows()->get();
+        $user     = Auth::user();
+        $follows  = $user->follows()->get();
         $statuses = StatusBackend::getDashboard($user);
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
@@ -35,17 +35,25 @@ class FrontendStatusController extends Controller
             }
             return redirect()->route('globaldashboard');
         }
-        return view('dashboard', ['statuses' => $statuses]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => $user,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals($user)
+        ]);
     }
 
     public function getGlobalDashboard() {
         $statuses = StatusBackend::getGlobalDashboard();
-        return view('dashboard', ['statuses' => $statuses]);
+        return view('dashboard', [
+            'statuses' => $statuses,
+            'currentUser' => Auth::user(),
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+        ]);
     }
 
     public function DeleteStatus(Request $request) {
-        $DeleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
-        if ($DeleteStatusResponse === false) {
+        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
+        if ($deleteStatusResponse === false) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
         return response()->json(['message' => __('controller.status.delete-ok')], 200);
@@ -56,32 +64,32 @@ class FrontendStatusController extends Controller
             'body' => 'max:280',
             'businessCheck' => 'max:1',
         ]);
-        $EditStatusResponse = StatusBackend::EditStatus(
+        $editStatusResponse = StatusBackend::EditStatus(
             Auth::user(),
             $request['statusId'],
             $request['body'],
             $request['businessCheck']
         );
-        if ($EditStatusResponse === false) {
+        if ($editStatusResponse === false) {
             return redirect()->back();
         }
-        return response()->json(['new_body' => $EditStatusResponse], 200);
+        return response()->json(['new_body' => $editStatusResponse], 200);
     }
 
     public function CreateLike(Request $request) {
-        $CreateLikeResponse = StatusBackend::CreateLike(Auth::user(), $request['statusId']);
-        if ($CreateLikeResponse === null) {
+        $createLikeResponse = StatusBackend::CreateLike(Auth::user(), $request['statusId']);
+        if ($createLikeResponse === null) {
             return response(__('controller.status.status-not-found'), 404);
         }
-        if ($CreateLikeResponse === false) {
+        if ($createLikeResponse === false) {
             return response(__('controller.status.like-already'), 409);
         }
         return response(__('controller.status.like-ok'), 201);
     }
 
     public function DestroyLike(Request $request) {
-        $DestroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $request['statusId']);
-        if ($DestroyLikeResponse === true) {
+        $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $request['statusId']);
+        if ($destroyLikeResponse === true) {
             return response(__('controller.status.like-deleted'), 200);
         }
         return response(__('controller.status.like-not-found'), 404);
@@ -103,17 +111,19 @@ class FrontendStatusController extends Controller
             'filetype' => 'required|in:json,csv,pdf'
         ]);
 
-        $export = StatusBackend::ExportStatuses($request->input('begin'), $request->input('end'), $request->input('filetype'));
+        $export = StatusBackend::ExportStatuses($request->input('begin'),
+                                                $request->input('end'),
+                                                $request->input('filetype'));
         return $export;
     }
 
     public function getActiveStatuses() {
-        $ActiveStatusesResponse = StatusBackend::getActiveStatuses();
-        $ActiveEvents = EventBackend::activeEvents();
+        $activeStatusesResponse = StatusBackend::getActiveStatuses();
+        $activeEvents           = EventBackend::activeEvents();
         return view('activejourneys', [
-            'statuses' => $ActiveStatusesResponse['statuses'],
-            'polylines' => $ActiveStatusesResponse['polylines'],
-            'events' => $ActiveEvents,
+            'statuses' => $activeStatusesResponse['statuses'],
+            'polylines' => $activeStatusesResponse['polylines'],
+            'events' => $activeEvents,
             'event' => null
         ]);
     }
@@ -132,17 +142,34 @@ class FrontendStatusController extends Controller
             'statuses' => $statusesResponse,
             'events' => $events,
             'event' => $e,
+            'currentUser' => Auth::user(),
         ]);
     }
 
-    public function getStatus($id) {
-        $StatusResponse = StatusBackend::getStatus($id);
-        return view('status', ['status' => $StatusResponse]);
+    public function getStatus($statusId) {
+        $statusResponse = StatusBackend::getStatus($statusId);
+
+        $t = time();
+
+        return view('status', [
+            'status' => $statusResponse,
+            'currentUser' => Auth::user(),
+            'time' => $t,
+            'title' => __('status.ogp-title', ['name' => $statusResponse->user->username]),
+            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
+                'linename' => $statusResponse->trainCheckin->HafasTrip->linename,
+                'distance' => $statusResponse->trainCheckin->distance,
+                'destination' => $statusResponse->trainCheckin->Destination->name,
+                'origin' => $statusResponse->trainCheckin->Origin->name
+            ]),
+            'image' => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
+            'dtObj' => new \DateTime($statusResponse->trainCheckin->departure),
+        ]);
     }
 
     public function usageboard(Request $request) {
         $begin = Carbon::now()->copy()->addDays(-14);
-        $end = Carbon::now();
+        $end   = Carbon::now();
 
         if($request->input('begin') != "") {
             $begin = Carbon::createFromFormat("Y-m-d", $request->input('begin'));
@@ -152,30 +179,36 @@ class FrontendStatusController extends Controller
         }
 
         if($begin->isAfter($end)) {
-            return redirect()->back()->with('error', $begin->format('Y-m-d') . ' ist vor ' . $end->format('Y-m-d') . '. Das darf nicht.');
+            return redirect()
+                ->back()
+                ->with('error',
+                       $begin->format('Y-m-d') .
+                       ' ist vor ' .
+                       $end->format('Y-m-d') .
+                       '. Das darf nicht.');
         }
         if($end->isFuture()) {
             $end = Carbon::now();
         }
 
-        $dates = [];
-        $statusesByDay = [];
+        $dates                  = [];
+        $statusesByDay          = [];
         $userRegistrationsByDay = [];
-        $hafasTripsByDay = [];
+        $hafasTripsByDay        = [];
 
         // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
         $dateIterator = $end->copy()->addDays(1);
-        $i = 0; $datediff = $end->diffInDays($begin);
-        while($i < $datediff) {
-            $i++;
+        $cnt          = 0;
+        $datediff     = $end->diffInDays($begin);
+        while($cnt < $datediff) {
+            $cnt++;
             $dateIterator->addDays(-1);
-            $dates[] = $dateIterator->format("Y-m-d");
-
-            $statusesByDay[] = StatusController::usageByDay($dateIterator);
+            $dates[]                  = $dateIterator->format("Y-m-d");
+            $statusesByDay[]          = StatusController::usageByDay($dateIterator);
             $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
 
-            // Wenn keine Stati passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
-            if($statusesByDay[count($statusesByDay) - 1]->occurs == 0) { // Heute keine Stati
+            // Wenn keine Status passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
+            if($statusesByDay[count($statusesByDay) - 1] == 0) { // Heute keine Stati
                 $hafasTripsByDay[] = (object) [];
             } else {
                 $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
@@ -194,5 +227,21 @@ class FrontendStatusController extends Controller
             'userRegistrationsByDay' => $userRegistrationsByDay,
             'hafasTripsByDay' => $hafasTripsByDay
         ]);
+    }
+
+    public static function nextStation(&$status) {
+        $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
+        $nextStopIndex = count($stops) - 1;
+
+        // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+        for ($i = count($stops) - 1; $i > 0; $i--) {
+            $arrival = $stops[$i]->arrival;
+            if ($arrival != NULL && strtotime($arrival) > time()) {
+                $nextStopIndex = $i;
+                continue;
+            }
+            break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+        }
+        return $stops[$nextStopIndex]->stop->name;
     }
 }

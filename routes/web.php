@@ -12,7 +12,6 @@
 */
 
 
-
 Route::get('/lang/{lang?}', [
     'uses' => 'FrontendStaticController@changeLanguage',
     'as' => 'static.lang'
@@ -21,7 +20,7 @@ Route::get('/lang/{lang?}', [
 Route::get('/', [
     'uses' => 'FrontendStaticController@showFrontpage',
     'as' => 'static.welcome',
-    'middleware' =>'guest'
+    'middleware' => 'guest'
 ]);
 
 Route::get('/imprint', [
@@ -67,7 +66,10 @@ Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
-Route::get('/status/{id}', 'FrontendStatusController@getStatus');
+Route::get('/status/{id}', [
+    'uses' => 'FrontendStatusController@getStatus',
+    'as' => 'statuses.get'
+]);
 
 Route::get('/blog', [
     'uses'  => 'BlogController@all',
@@ -85,7 +87,7 @@ Route::get('/blog/cat/{cat}', [
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
     Route::get('/gdpr-intercept', [
         'uses' => 'PrivacyAgreementController@intercept',
         'as'   => 'gdpr.intercept'
@@ -105,7 +107,7 @@ Route::middleware(['auth'])->group(function() {
 /**
  * Routes for the admins.
  */
-Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
+Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function () {
 
     Route::get('/', [
         'uses'  => 'FrontendStatusController@usageboard',
@@ -168,14 +170,25 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'uses' => 'UserController@updateSettings',
         'as'   => 'settings',
     ]);
+
     Route::post('/settings/uploadProfileImage', [
-        'uses' => 'UserController@uploadImage',
+        'uses' => 'FrontendUserController@updateProfilePicture',
         'as'   => 'settings.upload-image'
+    ]);
+
+    Route::get('/settings/deleteProfilePicture', [
+        'uses' => 'UserController@deleteProfilePicture',
+        'as' => 'settings.delete-profile-picture'
     ]);
 
     Route::get('/settings/delsession', [
         'uses' => 'UserController@deleteSession',
         'as'   => 'delsession',
+    ]);
+
+    Route::get('/settings/deltoken/{id}', [
+        'uses' => 'UserController@deleteToken',
+        'as'   => 'deltoken',
     ]);
 
     Route::get('/dashboard', [
@@ -271,5 +284,18 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/mastodon/test', [
         'uses'  => 'SocialController@testMastodon',
     ]);
+
+    Route::get('/notifications/latest', [
+        'uses'  => 'NotificationController@renderLatest',
+        'as'    => 'notifications.latest'
+    ]);
+
+    Route::post('/notifications/toggleReadState/{id}', [
+        'uses'  => 'NotificationController@toggleReadState',
+        'as'    => 'notifications.toggleReadState'
+    ]);
+    Route::post('/notifications/readAll', [
+        'uses'  => 'NotificationController@readAll',
+        'as'    => 'notifications.readAll'
+    ]);
 });
-//Route::get('/trip', 'HafasTripController@getTrip')->defaults('tripID', '1|178890|0|80|13082019')->defaults('lineName', 'ICE 376');

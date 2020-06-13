@@ -48,7 +48,7 @@ function secondsToDuration($seconds): array {
     return [
         "hours" => intdiv($seconds, $secondsInAnHour),
         "minutes" => intdiv($seconds % $secondsInAnHour, 60),
-        "showHours" => $seconds > $secondsInAnHour
+        "showHours" => $seconds >= $secondsInAnHour
     ];
 }
 
@@ -84,4 +84,11 @@ function stationLink($name, $classes = "text-trwl clearfix"): String {
     $return = '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) . '" class="' . $classes . '">' . $name . '</a>';
 
     return $return;
+}
+
+function formatNewDay($DateObject) {
+
+
+
+    return __("dates." . $DateObject->format('l')) .', '. $DateObject->format('j').'. '.__("dates." . $DateObject->format('F')) .' '. $DateObject->format('Y');
 }

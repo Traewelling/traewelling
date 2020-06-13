@@ -45,17 +45,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8" id="activeJourneys">
                 <!-- The status cards -->
-                @php($day = "---")
                 @foreach($statuses as $status)
-                    @php($newDay = date('Y-m-d', strtotime($status->trainCheckin->departure)))
-                    @if($newDay != $day)
-                        <?php
-                        $day = $newDay;
-                        $dtObj = new \DateTime($status->trainCheckin->departure);
-                        ?>
-                        <h5 class="mt-4">{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
-                    @endif
-
                     @include('includes.status')
                 @endforeach
             </div>

@@ -7,6 +7,11 @@ return [
     "connect" => "Connect",
     "connected" => "Connected",
     "current-password" => "Current Password",
+    "delete-profile-picture" => "Delete profile picture",
+    "delete-profile-picture-btn" => "Delete profile picture",
+    "delete-profile-picture-desc" => "You are about to delete your profile picture. This action <strong>cannot be undone</strong>. Are you sure you want to continue?",
+    "delete-profile-picture-yes" => "Yes, delete it.",
+    "delete-profile-picture-no" => "Back",
     "delete-account" => "Delete account",
     "delete-account-btn-back" => "Back",
     "delete-account-btn-confirm" => "Really delete",
@@ -26,5 +31,11 @@ return [
     "title-password" => "Password",
     "title-profile" => "Profile Settings",
     "title-sessions" => "Sessions",
-    "upload-image" => "Upload profile avatar"
+    "upload-image" => "Upload profile avatar",
+    "client-name" => "Service",
+    "created" => "Created",
+    "updated" => "Updated",
+    "expires" => "Expires",
+    "deletetokenfor" => "Invalidate token for:",
+    "title-tokens" => "API-Tokens"
 ];

@@ -64,8 +64,12 @@
                                     <i class="fa fa-train"></i>
                                 @endif</td>
                             <td>
-                                @php($lineNr = $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr)
-                                {!! str_replace(" ", "&nbsp;", $lineNr) !!}
+                                @if($departure->line->name)
+                                    {!! str_replace(" ", "&nbsp;", $departure->line->name) !!}
+                                @else
+                                    {!! str_replace(" ", "&nbsp;", $departure->line->fahrtNr) !!}
+                                @endif
+
                             </td>
                             <td>{{ $departure->direction }}</td>
                             <td>

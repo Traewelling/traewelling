@@ -53,6 +53,7 @@ $(".upload-image").on("click", function(ev) {
                     // Bestehendes Bild noch ändern
                     $("#theProfilePicture").attr("src", img);
                     $("#uploadAvatarModal").modal("hide");
+                    $("#deleteProfilePictureButton").removeClass("d-none");
                 },
                 error: function() {
                     $("#upload-error").removeClass("d-none");

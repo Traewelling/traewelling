@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +26,18 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at', 'created_at', 'updated_at', 'home_id', 'avatar', 'always_dbl'
+        'password',
+        'remember_token',
+        'email',
+        'email_verified_at',
+        'privacy_ack_at',
+        'created_at',
+        'updated_at',
+        'home_id',
+        'avatar',
+        'always_dbl',
+        'role',
+        'social_profile'
     ];
 
     /**
@@ -37,12 +49,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function socialProfile()
-    {
+    public function averageSpeed() {
+        return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
+    }
+
+    public function socialProfile() {
         return $this->hasOne(SocialLoginProfile::class);
     }
 
-    public function statuses(){
+    public function statuses() {
         return $this->hasMany('App\Status');
     }
 
@@ -58,8 +73,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Follow');
     }
 
+    public function followers() {
+        return $this->hasMany('App\Follow', 'follow_id', 'id');
+    }
+
     public function sessions() {
         return $this->hasMany('App\Session');
     }
+
+
 
 }

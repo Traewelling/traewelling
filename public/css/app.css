@@ -36294,3 +36294,96 @@ p.train-status:before {
   line-height: 1.5;
 }
 
+#notifications-board .modal-header {
+  justify-content: initial;
+}
+
+#notifications-board .modal-header .close {
+  font-size: 2rem;
+  float: none;
+}
+
+#notifications-board .modal-header .close#mark-all-read {
+  flex-grow: 1;
+  text-align: left;
+}
+
+#notifications-board .modal-header .close#mark-all-read i.fas {
+  font-size: 0.6em;
+}
+
+#notifications-board .modal-body#notifications-list {
+  padding: 0;
+}
+
+#notifications-board .modal-body#notifications-list .row {
+  background-color: white;
+  padding: 1rem 0;
+  border-bottom: 0.5rem solid #f8fafc;
+  margin: 0;
+}
+
+#notifications-board .modal-body#notifications-list .row a {
+  color: #212529;
+}
+
+#notifications-board .modal-body#notifications-list .row.unread.warning {
+  background-color: #f2c9c5;
+}
+
+#notifications-board .modal-body#notifications-list .row.unread.neutral {
+  background-color: #e2effa;
+}
+
+#notifications-board .modal-body#notifications-list .row p.lead {
+  margin-bottom: 0.5rem;
+}
+
+#notifications-board .modal-body#notifications-list .row p.lead i {
+  padding-right: 0.5rem;
+}
+
+#notifications-board .modal-body#notifications-list .row .col-1 i,
+#notifications-board .modal-body#notifications-list .row .interact {
+  font-weight: 700;
+  line-height: 1;
+  color: #343a40;
+  text-shadow: 0 1px 0 #fff;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  font-size: 1.25rem;
+}
+
+#notifications-board .modal-body#notifications-list .row strong,
+#notifications-board .modal-body#notifications-list .row b {
+  font-weight: bold;
+}
+
+#notifications-board #notifications-empty {
+  padding: 2rem 0;
+}
+
+.navbar div.navbar-toggler {
+  display: table-cell;
+  padding-right: 0;
+}
+
+.navbar div.navbar-toggler button.navbar-toggler {
+  vertical-align: middle;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.navbar div.navbar-toggler button.navbar-toggler:last-child {
+  padding-right: 0;
+}
+
+.navbar .nav-item span.notifications-bell.fa,
+.navbar .nav-item span.notifications-bell.far {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+

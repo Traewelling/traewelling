@@ -7,6 +7,11 @@ return [
     "connect" => "Verbinden",
     "connected" => "Verbunden",
     "current-password" => "Aktuelles Passwort",
+    "delete-profile-picture" => "Profilbild löschen",
+    "delete-profile-picture-btn" => "Profilbild löschen",
+    "delete-profile-picture-desc" => "Du möchtest dein Profilbild löschen. Diese Aktion kann <strong>nicht rückgängig</strong> gemacht werden. Bist du dir sicher?",
+    "delete-profile-picture-yes" => "Wirklich löschen",
+    "delete-profile-picture-no" => "Zurück",
     "delete-account" => "Account löschen",
     "delete-account-btn-back" => "Zurück",
     "delete-account-btn-confirm" => "Wirklich löschen",
@@ -26,5 +31,11 @@ return [
     "title-password" => "Passwort",
     "title-profile" => "Profil-Einstellungen",
     "title-sessions" => "Sitzungen",
-    "upload-image" => "Profilbild hochladen"
+    "upload-image" => "Profilbild hochladen",
+    "client-name" => "Dienst",
+    "created" => "Erstellt",
+    "updated" => "Geändert",
+    "expires" => "Läuft ab",
+    "deletetokenfor" => "Token invalidieren für:",
+    "title-tokens" => "API-Tokens"
 ];

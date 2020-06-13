@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model {
+class Event extends Model
+{
     protected $dates = [
         'begin',
         'end'
@@ -20,10 +21,17 @@ class Event extends Model {
         'end'
     ];
 
-    public function trainstation() {
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    public function trainstation()
+    {
         return $this->hasOne('App\TrainStations', 'trainstation', 'id');
     }
-    public function getTrainstation(): TrainStations {
+    public function getTrainstation(): TrainStations
+    {
         return TrainStations::where("id", "=", $this->trainstation)->first() ?? new TrainStations();
     }
 }

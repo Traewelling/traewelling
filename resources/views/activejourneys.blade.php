@@ -32,21 +32,11 @@ window.addEventListener("load", () => {
     const statuses = [
         @foreach($statuses as $s)
             {
-            @php
-                $hafas = $s->trainCheckin->HafasTrip()->first();
-                $poly = $hafas->getPolyLine()->first();
-                $polyline = "''";
-                if ($poly != null) {
-                        $polyline = $poly->polyline;
-                }
-            @endphp
-
                 id: {{$s->id}},
                 origin: {{$s->trainCheckin->origin}},
                 destination: {{$s->trainCheckin->destination}},
-                <?php $hafas = $s->trainCheckin->HafasTrip()->first() ?>
-                polyline: <?php echo $polyline ?>,
-                stops: <?php echo $hafas->stopovers ?>,
+                polyline: {!! $s->trainCheckin->hafastrip->getPolyline->polyline !!}, // Stored as JSON in DB
+                stops: {!! $s->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB
                 percentage: 0,
             },
         @endforeach

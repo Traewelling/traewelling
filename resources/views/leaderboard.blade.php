@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab" aria-controls="home" aria-selected="true">{{ __('leaderboard.top20') }}</a>
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab" aria-controls="home" aria-selected="true">{{ __('leaderboard.top') }} {{$usersCount}}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab" aria-controls="profile" aria-selected="false">{{ __('leaderboard.distance') }}</a>
@@ -35,6 +35,7 @@
                                 <td>{{ __('leaderboard.user') }}</td>
                                 <td>{{ __('leaderboard.duration') }}</td>
                                 <td>{{ __('leaderboard.distance') }}</td>
+                                <td>{{ __('leaderboard.averagespeed') }}</td>
                                 <td>{{ __('leaderboard.points') }}</td>
                             </tr>
                             </thead>
@@ -44,6 +45,7 @@
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ number($user->train_distance) }}<small>km</small></td>
+                                    <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
@@ -57,6 +59,7 @@
                                 <td>{{ __('leaderboard.user') }}</td>
                                 <td>{{ __('leaderboard.duration') }}</td>
                                 <td>{{ __('leaderboard.distance') }}</td>
+                                <td>{{ __('leaderboard.averagespeed') }}</td>
                                 <td>{{ __('leaderboard.points') }}</td>
                             </tr>
                             </thead>
@@ -66,6 +69,7 @@
                                     <td><a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a></td>
                                     <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                     <td>{{ number($user->train_distance) }}<small>km</small></td>
+                                    <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
                                     <td>{{ $user->points }}</td>
                                 </tr>
                             @endforeach
