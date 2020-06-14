@@ -27,19 +27,26 @@ class StatusController extends Controller
                                                     'event')->withCount('likes')->firstOrFail();
     }
 
-    public static function getActiveStatuses($userId=null)
+    /**
+     * This Method returns the current active status(es) for all users or a specific user.
+     *
+     * @param null $userId UserId to get the current active status for a user. Defaults to null.
+     * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
+     * @return Status|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function getActiveStatuses ($userId = null, bool $array = true)
     {
         if ($userId === null) {
             $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
+                'trainCheckin',
+                'trainCheckin.Origin',
+                'trainCheckin.Destination',
+                'trainCheckin.HafasTrip',
+                'event')
                 ->withCount('likes')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))
-                          ->where('arrival', '>', date('Y-m-d H:i:s'));
+                        ->where('arrival', '>', date('Y-m-d H:i:s'));
                 })
                 ->get()
                 ->sortByDesc(function ($status) {
@@ -47,11 +54,11 @@ class StatusController extends Controller
                 })->values();
         } else {
             $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
+                'trainCheckin',
+                'trainCheckin.Origin',
+                'trainCheckin.Destination',
+                'trainCheckin.HafasTrip',
+                'event')
                 ->whereHas('trainCheckin', function ($query) {
                     $query->where('departure', '<', date('Y-m-d H:i:s'))
                         ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -64,20 +71,24 @@ class StatusController extends Controller
         if ($statuses === null) {
             return null;
         }
-        $polylines = $statuses->map(function($status) {
+        $polylines = $statuses->map(function ($status) {
             return $status->trainCheckin->getMapLines();
         });
-        return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
+        if ($array == true) {
+            return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
+        }
+
+        return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
     public static function getStatusesByEvent(int $eventId)
     {
         return Status::with('user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event')
+            'trainCheckin',
+            'trainCheckin.Origin',
+            'trainCheckin.Destination',
+            'trainCheckin.HafasTrip',
+            'event')
             ->withCount('likes')
             ->where('event_id', '=', $eventId)
             ->orderBy('created_at', 'desc')
@@ -85,36 +96,31 @@ class StatusController extends Controller
             ->simplePaginate(15);
     }
 
-    public static function getDashboard($user)
-    {
-        $userIds   = $user->follows()->pluck('follow_id');
+    public static function getDashboard ($user) {
+        $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        $statuses  = Status::whereIn('user_id', $userIds)
+        return Status::whereIn('user_id', $userIds)
             ->with('user',
-                   'trainCheckin',
-                   'trainCheckin.Origin',
-                   'trainCheckin.Destination',
-                   'trainCheckin.HafasTrip')
+                'trainCheckin',
+                'trainCheckin.Origin',
+                'trainCheckin.Destination',
+                'trainCheckin.HafasTrip')
             ->withCount('likes')
             ->latest()->simplePaginate(15);
-
-        return $statuses;
     }
 
-    public static function getGlobalDashboard()
-    {
+    public static function getGlobalDashboard () {
         return Status::orderBy('created_at', 'desc')
             ->with('user',
-                   'trainCheckin',
-                   'trainCheckin.Origin',
-                   'trainCheckin.Destination',
-                   'trainCheckin.HafasTrip')
+                'trainCheckin',
+                'trainCheckin.Origin',
+                'trainCheckin.Destination',
+                'trainCheckin.HafasTrip')
             ->withCount('likes')
             ->latest()->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId)
-    {
+    public static function DeleteStatus ($user, $statusId) {
         $status = Status::find($statusId);
 
         if ($status === null) {
@@ -138,8 +144,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck)
-    {
+    public static function EditStatus ($user, $statusId, $body, $businessCheck) {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -147,14 +152,13 @@ class StatusController extends Controller
         if ($user != $status->user) {
             return false;
         }
-        $status->body     = $body;
+        $status->body = $body;
         $status->business = $businessCheck >= 1 ? 1 : 0;
         $status->update();
         return $status->body;
     }
 
-    public static function CreateLike($user, $statusId)
-    {
+    public static function CreateLike ($user, $statusId) {
         $status = Status::findOrFail($statusId);
         if (!$status) {
             return null;
@@ -164,16 +168,15 @@ class StatusController extends Controller
             return false;
         }
 
-        $like            = new Like();
-        $like->user_id   = $user->id;
+        $like = new Like();
+        $like->user_id = $user->id;
         $like->status_id = $status->id;
         $like->save();
         $status->user->notify(new StatusLiked($like));
         return true;
     }
 
-    public static function DestroyLike($user, $statusId)
-    {
+    public static function DestroyLike ($user, $statusId) {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
             $like->delete();
@@ -182,92 +185,93 @@ class StatusController extends Controller
         return false;
     }
 
-    public static function getLikes($statusId) {
-        $likes = Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
-        return $likes;
+    public static function getLikes ($statusId) {
+        return Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
     }
 
-    public static function ExportStatuses($startDate, $endDate, $fileType, $privateTrips=true, $businessTrips=true)
-    {
-        if(!$privateTrips && !$businessTrips) {
+    public static function ExportStatuses ($startDate,
+                                           $endDate,
+                                           $fileType,
+                                           $privateTrips = true,
+                                           $businessTrips = true) {
+        if (!$privateTrips && !$businessTrips) {
             abort(400, __('controller.status.export-neither-business'));
         }
         $endInclLastOfMonth = (new \DateTime($endDate))->add(new \DateInterval("P1D"))->format("Y-m-d");
 
         $user          = Auth::user();
         $trainCheckins = Status::with('user',
-                                      'trainCheckin',
-                                      'trainCheckin.Origin',
-                                      'trainCheckin.Destination',
-                                      'trainCheckin.hafastrip')
+            'trainCheckin',
+            'trainCheckin.Origin',
+            'trainCheckin.Destination',
+            'trainCheckin.hafastrip')
             ->where('user_id', $user->id)
-            ->whereHas('trainCheckin', function ($query) use ($startDate, $endInclLastOfMonth){
+            ->whereHas('trainCheckin', function ($query) use ($startDate, $endInclLastOfMonth) {
                 $query->whereBetween('arrival', [$startDate, $endInclLastOfMonth]);
                 $query->orwhereBetween('departure', [$startDate, $endInclLastOfMonth]);
             })
             ->get()->sortBy('trainCheckin.departure');
-        $export        = array();
+        $export = array();
 
         foreach ($trainCheckins as $t) {
             $interval = (new \DateTime($t->trainCheckin->departure))->diff(new \DateTime($t->trainCheckin->arrival));
-            $export   = array_merge($export, array([
-                (String) $t->id,
+            $export = array_merge($export, array([
+                (string)$t->id,
                 $t->trainCheckin->hafastrip->category,
                 $t->trainCheckin->hafastrip->linename,
                 $t->trainCheckin->Origin->name,
-                $t->trainCheckin->Origin->latitude. ', ' .$t->trainCheckin->Origin->longitude,
+                $t->trainCheckin->Origin->latitude . ', ' . $t->trainCheckin->Origin->longitude,
                 $t->trainCheckin->departure,
                 $t->trainCheckin->Destination->name,
-                $t->trainCheckin->Destination->latitude. ', ' .$t->trainCheckin->Destination->longitude,
+                $t->trainCheckin->Destination->latitude . ', ' . $t->trainCheckin->Destination->longitude,
                 $t->trainCheckin->arrival,
                 $interval->h . ":" . sprintf('%02d', $interval->i),
                 $t->trainCheckin->distance,
                 $t->trainCheckin->points,
-                (String) $t->trainCheckin->body,
+                (string)$t->trainCheckin->body,
                 ''
             ]));
         }
         if ($fileType == 'pdf') {
             $pdf = PDF::loadView('pdf.export-template',
-                                 ['export' => $export,
-                                  'name' => $user->name,
-                                  'start_date' => $startDate,
-                                  'end_date' => $endDate])
+                ['export' => $export,
+                    'name' => $user->name,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate])
                 ->setPaper('a4', 'landscape');
             return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf',
-                                          $startDate,
-                                          $endDate));
+                $startDate,
+                $endDate));
         }
 
         if ($fileType == 'csv') {
-            $headers  = [
-                'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-                'Content-type'        => 'text/csv',
+            $headers = [
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Content-type' => 'text/csv',
                 'Content-Disposition' => sprintf('attachment; filename="' .
-                                                 config('app.name', 'Träwelling') .
-                                                 '_export_%s_to_%s.csv"',
-                                                 $startDate,
-                                                 $endDate),
-                'Expires'             => '0',
-                'Pragma'              => 'public'
+                    config('app.name', 'Träwelling') .
+                    '_export_%s_to_%s.csv"',
+                    $startDate,
+                    $endDate),
+                'Expires' => '0',
+                'Pragma' => 'public'
             ];
-            $callback = function() use ($export)
-            {
+            $callback = function () use ($export) {
                 $fileStream = fopen('php://output', 'w');
                 fputcsv($fileStream, ['Status-ID',
-                              'Zugart',
-                              'Zugnummer',
-                              'Abfahrtsort',
-                              'Abfahrtskoordinaten',
-                              'Abfahrtszeit',
-                              'Ankunftsort',
-                              'Ankunftskoordinaten',
-                              'Ankunftszeit',
-                              'Reisezeit',
-                              'Kilometer',
-                              'Punkte',
-                              'Status',
-                              'Zwischenhalte'
+                    'Zugart',
+                    'Zugnummer',
+                    'Abfahrtsort',
+                    'Abfahrtskoordinaten',
+                    'Abfahrtszeit',
+                    'Ankunftsort',
+                    'Ankunftskoordinaten',
+                    'Ankunftszeit',
+                    'Reisezeit',
+                    'Kilometer',
+                    'Punkte',
+                    'Status',
+                    'Zwischenhalte'
                 ], "\t");
                 foreach ($export as $t) {
                     fputcsv($fileStream, $t, "\t");
@@ -279,23 +283,22 @@ class StatusController extends Controller
 
         // Else: $filetype == 'json', fallback
         $headers = [
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Content-type'        => 'text/json',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type' => 'text/json',
             'Content-Disposition' => sprintf('attachment; filename="' .
-                                             config('app.name', 'Träwelling') .
-                                             '_export_%s_to_%s.json"',
-                                             $startDate,
-                                             $endDate),
-            'Expires'             => '0',
-            'Pragma'              => 'public'
+                config('app.name', 'Träwelling') .
+                '_export_%s_to_%s.json"',
+                $startDate,
+                $endDate),
+            'Expires' => '0',
+            'Pragma' => 'public'
         ];
         return Response::json($trainCheckins, 200, $headers);
     }
 
-    public static function usageByDay(Carbon $date) {
-        $q = Status::where("created_at", ">=", $date->copy()->startOfDay())
+    public static function usageByDay (Carbon $date) {
+        return Status::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
             ->count();
-        return $q;
     }
 }

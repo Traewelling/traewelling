@@ -18,7 +18,7 @@ class UserController extends ResponseController
     public function active($username)
     {
         $user           = User::where('username', $username)->firstOrFail();
-        $statusResponse = StatusBackend::getActiveStatuses($user->id);
+        $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
         return $this->sendResponse($statusResponse);
     }
 
