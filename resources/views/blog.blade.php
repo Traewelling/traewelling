@@ -25,7 +25,7 @@
             @endif
 
             @foreach($blogposts as $blogpost)
-            <div class="card mb-4 status">
+            <div class="card mb-4">
                 <div class="card-header">
                     <p class="mb-0 float-right">
                         <code class="pr-2">{{ date("Y-m-d", strtotime($blogpost->published_at)) }}</code>
