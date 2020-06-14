@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('title')
-    Imprint
+    {{__('menu.imprint')}}
 @endsection
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1>Impressum</h1>
+                <h1>{{__('menu.imprint')}}</h1>
 
                 <h2>Angaben gem&auml;&szlig; &sect; 5 TMG</h2>
                 <p>Levin Baumann<br />
