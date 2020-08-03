@@ -98,15 +98,22 @@ if (document.getElementById("history-button")) {
 if (document.getElementById("gps-button")) {
     document.getElementById("gps-button").addEventListener("click", () => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(searchStationByPosition);
+            navigator.geolocation.getCurrentPosition(searchStationByPosition, handlePositioningError);
         } else {
-            console.error("Geolocation not supported!");
+            ["d-none", "animated", "fadeIn"].forEach(classname =>
+                document.getElementById("gps-disabled-error").classList.toggle(classname)
+            );
         }
     });
 }
 
 function searchStationByPosition(position) {
     let newLocation = `${window.location.protocol}//${window.location.host}/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
-    console.log(newLocation);
     window.location.href = newLocation;
+}
+
+function handlePositioningError(error) {
+    ["d-none", "animated", "fadeIn"].forEach(classname =>
+        document.getElementById("gps-disabled-error").classList.toggle(classname)
+    );
 }

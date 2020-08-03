@@ -24,5 +24,6 @@ return [
     "where-are-you" => "Wo bist Du?",
     "last-stations" => "Letzte Stationen",
     "next-stop" => "Nächster Halt",
-    "search-by-location" => "Standortbasierte Suche"
+    "search-by-location" => "Standortbasierte Suche",
+    "position-unavailable" => "Postionsbestimmung nicht möglich!"
 ];

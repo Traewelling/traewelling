@@ -4,6 +4,12 @@
             <div class="card">
                 <div class="card-header">{{__('stationboard.where-are-you')}}</div>
                 <div class="card-body">
+                    <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
+                        {{__('stationboard.position-unavailable')}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
 
