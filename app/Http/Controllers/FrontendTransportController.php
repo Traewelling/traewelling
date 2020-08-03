@@ -42,6 +42,22 @@ class FrontendTransportController extends Controller
         );
     }
 
+    public function StationByCoordinates(Request $request)
+    {
+        $NearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        if ($NearestStation === null) {
+            return redirect()->back()->with('error', __('controller.transport.no-station-found'));
+        }
+
+        return view('stationboard', [
+            'station' => $NearestStation['station'],
+            'departures' => $NearestStation['departures'],
+            'when' => $NearestStation['when'],
+            'request' => $request,
+            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+        ]);
+    }
+
     public function TrainTrip(Request $request) {
         $TrainTripResponse = TransportBackend::TrainTrip(
             $request->tripID,

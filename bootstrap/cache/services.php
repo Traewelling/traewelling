@@ -182,6 +182,7 @@
     'Laravel\\Socialite\\Contracts\\Factory' => 'Laravel\\Socialite\\SocialiteServiceProvider',
     'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
     'NunoMaduro\\Collision\\Contracts\\Provider' => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    'Revolution\\Mastodon\\MastodonClient' => 'Revolution\\Mastodon\\Providers\\MastodonServiceProvider',
     'Revolution\\Mastodon\\Contracts\\Factory' => 'Revolution\\Mastodon\\Providers\\MastodonServiceProvider',
   ),
   'when' => 

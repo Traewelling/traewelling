@@ -96,6 +96,15 @@ class TransportController extends Controller
         return null;
     }
 
+    public static function StationByCoordinates($latitude, $longitude)
+    {
+        $client = new Client(['base_uri' => config('trwl.db_rest')]);
+        $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
+        $json = json_decode($response->getBody()->getContents());
+
+        return self::TrainStationboard($json[0]->name, null, null);
+    }
+
     private static function getTrainDepartures($ibnr, $when='now', $trainType=null)
     {
         $client = new Client(['base_uri' => config('trwl.db_rest')]);

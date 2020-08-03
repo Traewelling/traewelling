@@ -17,6 +17,12 @@
                                 </span>
                             </div>
                             @endif
+                            
+                            <div class="input-group-append" id="gps-button" title="{{__('stationboard.search-by-location')}}">
+                                <span class="input-group-text" id="basic-addon2">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                </span>
+                            </div>
 
                         </div>
                         <div class="list-group d-none" id="last-stations">
