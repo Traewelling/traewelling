@@ -8,9 +8,9 @@
     <div id="timepicker-wrapper">
         <div class="row justify-content-center">
             <div class="btn-group" role="group">
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $station['name'], 'when' => strtotime('-15 Minutes', $when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
+                <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station['name'], 'when' => strtotime('-15 Minutes', $when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-left"></i></a>
                 <a href="#" id="timepicker-reveal" alt="{{__('stationboard.dt-picker')}}" class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
-                <a href="{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $station['name'], 'when' => strtotime('+15 Minutes', $when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
+                <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station['name'], 'when' => strtotime('+15 Minutes', $when), 'travelType' => $request->travelType]) }}" alt="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -21,7 +21,7 @@
                         <a href="#" class="input-group-text btn-primary text-white" id="timepicker-button">{{__('stationboard.set-time')}}</a>
                     </div>
                     <script>
-                    window.changeTimeLink = "{{ url()->current() . '?' . http_build_query(['provider' => $request->provider, 'station' => $station['name'], 'travelType' => $request->travelType, 'when' => 'REPLACEME' ]) }}";
+                    window.changeTimeLink = "{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station['name'], 'when' => 'REPLACEME', 'travelType' => $request->travelType]) }}";
                     </script>
                 </div>
             </div>
