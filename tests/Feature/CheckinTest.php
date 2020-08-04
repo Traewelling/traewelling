@@ -42,6 +42,77 @@ class CheckinTest extends TestCase
 
     }
 
+
+    /**
+     * The nearby endpoint should redirect the user to the 
+     * 
+     * @test
+     */
+    public function stationboardByLocationPositiveTest()
+    {
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = factory(User::class)->create();
+        $response = $this->actingAs($user)
+            ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+
+        // GIVEN: A bunch of locations around Europe that should return true
+        $locations = [
+            //["name" => "Dortmund Hbf", "station" => "Hauptbahnhof, Dortmund", "latitude" => 51.517, "longitude" => 7.4592],
+            ["name" => "FRA", "station" => "Frankfurt(M) Flughafen Fernbf", "latitude" => 50.052926, "longitude" => 8.569776],
+            //["name" => "Moskau", "station" => "Moskva Oktiabrskaia", "latitude" => 55.776111, "longitude" => 37.655278]
+        ];
+
+        foreach ($locations as $testcase) {
+            // WHEN: Requesting the stationboard based on Coordinates
+            $response = $this->actingAs($user)
+                ->get(route("trains.nearby", [
+                    "latitude" => $testcase["latitude"],
+                    "longitude" => $testcase["longitude"]
+                ]));
+
+            // THEN: Expect the redirect to another stationboard
+            $response->assertStatus(302);
+            $response->assertRedirect(route("trains.stationboard", [
+                'station' => $testcase["station"],
+                'provider' => 'train'
+            ]));
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function stationboardByLocationNegativeTest()
+    {
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = factory(User::class)->create();
+        $response = $this->actingAs($user)
+            ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+
+        // GIVEN: A bunch of Locations
+        $locations = [
+            ["name" => "Null Island", "latitude" => 0, "longitude" => 0],
+            ["name" => "New York City", "latitude" => 40.730610, "longitude" => -73.935242]
+        ];
+
+        foreach ($locations as $testcase) {
+            // WHEN: Requesting the stationboard based on Coordinates
+            $response = $this->actingAs($user)
+                ->get(route("trains.nearby", [
+                    "latitude" => $testcase["latitude"],
+                    "longitude" => $testcase["longitude"]
+                ]));
+
+            // THEN: Expect an error
+            $response->assertStatus(302);
+            $response->assertSessionHas("error");
+        }
+    }
+
     /**
      * This is a lengthy test which does a lot of this and touches many endpoints. FIRST, it will
      * find an ICE train that leaving Frankfurt/Main Airport at 10:00 the next day. This way, we

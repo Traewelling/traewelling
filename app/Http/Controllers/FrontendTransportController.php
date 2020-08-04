@@ -49,13 +49,13 @@ class FrontendTransportController extends Controller
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
         
-        $NearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
-        if ($NearestStation === null) {
+        $nearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
+        if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
         return redirect(route('trains.stationboard', [
-            'station' => $NearestStation['station']['name'],
+            'station' => $nearestStation->name,
             'provider' => 'train'
         ]));
     }

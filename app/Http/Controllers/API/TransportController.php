@@ -144,12 +144,12 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
         
-        $NearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
-        if ($NearestStation === null) {
-            return $this->sendError('Nearby station not found', 404);
+        $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        if ($nearestStation === null) {
+            return $this->sendError(__("controller.transport.no-station-found"), 404);
         }
 
-        return $this->sendResponse($NearestStation['station']);
+        return $this->sendResponse($nearestStation);
     }
 
     public function getHome()
