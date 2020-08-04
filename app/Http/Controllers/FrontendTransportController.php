@@ -44,12 +44,12 @@ class FrontendTransportController extends Controller
 
     public function StationByCoordinates(Request $request)
     {
-        $request->validate([
+        $validatedInput = $request->validate([
             'latitude' => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
         
-        $NearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        $NearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
         if ($NearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
