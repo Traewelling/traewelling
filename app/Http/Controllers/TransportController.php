@@ -102,7 +102,11 @@ class TransportController extends Controller
         $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
         $json = json_decode($response->getBody()->getContents());
 
-        return self::TrainStationboard($json[0]->name, null, null);
+        if (count($json) === 0) {
+            return null;
+        }
+
+        return $json[0];
     }
 
     private static function getTrainDepartures($ibnr, $when='now', $trainType=null)
