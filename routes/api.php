@@ -56,6 +56,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');
             Route::get('home', 'API\TransportController@getHome')->name('api.v0.checkin.train.home');
             Route::put('home', 'API\TransportController@setHome')->name('api.v0.checkin.train.home');
+            Route::get('nearby', 'API\TransportController@StationByCoordinates')->name('api.v0.trains.nearby');
         });
     });
 });

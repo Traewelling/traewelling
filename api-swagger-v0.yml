@@ -675,6 +675,55 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         406:
           $ref: '#/components/responses/GDPRError'
+  /trains/nearby:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [Nearby]
+      summary: Retrieves the nearest station from coordinates
+      description: This endpoint queries the nearest station to given coordinates.
+      parameters:
+        - in: query
+          name: latitude
+          schema:
+            type: number
+            example: 48.994348
+          required: true
+          description: The latitude of the coordinates
+        - in: query
+          name: longitude
+          schema:
+            type: number
+            example: 8.399583
+          required: true
+          description: The longitude of the coordinates
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "station"
+                  id:
+                    type: string
+                    example: "8000191"
+                  name:
+                    type: string
+                    example: "Karlsruhe Hbf"
+                  location:
+                    $ref: '#/components/schemas/hafas_location'
+                  products:
+                    $ref: '#/components/schemas/hafas_products'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /user/leaderboard:
     get:
       security:
