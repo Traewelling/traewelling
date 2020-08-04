@@ -256,6 +256,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'    => 'trains.stationboard',
     ]);
 
+    Route::get('/trains/nearby', [
+        'uses'  => 'FrontendTransportController@StationByCoordinates',
+        'as'    => 'trains.nearby',
+    ]);
+
     Route::get('/trains/trip', [
         'uses'  => 'FrontendTransportController@TrainTrip',
         'as'    => 'trains.trip'

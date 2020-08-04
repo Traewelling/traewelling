@@ -135,6 +135,23 @@ class TransportController extends ResponseController
         return $this->sendResponse($arrivals);
     }
 
+    public function StationByCoordinates(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'latitude' => 'required|numeric|min:-180|max:180',
+            'longitude' => 'required|numeric|min:-180|max:180'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+        
+        $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        if ($nearestStation === null) {
+            return $this->sendError(__("controller.transport.no-station-found"), 404);
+        }
+
+        return $this->sendResponse($nearestStation);
+    }
+
     public function getHome()
     {
         return $this->sendResponse(auth()->user()->home);

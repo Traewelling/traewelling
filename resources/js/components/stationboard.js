@@ -1,4 +1,4 @@
-import {longStackSupport} from "q";
+import { longStackSupport } from "q";
 
 let delays = document.getElementsByClassName("traindelay");
 for (let i = 0; i < delays.length; i++) {
@@ -17,7 +17,7 @@ for (let i = 0; i < delays.length; i++) {
 
 var touchmoved;
 $(document)
-    .on("click touchstart", ".trainrow", function() {
+    .on("click touchstart", ".trainrow", function () {
         var lineName = $(this).data("linename");
         var tripID = $(this).data("tripid");
         var start = $(this).data("start");
@@ -32,15 +32,15 @@ $(document)
                 start;
         }
     })
-    .on("touchmove", function(e) {
+    .on("touchmove", function (e) {
         touchmoved = true;
     })
-    .on("touchstart", function() {
+    .on("touchstart", function () {
         touchmoved = false;
     });
 
 $(document)
-    .on("click touchend", ".train-destinationrow", function() {
+    .on("click touchend", ".train-destinationrow", function () {
         var tripID = $(this)
             .parent()
             .parent()
@@ -56,14 +56,14 @@ $(document)
             .parent()
             .data("linename");
         if (touchmoved != true) {
-            $("#checkinModal").modal("show", function(event) {
+            $("#checkinModal").modal("show", function (event) {
                 var modal = $(this);
                 modal
                     .find(".modal-title")
                     .html(
                         linename +
-                            ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                            stopname
+                        ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                        stopname
                     );
                 modal.find("#input-tripID").val(tripID);
                 modal.find("#input-destination").val(destination);
@@ -71,18 +71,18 @@ $(document)
             });
         }
     })
-    .on("touchmove", function(e) {
+    .on("touchmove", function (e) {
         touchmoved = true;
     })
-    .on("touchstart", function() {
+    .on("touchstart", function () {
         touchmoved = false;
     });
 
-$("#checkinModal").on("show.bs.modal", function(event) {
+$("#checkinModal").on("show.bs.modal", function (event) {
     $(event.relatedTarget);
 });
 
-$("#checkinButton").click(function(e) {
+$("#checkinButton").click(function (e) {
     e.preventDefault();
     $("#checkinForm").submit();
 });
@@ -93,4 +93,27 @@ if (document.getElementById("history-button")) {
             document.getElementById("last-stations").classList.toggle(classname)
         );
     });
+}
+
+if (document.getElementById("gps-button")) {
+    document.getElementById("gps-button").addEventListener("click", () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(searchStationByPosition, handlePositioningError);
+        } else {
+            ["d-none", "animated", "fadeIn"].forEach(classname =>
+                document.getElementById("gps-disabled-error").classList.toggle(classname)
+            );
+        }
+    });
+}
+
+function searchStationByPosition(position) {
+    let newLocation = `${window.location.protocol}//${window.location.host}/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+    window.location.href = newLocation;
+}
+
+function handlePositioningError(error) {
+    ["d-none", "animated", "fadeIn"].forEach(classname =>
+        document.getElementById("gps-disabled-error").classList.toggle(classname)
+    );
 }

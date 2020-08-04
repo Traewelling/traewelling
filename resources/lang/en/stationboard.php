@@ -23,5 +23,7 @@ return [
     "submit-search" => "Search",
     "where-are-you" => "Where are you?",
     "last-stations" => "Last stations",
-    "next-stop" => "Next stop"
+    "next-stop" => "Next stop",
+    "search-by-location" => "Search by location",
+    "position-unavailable" => "Locating not possible!"
 ];

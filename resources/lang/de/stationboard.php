@@ -23,5 +23,7 @@ return [
     "submit-search" => "Suchen",
     "where-are-you" => "Wo bist Du?",
     "last-stations" => "Letzte Stationen",
-    "next-stop" => "Nächster Halt"
+    "next-stop" => "Nächster Halt",
+    "search-by-location" => "Standortbasierte Suche",
+    "position-unavailable" => "Positionsbestimmung nicht möglich!"
 ];
