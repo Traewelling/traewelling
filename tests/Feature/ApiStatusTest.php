@@ -64,7 +64,7 @@ class ApiStatusTest extends ApiTestCase
     public function get_event_statuses() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.event', ['id' => '1']));
+            ->get(route('api.v0.statuses.event', ['eventID' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $firstTrain = json_decode($response->getContent(), true)['data'][0];
@@ -84,7 +84,7 @@ class ApiStatusTest extends ApiTestCase
     public function get_status_by_id() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.show', ['id' => '1']));
+            ->get(route('api.v0.statuses.show', ['status' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
@@ -97,35 +97,35 @@ class ApiStatusTest extends ApiTestCase
         //First check if there are no likes for a status
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue(empty(json_decode($response->getContent())->data));
 
         //Like the status
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->post(route('api.v0.statuses.like', ['id' => '1']));
+            ->post(route('api.v0.statuses.like', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue($response->getContent() == 'true');
 
         //check if the like has been created
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent())->data));
 
         //Delete the like
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->delete(route('api.v0.statuses.like', ['id' => '1']));
+            ->delete(route('api.v0.statuses.like', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue($response->getContent() == 'true');
 
         //check if the like has been deleted
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['id' => '1']));
+            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue(empty(json_decode($response->getContent())->data));
 

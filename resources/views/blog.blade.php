@@ -19,7 +19,7 @@
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
 
             @elseif($page == "category")
-            
+
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
             <h1><i class="fa fa-tag pr-2"></i>{{$category}}</h1>
             @endif
@@ -49,7 +49,7 @@
                             {{ $blogpost->author_name }}
                         </li>
                         <li class="list-inline-item">
-                            <a href="{{ route('blog.category', ['category' => $blogpost->category]) }}">
+                            <a href="{{ route('blog.category', ['cat' => $blogpost->category]) }}">
                                 <i class="fa fa-tag"></i>
                                 {{$blogpost->category}}
                             </a>
