@@ -36387,3 +36387,9 @@ p.train-status:before {
   padding-right: 3px;
 }
 
+#leaderboard #top20 a:hover,
+#leaderboard #top20k a:hover,
+#leaderboard #top20f a:hover {
+  text-decoration: underline;
+}
+
