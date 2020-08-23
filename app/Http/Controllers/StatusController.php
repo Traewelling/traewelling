@@ -99,15 +99,18 @@ class StatusController extends Controller
     public static function getDashboard ($user) {
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        return Status::with(['event', 'likes'])
+        return Status::with([
+                'event', 'likes', 'user', 'trainCheckin',
+                'trainCheckin.Origin', 'trainCheckin.Destination',
+                'trainCheckin.HafasTrip'
+            ])
+            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+            ->select('statuses.*')
+            ->orderBy('train_checkins.departure', 'desc')
             ->whereIn('user_id', $userIds)
-            ->with('user',
-                'trainCheckin',
-                'trainCheckin.Origin',
-                'trainCheckin.Destination',
-                'trainCheckin.HafasTrip')
             ->withCount('likes')
-            ->latest()->simplePaginate(15);
+            ->latest()
+            ->simplePaginate(15);
     }
 
     public static function getGlobalDashboard () {
