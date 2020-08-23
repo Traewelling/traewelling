@@ -37,5 +37,6 @@ return [
     "updated" => "Geändert",
     "expires" => "Läuft ab",
     "deletetokenfor" => "Token invalidieren für:",
-    "title-tokens" => "API-Tokens"
+    "title-tokens" => "API-Tokens",
+    "no-tokens" => "Es haben aktuell keine externen Anwendungen Zugriff auf deinen Account.",
 ];

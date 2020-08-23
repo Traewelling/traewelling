@@ -37,5 +37,6 @@ return [
     "updated" => "Updated",
     "expires" => "Expires",
     "deletetokenfor" => "Invalidate token for:",
-    "title-tokens" => "API-Tokens"
+    "title-tokens" => "API-Tokens",
+    "no-tokens" => "There a no external applications with access to your account.",
 ];
