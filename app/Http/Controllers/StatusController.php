@@ -111,7 +111,11 @@ class StatusController extends Controller
     }
 
     public static function getGlobalDashboard () {
-        return Status::with(['event', 'likes', 'user', 'trainCheckin', 'trainCheckin.Origin', 'trainCheckin.Destination', 'trainCheckin.HafasTrip'])
+        return Status::with([
+                'event', 'likes', 'user', 'trainCheckin',
+                'trainCheckin.Origin', 'trainCheckin.Destination',
+                'trainCheckin.HafasTrip'
+            ])
             ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
             ->select('statuses.*')
             ->orderBy('train_checkins.departure', 'desc')
