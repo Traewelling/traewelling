@@ -99,7 +99,8 @@ class StatusController extends Controller
     public static function getDashboard ($user) {
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        return Status::whereIn('user_id', $userIds)
+        return Status::with(['event', 'likes'])
+            ->whereIn('user_id', $userIds)
             ->with('user',
                 'trainCheckin',
                 'trainCheckin.Origin',
