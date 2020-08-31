@@ -99,25 +99,32 @@ class StatusController extends Controller
     public static function getDashboard ($user) {
         $userIds = $user->follows()->pluck('follow_id');
         $userIds[] = $user->id;
-        return Status::whereIn('user_id', $userIds)
-            ->with('user',
-                'trainCheckin',
-                'trainCheckin.Origin',
-                'trainCheckin.Destination',
-                'trainCheckin.HafasTrip')
+        return Status::with([
+                'event', 'likes', 'user', 'trainCheckin',
+                'trainCheckin.Origin', 'trainCheckin.Destination',
+                'trainCheckin.HafasTrip'
+            ])
+            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+            ->select('statuses.*')
+            ->orderBy('train_checkins.departure', 'desc')
+            ->whereIn('user_id', $userIds)
             ->withCount('likes')
-            ->latest()->simplePaginate(15);
+            ->latest()
+            ->simplePaginate(15);
     }
 
     public static function getGlobalDashboard () {
-        return Status::orderBy('created_at', 'desc')
-            ->with('user',
-                'trainCheckin',
-                'trainCheckin.Origin',
-                'trainCheckin.Destination',
-                'trainCheckin.HafasTrip')
+        return Status::with([
+                'event', 'likes', 'user', 'trainCheckin',
+                'trainCheckin.Origin', 'trainCheckin.Destination',
+                'trainCheckin.HafasTrip'
+            ])
+            ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+            ->select('statuses.*')
+            ->orderBy('train_checkins.departure', 'desc')
             ->withCount('likes')
-            ->latest()->simplePaginate(15);
+            ->latest()
+            ->simplePaginate(15);
     }
 
     public static function DeleteStatus ($user, $statusId) {
