@@ -5,7 +5,7 @@ info:
   title: "TRWL app API"
   contact:
     name: "Träwelling Dev Team"
-    url: "https://gitlab.com/HerrLevin_/trwl"
+    url: "https://github.com/traewelling/traewelling"
 servers:
   - url: "https://testing.traewelling.de/api/v0"
   - url: "https://traewelling.de/api/v0"
