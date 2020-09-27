@@ -38,7 +38,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
         // Controller for complete /statuses-stuff
         Route::group(['prefix' => 'statuses'], function () {
             Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
-            Route::get('event/{slug}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
+            Route::get('event/{eventId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
             Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
             Route::delete('{statusId}/like', 'API\StatusController@destroyLike')->name('api.v0.statuses.like');
             Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
