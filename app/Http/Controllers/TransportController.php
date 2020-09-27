@@ -298,12 +298,15 @@ class TransportController extends Controller
         $trainCheckin->origin      = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
         $trainCheckin->distance    = $distance;
-        $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
-                                                             $stopovers[$offset1]['departureDelay'] ?? 0);
-        $trainCheckin->arrival     = self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
-                                                             $stopovers[$offset2]['arrivalDelay'] ?? 0);
         $trainCheckin->delay       = $hafas['delay'];
         $trainCheckin->points      = $points;
+        $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
+                                        $stopovers[$offset1]['departureDelay'] ?? 0);
+        $trainCheckin->arrival     = isset($stopovers[$offset2]['arrival']) ?
+                                        self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
+                                        $stopovers[$offset2]['arrivalDelay'] ?? 0) :
+                                        self::dateToMySQLEscape($stopovers[$offset2]['departure'],
+                                        $stopovers[$offset2]['departureDelay'] ?? 0);
 
         //check if there are colliding checkins
         $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
@@ -378,7 +381,7 @@ class TransportController extends Controller
                 $postText .= $appendix;
             }
 
-            if (isset($tootCheck) && $user->socialProfile) {
+            if (isset($tootCheck) && $tootCheck != false && $user->socialProfile) {
                 try {
                     $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)
                         ->first()->domain;
@@ -390,7 +393,7 @@ class TransportController extends Controller
                     Log::error($e);
                 }
             }
-            if (isset($tweetCheck) && $user->socialProfile) {
+            if (isset($tweetCheck) && $tweetCheck != false && $user->socialProfile) {
                 try {
                     $connection = new TwitterOAuth(
                         config('trwl.twitter_id'),
