@@ -49,7 +49,7 @@
                             {{ $blogpost->author_name }}
                         </li>
                         <li class="list-inline-item">
-                            <a href="{{ route('blog.category', ['cat' => $blogpost->category]) }}">
+                            <a href="{{ route('blog.category', ['category' => $blogpost->category]) }}">
                                 <i class="fa fa-tag"></i>
                                 {{$blogpost->category}}
                             </a>

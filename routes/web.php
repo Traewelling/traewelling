@@ -79,7 +79,7 @@ Route::get('/blog/{slug}', [
     'uses'  => 'BlogController@show',
     'as'    => 'blog.show'
 ]);
-Route::get('/blog/cat/{cat}', [
+Route::get('/blog/cat/{category}', [
     'uses'  => 'BlogController@category',
     'as'    => 'blog.category'
 ]);
