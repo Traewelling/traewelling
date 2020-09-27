@@ -440,6 +440,7 @@ class TransportController extends Controller
 
         return [
             'success' => true,
+            'statusId' => $status->id,
             'points' => $trainCheckin->points,
             'alsoOnThisConnection' => $alsoOnThisConnection,
             'lineName' => $hafas['linename'],

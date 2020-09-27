@@ -596,6 +596,10 @@ paths:
                     type: number
                     example: 900
                     description: Travel time in Seconds
+                  statusId:
+                    type: number
+                    example: 34
+                    description: ID of the generated Status
                   points:
                     type: number
                     example: 1
