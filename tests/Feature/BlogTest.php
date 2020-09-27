@@ -37,7 +37,7 @@ class BlogTest extends TestCase
      * Test a Category page.
      */
     public function testCategoryPage() {
-        $response = $this->get(route('blog.category', ['cat' => 'Fehlerbehebung']));
+        $response = $this->get(route('blog.category', ['category' => 'Fehlerbehebung']));
         $response->assertSuccessful(); // There is at least one post with category `Fehlerbehebung`.
         $this->assertNotEquals($this->getBlogpostsCount($response), 0);
 
@@ -64,7 +64,7 @@ class BlogTest extends TestCase
      * If the requested category does not have any posts, we expect a 404 Not Found error.
      */
     public function testCategoryEmpty() {
-        $response = $this->get(route('blog.category', ['cat' => 'non-existing-category']));
+        $response = $this->get(route('blog.category', ['category' => 'non-existing-category']));
         $response->assertStatus(404);
         $response->assertSee('Not Found');
     }

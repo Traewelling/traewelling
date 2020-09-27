@@ -139,7 +139,7 @@ class ApiUserTest extends ApiTestCase
      */
     public function get_active_checkin_for_user() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get(route('api.v0.user.active', ['Username' => 'Gertrud123']));
+            ->get(route('api.v0.user.active', ['username' => 'Gertrud123']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         //Somehow this throws an error even though the structure is the same.

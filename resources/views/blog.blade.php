@@ -19,7 +19,7 @@
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
 
             @elseif($page == "category")
-            
+
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
             <h1><i class="fa fa-tag pr-2"></i>{{$category}}</h1>
             @endif

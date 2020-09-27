@@ -57,7 +57,7 @@ Route::get('/statuses/active', [
     'uses' => 'FrontendStatusController@getActiveStatuses',
     'as'   => 'statuses.active',
 ]);
-Route::get('/statuses/event/{event}', [
+Route::get('/statuses/event/{eventSlug}', [
     'uses'  => 'FrontendStatusController@statusesByEvent',
     'as'    => 'statuses.byEvent'
 ]);
@@ -79,7 +79,7 @@ Route::get('/blog/{slug}', [
     'uses'  => 'BlogController@show',
     'as'    => 'blog.show'
 ]);
-Route::get('/blog/cat/{cat}', [
+Route::get('/blog/cat/{category}', [
     'uses'  => 'BlogController@category',
     'as'    => 'blog.category'
 ]);

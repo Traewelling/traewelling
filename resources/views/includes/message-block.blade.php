@@ -70,7 +70,7 @@
                 <p>
                     {!!  __('events.on-your-way', [
                         "name" => Session::get('checkin-success')['event']['name'],
-                        "url" => route('statuses.byEvent', ['event' => Session::get('checkin-success')['event']['slug']])
+                        "url" => route('statuses.byEvent', ['eventSlug' => Session::get('checkin-success')['event']['slug']])
                     ]) !!}
                 </p>
             @endif
