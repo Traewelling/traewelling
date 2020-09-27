@@ -384,10 +384,10 @@
                                 </thead>
                                 @foreach($tokens as $token)
                                     <tr>
-                                        <td>{{ $token['clientName'] }}</td>
-                                        <td>{{ $token['created_at'] }}</td>
-                                        <td>{{ $token['updated_at'] }}</td>
-                                        <td>{{ $token['expires_at'] }}</td>
+                                        <td>{{ $token->name }}</td>
+                                        <td>{{ $token->created_at }}</td>
+                                        <td>{{ $token->updated_at }}</td>
+                                        <td>{{ $token->expires_at }}</td>
                                         <td>
                                             <a href="{{ route('deltoken', ['id' => $token['id']]) }}"
                                                alt="{{ __('settings.deletetokenfor') }}  {{ $token['clientName'] }}"

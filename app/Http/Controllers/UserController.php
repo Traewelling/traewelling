@@ -137,7 +137,7 @@ class UserController extends Controller
     public function getAccount() {
         $user     = Auth::user();
         $sessions = array();
-        $tokens   = array();
+        $tokens   = auth()->user()->tokens->where('revoked', 0)->where('expires_at', '>' , Carbon::now());
         foreach($user->sessions as $session) {
             $sessionArray = array();
             $result       = new Agent();
@@ -155,19 +155,6 @@ class UserController extends Controller
             $sessionArray['ip']   = $session->ip_address;
             $sessionArray['last'] = $session->last_activity;
             array_push($sessions, $sessionArray);
-        }
-
-        foreach($user->tokens as $token) {
-            if ($token->revoked != 1) {
-                $tokenInfo               = array();
-                $tokenInfo['id']         = $token->id;
-                $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (String) $token->created_at;
-                $tokenInfo['updated_at'] = (String) $token->updated_at;
-                $tokenInfo['expires_at'] = (String) $token->expires_at;
-
-                array_push($tokens, $tokenInfo);
-            }
         }
 
         return view('settings', compact('user', 'sessions', 'tokens'));
