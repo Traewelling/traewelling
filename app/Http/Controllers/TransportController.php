@@ -381,7 +381,7 @@ class TransportController extends Controller
                 $postText .= $appendix;
             }
 
-            if (isset($tootCheck) && $tootCheck != false && $user->socialProfile) {
+            if (isset($tootCheck) && $tootCheck == true && $user->socialProfile) {
                 try {
                     $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)
                         ->first()->domain;
@@ -393,7 +393,7 @@ class TransportController extends Controller
                     Log::error($e);
                 }
             }
-            if (isset($tweetCheck) && $tweetCheck != false && $user->socialProfile) {
+            if (isset($tweetCheck) && $tweetCheck == true && $user->socialProfile) {
                 try {
                     $connection = new TwitterOAuth(
                         config('trwl.twitter_id'),
