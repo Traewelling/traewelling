@@ -21,8 +21,4 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php vendor/bin/phpunit --coverage-clover build/coverage/xml
-      - name: Write Coverage to Codacy
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        run: php vendor/bin/codacycoverage clover build/coverage/xml
+        run: php artisan test

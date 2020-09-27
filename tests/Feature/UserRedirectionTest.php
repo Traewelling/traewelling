@@ -66,7 +66,7 @@ class UserRedirectionTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
         $this->followRedirects($response)
-             ->assertSee(__('privacy.not-signed-yet'));
+             ->assertSee(__('privacy.not-signed-yet'), false);
 
         // Signs the terms and sleep a little while so `$gdpr->valid_at` is
         // real-greater than `$user->privacy_ack_at`.
@@ -89,7 +89,7 @@ class UserRedirectionTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
         $this->followRedirects($response)
-             ->assertSee(__('privacy.we-changed'));
+             ->assertSee(__('privacy.we-changed'), false);
 
         // At this point, we can sign the new agreement and get redirected again:
         $response = $this->actingAs($user)
