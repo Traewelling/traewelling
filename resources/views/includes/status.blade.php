@@ -33,7 +33,7 @@
 
                         @if($status->event != null)
                             <br class="d-sm-none">
-                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['event' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
+                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
                         @endif
                     </p>
 
@@ -53,7 +53,7 @@
                 @if($status->event != null)
                 <!-- <li class="calendar-button">
                     <i class="fa fa-calendar-day"></i>
-                    <a href="{{ route('statuses.byEvent', ['event' => $status->event->slug]) }}">{{ $status->event->name }}</a>
+                    <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a>
                 </li> -->
                 @endif
             </ul>

@@ -57,7 +57,7 @@ Route::get('/statuses/active', [
     'uses' => 'FrontendStatusController@getActiveStatuses',
     'as'   => 'statuses.active',
 ]);
-Route::get('/statuses/event/{event}', [
+Route::get('/statuses/event/{eventSlug}', [
     'uses'  => 'FrontendStatusController@statusesByEvent',
     'as'    => 'statuses.byEvent'
 ]);

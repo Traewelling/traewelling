@@ -242,7 +242,7 @@ window.addEventListener("load", () => {
             "begin": "{{ date("Y-m-d", strtotime($event->begin)) }}",
             "end": "{{ date("Y-m-d", strtotime($event->end)) }}",
             "ts": {!! $event->getTrainStation() !!},
-            "mapLink": "{{ route('statuses.byEvent', ['event' => $event->slug]) }}",
+            "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
             "closestLink": `{!! stationLink($event->getTrainstation()->name) !!}`
         },
         @endforeach
