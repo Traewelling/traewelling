@@ -1,51 +1,54 @@
-document.getElementById('notifications-toggle').addEventListener('click', () => {
-    let list = document.getElementById('notifications-list')
-    let empty = document.getElementById('notifications-empty')
-    empty.classList.remove('d-none')
+let notificationsToggle = document.getElementById('notifications-toggle');
+if (notificationsToggle !== undefined && notificationsToggle !== null) {
+    notificationsToggle.addEventListener('click', () => {
+        let list = document.getElementById('notifications-list')
+        let empty = document.getElementById('notifications-empty')
+        empty.classList.remove('d-none')
 
-    while (list.childNodes.length > 3) {
-        list.removeChild(list.firstChild)
-    }
-    fetch('/notifications/latest', {
-        credentials: 'same-origin'
-    })
-    .then(res => res.json())
-    .then(notifications => {
-        // If there are no notifications, we can just quit here. Else, show the items.
-        if (notifications.length == 0) return;
-        empty.classList.add('d-none');
-
-        // if there are unread notifications, make the bell ring.
-        if (notifications.some(n => n.read_at == null)) {
-            Array.from(document.getElementsByClassName('notifications-bell'))
-                .forEach(bell => bell.classList.replace("far", "fa"));
+        while (list.childNodes.length > 3) {
+            list.removeChild(list.firstChild)
         }
+        fetch('/notifications/latest', {
+            credentials: 'same-origin'
+        })
+            .then(res => res.json())
+            .then(notifications => {
+                // If there are no notifications, we can just quit here. Else, show the items.
+                if (notifications.length == 0) return;
+                empty.classList.add('d-none');
 
-        var html = notifications.reduce((sum, add) => {
-            return sum + add.html;
-        }, "");
+                // if there are unread notifications, make the bell ring.
+                if (notifications.some(n => n.read_at == null)) {
+                    Array.from(document.getElementsByClassName('notifications-bell'))
+                        .forEach(bell => bell.classList.replace("far", "fa"));
+                }
 
-        list.insertAdjacentHTML('afterbegin', html);
-    })
-    .then(() => { // After the notification rows have been created, we can add eventlisteners for them
-        Array.from(document.getElementsByClassName('toggleReadState')).forEach(btn =>
-            btn.addEventListener('click', () => {
+                var html = notifications.reduce((sum, add) => {
+                    return sum + add.html;
+                }, "");
 
-                fetch('/notifications/toggleReadState/' + btn.dataset.id, {
-                    credentials: 'same-origin',
-                    method: 'POST',
-                    body: JSON.stringify({}),
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
-                })
-                    .then(res => {
-                        toggleRead(btn.dataset.id, res.status == 201);
-                    });
+                list.insertAdjacentHTML('afterbegin', html);
             })
-        );
+            .then(() => { // After the notification rows have been created, we can add eventlisteners for them
+                Array.from(document.getElementsByClassName('toggleReadState')).forEach(btn =>
+                    btn.addEventListener('click', () => {
+
+                        fetch('/notifications/toggleReadState/' + btn.dataset.id, {
+                            credentials: 'same-origin',
+                            method: 'POST',
+                            body: JSON.stringify({}),
+                            headers: {
+                                'X-CSRF-TOKEN': token
+                            }
+                        })
+                            .then(res => {
+                                toggleRead(btn.dataset.id, res.status == 201);
+                            });
+                    })
+                );
+            });
     });
-});
+}
 
 
 document.getElementById('mark-all-read').addEventListener('click', () => {
