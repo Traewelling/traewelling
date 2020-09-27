@@ -14,7 +14,7 @@
     ],
     "license": "AGPL-3.0-only",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.3",
         "ext-json": "*",
         "abraham/twitteroauth": "^1.2",
         "barryvdh/laravel-dompdf": "^0.8.7",
@@ -23,11 +23,11 @@
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
-        "laravel/framework": "^7.0",
-        "laravel/passport": "^9.3.2",
-        "laravel/socialite": "^4.1",
+        "laravel/framework": "^8.0",
+        "laravel/passport": "^10.0",
+        "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^2.0",
+        "laravel/ui": "^3.0",
         "revolution/laravel-mastodon-api": "^2.0",
         "trwl/socialite-mastodon": "^1.2"
     },
@@ -38,8 +38,8 @@
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.9",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5"
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -56,12 +56,10 @@
             "app/Helpers/Helper.php"
         ],
         "psr-4": {
-            "App\\": "app/"
-        },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ]
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
