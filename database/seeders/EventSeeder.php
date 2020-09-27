@@ -1,18 +1,18 @@
 <?php
 
-use App\Event;
-use App\TrainStations;
+namespace Database\Seeders;
+
+use App\Models\Event;
+use App\Models\TrainStations;
 use Illuminate\Database\Seeder;
 
-class EventSeeder extends Seeder
-{
+class EventSeeder extends Seeder {
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $event = new Event([
             'name' => 'Jährliches Modelleisenbahntreffen ' . date('Y'),
             'hashtag' => 'Modellbahn' . date('y'),

@@ -1,20 +1,20 @@
 <?php
 
-use App\HafasTrip;
+namespace Database\Seeders;
+
+use App\Models\HafasTrip;
 use Illuminate\Database\Seeder;
 use App\Http\Controllers\TransportController;
-use App\User;
+use App\Models\User;
 
-class TrainCheckinSeeder extends Seeder
-{
+class TrainCheckinSeeder extends Seeder {
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
-    {
-        for($cnt = 0; $cnt < 50; $cnt++) {
+    public function run() {
+        for ($cnt = 0; $cnt < 50; $cnt++) {
             $user = User::all()->random();
             $trip = HafasTrip::all()->random();
             TransportController::TrainCheckin(
@@ -26,10 +26,10 @@ class TrainCheckinSeeder extends Seeder
                 0,
                 0,
                 0,
-                rand(0,1)
-                );
+                rand(0, 1)
+            );
         }
-        $user = User::where('username', 'Gertrud123')->first();
+        $user = User::where('id', 1)->first();
         $trip = HafasTrip::all()->random();
         TransportController::TrainCheckin(
             $trip->trip_id,
