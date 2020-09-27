@@ -66,7 +66,7 @@ class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase
 
         // THEN: The page is rendered and shows the user's name and username
         $response->assertOk();
-        $response->assertSee($user->name);
-        $response->assertSee($user->username);
+        $response->assertSee($user->name, false);
+        $response->assertSee($user->username, false);
     }
 }
