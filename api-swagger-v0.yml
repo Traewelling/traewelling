@@ -37,6 +37,10 @@ paths:
                 - password
                 - email
               properties:
+                applicationName:
+                  type: string
+                  example: Very nice app
+                  description: The name of your application
                 email:
                   type: string
                   example: gertrud@traewelling.de

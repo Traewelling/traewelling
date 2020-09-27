@@ -45,7 +45,8 @@ class AuthController extends ResponseController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
-            'password' => 'required'
+            'password' => 'required',
+            'applicationName' => 'required|max:255'
         ]);
 
         if($validator->fails()){
@@ -58,7 +59,8 @@ class AuthController extends ResponseController
             return $this->sendError($error, 401);
         }
         $user             = $request->user();
-        $success['token'] = $user->createToken('token')->accessToken;
+        $token =  $user->createToken(request('applicationName'));
+        $success['token'] = $token->accessToken;
         return $this->sendResponse($success);
     }
 
