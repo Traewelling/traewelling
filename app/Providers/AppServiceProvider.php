@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Revolution\Socialite\Mastodon\MastodonProvider;
 
@@ -32,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
                 return $socialite->buildProvider(MastodonProvider::class, $config);
             }
         );
+
+        Paginator::useBootstrap();
     }
 }
