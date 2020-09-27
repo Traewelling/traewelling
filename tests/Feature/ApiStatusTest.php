@@ -64,7 +64,7 @@ class ApiStatusTest extends ApiTestCase
     public function get_event_statuses() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.event', ['eventId' => '1']));
+            ->get(route('api.v0.statuses.event', ['statusId' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $firstTrain = json_decode($response->getContent(), true)['data'][0];
