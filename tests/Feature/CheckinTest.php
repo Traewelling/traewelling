@@ -44,8 +44,8 @@ class CheckinTest extends TestCase
 
 
     /**
-     * The nearby endpoint should redirect the user to the 
-     * 
+     * The nearby endpoint should redirect the user to the
+     *
      * @test
      */
     public function stationboardByLocationPositiveTest()
@@ -191,8 +191,8 @@ class CheckinTest extends TestCase
         // THEN: You can get the status page and see its information
         $response = $this->get(url('/status/' . $statuses[0]->id));
         $response->assertOk();
-        $response->assertSee($stationname); // Departure Station
-        $response->assertSee($trip['stopovers'][0]['stop']['name']); // Arrival Station
+        $response->assertSee($stationname, false); // Departure Station
+        $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
     }
 
     /**
@@ -232,10 +232,10 @@ class CheckinTest extends TestCase
             'controller.transport.checkin-ok',
             preg_match('/\s/', $message['lineName']),
             ['lineName' => $message['lineName']]
-        ));
+        ), false);
 
         // Usual Dashboard stuff
-        $response->assertSee(__('stationboard.where-are-you'));
-        $response->assertSee(__('menu.developed'));
+        $response->assertSee(__('stationboard.where-are-you'), false);
+        $response->assertSee(__('menu.developed'), false);
     }
 }

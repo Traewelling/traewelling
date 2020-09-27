@@ -73,8 +73,8 @@ class HelperMethodTest extends TestCase
 
             $response = $this->actingAs($user)
                             ->get($links[0]->getAttribute('href'));
-            $response->assertSee('<input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="Haltestelle"  value="' . $alternatedTo . '" >');
-            $response->assertSee($alternatedTo . ' <small><i class="far fa-clock fa-sm"></i>');
+            $response->assertSee('<input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="Haltestelle"  value="' . $alternatedTo . '" >', false);
+            $response->assertSee($alternatedTo . ' <small><i class="far fa-clock fa-sm"></i>', false);
         }
     }
 
