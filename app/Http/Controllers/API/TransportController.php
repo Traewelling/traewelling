@@ -120,6 +120,7 @@ class TransportController extends ResponseController
             return $this->sendResponse([
                 'distance' => $trainCheckinResponse['distance'],
                 'duration' => $trainCheckinResponse['duration'],
+                'statusId' => $trainCheckinResponse['statusId'],
                 'points' => $trainCheckinResponse['points'],
                 'lineName' => $trainCheckinResponse['lineName'],
                 'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
@@ -143,7 +144,7 @@ class TransportController extends ResponseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
-        
+
         $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
         if ($nearestStation === null) {
             return $this->sendError(__("controller.transport.no-station-found"), 404);
