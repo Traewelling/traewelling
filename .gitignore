@@ -112,3 +112,7 @@ fabric.properties
 
 
 artisan
+public/js/admin.js
+public/js/app.js
+public/css/admin.css
+public/css/app.css
