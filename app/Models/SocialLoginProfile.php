@@ -5,7 +5,8 @@ namespace App\Models;
 use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
-class SocialLoginProfile extends Model {
+class SocialLoginProfile extends Model
+{
 
     use Encryptable;
 

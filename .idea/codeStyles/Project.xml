@@ -4,18 +4,24 @@
       <option name="ALIGN_KEY_VALUE_PAIRS" value="true" />
       <option name="ALIGN_ASSIGNMENTS" value="true" />
       <option name="ALIGN_INLINE_COMMENTS" value="true" />
+      <option name="ANONYMOUS_BRACE_STYLE" value="2" />
+      <option name="UPPER_CASE_NULL_CONST" value="true" />
+      <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
+      <option name="VARIABLE_NAMING_STYLE" value="CAMEL_CASE" />
+      <option name="SPACE_BEFORE_CLOSURE_LEFT_PARENTHESIS" value="false" />
+      <option name="FORCE_SHORT_DECLARATION_ARRAY_STYLE" value="true" />
     </PHPCodeStyleSettings>
     <editorconfig>
       <option name="ENABLED" value="false" />
     </editorconfig>
     <codeStyleSettings language="PHP">
-      <option name="CLASS_BRACE_STYLE" value="1" />
       <option name="METHOD_BRACE_STYLE" value="1" />
       <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
       <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
       <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
       <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
       <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
+      <option name="WRAP_ON_TYPING" value="0" />
     </codeStyleSettings>
   </code_scheme>
 </component>

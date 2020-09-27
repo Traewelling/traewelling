@@ -8,7 +8,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail {
+class User extends Authenticatable implements MustVerifyEmail
+{
 
     use Notifiable, HasApiTokens, HasFactory;
 
@@ -66,6 +67,5 @@ class User extends Authenticatable implements MustVerifyEmail {
     public function sessions() {
         return $this->hasMany(Session::class);
     }
-
 
 }
