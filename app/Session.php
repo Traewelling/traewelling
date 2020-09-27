@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Session extends Model
 {
-    public function user() {
+    protected $keyType = 'string';
+
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 }

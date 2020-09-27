@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li class="list-inline-item">
-                <a href="{{ route('statuses.byEvent', ['slug' => $event->slug]) }}">
+                <a href="{{ route('statuses.byEvent', ['event' => $event->slug]) }}">
                     <i class="fas fa-list"></i>
                 </a>
             </li>
