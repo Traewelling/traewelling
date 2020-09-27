@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Follow;
-use App\HafasTrip;
-use App\Like;
-use App\MastodonServer;
+use App\Models\Follow;
+use App\Models\HafasTrip;
+use App\Models\Like;
+use App\Models\MastodonServer;
 use App\Notifications\UserFollowed;
-use App\SocialLoginProfile;
-use App\Status;
-use App\TrainCheckin;
-use App\User;
+use App\Models\SocialLoginProfile;
+use App\Models\Status;
+use App\Models\TrainCheckin;
+use App\Models\User;
 use Carbon\Carbon;
 use \Exception;
 use Illuminate\Http\Request;

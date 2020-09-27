@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\PrivacyAgreement;
-use App\User;
+use App\Models\PrivacyAgreement;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserRedirectionTest extends TestCase
@@ -36,7 +35,7 @@ class UserRedirectionTest extends TestCase
      */
     public function user_can_delete_account() {
         // Given: A new user
-        $user    = factory(User::class)->create();
+        $user    = User::factory()->create();
         $user_id = $user->id;
 
         // When: They delete their account
@@ -58,7 +57,7 @@ class UserRedirectionTest extends TestCase
      */
     public function gdpr_interception() {
         // Creates user
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         // Has not yet signed -> Redirection.
         $response = $this->actingAs($user)

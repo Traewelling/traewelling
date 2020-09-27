@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Event;
-use App\HafasTrip;
-use App\MastodonServer;
-use App\PolyLine;
-use App\Status;
-use App\TrainCheckin;
-use App\TrainStations;
+use App\Models\Event;
+use App\Models\HafasTrip;
+use App\Models\MastodonServer;
+use App\Models\PolyLine;
+use App\Models\Status;
+use App\Models\TrainCheckin;
+use App\Models\TrainStations;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;

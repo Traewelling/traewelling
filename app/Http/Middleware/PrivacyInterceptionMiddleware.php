@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\PrivacyAgreement;
+use App\Models\PrivacyAgreement;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

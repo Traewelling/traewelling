@@ -2,15 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use DateTime;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\TransportController;
-use App\Http\Controllers\StatusController as StatusBackend;
-
-use Barryvdh\DomPDF\Facade as PDF;
 
 class ExportTripsTest extends TestCase
 {
@@ -21,7 +17,7 @@ class ExportTripsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user   = factory(User::class)->create();
+        $this->user   = User::factory()->create();
             $response = $this->actingAs($this->user)
                             ->post('/gdpr-ack');
             $response->assertStatus(302);

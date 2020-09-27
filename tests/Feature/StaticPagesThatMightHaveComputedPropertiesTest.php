@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -55,7 +55,7 @@ class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase
 
     public function testProfilePageGet() {
         // GIVEN: A gdpr-acked user
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);

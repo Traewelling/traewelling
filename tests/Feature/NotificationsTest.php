@@ -3,15 +3,11 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\TransportController;
-use App\Http\Controllers\StatusController as StatusBackend;
-use App\Like;
-use App\Status;
-use App\TrainCheckin;
+use App\Models\Like;
 use DateTime;
-use Illuminate\Support\Facades\DB;
-use App\User;
+use App\Models\User;
+use Exception;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,13 +20,18 @@ class NotificationsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
         $response   = $this->actingAs($this->user)
                         ->post('/gdpr-ack');
     }
 
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
+     * @param $stationname
+     * @param $ibnr
+     * @param DateTime $now
+     * @param User|null $user
+     * @throws Exception
      */
     protected function checkin($stationname, $ibnr, DateTime $now, User $user = null) {
         if($user == null) { $user = $this->user; }
@@ -96,7 +97,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(1); // one like
         $notifications->assertJsonFragment([
             'type' => "App\\Notifications\\StatusLiked",
-            'notifiable_type' => "App\\User",
+            'notifiable_type' => "App\\Models\\User",
             'notifiable_id' => (string) $this->user->id
         ]);
     }
@@ -126,7 +127,7 @@ class NotificationsTest extends TestCase
     public function following_a_user_should_spawn_a_notification() {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob   = factory(User::class)->create();
+        $bob   = User::factory()->create();
         $this->actingAs($bob)->post('/gdpr-ack');
 
         // When: Alice follows Bob
@@ -140,7 +141,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
             'type' => "App\\Notifications\\UserFollowed",
-            'notifiable_type' => "App\\User",
+            'notifiable_type' => "App\\Models\\User",
             'notifiable_id' => (string) $bob->id
         ]);
     }
@@ -149,7 +150,7 @@ class NotificationsTest extends TestCase
     public function unfollowing_bob_should_remove_the_notification() {
         // Given: Users Alice and Bob and Alice follows Bob
         $alice = $this->user;
-        $bob   = factory(User::class)->create();
+        $bob   = User::factory()->create();
         $this->actingAs($bob)->post('/gdpr-ack');
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
         $follow->assertStatus(201);
@@ -168,14 +169,14 @@ class NotificationsTest extends TestCase
     /** @test */
     public function bob_joining_on_alices_connection_should_spawn_a_notification() {
         // GIVEN: Alice checked-into a train.
-        $alice    = factory(User::class)->create();
+        $alice    = User::factory()->create();
         $response = $this->actingAs($alice)
                         ->post('/gdpr-ack');
         $now      = new DateTime("+2 day 7:30");
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
-        $bob      = factory(User::class)->create();
+        $bob      = User::factory()->create();
         $response = $this->actingAs($bob)
                         ->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);
@@ -187,7 +188,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(1); // One other user on that train
         $notifications->assertJsonFragment([
             'type' => "App\\Notifications\\UserJoinedConnection",
-            'notifiable_type' => "App\\User",
+            'notifiable_type' => "App\\Models\\User",
             'notifiable_id' => (string) $alice->id
         ]);
 
@@ -236,7 +237,7 @@ class NotificationsTest extends TestCase
     public function deleting_a_user_should_delete_its_notifications() {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob   = factory(User::class)->create();
+        $bob   = User::factory()->create();
         $this->actingAs($bob)->post('/gdpr-ack');
 
         // When: Alice follows Bob
@@ -250,7 +251,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
             'type' => "App\\Notifications\\UserFollowed",
-            'notifiable_type' => "App\\User",
+            'notifiable_type' => "App\\Models\\User",
             'notifiable_id' => (string) $bob->id
         ]);
 

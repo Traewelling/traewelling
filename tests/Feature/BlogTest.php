@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Blogpost;
+use App\Models\Blogpost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use function substr_count;

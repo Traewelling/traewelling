@@ -2,11 +2,11 @@
 
 namespace App\Console;
 
-use App\SocialLoginProfile;
-use App\User;
+use App\Models\SocialLoginProfile;
+use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {

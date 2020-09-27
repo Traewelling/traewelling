@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -12,7 +12,7 @@ abstract class TestCase extends BaseTestCase
     public function createGDPRAckedUser(): User {
 
         // Creates user
-        $user     = factory(User::class)->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
 

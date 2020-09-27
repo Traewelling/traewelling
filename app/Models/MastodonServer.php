@@ -1,11 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MastodonServer extends Model
-{
+class MastodonServer extends Model {
 
     protected $fillable = [
         'domain',

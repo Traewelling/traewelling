@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PrivacyAgreement;
+use App\Models\PrivacyAgreement;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

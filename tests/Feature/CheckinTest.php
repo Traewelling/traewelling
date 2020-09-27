@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
@@ -51,7 +51,7 @@ class CheckinTest extends TestCase
     public function stationboardByLocationPositiveTest()
     {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = factory(User::class)->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)
             ->post('/gdpr-ack');
         $response->assertStatus(302);
@@ -87,7 +87,7 @@ class CheckinTest extends TestCase
     public function stationboardByLocationNegativeTest()
     {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = factory(User::class)->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)
             ->post('/gdpr-ack');
         $response->assertStatus(302);
@@ -165,7 +165,7 @@ class CheckinTest extends TestCase
         );
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = factory(User::class)->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
@@ -204,7 +204,7 @@ class CheckinTest extends TestCase
      */
     public function testCheckinSuccessFlash() {
         // GIVEN: A gdpr-acked user
-        $user     = factory(User::class)->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
