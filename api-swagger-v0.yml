@@ -1195,6 +1195,7 @@ components:
         next_page_url:
           type: string
           example: "https://api.traewelling.de/v0/statuses?page=2"
+          nullable: true
         path:
           type: string
           example: "https://api.traewelling.de/v0/statuses"
@@ -1204,6 +1205,7 @@ components:
         prev_page_url:
           type: string
           example: null
+          nullable: true
         to:
           type: integer
           example: 15
@@ -1244,6 +1246,7 @@ components:
         next_page_url:
           type: string
           example: "https://api.traewelling.de/v0/statuses/1/likes?page=2"
+          nullable: true
         path:
           type: string
           example: "https://api.traewelling.de/v0/statuses"
@@ -1253,6 +1256,7 @@ components:
         prev_page_url:
           type: string
           example: null
+          nullable: true
         to:
           type: integer
           example: 15
@@ -1283,6 +1287,7 @@ components:
           type: string
           maxLength: 280
           example: "This is my first checkin!"
+          nullable: true
         type:
           type: string
           example: "hafas"
@@ -1291,10 +1296,10 @@ components:
           nullable: true
           example: 1
         likes_count:
-          type: string
+          type: integer
           example: "15"
           description: Show how many accounts liked this status
-        liked:
+        favorited:
           type: boolean
           example: true
           description: Shows whether the user has liked this status.
@@ -1442,9 +1447,10 @@ components:
               type: string
               description: actually array but almost always empty. Don't know what it does.
             delay:
-              type: string
+              type: integer
               example: "60"
               description: Delay in seconds
+              nullable: true
             platform:
               type: string
     hafas_location:
@@ -1511,6 +1517,7 @@ components:
         delay:
           type: integer
           example: "0"
+          nullable: true
         hafas_trip:
           $ref: '#/components/schemas/hafas_trip'
     hafas_trip:
@@ -1543,6 +1550,7 @@ components:
         delay:
           type: integer
           example: "0"
+          nullable: true
     event:
       type: object
       nullable: true
