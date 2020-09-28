@@ -11,32 +11,20 @@
 |
 */
 
+Route::view('/', 'welcome')->name('static.welcome');
+Route::view('/about', 'about')->name('static.about');
+Route::view('/imprint', 'imprint')->name('static.imprint');
 
 Route::get('/lang/{lang?}', [
     'uses' => 'FrontendStaticController@changeLanguage',
-    'as' => 'static.lang'
-]);
-
-Route::get('/', [
-    'uses' => 'FrontendStaticController@showFrontpage',
-    'as' => 'static.welcome',
-    'middleware' => 'guest'
-]);
-
-Route::get('/imprint', [
-    'uses' => 'FrontendStaticController@showImprint',
-    'as' => 'static.imprint'
+    'as'   => 'static.lang'
 ]);
 
 Route::get('/privacy', [
     'uses' => 'PrivacyAgreementController@intercept',
-    'as' => 'static.privacy'
+    'as'   => 'static.privacy'
 ]);
 
-Route::get('/about', [
-    'uses' => 'FrontendStaticController@showAbout',
-    'as' => 'static.about'
-]);
 
 Route::get('/profile/{username}', [
     'uses' => 'FrontendUserController@getProfilePage',
@@ -58,8 +46,8 @@ Route::get('/statuses/active', [
     'as'   => 'statuses.active',
 ]);
 Route::get('/statuses/event/{eventSlug}', [
-    'uses'  => 'FrontendStatusController@statusesByEvent',
-    'as'    => 'statuses.byEvent'
+    'uses' => 'FrontendStatusController@statusesByEvent',
+    'as'   => 'statuses.byEvent'
 ]);
 
 Auth::routes(['verify' => true]);
@@ -68,26 +56,26 @@ Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 Route::get('/status/{id}', [
     'uses' => 'FrontendStatusController@getStatus',
-    'as' => 'statuses.get'
+    'as'   => 'statuses.get'
 ]);
 
 Route::get('/blog', [
-    'uses'  => 'BlogController@all',
-    'as'    => 'blog.all'
+    'uses' => 'BlogController@all',
+    'as'   => 'blog.all'
 ]);
 Route::get('/blog/{slug}', [
-    'uses'  => 'BlogController@show',
-    'as'    => 'blog.show'
+    'uses' => 'BlogController@show',
+    'as'   => 'blog.show'
 ]);
 Route::get('/blog/cat/{category}', [
-    'uses'  => 'BlogController@category',
-    'as'    => 'blog.category'
+    'uses' => 'BlogController@category',
+    'as'   => 'blog.category'
 ]);
 
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function() {
     Route::get('/gdpr-intercept', [
         'uses' => 'PrivacyAgreementController@intercept',
         'as'   => 'gdpr.intercept'
@@ -107,40 +95,40 @@ Route::middleware(['auth'])->group(function () {
 /**
  * Routes for the admins.
  */
-Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
 
     Route::get('/', [
-        'uses'  => 'FrontendStatusController@usageboard',
-        'as'    => 'admin.dashboard'
+        'uses' => 'FrontendStatusController@usageboard',
+        'as'   => 'admin.dashboard'
     ]);
 
     Route::get('/events', [
-        'uses'  => 'FrontendEventController@index',
-        'as'    => 'events.all'
+        'uses' => 'FrontendEventController@index',
+        'as'   => 'events.all'
     ]);
 
     Route::get('/events/new', [
-        'uses'  => 'FrontendEventController@newForm',
-        'as'    => 'events.newform'
+        'uses' => 'FrontendEventController@newForm',
+        'as'   => 'events.newform'
     ]);
 
     Route::post('/events/new', [
-        'uses'  => 'FrontendEventController@store',
-        'as'    => 'events.store'
+        'uses' => 'FrontendEventController@store',
+        'as'   => 'events.store'
     ]);
 
     Route::get('/events/{slug}/delete', [
-        'uses'  => 'FrontendEventController@destroy',
-        'as'    => 'events.delete'
+        'uses' => 'FrontendEventController@destroy',
+        'as'   => 'events.delete'
     ]);
 
     Route::get('/events/{slug}', [
-        'uses'  => 'FrontendEventController@show',
-        'as'    => 'events.show'
+        'uses' => 'FrontendEventController@show',
+        'as'   => 'events.show'
     ]);
     Route::put('/events/{slug}', [
-        'uses'  => 'FrontendEventController@update',
-        'as'    => 'events.update'
+        'uses' => 'FrontendEventController@update',
+        'as'   => 'events.update'
     ]);
 });
 
@@ -150,8 +138,8 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function () {
 Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/destroy/provider', [
-        'uses'  => 'SocialController@destroyProvider',
-        'as'    => 'provider.destroy',
+        'uses' => 'SocialController@destroyProvider',
+        'as'   => 'provider.destroy',
     ]);
 
     Route::post('/settings/password', [
@@ -178,7 +166,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/settings/deleteProfilePicture', [
         'uses' => 'UserController@deleteProfilePicture',
-        'as' => 'settings.delete-profile-picture'
+        'as'   => 'settings.delete-profile-picture'
     ]);
 
     Route::get('/settings/delsession', [
@@ -208,7 +196,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/edit', [
         'uses' => 'FrontendStatusController@EditStatus',
-        'as' => 'edit',
+        'as'   => 'edit',
     ]);
 
     Route::post('/createlike', [
@@ -242,65 +230,65 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
 
     Route::get('/transport/train/autocomplete/{station}', [
-        'uses'  => 'FrontendTransportController@TrainAutocomplete',
-        'as'    => 'transport.train.autocomplete',
+        'uses' => 'FrontendTransportController@TrainAutocomplete',
+        'as'   => 'transport.train.autocomplete',
     ]);
 
     Route::get('/transport/bus/autocomplete/{station}', [
-        'uses'  => 'FrontendTransportController@BusAutocomplete',
-        'as'    => 'transport.bus.autocomplete',
+        'uses' => 'FrontendTransportController@BusAutocomplete',
+        'as'   => 'transport.bus.autocomplete',
     ]);
 
     Route::get('/trains/stationboard', [
-        'uses'  => 'FrontendTransportController@TrainStationboard',
-        'as'    => 'trains.stationboard',
+        'uses' => 'FrontendTransportController@TrainStationboard',
+        'as'   => 'trains.stationboard',
     ]);
 
     Route::get('/trains/nearby', [
-        'uses'  => 'FrontendTransportController@StationByCoordinates',
-        'as'    => 'trains.nearby',
+        'uses' => 'FrontendTransportController@StationByCoordinates',
+        'as'   => 'trains.nearby',
     ]);
 
     Route::get('/trains/trip', [
-        'uses'  => 'FrontendTransportController@TrainTrip',
-        'as'    => 'trains.trip'
+        'uses' => 'FrontendTransportController@TrainTrip',
+        'as'   => 'trains.trip'
     ]);
 
     Route::get('/trains/fast', [
-        'uses'  => 'FrontendTransportController@FastTripAccess',
-        'as'    => 'trains.fast'
+        'uses' => 'FrontendTransportController@FastTripAccess',
+        'as'   => 'trains.fast'
     ]);
 
     Route::post('/trains/checkin', [
-        'uses'  => 'FrontendTransportController@TrainCheckin',
-        'as'    => 'trains.checkin'
+        'uses' => 'FrontendTransportController@TrainCheckin',
+        'as'   => 'trains.checkin'
     ]);
 
     Route::get('/trains/setHome/{ibnr}', [
-        'uses'  => 'FrontendTransportController@setHome',
-        'as'    => 'user.setHome'
+        'uses' => 'FrontendTransportController@setHome',
+        'as'   => 'user.setHome'
     ]);
 
     Route::get('/busses/stationboard', [
-        'uses'  => 'FrontendTransportController@trainStationboard',
-        'as'    => 'busses.stationboard'
+        'uses' => 'FrontendTransportController@trainStationboard',
+        'as'   => 'busses.stationboard'
     ]);
 
     Route::get('/mastodon/test', [
-        'uses'  => 'SocialController@testMastodon',
+        'uses' => 'SocialController@testMastodon',
     ]);
 
     Route::get('/notifications/latest', [
-        'uses'  => 'NotificationController@renderLatest',
-        'as'    => 'notifications.latest'
+        'uses' => 'NotificationController@renderLatest',
+        'as'   => 'notifications.latest'
     ]);
 
     Route::post('/notifications/toggleReadState/{id}', [
-        'uses'  => 'NotificationController@toggleReadState',
-        'as'    => 'notifications.toggleReadState'
+        'uses' => 'NotificationController@toggleReadState',
+        'as'   => 'notifications.toggleReadState'
     ]);
     Route::post('/notifications/readAll', [
-        'uses'  => 'NotificationController@readAll',
-        'as'    => 'notifications.readAll'
+        'uses' => 'NotificationController@readAll',
+        'as'   => 'notifications.readAll'
     ]);
 });
