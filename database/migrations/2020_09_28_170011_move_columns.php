@@ -14,7 +14,6 @@ class MoveColumns extends Migration
      */
     public function up()
     {
-        return;
         DB::statement("ALTER TABLE `follows` CHANGE `created_at` `created_at` TIMESTAMP NULL DEFAULT NULL AFTER `follow_id`;");
         DB::statement("ALTER TABLE `follows` CHANGE `updated_at` `updated_at` TIMESTAMP NULL DEFAULT NULL AFTER `created_at`;");
 
