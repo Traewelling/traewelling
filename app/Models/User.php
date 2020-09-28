@@ -36,7 +36,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function averageSpeed() {
+    protected $appends = [
+        'averageSpeed'
+    ];
+
+    public function getAverageSpeedAttribute() {
         return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }
 
