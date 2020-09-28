@@ -76,7 +76,6 @@ class FrontendUserController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
-     * @todo VALIDATE
      */
     public function DestroyFollow(Request $request) {
         $validated      = $request->validate([
@@ -91,9 +90,6 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    /**
-     * @todo VALIDATE
-     */
     public function updateProfilePicture(Request $request)
     {
         $avatar                 = $request->input('image');

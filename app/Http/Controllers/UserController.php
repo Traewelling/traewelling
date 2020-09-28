@@ -205,7 +205,8 @@ class UserController extends Controller
         }
 
         $user->socialProfile()->delete();
-        //$user->follows()->delete(); This would delete the user not. When PR #110 is merged the DB will delete these automaticly
+        //This would delete the user not. When PR #110 is merged the DB will delete these automaticly
+        //$user->follows()->delete();
         //$user->followers()->delete();
         DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
 
@@ -297,8 +298,9 @@ class UserController extends Controller
      * @return bool
      */
     public static function createFollow(User $user, User $userToFollow): bool {
-        if (self::isFollowing($user, $userToFollow))
+        if (self::isFollowing($user, $userToFollow)) {
             return false;
+        }
 
         $follow = Follow::create([
                                      'user_id'   => $user->id,
@@ -317,8 +319,9 @@ class UserController extends Controller
      * @return bool
      */
     public static function destroyFollow(User $user, User $userToUnfollow): bool {
-        if (!self::isFollowing($user, $userToUnfollow))
+        if (!self::isFollowing($user, $userToUnfollow)) {
             return false;
+        }
         Follow::where('user_id', $user->id)->where('follow_id', $userToUnfollow->id)->delete();
         $user->load('follows');
         return self::isFollowing($user, $userToUnfollow) == false;
