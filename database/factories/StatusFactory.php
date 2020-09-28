@@ -1,18 +1,29 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
-use App\User;
-use App\Status;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\Models\Status;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
+class StatusFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Status::class;
 
-$factory->define(Status::class, function (Faker $faker) {
-    return [
-        'body' => $faker->paragraph,
-        'user_id' => function () {
-            return factory(App\Status::class)->create()->id;
-        }
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition() {
+        return [
+            'body'    => $this->faker->paragraph,
+            'user_id' => User::factory()
+        ];
+    }
+}

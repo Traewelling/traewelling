@@ -1,38 +1,35 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TrainCheckin extends Model
 {
+
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function status()
-    {
-        return $this->belongsTo('App\Status');
+    public function status() {
+        return $this->belongsTo(Status::class);
     }
 
-    public function Origin()
-    {
-        return $this->hasOne('App\TrainStations', 'ibnr', 'origin');
+    public function Origin() {
+        return $this->hasOne(TrainStations::class, 'ibnr', 'origin');
     }
 
-    public function Destination()
-    {
-        return $this->hasOne('App\TrainStations', 'ibnr', 'destination');
+    public function Destination() {
+        return $this->hasOne(TrainStations::class, 'ibnr', 'destination');
     }
 
-    public function HafasTrip()
-    {
-        return $this->hasone('App\HafasTrip', 'trip_id', 'trip_id');
+    public function HafasTrip() {
+        return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getMapLines()
-    {
+    public function getMapLines() {
         $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
         if ($hafas === null) {
-            $origin      = $this->Origin()->first();
+            $origin = $this->Origin()->first();
+
             $destination = $this->Destination()->first();
             $route       = [];
             $route[0]    = [$origin->longitude, $origin->latitude];
@@ -45,7 +42,7 @@ class TrainCheckin extends Model
         $polyline = json_decode($hafas->polyline);
 
         // Bei manchen Posts ist das Feld leer.
-        if(!isset($polyline->features)) {
+        if (!isset($polyline->features)) {
             return json_encode([]);
         }
 

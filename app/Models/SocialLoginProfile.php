@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
 class SocialLoginProfile extends Model
 {
+
     use Encryptable;
 
     protected $fillable = [
@@ -16,9 +17,9 @@ class SocialLoginProfile extends Model
         'mastodon_server'
     ];
 
-    protected $encryptable =  [
-      'twitter_token',
-      'twitter_tokenSecret',
-      'mastodon_token'
+    protected $encryptable = [
+        'twitter_token',
+        'twitter_tokenSecret',
+        'mastodon_token'
     ];
 }

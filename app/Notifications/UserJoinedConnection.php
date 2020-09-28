@@ -3,8 +3,8 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
-use App\Status;
-use App\User;
+use App\Models\Status;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

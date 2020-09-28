@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -12,9 +12,9 @@ abstract class TestCase extends BaseTestCase
     public function createGDPRAckedUser(): User {
 
         // Creates user
-        $user     = factory(User::class)->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
+        $user = User::factory()->create();
+        $this->actingAs($user)
+             ->post('/gdpr-ack');
 
         return $user;
     }
@@ -37,7 +37,7 @@ abstract class TestCase extends BaseTestCase
      */
     public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
         $requestDateMinusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
-        $requestDatePlusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
+        $requestDatePlusOneDay  = (clone $requestDate)->add(new \DateInterval('P1D'));
 
         // All Hafas Trips should have four pipe characters
         $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
@@ -49,7 +49,7 @@ abstract class TestCase extends BaseTestCase
         ]);
 
         $ret = $fourPipes && $rightDate;
-        if(!$ret) {
+        if (!$ret) {
             echo "The following Hafas Trip did not match our expectations:";
             dd($hafastrip);
         }

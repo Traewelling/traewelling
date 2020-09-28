@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\HafasTrip;
-use App\Like;
-use App\Status;
-use App\TrainCheckin;
-use App\TrainStations;
+use App\Models\HafasTrip;
+use App\Models\Like;
+use App\Models\Status;
+use App\Models\TrainCheckin;
+use App\Models\TrainStations;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

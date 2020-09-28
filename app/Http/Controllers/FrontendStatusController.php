@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Event;
+use App\Models\Event;
 use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use Carbon\Carbon;

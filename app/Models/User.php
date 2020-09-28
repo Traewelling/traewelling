@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,22 +10,13 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    use Notifiable, HasApiTokens, HasFactory;
+
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'password'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -40,11 +32,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'social_profile'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -58,29 +45,27 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function statuses() {
-        return $this->hasMany('App\Status');
+        return $this->hasMany(Status::class);
     }
 
     public function home() {
-        return $this->hasOne('App\TrainStations', 'id', 'home_id');
+        return $this->hasOne(TrainStations::class, 'id', 'home_id');
     }
 
     public function likes() {
-        return $this->hasMany('App\Like');
+        return $this->hasMany(Like::class);
     }
 
     public function follows() {
-        return $this->hasMany('App\Follow');
+        return $this->hasMany(Follow::class);
     }
 
     public function followers() {
-        return $this->hasMany('App\Follow', 'follow_id', 'id');
+        return $this->hasMany(Follow::class, 'follow_id', 'id');
     }
 
     public function sessions() {
-        return $this->hasMany('App\Session');
+        return $this->hasMany(Session::class);
     }
-
-
 
 }

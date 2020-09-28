@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\SocialLoginProfile;
+use App\Models\SocialLoginProfile;
 use Illuminate\Http\Request;
 use Validator,Redirect,Response,File;
 use Socialite;
-use App\User;
-use App\MastodonServer;
+use App\Models\User;
+use App\Models\MastodonServer;
 use Auth;
 use Mastodon;
 use GuzzleHttp\Exception\ClientException;

@@ -65,7 +65,6 @@ class ApiCheckinTest extends ApiTestCase
         // First: Get a train
         $now         = new DateTime($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
-        $ibnr        = 8000105;
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
                 'when' => $now->format('U')]);

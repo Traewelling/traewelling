@@ -24,7 +24,7 @@
 
 We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
 
-* PHP 7.2 (or higher)
+* PHP 7.3 (or higher)
 * Composer
 * NodeJS and npm
 * A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)

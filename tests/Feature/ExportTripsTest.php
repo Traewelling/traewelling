@@ -2,15 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use DateTime;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\TransportController;
-use App\Http\Controllers\StatusController as StatusBackend;
-
-use Barryvdh\DomPDF\Facade as PDF;
 
 class ExportTripsTest extends TestCase
 {
@@ -21,11 +17,11 @@ class ExportTripsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user   = factory(User::class)->create();
-            $response = $this->actingAs($this->user)
-                            ->post('/gdpr-ack');
-            $response->assertStatus(302);
-            $response->assertRedirect('/');
+        $this->user = User::factory()->create();
+        $response   = $this->actingAs($this->user)
+                           ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
 
         $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070003", new DateTime("+1 day 8:00"));
         $this->checkin("Essen Hbf", "8000098", new DateTime("+2 day 7:30"));
@@ -40,7 +36,7 @@ class ExportTripsTest extends TestCase
     protected function checkin($stationName, $ibnr, DateTime $now) {
         $trainStationboard = TransportController::TrainStationboard($stationName, $now->format('U'), 'nationalExpress');
         $countDepartures   = count($trainStationboard['departures']);
-        if($countDepartures == 0) {
+        if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
             return;
         }
@@ -49,7 +45,7 @@ class ExportTripsTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-              || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
@@ -67,13 +63,13 @@ class ExportTripsTest extends TestCase
         );
 
         // WHEN: User tries to check-in
-        $response = $this->actingAs($this->user)
-            ->post(route('trains.checkin'), [
-                'body' => 'Example Body',
-                'tripID' => $departure->tripId,
-                'start' => $ibnr,
-                'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-            ]);
+        $this->actingAs($this->user)
+             ->post(route('trains.checkin'), [
+                 'body'        => 'Example Body',
+                 'tripID'      => $departure->tripId,
+                 'start'       => $ibnr,
+                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+             ]);
     }
 
     public function test_two_checkins_have_been_created_at_setup() {
@@ -85,29 +81,29 @@ class ExportTripsTest extends TestCase
      */
 
     public function test_pdf_export() {
-        $pdfResponse = $this->actingAs($this->user)
+        $this->actingAs($this->user)
              ->get(route('export.generate'), [
-                 'begin' => date('Y-m-d', time()), // now
-                 'end' => date('Y-m-d', time() + 4*24*60*60), // in four days
+                 'begin'    => date('Y-m-d', time()), // now
+                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
                  'filetype' => 'pdf'
              ]);
     }
 
     public function test_json_export() {
-        $jsonResponse = $this->actingAs($this->user)
+        $this->actingAs($this->user)
              ->get('/export-generate', [
-                 'begin' => date('Y-m-d', time()), // now
-                 'end' => date('Y-m-d', time() + 4*24*60*60), // in four days
+                 'begin'    => date('Y-m-d', time()), // now
+                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
                  'filetype' => 'json'
              ]);
     }
 
     public function test_csv_export() {
         $this->followingRedirects();
-        $csvResponse = $this->actingAs($this->user)
+        $this->actingAs($this->user)
              ->get(route('export.generate'), [
-                 'begin' => date('Y-m-d', time()), // now
-                 'end' => date('Y-m-d', time() + 4*24*60*60), // in four days
+                 'begin'    => date('Y-m-d', time()), // now
+                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
                  'filetype' => 'csv'
              ]);
     }
