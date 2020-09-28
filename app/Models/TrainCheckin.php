@@ -8,7 +8,7 @@ class TrainCheckin extends Model
 {
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $dates = ['departure', 'arrival'];
+    protected $dates  = ['departure', 'arrival'];
 
     public function status() {
         return $this->belongsTo(Status::class);
