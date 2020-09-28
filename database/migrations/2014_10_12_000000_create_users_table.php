@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('points')->default(0);
             $table->boolean('always_dbl')->default(false);
             $table->integer('home_id')->unsigned()
-                ->references('id')->on('train_stations')->default(0);
+                ->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

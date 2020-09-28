@@ -14,8 +14,7 @@ class ConnectStatusesAndEvents extends Migration
     public function up()
     {
         Schema::table('statuses', function (Blueprint $table) {
-            $table->bigInteger('event_id')->nullable(true)->unsigned()
-                ->references('id')->on('events');
+            $table->bigInteger('event_id')->nullable(true)->unsigned();
         });
     }
 

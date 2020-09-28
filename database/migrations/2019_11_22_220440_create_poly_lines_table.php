@@ -15,8 +15,7 @@ class CreatePolyLinesTable extends Migration
     {
         Schema::create('poly_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('hash')
-                ->references('polyline')->on('hafas_trips');
+            $table->string('hash');
             $table->json('polyline');
             $table->timestamps();
         });
