@@ -97,7 +97,7 @@ class StatusController extends Controller
     }
 
     public static function getDashboard ($user) {
-        $userIds = $user->follows()->pluck('follow_id');
+        $userIds = $user->follows->pluck('id');
         $userIds[] = $user->id;
         return Status::with([
                 'event', 'likes', 'user', 'trainCheckin',

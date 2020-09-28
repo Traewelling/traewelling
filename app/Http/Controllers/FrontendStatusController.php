@@ -14,7 +14,6 @@ class FrontendStatusController extends Controller
 {
     public function getDashboard() {
         $user     = Auth::user();
-        $follows  = $user->follows()->get();
         $statuses = StatusBackend::getDashboard($user);
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
@@ -24,7 +23,7 @@ class FrontendStatusController extends Controller
                             )
             );
         }
-        if ($statuses->isEmpty() || $follows->isEmpty()) {
+        if ($statuses->isEmpty() || $user->follows->count() == 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                     ->with('checkin-success', Session::get('checkin-success'));

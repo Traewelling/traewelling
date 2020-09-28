@@ -57,11 +57,11 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function follows() {
-        return $this->hasMany(Follow::class);
+        return $this->belongsToMany(User::class, 'follows', 'user_id', 'follow_id');
     }
 
     public function followers() {
-        return $this->hasMany(Follow::class, 'follow_id', 'id');
+        return $this->belongsToMany(User::class, 'follows', 'user_id', 'user_id');
     }
 
     public function sessions() {
