@@ -10,12 +10,14 @@ use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\User;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Mastodon;
@@ -523,15 +525,19 @@ class TransportController extends Controller
                                         ]);
     }
 
-    public static function getLatestArrivals($user) {
-        return TrainCheckin::with('Status')->whereHas('Status', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-                           ->orderBy('created_at', 'DESC')
-                           ->get()
-                           ->map(function($t) {
-                               return TrainStation::where("ibnr", $t->destination)->first();
-                           })->unique()->take(5);
+    /**
+     * Get the latest TrainStations the user is arrived.
+     * @param User $user
+     * @param int $maxCount
+     * @return Collection
+     */
+    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+        $user->loadMissing(['statuses', 'statuses.trainCheckIn', 'statuses.trainCheckIn.Destination']);
+        return $user->statuses->map(function($status) {
+            return $status->trainCheckIn;
+        })->groupBy('destination')->map(function($checkIns) {
+            return $checkIns->sortByDesc('arrival')->first()->Destination;
+        })->sortByDesc('arrival')->take($maxCount);
     }
 
     public static function SetHome($user, $ibnr) {
