@@ -6,7 +6,6 @@ use App\Models\HafasTrip;
 use App\Models\TrainStations;
 use Illuminate\Database\Seeder;
 
-
 class DatabaseSeeder extends Seeder
 {
     /**

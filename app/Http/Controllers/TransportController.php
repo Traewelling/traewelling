@@ -424,13 +424,17 @@ class TransportController extends Controller
                                                         ['arrival', '>', $trainCheckin->departure],
                                                         ['departure', '<', $trainCheckin->arrival]
                                                     ])->get()->pluck('status.user')
-                                            ->each(function($t) use ($status, $hafas, $originStation, $destinationStation) {
-                                                $t->notify(new UserJoinedConnection($status->id,
-                                                                                    $hafas['linename'],
-                                                                                    $originStation->name,
-                                                                                    $destinationStation->name));
-                                                return $t;
-                                            });
+                                            ->each(
+                                                function($t) use (
+                                                    $status, $hafas,
+                                                    $originStation, $destinationStation
+                                                ) {
+                                                    $t->notify(new UserJoinedConnection($status->id,
+                                                                                        $hafas['linename'],
+                                                                                        $originStation->name,
+                                                                                        $destinationStation->name));
+                                                    return $t;
+                                                });
 
         return [
             'success'              => true,
