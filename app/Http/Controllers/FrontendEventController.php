@@ -16,12 +16,10 @@ class FrontendEventController extends Controller {
     public function index() {
         $events = EventBackend::all();
 
-        $t = time();
-
         return view('admin.event', [
-            'upcoming' => $events->filter(function($e) use ($t) { return $t < strtotime($e->begin); }),
-            'live' => $events->filter(function($e) use ($t) { return strtotime($e->begin) <= $t && strtotime($e->end) >= $t; }),
-            'past' => $events->filter(function($e) use ($t) { return $t > strtotime($e->end); }),
+            'upcoming' => $events->filter(function($event) { return $event->begin->isFuture(); }),
+            'live' => $events->filter(function($event) { return $event->begin->isPast() && $event->end->isFuture(); }),
+            'past' => $events->filter(function($event) { return$event->end->isPast(); }),
         ]);
     }
 

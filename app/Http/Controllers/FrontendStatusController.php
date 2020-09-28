@@ -235,8 +235,8 @@ class FrontendStatusController extends Controller
 
         // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
         for ($i = count($stops) - 1; $i > 0; $i--) {
-            $arrival = $stops[$i]->arrival;
-            if ($arrival != NULL && strtotime($arrival) > time()) {
+            $arrival = Carbon::parse($stops[$i]->arrival);
+            if ($arrival != NULL && $arrival->isFuture()) {
                 $nextStopIndex = $i;
                 continue;
             }

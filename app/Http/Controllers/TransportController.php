@@ -331,7 +331,7 @@ class TransportController extends Controller
         $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
         $user->train_distance += $trainCheckin->distance;
-        $user->train_duration += (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->train_duration += $trainCheckin->duration;
         $user->points         += $trainCheckin->points;
 
         $user->update();
@@ -445,7 +445,7 @@ class TransportController extends Controller
             'alsoOnThisConnection' => $alsoOnThisConnection,
             'lineName'             => $hafas['linename'],
             'distance'             => $trainCheckin->distance,
-            'duration'             => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure),
+            'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];
     }
