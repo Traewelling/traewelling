@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class LikeTableSeeder extends Seeder {
+class LikeTableSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *

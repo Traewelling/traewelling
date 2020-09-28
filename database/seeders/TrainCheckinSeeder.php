@@ -7,7 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Http\Controllers\TransportController;
 use App\Models\User;
 
-class TrainCheckinSeeder extends Seeder {
+class TrainCheckinSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *

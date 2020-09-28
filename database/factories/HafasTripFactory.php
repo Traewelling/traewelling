@@ -8,7 +8,8 @@ use App\Models\TrainStations;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
-class HafasTripFactory extends Factory {
+class HafasTripFactory extends Factory
+{
     /**
      * The name of the factory's corresponding model.
      *
@@ -22,43 +23,43 @@ class HafasTripFactory extends Factory {
      * @return array
      */
     public function definition() {
-        $stops = [
+        $stops     = [
             TrainStations::all()->random(),
             TrainStations::all()->random(),
             TrainStations::all()->random(),
             TrainStations::all()->random(),
         ];
-        $features = [];
+        $features  = [];
         $stopOvers = [];
-        $time = -15;
+        $time      = -15;
         foreach ($stops as $stop) {
             array_push($features, [
-                'type' => 'Feature',
+                'type'       => 'Feature',
                 'properties' => [
-                    'type' => 'stop',
-                    'id' => $stop->ibnr,
-                    'name' => $stop->name,
+                    'type'     => 'stop',
+                    'id'       => $stop->ibnr,
+                    'name'     => $stop->name,
                     'location' => [
-                        'type' => 'location',
-                        'id' => $stop->ibnr,
-                        'latitude' => $stop->latitude,
+                        'type'      => 'location',
+                        'id'        => $stop->ibnr,
+                        'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
                     'products' => [
                         'nationalExpress' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'national' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'regionalExp' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'regional' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'suburban' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'bus' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'ferry' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'subway' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'tram' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'taxi' => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'national'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'regionalExp'     => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'regional'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'suburban'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'bus'             => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'ferry'           => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'subway'          => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'tram'            => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'taxi'            => $this->faker->boolean($chanceOfGettingTrue = 50),
                     ],
                 ],
-                'geometry' => [
-                    'type' => 'Point',
+                'geometry'   => [
+                    'type'        => 'Point',
                     'coordinates' => [
                         $stop->longitude,
                         $stop->latitude,
@@ -66,54 +67,54 @@ class HafasTripFactory extends Factory {
                 ]
             ]);
             array_push($stopOvers, [
-                'stop' => [
-                    'type' => 'stop',
-                    'id' => $stop->ibnr,
-                    'name' => $stop->name,
+                'stop'              => [
+                    'type'     => 'stop',
+                    'id'       => $stop->ibnr,
+                    'name'     => $stop->name,
                     'location' => [
-                        'type' => 'location',
-                        'id' => $stop->ibnr,
-                        'latitude' => $stop->latitude,
+                        'type'      => 'location',
+                        'id'        => $stop->ibnr,
+                        'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
                     'products' => [
                         'nationalExpress' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'national' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'regionalExp' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'regional' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'suburban' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'bus' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'ferry' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'subway' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'tram' => $this->faker->boolean($chanceOfGettingTrue = 50),
-                        'taxi' => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'national'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'regionalExp'     => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'regional'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'suburban'        => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'bus'             => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'ferry'           => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'subway'          => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'tram'            => $this->faker->boolean($chanceOfGettingTrue = 50),
+                        'taxi'            => $this->faker->boolean($chanceOfGettingTrue = 50),
                     ],
                 ],
-                'arrival' => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
-                'arrivalDelay' => null,
-                'arrivalPlatform' => null,
-                'departure' => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
-                'departureDelay' => null,
+                'arrival'           => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
+                'arrivalDelay'      => null,
+                'arrivalPlatform'   => null,
+                'departure'         => date('Y-m-d\TH:i:sP', strtotime($time . 'min')),
+                'departureDelay'    => null,
                 'departurePlatform' => null,
             ]);
             $time += 30;
         }
 
-        $polyline = json_encode(['type' => 'FeatureCollection',
-            'features' => $features]);
+        $polyline     = json_encode(['type'     => 'FeatureCollection',
+                                     'features' => $features]);
         $polylineHash = TransportController::getPolylineHash($polyline);
         return [
-            'trip_id' => $this->faker->unique()->numerify('1|######|##|##|') . date('dmY'),
-            'category' => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,
-            'number' => $this->faker->bothify('??-##'),
-            'linename' => $this->faker->bothify('?? ##'),
-            'origin' => $stops[0]->ibnr,
+            'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . date('dmY'),
+            'category'    => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,
+            'number'      => $this->faker->bothify('??-##'),
+            'linename'    => $this->faker->bothify('?? ##'),
+            'origin'      => $stops[0]->ibnr,
             'destination' => $stops[3]->ibnr,
-            'stopovers' => json_encode($stopOvers),
-            'departure' => date('Y-m-d H:i:s', strtotime('-15min')),
-            'arrival' => date('Y-m-d H:i:s', strtotime('+80min')),
-            'delay' => null,
-            'polyline' => $polylineHash,
+            'stopovers'   => json_encode($stopOvers),
+            'departure'   => date('Y-m-d H:i:s', strtotime('-15min')),
+            'arrival'     => date('Y-m-d H:i:s', strtotime('+80min')),
+            'delay'       => null,
+            'polyline'    => $polylineHash,
         ];
     }
 }

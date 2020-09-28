@@ -6,7 +6,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 
-class FollowTableSeeder extends Seeder {
+class FollowTableSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *
@@ -14,8 +15,8 @@ class FollowTableSeeder extends Seeder {
      */
     public function run() {
         DB::table('follows')->insert([
-            'user_id' => rand(1, 50),
-            'follow_id' => rand(1, 50),
-        ]);
+                                         'user_id'   => rand(1, 50),
+                                         'follow_id' => rand(1, 50),
+                                     ]);
     }
 }

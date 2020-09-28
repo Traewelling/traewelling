@@ -64,11 +64,11 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function TrainStationboard($station, $when = 'now', $travelType = NULL) {
+    public static function TrainStationboard($station, $when = 'now', $travelType = null) {
         if (empty($station)) {
             return false;
         }
-        if ($when === NULL) {
+        if ($when === null) {
             $when = strtotime('-5 minutes');
         }
         $ibnrObject = self::TrainAutocomplete($station);
@@ -76,7 +76,7 @@ class TransportController extends Controller
         $station    = $ibnrObject[0];
 
         if (empty($station['name'])) {
-            return NULL;
+            return null;
         }
         return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
@@ -88,7 +88,7 @@ class TransportController extends Controller
                 return $departure;
             }
         }
-        return NULL;
+        return null;
     }
 
     public static function StationByCoordinates($latitude, $longitude) {
@@ -97,13 +97,13 @@ class TransportController extends Controller
         $json     = json_decode($response->getBody()->getContents());
 
         if (count($json) === 0) {
-            return NULL;
+            return null;
         }
 
         return $json[0];
     }
 
-    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = NULL) {
+    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
         $trainTypes = [
             'suburban' => 'false',
@@ -116,7 +116,7 @@ class TransportController extends Controller
         ];
         $appendix   = '';
 
-        if ($trainType != NULL) {
+        if ($trainType != null) {
             $trainTypes[$trainType] = 'true';
             $appendix               = '&' . http_build_query($trainTypes);
         }
@@ -124,7 +124,7 @@ class TransportController extends Controller
         $json     = json_decode($response->getBody()->getContents());
 
         //remove express trains in filtered results
-        if ($trainType != NULL && $trainType != 'express') {
+        if ($trainType != null && $trainType != 'express') {
             foreach ($json as $key => $item) {
                 if ($item->line->product != $trainType) {
                     unset($json[$key]);
@@ -141,12 +141,12 @@ class TransportController extends Controller
     public static function sortByWhenOrScheduledWhen(array $departuresList): array {
         uasort($departuresList, function($a, $b) {
             $dateA = $a->when;
-            if ($dateA == NULL) {
+            if ($dateA == null) {
                 $dateA = $a->scheduledWhen;
             }
 
             $dateB = $b->when;
-            if ($dateB == NULL) {
+            if ($dateB == null) {
                 $dateB = $b->scheduledWhen;
             }
 
@@ -162,8 +162,8 @@ class TransportController extends Controller
         $train     = $trip->getAttributes();
         $stopovers = json_decode($train['stopovers'], true);
         $offset    = self::searchForId($start, $stopovers);
-        if ($offset === NULL) {
-            return NULL;
+        if ($offset === null) {
+            return null;
         }
         $stopovers   = array_slice($stopovers, $offset + 1);
         $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
@@ -187,7 +187,7 @@ class TransportController extends Controller
                       ->first();
 
         $factor = 1;
-        if ($factorDB != NULL) {
+        if ($factorDB != null) {
             $factor = $factorDB->value;
         }
         $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
@@ -243,7 +243,7 @@ class TransportController extends Controller
                                               $originAttributes['stop']['location']['longitude'],
                                               $destinationAttributes['stop']['location']['latitude'],
                                               $destinationAttributes['stop']['location']['longitude']);
-        if ($polyline !== NULL) {
+        if ($polyline !== null) {
             $distance = 0.0;
             foreach ($polyline as $key => $point) {
                 if ($key === 0) {
@@ -315,10 +315,10 @@ class TransportController extends Controller
         }
 
         // Let's connect our statuses and the events
-        $event = NULL;
+        $event = null;
         if ($eventId != 0) {
             $event = Event::find($eventId);
-            if ($event === NULL) {
+            if ($event === null) {
                 abort(404);
             }
             if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
@@ -339,7 +339,7 @@ class TransportController extends Controller
                 preg_match('/\s/', $hafas['linename']),
                 ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name]
             );
-            if ($event !== NULL) {
+            if ($event !== null) {
                 $postText = trans_choice(
                     'controller.transport.social-post-with-event',
                     preg_match('/\s/', $hafas['linename']),
@@ -353,7 +353,7 @@ class TransportController extends Controller
 
             if (isset($status->body)) {
                 $eventIntercept = "";
-                if ($event !== NULL) {
+                if ($event !== null) {
                     $eventIntercept = __('controller.transport.social-post-for') . '#' . $event->hashtag;
                 }
 
@@ -440,14 +440,14 @@ class TransportController extends Controller
             'lineName'             => $hafas['linename'],
             'distance'             => $trainCheckin->distance,
             'duration'             => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure),
-            'event'                => $event ?? NULL
+            'event'                => $event ?? null
         ];
     }
 
     private static function getHAFAStrip($tripID, $lineName) {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
 
-        if ($trip === NULL) {
+        if ($trip === null) {
             $trip        = new HafasTrip;
             $client      = new Client(['base_uri' => config('trwl.db_rest')]);
             $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
@@ -460,11 +460,11 @@ class TransportController extends Controller
                                                  $json->destination->name,
                                                  $json->destination->location->latitude,
                                                  $json->destination->location->longitude);
-            if ($json->line->name === NULL) {
+            if ($json->line->name === null) {
                 $json->line->name = $json->line->fahrtNr;
             }
 
-            if ($json->line->id === NULL) {
+            if ($json->line->id === null) {
                 $json->line->id = '';
             }
             $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
@@ -491,7 +491,7 @@ class TransportController extends Controller
 
     public static function getTrainStation($ibnr, $name, $latitude, $longitude) {
         $station = TrainStations::where('ibnr', $ibnr)->first();
-        if ($station === NULL) {
+        if ($station === null) {
             $station            = new TrainStations;
             $station->ibnr      = $ibnr;
             $station->name      = $name;
@@ -505,7 +505,7 @@ class TransportController extends Controller
     public static function getPolylineHash($polyline) {
         $hash       = md5($polyline);
         $dbPolyline = PolyLine::where('hash', $hash)->first();
-        if ($dbPolyline === NULL) {
+        if ($dbPolyline === null) {
             $newPolyline           = new PolyLine;
             $newPolyline->hash     = $hash;
             $newPolyline->polyline = $polyline;

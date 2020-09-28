@@ -6,7 +6,8 @@ use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class StatusFactory extends Factory {
+class StatusFactory extends Factory
+{
     /**
      * The name of the factory's corresponding model.
      *
@@ -21,7 +22,7 @@ class StatusFactory extends Factory {
      */
     public function definition() {
         return [
-            'body' => $this->faker->paragraph,
+            'body'    => $this->faker->paragraph,
             'user_id' => User::factory()
         ];
     }
