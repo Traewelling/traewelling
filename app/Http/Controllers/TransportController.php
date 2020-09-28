@@ -471,7 +471,7 @@ class TransportController extends Controller
             if ($json->line->id === null) {
                 $json->line->id = '';
             }
-            $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
+            $polyLineHash = self::getPolylineHash(json_encode($json->polyline))->hash;
 
             $trip->trip_id     = $tripID;
             $trip->category    = $json->line->product;
@@ -493,29 +493,34 @@ class TransportController extends Controller
         return $trip;
     }
 
-    public static function getTrainStation($ibnr, $name, $latitude, $longitude) {
-        $station = TrainStation::where('ibnr', $ibnr)->first();
-        if ($station === null) {
-            $station            = new TrainStation;
-            $station->ibnr      = $ibnr;
-            $station->name      = $name;
-            $station->latitude  = $latitude;
-            $station->longitude = $longitude;
-            $station->save();
-        }
-        return $station;
+    /**
+     * Get the TrainStation Model from Database
+     * @param int $ibnr
+     * @param string $name
+     * @param float $latitude
+     * @param float $longitude
+     * @return TrainStation
+     */
+    public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
+        return TrainStation::updateOrCreate([
+                                                'ibnr'      => $ibnr,
+                                                'name'      => $name,
+                                                'latitude'  => $latitude,
+                                                'longitude' => $longitude
+                                            ]);
     }
 
-    public static function getPolylineHash($polyline) {
-        $hash       = md5($polyline);
-        $dbPolyline = PolyLine::where('hash', $hash)->first();
-        if ($dbPolyline === null) {
-            $newPolyline           = new PolyLine;
-            $newPolyline->hash     = $hash;
-            $newPolyline->polyline = $polyline;
-            $newPolyline->save();
-        }
-        return $hash;
+    /**
+     * Get the PolyLine Model from Database
+     * @param string $polyline The Polyline as a json string given by hafas
+     * @return PolyLine
+     */
+    public static function getPolylineHash(string $polyline): PolyLine {
+        return PolyLine::updateOrCreate([
+                                            'hash' => md5($polyline)
+                                        ], [
+                                            'polyline' => $polyline
+                                        ]);
     }
 
     public static function getLatestArrivals($user) {

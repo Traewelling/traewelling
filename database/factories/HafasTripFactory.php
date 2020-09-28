@@ -102,7 +102,7 @@ class HafasTripFactory extends Factory
 
         $polyline     = json_encode(['type'     => 'FeatureCollection',
                                      'features' => $features]);
-        $polylineHash = TransportController::getPolylineHash($polyline);
+        $polylineHash = TransportController::getPolylineHash($polyline)->hash;
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . date('dmY'),
             'category'    => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,

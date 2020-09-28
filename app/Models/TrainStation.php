@@ -10,8 +10,9 @@ class TrainStation extends Model
 
     use HasFactory;
 
-    protected $hidden = ['created_at', 'updated_at'];
-    protected $casts  = [
+    protected $fillable = ['ibnr', 'name', 'latitude', 'longitude'];
+    protected $hidden   = ['created_at', 'updated_at'];
+    protected $casts    = [
         'latitude'  => 'double',
         'longitude' => 'double'
     ];
