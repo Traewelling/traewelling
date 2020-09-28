@@ -45,6 +45,7 @@ class UserRedirectionTest extends TestCase
 
         // Then: It isn't there anymore.
         $this->expectException(ModelNotFoundException::class);
+        User::firstOrFail($user->id);
     }
 
     /**
