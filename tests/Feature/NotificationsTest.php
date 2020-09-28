@@ -100,7 +100,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonFragment([
                                                'type'            => "App\\Notifications\\StatusLiked",
                                                'notifiable_type' => "App\\Models\\User",
-                                               'notifiable_id'   => (string)$this->user->id
+                                               'notifiable_id'   => (string) $this->user->id
                                            ]);
     }
 
@@ -144,7 +144,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonFragment([
                                                'type'            => "App\\Notifications\\UserFollowed",
                                                'notifiable_type' => "App\\Models\\User",
-                                               'notifiable_id'   => (string)$bob->id
+                                               'notifiable_id'   => (string) $bob->id
                                            ]);
     }
 
@@ -191,7 +191,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonFragment([
                                                'type'            => "App\\Notifications\\UserJoinedConnection",
                                                'notifiable_type' => "App\\Models\\User",
-                                               'notifiable_id'   => (string)$alice->id
+                                               'notifiable_id'   => (string) $alice->id
                                            ]);
 
         /** Deleting A Status Should Remove The UserJoinedConnection Notification. */
@@ -254,7 +254,7 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonFragment([
                                                'type'            => "App\\Notifications\\UserFollowed",
                                                'notifiable_type' => "App\\Models\\User",
-                                               'notifiable_id'   => (string)$bob->id
+                                               'notifiable_id'   => (string) $bob->id
                                            ]);
 
         // When: Bob deletes its account

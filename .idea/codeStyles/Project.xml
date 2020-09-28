@@ -21,6 +21,7 @@
       <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
       <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
       <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
+      <option name="SPACE_AFTER_TYPE_CAST" value="true" />
       <option name="WRAP_ON_TYPING" value="0" />
     </codeStyleSettings>
   </code_scheme>
