@@ -14,11 +14,11 @@ class TrainCheckin extends Model
     }
 
     public function Origin() {
-        return $this->hasOne(TrainStations::class, 'ibnr', 'origin');
+        return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
     }
 
     public function Destination() {
-        return $this->hasOne(TrainStations::class, 'ibnr', 'destination');
+        return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
     }
 
     public function HafasTrip() {

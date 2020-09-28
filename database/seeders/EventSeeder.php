@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use Illuminate\Database\Seeder;
 
 class EventSeeder extends Seeder
@@ -22,7 +22,7 @@ class EventSeeder extends Seeder
                                'url'          => 'https://traewelling.de',
                                'begin'        => date('Y-m-d H:i:s', strtotime('-1 day')),
                                'end'          => date('Y-m-d H:i:s', strtotime('+3 days')),
-                               'trainstation' => TrainStations::all()->random()->ibnr
+                               'trainstation' => TrainStation::all()->random()->ibnr
                            ]);
         $event->save();
     }

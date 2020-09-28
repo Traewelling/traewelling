@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TrainStationsFactory extends Factory
+class TrainStationFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = TrainStations::class;
+    protected $model = TrainStation::class;
 
     /**
      * Define the model's default state.

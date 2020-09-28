@@ -6,7 +6,7 @@ use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

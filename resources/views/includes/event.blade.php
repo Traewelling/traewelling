@@ -10,7 +10,7 @@
             <tr><th class="pl-0">URL:</th><td class="text-break"><a href="{{ $event->url }}">{{ $event->url }} <i class="fas fa-link"></i></a></td></tr>
             <tr><th class="pl-0">Beginn:</th><td class="text-break">{{ $event->begin->format('Y-m-d') }}</td></tr>
             <tr><th class="pl-0">Ende:</th><td class="text-break">{{ $event->end->format('Y-m-d') }}</td></tr>
-            <tr><th class="pl-0">Station:</th><td class="text-break">{{ \App\TrainStations::find($event->trainstation)->name }}</td></tr>
+            <tr><th class="pl-0">Station:</th><td class="text-break">{{ \App\Models\TrainStation::find($event->trainstation)->name }}</td></tr>
         </table>
     </div>
     <div class="card-footer">

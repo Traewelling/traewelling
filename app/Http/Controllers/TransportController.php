@@ -9,7 +9,7 @@ use App\Models\MastodonServer;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
@@ -166,8 +166,8 @@ class TransportController extends Controller
             return null;
         }
         $stopovers   = array_slice($stopovers, $offset + 1);
-        $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
-        $start       = TrainStations::where('ibnr', $train['origin'])->first()->name;
+        $destination = TrainStation::where('ibnr', $train['destination'])->first()->name;
+        $start       = TrainStation::where('ibnr', $train['origin'])->first()->name;
 
         return [
             'train'       => $train,
@@ -494,9 +494,9 @@ class TransportController extends Controller
     }
 
     public static function getTrainStation($ibnr, $name, $latitude, $longitude) {
-        $station = TrainStations::where('ibnr', $ibnr)->first();
+        $station = TrainStation::where('ibnr', $ibnr)->first();
         if ($station === null) {
-            $station            = new TrainStations;
+            $station            = new TrainStation;
             $station->ibnr      = $ibnr;
             $station->name      = $name;
             $station->latitude  = $latitude;
@@ -525,7 +525,7 @@ class TransportController extends Controller
                            ->orderBy('created_at', 'DESC')
                            ->get()
                            ->map(function($t) {
-                               return TrainStations::where("ibnr", $t->destination)->first();
+                               return TrainStation::where("ibnr", $t->destination)->first();
                            })->unique()->take(5);
     }
 

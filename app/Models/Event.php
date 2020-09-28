@@ -28,10 +28,10 @@ class Event extends Model
     ];
 
     public function trainstation() {
-        return $this->hasOne(TrainStations::class, 'trainstation', 'id');
+        return $this->hasOne(TrainStation::class, 'trainstation', 'id');
     }
 
-    public function getTrainstation(): TrainStations {
-        return TrainStations::where("id", "=", $this->trainstation)->first() ?? new TrainStations();
+    public function getTrainstation(): TrainStation {
+        return TrainStation::where("id", "=", $this->trainstation)->first() ?? new TrainStation();
     }
 }

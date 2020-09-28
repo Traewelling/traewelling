@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function home() {
-        return $this->hasOne(TrainStations::class, 'id', 'home_id');
+        return $this->hasOne(TrainStation::class, 'id', 'home_id');
     }
 
     public function likes() {
