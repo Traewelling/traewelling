@@ -21,8 +21,8 @@ class NotificationsTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $response   = $this->actingAs($this->user)
-                        ->post('/gdpr-ack');
+        $this->actingAs($this->user)
+             ->post('/gdpr-ack');
     }
 
     /**
@@ -34,13 +34,15 @@ class NotificationsTest extends TestCase
      * @throws Exception
      */
     protected function checkin($stationname, $ibnr, DateTime $now, User $user = null) {
-        if($user == null) { $user = $this->user; }
+        if ($user == null) {
+            $user = $this->user;
+        }
         $trainStationboard = TransportController::TrainStationboard($stationname,
                                                                     $now->format('U'),
                                                                     'express');
 
         $countDepartures = count($trainStationboard['departures']);
-        if($countDepartures == 0) {
+        if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
         }
@@ -49,7 +51,7 @@ class NotificationsTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-              || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train.
@@ -68,13 +70,13 @@ class NotificationsTest extends TestCase
         );
 
         // WHEN: User tries to check-in
-        $response = $this->actingAs($user)
-            ->post(route('trains.checkin'), [
-                'body' => 'Example Body',
-                'tripID' => $departure->tripId,
-                'start' => $ibnr,
-                'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-            ]);
+        $this->actingAs($user)
+             ->post(route('trains.checkin'), [
+                 'body'        => 'Example Body',
+                 'tripID'      => $departure->tripId,
+                 'start'       => $ibnr,
+                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+             ]);
     }
 
     /** @test */
@@ -96,10 +98,10 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one like
         $notifications->assertJsonFragment([
-            'type' => "App\\Notifications\\StatusLiked",
-            'notifiable_type' => "App\\Models\\User",
-            'notifiable_id' => (string) $this->user->id
-        ]);
+                                               'type'            => "App\\Notifications\\StatusLiked",
+                                               'notifiable_type' => "App\\Models\\User",
+                                               'notifiable_id'   => (string)$this->user->id
+                                           ]);
     }
 
     /** @test */
@@ -110,7 +112,7 @@ class NotificationsTest extends TestCase
 
         $status = $this->user->statuses->first();
         $like   = $this->actingAs($this->user)
-                     ->post(route('like.create'), ['statusId' => $status->id]);
+                       ->post(route('like.create'), ['statusId' => $status->id]);
         $like->assertStatus(201); // Created
 
         // When: The like is removed
@@ -140,10 +142,10 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
-            'type' => "App\\Notifications\\UserFollowed",
-            'notifiable_type' => "App\\Models\\User",
-            'notifiable_id' => (string) $bob->id
-        ]);
+                                               'type'            => "App\\Notifications\\UserFollowed",
+                                               'notifiable_type' => "App\\Models\\User",
+                                               'notifiable_id'   => (string)$bob->id
+                                           ]);
     }
 
     /** @test */
@@ -169,16 +171,16 @@ class NotificationsTest extends TestCase
     /** @test */
     public function bob_joining_on_alices_connection_should_spawn_a_notification() {
         // GIVEN: Alice checked-into a train.
-        $alice    = User::factory()->create();
-        $response = $this->actingAs($alice)
-                        ->post('/gdpr-ack');
-        $now      = new DateTime("+2 day 7:30");
+        $alice = User::factory()->create();
+        $this->actingAs($alice)
+             ->post('/gdpr-ack');
+        $now = new DateTime("+2 day 7:30");
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
         $bob      = User::factory()->create();
         $response = $this->actingAs($bob)
-                        ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);
 
         // THEN: Alice should see that in their notification
@@ -187,10 +189,10 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // One other user on that train
         $notifications->assertJsonFragment([
-            'type' => "App\\Notifications\\UserJoinedConnection",
-            'notifiable_type' => "App\\Models\\User",
-            'notifiable_id' => (string) $alice->id
-        ]);
+                                               'type'            => "App\\Notifications\\UserJoinedConnection",
+                                               'notifiable_type' => "App\\Models\\User",
+                                               'notifiable_id'   => (string)$alice->id
+                                           ]);
 
         /** Deleting A Status Should Remove The UserJoinedConnection Notification. */
 
@@ -250,10 +252,10 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
-            'type' => "App\\Notifications\\UserFollowed",
-            'notifiable_type' => "App\\Models\\User",
-            'notifiable_id' => (string) $bob->id
-        ]);
+                                               'type'            => "App\\Notifications\\UserFollowed",
+                                               'notifiable_type' => "App\\Models\\User",
+                                               'notifiable_id'   => (string)$bob->id
+                                           ]);
 
         // When: Bob deletes its account
         $delete = $this->actingAs($bob)

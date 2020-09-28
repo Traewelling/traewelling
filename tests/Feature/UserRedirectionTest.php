@@ -35,8 +35,7 @@ class UserRedirectionTest extends TestCase
      */
     public function user_can_delete_account() {
         // Given: A new user
-        $user    = User::factory()->create();
-        $user_id = $user->id;
+        $user = User::factory()->create();
 
         // When: They delete their account
         $response = $this->actingAs($user)
@@ -46,7 +45,6 @@ class UserRedirectionTest extends TestCase
 
         // Then: It isn't there anymore.
         $this->expectException(ModelNotFoundException::class);
-        $u = User::firstOrFail($user_id);
     }
 
     /**
