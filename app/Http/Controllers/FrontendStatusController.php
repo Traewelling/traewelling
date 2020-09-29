@@ -154,7 +154,6 @@ class FrontendStatusController extends Controller
 
         return view('status', [
             'status' => $statusResponse,
-            'currentUser' => Auth::user(),
             'time' => $t,
             'title' => __('status.ogp-title', ['name' => $statusResponse->user->username]),
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
@@ -163,8 +162,7 @@ class FrontendStatusController extends Controller
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin' => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image' => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
-            'dtObj' => new \DateTime($statusResponse->trainCheckin->departure),
+            'image' => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
         ]);
     }
 

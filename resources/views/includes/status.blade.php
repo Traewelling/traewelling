@@ -1,3 +1,4 @@
+
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}" data-date="{{formatNewDay(new \DateTime($status->trainCheckin->departure)) }}">
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
@@ -18,7 +19,7 @@
             <ul class="timeline">
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->departure)) }}</span>
+                    <span class="text-trwl float-right">{{ $status->trainCheckin->departure->format('H:i') }}</span>
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
                     <p class="train-status text-muted">
                         <span>
@@ -41,13 +42,13 @@
                         <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
                     @endif
 
-                    @if(time() > strtotime($status->trainCheckin->departure) && time() < strtotime($status->trainCheckin->arrival))
+                    @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}: {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}</p>
                     @endif
                 </li>
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">{{ date('H:i', strtotime($status->trainCheckin->arrival)) }}</span>
+                    <span class="text-trwl float-right">{{ $status->trainCheckin->arrival->format('H:i') }}</span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
                 @if($status->event != null)
@@ -73,7 +74,7 @@
         <span class="float-right like-text">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 @if(Auth::check())
-                    @if($currentUser->id == $status->user_id)
+                    @if(auth()->user()->id == $status->user_id)
                         {{__('user.you')}}
                     @else
                         {{ $status->user->username }}
@@ -83,7 +84,7 @@
                 @endif
             </a>{{__('dates.-on-')}}
             <a href="{{ url('/status/'.$status->id) }}">
-                {{ date('H:i', strtotime($status->created_at)) }}
+                {{ $status->created_at->format('H:i') }}
             </a>
         </span>
         <ul class="list-inline">
@@ -91,17 +92,17 @@
 
             @if(Auth::check())
                 <li class="
-                @if($currentUser->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}" data-selflike="{{ $currentUser->id == $status->user_id }}">
+                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}" data-selflike="{{ auth()->user()->id == $status->user_id }}">
                         <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                             <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}" class="profile-image" alt="{{__('settings.picture')}}">
                         </a>
                     </li>
 
                 <li class="list-inline-item like-text">
-                    <span class="like {{ $status->likes->where('user_id', $currentUser->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
+                    <span class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
-                @if($currentUser->id == $status->user_id)
+                @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
                         <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
                     </li>
