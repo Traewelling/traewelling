@@ -176,6 +176,7 @@ class UserController extends Controller
     //delete sessions from user
     public function deleteSession() {
         $user = Auth::user();
+        Auth::logout();
         foreach ($user->sessions as $session) {
             $session->delete();
         }
