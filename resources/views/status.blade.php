@@ -20,7 +20,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h5>{{__("dates." . $dtObj->format('l')) }}, {{ $dtObj->format('j') }}. {{__("dates." . $dtObj->format('F')) }} {{ $dtObj->format('Y') }}</h5>
+                <h5>{{ $status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY') }}</h5>
                 @include('includes.status')
             </div>
         </div>
