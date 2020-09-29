@@ -505,7 +505,8 @@ class TransportController extends Controller
      */
     public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
         return TrainStation::updateOrCreate([
-                                                'ibnr'      => $ibnr,
+                                                'ibnr'      => $ibnr
+                                            ], [
                                                 'name'      => $name,
                                                 'latitude'  => $latitude,
                                                 'longitude' => $longitude
