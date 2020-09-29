@@ -17,7 +17,7 @@ class AddForeignKeysToUsers extends Migration {
         DB::table('users')->where('home_id', '0')->update(['home_id' => NULL]);
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('home_id')
-                ->references('ibnr')//TODO: Should use 'id' instead...
+                ->references('id')
                 ->on('train_stations')
                 ->onDelete('set null')
                 ->onUpdate('restrict');
