@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +16,8 @@ class FollowTableSeeder extends Seeder
      */
     public function run() {
         DB::table('follows')->insert([
-                                         'user_id'   => rand(1, 50),
-                                         'follow_id' => rand(1, 50),
+                                         'user_id'   => User::all()->random()->id,
+                                         'follow_id' => User::all()->random()->id,
                                      ]);
     }
 }
