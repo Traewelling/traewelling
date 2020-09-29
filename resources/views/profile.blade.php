@@ -12,7 +12,7 @@
                         <strong>{{ __('profile.statistics-for') }} {{ $user->name }}</strong> <small class="font-weight-light">{{ '@'.$user->username }}</small>
                         @if($currentUser)
                             @if($user->id !== $currentUser->id && Auth::check())
-                                @if(Auth::user()->follows->where('follow_id', $user->id)->first() === null)
+                                @if(Auth::user()->follows->where('id', $user->id)->first() === null)
                                     <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                 @else
                                     <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}" data-following="yes">{{__('profile.unfollow')}}</a>

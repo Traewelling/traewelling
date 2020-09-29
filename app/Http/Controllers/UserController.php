@@ -205,8 +205,9 @@ class UserController extends Controller
         }
 
         $user->socialProfile()->delete();
-        $user->follows()->delete();
-        $user->followers()->delete();
+        //This would delete the user not. When PR #110 is merged the DB will delete these automaticly
+        //$user->follows()->delete();
+        //$user->followers()->delete();
         DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
 
 
@@ -291,71 +292,84 @@ class UserController extends Controller
     }
 
     /**
-     * @param User The user who wants to see stuff in their timeline
-     * @param int The user id of the person who is followed
+     * Add $userToFollow to $user's Follower
+     * @param User $user
+     * @param User $userToFollow The user of the person who is followed
+     * @return bool
      */
-    public static function CreateFollow($user, $followId)
-    {
-        $follow = $user->follows()->where('follow_id', $followId)->first();
-        if ($follow) {
+    public static function createFollow(User $user, User $userToFollow): bool {
+        if (self::isFollowing($user, $userToFollow)) {
             return false;
         }
-        $follow            = new Follow();
-        $follow->user_id   = $user->id;
-        $follow->follow_id = $followId;
-        $follow->save();
 
-        User::find($followId)->notify(new UserFollowed($follow));
-        return true;
+        $follow = Follow::create([
+                                     'user_id'   => $user->id,
+                                     'follow_id' => $userToFollow->id
+                                 ]);
+
+        $userToFollow->notify(new UserFollowed($follow));
+        $user->load('follows');
+        return self::isFollowing($user, $userToFollow);
     }
 
     /**
-     * @param User The user who doesn't want to see stuff in their timeline anymore
-     * @param int The user id of the person who was followed and now isn't
+     * Remove $userToUnfollow from $user's Follower
+     * @param User $user
+     * @param User $userToUnfollow The user of the person who was followed and now isn't
+     * @return bool
      */
-    public static function DestroyFollow($user, $followId)
-    {
-        $follow = $user->follows()->where('follow_id', $followId)->where('user_id', $user->id)->first();
-        if ($follow) {
-            $follow->delete();
-            return true;
+    public static function destroyFollow(User $user, User $userToUnfollow): bool {
+        if (!self::isFollowing($user, $userToUnfollow)) {
+            return false;
         }
+        Follow::where('user_id', $user->id)->where('follow_id', $userToUnfollow->id)->delete();
+        $user->load('follows');
+        return self::isFollowing($user, $userToUnfollow) == false;
     }
 
-    public static function getLeaderboard()
-    {
+    /**
+     * Returnes whether $user follows $userFollow
+     * @param User $user
+     * @param User $userFollow
+     * @return bool
+     */
+    private static function isFollowing(User $user, User $userFollow): bool {
+        return $user->follows->contains('id', $userFollow->id);
+    }
+
+    public static function getLeaderboard() {
         $user    = Auth::user();
         $friends = null;
 
         if ($user != null) {
-            $userIds   = $user->follows()->pluck('follow_id');
+            $userIds   = $user->follows->pluck('id');
             $userIds[] = $user->id;
             $friends   = User::select('username',
                                       'train_duration',
                                       'train_distance',
                                       'points')
-                ->where('points', '<>', 0)
-                ->whereIn('id', $userIds)
-                ->orderby('points', 'desc')
-                ->limit(20)
-                ->get();
+                             ->where('points', '<>', 0)
+                             ->whereIn('id', $userIds)
+                             ->orderby('points', 'desc')
+                             ->limit(20)
+                             ->get();
         }
         $users      = User::select('username',
                                    'train_duration',
                                    'train_distance',
                                    'points')
-            ->where('points', '<>', 0)
-            ->orderby('points', 'desc')
-            ->limit(20)
-            ->get();
+                          ->where('points', '<>', 0)
+                          ->orderby('points', 'desc')
+                          ->limit(20)
+                          ->get();
         $kilometers = User::select('username',
                                    'train_duration',
                                    'train_distance',
                                    'points')
-            ->where('points', '<>', 0)
-            ->orderby('train_distance', 'desc')
-            ->limit(20)
-            ->get();
+                          ->where('points', '<>', 0)
+                          ->orderby('train_distance', 'desc')
+                          ->limit(20)
+                          ->get();
 
 
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];

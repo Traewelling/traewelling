@@ -6,7 +6,7 @@ use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -97,7 +97,7 @@ class StatusController extends Controller
     }
 
     public static function getDashboard ($user) {
-        $userIds = $user->follows()->pluck('follow_id');
+        $userIds = $user->follows->pluck('id');
         $userIds[] = $user->id;
         return Status::with([
                 'event', 'likes', 'user', 'trainCheckin',
@@ -139,10 +139,10 @@ class StatusController extends Controller
             return false;
         }
         $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->train_duration -= $trainCheckin->duration;
 
         //Don't subtract points, if status outside of current point calculation
-        if (strtotime($trainCheckin->departure) >= date(strtotime('last thursday 3:14am'))) {
+        if ($trainCheckin->departure->isAfter(Carbon::parse('last thursday 3:14am'))) {
             $user->points -= $trainCheckin->points;
         }
         $user->update();

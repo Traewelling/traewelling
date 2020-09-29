@@ -36,7 +36,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function averageSpeed() {
+    protected $appends = [
+        'averageSpeed'
+    ];
+
+    public function getAverageSpeedAttribute() {
         return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }
 
@@ -49,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function home() {
-        return $this->hasOne(TrainStations::class, 'id', 'home_id');
+        return $this->hasOne(TrainStation::class, 'id', 'home_id');
     }
 
     public function likes() {
@@ -57,11 +61,11 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function follows() {
-        return $this->hasMany(Follow::class);
+        return $this->belongsToMany(User::class, 'follows', 'user_id', 'follow_id');
     }
 
     public function followers() {
-        return $this->hasMany(Follow::class, 'follow_id', 'id');
+        return $this->belongsToMany(User::class, 'follows', 'user_id', 'user_id');
     }
 
     public function sessions() {

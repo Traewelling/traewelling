@@ -239,8 +239,8 @@ window.addEventListener("load", () => {
             "name": "{{$event->name}}",
             "host": "{{$event->host}}",
             "url": "{{$event->url}}",
-            "begin": "{{ date("Y-m-d", strtotime($event->begin)) }}",
-            "end": "{{ date("Y-m-d", strtotime($event->end)) }}",
+            "begin": "{{ $event->begin->format('Y-m-d') }}",
+            "end": "{{ $event->end->format('Y-m-d') }}",
             "ts": {!! $event->getTrainStation() !!},
             "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
             "closestLink": `{!! stationLink($event->getTrainstation()->name) !!}`

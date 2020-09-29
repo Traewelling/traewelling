@@ -28,7 +28,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <p class="mb-0 float-right">
-                        <code class="pr-2">{{ date("Y-m-d", strtotime($blogpost->published_at)) }}</code>
+                        <code class="pr-2">{{ $blogpost->published_at->format('d.m.Y') }}</code>
                     </p>
                     <a href="{{ route('blog.show', ['slug' => $blogpost->slug]) }}">
                         <h3 class="mb-0">{{$blogpost->title}}</h3>

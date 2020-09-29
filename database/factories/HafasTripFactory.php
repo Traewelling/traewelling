@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\HafasTrip;
 use App\Http\Controllers\TransportController;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
@@ -24,10 +24,10 @@ class HafasTripFactory extends Factory
      */
     public function definition() {
         $stops     = [
-            TrainStations::all()->random(),
-            TrainStations::all()->random(),
-            TrainStations::all()->random(),
-            TrainStations::all()->random(),
+            TrainStation::all()->random(),
+            TrainStation::all()->random(),
+            TrainStation::all()->random(),
+            TrainStation::all()->random(),
         ];
         $features  = [];
         $stopOvers = [];
@@ -102,7 +102,7 @@ class HafasTripFactory extends Factory
 
         $polyline     = json_encode(['type'     => 'FeatureCollection',
                                      'features' => $features]);
-        $polylineHash = TransportController::getPolylineHash($polyline);
+        $polylineHash = TransportController::getPolylineHash($polyline)->hash;
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . date('dmY'),
             'category'    => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,

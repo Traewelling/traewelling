@@ -7,19 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class TrainCheckin extends Model
 {
 
-    protected $hidden = ['created_at', 'updated_at'];
-    protected $dates  = ['departure', 'arrival'];
+    protected $hidden  = ['created_at', 'updated_at'];
+    protected $dates   = ['departure', 'arrival', 'created_at', 'updated_at'];
+    protected $appends = ['duration'];
 
     public function status() {
         return $this->belongsTo(Status::class);
     }
 
     public function Origin() {
-        return $this->hasOne(TrainStations::class, 'ibnr', 'origin');
+        return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
     }
 
     public function Destination() {
-        return $this->hasOne(TrainStations::class, 'ibnr', 'destination');
+        return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
     }
 
     public function HafasTrip() {
@@ -67,5 +68,13 @@ class TrainCheckin extends Model
 
         }
         return json_encode($coords);
+    }
+
+    /**
+     * The duration of the journey in minutes
+     * @return int
+     */
+    public function getDurationAttribute() {
+        return $this->arrival->diffInMinutes($this->departure);
     }
 }

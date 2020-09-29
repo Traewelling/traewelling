@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
 use Illuminate\Http\Response;
@@ -54,19 +55,36 @@ class FrontendUserController extends Controller
         ]);
     }
 
-    public function CreateFollow(Request $request)
-    {
-        $createFollowResponse = UserBackend::CreateFollow(Auth::user(), $request['follow_id']);
-        if($createFollowResponse === false) {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function CreateFollow(Request $request) {
+        $validated = $request->validate([
+                                            'follow_id' => ['required', 'exists:users,id']
+                                        ]);
+
+        $userToFollow = User::find($validated['follow_id']);
+
+        $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
+        if ($createFollowResponse === false) {
             return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
         }
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
 
-    public function DestroyFollow(Request $request)
-    {
-        $destroyFollowResponse = UserBackend::DestroyFollow(Auth::user(), $request['follow_id']);
-        if($destroyFollowResponse === false) {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function DestroyFollow(Request $request) {
+        $validated      = $request->validate([
+                                                 'follow_id' => ['required', 'exists:users,id']
+                                             ]);
+        $userToUnfollow = User::find($validated['follow_id']);
+
+        $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
+        if ($destroyFollowResponse === false) {
             return response()->json(['message' => __('controller.user.follow-404')], 409);
         }
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);

@@ -52,7 +52,7 @@
                                             </td>
                                             <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                             <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                            <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
+                                            <td>{{ number($user->averageSpeed) }}<small>km/h</small></td>
                                             <td>{{ $user->points }}</td>
                                         </tr>
                                     @endforeach
@@ -79,7 +79,7 @@
                                             </td>
                                             <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
                                             <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                            <td>{{ number($user->averageSpeed()) }}<small>km/h</small></td>
+                                            <td>{{ number($user->averageSpeed) }}<small>km/h</small></td>
                                             <td>{{ $user->points }}</td>
                                         </tr>
                                     @endforeach

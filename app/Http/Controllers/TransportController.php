@@ -9,13 +9,15 @@ use App\Models\MastodonServer;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStations;
+use App\Models\TrainStation;
+use App\Models\User;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Mastodon;
@@ -166,8 +168,8 @@ class TransportController extends Controller
             return null;
         }
         $stopovers   = array_slice($stopovers, $offset + 1);
-        $destination = TrainStations::where('ibnr', $train['destination'])->first()->name;
-        $start       = TrainStations::where('ibnr', $train['origin'])->first()->name;
+        $destination = TrainStation::where('ibnr', $train['destination'])->first()->name;
+        $start       = TrainStation::where('ibnr', $train['origin'])->first()->name;
 
         return [
             'train'       => $train,
@@ -329,7 +331,7 @@ class TransportController extends Controller
         $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
         $user->train_distance += $trainCheckin->distance;
-        $user->train_duration += (strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure)) / 60;
+        $user->train_duration += $trainCheckin->duration;
         $user->points         += $trainCheckin->points;
 
         $user->update();
@@ -443,7 +445,7 @@ class TransportController extends Controller
             'alsoOnThisConnection' => $alsoOnThisConnection,
             'lineName'             => $hafas['linename'],
             'distance'             => $trainCheckin->distance,
-            'duration'             => strtotime($trainCheckin->arrival) - strtotime($trainCheckin->departure),
+            'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];
     }
@@ -471,7 +473,7 @@ class TransportController extends Controller
             if ($json->line->id === null) {
                 $json->line->id = '';
             }
-            $polyLineHash = self::getPolylineHash(json_encode($json->polyline));
+            $polyLineHash = self::getPolylineHash(json_encode($json->polyline))->hash;
 
             $trip->trip_id     = $tripID;
             $trip->category    = $json->line->product;
@@ -493,40 +495,50 @@ class TransportController extends Controller
         return $trip;
     }
 
-    public static function getTrainStation($ibnr, $name, $latitude, $longitude) {
-        $station = TrainStations::where('ibnr', $ibnr)->first();
-        if ($station === null) {
-            $station            = new TrainStations;
-            $station->ibnr      = $ibnr;
-            $station->name      = $name;
-            $station->latitude  = $latitude;
-            $station->longitude = $longitude;
-            $station->save();
-        }
-        return $station;
+    /**
+     * Get the TrainStation Model from Database
+     * @param int $ibnr
+     * @param string $name
+     * @param float $latitude
+     * @param float $longitude
+     * @return TrainStation
+     */
+    public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
+        return TrainStation::updateOrCreate([
+                                                'ibnr'      => $ibnr
+                                            ], [
+                                                'name'      => $name,
+                                                'latitude'  => $latitude,
+                                                'longitude' => $longitude
+                                            ]);
     }
 
-    public static function getPolylineHash($polyline) {
-        $hash       = md5($polyline);
-        $dbPolyline = PolyLine::where('hash', $hash)->first();
-        if ($dbPolyline === null) {
-            $newPolyline           = new PolyLine;
-            $newPolyline->hash     = $hash;
-            $newPolyline->polyline = $polyline;
-            $newPolyline->save();
-        }
-        return $hash;
+    /**
+     * Get the PolyLine Model from Database
+     * @param string $polyline The Polyline as a json string given by hafas
+     * @return PolyLine
+     */
+    public static function getPolylineHash(string $polyline): PolyLine {
+        return PolyLine::updateOrCreate([
+                                            'hash' => md5($polyline)
+                                        ], [
+                                            'polyline' => $polyline
+                                        ]);
     }
 
-    public static function getLatestArrivals($user) {
-        return TrainCheckin::with('Status')->whereHas('Status', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-                           ->orderBy('created_at', 'DESC')
-                           ->get()
-                           ->map(function($t) {
-                               return TrainStations::where("ibnr", $t->destination)->first();
-                           })->unique()->take(5);
+    /**
+     * Get the latest TrainStations the user is arrived.
+     * @param User $user
+     * @param int $maxCount
+     * @return Collection
+     */
+    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+        $user->loadMissing(['statuses', 'statuses.trainCheckIn', 'statuses.trainCheckIn.Destination']);
+        return $user->statuses->map(function($status) {
+            return $status->trainCheckIn;
+        })->groupBy('destination')->map(function($checkIns) {
+            return $checkIns->sortByDesc('arrival')->first()->Destination;
+        })->sortByDesc('arrival')->take($maxCount);
     }
 
     public static function SetHome($user, $ibnr) {
