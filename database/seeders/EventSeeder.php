@@ -22,7 +22,7 @@ class EventSeeder extends Seeder
                                'url'          => 'https://traewelling.de',
                                'begin'        => date('Y-m-d H:i:s', strtotime('-1 day')),
                                'end'          => date('Y-m-d H:i:s', strtotime('+3 days')),
-                               'trainstation' => TrainStation::all()->random()->ibnr
+                               'trainstation' => TrainStation::all()->random()->id
                            ]);
         $event->save();
     }
