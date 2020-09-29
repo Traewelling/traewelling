@@ -16,6 +16,7 @@ use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -158,24 +159,31 @@ class TransportController extends Controller
         return $departuresList;
     }
 
-    public static function TrainTrip($tripId, $lineName, $start) {
+    /**
+     * @param string $tripId TripID in Hafas format
+     * @param string $lineName Line Name in Hafas format
+     * @param $start
+     * @return array|null
+     * @throws GuzzleException
+     */
+    public static function TrainTrip(string $tripId, string $lineName, $start) {
 
-        $trip      = self::getHAFAStrip($tripId, $lineName);
-        $train     = $trip->getAttributes();
-        $stopovers = json_decode($train['stopovers'], true);
+        $hafasTrip = self::getHAFAStrip($tripId, $lineName);
+        $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers);
         if ($offset === null) {
             return null;
         }
         $stopovers   = array_slice($stopovers, $offset + 1);
-        $destination = TrainStation::where('ibnr', $train['destination'])->first()->name;
-        $start       = TrainStation::where('ibnr', $train['origin'])->first()->name;
+        $destination = $hafasTrip->destinationStation->name;
+        $start       = $hafasTrip->originStation->name;
 
         return [
-            'train'       => $train,
+            'train'       => $hafasTrip->getAttributes(), //deprecated. use hafasTrip instead
+            'hafasTrip'   => $hafasTrip,
             'stopovers'   => $stopovers,
-            'destination' => $destination,
-            'start'       => $start
+            'destination' => $destination, //deprecated. use hafasTrip->destinationStation instead
+            'start'       => $start //deprecated. use hafasTrip->originStation instead
         ];
     }
 
@@ -233,11 +241,11 @@ class TransportController extends Controller
                                         $tweetCheck,
                                         $tootCheck,
                                         $eventId = 0) {
-        $hafas                 = self::getHAFAStrip($tripId, '')->getAttributes();
-        $stopovers             = json_decode($hafas['stopovers'], true);
+        $hafasTrip             = self::getHAFAStrip($tripId, '');
+        $stopovers             = json_decode($hafasTrip->stopovers, true);
         $offset1               = self::searchForId($start, $stopovers);
         $offset2               = self::searchForId($destination, $stopovers);
-        $polyline              = self::polyline($start, $destination, $hafas['polyline']);
+        $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
 
@@ -276,10 +284,10 @@ class TransportController extends Controller
         );
         $points             = self::CalculateTrainPoints(
             $distance,
-            $hafas['category'],
+            $hafasTrip->category,
             $stopovers[$offset1]['departure'],
             $stopovers[$offset2]['arrival'],
-            $hafas['delay']
+            $hafasTrip->delay
         );
 
         $status           = new Status();
@@ -291,7 +299,7 @@ class TransportController extends Controller
         $trainCheckin->origin      = $originStation->ibnr;
         $trainCheckin->destination = $destinationStation->ibnr;
         $trainCheckin->distance    = $distance;
-        $trainCheckin->delay       = $hafas['delay'];
+        $trainCheckin->delay       = $hafasTrip->delay;
         $trainCheckin->points      = $points;
         $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
                                                              $stopovers[$offset1]['departureDelay'] ?? 0);
@@ -338,16 +346,18 @@ class TransportController extends Controller
         if ((isset($tootCheck) || isset($tweetCheck)) && config('trwl.post_social') === true) {
             $postText = trans_choice(
                 'controller.transport.social-post',
-                preg_match('/\s/', $hafas['linename']),
-                ['lineName' => $hafas['linename'], 'destination' => $destinationStation->name]
+                preg_match('/\s/', $hafasTrip->linename),
+                ['lineName' => $hafasTrip->linename, 'destination' => $destinationStation->name]
             );
             if ($event !== null) {
                 $postText = trans_choice(
                     'controller.transport.social-post-with-event',
-                    preg_match('/\s/', $hafas['linename']),
-                    ['lineName'    => $hafas['linename'],
-                     'destination' => $destinationStation->name,
-                     'hashtag'     => $event->hashtag]
+                    preg_match('/\s/', $hafasTrip->linename),
+                    [
+                        'lineName'    => $hafasTrip->linename,
+                        'destination' => $destinationStation->name,
+                        'hashtag'     => $event->hashtag
+                    ]
                 );
             }
 
@@ -360,7 +370,7 @@ class TransportController extends Controller
                 }
 
                 $appendix = " (@ " .
-                    $hafas['linename'] .
+                    $hafasTrip->linename .
                     ' ➜ ' .
                     $destinationStation->name .
                     $eventIntercept .
@@ -428,11 +438,11 @@ class TransportController extends Controller
                                                     ])->get()->pluck('status.user')
                                             ->each(
                                                 function($t) use (
-                                                    $status, $hafas,
+                                                    $status, $hafasTrip,
                                                     $originStation, $destinationStation
                                                 ) {
                                                     $t->notify(new UserJoinedConnection($status->id,
-                                                                                        $hafas['linename'],
+                                                                                        $hafasTrip->linename,
                                                                                         $originStation->name,
                                                                                         $destinationStation->name));
                                                     return $t;
@@ -443,56 +453,61 @@ class TransportController extends Controller
             'statusId'             => $status->id,
             'points'               => $trainCheckin->points,
             'alsoOnThisConnection' => $alsoOnThisConnection,
-            'lineName'             => $hafas['linename'],
+            'lineName'             => $hafasTrip->linename,
             'distance'             => $trainCheckin->distance,
             'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];
     }
 
-    private static function getHAFAStrip($tripID, $lineName) {
+    /**
+     * @param string $tripID
+     * @param string $lineName
+     * @return HafasTrip
+     * @throws GuzzleException
+     */
+    private static function getHAFAStrip(string $tripID, string $lineName): HafasTrip {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
-
-        if ($trip === null) {
-            $trip        = new HafasTrip;
-            $client      = new Client(['base_uri' => config('trwl.db_rest')]);
-            $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
-            $json        = json_decode($response->getBody()->getContents());
-            $origin      = self::getTrainStation($json->origin->id,
-                                                 $json->origin->name,
-                                                 $json->origin->location->latitude,
-                                                 $json->origin->location->longitude);
-            $destination = self::getTrainStation($json->destination->id,
-                                                 $json->destination->name,
-                                                 $json->destination->location->latitude,
-                                                 $json->destination->location->longitude);
-            if ($json->line->name === null) {
-                $json->line->name = $json->line->fahrtNr;
-            }
-
-            if ($json->line->id === null) {
-                $json->line->id = '';
-            }
-            $polyLineHash = self::getPolylineHash(json_encode($json->polyline))->hash;
-
-            $trip->trip_id     = $tripID;
-            $trip->category    = $json->line->product;
-            $trip->number      = $json->line->id;
-            $trip->linename    = $json->line->name;
-            $trip->origin      = $origin->ibnr;
-            $trip->destination = $destination->ibnr;
-            $trip->stopovers   = json_encode($json->stopovers);
-            $trip->polyline    = $polyLineHash;
-            $trip->departure   = self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
-                                                         $json->departureDelay ?? 0);
-            $trip->arrival     = self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
-                                                         $json->arrivalDelay ?? 0);
-            if (isset($json->arrivalDelay)) {
-                $trip->delay = $json->arrivalDelay;
-            }
-            $trip->save();
+        if ($trip !== null) {
+            return $trip;
         }
-        return $trip;
+
+        $client      = new Client(['base_uri' => config('trwl.db_rest')]);
+        $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
+        $json        = json_decode($response->getBody()->getContents());
+        $origin      = self::getTrainStation($json->origin->id,
+                                             $json->origin->name,
+                                             $json->origin->location->latitude,
+                                             $json->origin->location->longitude);
+        $destination = self::getTrainStation($json->destination->id,
+                                             $json->destination->name,
+                                             $json->destination->location->latitude,
+                                             $json->destination->location->longitude);
+        if ($json->line->name === null) {
+            $json->line->name = $json->line->fahrtNr;
+        }
+
+        if ($json->line->id === null) {
+            $json->line->id = '';
+        }
+
+        return HafasTrip::updateOrCreate([
+                                             'trip_id' => $tripID
+                                         ], [
+                                             'category'    => $json->line->product,
+                                             'number'      => $json->line->id,
+                                             'linename'    => $json->line->name,
+                                             'origin'      => $origin->ibnr,
+                                             'destination' => $destination->ibnr,
+                                             'stopovers'   => json_encode($json->stopovers),
+                                             'polyline'    => self::getPolylineHash(json_encode($json->polyline))->hash,
+                                             'departure'   => self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
+                                                                                      $json->departureDelay ?? 0),
+                                             'arrival'     => self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
+                                                                                      $json->arrivalDelay ?? 0),
+                                             'delay'       => $json->arrivalDelay ?? null
+                                         ]);
+
     }
 
     /**
