@@ -76,7 +76,7 @@
             @endif
             <hr>
             <p class="mb-0">
-                <i class="fa fa-stopwatch d-inline"></i>&nbsp;<b>{!! durationToSpan(secondsToDuration(Session::get('checkin-success')['duration'])) !!}</b>
+                <i class="fa fa-stopwatch d-inline"></i>&nbsp;<b>{!! durationToSpan(secondsToDuration(Session::get('checkin-success')['duration'] * 60)) !!}</b>
                 — <i class="fa fa-route d-inline"></i>&nbsp;<b>{{ number(Session::get('checkin-success')['distance']) }}<small>km</small></b>
                 — <i class="fa fa-dice-d20 d-inline"></i>&nbsp;<b>{{ Session::get('checkin-success')['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
             </p>
