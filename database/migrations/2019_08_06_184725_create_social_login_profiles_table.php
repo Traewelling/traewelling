@@ -15,14 +15,13 @@ class CreateSocialLoginProfilesTable extends Migration
     {
         Schema::create('social_login_profiles', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()
-                ->references('id')->on('users');
+            $table->integer('user_id')->unsigned();
             $table->string('twitter_id')->nullable();
             $table->text('twitter_token')->nullable();
             $table->text('twitter_tokenSecret')->nullable();
             $table->string('mastodon_id')->nullable();
             $table->integer('mastodon_server')
-                ->references('id')->on('mastodon_servers')->nullable();
+                ->nullable();
             $table->text('mastodon_token')->nullable();
             $table->timestamps();
         });

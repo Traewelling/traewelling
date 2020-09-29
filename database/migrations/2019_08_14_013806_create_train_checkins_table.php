@@ -16,13 +16,10 @@ class CreateTrainCheckinsTable extends Migration
         Schema::create('train_checkins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('status_id')
-                ->references('id')->on('statuses')->unique();
-            $table->string('trip_id')
-                ->references('trip_id')->on('hafas_trips');
-            $table->string('origin')
-                ->references('ibnr')->on('train_stations');
-            $table->string('destination')
-                ->references('ibnr')->on('train_stations');
+                ->unique();
+            $table->string('trip_id');
+            $table->string('origin');
+            $table->string('destination');
             $table->integer('distance');
             $table->timestampTz('departure');
             $table->timestampTz('arrival')->nullable();

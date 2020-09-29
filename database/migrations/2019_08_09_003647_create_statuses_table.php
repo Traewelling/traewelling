@@ -17,8 +17,7 @@ class CreateStatusesTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->text('body')->nullable();
-            $table->integer('user_id')->unsigned()
-                ->references('id')->on('users');
+            $table->integer('user_id')->unsigned();
             $table->boolean('business')->nullable();
             $table->string('type')->default('hafas');
 

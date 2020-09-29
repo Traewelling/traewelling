@@ -19,8 +19,7 @@ class CreateEventsTable extends Migration {
             $table->string('hashtag');
             $table->string('host'); // Einfach nur Name des Veranstalters, weil einfacher I guess
             $table->string('url'); // Event-URL
-            $table->integer('trainstation')
-                ->references('id')->on('train_stations');
+            $table->integer('trainstation');
             $table->dateTime('begin');
             $table->dateTime('end');
 
