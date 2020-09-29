@@ -1,27 +1,27 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $train['linename'] }} -> {{$destination}}
+    {{ $hafasTrip->linename }} -> {{$destination}}
 @endsection
 @section('content')
     <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
+                <div class="card-header" data-linename="{{ $hafasTrip->linename }}" data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}" data-tripid="{{ $hafasTrip->trip_id }}">
                     <div class="float-right">
                         <a href="#" class="train-destinationrow" data-ibnr="{{$terminalStop['stop']['id']}}" data-stopname="{{$terminalStop['stop']['name']}}"><i class="fa fa-fast-forward"></i></a>
                     </div>
-                    @if (file_exists(public_path('img/'.$train['category'].'.svg')))
-                        <img class="product-icon" src="{{ asset('img/'.$train['category'].'.svg') }}">
+                    @if (file_exists(public_path('img/'.$hafasTrip->category.'.svg')))
+                        <img class="product-icon" src="{{ asset('img/'.$hafasTrip->category.'.svg') }}">
                     @else
                         <i class="fa fa-train"></i>
                     @endif
-                    {{ $train['linename'] }} <i class="fas fa-arrow-alt-circle-right"></i> {{$destination}}
+                    {{ $hafasTrip->linename }} <i class="fas fa-arrow-alt-circle-right"></i> {{$hafasTrip->destinationStation->name}}
                 </div>
 
                 <div class="card-body p-0 table-responsive">
-                    <table id="my-table-id" class="table table-dark table-borderless table-hover m-0" data-linename="{{ $train['linename'] }}" data-startname="{{ $start }}" data-start="{{ request()->start }}" data-tripid="{{ request()->tripID }}">
+                    <table id="my-table-id" class="table table-dark table-borderless table-hover m-0" data-linename="{{ $hafasTrip->linename }}" data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}" data-tripid="{{ $hafasTrip->trip_id }}">
                         <thead>
                             <tr>
                                 <th>{{__('stationboard.stopover')}}</th>
@@ -71,15 +71,15 @@
                             <label for="message-text" class="col-form-label">{{__('stationboard.label-message')}}</label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
-                        @if ($user->socialProfile != null)
-                            @if ($user->socialProfile->twitter_id != null)
+                        @if (auth()->user()->socialProfile != null)
+                            @if (auth()->user()->socialProfile->twitter_id != null)
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="tweet_check" name="tweet_check">
                                 <label class="custom-control-label" for="tweet_check">{{__('stationboard.check-tweet')}}</label>
                             </div>
                             @endif
 
-                            @if ($user->socialProfile->mastodon_id != null)
+                            @if (auth()->user()->socialProfile->mastodon_id != null)
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" id="toot_check" name="toot_check">
                                 <label class="custom-control-label" for="toot_check">{{__('stationboard.check-toot')}}</label>

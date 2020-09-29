@@ -37,7 +37,7 @@ class FrontendTransportController extends Controller
             'departures' => $TrainStationboardResponse['departures'],
             'when' => $TrainStationboardResponse['when'],
             'request' => $request,
-            'latest' => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+            'latest' => TransportController::getLatestArrivals(Auth::user())
         ]
         );
     }
@@ -78,13 +78,13 @@ class FrontendTransportController extends Controller
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
 
         return view('trip', [
-            'destination' => $TrainTripResponse['destination'],
-            'events' => EventBackend::activeEvents(),
-            'start' => $TrainTripResponse['start'],
-            'stopovers' => $TrainTripResponse['stopovers'],
+            'hafasTrip'    => $TrainTripResponse['hafasTrip'],
+            'destination'  => $TrainTripResponse['destination'], //deprecated. use hafasTrip->destinationStation instead
+            'events'       => EventBackend::activeEvents(),
+            'start'        => $TrainTripResponse['start'], //deprecated. use hafasTrip->originStation instead
+            'stopovers'    => $TrainTripResponse['stopovers'],
             'terminalStop' => $terminalStop,
-            'train' => $TrainTripResponse['train'],
-            'user' => Auth::user(),
+            'user'         => Auth::user(),
         ]);
     }
 
