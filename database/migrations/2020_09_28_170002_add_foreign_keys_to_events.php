@@ -17,7 +17,7 @@ class AddForeignKeysToEvents extends Migration
             $table->bigInteger('trainstation')->unsigned()->change();
 
             $table->foreign('trainstation')
-                ->references('ibnr') //TODO: Should use 'id' instead...
+                ->references('id')
                 ->on('train_stations')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
