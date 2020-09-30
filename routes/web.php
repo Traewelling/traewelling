@@ -156,7 +156,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/settings', [
         'uses' => 'UserController@updateSettings',
-        'as'   => 'settings',
     ]);
 
     Route::post('/settings/uploadProfileImage', [
