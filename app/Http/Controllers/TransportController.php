@@ -520,7 +520,7 @@ class TransportController extends Controller
      */
     public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
         return TrainStation::updateOrCreate([
-                                                'ibnr'      => $ibnr
+                                                'ibnr' => $ibnr
                                             ], [
                                                 'name'      => $name,
                                                 'latitude'  => $latitude,
@@ -549,11 +549,16 @@ class TransportController extends Controller
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
         $user->loadMissing(['statuses', 'statuses.trainCheckIn', 'statuses.trainCheckIn.Destination']);
-        return $user->statuses->map(function($status) {
-            return $status->trainCheckIn;
-        })->groupBy('destination')->map(function($checkIns) {
-            return $checkIns->sortByDesc('arrival')->first()->Destination;
-        })->sortByDesc('arrival')->take($maxCount);
+        return $user->statuses
+            ->sortByDesc('trainCheckin.arrival')
+            ->map(function($status) {
+                return $status->trainCheckIn;
+            })->map(function($checkIns) {
+                return $checkIns->Destination;
+            })->groupBy('ibnr')
+            ->map(function($trainStations) {
+                return $trainStations->first();
+            })->take($maxCount);
     }
 
     public static function SetHome($user, $ibnr) {
