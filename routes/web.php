@@ -11,6 +11,9 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FrontendTransportController;
+
 Route::view('/', 'welcome')->name('static.welcome');
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');
@@ -263,10 +266,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         'as'   => 'trains.checkin'
     ]);
 
-    Route::get('/trains/setHome/{ibnr}', [
-        'uses' => 'FrontendTransportController@setHome',
-        'as'   => 'user.setHome'
-    ]);
+    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setHome'])
+         ->name('user.setHome');
 
     Route::get('/busses/stationboard', [
         'uses' => 'FrontendTransportController@trainStationboard',

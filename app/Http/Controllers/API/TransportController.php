@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -167,7 +168,14 @@ class TransportController extends ResponseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
-        $setHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
-        return $this->sendResponse($setHomeResponse);
+        try {
+            $trainStation = TransportBackend::setHome(Auth::user(), $request->ibnr);
+            return $this->sendResponse($trainStation->name);
+        } catch (HafasException $e) {
+            return $this->sendError([
+                                        'id'      => 'HAFAS_EXCEPTION',
+                                        'message' => $e->getMessage()
+                                    ]);
+        }
     }
 }

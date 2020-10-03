@@ -29,7 +29,8 @@ class HafasController extends Controller
                                                     'longitude' => $data->location->longitude
                                                 ]);
         } catch (GuzzleException $e) {
-            throw new HafasException($e->getMessage());
+            $response = $e->getResponse()->getBody()->getContents();
+            throw new HafasException($response->msg ?? $e->getMessage());
         }
     }
 }

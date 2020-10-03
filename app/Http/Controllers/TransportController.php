@@ -555,25 +555,20 @@ class TransportController extends Controller
             })->take($maxCount);
     }
 
-    public static function SetHome($user, $ibnr) {
-        $client     = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response   = $client->request('GET', "locations?query=$ibnr")->getBody()->getContents();
-        $ibnrObject = json_decode($response);
+    /**
+     * @param User $user
+     * @param int $ibnr
+     * @return TrainStation
+     * @throws HafasException
+     */
+    public static function setHome(User $user, int $ibnr): TrainStation {
+        $trainStation = self::getTrainStation($ibnr);
 
-        $station = self::getTrainStation(
-            $ibnrObject[0]->id,
-            $ibnrObject[0]->name,
-            $ibnrObject[0]->location->latitude,
-            $ibnrObject[0]->location->longitude
-        );
+        $user->update([
+                          'home_id' => $trainStation->id
+                      ]);
 
-        $user->home_id = $station->id;
-        try {
-            $user->save();
-        } catch (\Exception $e) {
-            return false;
-        }
-        return $station->name;
+        return $trainStation;
     }
 
     public static function usageByDay(Carbon $date) {

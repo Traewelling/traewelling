@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\EventController as EventBackend;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class FrontendTransportController extends Controller
             'latitude' => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
-        
+
         $nearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
@@ -133,12 +134,18 @@ class FrontendTransportController extends Controller
         }
     }
 
-    public function SetHome(Request $request) {
-        $setHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
-        if ($setHomeResponse === true) {
-            return redirect()->back();
+    public function setHome(Request $request) {
+        $validated = $request->validate([
+                                            'ibnr' => ['required', 'numeric']
+                                        ]);
+
+        try {
+            $trainStation = TransportBackend::setHome(Auth::user(), $validated['ibnr']);
+
+            return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
+        } catch (HafasException $e) {
+            return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-        return redirect()->back()->with(['message' => __('user.home-set', ['station' => $setHomeResponse])]);
     }
 
     public function FastTripAccess(Request $request) {
