@@ -156,7 +156,11 @@ class TransportController extends ResponseController
 
     public function getHome()
     {
-        return $this->sendResponse(auth()->user()->home);
+        $home = auth()->user()->home;
+        if($home === null) {
+            return $this->sendError('user has not set a home station.');
+        }
+        return $this->sendResponse($home);
     }
 
     public function setHome(Request $request)
@@ -168,6 +172,7 @@ class TransportController extends ResponseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
+
         try {
             $trainStation = TransportBackend::setHome(Auth::user(), $request->ibnr);
             return $this->sendResponse($trainStation->name);
