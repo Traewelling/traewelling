@@ -28,7 +28,7 @@ return [
         "overlapping-checkin" => "Du hast bereits einen Check-In in Verbindung :linename: <a href=\":url\">#:id</a>",
         "also-in-connection" => "Auch in dieser Verbindung sind:",
         "social-post" => "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
-        "social-post-with-event" => "Ich bin gerade in :lineName nach :Destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #Destination für #:hashtag! #NowTräwelling ",
+        "social-post-with-event" => "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
         "social-post-for" => " für ",
         "no-station-found" => "Für diese Suche wurde keine Haltestelle gefunden.",
     ],
