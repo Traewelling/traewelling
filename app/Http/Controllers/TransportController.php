@@ -233,6 +233,20 @@ class TransportController extends Controller
         return 1;
     }
 
+    /**
+     * @param $tripId
+     * @param $start
+     * @param $destination
+     * @param $body
+     * @param $user
+     * @param $businessCheck
+     * @param $tweetCheck
+     * @param $tootCheck
+     * @param int $eventId
+     * @return array
+     * @throws GuzzleException
+     * @throws HafasException
+     */
     public static function TrainCheckin($tripId,
                                         $start,
                                         $destination,
@@ -291,39 +305,42 @@ class TransportController extends Controller
             $hafasTrip->delay
         );
 
-        $status           = new Status();
-        $status->body     = $body;
-        $status->business = isset($businessCheck) && $businessCheck == 'on';
 
-        $trainCheckin              = new TrainCheckin;
-        $trainCheckin->trip_id     = $tripId;
-        $trainCheckin->origin      = $originStation->ibnr;
-        $trainCheckin->destination = $destinationStation->ibnr;
-        $trainCheckin->distance    = $distance;
-        $trainCheckin->delay       = $hafasTrip->delay;
-        $trainCheckin->points      = $points;
-        $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
-                                                             $stopovers[$offset1]['departureDelay'] ?? 0);
-        $trainCheckin->arrival     = isset($stopovers[$offset2]['arrival']) ?
-            self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
-                                    $stopovers[$offset2]['arrivalDelay'] ?? 0) :
-            self::dateToMySQLEscape($stopovers[$offset2]['departure'],
-                                    $stopovers[$offset2]['departureDelay'] ?? 0);
+        $departure = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
+                                             $stopovers[$offset1]['departureDelay'] ?? 0);
 
-        //check if there are colliding checkins
-        $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
-        $overlapArrival   = self::dateToMySQLEscape($trainCheckin->arrival, 120);
-
-        $overlap = TrainCheckin::with('Status')->whereHas('Status', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->where(function($query) use ($overlapArrival, $overlapDeparture) {
-            $query->where([['arrival', '>', $overlapDeparture], ['departure', '<', $overlapDeparture]])
-                  ->orwhere([['arrival', '>', $overlapArrival], ['departure', '<', $overlapArrival]])
-                  ->orwhere([['departure', '>', $overlapDeparture], ['arrival', '<', $overlapArrival]]);
-        })->first();
-        if (!empty($overlap)) {
-            return ['success' => false, 'overlap' => $overlap];
+        if ($stopovers[$offset2]['arrival']) {
+            $arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
+                                               $stopovers[$offset2]['arrivalDelay'] ?? 0);
+        } else {
+            $arrival = self::dateToMySQLEscape($stopovers[$offset2]['departure'],
+                                               $stopovers[$offset2]['departureDelay'] ?? 0);
         }
+
+        $overlapping = self::getOverlappingCheckIns($user, Carbon::parse($departure), Carbon::parse($arrival));
+        if ($overlapping->count() > 0) {
+            return ['success' => false, 'overlap' => $overlapping->first()];
+        }
+
+        $status = Status::create([
+                                     'user_id'  => $user->id,
+                                     'body'     => $body,
+                                     'business' => isset($businessCheck) && $businessCheck == 'on'
+                                 ]);
+
+        $trainCheckin = TrainCheckin::create([
+            'status_id' => $status->id,
+                                                 'trip_id'     => $tripId,
+                                                 'origin'      => $originStation->ibnr,
+                                                 'destination' => $destinationStation->ibnr,
+                                                 'distance'    => $distance,
+                                                 'delay'       => $hafasTrip->delay,
+                                                 'points'      => $points,
+                                                 'departure'   => $departure,
+                                                 'arrival'     => $arrival
+                                             ]);
+
+        $user->load(['statuses']);
 
         // Let's connect our statuses and the events
         $event = null;
@@ -333,11 +350,11 @@ class TransportController extends Controller
                 abort(404);
             }
             if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
-                $status->event_id = $event->id;
+                $status->update([
+                                    'event_id' => $event->id
+                                ]);
             }
         }
-
-        $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += $trainCheckin->duration;
@@ -616,5 +633,26 @@ class TransportController extends Controller
         }
 
         return $returnArray;
+    }
+
+    /**
+     * Check if there are colliding CheckIns
+     * @param User $user
+     * @param Carbon $start
+     * @param Carbon $end
+     * @return Collection
+     * @todo untested
+     */
+    private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
+        $start = $start->clone()->subMinutes(2);
+        $end   = $end->clone()->addMinutes(2);
+
+        $user->loadMissing(['statuses', 'statuses.trainCheckin']);
+
+        return $user->statuses->map(function($status) {
+            return $status->trainCheckin;
+        })->filter(function($trainCheckIn) use ($start, $end) {
+            return $trainCheckIn->arrival->isBetween($start, $end) || $trainCheckIn->departure->isBetween($start, $end);
+        });
     }
 }

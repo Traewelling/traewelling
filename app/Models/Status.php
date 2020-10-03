@@ -11,8 +11,9 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $hidden  = ['user_id', 'business'];
-    protected $appends = ['favorited', 'socialText'];
+    protected $fillable = ['user_id', 'body', 'business', 'event_id'];
+    protected $hidden   = ['user_id', 'business'];
+    protected $appends  = ['favorited', 'socialText'];
 
     public function user() {
         return $this->belongsTo(User::class);

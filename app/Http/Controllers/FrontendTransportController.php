@@ -115,9 +115,9 @@ class FrontendTransportController extends Controller
                 ->with('error', __(
                         'controller.transport.overlapping-checkin',
                         [
-                            'url' => url('/status/'.$trainCheckinResponse['overlap']->id),
-                            'id' => $trainCheckinResponse['overlap']->id,
-                            'linename' => $trainCheckinResponse['overlap']->HafasTrip()->first()->linename
+                            'url' => url('/status/'.$trainCheckinResponse['overlap']->status->id),
+                            'id' => $trainCheckinResponse['overlap']->status->id,
+                            'linename' => $trainCheckinResponse['overlap']->HafasTrip->linename
                         ]
                     ));
         }
