@@ -643,7 +643,6 @@ class TransportController extends Controller
      * @param Carbon $start
      * @param Carbon $end
      * @return Collection
-     * @todo untested
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
         $start = $start->clone()->subMinutes(2);
