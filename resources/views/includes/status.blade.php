@@ -1,5 +1,5 @@
 
-<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}" data-date="{{formatNewDay(new \DateTime($status->trainCheckin->departure)) }}">
+<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}" data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}">
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
         <div class="card-img-top">

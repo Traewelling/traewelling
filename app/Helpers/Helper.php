@@ -85,8 +85,3 @@ function stationLink($name, $classes = "text-trwl clearfix"): string {
     return '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) .
         '" class="' . $classes . '">' . $name . '</a>';
 }
-
-function formatNewDay($dateObject) {
-    return __("dates." . $dateObject->format('l')) . ', ' . $dateObject->format('j') . '. '
-        . __("dates." . $dateObject->format('F')) . ' ' . $dateObject->format('Y');
-}
