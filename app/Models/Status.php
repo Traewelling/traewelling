@@ -32,7 +32,7 @@ class Status extends Model
     }
 
     public function getFavoritedAttribute() {
-        return !!$this->likes->where('user_id', Auth::id())->first();
+        return $this->likes->contains('user_id', Auth::id());
     }
 
 }
