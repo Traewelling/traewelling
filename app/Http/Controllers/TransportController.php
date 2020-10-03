@@ -372,30 +372,18 @@ class TransportController extends Controller
         }
 
         // check for other people on this train
-
-        $alsoOnThisConnection = TrainCheckin::where([
-                                                        ['trip_id', '=', $trainCheckin->trip_id],
-                                                        ['status_id', '!=', $status->id],
-                                                        ['arrival', '>', $trainCheckin->departure],
-                                                        ['departure', '<', $trainCheckin->arrival]
-                                                    ])->get()->pluck('status.user')
-                                            ->each(
-                                                function($t) use (
-                                                    $status, $hafasTrip,
-                                                    $originStation, $destinationStation
-                                                ) {
-                                                    $t->notify(new UserJoinedConnection($status->id,
-                                                                                        $hafasTrip->linename,
-                                                                                        $originStation->name,
-                                                                                        $destinationStation->name));
-                                                    return $t;
-                                                });
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+            $otherStatus->user->notify(new UserJoinedConnection($status->id,
+                                                                $status->trainCheckin->HafasTrip->linename,
+                                                                $status->trainCheckin->Origin->name,
+                                                                $status->trainCheckin->Destination->name));
+        }
 
         return [
             'success'              => true,
             'statusId'             => $status->id,
             'points'               => $trainCheckin->points,
-            'alsoOnThisConnection' => $alsoOnThisConnection,
+            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
             'lineName'             => $hafasTrip->linename,
             'distance'             => $trainCheckin->distance,
             'duration'             => $trainCheckin->duration,

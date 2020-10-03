@@ -80,4 +80,18 @@ class TrainCheckin extends Model
     public function getDurationAttribute() {
         return $this->arrival->diffInMinutes($this->departure);
     }
+
+    public function getAlsoOnThisConnectionAttribute() {
+        return TrainCheckin::with(['status'])
+                           ->where([
+                                       ['status_id', '<>', $this->status->id],
+                                       ['trip_id', '=', $this->HafasTrip->trip_id],
+                                       ['arrival', '>', $this->departure],
+                                       ['departure', '<', $this->arrival]
+                                   ])
+                           ->get()
+                           ->map(function($trainCheckIn) {
+                               return $trainCheckIn->status;
+                           });
+    }
 }

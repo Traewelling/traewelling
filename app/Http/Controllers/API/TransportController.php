@@ -114,12 +114,15 @@ class TransportController extends ResponseController
             );
 
             return $this->sendResponse([
-                                           'distance' => $trainCheckinResponse['distance'],
-                                           'duration' => $trainCheckinResponse['duration'],
-                                           'statusId' => $trainCheckinResponse['statusId'],
-                                           'points' => $trainCheckinResponse['points'],
-                                           'lineName' => $trainCheckinResponse['lineName'],
+                                           'distance'             => $trainCheckinResponse['distance'],
+                                           'duration'             => $trainCheckinResponse['duration'],
+                                           'statusId'             => $trainCheckinResponse['statusId'],
+                                           'points'               => $trainCheckinResponse['points'],
+                                           'lineName'             => $trainCheckinResponse['lineName'],
                                            'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
+                                               ->map(function($status) {
+                                                   return $status->user;
+                                               })
                                        ]);
 
         } catch (CheckInCollisionException $e) {

@@ -19,4 +19,6 @@ class CheckInCollisionException extends Exception
     public function getCollision(): TrainCheckin {
         return $this->trainCheckIn;
     }
+
 }
+
