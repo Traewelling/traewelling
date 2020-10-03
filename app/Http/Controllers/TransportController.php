@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\HafasException;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -502,12 +503,16 @@ class TransportController extends Controller
     /**
      * Get the TrainStation Model from Database
      * @param int $ibnr
-     * @param string $name
-     * @param float $latitude
-     * @param float $longitude
+     * @param string|null $name
+     * @param float|null $latitude
+     * @param float|null $longitude
      * @return TrainStation
+     * @throws HafasException
      */
-    public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
+    public static function getTrainStation(int $ibnr, string $name = null, float $latitude = null, float $longitude = null): TrainStation {
+        if ($name === null || $latitude === null || $longitude === null) {
+            return HafasController::fetchTrainStation($ibnr);
+        }
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $ibnr
                                             ], [
