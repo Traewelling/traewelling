@@ -187,14 +187,4 @@ class SocialController extends Controller
 
         return response(__('controller.social.deleted'), 200);
     }
-
-    public function testMastodon() {
-        $user = Auth::user();
-        $socialProfile = $user->socialProfile;
-        $mastodonDomain = MastodonServer::where('id', $socialProfile->mastodon_server)->first()->domain;
-
-        Mastodon::domain($mastodonDomain)->token($socialProfile->mastodon_token);
-        $response = Mastodon::createStatus('test1');
-        dd($response);
-    }
 }
