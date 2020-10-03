@@ -387,10 +387,12 @@ class TransportController extends Controller
      * @param Status $status
      */
     private static function postTwitter(Status $status) {
-        if (config('trwl.post_social') !== true)
+        if (config('trwl.post_social') !== true) {
             return;
-        if ($status->user->socialProfile->twitter_id === null)
+        }
+        if ($status->user->socialProfile->twitter_id === null) {
             return;
+        }
 
         try {
             $connection = new TwitterOAuth(
@@ -428,14 +430,16 @@ class TransportController extends Controller
      * @param Status $status
      */
     private static function postMastodon(Status $status) {
-        if (config('trwl.post_social') !== true)
+        if (config('trwl.post_social') !== true) {
             return;
-        if ($status->user->socialProfile->mastodon_server === null)
+        }
+        if ($status->user->socialProfile->mastodon_server === null) {
             return;
+        }
 
         try {
             $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
-            $mastodonDomain = MastodonServer::where('id', $status->user->socialProfile->mastodon_server)->first()->domain;
+            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
             Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
         } catch (RequestException $e) {

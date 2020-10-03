@@ -38,7 +38,10 @@ class Status extends Model
         $postText = trans_choice(
             'controller.transport.social-post',
             preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-            ['lineName' => $this->trainCheckin->HafasTrip->linename, 'destination' => $this->trainCheckin->Destination->name]
+            [
+                'lineName'    => $this->trainCheckin->HafasTrip->linename,
+                'destination' => $this->trainCheckin->Destination->name
+            ]
         );
         if ($this->event !== null) {
             $postText = trans_choice(
@@ -65,8 +68,8 @@ class Status extends Model
                 $eventIntercept .
                 ") #NowTräwelling ";
 
-            $appendix_length = strlen($appendix) + 30;
-            $postText        = substr($status->body, 0, 280 - $appendix_length);
+            $appendixLength = strlen($appendix) + 30;
+            $postText       = substr($status->body, 0, 280 - $appendixLength);
             if (strlen($postText) != strlen($status->body)) {
                 $postText .= '...';
             }
