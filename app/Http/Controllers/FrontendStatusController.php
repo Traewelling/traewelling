@@ -149,11 +149,9 @@ class FrontendStatusController extends Controller
     public function getStatus($statusId) {
         $statusResponse = StatusBackend::getStatus($statusId);
 
-        $t = time();
-
         return view('status', [
             'status' => $statusResponse,
-            'time' => $t,
+            'time' => time(),
             'title' => __('status.ogp-title', ['name' => $statusResponse->user->username]),
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
                 'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,

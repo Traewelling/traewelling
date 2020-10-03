@@ -96,7 +96,7 @@ class FrontendTransportController extends Controller
             'toot_check' => 'max:2',
             'event' => 'integer'
         ]);
-        $TrainCheckinResponse = TransportBackend::TrainCheckin(
+        $trainCheckinResponse = TransportBackend::TrainCheckin(
             $request->tripID,
             $request->start,
             $request->destination,
@@ -108,45 +108,45 @@ class FrontendTransportController extends Controller
             $request->event
             );
 
-        if ($TrainCheckinResponse['success'] === false) {
+        if ($trainCheckinResponse['success'] === false) {
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
                         'controller.transport.overlapping-checkin',
                         [
-                            'url' => url('/status/'.$TrainCheckinResponse['overlap']->id),
-                            'id' => $TrainCheckinResponse['overlap']->id,
-                            'linename' => $TrainCheckinResponse['overlap']->HafasTrip()->first()->linename
+                            'url' => url('/status/'.$trainCheckinResponse['overlap']->id),
+                            'id' => $trainCheckinResponse['overlap']->id,
+                            'linename' => $trainCheckinResponse['overlap']->HafasTrip()->first()->linename
                         ]
                     ));
         }
 
-        if ($TrainCheckinResponse['success'] === true) {
+        if ($trainCheckinResponse['success'] === true) {
             return redirect()->route('dashboard')->with('checkin-success', [
-                'distance' => $TrainCheckinResponse['distance'],
-                'duration' => $TrainCheckinResponse['duration'],
-                'points' => $TrainCheckinResponse['points'],
-                'lineName' => $TrainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection'],
-                'event' => $TrainCheckinResponse['event']
+                'distance' => $trainCheckinResponse['distance'],
+                'duration' => $trainCheckinResponse['duration'],
+                'points' => $trainCheckinResponse['points'],
+                'lineName' => $trainCheckinResponse['lineName'],
+                'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection'],
+                'event' => $trainCheckinResponse['event']
             ]);
         }
     }
 
     public function SetHome(Request $request) {
-        $SetHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
-        if ($SetHomeResponse === true) {
+        $setHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
+        if ($setHomeResponse === true) {
             return redirect()->back();
         }
-        return redirect()->back()->with(['message' => __('user.home-set', ['station' => $SetHomeResponse])]);
+        return redirect()->back()->with(['message' => __('user.home-set', ['station' => $setHomeResponse])]);
     }
 
     public function FastTripAccess(Request $request) {
-        $FastTripResponse = TransportBackend::FastTripAccess($request->start, $request->lineName, $request->number, $request->when);
-        if ($FastTripResponse === null) {
+        $fastTripResponse = TransportBackend::FastTripAccess($request->start, $request->lineName, $request->number, $request->when);
+        if ($fastTripResponse === null) {
             abort(404);
         }
-        return redirect()->route('trains.trip', ['tripID'=>$FastTripResponse->tripId,'lineName'=>$FastTripResponse->line->name,'start'=>$request->start]);
+        return redirect()->route('trains.trip', ['tripID'=>$fastTripResponse->tripId,'lineName'=>$fastTripResponse->line->name,'start'=>$request->start]);
     }
 
 }
