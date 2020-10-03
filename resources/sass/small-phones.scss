@@ -1,35 +1,35 @@
 /** For iPhone 5 and mobile devices <=320px, we need to drop some details. */
 @media screen and (max-width: 350px) {
-    .card {
-        border-radius: 0;
-        padding: 0 !important;
-    }
-    .card-body:not(.table-responsive) {
-        padding: 1.25rem 0 !important;
-    }
-    .col-md-8 {
-        padding: 0;
-    }
-    .container {
-        padding: 0;
-    }
-    .row {
-        margin-left: 0;
-        margin-right: 0;
-    }
+  .card {
+    border-radius: 0;
+    padding: 0 !important;
+  }
+  .card-body:not(.table-responsive) {
+    padding: 1.25rem 0 !important;
+  }
+  .col-md-8 {
+    padding: 0;
+  }
+  .container {
+    padding: 0;
+  }
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
 
-    h5.mt-4 {
-        margin-left: 1.25rem;
-    }
+  h5.mt-4 {
+    margin-left: 1.25rem;
+  }
 
-    .modal-footer {
-        padding: 1rem 0;
-    }
+  .modal-footer {
+    padding: 1rem 0;
+  }
 }
 
 /** This is useful for larger phones, too. */
 @media screen and (max-width: 470px) {
-    span.footer-nav-link {
-        display: block;
-    }
+  span.footer-nav-link {
+    display: block;
+  }
 }

@@ -1,32 +1,35 @@
 #timepicker-wrapper {
-    padding: 2rem 0;
+  padding: 2rem 0;
 
-    .btn-rounded:first-child {
-        border-top-left-radius: 10em;
-        border-bottom-left-radius: 10em;
-    }
-    .btn-rounded:last-child {
-        border-top-right-radius: 10em;
-        border-bottom-right-radius: 10em;
-    }
-    .btn {
-        box-shadow: none !important;
-    }
-    .text-white {
-        color: white;
-        text-transform: uppercase;
-        word-wrap: break-word;
-        white-space: normal;
-        font-size: 0.81rem;
-    }
+  .btn-rounded:first-child {
+    border-top-left-radius: 10em;
+    border-bottom-left-radius: 10em;
+  }
 
-    #timepicker-form {
-        &.opacity-null {
-            display: none;
+  .btn-rounded:last-child {
+    border-top-right-radius: 10em;
+    border-bottom-right-radius: 10em;
+  }
 
-            &.animated {
-                transition: 0.2s display ease-ease;
-            }
-        }
+  .btn {
+    box-shadow: none !important;
+  }
+
+  .text-white {
+    color: white;
+    text-transform: uppercase;
+    word-wrap: break-word;
+    white-space: normal;
+    font-size: 0.81rem;
+  }
+
+  #timepicker-form {
+    &.opacity-null {
+      display: none;
+
+      &.animated {
+        transition: 0.2s display ease-ease;
+      }
     }
+  }
 }

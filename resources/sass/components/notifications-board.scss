@@ -1,99 +1,102 @@
 #notifications-board {
-    .modal-header {
-        justify-content: initial;
+  .modal-header {
+    justify-content: initial;
 
-        .close {
-            font-size: 2rem;
-            float: none;
+    .close {
+      font-size: 2rem;
+      float: none;
 
-            &#mark-all-read {
-                flex-grow: 1;
-                text-align: left;
+      &#mark-all-read {
+        flex-grow: 1;
+        text-align: left;
 
-                i.fas {
-                    font-size: 0.6em;
-                }
-            }
+        i.fas {
+          font-size: 0.6em;
         }
+      }
     }
+  }
 
-    .modal-body#notifications-list {
+  .modal-body#notifications-list {
+    padding: 0;
+
+    .row {
+      background-color: white;
+      padding: 1rem 0;
+      border-bottom: 0.5rem solid $body-bg;
+      margin: 0;
+
+      a {
+        color: $text-color;
+      }
+
+      &.unread {
+        &.warning {
+          background-color: lighten($bahnrot, 40%);
+        }
+
+        &.neutral {
+          background-color: lighten($blue, 40%);
+        }
+      }
+
+      p.lead {
+        margin-bottom: 0.5rem;
+
+        i {
+          padding-right: 0.5rem;
+        }
+      }
+
+      .col-1 i,
+      .interact {
+        font-weight: 700;
+        line-height: 1;
+        color: $dark;
+        text-shadow: 0 1px 0 #fff;
+
         padding: 0;
+        background-color: transparent;
+        border: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        font-size: 1.25rem;
+      }
 
-        .row {
-            background-color: white;
-            padding: 1rem 0;
-            border-bottom: 0.5rem solid $body-bg;
-            margin: 0;
-
-            a {
-                color: $text-color;
-            }
-
-            &.unread {
-                &.warning {
-                    background-color: lighten($bahnrot, 40%);
-                }
-                &.neutral {
-                    background-color: lighten($blue, 40%);
-                }
-            }
-
-            p.lead {
-                margin-bottom: 0.5rem;
-
-                i {
-                    padding-right: 0.5rem;
-                }
-            }
-
-            .col-1 i,
-            .interact {
-                font-weight: 700;
-                line-height: 1;
-                color: $dark;
-                text-shadow: 0 1px 0 #fff;
-
-                padding: 0;
-                background-color: transparent;
-                border: 0;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                font-size: 1.25rem;
-            }
-            strong,
-            b {
-                font-weight: bold;
-            }
-        }
+      strong,
+      b {
+        font-weight: bold;
+      }
     }
+  }
 
-    #notifications-empty {
-        padding: 2rem 0;
-    }
+  #notifications-empty {
+    padding: 2rem 0;
+  }
 }
 
 .navbar {
-    div.navbar-toggler {
-        display: table-cell;
+  div.navbar-toggler {
+    display: table-cell;
+    padding-right: 0;
+
+    button.navbar-toggler {
+      // The toggle buttons inside the div
+      vertical-align: middle;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      &:last-child {
         padding-right: 0;
-
-        button.navbar-toggler {
-            // The toggle buttons inside the div
-            vertical-align: middle;
-            padding-top: 0;
-            padding-bottom: 0;
-
-            &:last-child {
-                padding-right: 0;
-            }
-        }
+      }
     }
-    .nav-item span.notifications-bell {
-        &.fa,
-        &.far {
-            padding-left: 3px;
-            padding-right: 3px;
-        }
+  }
+
+  .nav-item span.notifications-bell {
+    &.fa,
+    &.far {
+      padding-left: 3px;
+      padding-right: 3px;
     }
+  }
 }
