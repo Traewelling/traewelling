@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   background-color: #fff;
   color: #fff;
   font-family: 'Nunito', sans-serif;
@@ -50,7 +51,7 @@ html, body {
   padding: 0 25px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: .1rem;
+  letter-spacing: 0.1rem;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -78,8 +79,8 @@ html, body {
   height: 100%;
   width: 100%;
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: 2;
   background-image: linear-gradient(#d4353e, #a20b12);
   opacity: 0.8;
