@@ -27,14 +27,6 @@ use Mastodon;
 
 class TransportController extends Controller
 {
-    /**
-     * Takes just about any date string and formats it in Y-m-d H:i:s which is
-     * the required format for MySQL inserts.
-     * @return String
-     */
-    public static function dateToMySQLEscape(string $timeString, $delaySeconds = 0): string {
-        return date("Y-m-d H:i:s", strtotime($timeString) - $delaySeconds);
-    }
 
     public static function TrainAutocomplete($station) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
@@ -307,19 +299,18 @@ class TransportController extends Controller
             $hafasTrip->delay
         );
 
-
-        $departure = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
-                                             $stopovers[$offset1]['departureDelay'] ?? 0);
+        $departure = Carbon::parse($stopovers[$offset1]['departure']);
+        $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
         if ($stopovers[$offset2]['arrival']) {
-            $arrival = self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
-                                               $stopovers[$offset2]['arrivalDelay'] ?? 0);
+            $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
+            $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
         } else {
-            $arrival = self::dateToMySQLEscape($stopovers[$offset2]['departure'],
-                                               $stopovers[$offset2]['departureDelay'] ?? 0);
+            $arrival = Carbon::parse($stopovers[$offset2]['departure']);
+            $arrival->subSeconds($stopovers[$offset2]['departureDelay'] ?? 0);
         }
 
-        $overlapping = self::getOverlappingCheckIns($user, Carbon::parse($departure), Carbon::parse($arrival));
+        $overlapping = self::getOverlappingCheckIns($user, $departure, $arrival);
         if ($overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
         }
@@ -488,6 +479,12 @@ class TransportController extends Controller
             $json->line->id = '';
         }
 
+        $departure = Carbon::parse($json->departure ?? $json->scheduledDeparture);
+        $departure->subSeconds($json->departureDelay ?? 0);
+
+        $arrival = Carbon::parse($json->arrival ?? $json->scheduledArrival);
+        $arrival->subSeconds($json->arrivalDelay ?? 0);
+
         return HafasTrip::updateOrCreate([
                                              'trip_id' => $tripID
                                          ], [
@@ -498,10 +495,8 @@ class TransportController extends Controller
                                              'destination' => $destination->ibnr,
                                              'stopovers'   => json_encode($json->stopovers),
                                              'polyline'    => self::getPolylineHash(json_encode($json->polyline))->hash,
-                                             'departure'   => self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
-                                                                                      $json->departureDelay ?? 0),
-                                             'arrival'     => self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
-                                                                                      $json->arrivalDelay ?? 0),
+                                             'departure'   => $departure,
+                                             'arrival'     => $arrival,
                                              'delay'       => $json->arrivalDelay ?? null
                                          ]);
 
