@@ -19,14 +19,6 @@ function get_current_git_commit() {
     }
 }
 
-function get_current_git_commit_message($branch = 'master') {
-    if ($message = file_get_contents(base_path() . '/.git/COMMIT_EDITMSG')) {
-        return $message;
-    } else {
-        return false;
-    }
-}
-
 /**
  * @see https://stackoverflow.com/a/437642
  */
