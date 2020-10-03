@@ -74,6 +74,10 @@ function stationLink($name, $classes = "text-trwl clearfix"): string {
             break;
     }
 
-    return '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) .
-        '" class="' . $classes . '">' . $name . '</a>';
+    return strtr('<a href=":href?provider=train&station=:station" class=":classes">:name</a>', [
+        ':href'    => route('trains.stationboard'),
+        ':station' => urlencode($urlname),
+        ':classes' => $classes,
+        ':name'    => $name
+    ]);
 }

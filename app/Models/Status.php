@@ -62,12 +62,11 @@ class Status extends Model
                 $eventIntercept = __('controller.transport.social-post-for') . '#' . $this->event->hashtag;
             }
 
-            $appendix = " (@ " .
-                $this->trainCheckin->HafasTrip->linename .
-                ' ➜ ' .
-                $this->trainCheckin->Destination->name .
-                $eventIntercept .
-                ") #NowTräwelling ";
+            $appendix = strtr(" (@ :linename ➜ :destination :eventIntercept) #NowTräwelling ", [
+                ':linename'       => $this->trainCheckin->HafasTrip->linename,
+                ':destination'    => $this->trainCheckin->Destination->name,
+                ':eventIntercept' => $eventIntercept
+            ]);
 
             $appendixLength = strlen($appendix) + 30;
             $postText       = substr($status->body, 0, 280 - $appendixLength);
