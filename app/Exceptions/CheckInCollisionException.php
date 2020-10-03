@@ -8,7 +8,6 @@ use Throwable;
 
 class CheckInCollisionException extends Exception
 {
-
     private $trainCheckIn;
 
     public function __construct(TrainCheckin $trainCheckIn, $message = "", $code = 0, Throwable $previous = null) {
@@ -19,6 +18,4 @@ class CheckInCollisionException extends Exception
     public function getCollision(): TrainCheckin {
         return $this->trainCheckIn;
     }
-
 }
-
