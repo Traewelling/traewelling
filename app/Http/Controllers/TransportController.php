@@ -343,89 +343,12 @@ class TransportController extends Controller
         $user->points         += $trainCheckin->points;
 
         $user->update();
-        if ((isset($tootCheck) || isset($tweetCheck)) && config('trwl.post_social') === true) {
-            $postText = trans_choice(
-                'controller.transport.social-post',
-                preg_match('/\s/', $hafasTrip->linename),
-                ['lineName' => $hafasTrip->linename, 'destination' => $destinationStation->name]
-            );
-            if ($event !== null) {
-                $postText = trans_choice(
-                    'controller.transport.social-post-with-event',
-                    preg_match('/\s/', $hafasTrip->linename),
-                    [
-                        'lineName'    => $hafasTrip->linename,
-                        'destination' => $destinationStation->name,
-                        'hashtag'     => $event->hashtag
-                    ]
-                );
-            }
 
-            $postUrl = url("/status/{$trainCheckin->status_id}");
-
-            if (isset($status->body)) {
-                $eventIntercept = "";
-                if ($event !== null) {
-                    $eventIntercept = __('controller.transport.social-post-for') . '#' . $event->hashtag;
-                }
-
-                $appendix = " (@ " .
-                    $hafasTrip->linename .
-                    ' ➜ ' .
-                    $destinationStation->name .
-                    $eventIntercept .
-                    ") #NowTräwelling ";
-
-                $appendix_length = strlen($appendix) + 30;
-                $postText        = substr($status->body, 0, 280 - $appendix_length);
-                if (strlen($postText) != strlen($status->body)) {
-                    $postText .= '...';
-                }
-                $postText .= $appendix;
-            }
-
-            if (isset($tootCheck) && $tootCheck == true && $user->socialProfile) {
-                try {
-                    $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)
-                                                    ->first()->domain;
-                    Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                    Mastodon::createStatus($postText . $postUrl, ['visibility' => 'unlisted']);
-                } catch (RequestException $e) {
-                    $user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-                } catch (\Exception $e) {
-                    Log::error($e);
-                }
-            }
-            if (isset($tweetCheck) && $tweetCheck == true && $user->socialProfile) {
-                try {
-                    $connection = new TwitterOAuth(
-                        config('trwl.twitter_id'),
-                        config('trwl.twitter_secret'),
-                        $user->socialProfile->twitter_token,
-                        $user->socialProfile->twitter_tokenSecret
-                    );
-                    // #dbl only works on Twitter.
-                    if ($user->always_dbl) {
-                        $postText .= "#dbl ";
-                    }
-                    $connection->post(
-                        "statuses/update",
-                        [
-                            "status" => $postText . $postUrl,
-                            'lat'    => $originStation->latitude,
-                            'lon'    => $originStation->longitude
-                        ]
-                    );
-
-                    if ($connection->getLastHttpCode() != 200) {
-                        $user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
-                    }
-                } catch (\Exception $exception) {
-                    Log::error($e);
-                    // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
-                    // However, we still want to continue if it explodes, thus why not catch exceptions here.
-                }
-            }
+        if (isset($tootCheck) && $tootCheck == true) {
+            self::postMastodon($status);
+        }
+        if (isset($tweetCheck) && $tweetCheck == true) {
+            self::postTwitter($status);
         }
 
         // check for other people on this train
@@ -458,6 +381,68 @@ class TransportController extends Controller
             'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];
+    }
+
+    /**
+     * @param Status $status
+     */
+    private static function postTwitter(Status $status) {
+        if (config('trwl.post_social') !== true)
+            return;
+        if ($status->user->socialProfile->twitter_id === null)
+            return;
+
+        try {
+            $connection = new TwitterOAuth(
+                config('trwl.twitter_id'),
+                config('trwl.twitter_secret'),
+                $status->user->socialProfile->twitter_token,
+                $status->user->socialProfile->twitter_tokenSecret
+            );
+            #dbl only works on Twitter.
+            $socialText = $status->socialText;
+            if ($status->user->always_dbl) {
+                $socialText .= "#dbl ";
+            }
+            $socialText .= ' ' . url("/status/{$status->id}");
+            $connection->post(
+                "statuses/update",
+                [
+                    "status" => $socialText,
+                    'lat'    => $status->trainCheckin->Origin->latitude,
+                    'lon'    => $status->trainCheckin->Origin->longitude
+                ]
+            );
+
+            if ($connection->getLastHttpCode() != 200) {
+                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception);
+            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+            // However, we still want to continue if it explodes, thus why not catch exceptions here.
+        }
+    }
+
+    /**
+     * @param Status $status
+     */
+    private static function postMastodon(Status $status) {
+        if (config('trwl.post_social') !== true)
+            return;
+        if ($status->user->socialProfile->mastodon_server === null)
+            return;
+
+        try {
+            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $mastodonDomain = MastodonServer::where('id', $status->user->socialProfile->mastodon_server)->first()->domain;
+            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
+            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+        } catch (RequestException $e) {
+            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
+        } catch (\Exception $e) {
+            Log::error($e);
+        }
     }
 
     /**
