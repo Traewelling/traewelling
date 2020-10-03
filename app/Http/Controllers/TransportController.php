@@ -509,7 +509,10 @@ class TransportController extends Controller
      * @return TrainStation
      * @throws HafasException
      */
-    public static function getTrainStation(int $ibnr, string $name = null, float $latitude = null, float $longitude = null): TrainStation {
+    public static function getTrainStation(int $ibnr,
+                                           string $name = null,
+                                           float $latitude = null,
+                                           float $longitude = null): TrainStation {
         if ($name === null || $latitude === null || $longitude === null) {
             return HafasController::fetchTrainStation($ibnr);
         }

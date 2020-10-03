@@ -34,5 +34,3 @@ class HafasController extends Controller
         }
     }
 }
-
-
