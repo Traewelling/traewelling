@@ -172,18 +172,23 @@ class SocialController extends Controller
     }
 
     public function destroyProvider(Request $request) {
-        $providerField = "{$request->provider}_id";
-        $user = Auth::user();
-        if ($user->password === null) {
+        $validated = $request->validate([
+                                            'provider' => ['required', 'alpha_dash']
+                                        ]);
+
+        $providerField = "{$validated['provider']}_id";
+        $user          = auth()->user();
+        if ($user->password === null
+            && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
             return response(__('controller.social.delete-set-password'), 406);
         }
 
-        $SocialLoginProfile = SocialLoginProfile::where('user_id', $user->id)->first();
-        if ($SocialLoginProfile === null) {
+        if ($user->socialProfile === null) {
             return response(__('controller.social.delete-never-connected'), 404);
         }
-        $SocialLoginProfile->{$providerField} = '';
-        $user->socialProfile()->save($SocialLoginProfile);
+        $user->socialProfile->update([
+                                         $providerField => null
+                                     ]);
 
         return response(__('controller.social.deleted'), 200);
     }
