@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\EventController as EventBackend;
@@ -97,41 +98,49 @@ class FrontendTransportController extends Controller
             'toot_check' => 'max:2',
             'event' => 'integer'
         ]);
-        $trainCheckinResponse = TransportBackend::TrainCheckin(
-            $request->tripID,
-            $request->start,
-            $request->destination,
-            $request->body,
-            Auth::user(),
-            $request->business_check,
-            $request->tweet_check,
-            $request->toot_check,
-            $request->event
+        try {
+            $trainCheckin = TransportBackend::TrainCheckin(
+                $request->tripID,
+                $request->start,
+                $request->destination,
+                $request->body,
+                Auth::user(),
+                $request->business_check,
+                $request->tweet_check,
+                $request->toot_check,
+                $request->event
             );
 
-        if ($trainCheckinResponse['success'] === false) {
+            return redirect()->route('dashboard')->with('checkin-success', [
+                'distance'             => $trainCheckin['distance'],
+                'duration'             => $trainCheckin['duration'],
+                'points'               => $trainCheckin['points'],
+                'lineName'             => $trainCheckin['lineName'],
+                'alsoOnThisConnection' => $trainCheckin['alsoOnThisConnection'],
+                'event'                => $trainCheckin['event']
+            ]);
+
+        } catch (CheckInCollisionException $e) {
+
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
-                        'controller.transport.overlapping-checkin',
-                        [
-                            'url' => url('/status/'.$trainCheckinResponse['overlap']->status->id),
-                            'id' => $trainCheckinResponse['overlap']->status->id,
-                            'linename' => $trainCheckinResponse['overlap']->HafasTrip->linename
-                        ]
-                    ));
+                    'controller.transport.overlapping-checkin',
+                    [
+                        'url'      => url('/status/' . $e->getCollision()->status->id),
+                        'id'       => $e->getCollision()->status->id,
+                        'linename' => $e->getCollision()->HafasTrip->linename
+                    ]
+                ));
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->route('dashboard')
+                ->with('error', __('messages.exception.general'));
+
         }
 
-        if ($trainCheckinResponse['success'] === true) {
-            return redirect()->route('dashboard')->with('checkin-success', [
-                'distance' => $trainCheckinResponse['distance'],
-                'duration' => $trainCheckinResponse['duration'],
-                'points' => $trainCheckinResponse['points'],
-                'lineName' => $trainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection'],
-                'event' => $trainCheckinResponse['event']
-            ]);
-        }
     }
 
     public function setHome(Request $request) {

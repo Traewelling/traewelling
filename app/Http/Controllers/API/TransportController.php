@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -99,35 +101,38 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainCheckinResponse = TransportBackend::TrainCheckin(
-            $request->input('tripID'),
-            $request->input('start'),
-            $request->input('destination'),
-            $request->input('body'),
-            auth()->user(),
-            0,
-            $request->input('tweet'),
-            $request->input('toot')
-        );
+        try {
+            $trainCheckinResponse = TransportBackend::TrainCheckin(
+                $request->input('tripID'),
+                $request->input('start'),
+                $request->input('destination'),
+                $request->input('body'),
+                auth()->user(),
+                0,
+                $request->input('tweet'),
+                $request->input('toot')
+            );
 
-        if ($trainCheckinResponse['success'] === false) {
-            return $this->sendError([
-                        'status_id' => $trainCheckinResponse['overlap']->id,
-                        'lineName' => $trainCheckinResponse['overlap']->HafasTrip()->first()->linename
-                    ], 409);
-        }
-
-        if ($trainCheckinResponse['success'] === true) {
             return $this->sendResponse([
-                'distance' => $trainCheckinResponse['distance'],
-                'duration' => $trainCheckinResponse['duration'],
-                'statusId' => $trainCheckinResponse['statusId'],
-                'points' => $trainCheckinResponse['points'],
-                'lineName' => $trainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
-            ]);
+                                           'distance' => $trainCheckinResponse['distance'],
+                                           'duration' => $trainCheckinResponse['duration'],
+                                           'statusId' => $trainCheckinResponse['statusId'],
+                                           'points' => $trainCheckinResponse['points'],
+                                           'lineName' => $trainCheckinResponse['lineName'],
+                                           'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
+                                       ]);
+
+        } catch (CheckInCollisionException $e) {
+
+            return $this->sendError([
+                                        'status_id' => $e->getCollision()->status_id,
+                                        'lineName' => $e->getCollision()->HafasTrip->first()->linename
+                                    ], 409);
+
+        } catch (\Throwable $e) {
+            return $this->sendError('Unknown Error occured', 500);
         }
-        return $this->sendError('Unknown Error occured', 500);
+
     }
 
     public function TrainLatestArrivals()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -244,6 +245,7 @@ class TransportController extends Controller
      * @param $tootCheck
      * @param int $eventId
      * @return array
+     * @throws CheckInCollisionException
      * @throws GuzzleException
      * @throws HafasException
      */
@@ -319,7 +321,7 @@ class TransportController extends Controller
 
         $overlapping = self::getOverlappingCheckIns($user, Carbon::parse($departure), Carbon::parse($arrival));
         if ($overlapping->count() > 0) {
-            return ['success' => false, 'overlap' => $overlapping->first()];
+            throw new CheckInCollisionException($overlapping->first());
         }
 
         $status = Status::create([
