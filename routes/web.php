@@ -174,6 +174,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
 
+    Route::get('/transport/bus/autocomplete/{station}', [FrontendTransportController::class, 'BusAutocomplete'])
+         ->name('transport.bus.autocomplete');
+
     Route::get('/trains/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
          ->name('trains.stationboard');
 
@@ -191,6 +194,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setHome'])
          ->name('user.setHome');
+
+    Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
+         ->name('busses.stationboard');
+
+    Route::get('/mastodon/test', [SocialController::class, 'testMastodon']);
 
     Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
          ->name('notifications.latest');
