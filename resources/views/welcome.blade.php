@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="theme-color" content="#c72730">
         <meta name="name" content="{{ config('app.name') }}">
@@ -18,97 +19,13 @@
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
 
+        <link rel="shortcutt favicon" rel="{{ asset('images/icons/favicon.ico') }}">
+        <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
+        <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
 
-        <!-- Fonts -->
-    <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
+        <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #fff;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                z-index: 3;
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .bottom-center {
-                z-index: 3;
-                position: absolute;
-                bottom: 18px;
-                text-align: center;
-            }
-
-            .content {
-                z-index: 3;
-                text-align: center;
-                position: absolute;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #fff;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-
-            .videoContainer {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                background-attachment: scroll;
-                overflow: hidden;
-            }
-            .videoContainer video {
-                min-width: 100%;
-                min-height: 100%;
-                position: relative;
-                z-index: 1;
-            }
-            .videoContainer .overlay {
-                height: 100%;
-                width: 100%;
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                z-index: 2;
-                background-image: linear-gradient(#d4353e, #a20b12);
-                opacity: 0.8;
-            }
-        </style>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -118,19 +35,17 @@
                     <source src="{{ asset('img/vid1.mp4') }}" type="video/mp4">
                 </video>
             </div>
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/dashboard') }}">{{__('menu.dashboard')}}</a>
-                    @else
-                        <a href="{{ route('login') }}">{{__('menu.login')}}</a>
+            <div class="top-right links">
+                @auth
+                    <a href="{{ url('/dashboard') }}">{{__('menu.dashboard')}}</a>
+                @else
+                    <a href="{{ route('login') }}">{{__('menu.login')}}</a>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">{{__('menu.register')}}</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}">{{__('menu.register')}}</a>
+                    @endif
+                @endauth
+            </div>
 
             <div class="content">
                 <div class="title m-b-md">

@@ -61,8 +61,8 @@
             @if(Session::get('checkin-success')['alsoOnThisConnection']->count() >= 1)
                 <p>{{ __('controller.transport.also-in-connection') }}</p>
                 <ul>
-                @foreach(Session::get('checkin-success')['alsoOnThisConnection'] as $person)
-                        <li><a href="{{ route('account.show', ['username' => $person->status->user->username]) }}">{{ '@' . $person->status->user->username }}</a></li>
+                @foreach(Session::get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
+                        <li><a href="{{ route('account.show', ['username' => $otherStatus->user->username]) }}">{{ '@' . $otherStatus->user->username }}</a></li>
                 @endforeach
                 </ul>
             @endif

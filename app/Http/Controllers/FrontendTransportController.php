@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\EventController as EventBackend;
 use Illuminate\Http\Request;
@@ -48,7 +50,7 @@ class FrontendTransportController extends Controller
             'latitude' => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
-        
+
         $nearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
@@ -96,57 +98,78 @@ class FrontendTransportController extends Controller
             'toot_check' => 'max:2',
             'event' => 'integer'
         ]);
-        $TrainCheckinResponse = TransportBackend::TrainCheckin(
-            $request->tripID,
-            $request->start,
-            $request->destination,
-            $request->body,
-            Auth::user(),
-            $request->business_check,
-            $request->tweet_check,
-            $request->toot_check,
-            $request->event
+        try {
+            $trainCheckin = TransportBackend::TrainCheckin(
+                $request->tripID,
+                $request->start,
+                $request->destination,
+                $request->body,
+                Auth::user(),
+                $request->business_check,
+                $request->tweet_check,
+                $request->toot_check,
+                $request->event
             );
 
-        if ($TrainCheckinResponse['success'] === false) {
+            return redirect()->route('dashboard')->with('checkin-success', [
+                'distance'             => $trainCheckin['distance'],
+                'duration'             => $trainCheckin['duration'],
+                'points'               => $trainCheckin['points'],
+                'lineName'             => $trainCheckin['lineName'],
+                'alsoOnThisConnection' => $trainCheckin['alsoOnThisConnection'],
+                'event'                => $trainCheckin['event']
+            ]);
+
+        } catch (CheckInCollisionException $e) {
+
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
-                        'controller.transport.overlapping-checkin',
-                        [
-                            'url' => url('/status/'.$TrainCheckinResponse['overlap']->id),
-                            'id' => $TrainCheckinResponse['overlap']->id,
-                            'linename' => $TrainCheckinResponse['overlap']->HafasTrip()->first()->linename
-                        ]
-                    ));
+                    'controller.transport.overlapping-checkin',
+                    [
+                        'url'      => url('/status/' . $e->getCollision()->status->id),
+                        'id'       => $e->getCollision()->status->id,
+                        'linename' => $e->getCollision()->HafasTrip->linename
+                    ]
+                ));
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->route('dashboard')
+                ->with('error', __('messages.exception.general'));
+
         }
 
-        if ($TrainCheckinResponse['success'] === true) {
-            return redirect()->route('dashboard')->with('checkin-success', [
-                'distance' => $TrainCheckinResponse['distance'],
-                'duration' => $TrainCheckinResponse['duration'],
-                'points' => $TrainCheckinResponse['points'],
-                'lineName' => $TrainCheckinResponse['lineName'],
-                'alsoOnThisConnection' => $TrainCheckinResponse['alsoOnThisConnection'],
-                'event' => $TrainCheckinResponse['event']
-            ]);
-        }
     }
 
-    public function SetHome(Request $request) {
-        $SetHomeResponse = TransportBackend::SetHome(Auth::user(), $request->ibnr);
-        if ($SetHomeResponse === true) {
-            return redirect()->back();
+    public function setHome(Request $request) {
+        $validated = $request->validate([
+                                            'ibnr' => ['required', 'numeric']
+                                        ]);
+
+        try {
+            $trainStation = TransportBackend::setHome(Auth::user(), $validated['ibnr']);
+
+            return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
+        } catch (HafasException $e) {
+            return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-        return redirect()->back()->with(['message' => __('user.home-set', ['station' => $SetHomeResponse])]);
     }
 
     public function FastTripAccess(Request $request) {
-        $FastTripResponse = TransportBackend::FastTripAccess($request->start, $request->lineName, $request->number, $request->when);
-        if ($FastTripResponse === null) {
+        $fastTripResponse = TransportBackend::FastTripAccess($request->start,
+                                                             $request->lineName,
+                                                             $request->number,
+                                                             $request->when);
+        if ($fastTripResponse === null) {
             abort(404);
         }
-        return redirect()->route('trains.trip', ['tripID'=>$FastTripResponse->tripId,'lineName'=>$FastTripResponse->line->name,'start'=>$request->start]);
+        return redirect()->route('trains.trip', [
+            'tripID'   => $fastTripResponse->tripId,
+            'lineName' => $fastTripResponse->line->name,
+            'start'    => $request->start
+        ]);
     }
 
 }

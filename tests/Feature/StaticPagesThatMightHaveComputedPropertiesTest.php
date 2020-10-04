@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * WHEN: A non-logged-in user tries to reach those pages
  * THEN: Show them to the user.
  */
-class StaticPagesThatMightHaveComputedPropertiesReturn200Test extends TestCase
+class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
 {
     use RefreshDatabase;
 

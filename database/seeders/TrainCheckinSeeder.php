@@ -15,8 +15,7 @@ class TrainCheckinSeeder extends Seeder
      * @return void
      */
     public function run() {
-        for ($cnt = 0; $cnt < 50; $cnt++) {
-            $user = User::all()->random();
+        foreach (User::all() as $user) {
             $trip = HafasTrip::all()->random();
             TransportController::TrainCheckin(
                 $trip->trip_id,
@@ -30,18 +29,5 @@ class TrainCheckinSeeder extends Seeder
                 rand(0, 1)
             );
         }
-        $user = User::where('id', 1)->first();
-        $trip = HafasTrip::all()->random();
-        TransportController::TrainCheckin(
-            $trip->trip_id,
-            $trip->origin,
-            $trip->destination,
-            '',
-            $user,
-            0,
-            0,
-            0,
-            rand(0, 1)
-        );
     }
 }

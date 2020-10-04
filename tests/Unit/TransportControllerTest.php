@@ -29,7 +29,6 @@ class TransportControllerTest extends TestCase
      * Everything is 30min late, assuming that departure delay = arrival delay (That's just how traewelling works).
      */
     public function testCalculateTrainPoints_delayed_trains() {
-        $now = time();
         $this->assertEquals(15, TransportController::CalculateTrainPoints(50, 'nationalExpress', "-32 minutes", "-20 minutes", 30 * 60));
     }
 

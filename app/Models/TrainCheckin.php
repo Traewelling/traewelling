@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainCheckin extends Model
 {
-
-    protected $hidden  = ['created_at', 'updated_at'];
-    protected $dates   = ['departure', 'arrival', 'created_at', 'updated_at'];
-    protected $appends = ['duration'];
+    protected $fillable = [
+        'status_id', 'trip_id', 'origin', 'destination',
+        'distance', 'delay', 'points', 'departure', 'arrival'
+    ];
+    protected $hidden   = ['created_at', 'updated_at'];
+    protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
+    protected $appends  = ['duration'];
 
     public function status() {
         return $this->belongsTo(Status::class);
@@ -76,5 +79,19 @@ class TrainCheckin extends Model
      */
     public function getDurationAttribute() {
         return $this->arrival->diffInMinutes($this->departure);
+    }
+
+    public function getAlsoOnThisConnectionAttribute() {
+        return TrainCheckin::with(['status'])
+                           ->where([
+                                       ['status_id', '<>', $this->status->id],
+                                       ['trip_id', '=', $this->HafasTrip->trip_id],
+                                       ['arrival', '>', $this->departure],
+                                       ['departure', '<', $this->arrival]
+                                   ])
+                           ->get()
+                           ->map(function($trainCheckIn) {
+                               return $trainCheckIn->status;
+                           });
     }
 }

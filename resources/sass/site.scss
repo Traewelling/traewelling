@@ -1,78 +1,83 @@
 body {
-    background: rgb(248, 250, 252);
-    overflow-x: hidden;
+  background: rgb(248, 250, 252);
+  overflow-x: hidden;
 }
+
 .product-icon {
-    width: 1em;
-    height: 1em;
+  width: 1em;
+  height: 1em;
 }
 
 ul.timeline {
-    list-style-type: none;
-    position: relative;
+  list-style-type: none;
+  position: relative;
+
+  &:last-child {
+    background: transparent !important;
+  }
+
+  > li {
+    margin: 20px 0;
+    padding-left: 20px;
+
+    > i {
+      content: " ";
+      background: #fff;
+      display: inline-block;
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid rgb(192, 57, 43);
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      z-index: 400;
+    }
+
+    &:first-child:before {
+      content: " ";
+      background: #d4d9df;
+      display: inline-block;
+      left: 29px;
+      width: 2px;
+      height: 90%;
+      position: absolute;
+      z-index: 400;
+    }
+
     &:last-child {
-        background: transparent !important;
+      line-height: 1;
     }
-
-    > li {
-        margin: 20px 0;
-        padding-left: 20px;
-
-        > i {
-            content: " ";
-            background: #fff;
-            display: inline-block;
-            position: absolute;
-            border-radius: 50%;
-            border: 3px solid rgb(192, 57, 43);
-            left: 20px;
-            width: 20px;
-            height: 20px;
-            z-index: 400;
-        }
-
-        &:first-child:before {
-            content: " ";
-            background: #d4d9df;
-            display: inline-block;
-            left: 29px;
-            width: 2px;
-            height: 90%;
-            position: absolute;
-            z-index: 400;
-        }
-
-        &:last-child {
-            line-height: 1;
-        }
-    }
+  }
 }
 
 ul.timeline > li p.status-body:before,
 p.train-status:before {
-    font-family: FontAwesome;
-    display: inline-block;
-    padding-right: 6px;
-    vertical-align: middle;
+  font-family: FontAwesome;
+  display: inline-block;
+  padding-right: 6px;
+  vertical-align: middle;
 }
 
 .connection {
-    background: #f5f5f5;
+  background: #f5f5f5;
 }
+
 .text-trwl {
-    color: rgb(199, 39, 48) !important;
+  color: rgb(199, 39, 48) !important;
 }
+
 .bg-trwl {
-    background-color: #c72730 !important;
+  background-color: #c72730 !important;
 }
 
 .navbar-dark .navbar-brand {
-    font-weight: bold !important;
+  font-weight: bold !important;
 }
 
 .dropdown-menu {
-    z-index: 2000;
+  z-index: 2000;
 }
+
 .nav-tabs {
-    border-bottom: 0; // Fix double line in Leaderboards.
+  border-bottom: 0; // Fix double line in Leaderboards.
 }

@@ -14,15 +14,7 @@ function get_current_git_commit() {
         } else {
             return false;
         }
-    } catch(Exception $e) {
-        return false;
-    }
-}
-
-function get_current_git_commit_message( $branch='master' ) {
-    if ($message = file_get_contents(base_path() . '/.git/COMMIT_EDITMSG')) {
-        return $message;
-    } else {
+    } catch (Exception $e) {
         return false;
     }
 }
@@ -30,10 +22,10 @@ function get_current_git_commit_message( $branch='master' ) {
 /**
  * @see https://stackoverflow.com/a/437642
  */
-function number($number, $decimals=2) {
+function number($number, $decimals = 2) {
     return number_format($number, $decimals,
-               __('dates.decimal_point'),
-               __('dates.thousands_sep'));
+                         __('dates.decimal_point'),
+                         __('dates.thousands_sep'));
 }
 
 /**
@@ -43,52 +35,49 @@ function number($number, $decimals=2) {
  * @return array with `hours`, `minutes` and `showHours`.
  */
 function secondsToDuration($seconds): array {
-    $secondsInAnHour = 60*60;
+    $secondsInAnHour = 60 * 60;
 
     return [
-        "hours" => intdiv($seconds, $secondsInAnHour),
-        "minutes" => intdiv($seconds % $secondsInAnHour, 60),
+        "hours"     => intdiv($seconds, $secondsInAnHour),
+        "minutes"   => intdiv($seconds % $secondsInAnHour, 60),
         "showHours" => $seconds >= $secondsInAnHour
     ];
 }
 
 /**
  * @param array $duration from the secondsToDuration
+ * @return string
  */
-function durationToSpan($duration): String {
+function durationToSpan($duration): string {
     $return = $duration["minutes"] . "<small>min</small>";
 
-    if($duration["showHours"]) {
+    if ($duration["showHours"]) {
         $return = $duration["hours"] . "<small>h</small>&nbsp;" . $return;
     }
 
     return $return;
 }
 
-function stationLink($name, $classes = "text-trwl clearfix"): String {
+function stationLink($name, $classes = "text-trwl clearfix"): string {
     $urlname = $name;
 
-    switch($name) {
+    switch ($name) {
         // Those are stations that you can ride to but you can't search for them.
         case $name == "Köln Messe/Deutz Gl. 9-10":
         case $name == "Köln Messe/Deutz Gl.11-12":
             $urlname = "Köln Messe/Deutz";
-        break;
+            break;
 
         // Hamburg's Landungsbrücken has three bridges [1..3], but you cannot search for them.
         case preg_match('/Landungsbr.*cken Br.*cke \d/i', $name) > 0:
             $urlname = "Landungsbrücken, Hamburg";
-        break;
+            break;
     }
 
-    $return = '<a href="' . route('trains.stationboard') . '?provider=train&station=' . urlencode($urlname) . '" class="' . $classes . '">' . $name . '</a>';
-
-    return $return;
-}
-
-function formatNewDay($DateObject) {
-
-
-
-    return __("dates." . $DateObject->format('l')) .', '. $DateObject->format('j').'. '.__("dates." . $DateObject->format('F')) .' '. $DateObject->format('Y');
+    return strtr('<a href=":href?provider=train&station=:station" class=":classes">:name</a>', [
+        ':href'    => route('trains.stationboard'),
+        ':station' => urlencode($urlname),
+        ':classes' => $classes,
+        ':name'    => $name
+    ]);
 }

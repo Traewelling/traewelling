@@ -179,8 +179,7 @@ class NotificationsTest extends TestCase
 
         // WHEN: Bob also checks into the train
         $bob      = User::factory()->create();
-        $response = $this->actingAs($bob)
-                         ->post('/gdpr-ack');
+        $this->actingAs($bob)->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);
 
         // THEN: Alice should see that in their notification

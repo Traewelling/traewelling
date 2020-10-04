@@ -184,9 +184,9 @@ class UserController extends Controller
     }
 
     //delete a specific session for user
-    public function deleteToken($id) {
+    public function deleteToken($tokenId) {
         $user = Auth::user();
-        $token = Token::find($id);
+        $token = Token::find($tokenId);
         if ($token->user == $user) {
             $token->revoke();
         }
@@ -378,10 +378,9 @@ class UserController extends Controller
 
     public static function registerByDay(Carbon $date)
     {
-        $q = User::where("created_at", ">=", $date->copy()->startOfDay())
+        return User::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
             ->count();
-        return $q;
     }
 
     public static function updateDisplayName($displayname)

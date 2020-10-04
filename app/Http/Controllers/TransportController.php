@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -25,14 +27,6 @@ use Mastodon;
 
 class TransportController extends Controller
 {
-    /**
-     * Takes just about any date string and formats it in Y-m-d H:i:s which is
-     * the required format for MySQL inserts.
-     * @return String
-     */
-    public static function dateToMySQLEscape(string $timeString, $delaySeconds = 0): string {
-        return date("Y-m-d H:i:s", strtotime($timeString) - $delaySeconds);
-    }
 
     public static function TrainAutocomplete($station) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
@@ -232,6 +226,21 @@ class TransportController extends Controller
         return 1;
     }
 
+    /**
+     * @param $tripId
+     * @param $start
+     * @param $destination
+     * @param $body
+     * @param $user
+     * @param $businessCheck
+     * @param $tweetCheck
+     * @param $tootCheck
+     * @param int $eventId
+     * @return array
+     * @throws CheckInCollisionException
+     * @throws GuzzleException
+     * @throws HafasException
+     */
     public static function TrainCheckin($tripId,
                                         $start,
                                         $destination,
@@ -290,39 +299,41 @@ class TransportController extends Controller
             $hafasTrip->delay
         );
 
-        $status           = new Status();
-        $status->body     = $body;
-        $status->business = isset($businessCheck) && $businessCheck == 'on';
+        $departure = Carbon::parse($stopovers[$offset1]['departure']);
+        $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
-        $trainCheckin              = new TrainCheckin;
-        $trainCheckin->trip_id     = $tripId;
-        $trainCheckin->origin      = $originStation->ibnr;
-        $trainCheckin->destination = $destinationStation->ibnr;
-        $trainCheckin->distance    = $distance;
-        $trainCheckin->delay       = $hafasTrip->delay;
-        $trainCheckin->points      = $points;
-        $trainCheckin->departure   = self::dateToMySQLEscape($stopovers[$offset1]['departure'],
-                                                             $stopovers[$offset1]['departureDelay'] ?? 0);
-        $trainCheckin->arrival     = isset($stopovers[$offset2]['arrival']) ?
-            self::dateToMySQLEscape($stopovers[$offset2]['arrival'],
-                                    $stopovers[$offset2]['arrivalDelay'] ?? 0) :
-            self::dateToMySQLEscape($stopovers[$offset2]['departure'],
-                                    $stopovers[$offset2]['departureDelay'] ?? 0);
-
-        //check if there are colliding checkins
-        $overlapDeparture = self::dateToMySQLEscape($trainCheckin->departure, -120);
-        $overlapArrival   = self::dateToMySQLEscape($trainCheckin->arrival, 120);
-
-        $overlap = TrainCheckin::with('Status')->whereHas('Status', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->where(function($query) use ($overlapArrival, $overlapDeparture) {
-            $query->where([['arrival', '>', $overlapDeparture], ['departure', '<', $overlapDeparture]])
-                  ->orwhere([['arrival', '>', $overlapArrival], ['departure', '<', $overlapArrival]])
-                  ->orwhere([['departure', '>', $overlapDeparture], ['arrival', '<', $overlapArrival]]);
-        })->first();
-        if (!empty($overlap)) {
-            return ['success' => false, 'overlap' => $overlap];
+        if ($stopovers[$offset2]['arrival']) {
+            $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
+            $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
+        } else {
+            $arrival = Carbon::parse($stopovers[$offset2]['departure']);
+            $arrival->subSeconds($stopovers[$offset2]['departureDelay'] ?? 0);
         }
+
+        $overlapping = self::getOverlappingCheckIns($user, $departure, $arrival);
+        if ($overlapping->count() > 0) {
+            throw new CheckInCollisionException($overlapping->first());
+        }
+
+        $status = Status::create([
+                                     'user_id'  => $user->id,
+                                     'body'     => $body,
+                                     'business' => isset($businessCheck) && $businessCheck == 'on'
+                                 ]);
+
+        $trainCheckin = TrainCheckin::create([
+                                                 'status_id'   => $status->id,
+                                                 'trip_id'     => $tripId,
+                                                 'origin'      => $originStation->ibnr,
+                                                 'destination' => $destinationStation->ibnr,
+                                                 'distance'    => $distance,
+                                                 'delay'       => $hafasTrip->delay,
+                                                 'points'      => $points,
+                                                 'departure'   => $departure,
+                                                 'arrival'     => $arrival
+                                             ]);
+
+        $user->load(['statuses']);
 
         // Let's connect our statuses and the events
         $event = null;
@@ -332,127 +343,38 @@ class TransportController extends Controller
                 abort(404);
             }
             if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
-                $status->event_id = $event->id;
+                $status->update([
+                                    'event_id' => $event->id
+                                ]);
             }
         }
-
-        $user->statuses()->save($status)->trainCheckin()->save($trainCheckin);
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += $trainCheckin->duration;
         $user->points         += $trainCheckin->points;
 
         $user->update();
-        if ((isset($tootCheck) || isset($tweetCheck)) && config('trwl.post_social') === true) {
-            $postText = trans_choice(
-                'controller.transport.social-post',
-                preg_match('/\s/', $hafasTrip->linename),
-                ['lineName' => $hafasTrip->linename, 'destination' => $destinationStation->name]
-            );
-            if ($event !== null) {
-                $postText = trans_choice(
-                    'controller.transport.social-post-with-event',
-                    preg_match('/\s/', $hafasTrip->linename),
-                    [
-                        'lineName'    => $hafasTrip->linename,
-                        'destination' => $destinationStation->name,
-                        'hashtag'     => $event->hashtag
-                    ]
-                );
-            }
 
-            $postUrl = url("/status/{$trainCheckin->status_id}");
-
-            if (isset($status->body)) {
-                $eventIntercept = "";
-                if ($event !== null) {
-                    $eventIntercept = __('controller.transport.social-post-for') . '#' . $event->hashtag;
-                }
-
-                $appendix = " (@ " .
-                    $hafasTrip->linename .
-                    ' ➜ ' .
-                    $destinationStation->name .
-                    $eventIntercept .
-                    ") #NowTräwelling ";
-
-                $appendix_length = strlen($appendix) + 30;
-                $postText        = substr($status->body, 0, 280 - $appendix_length);
-                if (strlen($postText) != strlen($status->body)) {
-                    $postText .= '...';
-                }
-                $postText .= $appendix;
-            }
-
-            if (isset($tootCheck) && $tootCheck == true && $user->socialProfile) {
-                try {
-                    $mastodonDomain = MastodonServer::where('id', $user->socialProfile->mastodon_server)
-                                                    ->first()->domain;
-                    Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
-                    Mastodon::createStatus($postText . $postUrl, ['visibility' => 'unlisted']);
-                } catch (RequestException $e) {
-                    $user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-                } catch (\Exception $e) {
-                    Log::error($e);
-                }
-            }
-            if (isset($tweetCheck) && $tweetCheck == true && $user->socialProfile) {
-                try {
-                    $connection = new TwitterOAuth(
-                        config('trwl.twitter_id'),
-                        config('trwl.twitter_secret'),
-                        $user->socialProfile->twitter_token,
-                        $user->socialProfile->twitter_tokenSecret
-                    );
-                    // #dbl only works on Twitter.
-                    if ($user->always_dbl) {
-                        $postText .= "#dbl ";
-                    }
-                    $connection->post(
-                        "statuses/update",
-                        [
-                            "status" => $postText . $postUrl,
-                            'lat'    => $originStation->latitude,
-                            'lon'    => $originStation->longitude
-                        ]
-                    );
-
-                    if ($connection->getLastHttpCode() != 200) {
-                        $user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
-                    }
-                } catch (\Exception $exception) {
-                    Log::error($e);
-                    // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
-                    // However, we still want to continue if it explodes, thus why not catch exceptions here.
-                }
-            }
+        if (isset($tootCheck) && $tootCheck == true) {
+            self::postMastodon($status);
+        }
+        if (isset($tweetCheck) && $tweetCheck == true) {
+            self::postTwitter($status);
         }
 
         // check for other people on this train
-
-        $alsoOnThisConnection = TrainCheckin::where([
-                                                        ['trip_id', '=', $trainCheckin->trip_id],
-                                                        ['status_id', '!=', $status->id],
-                                                        ['arrival', '>', $trainCheckin->departure],
-                                                        ['departure', '<', $trainCheckin->arrival]
-                                                    ])->get()->pluck('status.user')
-                                            ->each(
-                                                function($t) use (
-                                                    $status, $hafasTrip,
-                                                    $originStation, $destinationStation
-                                                ) {
-                                                    $t->notify(new UserJoinedConnection($status->id,
-                                                                                        $hafasTrip->linename,
-                                                                                        $originStation->name,
-                                                                                        $destinationStation->name));
-                                                    return $t;
-                                                });
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+            $otherStatus->user->notify(new UserJoinedConnection($status->id,
+                                                                $status->trainCheckin->HafasTrip->linename,
+                                                                $status->trainCheckin->Origin->name,
+                                                                $status->trainCheckin->Destination->name));
+        }
 
         return [
             'success'              => true,
             'statusId'             => $status->id,
             'points'               => $trainCheckin->points,
-            'alsoOnThisConnection' => $alsoOnThisConnection,
+            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
             'lineName'             => $hafasTrip->linename,
             'distance'             => $trainCheckin->distance,
             'duration'             => $trainCheckin->duration,
@@ -461,10 +383,76 @@ class TransportController extends Controller
     }
 
     /**
+     * @param Status $status
+     */
+    private static function postTwitter(Status $status) {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->twitter_id === null) {
+            return;
+        }
+
+        try {
+            $connection = new TwitterOAuth(
+                config('trwl.twitter_id'),
+                config('trwl.twitter_secret'),
+                $status->user->socialProfile->twitter_token,
+                $status->user->socialProfile->twitter_tokenSecret
+            );
+            #dbl only works on Twitter.
+            $socialText = $status->socialText;
+            if ($status->user->always_dbl) {
+                $socialText .= "#dbl ";
+            }
+            $socialText .= ' ' . url("/status/{$status->id}");
+            $connection->post(
+                "statuses/update",
+                [
+                    "status" => $socialText,
+                    'lat'    => $status->trainCheckin->Origin->latitude,
+                    'lon'    => $status->trainCheckin->Origin->longitude
+                ]
+            );
+
+            if ($connection->getLastHttpCode() != 200) {
+                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception);
+            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+            // However, we still want to continue if it explodes, thus why not catch exceptions here.
+        }
+    }
+
+    /**
+     * @param Status $status
+     */
+    private static function postMastodon(Status $status) {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->mastodon_server === null) {
+            return;
+        }
+
+        try {
+            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
+            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
+            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+        } catch (RequestException $e) {
+            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
+        } catch (\Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    /**
      * @param string $tripID
      * @param string $lineName
      * @return HafasTrip
-     * @throws GuzzleException
+     * @throws GuzzleException|HafasException
      */
     private static function getHAFAStrip(string $tripID, string $lineName): HafasTrip {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
@@ -472,40 +460,46 @@ class TransportController extends Controller
             return $trip;
         }
 
-        $client      = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
-        $json        = json_decode($response->getBody()->getContents());
-        $origin      = self::getTrainStation($json->origin->id,
-                                             $json->origin->name,
-                                             $json->origin->location->latitude,
-                                             $json->origin->location->longitude);
-        $destination = self::getTrainStation($json->destination->id,
-                                             $json->destination->name,
-                                             $json->destination->location->latitude,
-                                             $json->destination->location->longitude);
-        if ($json->line->name === null) {
-            $json->line->name = $json->line->fahrtNr;
+        $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
+        $tripResponse = $tripClient->get("trips/$tripID?lineName=$lineName&polyline=true");
+        $tripJson     = json_decode($tripResponse->getBody()->getContents());
+        $origin       = self::getTrainStation($tripJson->origin->id,
+                                              $tripJson->origin->name,
+                                              $tripJson->origin->location->latitude,
+                                              $tripJson->origin->location->longitude);
+        $destination  = self::getTrainStation($tripJson->destination->id,
+                                              $tripJson->destination->name,
+                                              $tripJson->destination->location->latitude,
+                                              $tripJson->destination->location->longitude);
+        if ($tripJson->line->name === null) {
+            $tripJson->line->name = $tripJson->line->fahrtNr;
         }
 
-        if ($json->line->id === null) {
-            $json->line->id = '';
+        if ($tripJson->line->id === null) {
+            $tripJson->line->id = '';
         }
+
+        $departure = Carbon::parse($tripJson->departure ?? $tripJson->scheduledDeparture);
+        $departure->subSeconds($tripJson->departureDelay ?? 0);
+
+        $arrival = Carbon::parse($tripJson->arrival ?? $tripJson->scheduledArrival);
+        $arrival->subSeconds($tripJson->arrivalDelay ?? 0);
+
+        $polylineHash = self::getPolylineHash(json_encode($tripJson->polyline))->hash;
 
         return HafasTrip::updateOrCreate([
                                              'trip_id' => $tripID
                                          ], [
-                                             'category'    => $json->line->product,
-                                             'number'      => $json->line->id,
-                                             'linename'    => $json->line->name,
+                                             'category'    => $tripJson->line->product,
+                                             'number'      => $tripJson->line->id,
+                                             'linename'    => $tripJson->line->name,
                                              'origin'      => $origin->ibnr,
                                              'destination' => $destination->ibnr,
-                                             'stopovers'   => json_encode($json->stopovers),
-                                             'polyline'    => self::getPolylineHash(json_encode($json->polyline))->hash,
-                                             'departure'   => self::dateToMySQLEscape($json->departure ?? $json->scheduledDeparture,
-                                                                                      $json->departureDelay ?? 0),
-                                             'arrival'     => self::dateToMySQLEscape($json->arrival ?? $json->scheduledArrival,
-                                                                                      $json->arrivalDelay ?? 0),
-                                             'delay'       => $json->arrivalDelay ?? null
+                                             'stopovers'   => json_encode($tripJson->stopovers),
+                                             'polyline'    => $polylineHash,
+                                             'departure'   => $departure,
+                                             'arrival'     => $arrival,
+                                             'delay'       => $tripJson->arrivalDelay ?? null
                                          ]);
 
     }
@@ -513,12 +507,24 @@ class TransportController extends Controller
     /**
      * Get the TrainStation Model from Database
      * @param int $ibnr
-     * @param string $name
-     * @param float $latitude
-     * @param float $longitude
+     * @param string|null $name
+     * @param float|null $latitude
+     * @param float|null $longitude
      * @return TrainStation
+     * @throws HafasException
      */
-    public static function getTrainStation(int $ibnr, string $name, float $latitude, float $longitude): TrainStation {
+    public static function getTrainStation(int $ibnr,
+                                           string $name = null,
+                                           float $latitude = null,
+                                           float $longitude = null): TrainStation {
+
+        if ($name === null || $latitude === null || $longitude === null) {
+            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
+            if($dbTrainStation !== null) {
+                return $dbTrainStation;
+            }
+            return HafasController::fetchTrainStation($ibnr);
+        }
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $ibnr
                                             ], [
@@ -561,25 +567,20 @@ class TransportController extends Controller
             })->take($maxCount);
     }
 
-    public static function SetHome($user, $ibnr) {
-        $client     = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response   = $client->request('GET', "locations?query=$ibnr")->getBody()->getContents();
-        $ibnrObject = json_decode($response);
+    /**
+     * @param User $user
+     * @param int $ibnr
+     * @return TrainStation
+     * @throws HafasException
+     */
+    public static function setHome(User $user, int $ibnr): TrainStation {
+        $trainStation = self::getTrainStation($ibnr);
 
-        $station = self::getTrainStation(
-            $ibnrObject[0]->id,
-            $ibnrObject[0]->name,
-            $ibnrObject[0]->location->latitude,
-            $ibnrObject[0]->location->longitude
-        );
+        $user->update([
+                          'home_id' => $trainStation->id
+                      ]);
 
-        $user->home_id = $station->id;
-        try {
-            $user->save();
-        } catch (\Exception $e) {
-            return false;
-        }
-        return $station->name;
+        return $trainStation;
     }
 
     public static function usageByDay(Carbon $date) {
@@ -624,5 +625,25 @@ class TransportController extends Controller
         }
 
         return $returnArray;
+    }
+
+    /**
+     * Check if there are colliding CheckIns
+     * @param User $user
+     * @param Carbon $start
+     * @param Carbon $end
+     * @return Collection
+     */
+    private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
+        $start = $start->clone()->subMinutes(2);
+        $end   = $end->clone()->addMinutes(2);
+
+        $user->loadMissing(['statuses', 'statuses.trainCheckin']);
+
+        return $user->statuses->map(function($status) {
+            return $status->trainCheckin;
+        })->filter(function($trainCheckIn) use ($start, $end) {
+            return $trainCheckIn->arrival->isBetween($start, $end) || $trainCheckIn->departure->isBetween($start, $end);
+        });
     }
 }

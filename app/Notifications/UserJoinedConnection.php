@@ -77,7 +77,7 @@ class UserJoinedConnection extends Notification
     public static function render($notification)
     {
         try {
-            $detail = Self::detail($notification);
+            $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {
             $notification->delete();
             return null;

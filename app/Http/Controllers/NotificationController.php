@@ -61,10 +61,10 @@ class NotificationController extends Controller
             return Response::json($notification, 202); // new state = unread, 202=accepted
         }
     }
-    public static function destroy($nottificationID)
+    public static function destroy($notificationID)
     {
         try {
-            $notification = Auth::user()->notifications->where('id', $nottificationID)->first();
+            $notification = Auth::user()->notifications->where('id', $notificationID)->first();
             $notification->delete();
         } catch (\Throwable $e) {
             return Response::json([], 404);
