@@ -460,17 +460,17 @@ class TransportController extends Controller
             return $trip;
         }
 
-        $tripClient      = new Client(['base_uri' => config('trwl.db_rest')]);
-        $tripResponse    = $tripClient->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
-        $tripJson        = json_decode($tripResponse->getBody()->getContents());
-        $origin      = self::getTrainStation($tripJson->origin->id,
-                                             $tripJson->origin->name,
-                                             $tripJson->origin->location->latitude,
-                                             $tripJson->origin->location->longitude);
-        $destination = self::getTrainStation($tripJson->destination->id,
-                                             $tripJson->destination->name,
-                                             $tripJson->destination->location->latitude,
-                                             $tripJson->destination->location->longitude);
+        $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
+        $tripResponse = $tripClient->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
+        $tripJson     = json_decode($tripResponse->getBody()->getContents());
+        $origin       = self::getTrainStation($tripJson->origin->id,
+                                              $tripJson->origin->name,
+                                              $tripJson->origin->location->latitude,
+                                              $tripJson->origin->location->longitude);
+        $destination  = self::getTrainStation($tripJson->destination->id,
+                                              $tripJson->destination->name,
+                                              $tripJson->destination->location->latitude,
+                                              $tripJson->destination->location->longitude);
         if ($tripJson->line->name === null) {
             $tripJson->line->name = $tripJson->line->fahrtNr;
         }
