@@ -322,7 +322,7 @@ class TransportController extends Controller
                                  ]);
 
         $trainCheckin = TrainCheckin::create([
-            'status_id' => $status->id,
+                                                 'status_id'   => $status->id,
                                                  'trip_id'     => $tripId,
                                                  'origin'      => $originStation->ibnr,
                                                  'destination' => $destinationStation->ibnr,
