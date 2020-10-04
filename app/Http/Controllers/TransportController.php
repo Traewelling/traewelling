@@ -485,6 +485,8 @@ class TransportController extends Controller
         $arrival = Carbon::parse($tripJson->arrival ?? $tripJson->scheduledArrival);
         $arrival->subSeconds($tripJson->arrivalDelay ?? 0);
 
+        $polylineHash = self::getPolylineHash(json_encode($tripJson->polyline))->hash;
+
         return HafasTrip::updateOrCreate([
                                              'trip_id' => $tripID
                                          ], [
@@ -494,7 +496,7 @@ class TransportController extends Controller
                                              'origin'      => $origin->ibnr,
                                              'destination' => $destination->ibnr,
                                              'stopovers'   => json_encode($tripJson->stopovers),
-                                             'polyline'    => self::getPolylineHash(json_encode($tripJson->polyline))->hash,
+                                             'polyline'    => $polylineHash,
                                              'departure'   => $departure,
                                              'arrival'     => $arrival,
                                              'delay'       => $tripJson->arrivalDelay ?? null
