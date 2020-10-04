@@ -29,7 +29,7 @@ return [
         "also-in-connection" => "Auch in dieser Verbindung sind:",
         "social-post" => "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
         "social-post-with-event" => "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
-        "social-post-for" => " für ",
+        "social-post-for" => " für #:hashtag",
         "no-station-found" => "Für diese Suche wurde keine Haltestelle gefunden.",
     ],
     "user" => [
