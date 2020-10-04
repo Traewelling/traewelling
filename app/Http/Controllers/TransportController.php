@@ -461,7 +461,7 @@ class TransportController extends Controller
         }
 
         $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $tripResponse = $tripClient->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
+        $tripResponse = $tripClient->get("trips/$tripID?lineName=$lineName&polyline=true");
         $tripJson     = json_decode($tripResponse->getBody()->getContents());
         $origin       = self::getTrainStation($tripJson->origin->id,
                                               $tripJson->origin->name,
