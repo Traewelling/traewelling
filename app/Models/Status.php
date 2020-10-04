@@ -59,7 +59,7 @@ class Status extends Model
         if (isset($status->body)) {
             $eventIntercept = "";
             if ($this->event !== null) {
-                $eventIntercept = strtr(__('controller.transport.social-post-for'), [
+                $eventIntercept = __('controller.transport.social-post-for', [
                     ':hashtag' => $this->event->hashtag
                 ]);
             }
