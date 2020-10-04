@@ -5,6 +5,6 @@ return [
     "cookie-notice-learn" => "Learn more",
     "exception" => [
         "general" => "An unknown error occurred. Please try again.",
-        'generalHafas' => "There was an Problem with the HAFAS interface."
+        'generalHafas' => "There has been an Problem with the HAFAS interface."
     ]
 ];
