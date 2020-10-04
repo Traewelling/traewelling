@@ -452,7 +452,7 @@ class TransportController extends Controller
      * @param string $tripID
      * @param string $lineName
      * @return HafasTrip
-     * @throws GuzzleException
+     * @throws GuzzleException|HafasException
      */
     private static function getHAFAStrip(string $tripID, string $lineName): HafasTrip {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
@@ -460,44 +460,44 @@ class TransportController extends Controller
             return $trip;
         }
 
-        $client      = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response    = $client->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
-        $json        = json_decode($response->getBody()->getContents());
-        $origin      = self::getTrainStation($json->origin->id,
-                                             $json->origin->name,
-                                             $json->origin->location->latitude,
-                                             $json->origin->location->longitude);
-        $destination = self::getTrainStation($json->destination->id,
-                                             $json->destination->name,
-                                             $json->destination->location->latitude,
-                                             $json->destination->location->longitude);
-        if ($json->line->name === null) {
-            $json->line->name = $json->line->fahrtNr;
+        $tripClient      = new Client(['base_uri' => config('trwl.db_rest')]);
+        $tripResponse    = $tripClient->request('GET', "trips/$tripID?lineName=$lineName&polyline=true");
+        $tripJson        = json_decode($tripResponse->getBody()->getContents());
+        $origin      = self::getTrainStation($tripJson->origin->id,
+                                             $tripJson->origin->name,
+                                             $tripJson->origin->location->latitude,
+                                             $tripJson->origin->location->longitude);
+        $destination = self::getTrainStation($tripJson->destination->id,
+                                             $tripJson->destination->name,
+                                             $tripJson->destination->location->latitude,
+                                             $tripJson->destination->location->longitude);
+        if ($tripJson->line->name === null) {
+            $tripJson->line->name = $tripJson->line->fahrtNr;
         }
 
-        if ($json->line->id === null) {
-            $json->line->id = '';
+        if ($tripJson->line->id === null) {
+            $tripJson->line->id = '';
         }
 
-        $departure = Carbon::parse($json->departure ?? $json->scheduledDeparture);
-        $departure->subSeconds($json->departureDelay ?? 0);
+        $departure = Carbon::parse($tripJson->departure ?? $tripJson->scheduledDeparture);
+        $departure->subSeconds($tripJson->departureDelay ?? 0);
 
-        $arrival = Carbon::parse($json->arrival ?? $json->scheduledArrival);
-        $arrival->subSeconds($json->arrivalDelay ?? 0);
+        $arrival = Carbon::parse($tripJson->arrival ?? $tripJson->scheduledArrival);
+        $arrival->subSeconds($tripJson->arrivalDelay ?? 0);
 
         return HafasTrip::updateOrCreate([
                                              'trip_id' => $tripID
                                          ], [
-                                             'category'    => $json->line->product,
-                                             'number'      => $json->line->id,
-                                             'linename'    => $json->line->name,
+                                             'category'    => $tripJson->line->product,
+                                             'number'      => $tripJson->line->id,
+                                             'linename'    => $tripJson->line->name,
                                              'origin'      => $origin->ibnr,
                                              'destination' => $destination->ibnr,
-                                             'stopovers'   => json_encode($json->stopovers),
-                                             'polyline'    => self::getPolylineHash(json_encode($json->polyline))->hash,
+                                             'stopovers'   => json_encode($tripJson->stopovers),
+                                             'polyline'    => self::getPolylineHash(json_encode($tripJson->polyline))->hash,
                                              'departure'   => $departure,
                                              'arrival'     => $arrival,
-                                             'delay'       => $json->arrivalDelay ?? null
+                                             'delay'       => $tripJson->arrivalDelay ?? null
                                          ]);
 
     }
