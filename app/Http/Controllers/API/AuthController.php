@@ -13,7 +13,7 @@ class AuthController extends ResponseController
     //create user
     public function signup(Request $request) {
         $validator = Validator::make($request->all(), [
-            'username'         => 'required|string|',
+            'username'         => 'required|string|unique:users',
             'name'             => 'required|string|',
             'email'            => 'required|string|email|unique:users',
             'password'         => 'required',
