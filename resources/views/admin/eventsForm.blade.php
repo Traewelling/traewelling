@@ -75,6 +75,7 @@
         </div>
     </div>
 
+    @if($event->id != 0)
     <div class="modal fade" tabindex="-1" role="dialog" id="delete-modal-{{ $event->id }}">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -92,4 +93,5 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    @endif
 @endsection
