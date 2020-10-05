@@ -147,7 +147,6 @@ class StatusController extends Controller
         }
         $user->update();
         $status->delete();
-        $trainCheckin->delete();
         return true;
     }
 
