@@ -20,20 +20,25 @@ trait Encryptable
         }
         return $value;
     }
+
     /**
      * If the attribute is in the encryptable array
      * then encrypt it.
      *
      * @param $key
      * @param $value
+     * @return Encryptable
      */
-    public function setAttribute($key, $value)
-    {
+    public function setAttribute($key, $value) {
+        if ($value === null) {
+            return parent::setAttribute($key, $value);
+        }
         if (in_array($key, $this->encryptable)) {
             $value = encrypt($value);
         }
         return parent::setAttribute($key, $value);
     }
+
     /**
      * When need to make sure that we iterate through
      * all the keys.
