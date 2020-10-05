@@ -193,7 +193,7 @@ class SocialController extends Controller
                                              'twitter_token'       => null,
                                              'twitter_tokenSecret' => null
                                          ]);
-        } else if ($validated['provider'] == "mastodon") {
+        } elseif ($validated['provider'] == "mastodon") {
             $user->socialProfile->update([
                                              'mastodon_id'     => null,
                                              'mastodon_server' => null,
