@@ -9,12 +9,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                @foreach($statuses as $status)
-                    @if($loop->first || !$status->trainCheckin->departure->isSameDay($statuses[$loop->index - 1]->trainCheckin->departure))
-                        <h5 class="mt-4">{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}</h5>
-                    @endif
-                    @include('includes.status')
-                @endforeach
+                @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
             </div>
         </div>
         <div class="row justify-content-center mt-5">
