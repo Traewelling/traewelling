@@ -24,7 +24,9 @@ use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 
-Route::view('/', 'welcome')->name('static.welcome');
+Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
+     ->name('static.welcome');
+
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');
 
