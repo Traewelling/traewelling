@@ -264,9 +264,7 @@ ${event.closestLink}`);
                 </script>
 
                 <!-- The status cards -->
-                @foreach($statuses as $status)
-                    @include('includes.status')
-                @endforeach
+                @include('includes.statuses', ['statuses' => $statuses, 'showDates' => false])
             </div>
         </div>
     </div><!--- /container -->

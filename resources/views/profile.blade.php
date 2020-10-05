@@ -58,10 +58,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
-                @foreach($statuses as $status)
-                    @include('includes.status')
-                @endforeach
-
+                @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
             </div>
         </div>
         <div class="row justify-content-center mt-5">
