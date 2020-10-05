@@ -42,6 +42,22 @@
         </div>
     @endif
 
+    @if($message = Session::get('mail-prompt'))
+            <div class="alert alert-info alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{!! $message !!}</strong>
+                <button class="btn btn-default" href="{{ route('verification.resend') }}"
+                        onclick="event.preventDefault(); document.getElementById('resend-mail-form').submit();">
+                    {{ __('controller.status.email-resend-mail') }}
+                </button>
+
+                <form id="resend-mail-form" action="{{ route('verification.resend') }}" method="POST"
+                      style="display: none;">
+                    @csrf
+                </form>
+            </div>
+    @endif
+
     @if(Session::has('message'))
         <div class="alert my-3 alert-info" role="alert">
             {!! Session::get('message') !!}
