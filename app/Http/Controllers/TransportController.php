@@ -633,17 +633,38 @@ class TransportController extends Controller
      * @param Carbon $start
      * @param Carbon $end
      * @return Collection
+     * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-        $start = $start->clone()->subMinutes(2);
-        $end   = $end->clone()->addMinutes(2);
+        $start = $start->clone()->addMinutes(2);
+        $end   = $end->clone()->subMinutes(2);
 
         $user->loadMissing(['statuses', 'statuses.trainCheckin']);
 
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
         })->filter(function($trainCheckIn) use ($start, $end) {
-            return $trainCheckIn->arrival->isBetween($start, $end) || $trainCheckIn->departure->isBetween($start, $end);
+            dump('XXXXXXXXXXXXXXXXXXXX');
+            dump('TD: ' . $trainCheckIn->departure . ' TA: ' . $trainCheckIn->arrival);
+            dump('D: ' . $start . ' A: ' . $end);
+            dump('T1:' . ($trainCheckIn->arrival > $start && $trainCheckIn->departure < $end));
+            dump('T2:' . ($trainCheckIn->arrival > $end && $trainCheckIn->departure < $start));
+            dump('T3:' . ($trainCheckIn->departure > $start && $trainCheckIn->arrival < $start));
+            return ($trainCheckIn->arrival > $start && $trainCheckIn->departure < $end)
+                || ($trainCheckIn->arrival > $end && $trainCheckIn->departure < $start)
+                || ($trainCheckIn->departure > $start && $trainCheckIn->arrival < $start);
+            //return $trainCheckIn->arrival->isBetween($start, $end) || $trainCheckIn->departure->isBetween($start, $end);
         });
     }
 }
+
+//$overlap = TrainCheckin::with('Status')->whereHas('Status', function ($query) use ($user) {
+//    $query->where('user_id', $user->id);
+//})->where(function($query) use ($overlapArrival, $overlapDeparture) {
+//    $query->where([['arrival', '>', $overlapDeparture], ['departure', '<', $overlapDeparture]])
+//          ->orwhere([['arrival', '>', $overlapArrival], ['departure', '<', $overlapArrival]])
+//          ->orwhere([['departure', '>', $overlapDeparture], ['arrival', '<', $overlapArrival]]);
+//})->first();
+//if(!empty($overlap)) {
+//    return ['success' => false, 'overlap' => $overlap];
+//}

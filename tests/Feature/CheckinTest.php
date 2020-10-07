@@ -2,9 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
+use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use App\Models\User;
 use DateTime;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Mail\Transport\Transport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\TransportController;
@@ -193,6 +199,110 @@ class CheckinTest extends TestCase
         $response->assertOk();
         $response->assertSee($stationname, false); // Departure Station
         $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
+    }
+    /*
+     * Test if the checkin collision is truly working
+     * @test
+     */
+    public function testCheckinCollision() {
+        // GIVEN: Generate TrainStations
+        TrainStation::factory()->count(4)->create();
+
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = User::factory()->create();
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+
+        /*
+         * We're now generating a 'base checkin' on which we are comparing all possible collision types
+         *                 |   |   | 12:00 |   |   | 13:00 |   |   |   |
+         *    Base:        |   |   |   |░░░░░░░░░░░░░░░|   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 1:      |  11:45|▓▓▓▓▓▓▓|12:15  |   |   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 2:      |   |   |   |   |  12:45|▓▓▓▓▓▓▓|13:15  |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 3:      |   |   |  12:15|▓▓▓▓▓▓▓|12:45  |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 4:      |  11:45|▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓|13:15  |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 5: 11:15|▓▓▓▓▓▓▓|11:45  |   |   |   |   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 6:      |   |   |   |   |   |   |   |  13:30|▓▓▓▓▓▓▓|13:45
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *
+         */
+        $trips[]  = [];
+        $trips[0] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('today 12:00')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
+        $trips[1] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]);
+        $trips[2] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:45')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]);
+        $trips[3] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:15')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))]);
+        $trips[4] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]);
+        $trips[5] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:15')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]);
+        $trips[6] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
+                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]);
+        //this seems to be correct. But in the database it's suddenly not correct. Idk...
+        //dd($trips[0]);
+
+        TransportController::TrainCheckin(
+            $trips[0]->trip_id,
+            $trips[0]->origin,
+            $trips[0]->destination,
+            '',
+            $user,
+            0,
+            0,
+            0,
+            0
+        );
+
+        for($i = 1; $i < 5; $i++) {
+            try {
+                TransportController::TrainCheckin(
+                    $trips[$i]->trip_id,
+                    $trips[$i]->origin,
+                    $trips[$i]->destination,
+                    '',
+                    $user,
+                    0,
+                    0,
+                    0,
+                    0
+                );
+                $this->fail("Expected exception for Collision Case $i not thrown");
+            }catch(CheckInCollisionException $e) {
+                $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
+            }
+        }
+
+        //check normal checkin possibility
+        for($i = 5; $i < 7; $i++) {
+            try {
+                TransportController::TrainCheckin(
+                    $trips[$i]->trip_id,
+                    $trips[$i]->origin,
+                    $trips[$i]->destination,
+                    '',
+                    $user,
+                    0,
+                    0,
+                    0,
+                    0
+                );
+                $this->assertTrue(true);
+            }catch(CheckInCollisionException $e) {
+                $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
+                $this->fail("Exception for Case $i thrown even though checkin should happen.");
+            }
+        }
     }
 
     /**
