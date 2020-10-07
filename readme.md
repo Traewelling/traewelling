@@ -25,9 +25,12 @@
 We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
 
 * PHP 7.3 (or higher)
+  * PHP GD library 
 * Composer
-* NodeJS and npm
+* NodeJS
+  * [npm](https://www.npmjs.com/)
 * A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
+  * If you're using SQLite, make sure you have `php-sqlite` installed 
 * A local instance of [db-rest v3](https://github.com/derhuerst/db-rest/tree/3)
 
 After setting up those things, you can clone the repository and get the dependencies:
@@ -50,7 +53,10 @@ Then, generate some application keys and migrate the database to the latest leve
 
 ```sh
 php artisan key:generate
-php artisan migrate
+php artisan migrate 
+#for example data use 
+#php artisan migrate --seed
+php artisan passport:install
 ```
 
 Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
