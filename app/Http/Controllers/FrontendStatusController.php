@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
 use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,15 +73,18 @@ class FrontendStatusController extends Controller
         return response()->json(['new_body' => $editStatusResponse], 200);
     }
 
-    public function CreateLike(Request $request) {
-        $createLikeResponse = StatusBackend::CreateLike(Auth::user(), $request['statusId']);
-        if ($createLikeResponse === null) {
-            return response(__('controller.status.status-not-found'), 404);
-        }
-        if ($createLikeResponse === false) {
+    public function createLike(Request $request) {
+        $validated = $request->validate([
+                                            'statusId' => ['required', 'exists:statuses,id']
+                                        ]);
+
+        try {
+            $status = Status::findOrFail($validated['statusId']);
+            StatusBackend::createLike(Auth::user(), $status);
+            return response(__('controller.status.like-ok'), 201);
+        } catch (StatusAlreadyLikedException $e) {
             return response(__('controller.status.like-already'), 409);
         }
-        return response(__('controller.status.like-ok'), 201);
     }
 
     public function DestroyLike(Request $request) {

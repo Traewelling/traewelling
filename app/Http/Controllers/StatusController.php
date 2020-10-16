@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -164,22 +166,25 @@ class StatusController extends Controller
         return $status->body;
     }
 
-    public static function CreateLike ($user, $statusId) {
-        $status = Status::findOrFail($statusId);
-        if (!$status) {
-            return null;
-        }
-        $like = $user->likes()->where('status_id', $statusId)->first();
-        if ($like) {
-            return false;
+    /**
+     * Create a Statuslike for a given User
+     * @param User $user
+     * @param Status $status
+     * @return Like
+     * @throws StatusAlreadyLikedException
+     */
+    public static function createLike(User $user, Status $status) {
+
+        if ($status->likes->contains('user_id', $user->id)) {
+            throw new StatusAlreadyLikedException($user, $status);
         }
 
-        $like = new Like();
-        $like->user_id = $user->id;
-        $like->status_id = $status->id;
-        $like->save();
+        $like = Like::create([
+                                 'user_id'   => $user->id,
+                                 'status_id' => $status->id
+                             ]);
         $status->user->notify(new StatusLiked($like));
-        return true;
+        return $like;
     }
 
     public static function DestroyLike ($user, $statusId) {
