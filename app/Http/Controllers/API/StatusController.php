@@ -107,7 +107,7 @@ class StatusController extends ResponseController
     public function createLike ($statusId) {
         $status = Status::find($statusId);
         if($status == null) {
-            return $this->sendError(__('controller.status.status-not-found'), 404);
+            return $this->sendError(false, 404);
         }
         try {
             StatusBackend::createLike(Auth::user(), $status);
