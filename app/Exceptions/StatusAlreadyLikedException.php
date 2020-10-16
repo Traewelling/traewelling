@@ -9,7 +9,8 @@ use Throwable;
 
 class StatusAlreadyLikedException extends Exception
 {
-    private $user, $status;
+    private $user;
+    private $status;
 
     public function __construct(User $user, Status $status) {
         $this->user   = $user;
