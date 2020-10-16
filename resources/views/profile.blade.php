@@ -32,14 +32,14 @@
                         <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                         @if($twitterUrl)
                         <span class="font-weight-bold pl-sm-2">
-                            <a href="{{ $twitterUrl }}" rel="me" class="text-white">
+                            <a href="{{ $twitterUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-twitter d-inline"></i>
                             </a>
                         </span>
                         @endif
                         @if($mastodonUrl)
                         <span class="font-weight-bold pl-sm-2">
-                            <a href="{{ $mastodonUrl }}" rel="me" class="text-white">
+                            <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-mastodon d-inline"></i>
                             </a>
                         </span>
