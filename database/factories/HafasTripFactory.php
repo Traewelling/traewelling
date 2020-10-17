@@ -23,6 +23,7 @@ class HafasTripFactory extends Factory
      * @return array
      */
     public function definition() {
+
         $stops     = [
             TrainStation::all()->random(),
             TrainStation::all()->random(),
@@ -117,4 +118,35 @@ class HafasTripFactory extends Factory
             'polyline'    => $polylineHash,
         ];
     }
+
+    /**
+     * Configure the model factory.
+     *
+     * @return $this
+     */
+    public function configure()
+    {
+        return $this->afterMaking(function (HafasTrip $hafasTrip) {
+            //
+        })->afterCreating(function (HafasTrip $hafasTrip) {
+            $stopOvers = json_decode($hafasTrip->stopovers);
+            $startTime = $hafasTrip->departure;
+            $endTime   = $hafasTrip->arrival;
+            $cnt       = count($stopOvers);
+            $interval  = (strtotime($endTime) - strtotime($startTime)) / $cnt;
+            $add       = $interval;
+
+            for ($i = 0; $i < $cnt; $i++) {
+                $stopOvers[$i]->arrival   = date('Y-m-d H:i:s',strtotime($startTime) + $add);
+                $stopOvers[$i]->departure = date('Y-m-d H:i:s',strtotime($startTime) + $add);
+                $add += $interval;
+            }
+            $stopOvers[$cnt-1]->arrival   = date('Y-m-d H:i:s',strtotime($endTime));
+            $stopOvers[$cnt-1]->departure = date('Y-m-d H:i:s',strtotime($endTime));
+
+            $hafasTrip->stopovers = json_encode($stopOvers);
+            $hafasTrip->save();
+        });
+    }
+
 }
