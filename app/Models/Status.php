@@ -56,7 +56,8 @@ class Status extends Model
             );
         }
 
-        if (isset($status->body)) {
+        if (isset($this->body)) {
+
             $eventIntercept = "";
             if ($this->event !== null) {
                 $eventIntercept = __('controller.transport.social-post-for', [
@@ -71,8 +72,8 @@ class Status extends Model
             ]);
 
             $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($status->body, 0, 280 - $appendixLength);
-            if (strlen($postText) != strlen($status->body)) {
+            $postText       = substr($this->body, 0, 280 - $appendixLength);
+            if (strlen($postText) != strlen($this->body)) {
                 $postText .= '...';
             }
             $postText .= $appendix;
