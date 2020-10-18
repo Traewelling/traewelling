@@ -144,6 +144,7 @@ class HafasTripFactory extends Factory
             $stopOvers[$cnt-1]->arrival   = date('Y-m-d H:i:s',strtotime($endTime));
             $stopOvers[$cnt-1]->departure = date('Y-m-d H:i:s',strtotime($endTime));
 
+
             $hafasTrip->stopovers = json_encode($stopOvers);
             $hafasTrip->save();
         });

@@ -636,8 +636,12 @@ class TransportController extends Controller
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-        $start = $start->clone()->addMinutes(2);
-        $end   = $end->clone()->subMinutes(2);
+        $start = $start->addMinutes(2);
+        $end   = $end->subMinutes(2);
+        dump($start->format("Y-m-d H:i:s"));
+        dump($end->format("Y-m-d H:i:s"));
+
+
 
         $user->loadMissing(['statuses', 'statuses.trainCheckin']);
 
