@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\User;
 use DateTime;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Mail\Transport\Transport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\TransportController;
@@ -54,12 +51,11 @@ class CheckinTest extends TestCase
      *
      * @test
      */
-    public function stationboardByLocationPositiveTest()
-    {
+    public function stationboardByLocationPositiveTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
@@ -73,15 +69,15 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                ->get(route("trains.nearby", [
-                    "latitude" => $testcase["latitude"],
-                    "longitude" => $testcase["longitude"]
-                ]));
+                             ->get(route("trains.nearby", [
+                                 "latitude"  => $testcase["latitude"],
+                                 "longitude" => $testcase["longitude"]
+                             ]));
 
             // THEN: Expect the redirect to another stationboard
             $response->assertStatus(302);
             $response->assertRedirect(route("trains.stationboard", [
-                'station' => $testcase["station"],
+                'station'  => $testcase["station"],
                 'provider' => 'train'
             ]));
         }
@@ -90,12 +86,11 @@ class CheckinTest extends TestCase
     /**
      * @test
      */
-    public function stationboardByLocationNegativeTest()
-    {
+    public function stationboardByLocationNegativeTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
@@ -108,10 +103,10 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                ->get(route("trains.nearby", [
-                    "latitude" => $testcase["latitude"],
-                    "longitude" => $testcase["longitude"]
-                ]));
+                             ->get(route("trains.nearby", [
+                                 "latitude"  => $testcase["latitude"],
+                                 "longitude" => $testcase["longitude"]
+                             ]));
 
             // THEN: Expect an error
             $response->assertStatus(302);
@@ -144,7 +139,7 @@ class CheckinTest extends TestCase
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
-        if($countDepartures == 0) {
+        if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
         }
@@ -153,7 +148,7 @@ class CheckinTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-              || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
@@ -179,12 +174,12 @@ class CheckinTest extends TestCase
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
-                ->post(route('trains.checkin'), [
-                    'body' => 'Example Body',
-                    'tripID' => $departure->tripId,
-                    'start' => $ibnr,
-                    'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-                ]);
+                         ->post(route('trains.checkin'), [
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
+                             'start'       => $ibnr,
+                             'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+                         ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
         $response->assertStatus(302);
@@ -197,9 +192,10 @@ class CheckinTest extends TestCase
         // THEN: You can get the status page and see its information
         $response = $this->get(url('/status/' . $statuses[0]->id));
         $response->assertOk();
-        $response->assertSee($stationname, false); // Departure Station
+        $response->assertSee($stationname, false);                          // Departure Station
         $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
     }
+
     /*
      * Test if the checkin collision is truly working
      * @test
@@ -235,7 +231,7 @@ class CheckinTest extends TestCase
          *
          */
         $trips[]  = [];
-        $trips[0] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('today 12:00')),
+        $trips[0] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:00')),
                                                   'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
         $trips[1] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
                                                   'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]);
@@ -249,8 +245,7 @@ class CheckinTest extends TestCase
                                                   'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]);
         $trips[6] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
                                                   'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]);
-        //this seems to be correct. But in the database it's suddenly not correct. Idk...
-        //dd($trips[0]);
+
 
         TransportController::TrainCheckin(
             $trips[0]->trip_id,
@@ -264,7 +259,7 @@ class CheckinTest extends TestCase
             0
         );
 
-        for($i = 1; $i < 5; $i++) {
+        for ($i = 1; $i < 5; $i++) {
             try {
                 TransportController::TrainCheckin(
                     $trips[$i]->trip_id,
@@ -278,13 +273,13 @@ class CheckinTest extends TestCase
                     0
                 );
                 $this->fail("Expected exception for Collision Case $i not thrown");
-            }catch(CheckInCollisionException $e) {
+            } catch (CheckInCollisionException $e) {
                 $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
             }
         }
 
         //check normal checkin possibility
-        for($i = 5; $i < 7; $i++) {
+        for ($i = 5; $i < 7; $i++) {
             try {
                 TransportController::TrainCheckin(
                     $trips[$i]->trip_id,
@@ -298,7 +293,7 @@ class CheckinTest extends TestCase
                     0
                 );
                 $this->assertTrue(true);
-            }catch(CheckInCollisionException $e) {
+            } catch (CheckInCollisionException $e) {
                 $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
                 $this->fail("Exception for Case $i thrown even though checkin should happen.");
             }
@@ -322,27 +317,27 @@ class CheckinTest extends TestCase
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [
-            "distance" => 72.096,
-            "duration" => 1860,
-            "points" => 18.0,
-            "lineName" => "ICE 107",
+            "distance"             => 72.096,
+            "duration"             => 1860,
+            "points"               => 18.0,
+            "lineName"             => "ICE 107",
             "alsoOnThisConnection" => new Collection(),
-            "event" => null
+            "event"                => null
         ];
         $response = $this->actingAs($user)
-            ->withSession(["checkin-success" => $message])
-            ->followingRedirects()
-            ->get(route('dashboard'));
+                         ->withSession(["checkin-success" => $message])
+                         ->followingRedirects()
+                         ->get(route('dashboard'));
 
         // THEN: The dashboard returns.
         $response->assertOk();
 
         // With the checkin data
         $response->assertSee(trans_choice(
-            'controller.transport.checkin-ok',
-            preg_match('/\s/', $message['lineName']),
-            ['lineName' => $message['lineName']]
-        ), false);
+                                 'controller.transport.checkin-ok',
+                                 preg_match('/\s/', $message['lineName']),
+                                 ['lineName' => $message['lineName']]
+                             ), false);
 
         // Usual Dashboard stuff
         $response->assertSee(__('stationboard.where-are-you'), false);

@@ -24,12 +24,7 @@ class HafasTripFactory extends Factory
      */
     public function definition() {
 
-        $stops     = [
-            TrainStation::all()->random(),
-            TrainStation::all()->random(),
-            TrainStation::all()->random(),
-            TrainStation::all()->random(),
-        ];
+        $stops     = TrainStation::inRandomOrder()->limit(4)->get();
         $features  = [];
         $stopOvers = [];
         $time      = -15;
@@ -124,11 +119,8 @@ class HafasTripFactory extends Factory
      *
      * @return $this
      */
-    public function configure()
-    {
-        return $this->afterMaking(function (HafasTrip $hafasTrip) {
-            //
-        })->afterCreating(function (HafasTrip $hafasTrip) {
+    public function configure() {
+        return $this->afterCreating(function(HafasTrip $hafasTrip) {
             $stopOvers = json_decode($hafasTrip->stopovers);
             $startTime = $hafasTrip->departure;
             $endTime   = $hafasTrip->arrival;
@@ -136,13 +128,15 @@ class HafasTripFactory extends Factory
             $interval  = (strtotime($endTime) - strtotime($startTime)) / $cnt;
             $add       = $interval;
 
-            for ($i = 0; $i < $cnt; $i++) {
-                $stopOvers[$i]->arrival   = date('Y-m-d H:i:s',strtotime($startTime) + $add);
-                $stopOvers[$i]->departure = date('Y-m-d H:i:s',strtotime($startTime) + $add);
-                $add += $interval;
+            for ($i = 1; $i < $cnt; $i++) {
+                $stopOvers[$i]->arrival   = date('Y-m-d H:i:s', strtotime($startTime) + $add);
+                $stopOvers[$i]->departure = date('Y-m-d H:i:s', strtotime($startTime) + $add);
+                $add                      += $interval;
             }
-            $stopOvers[$cnt-1]->arrival   = date('Y-m-d H:i:s',strtotime($endTime));
-            $stopOvers[$cnt-1]->departure = date('Y-m-d H:i:s',strtotime($endTime));
+            $stopOvers[0]->arrival          = date('Y-m-d H:i:s', strtotime($startTime));
+            $stopOvers[0]->departure        = date('Y-m-d H:i:s', strtotime($startTime));
+            $stopOvers[$cnt - 1]->arrival   = date('Y-m-d H:i:s', strtotime($endTime));
+            $stopOvers[$cnt - 1]->departure = date('Y-m-d H:i:s', strtotime($endTime));
 
 
             $hafasTrip->stopovers = json_encode($stopOvers);
