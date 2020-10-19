@@ -288,7 +288,7 @@ class CheckinTest extends TestCase
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $e) {
-                $this->assertEquals($trip->linename, $e->getCollision()->HafasTrip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $e->getCollision()->HafasTrip->first()->linename);
             }
             $caseCount++;
         }
@@ -309,7 +309,7 @@ class CheckinTest extends TestCase
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $e) {
-                $this->assertEquals($trip->linename, $e->getCollision()->HafasTrip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $e->getCollision()->HafasTrip->first()->linename);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
             }
             $caseCount++;
