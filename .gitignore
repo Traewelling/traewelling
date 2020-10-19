@@ -3,13 +3,12 @@ node_modules/
 npm-debug.log
 
 # Profile pictures
-public/uploads/avatars
+public/uploads/avatars/*
 !public/uploads/avatars/user.jpg
 
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
-bootstrap/cache
 
 # Laravel 5 & Lumen specific
 public/storage
@@ -112,7 +111,6 @@ fabric.properties
 # End of https://www.gitignore.io/api/phpstorm
 
 
-artisan
 public/js/admin.js
 public/js/app.js
 public/css/admin.css
