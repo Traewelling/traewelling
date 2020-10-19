@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\CheckInCollisionException;
+use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use App\Models\User;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
@@ -48,12 +51,11 @@ class CheckinTest extends TestCase
      *
      * @test
      */
-    public function stationboardByLocationPositiveTest()
-    {
+    public function stationboardByLocationPositiveTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
@@ -67,15 +69,15 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                ->get(route("trains.nearby", [
-                    "latitude" => $testcase["latitude"],
-                    "longitude" => $testcase["longitude"]
-                ]));
+                             ->get(route("trains.nearby", [
+                                 "latitude"  => $testcase["latitude"],
+                                 "longitude" => $testcase["longitude"]
+                             ]));
 
             // THEN: Expect the redirect to another stationboard
             $response->assertStatus(302);
             $response->assertRedirect(route("trains.stationboard", [
-                'station' => $testcase["station"],
+                'station'  => $testcase["station"],
                 'provider' => 'train'
             ]));
         }
@@ -84,12 +86,11 @@ class CheckinTest extends TestCase
     /**
      * @test
      */
-    public function stationboardByLocationNegativeTest()
-    {
+    public function stationboardByLocationNegativeTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
@@ -102,10 +103,10 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                ->get(route("trains.nearby", [
-                    "latitude" => $testcase["latitude"],
-                    "longitude" => $testcase["longitude"]
-                ]));
+                             ->get(route("trains.nearby", [
+                                 "latitude"  => $testcase["latitude"],
+                                 "longitude" => $testcase["longitude"]
+                             ]));
 
             // THEN: Expect an error
             $response->assertStatus(302);
@@ -138,7 +139,7 @@ class CheckinTest extends TestCase
         $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
-        if($countDepartures == 0) {
+        if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
         }
@@ -147,7 +148,7 @@ class CheckinTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-              || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
@@ -173,12 +174,12 @@ class CheckinTest extends TestCase
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
-                ->post(route('trains.checkin'), [
-                    'body' => 'Example Body',
-                    'tripID' => $departure->tripId,
-                    'start' => $ibnr,
-                    'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-                ]);
+                         ->post(route('trains.checkin'), [
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
+                             'start'       => $ibnr,
+                             'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+                         ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
         $response->assertStatus(302);
@@ -198,6 +199,126 @@ class CheckinTest extends TestCase
         $this->assertStringContainsString("Example Body (@ ", $status->socialText);
     }
 
+    /*
+     * Test if the checkin collision is truly working
+     * @test
+     */
+    public function testCheckinCollision() {
+        // GIVEN: Generate TrainStations
+        TrainStation::factory()->count(4)->create();
+
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = User::factory()->create();
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+
+        /*
+         * We're now generating a 'base checkin' on which we are comparing all possible collision types
+         *                 |   |   | 12:00 |   |   | 13:00 |   |   |   |
+         *    Base:        |   |   |   |░░░░░░░░░░░░░░░|   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 1:      |  11:45|▓▓▓▓▓▓▓|12:15  |   |   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 2:      |   |   |   |   |  12:45|▓▓▓▓▓▓▓|13:15  |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 3:      |   |   |  12:15|▓▓▓▓▓▓▓|12:45  |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 4:      |  11:45|▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓|13:15  |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 5: 11:15|▓▓▓▓▓▓▓|11:45  |   |   |   |   |   |   |   |
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *    Case 6:      |   |   |   |   |   |   |   |  13:30|▓▓▓▓▓▓▓|13:45
+         *                 |   |   |   |   |   |   |   |   |   |   |   |
+         *
+         */
+
+        $collisionTrips    = [];
+        $nonCollisionTrips = [];
+        $baseTrip          = HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:00')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
+
+        //Trips Case 1 - 4 for which a collisionException should be thrown
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:15')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+
+        //Trips case 5 & 6 for which no Exception should be thrown
+        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:15')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]));
+        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]));
+
+
+        TransportController::TrainCheckin(
+            $baseTrip->trip_id,
+            $baseTrip->origin,
+            $baseTrip->destination,
+            '',
+            $user,
+            0,
+            0,
+            0,
+            0
+        );
+
+        $caseCount = 1; //This variable is needed to output error messages in case of a failed test
+        foreach ($collisionTrips as $trip) {
+            try {
+                TransportController::TrainCheckin(
+                    $trip->trip_id,
+                    $trip->origin,
+                    $trip->destination,
+                    '',
+                    $user,
+                    0,
+                    0,
+                    0,
+                    0
+                );
+                $this->fail("Expected exception for Collision Case $caseCount not thrown");
+            } catch (CheckInCollisionException $exception) {
+                $this->assertEquals($baseTrip->linename, $exception->getCollision()->HafasTrip->first()->linename);
+            }
+            $caseCount++;
+        }
+
+        //check normal checkin possibility
+        foreach ($nonCollisionTrips as $trip) {
+            try {
+                TransportController::TrainCheckin(
+                    $trip->trip_id,
+                    $trip->origin,
+                    $trip->destination,
+                    '',
+                    $user,
+                    0,
+                    0,
+                    0,
+                    0
+                );
+                $this->assertTrue(true);
+            } catch (CheckInCollisionException $exception) {
+                $this->assertEquals($baseTrip->linename, $exception->getCollision()->HafasTrip->first()->linename);
+                $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
+            }
+            $caseCount++;
+        }
+    }
+
     /**
      * Let us see if the message-flash works as intended. Therfore we fake a checkin or at least
      * what the dashboard get's to see of it. We expect the dashboard to return 200OK, show the
@@ -215,27 +336,27 @@ class CheckinTest extends TestCase
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [
-            "distance" => 72.096,
-            "duration" => 1860,
-            "points" => 18.0,
-            "lineName" => "ICE 107",
+            "distance"             => 72.096,
+            "duration"             => 1860,
+            "points"               => 18.0,
+            "lineName"             => "ICE 107",
             "alsoOnThisConnection" => new Collection(),
-            "event" => null
+            "event"                => null
         ];
         $response = $this->actingAs($user)
-            ->withSession(["checkin-success" => $message])
-            ->followingRedirects()
-            ->get(route('dashboard'));
+                         ->withSession(["checkin-success" => $message])
+                         ->followingRedirects()
+                         ->get(route('dashboard'));
 
         // THEN: The dashboard returns.
         $response->assertOk();
 
         // With the checkin data
         $response->assertSee(trans_choice(
-            'controller.transport.checkin-ok',
-            preg_match('/\s/', $message['lineName']),
-            ['lineName' => $message['lineName']]
-        ), false);
+                                 'controller.transport.checkin-ok',
+                                 preg_match('/\s/', $message['lineName']),
+                                 ['lineName' => $message['lineName']]
+                             ), false);
 
         // Usual Dashboard stuff
         $response->assertSee(__('stationboard.where-are-you'), false);

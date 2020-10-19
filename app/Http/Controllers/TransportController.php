@@ -633,17 +633,22 @@ class TransportController extends Controller
      * @param Carbon $start
      * @param Carbon $end
      * @return Collection
+     * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-        $start = $start->clone()->subMinutes(2);
-        $end   = $end->clone()->addMinutes(2);
 
         $user->loadMissing(['statuses', 'statuses.trainCheckin']);
+
+        //increase the tolerance for start and end of collisions
+        $start = $start->addMinutes(2);
+        $end   = $end->subMinutes(2);
 
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
         })->filter(function($trainCheckIn) use ($start, $end) {
-            return $trainCheckIn->arrival->isBetween($start, $end) || $trainCheckIn->departure->isBetween($start, $end);
+            return ($trainCheckIn->arrival->isAfter($start) && $trainCheckIn->departure->isBefore($end))
+                || ($trainCheckIn->arrival->isAfter($end) && $trainCheckIn->departure->isBefore($start))
+                || ($trainCheckIn->departure->isAfter($start) && $trainCheckIn->arrival->isBefore($start));
         });
     }
 }
