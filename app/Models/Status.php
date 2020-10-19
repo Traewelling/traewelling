@@ -57,17 +57,17 @@ class Status extends Model
         }
 
         if (isset($status->body)) {
-            $eventIntercept = "";
+
             if ($this->event !== null) {
                 $eventIntercept = __('controller.transport.social-post-for', [
                     ':hashtag' => $this->event->hashtag
                 ]);
             }
 
-            $appendix = strtr(" (@ :linename ➜ :destination :eventIntercept) #NowTräwelling ", [
+            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling ', [
                 ':linename'       => $this->trainCheckin->HafasTrip->linename,
                 ':destination'    => $this->trainCheckin->Destination->name,
-                ':eventIntercept' => $eventIntercept
+                ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
             ]);
 
             $appendixLength = strlen($appendix) + 30;
