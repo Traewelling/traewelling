@@ -230,27 +230,40 @@ class CheckinTest extends TestCase
          *                 |   |   |   |   |   |   |   |   |   |   |   |
          *
          */
-        $trips[]  = [];
-        $trips[0] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:00')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
-        $trips[1] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]);
-        $trips[2] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:45')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]);
-        $trips[3] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('12:15')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))]);
-        $trips[4] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]);
-        $trips[5] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('11:15')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]);
-        $trips[6] = HafasTrip::factory()->create(['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
-                                                  'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]);
+
+        $collisionTrips    = [];
+        $nonCollisionTrips = [];
+        $baseTrip          = HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:00')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
+
+        //Trips Case 1 - 4 for which a collisionException should be thrown
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('12:15')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))]));
+        array_push($collisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+
+        //Trips case 5 & 6 for which no Exception should be thrown
+        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('11:15')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]));
+        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+            ['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
+             'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]));
 
 
         TransportController::TrainCheckin(
-            $trips[0]->trip_id,
-            $trips[0]->origin,
-            $trips[0]->destination,
+            $baseTrip->trip_id,
+            $baseTrip->origin,
+            $baseTrip->destination,
             '',
             $user,
             0,
@@ -259,12 +272,13 @@ class CheckinTest extends TestCase
             0
         );
 
-        for ($i = 1; $i < 5; $i++) {
+        $caseCount = 1; //This variable is needed to output error messages in case of a failed test
+        foreach ($collisionTrips as $trip) {
             try {
                 TransportController::TrainCheckin(
-                    $trips[$i]->trip_id,
-                    $trips[$i]->origin,
-                    $trips[$i]->destination,
+                    $trip->trip_id,
+                    $trip->origin,
+                    $trip->destination,
                     '',
                     $user,
                     0,
@@ -272,19 +286,20 @@ class CheckinTest extends TestCase
                     0,
                     0
                 );
-                $this->fail("Expected exception for Collision Case $i not thrown");
+                $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $e) {
-                $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
+                $this->assertEquals($trip->linename, $e->getCollision()->HafasTrip->first()->linename);
             }
+            $caseCount++;
         }
 
         //check normal checkin possibility
-        for ($i = 5; $i < 7; $i++) {
+        foreach ($nonCollisionTrips as $trip) {
             try {
                 TransportController::TrainCheckin(
-                    $trips[$i]->trip_id,
-                    $trips[$i]->origin,
-                    $trips[$i]->destination,
+                    $trip->trip_id,
+                    $trip->origin,
+                    $trip->destination,
                     '',
                     $user,
                     0,
@@ -294,9 +309,10 @@ class CheckinTest extends TestCase
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $e) {
-                $this->assertEquals($trips[0]->linename, $e->getCollision()->HafasTrip->first()->linename);
-                $this->fail("Exception for Case $i thrown even though checkin should happen.");
+                $this->assertEquals($trip->linename, $e->getCollision()->HafasTrip->first()->linename);
+                $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
             }
+            $caseCount++;
         }
     }
 
