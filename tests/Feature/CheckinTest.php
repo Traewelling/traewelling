@@ -185,14 +185,17 @@ class CheckinTest extends TestCase
         $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
 
         // THEN: The user (just created earlier in the method) has one status.
-        $statuses = $user->statuses->all();
-        $this->assertCount(1, $statuses);
+        $this->assertCount(1, $user->statuses);
+        $status = $user->statuses->first();
 
         // THEN: You can get the status page and see its information
-        $response = $this->get(url('/status/' . $statuses[0]->id));
+        $response = $this->get(url('/status/' . $status->id));
         $response->assertOk();
-        $response->assertSee($stationname, false); // Departure Station
+        $response->assertSee($stationname, false);                          // Departure Station
         $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
+        $response->assertSee("Example Body");
+
+        $this->assertStringContainsString("Example Body (@ ", $status->socialText);
     }
 
     /**
