@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SocialLoginProfile;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Validator,Redirect,Response,File;
 use Socialite;
 use App\Models\User;
@@ -173,11 +174,10 @@ class SocialController extends Controller
 
     public function destroyProvider(Request $request) {
         $validated = $request->validate([
-                                            'provider' => ['required', 'alpha_dash']
+                                            'provider' => ['required', Rule::in(['twitter', 'mastodon'])]
                                         ]);
 
-        $providerField = "{$validated['provider']}_id";
-        $user          = auth()->user();
+        $user = auth()->user();
         if ($user->password === null
             && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
             return response(__('controller.social.delete-set-password'), 406);
@@ -186,10 +186,20 @@ class SocialController extends Controller
         if ($user->socialProfile === null) {
             return response(__('controller.social.delete-never-connected'), 404);
         }
-        $user->socialProfile->update([
-                                         $providerField => null
-                                     ]);
 
+        if ($validated['provider'] == "twitter") {
+            $user->socialProfile->update([
+                                             'twitter_id'          => null,
+                                             'twitter_token'       => null,
+                                             'twitter_tokenSecret' => null
+                                         ]);
+        } elseif ($validated['provider'] == "mastodon") {
+            $user->socialProfile->update([
+                                             'mastodon_id'     => null,
+                                             'mastodon_server' => null,
+                                             'mastodon_token'  => null
+                                         ]);
+        }
         return response(__('controller.social.deleted'), 200);
     }
 
