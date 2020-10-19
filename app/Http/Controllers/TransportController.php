@@ -646,9 +646,9 @@ class TransportController extends Controller
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
         })->filter(function($trainCheckIn) use ($start, $end) {
-            return ($trainCheckIn->arrival > $start && $trainCheckIn->departure < $end)
-                || ($trainCheckIn->arrival > $end && $trainCheckIn->departure < $start)
-                || ($trainCheckIn->departure > $start && $trainCheckIn->arrival < $start);
+            return ($trainCheckIn->arrival->isAfter($start) && $trainCheckIn->departure->isBefore($end))
+                || ($trainCheckIn->arrival->isAfter($end) && $trainCheckIn->departure->isBefore($start))
+                || ($trainCheckIn->departure->isAfter($start) && $trainCheckIn->arrival->isBefore($start));
         });
     }
 }

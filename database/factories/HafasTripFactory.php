@@ -132,7 +132,7 @@ class HafasTripFactory extends Factory
             for ($i = 1; $i < $cnt; $i++) {
                 $stopOvers[$i]->arrival   = $startTime->clone()->addSeconds($add)->format('c');
                 $stopOvers[$i]->departure = $stopOvers[$i]->arrival;
-                $add                      += $interval;
+                $add                     += $interval;
             }
             $stopOvers[0]->arrival          = $startTime->format('c');
             $stopOvers[0]->departure        = $startTime->format('c');
@@ -142,5 +142,4 @@ class HafasTripFactory extends Factory
             $hafasTrip->update(['stopovers' => json_encode($stopOvers)]);
         });
     }
-
 }
