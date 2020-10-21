@@ -396,4 +396,9 @@ class UserController extends Controller
         $user->name = $displayname;
         $user->save();
     }
+
+    //fixme: search method
+    public function searchUser(){
+        return view("search");
+    }
 }
