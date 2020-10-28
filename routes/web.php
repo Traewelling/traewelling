@@ -211,6 +211,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/notifications/readAll', [NotificationController::class, 'readAll'])
          ->name('notifications.readAll');
 
-    Route::get('/search/', [UserController::class, 'searchUser'])
+    Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
 });

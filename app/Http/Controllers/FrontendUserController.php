@@ -96,4 +96,15 @@ class FrontendUserController extends Controller
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return response()->json($profilePictureResponse);
     }
+
+    public function searchUser(Request $request){
+        $validated      = $request->validate([
+                                                 'searchQuery' => ['required', 'alpha_num']
+                                             ]);
+        $userSearchResponse = UserBackend::searchUser($validated['searchQuery']);
+        return view("search", [
+            'userSearchResponse' => $userSearchResponse,
+            'currentUser' => Auth::user()
+        ]);
+    }
 }

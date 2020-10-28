@@ -106,7 +106,7 @@
                         @else
                             <form class="form-inline" action="{{ route('userSearch') }}">
                                 <div class="md-form my-0">
-                                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="User suchen">
+                                    <input name="searchQuery" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="User suchen">
                                     <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Search</button>
                                 </div>
                             </form>
