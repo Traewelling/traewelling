@@ -302,6 +302,7 @@ class TransportController extends Controller
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
+
         if ($stopovers[$offset2]['arrival']) {
             $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
             $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
@@ -640,8 +641,8 @@ class TransportController extends Controller
         $user->loadMissing(['statuses', 'statuses.trainCheckin']);
 
         //increase the tolerance for start and end of collisions
-        $start = $start->addMinutes(2);
-        $end   = $end->subMinutes(2);
+        $start = $start->clone()->addMinutes(2);
+        $end   = $end->clone()->subMinutes(2);
 
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
