@@ -173,7 +173,7 @@ class StatusController extends Controller
      * @return Like
      * @throws StatusAlreadyLikedException
      */
-    public static function createLike(User $user, Status $status) {
+    public static function createLike(User $user, Status $status): Like {
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
