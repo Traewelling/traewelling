@@ -402,6 +402,6 @@ class UserController extends Controller
             'name', 'like', "%{$searchQuery}%"
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
-        )->get();
+        )->simplePaginate(5);
     }
 }

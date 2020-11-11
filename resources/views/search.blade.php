@@ -22,7 +22,7 @@
                 <div class="card status mt-3" id="status-1" data-body="" data-date="Mittwoch, 07. Oktober 2020">
 
                         <div class="card-body row">
-                            <div class="col-2 image-box d-none d-lg-flex">
+                            <div class="col-2 image-box search-image-box d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $user->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" alt="profile picture">
                                 </a>
@@ -30,13 +30,15 @@
 
                             <div class="col pl-0">
                                 <a href="{{ route('account.show', ['username' => $user->username]) }}">
-                                    <h3>{{ $user->name }} <small>{{ $user->username }}</small></h3>
+                                    <h4>{{ $user->name }} <small>{{ $user->username }}</small></h4>
                                 </a>
-                                <small>
-                                    <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ $user->train_distance }}</span><span class="small font-weight-lighter">km</span>
-                                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">Pkt</span>
-                                </small>
+                                <h6>
+                                    <small>
+                                        <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ $user->train_distance }}</span><span class="small font-weight-lighter">km</span>
+                                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">Pkt</span>
+                                    </small>
+                                </h6>
                                 @if($user->id !== $currentUser->id && Auth::check())
                                     @if(Auth::user()->follows->where('id', $user->id)->first() === null)
                                         <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
@@ -60,6 +62,7 @@
             </div>
         </div>
         <div class="row justify-content-center mt-5">
+            {{ $userSearchResponse->links() }}
         </div>
         @include('includes.edit-modal')
         @include('includes.delete-modal')
