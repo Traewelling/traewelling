@@ -98,7 +98,6 @@ class FrontendUserController extends Controller
     public function searchUser(Request $request) {
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
-            $userSearchResponse->appends(['searchQuery' => $request['searchQuery']]);
         } catch (HttpException $exception) {
             return redirect()->back();
         }

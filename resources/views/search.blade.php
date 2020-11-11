@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="row justify-content-center mt-5">
-            {{ $userSearchResponse->links() }}
+            {{ $userSearchResponse->withQueryString()->links() }}
         </div>
         @include('includes.edit-modal')
         @include('includes.delete-modal')
