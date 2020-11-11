@@ -104,8 +104,7 @@ class FrontendUserController extends Controller
         }
 
         return view("search", [
-            'userSearchResponse' => $userSearchResponse,
-            'currentUser'        => Auth::user()
+            'userSearchResponse' => $userSearchResponse
         ]);
     }
 }

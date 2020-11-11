@@ -22,5 +22,6 @@ return [
     "always-dbl" => "Mit #dbl twittern?",
     "liked-status" => "gefällt dieser Status.",
     "liked-own-status" => "gefällt der eigene Status.",
-    "invalid-mastodon" => ":domain scheint keine Mastodon-Instanz zu sein."
+    "invalid-mastodon" => ":domain scheint keine Mastodon-Instanz zu sein.",
+    "no-user" => "Keinen Nutzer gefunden."
 ];
