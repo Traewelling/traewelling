@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\TransportController;
 use App\Models\Like;
-use DateTime;
 use App\Models\User;
+use DateTime;
 use Exception;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\DatabaseNotification;
 use Tests\TestCase;
 
 class NotificationsTest extends TestCase
@@ -37,7 +37,7 @@ class NotificationsTest extends TestCase
         if ($user == null) {
             $user = $this->user;
         }
-        $trainStationboard = TransportController::TrainStationboard($stationname,
+        $trainStationboard = TransportController::trainStationboard($stationname,
                                                                     $now->format('U'),
                                                                     'express');
 
@@ -63,7 +63,7 @@ class NotificationsTest extends TestCase
         CheckinTest::isCorrectHafasTrip($departure, $now);
 
         // Third: Get the trip information
-        $trip = TransportController::TrainTrip(
+        $trip = TransportController::trainTrip(
             $departure->tripId,
             $departure->line->name,
             $departure->stop->location->id
@@ -178,7 +178,7 @@ class NotificationsTest extends TestCase
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
-        $bob      = User::factory()->create();
+        $bob = User::factory()->create();
         $this->actingAs($bob)->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);
 

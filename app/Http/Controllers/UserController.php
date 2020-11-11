@@ -29,8 +29,7 @@ use Mastodon;
 
 class UserController extends Controller
 {
-    public static function getProfilePicture($username)
-    {
+    public static function getProfilePicture($username) {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
             return null;
@@ -51,16 +50,15 @@ class UserController extends Controller
             $hex = dechex($hash & 0x00FFFFFF);
 
             $picture = Image::canvas(512, 512, $hex)
-                ->insert(public_path('/img/user.png'))
-                ->encode('png')->getEncoded();
+                            ->insert(public_path('/img/user.png'))
+                            ->encode('png')->getEncoded();
             $ext     = 'png';
         }
 
         return ['picture' => $picture, 'extension' => $ext];
     }
 
-    public function deleteProfilePicture()
-    {
+    public function deleteProfilePicture() {
         $user = Auth::user();
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -71,11 +69,10 @@ class UserController extends Controller
         return redirect(route('settings'));
     }
 
-    public function updateSettings(Request $request)
-    {
+    public function updateSettings(Request $request) {
         $user = Auth::user();
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:50'],
+            'name'   => ['required', 'string', 'max:50'],
             'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
@@ -107,8 +104,7 @@ class UserController extends Controller
         return $this->getAccount();
     }
 
-    public function updatePassword(Request $request)
-    {
+    public function updatePassword(Request $request) {
         $user = Auth::user();
         if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
@@ -122,7 +118,7 @@ class UserController extends Controller
     public static function updateProfilePicture($avatar) {
         $user     = Auth::user();
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
-        Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+        Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
 
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -136,10 +132,10 @@ class UserController extends Controller
     //Return Settings-page
     public function getAccount() {
         $user     = Auth::user();
-        $sessions = array();
-        $tokens   = array();
-        foreach($user->sessions as $session) {
-            $sessionArray = array();
+        $sessions = [];
+        $tokens   = [];
+        foreach ($user->sessions as $session) {
+            $sessionArray = [];
             $result       = new Agent();
             $result->setUserAgent($session->user_agent);
             $sessionArray['platform'] = $result->platform();
@@ -157,14 +153,14 @@ class UserController extends Controller
             array_push($sessions, $sessionArray);
         }
 
-        foreach($user->tokens as $token) {
+        foreach ($user->tokens as $token) {
             if ($token->revoked != 1) {
-                $tokenInfo               = array();
+                $tokenInfo               = [];
                 $tokenInfo['id']         = $token->id;
                 $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (String) $token->created_at;
-                $tokenInfo['updated_at'] = (String) $token->updated_at;
-                $tokenInfo['expires_at'] = (String) $token->expires_at;
+                $tokenInfo['created_at'] = (string) $token->created_at;
+                $tokenInfo['updated_at'] = (string) $token->updated_at;
+                $tokenInfo['expires_at'] = (string) $token->expires_at;
 
                 array_push($tokens, $tokenInfo);
             }
@@ -185,7 +181,7 @@ class UserController extends Controller
 
     //delete a specific session for user
     public function deleteToken($tokenId) {
-        $user = Auth::user();
+        $user  = Auth::user();
         $token = Token::find($tokenId);
         if ($token->user == $user) {
             $token->revoke();
@@ -235,11 +231,11 @@ class UserController extends Controller
             return null;
         }
         $statuses = $user->statuses()->with('user',
-        'trainCheckin',
-        'trainCheckin.Origin',
-        'trainCheckin.Destination',
-        'trainCheckin.HafasTrip',
-        'event')->orderBy('created_at', 'DESC')->paginate(15);
+                                            'trainCheckin',
+                                            'trainCheckin.Origin',
+                                            'trainCheckin.Destination',
+                                            'trainCheckin.HafasTrip',
+                                            'event')->orderBy('created_at', 'DESC')->paginate(15);
 
 
         $twitterUrl  = "";
@@ -252,8 +248,8 @@ class UserController extends Controller
                 if ($mastodonServer != null) {
                     $mastodonDomain      = $mastodonServer->domain;
                     $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
-                        ->token($user->socialProfile->mastodon_token)
-                        ->get("/accounts/" . $user->socialProfile->mastodon_id);
+                                                   ->token($user->socialProfile->mastodon_token)
+                                                   ->get("/accounts/" . $user->socialProfile->mastodon_id);
                     $mastodonUrl         = $mastodonAccountInfo["url"];
                 }
             } catch (Exception $e) {
@@ -284,11 +280,11 @@ class UserController extends Controller
         $user->unsetRelation('socialProfile');
 
         return [
-            'username' => $username,
-            'twitterUrl' => $twitterUrl,
+            'username'    => $username,
+            'twitterUrl'  => $twitterUrl,
             'mastodonUrl' => $mastodonUrl,
-            'statuses' => $statuses,
-            'user' => $user
+            'statuses'    => $statuses,
+            'user'        => $user
         ];
     }
 
@@ -376,20 +372,18 @@ class UserController extends Controller
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
-    public static function registerByDay(Carbon $date)
-    {
+    public static function registerByDay(Carbon $date) {
         return User::where("created_at", ">=", $date->copy()->startOfDay())
-            ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->count();
+                   ->where("created_at", "<=", $date->copy()->endOfDay())
+                   ->count();
     }
 
-    public static function updateDisplayName($displayname)
-    {
+    public static function updateDisplayName($displayname) {
         $request   = new Request(['displayname' => $displayname]);
         $validator = Validator::make($request->all(), [
             'displayname' => 'required|max:120'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             abort(400);
         }
         $user       = User::where('id', Auth::user()->id)->first();

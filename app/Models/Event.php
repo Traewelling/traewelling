@@ -32,8 +32,8 @@ class Event extends Model
     }
 
     /**
-     * @deprecated Use ->trainstation relationship instead
      * @return TrainStation
+     * @deprecated Use ->trainstation relationship instead
      */
     public function getTrainstation(): TrainStation {
         return TrainStation::where("id", "=", $this->trainstation)->first() ?? new TrainStation();

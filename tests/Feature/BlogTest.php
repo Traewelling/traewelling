@@ -55,8 +55,8 @@ class BlogTest extends TestCase
     }
 
     function trimHtml($response) {
-        $t = implode("\n", array_map('trim', explode("\n", $response->content())));
-        return str_replace(["\r", "\n"], "", $t);
+        $trim = implode("\n", array_map('trim', explode("\n", $response->content())));
+        return str_replace(["\r", "\n"], "", $trim);
     }
 
 

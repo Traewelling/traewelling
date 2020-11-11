@@ -22,23 +22,21 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
-        // $schedule->command('inspire')
-        //          ->hourly();
+    protected function schedule(Schedule $schedule) {
+        // $schedule->command('inspire')->hourly();
 
         $schedule->call(function() {
-            DB::table('users')->update(array('points' => '0'));
+            DB::table('users')->update(['points' => '0']);
         })->weeklyOn(5, '03:14')
-            ->runInBackground();
+                 ->runInBackground();
 
         //delete new users without GDPR Agreement
         $schedule->call(function() {
             $privacyUsers = User::where('privacy_ack_at', null)->get();
-            foreach($privacyUsers as $user) {
+            foreach ($privacyUsers as $user) {
                 if ($user->created_at < date('Y-m-d H:i:s', strtotime('-1 day'))) {
                     SocialLoginProfile::where('user_id', $user->id)->delete();
                     $user->delete();
@@ -52,9 +50,8 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function commands()
-    {
-        $this->load(__DIR__.'/Commands');
+    protected function commands() {
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

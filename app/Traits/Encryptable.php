@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Crypt;
 trait Encryptable
 {
     /**
@@ -11,7 +10,7 @@ trait Encryptable
      *
      * @param  $key
      *
-     * @return $value
+     * @return mixed|string $value
      */
     public function getAttribute($key) {
         $value = parent::getAttribute($key);
@@ -45,8 +44,7 @@ trait Encryptable
      *
      * @return array
      */
-    public function attributesToArray()
-    {
+    public function attributesToArray() {
         $attributes = parent::attributesToArray();
         foreach ($this->encryptable as $key) {
             if (isset($attributes[$key])) {

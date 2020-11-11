@@ -129,20 +129,14 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function statusesByEvent(string $event) {
-        $events = Event::where('slug', '=', $event)->get();
-        if ($events->count() == 0) {
-            abort(404);
-        }
+    public function statusesByEvent(string $eventSlug) {
+        $event = Event::where('slug', '=', $eventSlug)->firstOrFail();
 
-        $e = $events->get(0);
-
-        $statusesResponse = StatusBackend::getStatusesByEvent($e->id);
+        $statusesResponse = StatusBackend::getStatusesByEvent($event->id);
 
         return view('eventsMap', [
             'statuses'    => $statusesResponse,
-            'events'      => $events,
-            'event'       => $e,
+            'event'       => $event,
             'currentUser' => Auth::user(),
         ]);
     }
@@ -151,16 +145,17 @@ class FrontendStatusController extends Controller
         $statusResponse = StatusBackend::getStatus($statusId);
 
         return view('status', [
-            'status' => $statusResponse,
-            'time' => time(),
-            'title' => __('status.ogp-title', ['name' => $statusResponse->user->username]),
-            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
-                'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,
-                'distance'    => $statusResponse->trainCheckin->distance,
-                'destination' => $statusResponse->trainCheckin->Destination->name,
-                'origin'      => $statusResponse->trainCheckin->Origin->name
-            ]),
-            'image' => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
+            'status'      => $statusResponse,
+            'time'        => time(),
+            'title'       => __('status.ogp-title', ['name' => $statusResponse->user->username]),
+            'description' => trans_choice('status.ogp-description',
+                                          preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
+                                              'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,
+                                              'distance'    => $statusResponse->trainCheckin->distance,
+                                              'destination' => $statusResponse->trainCheckin->Destination->name,
+                                              'origin'      => $statusResponse->trainCheckin->Origin->name
+                                          ]),
+            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
         ]);
     }
 

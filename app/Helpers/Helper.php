@@ -21,6 +21,9 @@ function get_current_git_commit() {
 
 /**
  * @see https://stackoverflow.com/a/437642
+ * @param $number
+ * @param int $decimals
+ * @return string
  */
 function number($number, $decimals = 2) {
     return number_format($number, $decimals,

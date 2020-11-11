@@ -5,10 +5,8 @@ namespace App\Notifications;
 use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class TwitterNotSent extends Notification
 {
@@ -17,33 +15,29 @@ class TwitterNotSent extends Notification
     public $error;
     public $status;
 
-    public function __construct($error, Status $status)
-    {
+    public function __construct($error, Status $status) {
         $this->error  = $error;
         $this->status = $status;
     }
 
-    public function via()
-    {
+    public function via() {
         return ['database'];
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         return [
-            'error' => $this->error,
+            'error'     => $this->error,
             'status_id' => $this->status->id,
         ];
     }
 
-    public static function detail($notification)
-    {
+    public static function detail($notification) {
         $data                 = $notification->data;
         $notification->detail = new \stdClass();
 
         try {
             $status = Status::findOrFail($data['status_id']);
-        } catch(ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             throw new ShouldDeleteNotificationException();
         }
 
@@ -51,8 +45,7 @@ class TwitterNotSent extends Notification
         return $notification->type;
     }
 
-    public static function render($notification)
-    {
+    public static function render($notification) {
         try {
             $detail = Self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {
@@ -63,15 +56,15 @@ class TwitterNotSent extends Notification
         $data = $notification->data;
 
         return view("includes.notification", [
-            'color' => "warning",
-            'icon' => "fas fa-exclamation-triangle",
-            'lead' => __('notifications.socialNotShared.lead', ['platform' => "Twitter"]),
-            "link" => route('statuses.get', ['id' => $detail->status->id]),
+            'color'  => "warning",
+            'icon'   => "fas fa-exclamation-triangle",
+            'lead'   => __('notifications.socialNotShared.lead', ['platform' => "Twitter"]),
+            "link"   => route('statuses.get', ['id' => $detail->status->id]),
             'notice' => __('notifications.socialNotShared.twitter.' . $data['error']),
 
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read' => $notification->read_at != null,
-            'notificationId' => $notification->id
+            'read'            => $notification->read_at != null,
+            'notificationId'  => $notification->id
         ])->render();
     }
 }

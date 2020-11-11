@@ -173,32 +173,26 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroyfollow', [FrontendUserController::class, 'DestroyFollow'])
          ->name('follow.destroy');
 
-    Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
+    Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'trainAutocomplete'])
          ->name('transport.train.autocomplete');
 
-    Route::get('/transport/bus/autocomplete/{station}', [FrontendTransportController::class, 'BusAutocomplete'])
-         ->name('transport.bus.autocomplete');
-
-    Route::get('/trains/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
+    Route::get('/trains/stationboard', [FrontendTransportController::class, 'trainStationboard'])
          ->name('trains.stationboard');
 
-    Route::get('/trains/nearby', [FrontendTransportController::class, 'StationByCoordinates'])
+    Route::get('/trains/nearby', [FrontendTransportController::class, 'stationByCoordinates'])
          ->name('trains.nearby');
 
-    Route::get('/trains/trip', [FrontendTransportController::class, 'TrainTrip'])
+    Route::get('/trains/trip', [FrontendTransportController::class, 'trainTrip'])
          ->name('trains.trip');
 
-    Route::get('/trains/fast', [FrontendTransportController::class, 'FastTripAccess'])
+    Route::get('/trains/fast', [FrontendTransportController::class, 'fastTripAccess'])
          ->name('trains.fast');
 
-    Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
+    Route::post('/trains/checkin', [FrontendTransportController::class, 'trainCheckin'])
          ->name('trains.checkin');
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setHome'])
          ->name('user.setHome');
-
-    Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
-         ->name('busses.stationboard');
 
     Route::get('/mastodon/test', [SocialController::class, 'testMastodon']);
 

@@ -6,14 +6,12 @@ use App\Http\Controllers\Controller as Controller;
 
 class ResponseController extends Controller
 {
-    public function sendResponse($response)
-    {
+    public function sendResponse($response) {
         return response()->json($response, 200);
     }
 
 
-    public function sendError($error, $code = 404)
-    {
+    public function sendError($error, $code = 404) {
         $response = [
             'error' => $error,
         ];

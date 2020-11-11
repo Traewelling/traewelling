@@ -27,7 +27,7 @@ class CheckinTest extends TestCase
         $requestDate       = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
-        $trainStationboard = TransportController::TrainStationboard($stationname, $requestDate->format('U'));
+        $trainStationboard = TransportController::trainStationboard($stationname, $requestDate->format('U'));
         $station           = $trainStationboard['station'];
         $departures        = $trainStationboard['departures'];
 
@@ -61,9 +61,18 @@ class CheckinTest extends TestCase
 
         // GIVEN: A bunch of locations around Europe that should return true
         $locations = [
-            //["name" => "Dortmund Hbf", "station" => "Hauptbahnhof, Dortmund", "latitude" => 51.517, "longitude" => 7.4592],
-            ["name" => "FRA", "station" => "Frankfurt(M) Flughafen Fernbf", "latitude" => 50.052926, "longitude" => 8.569776],
-            //["name" => "Moskau", "station" => "Moskva Oktiabrskaia", "latitude" => 55.776111, "longitude" => 37.655278]
+            /*["name"      => "Dortmund Hbf",
+             "station"   => "Hauptbahnhof, Dortmund",
+             "latitude"  => 51.517,
+             "longitude" => 7.4592],*/
+            ["name"      => "FRA",
+             "station"   => "Frankfurt(M) Flughafen Fernbf",
+             "latitude"  => 50.052926,
+             "longitude" => 8.569776],
+            /*["name"      => "Moskau",
+             "station"   => "Moskva Oktiabrskaia",
+             "latitude"  => 55.776111,
+             "longitude" => 37.655278]*/
         ];
 
         foreach ($locations as $testcase) {
@@ -136,7 +145,7 @@ class CheckinTest extends TestCase
         $now               = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
-        $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
+        $trainStationboard = TransportController::trainStationboard($stationname, $now->format('U'), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -159,7 +168,7 @@ class CheckinTest extends TestCase
         $this->isCorrectHafasTrip($departure, $now);
 
         // Third: Get the trip information
-        $trip = TransportController::TrainTrip(
+        $trip = TransportController::trainTrip(
             $departure->tripId,
             $departure->line->name,
             $departure->stop->location->id
@@ -263,7 +272,7 @@ class CheckinTest extends TestCase
              'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]));
 
 
-        TransportController::TrainCheckin(
+        TransportController::trainCheckin(
             $baseTrip->trip_id,
             $baseTrip->origin,
             $baseTrip->destination,
@@ -278,7 +287,7 @@ class CheckinTest extends TestCase
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                TransportController::TrainCheckin(
+                TransportController::trainCheckin(
                     $trip->trip_id,
                     $trip->origin,
                     $trip->destination,
@@ -299,7 +308,7 @@ class CheckinTest extends TestCase
         //check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                TransportController::TrainCheckin(
+                TransportController::trainCheckin(
                     $trip->trip_id,
                     $trip->origin,
                     $trip->destination,

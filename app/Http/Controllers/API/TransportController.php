@@ -14,7 +14,7 @@ class TransportController extends ResponseController
 {
     public function TrainAutocomplete($station)
     {
-        $trainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
+        $trainAutocompleteResponse = TransportBackend::trainAutocomplete($station);
         return $this->sendResponse($trainAutocompleteResponse);
     }
 
@@ -38,7 +38,7 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainStationboardResponse = TransportBackend::TrainStationboard(
+        $trainStationboardResponse = TransportBackend::trainStationboard(
             $request->station,
             $request->when,
             $request->travelType
@@ -70,7 +70,7 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainTripResponse = TransportBackend::TrainTrip(
+        $trainTripResponse = TransportBackend::trainTrip(
             $request->tripID,
             $request->lineName,
             $request->start
@@ -102,7 +102,7 @@ class TransportController extends ResponseController
         }
 
         try {
-            $trainCheckinResponse = TransportBackend::TrainCheckin(
+            $trainCheckinResponse = TransportBackend::trainCheckin(
                 $request->input('tripID'),
                 $request->input('start'),
                 $request->input('destination'),
@@ -154,7 +154,7 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        $nearestStation = TransportBackend::stationByCoordinates($request->latitude, $request->longitude);
         if ($nearestStation === null) {
             return $this->sendError(__("controller.transport.no-station-found"), 404);
         }

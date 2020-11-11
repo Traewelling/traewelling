@@ -17,7 +17,7 @@ class TrainCheckinSeeder extends Seeder
     public function run() {
         foreach (User::all() as $user) {
             $trip = HafasTrip::all()->random();
-            TransportController::TrainCheckin(
+            TransportController::trainCheckin(
                 $trip->trip_id,
                 $trip->origin,
                 $trip->destination,

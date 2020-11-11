@@ -28,7 +28,7 @@ use Mastodon;
 class TransportController extends Controller
 {
 
-    public static function TrainAutocomplete($station) {
+    public static function trainAutocomplete($station) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stations?query=$station&fuzzy=true");
         if ($response->getBody()->getContents() <= 2) {
@@ -45,30 +45,14 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function BusAutocomplete($station) {
-        $client   = new Client(['base_uri' => config('trwl.flix_rest')]);
-        $response = $client->request('GET', "stations/?query=$station");
-        $json     = $response->getBody()->getContents();
-        $array    = json_decode($json, true);
-
-        foreach (array_keys($array) as $key) {
-            unset($array[$key]['relevance']);
-            unset($array[$key]['score']);
-            unset($array[$key]['weight']);
-            unset($array[$key]['type']);
-            $array[$key]['provider'] = 'bus';
-        }
-        return $array;
-    }
-
-    public static function TrainStationboard($station, $when = 'now', $travelType = null) {
+    public static function trainStationboard($station, $when = 'now', $travelType = null) {
         if (empty($station)) {
             return false;
         }
         if ($when === null) {
             $when = strtotime('-5 minutes');
         }
-        $ibnrObject = self::TrainAutocomplete($station);
+        $ibnrObject = self::trainAutocomplete($station);
         $departures = self::getTrainDepartures($ibnrObject[0]['id'], $when, $travelType);
         $station    = $ibnrObject[0];
 
@@ -78,7 +62,7 @@ class TransportController extends Controller
         return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
 
-    public static function FastTripAccess($departure, $lineName, $number, $when) {
+    public static function fastTripAccess($departure, $lineName, $number, $when) {
         $departuresArray = self::getTrainDepartures($departure, $when);
         foreach ($departuresArray as $departure) {
             if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
@@ -88,7 +72,7 @@ class TransportController extends Controller
         return null;
     }
 
-    public static function StationByCoordinates($latitude, $longitude) {
+    public static function stationByCoordinates($latitude, $longitude) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
         $json     = json_decode($response->getBody()->getContents());
@@ -160,7 +144,7 @@ class TransportController extends Controller
      * @return array|null
      * @throws GuzzleException
      */
-    public static function TrainTrip(string $tripId, string $lineName, $start) {
+    public static function trainTrip(string $tripId, string $lineName, $start) {
 
         $hafasTrip = self::getHAFAStrip($tripId, $lineName);
         $stopovers = json_decode($hafasTrip->stopovers, true);
@@ -181,7 +165,7 @@ class TransportController extends Controller
         ];
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay) {
+    public static function calculateTrainPoints($distance, $category, $departure, $arrival, $delay) {
         $now      = time();
         $factorDB = DB::table('pointscalculation')
                       ->where([
@@ -241,7 +225,7 @@ class TransportController extends Controller
      * @throws GuzzleException
      * @throws HafasException
      */
-    public static function TrainCheckin($tripId,
+    public static function trainCheckin($tripId,
                                         $start,
                                         $destination,
                                         $body,
@@ -291,7 +275,7 @@ class TransportController extends Controller
             $destinationAttributes['stop']['location']['latitude'],
             $destinationAttributes['stop']['location']['longitude']
         );
-        $points             = self::CalculateTrainPoints(
+        $points             = self::calculateTrainPoints(
             $distance,
             $hafasTrip->category,
             $stopovers[$offset1]['departure'],
@@ -521,7 +505,7 @@ class TransportController extends Controller
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if($dbTrainStation !== null) {
+            if ($dbTrainStation !== null) {
                 return $dbTrainStation;
             }
             return HafasController::fetchTrainStation($ibnr);

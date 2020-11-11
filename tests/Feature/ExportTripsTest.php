@@ -34,7 +34,7 @@ class ExportTripsTest extends TestCase
      * @param DateTime $now
      */
     protected function checkin($stationName, $ibnr, DateTime $now) {
-        $trainStationboard = TransportController::TrainStationboard($stationName, $now->format('U'), 'nationalExpress');
+        $trainStationboard = TransportController::trainStationboard($stationName, $now->format('U'), 'nationalExpress');
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
@@ -42,21 +42,21 @@ class ExportTripsTest extends TestCase
         }
 
         // Second: We don't like broken or cancelled trains.
-        $i = 0;
-        while ((isset($trainStationboard['departures'][$i]->cancelled)
-                && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0) {
-            $i++;
-            if ($i == $countDepartures) {
+        $cnt = 0;
+        while ((isset($trainStationboard['departures'][$cnt]->cancelled)
+                && $trainStationboard['departures'][$cnt]->cancelled)
+            || count($trainStationboard['departures'][$cnt]->remarks) != 0) {
+            $cnt++;
+            if ($cnt == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
                 return;
             }
         }
-        $departure = $trainStationboard['departures'][$i];
+        $departure = $trainStationboard['departures'][$cnt];
         CheckinTest::isCorrectHafasTrip($departure, $now);
 
         // Third: Get the trip information
-        $trip = TransportController::TrainTrip(
+        $trip = TransportController::trainTrip(
             $departure->tripId,
             $departure->line->name,
             $departure->stop->location->id
