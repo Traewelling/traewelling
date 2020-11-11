@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Doctrine\DBAL\Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Gd\Commands\BackupCommand;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
