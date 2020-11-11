@@ -104,6 +104,15 @@
                                 </li>
                             @endif
                         @else
+                            <form class="form-inline" action="{{ route('userSearch') }}">
+                                <div class="input-group md-form form-sm form-2 pl-0 m-0">
+                                    <input name="searchQuery" class="border border-white rounded-left form-control my-0 py-1" type="text" placeholder="Search" aria-label="User suchen">
+                                    <div class="input-group-append">
+                                        <button class="input-group-text btn-primary lighten-2" id="basic-text1" type="submit"><i class="fas fa-search text-grey"
+                                                                          aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                             <li class="nav-item d-none d-md-inline-block">
                                 <a href="#" id="notifications-toggle" class="nav-link" data-toggle="modal" data-target="#notifications-board">
                                     <span class="notifications-bell far fa-bell"></span>

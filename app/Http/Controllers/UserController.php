@@ -51,8 +51,8 @@ class UserController extends Controller
             $hex = dechex($hash & 0x00FFFFFF);
 
             $picture = Image::canvas(512, 512, $hex)
-                ->insert(public_path('/img/user.png'))
-                ->encode('png')->getEncoded();
+                            ->insert(public_path('/img/user.png'))
+                            ->encode('png')->getEncoded();
             $ext     = 'png';
         }
 
@@ -235,11 +235,11 @@ class UserController extends Controller
             return null;
         }
         $statuses = $user->statuses()->with('user',
-        'trainCheckin',
-        'trainCheckin.Origin',
-        'trainCheckin.Destination',
-        'trainCheckin.HafasTrip',
-        'event')->orderBy('created_at', 'DESC')->paginate(15);
+                                            'trainCheckin',
+                                            'trainCheckin.Origin',
+                                            'trainCheckin.Destination',
+                                            'trainCheckin.HafasTrip',
+                                            'event')->orderBy('created_at', 'DESC')->paginate(15);
 
 
         $twitterUrl  = "";
@@ -252,8 +252,8 @@ class UserController extends Controller
                 if ($mastodonServer != null) {
                     $mastodonDomain      = $mastodonServer->domain;
                     $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
-                        ->token($user->socialProfile->mastodon_token)
-                        ->get("/accounts/" . $user->socialProfile->mastodon_id);
+                                                   ->token($user->socialProfile->mastodon_token)
+                                                   ->get("/accounts/" . $user->socialProfile->mastodon_id);
                     $mastodonUrl         = $mastodonAccountInfo["url"];
                 }
             } catch (Exception $e) {
@@ -379,8 +379,8 @@ class UserController extends Controller
     public static function registerByDay(Carbon $date)
     {
         return User::where("created_at", ">=", $date->copy()->startOfDay())
-            ->where("created_at", "<=", $date->copy()->endOfDay())
-            ->count();
+                   ->where("created_at", "<=", $date->copy()->endOfDay())
+                   ->count();
     }
 
     public static function updateDisplayName($displayname)
@@ -395,5 +395,18 @@ class UserController extends Controller
         $user       = User::where('id', Auth::user()->id)->first();
         $user->name = $displayname;
         $user->save();
+    }
+
+    public static function searchUser(?string $searchQuery) {
+        $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
+        if ($validator->fails()) {
+            abort(400);
+        }
+
+        return User::where(
+            'name', 'like', "%{$searchQuery}%"
+        )->orWhere(
+            'username', 'like', "%{$searchQuery}%"
+        )->simplePaginate(10);
     }
 }

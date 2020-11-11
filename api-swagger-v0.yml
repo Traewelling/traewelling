@@ -882,6 +882,66 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         406:
           $ref: '#/components/responses/GDPRError'
+  /user/search/{searchQuery}:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [User profile]
+      summary: Searches for a user
+      parameters:
+        - in: path
+          name: searchQuery
+          schema:
+            type: string
+            example: 'jdo'
+          required: true
+          description: The query for the user search.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  first_page_url:
+                    type: string
+                    example: "https://traewelling.de/api/v0/user/search/jdo?page=1"
+                  from:
+                    type: integer
+                    example: 1
+                    description: Frist element on page
+                  next_page_url:
+                    type: string
+                    example: "https://traewelling.de/api/v0/user/search/jdo?page=2"
+                    nullable: true
+                  path:
+                    type: string
+                    example: "https://traewelling.de/api/v0/user/search/jdo"
+                  per_page:
+                    type: integer
+                    example: 5
+                  prev_page_url:
+                    type: string
+                    example: null
+                    nullable: true
+                  to:
+                    type: integer
+                    example: 5
+                    description: Last element on page
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /getuser:
     get:
       security:
@@ -1194,18 +1254,18 @@ components:
             $ref: '#/components/schemas/Status'
         first_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses?page=1"
+          example: "https://traewelling.de/api/v0/statuses?page=1"
         from:
           type: integer
           example: 1
           description: Frist element on page
         next_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses?page=2"
+          example: "https://traewelling.de/api/v0/statuses?page=2"
           nullable: true
         path:
           type: string
-          example: "https://api.traewelling.de/v0/statuses"
+          example: "https://traewelling.de/api/v0/statuses"
         per_page:
           type: integer
           example: 15
@@ -1245,18 +1305,18 @@ components:
                 $ref: '#/components/schemas/User'
         first_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses/1/likes?page=1"
+          example: "https://traewelling.de/api/v0/statuses/1/likes?page=1"
         from:
           type: integer
           example: 1
           description: Frist element on page
         next_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses/1/likes?page=2"
+          example: "https://traewelling.de/api/v0/statuses/1/likes?page=2"
           nullable: true
         path:
           type: string
-          example: "https://api.traewelling.de/v0/statuses"
+          example: "https://traewelling.de/api/v0/statuses"
         per_page:
           type: integer
           example: 15
@@ -1328,15 +1388,21 @@ components:
           type: string
           example: "jdoe"
         train_distance:
+          type: string
+          format: float
+          example: "454.59"
+        train_duration:
+          type: string
+          format: integer
+          example: "317"
+        points:
+          type: string
+          format: integer
+          example: "66"
+        averageSpeed:
           type: number
           format: float
-          example: 454.59
-        train_duration:
-          type: integer
-          example: 317
-        points:
-          type: integer
-          example: 66
+          example: 100.5678954
     db_rest_stopover:
       type: object
       properties:

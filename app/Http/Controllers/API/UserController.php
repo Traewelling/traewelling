@@ -52,4 +52,8 @@ class UserController extends ResponseController
             'kilometers' => $leaderboardResponse['kilometers']
         ]);
     }
+
+    public function searchUser($searchQuery) {
+        return UserBackend::searchUser($searchQuery);
+    }
 }

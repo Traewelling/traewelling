@@ -22,5 +22,6 @@ return [
     "always-dbl" => "Tweet with #dbl?",
     "liked-status" => "likes this status.",
     "liked-own-status" => "likes their own status.",
-    "invalid-mastodon" => ":domain doesn't seem to be a Mastodon instance."
+    "invalid-mastodon" => ":domain doesn't seem to be a Mastodon instance.",
+    "no-user" => "No user found."
 ];
