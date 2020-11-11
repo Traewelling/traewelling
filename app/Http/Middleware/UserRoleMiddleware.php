@@ -18,7 +18,8 @@ class UserRoleMiddleware
      * @return mixed
      */
     public function handle(Request $request, Closure $next, string $roleString) {
-        $userRole = Auth::user()->role ?? 0; // Guests have a 0-user-role, there's another Auth middleware for guest-access.
+        // Guests have a 0-user-role, there's another Auth middleware for guest-access.
+        $userRole = Auth::user()->role ?? 0;
         $role     = intval($roleString);
 
         if ($userRole >= $role) {

@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class FrontendTransportController extends Controller
 {
     public function trainAutocomplete($station) {
-        $TrainAutocompleteResponse = transportBackend::trainAutocomplete($station);
-        return response()->json($TrainAutocompleteResponse);
+        $trainAutocompleteResponse = transportBackend::trainAutocomplete($station);
+        return response()->json($trainAutocompleteResponse);
     }
 
     public function trainStationboard(Request $request) {
@@ -45,7 +45,8 @@ class FrontendTransportController extends Controller
                                                  'longitude' => 'required|numeric|min:-180|max:180'
                                              ]);
 
-        $nearestStation = transportBackend::stationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
+        $nearestStation = transportBackend::stationByCoordinates($validatedInput['latitude'],
+                                                                 $validatedInput['longitude']);
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
@@ -68,7 +69,9 @@ class FrontendTransportController extends Controller
 
         // Find out where this train terminates and offer this as a "fast check-in" option.
         $terminalStopIndex = count($trainTripResponse['stopovers']) - 1;
-        while ($terminalStopIndex >= 1 && @$trainTripResponse['stopovers'][$terminalStopIndex]['cancelled']) {
+        while ($terminalStopIndex >= 1
+            && isset($trainTripResponse['stopovers'][$terminalStopIndex]['cancelled'])
+            && $trainTripResponse['stopovers'][$terminalStopIndex]['cancelled']) {
             $terminalStopIndex--;
         }
         $terminalStop = $trainTripResponse['stopovers'][$terminalStopIndex];
