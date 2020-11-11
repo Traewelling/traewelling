@@ -882,6 +882,35 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         406:
           $ref: '#/components/responses/GDPRError'
+  /user/search/{searchQuery}:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [User profile]
+      summary: Searches for a user
+      parameters:
+        - in: path
+          name: searchQuery
+          schema:
+            type: string
+            example: 'jdo'
+          required: true
+          description: The query for the user search.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        406:
+          $ref: '#/components/responses/GDPRError'
   /getuser:
     get:
       security:

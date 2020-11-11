@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
         Route::group(['prefix' => 'user'], function() {
             Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
+            Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
             Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
             Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
             Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
