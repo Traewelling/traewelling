@@ -913,18 +913,18 @@ paths:
                       $ref: '#/components/schemas/User'
                   first_page_url:
                     type: string
-                    example: "https://api.traewelling.de/v0/user/search/jdo?page=1"
+                    example: "https://traewelling.de/api/v0/user/search/jdo?page=1"
                   from:
                     type: integer
                     example: 1
                     description: Frist element on page
                   next_page_url:
                     type: string
-                    example: "https://api.traewelling.de/v0/user/search/jdo?page=2"
+                    example: "https://traewelling.de/api/v0/user/search/jdo?page=2"
                     nullable: true
                   path:
                     type: string
-                    example: "https://api.traewelling.de/v0/user/search/jdo"
+                    example: "https://traewelling.de/api/v0/user/search/jdo"
                   per_page:
                     type: integer
                     example: 5
@@ -1254,18 +1254,18 @@ components:
             $ref: '#/components/schemas/Status'
         first_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses?page=1"
+          example: "https://traewelling.de/api/v0/statuses?page=1"
         from:
           type: integer
           example: 1
           description: Frist element on page
         next_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses?page=2"
+          example: "https://traewelling.de/api/v0/statuses?page=2"
           nullable: true
         path:
           type: string
-          example: "https://api.traewelling.de/v0/statuses"
+          example: "https://traewelling.de/api/v0/statuses"
         per_page:
           type: integer
           example: 15
@@ -1305,18 +1305,18 @@ components:
                 $ref: '#/components/schemas/User'
         first_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses/1/likes?page=1"
+          example: "https://traewelling.de/api/v0/statuses/1/likes?page=1"
         from:
           type: integer
           example: 1
           description: Frist element on page
         next_page_url:
           type: string
-          example: "https://api.traewelling.de/v0/statuses/1/likes?page=2"
+          example: "https://traewelling.de/api/v0/statuses/1/likes?page=2"
           nullable: true
         path:
           type: string
-          example: "https://api.traewelling.de/v0/statuses"
+          example: "https://traewelling.de/api/v0/statuses"
         per_page:
           type: integer
           example: 15
