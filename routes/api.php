@@ -1,6 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\NotificationController;
+use App\Http\Controllers\API\StatusController;
+use App\Http\Controllers\API\TransportController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\PrivacyAgreementController;
+use \App\Http\Controllers\API\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,50 +18,71 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
-    Route::group(['middleware' => ['guest:api']], function () {
-        Route::group(['prefix' => 'auth'], function () {
-            Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
-            Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
+Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
+    Route::group(['middleware' => ['guest:api']], function() {
+        Route::group(['prefix' => 'auth'], function() {
+            Route::post('login', [AuthController::class, 'login'])
+                 ->name('api.v0.auth.login');
+            Route::post('signup', [AuthController::class, 'signup'])
+                 ->name('api.v0.auth.signup');
         });
     });
-    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
-        ->name('api.v0.user.accept_privacy');
+    Route::put('user/accept_privacy', [PrivacyAgreementController::class, 'ack'])
+         ->middleware('auth:api')
+         ->name('api.v0.user.accept_privacy');
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], function() {
-        Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
-        Route::get('getuser', 'API\AuthController@getUser')->name('api.v0.getUser');
+        Route::post('auth/logout', [AuthController::class, 'logout'])
+             ->name('api.v0.auth.logout');
+        Route::get('getuser', [AuthController::class, 'getUser'])
+             ->name('api.v0.getUser');
 
         Route::group(['prefix' => 'user'], function() {
-            Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
-            Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
-            Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
-            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
-            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
+            Route::get('leaderboard', [UserController::class, 'getLeaderboard'])
+                 ->name('api.v0.user.leaderboard');
+            Route::get('{username}', [UserController::class, 'show'])
+                 ->name('api.v0.user');
+            Route::get('{username}/active', [UserController::class, 'active'])
+                 ->name('api.v0.user.active');
+            Route::put('profilepicture', [UserController::class, 'PutProfilepicture'])
+                 ->name('api.v0.user.profilepicture');
+            Route::put('displayname', [UserController::class, 'PutDisplayname'])
+                 ->name('api.v0.user.displayname');
         });
 
         // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], function () {
-            Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
-            Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
-            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
-            Route::delete('{statusId}/like', 'API\StatusController@destroyLike');
-            Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
+        Route::group(['prefix' => 'statuses'], function() {
+            Route::get('enroute/all', [StatusController::class, 'enroute'])
+                 ->name('api.v0.statuses.enroute');
+            Route::get('event/{statusId}', [StatusController::class, 'getByEvent'])
+                 ->name('api.v0.statuses.event');
+            Route::post('{statusId}/like', [StatusController::class, 'createLike'])
+                 ->name('api.v0.statuses.like');
+            Route::delete('{statusId}/like', [StatusController::class, 'destroyLike']);
+            Route::get('{statusId}/likes', [StatusController::class, 'getLikes'])
+                 ->name('api.v0.statuses.likes');
         });
-        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
+        Route::resource('statuses', StatusController::class, ['as' => 'api.v0']);
 
-        Route::resource('notifications', 'API\NotificationController');
+        Route::resource('notifications', NotificationController::class);
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
-            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')->name('api.v0.checkin.train.autocomplete');
-            Route::get('stationboard', 'API\TransportController@TrainStationboard')->name('api.v0.checkin.train.stationboard');;
-            Route::get('trip', 'API\TransportController@TrainTrip')->name('api.v0.checkin.train.trip');
-            Route::post('checkin', 'API\TransportController@TrainCheckin')->name('api.v0.checkin.train.checkin');
-            Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');
-            Route::get('home', 'API\TransportController@getHome')->name('api.v0.checkin.train.home');
-            Route::put('home', 'API\TransportController@setHome');
-            Route::get('nearby', 'API\TransportController@StationByCoordinates')->name('api.v0.trains.nearby');
+            Route::get('autocomplete/{station}', [TransportController::class, 'TrainAutocomplete'])
+                 ->name('api.v0.checkin.train.autocomplete');
+            Route::get('stationboard', [TransportController::class, 'TrainStationboard'])
+                 ->name('api.v0.checkin.train.stationboard');
+            Route::get('trip', [TransportController::class, 'TrainTrip'])
+                 ->name('api.v0.checkin.train.trip');
+            Route::post('checkin', [TransportController::class, 'TrainCheckin'])
+                 ->name('api.v0.checkin.train.checkin');
+            Route::get('latest', [TransportController::class, 'TrainLatestArrivals'])
+                 ->name('api.v0.checkin.train.latest');
+            Route::get('home', [TransportController::class, 'getHome'])
+                 ->name('api.v0.checkin.train.home');
+            Route::put('home', [TransportController::class, 'setHome']);
+            Route::get('nearby', [TransportController::class, 'StationByCoordinates'])
+                 ->name('api.v0.trains.nearby');
         });
     });
 });
