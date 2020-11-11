@@ -397,11 +397,16 @@ class UserController extends Controller
         $user->save();
     }
 
-    public static function searchUser(String $searchQuery){
+    public static function searchUser(?String $searchQuery){
+        $validator      = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
+        if($validator->fails()){
+            abort(400);
+        }
+
         return User::where(
             'name', 'like', "%{$searchQuery}%"
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
-        )->simplePaginate(5);
+        )->simplePaginate(10);
     }
 }

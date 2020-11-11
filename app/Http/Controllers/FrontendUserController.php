@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Doctrine\DBAL\Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
@@ -10,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Gd\Commands\BackupCommand;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
 {
@@ -98,10 +100,13 @@ class FrontendUserController extends Controller
     }
 
     public function searchUser(Request $request){
-        $validated      = $request->validate([
-                                                 'searchQuery' => ['required', 'alpha_num']
-                                             ]);
-        $userSearchResponse = UserBackend::searchUser($validated['searchQuery']);
+        try {
+            $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
+            $userSearchResponse->appends(['searchQuery' => $request['searchQuery']]);
+        } catch (HttpException $exception) {
+            return redirect()->back();
+        }
+
         return view("search", [
             'userSearchResponse' => $userSearchResponse,
             'currentUser' => Auth::user()
