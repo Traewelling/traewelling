@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Request; //FUCK LARAVEL WHY CAN'T I CALL DIRECT PATHS
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class Language
@@ -13,11 +13,11 @@ class Language
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
+     * @param $request
      * @param Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next) {
+    public function handle($request, Closure $next) {
 
         // Set default session language if none is set
         if (!Session::has('language')) {
