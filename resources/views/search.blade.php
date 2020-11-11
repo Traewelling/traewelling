@@ -35,7 +35,7 @@
                                         <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                                     </small>
                                 </h6>
-                                @if($user->id !== Auth::user()->id && Auth::check())
+                                @if($user->id !== Auth::user()->id)
                                     @if(Auth::user()->follows->where('id', $user->id)->first() === null)
                                         <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                     @else
