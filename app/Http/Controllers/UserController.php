@@ -397,9 +397,9 @@ class UserController extends Controller
         $user->save();
     }
 
-    public static function searchUser(?String $searchQuery){
-        $validator      = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
-        if($validator->fails()){
+    public static function searchUser(?string $searchQuery) {
+        $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
+        if ($validator->fails()) {
             abort(400);
         }
 

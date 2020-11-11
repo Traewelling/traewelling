@@ -224,20 +224,20 @@ class ApiUserTest extends ApiTestCase
     public function get_user_search() {
         //Test that user has been found
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-                                              'Accept'        => 'application/json'])->get(route('api.v0.user.search', 'gertru'));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.user.search', 'gertru'));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
-//        dd($response->content());
         $response->assertJsonStructure(['current_page',
                                         'data' => [[
-                                            "id",
-                                            "name",
-                                            "username",
-                                            "train_distance",
-                                            "train_duration",
-                                            "points",
-                                            "averageSpeed"
-                                        ]],
+                                                       "id",
+                                                       "name",
+                                                       "username",
+                                                       "train_distance",
+                                                       "train_duration",
+                                                       "points",
+                                                       "averageSpeed"
+                                                   ]],
                                         'first_page_url',
                                         'from',
                                         'next_page_url',
@@ -248,7 +248,9 @@ class ApiUserTest extends ApiTestCase
 
         //Test that an unknown user returns 200 and an empty json object
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-                                        'Accept'        => 'application/json'])->get(route('api.v0.user.search', 'sdfklghbqeörgjaösrjgäIERGKJAEFÖRGJSDÖFJHBÜÄAJRÄÜG'));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.user.search',
+                                     'sdfklghbqeörgjaösrjgäIERGKJAEFÖRGJSDÖFJHBÜÄAJRÄÜG'));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $response->assertJsonStructure(['current_page',

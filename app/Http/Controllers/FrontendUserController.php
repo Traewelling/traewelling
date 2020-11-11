@@ -99,7 +99,7 @@ class FrontendUserController extends Controller
         return response()->json($profilePictureResponse);
     }
 
-    public function searchUser(Request $request){
+    public function searchUser(Request $request) {
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
             $userSearchResponse->appends(['searchQuery' => $request['searchQuery']]);
@@ -109,7 +109,7 @@ class FrontendUserController extends Controller
 
         return view("search", [
             'userSearchResponse' => $userSearchResponse,
-            'currentUser' => Auth::user()
+            'currentUser'        => Auth::user()
         ]);
     }
 }
