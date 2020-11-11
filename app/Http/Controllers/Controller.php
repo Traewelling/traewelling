@@ -54,12 +54,11 @@ class Controller extends BaseController
         }
 
         $equatorialRadiusInKilometers = 6378.137;
-
-        $pi       = pi();
-        $latA     = $latitudeA  / 180 * $pi;
-        $lonA     = $longitudeA / 180 * $pi;
-        $latB     = $latitudeB  / 180 * $pi;
-        $lonB     = $longitudeB / 180 * $pi;
+        
+        $latA     = $latitudeA  / 180 * M_PI;
+        $lonA     = $longitudeA / 180 * M_PI;
+        $latB     = $latitudeB  / 180 * M_PI;
+        $lonB     = $longitudeB / 180 * M_PI;
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
             * $equatorialRadiusInKilometers;
 

@@ -35,7 +35,7 @@ class ApiStatusTest extends ApiTestCase
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
             'Accept'        => 'application/json'])
             ->get(route('api.v0.statuses.index'));
-        dd($response);
+
         $response->assertOk();
 
         $this->assertFalse(empty(json_decode($response->getContent(), true)));

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\TransportController;
 use App\Http\Controllers\API\UserController;
@@ -62,9 +61,14 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
             Route::get('{statusId}/likes', [StatusController::class, 'getLikes'])
                  ->name('api.v0.statuses.likes');
         });
-        Route::resource('statuses', StatusController::class, ['as' => 'api.v0']);
 
-        Route::resource('notifications', NotificationController::class);
+        // So Laravel decided that it's a good idea to use fixed namespaces in the Resource-Routes which breaks
+        // imports. For normal routes this is not a problem but here I need to either escape the Route with a \ or
+        // not include it at all.
+        // I hate laravel so much for this.
+        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
+        Route::resource('notifications', 'API\NotificationController');
+
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
