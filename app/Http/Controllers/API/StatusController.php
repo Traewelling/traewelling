@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -103,9 +105,17 @@ class StatusController extends ResponseController
     }
 
     public function createLike ($statusId) {
-        $createLikeResponse = StatusBackend::CreateLike(Auth::user(), $statusId);
+        $status = Status::find($statusId);
+        if($status == null) {
+            return $this->sendError(false, 404);
+        }
+        try {
+            StatusBackend::createLike(Auth::user(), $status);
+            return $this->sendResponse(true);
+        } catch (StatusAlreadyLikedException $e) {
+            return $this->sendError(false, 400);
+        }
 
-        return $this->sendResponse($createLikeResponse);
     }
 
     public function destroyLike ($statusId) {

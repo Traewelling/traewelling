@@ -155,7 +155,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/edit', [FrontendStatusController::class, 'EditStatus'])
          ->name('edit');
 
-    Route::post('/createlike', [FrontendStatusController::class, 'CreateLike'])
+    Route::post('/createlike', [FrontendStatusController::class, 'createLike'])
          ->name('like.create');
 
     Route::post('/destroylike', [FrontendStatusController::class, 'DestroyLike'])
