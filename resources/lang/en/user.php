@@ -20,6 +20,7 @@ return [
     "you" => "You",
     "home-set" => "We set your home to :Station.",
     "always-dbl" => "Tweet with #dbl?",
+    "private-profile" => "Private profile",
     "liked-status" => "likes this status.",
     "liked-own-status" => "likes their own status.",
     "invalid-mastodon" => ":domain doesn't seem to be a Mastodon instance.",

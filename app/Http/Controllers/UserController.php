@@ -98,6 +98,7 @@ class UserController extends Controller
         $user->username   = $request->username;
         $user->name       = $request->name;
         $user->always_dbl = $request->always_dbl == "on";
+        $user->private_profile = $request->private_profile == "on";
         $user->save();
 
         if (!$user->hasVerifiedEmail()) {

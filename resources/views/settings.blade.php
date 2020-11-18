@@ -109,6 +109,18 @@
                                         <label class="custom-control-label"
                                                for="always_dbl">{{ __('user.always-dbl') }}</label>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input id="private_profile" type="checkbox"
+                                               class="custom-control-input @error('private_profile') is-invalid @enderror"
+                                               name="private_profile" {{ $user->private_profile ? 'checked' : '' }}>
+                                        <label class="custom-control-label"
+                                               for="private_profile">{{ __('user.private-profile') }}</label>
+                                    </div>
                                     @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
