@@ -121,6 +121,9 @@ class StatusController extends Controller
                 'trainCheckin.Origin', 'trainCheckin.Destination',
                 'trainCheckin.HafasTrip'
             ])
+            ->whereHas('user', function($query){
+                return $query->where('private_profile', false);
+            })
             ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
             ->select('statuses.*')
             ->orderBy('train_checkins.departure', 'desc')
