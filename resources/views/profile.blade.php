@@ -12,7 +12,9 @@
                         <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif </strong> <br/>
                         <small class="font-weight-light">{{ '@'.$user->username }}</small>
                             @if($currentUser)
-                                @if($user->id !== $currentUser->id && Auth::check())
+                                {{-- What the actual fuck are these stupid nested if-statements?! --}}
+                                {{-- ToDo This needs to be refined with the "request follow"-feature --}}
+                                @if($user->id !== $currentUser->id && Auth::check() && !$user->private_profile)
                                     @if(Auth::user()->follows->where('id', $user->id)->first() === null)
                                         <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                     @else
@@ -22,7 +24,7 @@
                                         window.translFollow = "{{__('profile.follow')}}";
                                         window.translUnfollow = "{{__('profile.unfollow')}}";
                                     </script>
-                                @else
+                                @elseif($user->id == $currentUser->id)
                                     <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
                                 @endif
                             @endif
@@ -58,7 +60,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            @if($user->private_profile)
+            @if($user->private_profile && $user->id != Auth::user()->id)
                 <div class="col-md-8 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>

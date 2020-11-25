@@ -9,9 +9,9 @@ use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends ResponseController
 {
-    public function show ($username)
+    public function show (Request $request, $username)
     {
-        $userResponse = UserBackend::getProfilePage($username);
+        $userResponse = UserBackend::getProfilePage($request, $username);
         return $this->sendResponse($userResponse);
     }
 

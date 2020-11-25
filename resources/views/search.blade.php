@@ -26,7 +26,7 @@
 
                             <div class="col pl-0">
                                 <a href="{{ route('account.show', ['username' => $user->username]) }}">
-                                    <h4>{{ $user->name }} <small>{{ $user->username }}</small></h4>
+                                    <h4>{{ $user->name }}@if($user->private_profile)<i class="fas fa-user-lock"></i>@endif <small class="text-muted">{{ '@'.$user->username }}</small></h4>
                                 </a>
                                 <h6>
                                     <small>
@@ -35,7 +35,8 @@
                                         <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                                     </small>
                                 </h6>
-                                @if($user->id !== Auth::user()->id)
+                                @if($user !== Auth::user() && !$user->private_profile)
+                                    {{-- This needs to be refined with the "request follow"-feature --}}
                                     @if(Auth::user()->follows->where('id', $user->id)->first() === null)
                                         <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                     @else
@@ -45,7 +46,7 @@
                                         window.translFollow = "{{__('profile.follow')}}";
                                         window.translUnfollow = "{{__('profile.unfollow')}}";
                                     </script>
-                                @else
+                                @elseif($user == Auth::user())
                                     <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
                                 @endif
                             </div>

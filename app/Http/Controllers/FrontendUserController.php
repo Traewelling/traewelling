@@ -11,44 +11,41 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
 {
-    public function getProfilePage($username)
-    {
-        $profilePage = UserBackend::getProfilePage($username);
+    public function getProfilePage(Request $request, $username) {
+        $profilePage = UserBackend::getProfilePage($request, $username);
         if ($profilePage === null) {
             abort(404);
         }
 
         return view('profile', [
-            'username' => $profilePage['username'],
-            'statuses' => $profilePage['statuses'],
-            'user' => $profilePage['user'],
+            'username'    => $profilePage['username'],
+            'statuses'    => $profilePage['statuses'],
+            'user'        => $profilePage['user'],
             'currentUser' => Auth::user(),
-            'twitterUrl' => $profilePage['twitterUrl'],
+            'twitterUrl'  => $profilePage['twitterUrl'],
             'mastodonUrl' => $profilePage['mastodonUrl']
         ]);
     }
 
-    public function getProfilePicture($username)
-    {
+    public function getProfilePicture($username) {
         $profilePicture = UserBackend::getProfilePicture($username);
 
-        if($profilePicture === null) {
+        if ($profilePicture === null) {
             abort(404);
         }
 
         return response($profilePicture['picture'])
-            ->header('Content-Type', 'image/'. $profilePicture['extension'])
+            ->header('Content-Type', 'image/' . $profilePicture['extension'])
             ->header('Cache-Control', 'public, no-transform, max-age:900');
     }
 
-    public function getLeaderboard()
-    {
+    public function getLeaderboard() {
         $leaderboardResponse = UserBackend::getLeaderboard();
 
         return view('leaderboard', [
             'usersCount' => count($leaderboardResponse['users']),
-            'users' => $leaderboardResponse['users'],
-            'friends' => $leaderboardResponse['friends'],
+            'users'      => $leaderboardResponse['users'],
+            'friends'    => $leaderboardResponse['friends'],
             'kilometers' => $leaderboardResponse['kilometers']
         ]);
     }
@@ -88,8 +85,7 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function updateProfilePicture(Request $request)
-    {
+    public function updateProfilePicture(Request $request) {
         $avatar                 = $request->input('image');
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return response()->json($profilePictureResponse);

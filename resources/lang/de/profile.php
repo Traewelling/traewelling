@@ -1,6 +1,7 @@
 <?php
 return [
     "follow" => "Folgen",
+    "follow_req" => "Folgen anfragen",
     "last-journeys-of" => "Letzte Reisen von",
     "points-abbr" => "Pkt",
     "settings" => "Einstellungen",

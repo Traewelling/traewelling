@@ -1338,7 +1338,9 @@ components:
         mastodonUrl:
           $ref: '#/components/schemas/mastodonUrl'
         statuses:
-          $ref: '#/components/schemas/status_paginate'
+          allOf:
+            - $ref: '#/components/schemas/status_paginate'
+            - nullable: true
         user:
           $ref: '#/components/schemas/User'
     Status:
@@ -1399,6 +1401,9 @@ components:
           type: string
           format: integer
           example: "66"
+        private_profil:
+          type: boolean
+          example: false
         averageSpeed:
           type: number
           format: float

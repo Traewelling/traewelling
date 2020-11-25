@@ -1,6 +1,7 @@
 <?php
 return [
     "follow" => "Follow",
+    "follow_req" => "Request follow",
     "last-journeys-of" => "Last journeys of",
     "points-abbr" => "pts",
     "settings" => "Settings",
