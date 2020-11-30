@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\TransportController;
+use App\Models\HafasTrip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -262,5 +264,51 @@ class ApiUserTest extends ApiTestCase
                                         'per_page',
                                         'prev_page_url',
                                         'to']);
+    }
+
+    public function test_private_profile() {
+
+        $alice = User::factory()->create([
+                                    'username'        => 'Alice123',
+                                    'private_profile' => 1
+                                ]);
+
+        $trip = HafasTrip::all()->random();
+        //check-in for Alice
+        $status = TransportController::TrainCheckin(
+            $trip->trip_id,
+            $trip->origin,
+            $trip->destination,
+            '',
+            $alice,
+            0,
+            0,
+            0,
+            rand(0, 1)
+        );
+        //Check if non private profiles statuses are not null
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+                         ->json('GET', route('api.v0.user', ['username' => 'gertrud123']));
+        $response->assertOk();
+        $this->assertTrue(json_decode($response->getContent())->statuses !== null);
+        //set getrud as private profile and check again if status are not null, because the user should see his own statuses
+        $gertrud = User::where('username', 'Gertrud123')->first();
+        $gertrud->private_profile = true;
+        $gertrud->save();
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+                         ->json('GET', route('api.v0.user', ['username' => 'gertrud123']));
+        $response->assertOk();
+        $this->assertTrue(json_decode($response->getContent())->statuses !== null);
+
+        //check that statuses from other private users are not reachable
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+                         ->json('GET', route('api.v0.user', ['username' => 'Alice123']));
+        $response->assertOk();
+        $this->assertTrue(json_decode($response->getContent())->statuses == null);
+
+        //einchecken als Alice, muzss sichtbar sien bei: dashbaord, unterwegs, eigenes profil, status selbst
+        //gegenteil für getrud
+        //darf nicht im Dashboard,
+//        dd($response);
     }
 }
