@@ -15,7 +15,7 @@
                                 {{-- What the actual fuck are these stupid nested if-statements?! --}}
                                 {{-- ToDo This needs to be refined with the "request follow"-feature --}}
                                 @if($user->id !== $currentUser->id && Auth::check() && !$user->private_profile)
-                                    @if(Auth::user()->follows->where('id', $user->id)->first() === null)
+                                    @if($currentUser->follows->where('id', $user->id)->first() === null)
                                         <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}" data-following="no">{{__('profile.follow')}}</a>
                                     @else
                                         <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}" data-following="yes">{{__('profile.unfollow')}}</a>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            @if($user->private_profile && $user->id != Auth::user()->id)
+            @if($user->private_profile && $user != $currentUser)
                 <div class="col-md-8 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>

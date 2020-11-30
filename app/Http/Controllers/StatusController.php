@@ -20,12 +20,26 @@ use Barryvdh\DomPDF\Facade as PDF;
 class StatusController extends Controller
 {
     public static function getStatus($statusId) {
-        return Status::where('id', $statusId)->with('user',
-                                                    'trainCheckin',
-                                                    'trainCheckin.Origin',
-                                                    'trainCheckin.Destination',
-                                                    'trainCheckin.HafasTrip',
-                                                    'event')->withCount('likes')->firstOrFail();
+        $status = Status::where('id', $statusId)->with('user',
+                                                       'trainCheckin',
+                                                       'trainCheckin.Origin',
+                                                       'trainCheckin.Destination',
+                                                       'trainCheckin.HafasTrip',
+                                                       'event')->withCount('likes')->firstOrFail();
+
+        $authID = null;
+
+        //ToDo change to "also following"
+        if (Auth::check()) {
+            $authID = Auth::user()->id;
+        }
+
+        if ($status->user->id == $authID || !$status->user->private_profile) {
+            return $status;
+        }
+
+        abort(403);
+
     }
 
     /**
@@ -36,6 +50,12 @@ class StatusController extends Controller
      * @return Status|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
+        //ToDo change to "also following"
+        $authID = null;
+        if (Auth::check()) {
+            $authID = Auth::user()->id;
+        }
+
         if ($userId === null) {
             $statuses = Status::with('user',
                                      'trainCheckin',
@@ -48,10 +68,10 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                                //ToDo This needs to be removed with the Follow-Request-Feature
-                              ->whereHas('user', function($query) {
-                                return $query->where('private_profile', false);
-                              })
+                //ToDo This needs to be removed with the Follow-Request-Feature
+                              ->whereHas('user', function($query, $authID) {
+                    return $query->where('private_profile', false)->orwhere('id', $authID);
+                })
                               ->get()
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -66,6 +86,9 @@ class StatusController extends Controller
                               ->whereHas('trainCheckin', function($query) {
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
+                              })
+                              ->whereHas('user', function($query) {
+                                  return $query->where('private_profile', false)->where('');
                               })
                               ->where('user_id', $userId)
                               ->first();
@@ -113,8 +136,8 @@ class StatusController extends Controller
                      ->whereIn('user_id', $FollowingIDs)
             //ToDo This needs to be removed with the Follow-Request-Feature
                      ->whereHas('user', function($query) {
-                         return $query->where('private_profile', false);
-                     })
+                return $query->where('private_profile', false);
+            })
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
