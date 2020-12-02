@@ -29,7 +29,7 @@ class StatusController extends Controller
 
         $authID = null;
 
-        //ToDo change to "also following"
+        //PrivateProfile change to "also following"
         if (Auth::check()) {
             $authID = Auth::user()->id;
         }
@@ -50,7 +50,7 @@ class StatusController extends Controller
      * @return Status|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
-        //ToDo change to "also following"
+        //PrivateProfile change to "also following"
         $authID = null;
         if (Auth::check()) {
             $authID = Auth::user()->id;
@@ -68,10 +68,10 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                //ToDo This needs to be removed with the Follow-Request-Feature
-                              ->whereHas('user', function($query) use($authID) {
-                    return $query->where('private_profile', false)->orwhere('id', $authID);
-                })
+                //PrivateProfile This needs to be removed with the Follow-Request-Feature
+                              ->whereHas('user', function($query) use ($authID) {
+                                  return $query->where('private_profile', false)->orwhere('id', $authID);
+                              })
                               ->get()
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -123,8 +123,8 @@ class StatusController extends Controller
     }
 
     public static function getDashboard($user) {
-        $FollowingIDs   = $user->follows->pluck('id');
-        $FollowingIDs[] = $user->id;
+        $followingIDs   = $user->follows->pluck('id');
+        $followingIDs[] = $user->id;
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
@@ -133,11 +133,11 @@ class StatusController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('user_id', $FollowingIDs)
-            //ToDo This needs to be removed with the Follow-Request-Feature
+                     ->whereIn('user_id', $followingIDs)
+            //PrivateProfile This needs to be removed with the Follow-Request-Feature
                      ->whereHas('user', function($query) {
-                return $query->where('private_profile', false);
-            })
+                         return $query->where('private_profile', false);
+                     })
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -262,10 +262,12 @@ class StatusController extends Controller
                                                   $t->trainCheckin->hafastrip->category,
                                                   $t->trainCheckin->hafastrip->linename,
                                                   $t->trainCheckin->Origin->name,
-                                                  $t->trainCheckin->Origin->latitude . ', ' . $t->trainCheckin->Origin->longitude,
+                                                  $t->trainCheckin->Origin->latitude
+                                                  . ', ' . $t->trainCheckin->Origin->longitude,
                                                   $t->trainCheckin->departure,
                                                   $t->trainCheckin->Destination->name,
-                                                  $t->trainCheckin->Destination->latitude . ', ' . $t->trainCheckin->Destination->longitude,
+                                                  $t->trainCheckin->Destination->latitude
+                                                  . ', ' . $t->trainCheckin->Destination->longitude,
                                                   $t->trainCheckin->arrival,
                                                   $interval->h . ":" . sprintf('%02d', $interval->i),
                                                   $t->trainCheckin->distance,

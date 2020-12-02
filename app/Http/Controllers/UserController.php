@@ -233,18 +233,11 @@ class UserController extends Controller
         }
         $statuses = null;
 
-        $authID = null;
-
-        if (Auth::check()) {
-            $authID = Auth::user()->id;
-        }
-
-        //ToDo change to "also following"
-//        if ($user->id == $authID || !$user->private_profile) {
-            if(!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
+        //PrivateProfile change to "also following"
+        if (!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
 
 
-                $statuses = $user->statuses()->with('user',
+            $statuses = $user->statuses()->with('user',
                                                 'trainCheckin',
                                                 'trainCheckin.Origin',
                                                 'trainCheckin.Destination',
