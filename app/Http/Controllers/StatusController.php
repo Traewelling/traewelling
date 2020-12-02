@@ -70,7 +70,7 @@ class StatusController extends Controller
                               })
                 //PrivateProfile This needs to be removed with the Follow-Request-Feature
                               ->whereHas('user', function($query) use ($authID) {
-                                  return $query->where('private_profile', false)->orwhere('id', $authID);
+                                  return $query->where('private_profile', false)->orWhere('id', $authID);
                               })
                               ->get()
                               ->sortByDesc(function($status) {
