@@ -226,7 +226,7 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public static function getProfilePage(Request $request, $username) {
+    public static function getProfilePage($username) {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
@@ -240,8 +240,8 @@ class UserController extends Controller
         }
 
         //ToDo change to "also following"
-        if ($user->id == $authID || !$user->private_profile) {
-//            if(!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
+//        if ($user->id == $authID || !$user->private_profile) {
+            if(!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
 
 
                 $statuses = $user->statuses()->with('user',

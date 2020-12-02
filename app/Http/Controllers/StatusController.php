@@ -69,7 +69,7 @@ class StatusController extends Controller
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
                 //ToDo This needs to be removed with the Follow-Request-Feature
-                              ->whereHas('user', function($query, $authID) {
+                              ->whereHas('user', function($query) use($authID) {
                     return $query->where('private_profile', false)->orwhere('id', $authID);
                 })
                               ->get()
@@ -150,7 +150,7 @@ class StatusController extends Controller
                                 'trainCheckin.HafasTrip'
                             ])
                      ->whereHas('user', function($query) {
-                         return $query->where('private_profile', false);
+                         return $query->where('private_profile', false)->orWhere('user_id', Auth::user()->id);
                      })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
