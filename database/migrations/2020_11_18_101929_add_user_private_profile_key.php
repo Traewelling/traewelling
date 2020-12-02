@@ -14,7 +14,7 @@ class AddUserPrivateProfileKey extends Migration
     public function up()
     {
         Schema::table("users", function (Blueprint $table) {
-            $table->boolean('private_profile')->default(false);
+            $table->boolean('private_profile')->default(false)->after('home_id');
         });
     }
 
