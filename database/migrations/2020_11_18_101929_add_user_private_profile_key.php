@@ -25,6 +25,8 @@ class AddUserPrivateProfileKey extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('private_profile');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('private_profile');
+        });
     }
 }
