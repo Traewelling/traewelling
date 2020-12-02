@@ -1403,7 +1403,7 @@ components:
           type: string
           format: integer
           example: "66"
-        private_profil:
+        private_profile:
           type: boolean
           example: false
         averageSpeed:

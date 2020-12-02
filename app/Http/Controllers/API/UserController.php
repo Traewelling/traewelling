@@ -9,34 +9,30 @@ use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends ResponseController
 {
-    public function show ($username)
-    {
+    public function show($username) {
         $userResponse = UserBackend::getProfilePage($username);
         return $this->sendResponse($userResponse);
     }
 
-    public function active($username)
-    {
+    public function active($username) {
+        //Somehow this breaks without a LIKE.
         $user           = User::where('username', 'LIKE', $username)->firstOrFail();
         $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
         return $this->sendResponse($statusResponse);
     }
 
-    public function avatar($username)
-    {
+    public function avatar($username) {
         $profilePictureResponse = UserBackend::getProfilePicture($username);
         return $this->sendResponse($profilePictureResponse);
     }
 
-    public function PutProfilepicture(Request $request)
-    {
+    public function PutProfilepicture(Request $request) {
         $avatar                 = $request->getContent();
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return $this->sendResponse($profilePictureResponse);
     }
 
-    public function PutDisplayname(Request $request)
-    {
+    public function PutDisplayname(Request $request) {
         $displayname         = $request->getContent();
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
         return $this->sendResponse($displaynameResponse);
@@ -46,11 +42,11 @@ class UserController extends ResponseController
         $leaderboardResponse = UserBackend::getLeaderboard();
 
         return $this->sendResponse([
-            'usersCount' => count($leaderboardResponse['users']),
-            'users' => $leaderboardResponse['users'],
-            'friends' => $leaderboardResponse['friends'],
-            'kilometers' => $leaderboardResponse['kilometers']
-        ]);
+                                       'usersCount' => count($leaderboardResponse['users']),
+                                       'users'      => $leaderboardResponse['users'],
+                                       'friends'    => $leaderboardResponse['friends'],
+                                       'kilometers' => $leaderboardResponse['kilometers']
+                                   ]);
     }
 
     public function searchUser($searchQuery) {

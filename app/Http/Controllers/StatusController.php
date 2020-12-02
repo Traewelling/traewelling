@@ -19,7 +19,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 
 class StatusController extends Controller
 {
-    public static function getStatus($statusId) {
+    public static function getStatus(int $statusId) {
         $status = Status::where('id', $statusId)->with('user',
                                                        'trainCheckin',
                                                        'trainCheckin.Origin',
