@@ -12,7 +12,7 @@ use App\Models\User;
 class AuthController extends ResponseController
 {
     //create user
-    public function signup(Request $request) {
+    public function signup( $request) {
         $validator = Validator::make($request->all(), [
             'username'         => 'required|string|unique:users',
             'name'             => 'required|string|',

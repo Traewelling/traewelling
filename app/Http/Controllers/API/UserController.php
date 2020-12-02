@@ -9,15 +9,15 @@ use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends ResponseController
 {
-    public function show (Request $request, $username)
+    public function show ($username)
     {
-        $userResponse = UserBackend::getProfilePage($request, $username);
+        $userResponse = UserBackend::getProfilePage($username);
         return $this->sendResponse($userResponse);
     }
 
     public function active($username)
     {
-        $user           = User::where('username', $username)->firstOrFail();
+        $user           = User::where('username', 'LIKE', $username)->firstOrFail();
         $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
         return $this->sendResponse($statusResponse);
     }

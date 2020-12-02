@@ -87,8 +87,8 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                              ->whereHas('user', function($query) {
-                                  return $query->where('private_profile', false)->where('');
+                              ->whereHas('user', function($query) use ($authID) {
+                                  return $query->where('private_profile', false)->orWhere('id', $authID);
                               })
                               ->where('user_id', $userId)
                               ->first();

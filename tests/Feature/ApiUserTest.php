@@ -91,7 +91,6 @@ class ApiUserTest extends ApiTestCase
             ->json('GET', route('api.v0.user', ['username' => 'gertrud123']));
         $response->assertOk();
 
-//        dd($response);
         $response->assertJsonStructure([
             'username',
             'twitterUrl',
