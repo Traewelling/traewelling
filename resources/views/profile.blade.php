@@ -10,7 +10,7 @@
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%" width="20%" class="float-right img-thumbnail rounded-circle img-fluid"><div class="text-white px-4">
                     <h2 class="card-title h1-responsive font-bold">
                         <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif </strong> <br/>
-                        <small class="font-weight-light">{{ '@'.$user->username }}</small>
+                        <small class="font-weight-light">@{{ $user->username }}</small>
                             @if($currentUser)
                                 {{-- What the actual fuck are these stupid nested if-statements?! --}}
                                 {{-- ToDo This needs to be refined with the "request follow"-feature --}}
