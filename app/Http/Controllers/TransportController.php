@@ -29,22 +29,18 @@ class TransportController extends Controller
 {
 
     public static function TrainAutocomplete($station) {
-        $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response = $client->request('GET', "stations?query=$station&fuzzy=true");
-        if ($response->getBody()->getContents() <= 2) {
-            $response = $client->request('GET', "locations?query=$station");
-        }
-        $json  = $response->getBody()->getContents();
-        $array = json_decode($json, true);
-        foreach (array_keys($array) as $key) {
-            unset($array[$key]['type']);
-            unset($array[$key]['location']);
-            unset($array[$key]['products']);
-            $array[$key]['provider'] = 'train';
-        }
-        return $array;
+        return HafasController::getStations($station)->map(function($station) {
+            return [
+                'id'       => $station->ibnr,
+                'name'     => $station->name,
+                'provider' => 'train'
+            ];
+        });
     }
 
+    /**
+     * @stub
+     */
     public static function BusAutocomplete($station) {
         $client   = new Client(['base_uri' => config('trwl.flix_rest')]);
         $response = $client->request('GET', "stations/?query=$station");
@@ -61,75 +57,40 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function TrainStationboard($station, $when = 'now', $travelType = null) {
-        if (empty($station)) {
+    public static function TrainStationboard($stationName, $when = 'now', $travelType = null) {
+        if (empty($stationName)) {
             return false;
         }
         if ($when === null) {
-            $when = strtotime('-5 minutes');
+            $when = '-5 minutes';
         }
-        $ibnrObject = self::TrainAutocomplete($station);
-        $departures = self::getTrainDepartures($ibnrObject[0]['id'], $when, $travelType);
-        $station    = $ibnrObject[0];
+        $when = strtotime($when);
 
-        if (empty($station['name'])) {
+        $station = HafasController::getStations($stationName)->first();
+
+        if ($station == null) {
             return null;
         }
-        return ['station' => $station, 'departures' => $departures, 'when' => $when];
-    }
 
-
-    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
-        $client     = new Client(['base_uri' => config('trwl.db_rest')]);
-        $trainTypes = [
-            'suburban' => 'false',
-            'subway'   => 'false',
-            'tram'     => 'false',
-            'bus'      => 'false',
-            'ferry'    => 'false',
-            'express'  => 'false',
-            'regional' => 'false',
-        ];
-        $appendix   = '';
-
-        if ($trainType != null) {
-            $trainTypes[$trainType] = 'true';
-            $appendix               = '&' . http_build_query($trainTypes);
-        }
-        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
-        $json     = json_decode($response->getBody()->getContents());
-
-        //remove express trains in filtered results
-        if ($trainType != null && $trainType != 'express') {
-            foreach ($json as $key => $item) {
-                if ($item->line->product != $trainType) {
-                    unset($json[$key]);
-                }
-            }
-        }
-        $json = self::sortByWhenOrScheduledWhen($json);
-        return $json;
-    }
-
-    // Train with cancelled stops show up in the stationboard sometimes with when == 0.
-    // However, they will have a scheduledWhen. This snippet will sort the departures
-    // by actualWhen or use scheduledWhen if actual is empty.
-    public static function sortByWhenOrScheduledWhen(array $departuresList): array {
-        uasort($departuresList, function($a, $b) {
-            $dateA = $a->when;
-            if ($dateA == null) {
-                $dateA = $a->scheduledWhen;
-            }
-
-            $dateB = $b->when;
-            if ($dateB == null) {
-                $dateB = $b->scheduledWhen;
-            }
-
-            return ($dateA < $dateB) ? -1 : 1;
+        $departures = HafasController::getDepartures(
+            $station,
+            Carbon::parse($when),
+            15,
+            $travelType == null || $travelType == 'express',
+            $travelType == null || $travelType == 'express',
+            $travelType == null || $travelType == 'regional',
+            $travelType == null || $travelType == 'regional',
+            $travelType == null || $travelType == 'suburban',
+            $travelType == null || $travelType == 'bus',
+            $travelType == null || $travelType == 'ferry',
+            $travelType == null || $travelType == 'subway',
+            $travelType == null || $travelType == 'tram',
+            false
+        )->sortBy(function($departure) {
+            return $departure->when ?? $departure->plannedWhen;
         });
 
-        return $departuresList;
+        return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
 
     /**
@@ -141,7 +102,7 @@ class TransportController extends Controller
      */
     public static function TrainTrip(string $tripId, string $lineName, $start) {
 
-        $hafasTrip = self::getHAFAStrip($tripId, $lineName);
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers);
         if ($offset === null) {
@@ -229,7 +190,7 @@ class TransportController extends Controller
                                         $tweetCheck,
                                         $tootCheck,
                                         $eventId = 0) {
-        $hafasTrip             = self::getHAFAStrip($tripId, '');
+        $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
         $offset1               = self::searchForId($start, $stopovers);
         $offset2               = self::searchForId($destination, $stopovers);
@@ -429,62 +390,6 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $tripID
-     * @param string $lineName
-     * @return HafasTrip
-     * @throws GuzzleException|HafasException
-     */
-    private static function getHAFAStrip(string $tripID, string $lineName): HafasTrip {
-        $trip = HafasTrip::where('trip_id', $tripID)->first();
-        if ($trip !== null) {
-            return $trip;
-        }
-
-        $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $tripResponse = $tripClient->get("trips/$tripID?lineName=$lineName&polyline=true");
-        $tripJson     = json_decode($tripResponse->getBody()->getContents());
-        $origin       = self::getTrainStation($tripJson->origin->id,
-                                              $tripJson->origin->name,
-                                              $tripJson->origin->location->latitude,
-                                              $tripJson->origin->location->longitude);
-        $destination  = self::getTrainStation($tripJson->destination->id,
-                                              $tripJson->destination->name,
-                                              $tripJson->destination->location->latitude,
-                                              $tripJson->destination->location->longitude);
-        if ($tripJson->line->name === null) {
-            $tripJson->line->name = $tripJson->line->fahrtNr;
-        }
-
-        if ($tripJson->line->id === null) {
-            $tripJson->line->id = '';
-        }
-
-        $departure = Carbon::parse($tripJson->departure ?? $tripJson->scheduledDeparture);
-        $departure->subSeconds($tripJson->departureDelay ?? 0);
-
-        $arrival = Carbon::parse($tripJson->arrival ?? $tripJson->scheduledArrival);
-        $arrival->subSeconds($tripJson->arrivalDelay ?? 0);
-
-        $polylineHash = self::getPolylineHash(json_encode($tripJson->polyline))->hash;
-
-        return HafasTrip::updateOrCreate([
-                                             'trip_id' => $tripID
-                                         ], [
-                                             'category'    => $tripJson->line->product,
-                                             'number'      => $tripJson->line->id,
-                                             'linename'    => $tripJson->line->name,
-                                             'origin'      => $origin->ibnr,
-                                             'destination' => $destination->ibnr,
-                                             'stopovers'   => json_encode($tripJson->stopovers),
-                                             'polyline'    => $polylineHash,
-                                             'departure'   => $departure,
-                                             'arrival'     => $arrival,
-                                             'delay'       => $tripJson->arrivalDelay ?? null
-                                         ]);
-
-    }
-
-    /**
      * Get the TrainStation Model from Database
      * @param int $ibnr
      * @param string|null $name
@@ -500,7 +405,7 @@ class TransportController extends Controller
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if($dbTrainStation !== null) {
+            if ($dbTrainStation !== null) {
                 return $dbTrainStation;
             }
             return HafasController::fetchTrainStation($ibnr);

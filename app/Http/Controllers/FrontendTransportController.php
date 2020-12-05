@@ -27,6 +27,7 @@ class FrontendTransportController extends Controller
             $request->when,
             $request->travelType
         );
+
         if ($TrainStationboardResponse === false) {
             return redirect()->back()->with('error', __('controller.transport.no-name-given'));
         }
@@ -44,20 +45,19 @@ class FrontendTransportController extends Controller
         );
     }
 
-    public function StationByCoordinates(Request $request)
-    {
+    public function StationByCoordinates(Request $request) {
         $validatedInput = $request->validate([
-            'latitude' => 'required|numeric|min:-180|max:180',
-            'longitude' => 'required|numeric|min:-180|max:180'
-        ]);
+                                                 'latitude'  => 'required|numeric|min:-180|max:180',
+                                                 'longitude' => 'required|numeric|min:-180|max:180'
+                                             ]);
 
-        $nearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
+        $nearestStation = HafasController::getNearbyStations($validatedInput['latitude'], $validatedInput['longitude'], 1)->first();
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
         return redirect(route('trains.stationboard', [
-            'station' => $nearestStation->name,
+            'station'  => $nearestStation->name,
             'provider' => 'train'
         ]));
     }
