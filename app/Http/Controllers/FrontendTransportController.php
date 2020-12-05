@@ -157,19 +157,4 @@ class FrontendTransportController extends Controller
         }
     }
 
-    public function FastTripAccess(Request $request) {
-        $fastTripResponse = TransportBackend::FastTripAccess($request->start,
-                                                             $request->lineName,
-                                                             $request->number,
-                                                             $request->when);
-        if ($fastTripResponse === null) {
-            abort(404);
-        }
-        return redirect()->route('trains.trip', [
-            'tripID'   => $fastTripResponse->tripId,
-            'lineName' => $fastTripResponse->line->name,
-            'start'    => $request->start
-        ]);
-    }
-
 }

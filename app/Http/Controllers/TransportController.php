@@ -78,27 +78,6 @@ class TransportController extends Controller
         return ['station' => $station, 'departures' => $departures, 'when' => $when];
     }
 
-    public static function FastTripAccess($departure, $lineName, $number, $when) {
-        $departuresArray = self::getTrainDepartures($departure, $when);
-        foreach ($departuresArray as $departure) {
-            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
-                return $departure;
-            }
-        }
-        return null;
-    }
-
-    public static function StationByCoordinates($latitude, $longitude) {
-        $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
-        $json     = json_decode($response->getBody()->getContents());
-
-        if (count($json) === 0) {
-            return null;
-        }
-
-        return $json[0];
-    }
 
     private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
