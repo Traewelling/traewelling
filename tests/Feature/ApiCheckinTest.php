@@ -45,14 +45,12 @@ class ApiCheckinTest extends ApiTestCase
         $station      = $jsonResponse['station'];
         $departures   = $jsonResponse['departures'];
 
-
-
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
-        $this->assertEquals($ibnr, $station['id']);
-        $this->assertTrue(array_reduce($departures, function($carry, $hafastrip) use ($requestDate) {
-            return $carry && $this->isCorrectHafasTrip((object) $hafastrip, $requestDate);
-        }, true));
+        $this->assertEquals($ibnr, $station['ibnr']);
+        foreach($departures as $hafasTrip) {
+            $this->assertTrue($this->isCorrectHafasTrip((array) $hafasTrip, $requestDate));
+        }
     }
 
 
@@ -89,7 +87,7 @@ class ApiCheckinTest extends ApiTestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip((object) $departure, $now);
+        $this->isCorrectHafasTrip((array) $departure, $now);
 
         // Third: Get the trip information for train
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])

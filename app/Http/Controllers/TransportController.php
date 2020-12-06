@@ -57,14 +57,10 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function TrainStationboard($stationName, $when = 'now', $travelType = null) {
-        if (empty($stationName)) {
-            return false;
-        }
+    public static function TrainStationboard(string $stationName, Carbon $when = null, $travelType = null) {
         if ($when === null) {
-            $when = '-5 minutes';
+            $when = Carbon::now()->subMinutes(5);
         }
-        $when = strtotime($when);
 
         $station = HafasController::getStations($stationName)->first();
 
@@ -74,7 +70,7 @@ class TransportController extends Controller
 
         $departures = HafasController::getDepartures(
             $station,
-            Carbon::parse($when),
+            $when,
             15,
             $travelType == null || $travelType == 'express',
             $travelType == null || $travelType == 'express',
@@ -90,7 +86,7 @@ class TransportController extends Controller
             return $departure->when ?? $departure->plannedWhen;
         });
 
-        return ['station' => $station, 'departures' => $departures, 'when' => $when];
+        return ['station' => $station, 'departures' => $departures, 'when' => $when->timestamp];
     }
 
     /**

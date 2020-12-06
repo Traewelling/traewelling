@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,7 @@ class TransportController extends ResponseController
 
         $trainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
-            $request->when,
+            isset($request->when) ? Carbon::createFromTimestamp($request->when) : Carbon::now(),
             $request->travelType
         );
         if ($trainStationboardResponse === false) {

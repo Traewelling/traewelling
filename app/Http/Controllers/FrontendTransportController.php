@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\EventController as EventBackend;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +25,7 @@ class FrontendTransportController extends Controller
     public function TrainStationboard(Request $request) {
         $TrainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
-            $request->when,
+            isset($request->when) ? Carbon::createFromTimestamp($request->when) : Carbon::now(),
             $request->travelType
         );
 
@@ -36,12 +37,12 @@ class FrontendTransportController extends Controller
         }
 
         return view('stationboard', [
-            'station' => $TrainStationboardResponse['station'],
-            'departures' => $TrainStationboardResponse['departures'],
-            'when' => $TrainStationboardResponse['when'],
-            'request' => $request,
-            'latest' => TransportController::getLatestArrivals(Auth::user())
-        ]
+                                      'station'    => $TrainStationboardResponse['station'],
+                                      'departures' => $TrainStationboardResponse['departures'],
+                                      'when'       => $TrainStationboardResponse['when'],
+                                      'request'    => $request,
+                                      'latest'     => TransportController::getLatestArrivals(Auth::user())
+                                  ]
         );
     }
 
@@ -74,7 +75,7 @@ class FrontendTransportController extends Controller
 
         // Find out where this train terminates and offer this as a "fast check-in" option.
         $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
+        while ($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
             $terminalStopIndex--;
         }
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
@@ -92,11 +93,11 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request) {
         $this->validate($request, [
-            'body' => 'max:280',
+            'body'           => 'max:280',
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
-            'tweet_check' => 'max:2',
-            'toot_check' => 'max:2',
-            'event' => 'integer'
+            'tweet_check'    => 'max:2',
+            'toot_check'     => 'max:2',
+            'event'          => 'integer'
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
@@ -134,11 +135,10 @@ class FrontendTransportController extends Controller
                 ));
 
         } catch (\Throwable $e) {
-
+            report($e);
             return redirect()
                 ->route('dashboard')
                 ->with('error', __('messages.exception.general'));
-
         }
 
     }

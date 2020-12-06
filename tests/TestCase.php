@@ -3,7 +3,9 @@
 namespace Tests;
 
 use App\Models\User;
+use DateTime;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use stdClass;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -31,27 +33,28 @@ abstract class TestCase extends BaseTestCase
      * may contain trains starting the next day. If the test runs after midnight it might contain
      * some trains that started the day before.
      *
+     * @param array $hafastrip
+     * @param DateTime $requestDate
      * @return Boolean If all checks were resolved positively. Assertions to be made on the caller
      * side to provide a coherent amount of assertions.
-     * @throws \Exception
      */
-    public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
+    public static function isCorrectHafasTrip(array $hafastrip, DateTime $requestDate): bool {
         $requestDateMinusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
         $requestDatePlusOneDay  = (clone $requestDate)->add(new \DateInterval('P1D'));
 
         // All Hafas Trips should have four pipe characters
-        $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
+        $fourPipes = 4 == substr_count($hafastrip['tripId'], '|');
 
         $rightDate = in_array(1, [
-            substr_count($hafastrip->tripId, $requestDateMinusOneDay->format(self::$HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDate->format(self::$HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDatePlusOneDay->format(self::$HAFAS_ID_DATE))
+            substr_count($hafastrip['tripId'], $requestDateMinusOneDay->format(self::$HAFAS_ID_DATE)),
+            substr_count($hafastrip['tripId'], $requestDate->format(self::$HAFAS_ID_DATE)),
+            substr_count($hafastrip['tripId'], $requestDatePlusOneDay->format(self::$HAFAS_ID_DATE))
         ]);
 
         $ret = $fourPipes && $rightDate;
         if (!$ret) {
             echo "The following Hafas Trip did not match our expectations:";
-            dd($hafastrip);
+            //dd($hafastrip);
         }
         return $ret;
     }

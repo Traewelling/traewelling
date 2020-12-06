@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +24,7 @@ class ExportTripsTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect('/');
 
-        $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070003", new DateTime("+1 day 8:00"));
+        $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070004", new DateTime("+1 day 8:00"));
         $this->checkin("Essen Hbf", "8000098", new DateTime("+2 day 7:30"));
     }
 
@@ -34,7 +35,7 @@ class ExportTripsTest extends TestCase
      * @param DateTime $now
      */
     protected function checkin($stationName, $ibnr, DateTime $now) {
-        $trainStationboard = TransportController::TrainStationboard($stationName, $now->format('U'), 'nationalExpress');
+        $trainStationboard = TransportController::TrainStationboard($stationName, Carbon::createFromTimestamp($now->getTimestamp()), 'regional');
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
@@ -53,7 +54,7 @@ class ExportTripsTest extends TestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        CheckinTest::isCorrectHafasTrip($departure, $now);
+        CheckinTest::isCorrectHafasTrip((array) $departure, $now);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(

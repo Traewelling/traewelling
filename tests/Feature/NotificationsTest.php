@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\TransportController;
 use App\Models\Like;
+use Carbon\Carbon;
 use DateTime;
 use App\Models\User;
 use Exception;
@@ -38,7 +39,7 @@ class NotificationsTest extends TestCase
             $user = $this->user;
         }
         $trainStationboard = TransportController::TrainStationboard($stationname,
-                                                                    $now->format('U'),
+                                                                    Carbon::createFromTimestamp($now->getTimestamp()),
                                                                     'express');
 
         $countDepartures = count($trainStationboard['departures']);
@@ -178,7 +179,7 @@ class NotificationsTest extends TestCase
         $this->checkin("Essen Hbf", "8000098", $now, $alice);
 
         // WHEN: Bob also checks into the train
-        $bob      = User::factory()->create();
+        $bob = User::factory()->create();
         $this->actingAs($bob)->post('/gdpr-ack');
         $this->checkin("Essen Hbf", "8000098", $now, $bob);
 
