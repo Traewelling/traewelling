@@ -561,6 +561,10 @@ paths:
                     - $ref: '#/components/schemas/trip_id'
                   required:
                     - tripID
+                lineName:
+                  description: Required if /trains/trips isn't called before
+                  nullable: true
+                  example: "STB 7"
                 start:
                   allOf:
                     - $ref: '#/components/schemas/ibnr'

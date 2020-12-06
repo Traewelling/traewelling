@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Models\HafasTrip;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
@@ -89,30 +90,41 @@ class TransportController extends ResponseController
         ]);
     }
 
-    public function TrainCheckin(Request $request)
-    {
+    public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID' => 'required',
-            'start' => 'required',
-            'destination' => 'required',
-            'body' => 'max:280',
-            'tweet' => 'boolean',
-            'toot' => 'boolean'
+            'tripID'      => ['required'],
+            'lineName'    => ['nullable'], //TODO: Should be required in future API Releases due to DB Rest
+            'start'       => ['required', 'numeric'],
+            'destination' => ['required', 'numeric'],
+            'body'        => ['max:280'],
+            'tweet'       => ['boolean'],
+            'toot'        => ['boolean']
         ]);
+
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
 
+        $validated = $validator->validate();
+
+        $hafasTrip = HafasTrip::where('trip_id', $validated['tripID'])->first();
+
+        if ($hafasTrip == null && !isset($validated['lineName'])) {
+            return $this->sendError('Please specify the trip with lineName.', 400);
+        } else if ($hafasTrip == null) {
+            $hafasTrip = HafasController::getHafasTrip($validated['tripID'], $validated['lineName']);
+        }
+
         try {
             $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $request->input('tripID'),
-                $request->input('start'),
-                $request->input('destination'),
-                $request->input('body'),
+                $hafasTrip->trip_id,
+                $validated['start'],
+                $validated['destination'],
+                $validated['body'],
                 auth()->user(),
                 0,
-                $request->input('tweet'),
-                $request->input('toot')
+                $validated['tweet'],
+                $validated['toot']
             );
 
             return $this->sendResponse([
@@ -131,10 +143,11 @@ class TransportController extends ResponseController
 
             return $this->sendError([
                                         'status_id' => $e->getCollision()->status_id,
-                                        'lineName' => $e->getCollision()->HafasTrip->first()->linename
+                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
         } catch (\Throwable $e) {
+            report($e);
             return $this->sendError('Unknown Error occured', 500);
         }
 
