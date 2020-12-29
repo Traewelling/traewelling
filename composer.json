@@ -15,7 +15,7 @@
         "php": "^7.3 || ^8.0",
         "ext-json": "*",
         "abraham/twitteroauth": "^2.0",
-        "barryvdh/laravel-dompdf": "^0.8.7",
+        "barryvdh/laravel-dompdf": "^0.9",
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.4",
         "guzzlehttp/guzzle": "^7.1",
