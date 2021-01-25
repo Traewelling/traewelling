@@ -49,7 +49,7 @@ class ApiCheckinTest extends ApiTestCase
 
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
-        $this->assertEquals($ibnr, $station['id']);
+        $this->assertEquals($ibnr, $station['ibnr']);
         $this->assertTrue(array_reduce($departures, function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip((object) $hafastrip, $requestDate);
         }, true));

@@ -33,7 +33,7 @@ class CheckinTest extends TestCase
 
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
-        $this->assertEquals($ibnr, $station['id']);
+        $this->assertEquals($ibnr, $station['ibnr']);
 
         // Analyse the stationboard departures
         // This is just a very long construct to ensure that each and every hafas trip is reported
