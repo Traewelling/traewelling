@@ -30,12 +30,9 @@ class TransportController extends Controller
 
     public static function TrainAutocomplete($station) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response = $client->request('GET', "stations?query=$station&fuzzy=true");
-        if ($response->getBody()->getContents() <= 2) {
-            $response = $client->request('GET', "locations?query=$station");
-        }
-        $json  = $response->getBody()->getContents();
-        $array = json_decode($json, true);
+        $response = $client->get("locations?query=$station&fuzzy=true");
+        $content  = $response->getBody()->getContents();
+        $array    = json_decode($content, true);
         foreach (array_keys($array) as $key) {
             unset($array[$key]['type']);
             unset($array[$key]['location']);
