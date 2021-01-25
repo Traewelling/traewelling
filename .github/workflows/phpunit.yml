@@ -2,9 +2,9 @@ name: PHPUnit
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   laravel-tests:
