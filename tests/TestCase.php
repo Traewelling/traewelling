@@ -36,7 +36,7 @@ abstract class TestCase extends BaseTestCase
      * @throws \Exception
      */
     public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
-        $requestDateMinusOneDay = (clone $requestDate)->add(new \DateInterval('P1D'));
+        $requestDateMinusOneDay = (clone $requestDate)->sub(new \DateInterval('P1D'));
         $requestDatePlusOneDay  = (clone $requestDate)->add(new \DateInterval('P1D'));
 
         // All Hafas Trips should have four pipe characters
