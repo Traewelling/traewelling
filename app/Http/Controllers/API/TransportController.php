@@ -89,16 +89,15 @@ class TransportController extends ResponseController
         ]);
     }
 
-    public function TrainCheckin(Request $request)
-    {
+    public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID' => 'required',
+            'tripID'      => 'required',
             'lineName'    => ['nullable'], //TODO: Should be required in future API Releases due to DB Rest
-            'start' => 'required',
+            'start'       => 'required',
             'destination' => 'required',
-            'body' => 'max:280',
-            'tweet' => 'boolean',
-            'toot' => 'boolean'
+            'body'        => 'max:280',
+            'tweet'       => 'boolean',
+            'toot'        => 'boolean'
         ]);
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
@@ -139,7 +138,7 @@ class TransportController extends ResponseController
 
             return $this->sendError([
                                         'status_id' => $e->getCollision()->status_id,
-                                        'lineName' => $e->getCollision()->HafasTrip->first()->linename
+                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
         } catch (\Throwable $e) {
