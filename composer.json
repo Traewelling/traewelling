@@ -14,8 +14,9 @@
     ],
     "license": "AGPL-3.0-only",
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^8.0",
         "ext-json": "*",
+        "ext-gd": "*",
         "abraham/twitteroauth": "^2.0",
         "barryvdh/laravel-dompdf": "^0.9",
         "doctrine/dbal": "^3.0",

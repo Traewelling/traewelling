@@ -24,7 +24,7 @@
 
 We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
 
-* PHP 7.3 (or higher)
+* PHP 8.0 (or higher)
   * PHP GD library 
 * Composer
 * NodeJS
