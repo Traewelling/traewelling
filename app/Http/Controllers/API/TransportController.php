@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use Carbon\Carbon;
+use App\Models\HafasTrip;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +43,8 @@ class TransportController extends ResponseController
 
         $trainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
-            $request->when,
+            //workaround... api should use ISO8601 input instead of unixtime
+            Carbon::createFromTimestamp($request->when)->toIso8601String(),
             $request->travelType
         );
         if ($trainStationboardResponse === false) {
@@ -87,23 +91,30 @@ class TransportController extends ResponseController
         ]);
     }
 
-    public function TrainCheckin(Request $request)
-    {
+    public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID' => 'required',
-            'start' => 'required',
+            'tripID'      => 'required',
+            'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
+            'start'       => 'required',
             'destination' => 'required',
-            'body' => 'max:280',
-            'tweet' => 'boolean',
-            'toot' => 'boolean'
+            'body'        => 'max:280',
+            'tweet'       => 'boolean',
+            'toot'        => 'boolean'
         ]);
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
+        $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
+
+        if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
+            return $this->sendError('Please specify the trip with lineName.', 400);
+        } else if ($hafasTrip == null) {
+            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+        }
 
         try {
             $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $request->input('tripID'),
+                $hafasTrip->trip_id,
                 $request->input('start'),
                 $request->input('destination'),
                 $request->input('body'),
@@ -129,7 +140,7 @@ class TransportController extends ResponseController
 
             return $this->sendError([
                                         'status_id' => $e->getCollision()->status_id,
-                                        'lineName' => $e->getCollision()->HafasTrip->first()->linename
+                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
         } catch (\Throwable $e) {
@@ -154,7 +165,7 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        $nearestStation = HafasController::getNearbyStations($request->latitude, $request->longitude, 1)->first();
         if ($nearestStation === null) {
             return $this->sendError(__("controller.transport.no-station-found"), 404);
         }

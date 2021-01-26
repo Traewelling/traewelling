@@ -33,13 +33,13 @@ class CheckinTest extends TestCase
 
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
-        $this->assertEquals($ibnr, $station['id']);
+        $this->assertEquals($ibnr, $station['ibnr']);
 
         // Analyse the stationboard departures
         // This is just a very long construct to ensure that each and every hafas trip is reported
         // correctly. I'm using this over a loop with single assertions so there is a consistent
         // amount of assertions, no matter what time how the trains are moving.
-        $this->assertTrue(array_reduce($departures, function($carry, $hafastrip) use ($requestDate) {
+        $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
         }, true));
 

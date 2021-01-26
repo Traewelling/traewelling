@@ -51,7 +51,7 @@ class FrontendTransportController extends Controller
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
 
-        $nearestStation = TransportBackend::StationByCoordinates($validatedInput['latitude'], $validatedInput['longitude']);
+        $nearestStation = HafasController::getNearbyStations($validatedInput['latitude'], $validatedInput['longitude'], 1)->first();
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
