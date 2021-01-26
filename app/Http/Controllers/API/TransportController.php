@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use Carbon\Carbon;
 use App\Models\HafasTrip;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
@@ -42,7 +43,8 @@ class TransportController extends ResponseController
 
         $trainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
-            $request->when,
+            //workaround... api should use ISO8601 input instead of unixtime
+            Carbon::createFromTimestamp($request->when)->toIso8601String(),
             $request->travelType
         );
         if ($trainStationboardResponse === false) {
@@ -163,7 +165,7 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $nearestStation = TransportBackend::StationByCoordinates($request->latitude, $request->longitude);
+        $nearestStation = HafasController::getNearbyStations($request->latitude, $request->longitude, 1)->first();
         if ($nearestStation === null) {
             return $this->sendError(__("controller.transport.no-station-found"), 404);
         }
