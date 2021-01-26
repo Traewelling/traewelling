@@ -507,13 +507,14 @@ class TransportController extends Controller
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
-        $user->loadMissing(['statuses', 'statuses.trainCheckIn', 'statuses.trainCheckIn.Destination']);
+        $user->loadMissing(['statuses.trainCheckIn.Destination']);
         return $user->statuses
-            ->sortByDesc('trainCheckin.arrival')
             ->map(function($status) {
                 return $status->trainCheckIn;
-            })->map(function($checkIns) {
-                return $checkIns->Destination;
+            })
+            ->sortByDesc('arrival')
+            ->map(function($checkIn) {
+                return $checkIn->Destination;
             })->groupBy('ibnr')
             ->map(function($trainStations) {
                 return $trainStations->first();
