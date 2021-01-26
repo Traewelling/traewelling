@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Models\HafasTrip;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +93,7 @@ class TransportController extends ResponseController
     {
         $validator = Validator::make($request->all(), [
             'tripID' => 'required',
+            'lineName'    => ['nullable'], //TODO: Should be required in future API Releases due to DB Rest
             'start' => 'required',
             'destination' => 'required',
             'body' => 'max:280',
@@ -100,10 +103,17 @@ class TransportController extends ResponseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
+        $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
+
+        if ($hafasTrip == null && !isset($validated['lineName'])) {
+            return $this->sendError('Please specify the trip with lineName.', 400);
+        } else if ($hafasTrip == null) {
+            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+        }
 
         try {
             $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $request->input('tripID'),
+                $hafasTrip->trip_id,
                 $request->input('start'),
                 $request->input('destination'),
                 $request->input('body'),
