@@ -42,7 +42,8 @@ class TransportController extends ResponseController
 
         $trainStationboardResponse = TransportBackend::TrainStationboard(
             $request->station,
-            Carbon::createFromTimestamp($request->when)->toIso8601String(), //workaround... api should use ISO8601 input instead of unixtime
+            //workaround... api should use ISO8601 input instead of unixtime
+            Carbon::createFromTimestamp($request->when)->toIso8601String(),
             $request->travelType
         );
         if ($trainStationboardResponse === false) {
