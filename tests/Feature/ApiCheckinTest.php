@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use DateTime;
 use Tests\ApiTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,7 +40,7 @@ class ApiCheckinTest extends ApiTestCase
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('GET',
                    route('api.v0.checkin.train.stationboard'),
-                   ['station' => $stationname, 'when' => $requestDate->format('U')]);
+                   ['station' => $stationname, 'when' => Carbon::parse($this->plus_one_day_then_8pm)->toIso8601String()]);
         $response->assertOk();
         $jsonResponse = json_decode($response->getContent(), true);
         $station      = $jsonResponse['station'];
@@ -67,7 +68,7 @@ class ApiCheckinTest extends ApiTestCase
         $stationname = "Frankfurt(Main)Hbf";
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
-                'when' => $now->format('U')]);
+                'when' => Carbon::parse($this->plus_one_day_then_8pm)->toIso8601String()]);
 
         $trainStationboard = json_decode($response->getContent(), true);
         $countDepartures   = count($trainStationboard['departures']);

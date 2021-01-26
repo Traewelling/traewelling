@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\EventController as EventBackend;
+use App\Http\Controllers\TransportController as TransportBackend;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class FrontendTransportController extends Controller
 {
@@ -22,10 +24,19 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainStationboard(Request $request) {
+
+        $validated = $request->validate([
+                                            'station'    => ['required', 'string'],
+                                            'when'       => ['nullable', 'date'],
+                                            'travelType' => ['nullable', Rule::in('nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi')]
+                                        ]);
+
+        $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
+
         $TrainStationboardResponse = TransportBackend::TrainStationboard(
-            $request->station,
-            $request->when,
-            $request->travelType
+            $validated['station'],
+            $when,
+            $validated['travelType'] ?? null
         );
         if ($TrainStationboardResponse === false) {
             return redirect()->back()->with('error', __('controller.transport.no-name-given'));
@@ -35,12 +46,12 @@ class FrontendTransportController extends Controller
         }
 
         return view('stationboard', [
-            'station' => $TrainStationboardResponse['station'],
-            'departures' => $TrainStationboardResponse['departures'],
-            'when' => $TrainStationboardResponse['when'],
-            'request' => $request,
-            'latest' => TransportController::getLatestArrivals(Auth::user())
-        ]
+                                      'station'    => $TrainStationboardResponse['station'],
+                                      'departures' => $TrainStationboardResponse['departures'],
+                                      'when'       => $TrainStationboardResponse['when'],
+                                      'request'    => $request,
+                                      'latest'     => TransportController::getLatestArrivals(Auth::user())
+                                  ]
         );
     }
 

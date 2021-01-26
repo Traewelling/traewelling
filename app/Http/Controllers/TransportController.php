@@ -13,8 +13,8 @@ use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
-use App\Notifications\TwitterNotSent;
 use App\Notifications\MastodonNotSent;
+use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -54,21 +54,20 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function TrainStationboard($stationName, $when = 'now', $travelType = null) {
+    public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null) {
         if (empty($stationName)) {
             return false;
         }
         if ($when === null) {
-            $when = '-5 minutes';
+            $when = Carbon::now()->subMinutes(5);
         }
-        $when    = strtotime($when);
         $station = HafasController::getStations($stationName)->first();
         if ($station == null) {
             return null;
         }
         $departures = HafasController::getDepartures(
             $station,
-            Carbon::parse($when),
+            $when,
             15,
             $travelType == null || $travelType == 'nationalExpress',
             $travelType == null || $travelType == 'express',
