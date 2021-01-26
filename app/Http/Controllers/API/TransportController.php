@@ -92,7 +92,7 @@ class TransportController extends ResponseController
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => 'required',
-            'lineName'    => ['nullable'], //TODO: Should be required in future API Releases due to DB Rest
+            'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
             'start'       => 'required',
             'destination' => 'required',
             'body'        => 'max:280',
@@ -104,7 +104,7 @@ class TransportController extends ResponseController
         }
         $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
 
-        if ($hafasTrip == null && !isset($validated['lineName'])) {
+        if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
         } else if ($hafasTrip == null) {
             $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
