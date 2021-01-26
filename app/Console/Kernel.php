@@ -45,6 +45,8 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->daily()->runInBackground();
+
+        $schedule->command('trwl:refreshTrips')->everyMinute();
     }
 
     /**

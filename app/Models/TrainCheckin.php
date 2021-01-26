@@ -12,7 +12,7 @@ class TrainCheckin extends Model
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
-    protected $appends  = ['duration'];
+    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover'];
 
     public function status() {
         return $this->belongsTo(Status::class);
@@ -28,6 +28,14 @@ class TrainCheckin extends Model
 
     public function HafasTrip() {
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
+    }
+
+    public function getOriginStopoverAttribute(): TrainStopOver {
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)->first();
+    }
+
+    public function getDestinationStopoverAttribute(): TrainStopOver {
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)->first();
     }
 
     public function getMapLines() {

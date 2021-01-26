@@ -226,19 +226,16 @@ class FrontendStatusController extends Controller
         ]);
     }
 
+    /**
+     * @param $status
+     * @return mixed
+     * @todo move to Status Model and return StopOver instead of String
+     */
     public static function nextStation(&$status) {
-        $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
-        $nextStopIndex = count($stops) - 1;
-
-        // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
-        for ($i = count($stops) - 1; $i > 0; $i--) {
-            $arrival = Carbon::parse($stops[$i]->arrival);
-            if ($arrival != null && $arrival->isFuture()) {
-                $nextStopIndex = $i;
-                continue;
-            }
-            break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
-        }
-        return $stops[$nextStopIndex]->stop->name;
+        return $status->trainCheckin->HafasTrip->stopoversNEW
+            ->filter(function($stopover) {
+                return $stopover->arrival->isFuture();
+            })->sortBy('arrival')
+            ->first()?->trainStation?->name;
     }
 }

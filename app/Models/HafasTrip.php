@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HafasTrip extends Model
 {
@@ -27,5 +28,9 @@ class HafasTrip extends Model
 
     public function destinationStation() {
         return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
+    }
+
+    public function stopoversNEW(): HasMany { //TODO: Rename to ->stopovers when old attribute is away
+        return $this->hasMany(TrainStopOver::class, 'trip_id', 'trip_id')->orderBy('arrival_planned');
     }
 }
