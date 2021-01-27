@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,7 +35,7 @@ class ExportTripsTest extends TestCase
      * @param DateTime $now
      */
     protected function checkin($stationName, $ibnr, DateTime $now) {
-        $trainStationboard = TransportController::TrainStationboard($stationName, $now->format('U'), 'nationalExpress');
+        $trainStationboard = TransportController::TrainStationboard($stationName, Carbon::createFromTimestamp($now->format('U')), 'nationalExpress');
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");

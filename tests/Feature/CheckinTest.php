@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
@@ -27,7 +28,7 @@ class CheckinTest extends TestCase
         $requestDate       = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
-        $trainStationboard = TransportController::TrainStationboard($stationname, $requestDate->format('U'));
+        $trainStationboard = TransportController::TrainStationboard($stationname, Carbon::createFromTimestamp($requestDate->format('U')));
         $station           = $trainStationboard['station'];
         $departures        = $trainStationboard['departures'];
 
@@ -136,7 +137,7 @@ class CheckinTest extends TestCase
         $now               = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
-        $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
+        $trainStationboard = TransportController::TrainStationboard($stationname, Carbon::createFromTimestamp($now->format('U')), 'express');
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
