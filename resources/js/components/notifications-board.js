@@ -1,6 +1,6 @@
-let notificationsToggle = document.getElementById('notifications-toggle');
+let notificationsToggle = $('.notifications-board-toggle');
 if (notificationsToggle !== undefined && notificationsToggle !== null) {
-    notificationsToggle.addEventListener('click', () => {
+    notificationsToggle.on('touchstart click', () => {
         let list = document.getElementById('notifications-list')
         let empty = document.getElementById('notifications-empty')
         empty.classList.remove('d-none')
