@@ -7,6 +7,8 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -23,12 +25,17 @@ class FrontendTransportController extends Controller
         return response()->json($BusAutocompleteResponse);
     }
 
-    public function TrainStationboard(Request $request) {
+    public function TrainStationboard(Request $request): Renderable|RedirectResponse {
 
         $validated = $request->validate([
                                             'station'    => ['required', 'string'],
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in('nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi')]
+                                            'travelType' => ['nullable', Rule::in([
+                                                                                      'nationalExpress', 'express',
+                                                                                      'regionalExp', 'regional',
+                                                                                      'suburban', 'bus', 'ferry',
+                                                                                      'subway', 'tram', 'taxi'
+                                                                                  ])]
                                         ]);
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;

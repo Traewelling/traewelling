@@ -8,6 +8,7 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,11 +22,14 @@ class TransportController extends ResponseController
         return $this->sendResponse($trainAutocompleteResponse);
     }
 
-    public function TrainStationboard(Request $request) {
+    public function TrainStationboard(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
-            'travelType' => ['nullable', Rule::in('nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi')]
+            'travelType' => ['nullable', Rule::in([
+                                                      'nationalExpress', 'express', 'regionalExp', 'regional',
+                                                      'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi'
+                                                  ])]
         ]);
 
         if ($validator->fails()) {
