@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 class Status extends Model
@@ -15,27 +18,27 @@ class Status extends Model
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText'];
 
-    public function user() {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    public function likes() {
+    public function likes(): HasMany {
         return $this->hasMany(Like::class);
     }
 
-    public function trainCheckin() {
+    public function trainCheckin(): HasOne {
         return $this->hasOne(TrainCheckin::class);
     }
 
-    public function event() {
+    public function event(): HasOne {
         return $this->hasOne(Event::class, 'id', 'event_id');
     }
 
-    public function getFavoritedAttribute() {
+    public function getFavoritedAttribute(): bool {
         return $this->likes->contains('user_id', Auth::id());
     }
 
-    public function getSocialTextAttribute() {
+    public function getSocialTextAttribute(): string {
         $postText = trans_choice(
             'controller.transport.social-post',
             preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
