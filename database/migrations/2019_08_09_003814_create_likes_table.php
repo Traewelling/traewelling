@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateLikesTable extends Migration
 {
@@ -11,14 +11,12 @@ class CreateLikesTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('likes', function (Blueprint $table) {
+    public function up(): void {
+        Schema::create('likes', function(Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->integer('user_id')->unsigned();
             $table->integer('status_id')->unsigned();
-
+            $table->timestamps();
         });
     }
 
@@ -27,8 +25,7 @@ class CreateLikesTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('likes');
     }
 }
