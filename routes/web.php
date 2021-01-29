@@ -45,6 +45,9 @@ Route::get('/profile/{username}/profilepicture', [FrontendUserController::class,
 Route::get('/leaderboard', [FrontendUserController::class, 'getLeaderboard'])
      ->name('leaderboard');
 
+Route::get('/leaderboard/{date}', [FrontendUserController::class, 'renderMonthlyLeaderboard'])
+     ->name('leaderboard.month');
+
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
      ->name('statuses.active');
 
