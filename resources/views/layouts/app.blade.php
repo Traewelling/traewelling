@@ -18,7 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
-    <link rel="shortcutt favicon" rel="{{ asset('images/icons/favicon.ico') }}">
+    <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
     <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
     <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
 
