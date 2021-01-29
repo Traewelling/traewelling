@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blogpost;
+use DateTime;
 use Illuminate\Contracts\Support\Renderable;
 
 class BlogController extends Controller
 {
     public function all(): Renderable {
-        $blogposts = Blogpost::where("published_at", "<", new \DateTime())->latest('published_at')->simplePaginate(5);
+        $blogposts = Blogpost::where("published_at", "<", new DateTime())->latest('published_at')->simplePaginate(5);
 
         return view('blog', ['blogposts' => $blogposts, "page" => "home"]);
     }

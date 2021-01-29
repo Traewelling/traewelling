@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class AuthController extends ResponseController
 {
@@ -67,14 +67,12 @@ class AuthController extends ResponseController
     }
 
     //logout
-    public function logout(Request $request)
-    {
+    public function logout(Request $request) {
         $isUser = $request->user()->token()->revoke();
-        if($isUser){
+        if ($isUser) {
             $success['message'] = "Successfully logged out.";
             return $this->sendResponse($success);
-        }
-        else{
+        } else {
             $error = "Something went wrong.";
             return $this->sendResponse($error);
         }
@@ -83,14 +81,12 @@ class AuthController extends ResponseController
     }
 
     //getuser
-    public function getUser(Request $request)
-    {
+    public function getUser(Request $request) {
         //$id = $request->user()->id;
         $user = $request->user();
-        if($user){
+        if ($user) {
             return $this->sendResponse($user);
-        }
-        else{
+        } else {
             $error = "user not found";
             return $this->sendResponse($error);
         }

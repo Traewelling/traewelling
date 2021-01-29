@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class FrontendTransportController extends Controller
 {
@@ -92,7 +93,7 @@ class FrontendTransportController extends Controller
 
         // Find out where this train terminates and offer this as a "fast check-in" option.
         $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
+        while ($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
             $terminalStopIndex--;
         }
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
@@ -110,11 +111,11 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
-            'body' => 'max:280',
+            'body'           => 'max:280',
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
-            'tweet_check' => 'max:2',
-            'toot_check' => 'max:2',
-            'event' => 'integer'
+            'tweet_check'    => 'max:2',
+            'toot_check'     => 'max:2',
+            'event'          => 'integer'
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
@@ -151,7 +152,7 @@ class FrontendTransportController extends Controller
                     ]
                 ));
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
             return redirect()
                 ->route('dashboard')

@@ -8,15 +8,22 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class FrontendEventController extends Controller {
+class FrontendEventController extends Controller
+{
 
     public function index(): Renderable {
         $events = EventBackend::all();
 
         return view('admin.event', [
-            'upcoming' => $events->filter(function($event) { return $event->begin->isFuture(); }),
-            'live' => $events->filter(function($event) { return $event->begin->isPast() && $event->end->isFuture(); }),
-            'past' => $events->filter(function($event) { return$event->end->isPast(); }),
+            'upcoming' => $events->filter(function($event) {
+                return $event->begin->isFuture();
+            }),
+            'live'     => $events->filter(function($event) {
+                return $event->begin->isPast() && $event->end->isFuture();
+            }),
+            'past'     => $events->filter(function($event) {
+                return $event->end->isPast();
+            }),
         ]);
     }
 
@@ -32,7 +39,9 @@ class FrontendEventController extends Controller {
     // Update existing
     public function update(Request $request, string $slug): RedirectResponse {
         $event = Event::where('slug', '=', $slug)->first();
-        if($event == null) { abort(404); }
+        if ($event == null) {
+            abort(404);
+        }
 
         return EventBackend::save($request, $event);
     }

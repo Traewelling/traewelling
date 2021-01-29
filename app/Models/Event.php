@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Event extends Model
 {
-    
+
     protected $fillable = [
         'name', 'hashtag', 'slug', 'host', 'url', 'begin', 'end'
     ];

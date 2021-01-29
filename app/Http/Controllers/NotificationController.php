@@ -6,6 +6,7 @@ use App\Exceptions\ShouldDeleteNotificationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Throwable;
 
 class NotificationController extends Controller
 {
@@ -67,7 +68,7 @@ class NotificationController extends Controller
         try {
             $notification = Auth::user()->notifications->where('id', $notificationID)->first();
             $notification->delete();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return Response::json([], 404);
         }
 

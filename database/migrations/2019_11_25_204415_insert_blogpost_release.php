@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class InsertBlogpostRelease extends Migration
@@ -11,16 +9,15 @@ class InsertBlogpostRelease extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         DB::table('blogposts')->insert([
-            'title' => 'Träwelling-Release 1.0 - 2019',
-            'slug' => 'traewelling-release-1-0',
-            'author_name' => 'Levin Herr',
-            'twitter_handle' => 'HerrLevin_',
-            'published_at' => '2019-11-24 00:00:00',
-            'category' => 'Bekanntmachungen',
-            'body' => 'Lange hat sich an Träwelling nichts getan, obwohl es seit 2017 mehrere Anläufe gab.
+                                           'title'          => 'Träwelling-Release 1.0 - 2019',
+                                           'slug'           => 'traewelling-release-1-0',
+                                           'author_name'    => 'Levin Herr',
+                                           'twitter_handle' => 'HerrLevin_',
+                                           'published_at'   => '2019-11-24 00:00:00',
+                                           'category'       => 'Bekanntmachungen',
+                                           'body'           => 'Lange hat sich an Träwelling nichts getan, obwohl es seit 2017 mehrere Anläufe gab.
 
 August hat uns dann der Tatendrang gepackt und jetzt, gut drei Monate später, sind wir beim ersten vollen Release von Träwelling – sechs Jahre nach Beginn des Projekts.
 
@@ -80,7 +77,7 @@ Jannik[<i class="fab fa-twitter"></i>](https://twitter.com/confuzd_)[<i class="f
 Karl[<i class="fab fa-mastodon"></i>](https://uelfte.club/@der_karl)
 
 P.S.: Wir sind derzeit etwas am "ausmisten": Wir haben die Absicht, alle alten Accounts, die mit nicht mehr existenten Twitter-Accounts verbunden sind, zu deaktivieren. Bitte meldet euch, wenn ihr einen alten Account habt, den ihr gerne mit einem aktuellen Twitter-Account verbinden möchtet.'
-        ]);
+                                       ]);
     }
 
     /**
@@ -88,8 +85,7 @@ P.S.: Wir sind derzeit etwas am "ausmisten": Wir haben die Absicht, alle alten A
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         //
     }
 }

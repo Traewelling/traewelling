@@ -34,7 +34,7 @@ class UserController extends Controller
         try {
             $ext     = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
             $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $user->avatar = 'user.jpg';
         }
 
@@ -69,7 +69,7 @@ class UserController extends Controller
     public function updateSettings(Request $request): Renderable {
         $user = Auth::user();
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:50'],
+            'name'   => ['required', 'string', 'max:50'],
             'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
@@ -115,7 +115,7 @@ class UserController extends Controller
     public static function updateProfilePicture($avatar) {
         $user     = Auth::user();
         $filename = $user->name . time() . '.png'; // Croppie always uploads a png
-        Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+        Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
 
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -129,10 +129,10 @@ class UserController extends Controller
     //Return Settings-page
     public function getAccount(): Renderable {
         $user     = Auth::user();
-        $sessions = array();
-        $tokens   = array();
-        foreach($user->sessions as $session) {
-            $sessionArray = array();
+        $sessions = [];
+        $tokens   = [];
+        foreach ($user->sessions as $session) {
+            $sessionArray = [];
             $result       = new Agent();
             $result->setUserAgent($session->user_agent);
             $sessionArray['platform'] = $result->platform();
@@ -150,14 +150,14 @@ class UserController extends Controller
             array_push($sessions, $sessionArray);
         }
 
-        foreach($user->tokens as $token) {
+        foreach ($user->tokens as $token) {
             if ($token->revoked != 1) {
-                $tokenInfo               = array();
+                $tokenInfo               = [];
                 $tokenInfo['id']         = $token->id;
                 $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (String) $token->created_at;
-                $tokenInfo['updated_at'] = (String) $token->updated_at;
-                $tokenInfo['expires_at'] = (String) $token->expires_at;
+                $tokenInfo['created_at'] = (string) $token->created_at;
+                $tokenInfo['updated_at'] = (string) $token->updated_at;
+                $tokenInfo['expires_at'] = (string) $token->expires_at;
 
                 array_push($tokens, $tokenInfo);
             }
@@ -178,7 +178,7 @@ class UserController extends Controller
 
     //delete a specific session for user
     public function deleteToken($tokenId): RedirectResponse {
-        $user = Auth::user();
+        $user  = Auth::user();
         $token = Token::find($tokenId);
         if ($token->user == $user) {
             $token->revoke();
@@ -277,11 +277,11 @@ class UserController extends Controller
         $user->unsetRelation('socialProfile');
 
         return [
-            'username' => $username,
-            'twitterUrl' => $twitterUrl,
+            'username'    => $username,
+            'twitterUrl'  => $twitterUrl,
             'mastodonUrl' => $mastodonUrl,
-            'statuses' => $statuses,
-            'user' => $user
+            'statuses'    => $statuses,
+            'user'        => $user
         ];
     }
 

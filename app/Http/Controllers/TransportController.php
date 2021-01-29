@@ -242,14 +242,14 @@ class TransportController extends Controller
     }
 
     #[ArrayShape([
-        'success' => "bool",
-        'statusId' => "int",
-        'points' => "int",
+        'success'              => "bool",
+        'statusId'             => "int",
+        'points'               => "int",
         'alsoOnThisConnection' => "Illuminate\\Support\\Collection",
-        'lineName' => "string",
-        'distance' => "float",
-        'duration' => "float",
-        'event' => "mixed"
+        'lineName'             => "string",
+        'distance'             => "float",
+        'duration'             => "float",
+        'event'                => "mixed"
     ])]
     public static function TrainCheckin($tripId,
                                         $start,
