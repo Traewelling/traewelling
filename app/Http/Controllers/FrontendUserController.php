@@ -58,8 +58,16 @@ class FrontendUserController extends Controller
         $date = Carbon::parse($date);
 
         $leaderboard = Status::join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                             ->where('train_checkins.departure', '>=', $date->clone()->firstOfMonth()->toDateString())
-                             ->where('train_checkins.departure', '<=', $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59')
+                             ->where(
+                                 'train_checkins.departure',
+                                 '>=',
+                                 $date->clone()->firstOfMonth()->toDateString()
+                             )
+                             ->where(
+                                 'train_checkins.departure',
+                                 '<=',
+                                 $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                             )
                              ->get()
                              ->groupBy('user_id')
                              ->map(function($statuses) {
