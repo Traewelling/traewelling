@@ -15,6 +15,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -419,5 +420,31 @@ class UserController extends Controller
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
         )->simplePaginate(10);
+    }
+
+    public static function getMonthlyLeaderboard(Carbon $date): Collection {
+        return Status::join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                             ->where(
+                                 'train_checkins.departure',
+                                 '>=',
+                                 $date->clone()->firstOfMonth()->toDateString()
+                             )
+                             ->where(
+                                 'train_checkins.departure',
+                                 '<=',
+                                 $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                             )
+                             ->get()
+                             ->groupBy('user_id')
+                             ->map(function($statuses) {
+                                 return [
+                                     'user'        => $statuses->first()->user,
+                                     'points'      => $statuses->sum('trainCheckin.points'),
+                                     'distance'    => $statuses->sum('distance'),
+                                     'duration'    => $statuses->sum('trainCheckin.duration'),
+                                     'statusCount' => $statuses->count()
+                                 ];
+                             })
+                             ->sortByDesc('points');
     }
 }

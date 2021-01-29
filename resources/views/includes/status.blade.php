@@ -19,7 +19,14 @@
             <ul class="timeline">
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">{{ $status->trainCheckin->departure->format('H:i') }}</span>
+                    <span class="text-trwl float-right">
+                        @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
+                            <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>&nbsp;
+                            {{ $status->trainCheckin->origin_stopover->departure_real->format('H:i') }}
+                        @else
+                            {{ $status->trainCheckin?->origin_stopover?->departure->format('H:i') ?? $status->trainCheckin->departure->format('H:i') }}
+                        @endif
+                    </span>
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
                     <p class="train-status text-muted">
                         <span>
@@ -48,7 +55,14 @@
                 </li>
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">{{ $status->trainCheckin->arrival->format('H:i') }}</span>
+                    <span class="text-trwl float-right">
+                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
+                            <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}</small>&nbsp;
+                            {{ $status->trainCheckin->destination_stopover->arrival_real->format('H:i') }}
+                        @else
+                            {{ $status->trainCheckin?->destination_stopover?->arrival?->format('H:i') ?? $status->trainCheckin->arrival->format('H:i') }}
+                        @endif
+                    </span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
                 @if($status->event != null)
@@ -66,8 +80,8 @@
             role="progressbar"
             style="width: 0%"
             data-valuenow="{{ time() }}"
-            data-valuemin="{{ strtotime($status->trainCheckin->departure) }}"
-            data-valuemax="{{ strtotime($status->trainCheckin->arrival) }}"
+            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->format('H:i') }}"
+            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->format('H:i') }}"
             ></div>
     </div>
     <div class="card-footer text-muted interaction">

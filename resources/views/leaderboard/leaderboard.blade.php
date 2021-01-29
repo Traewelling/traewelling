@@ -10,6 +10,9 @@
             <div class="col-md-8">
                 <div class="card" id="leaderboard">
                     <div class="card-header">
+                        <a href="{{route('leaderboard.month', ['date' => date('Y-m')])}}" class="float-right">
+                            Zur Monatsübersicht
+                        </a>
                         {{ __('menu.leaderboard') }}
                     </div>
                     <div class="card-body">

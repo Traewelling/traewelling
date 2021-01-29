@@ -109,7 +109,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'de_DE',
 
     /*
     |--------------------------------------------------------------------------
@@ -239,6 +239,14 @@ return [
         'Agent'        => Jenssegers\Agent\Facades\Agent::class,
         'Image'        => Intervention\Image\Facades\Image::class,
 
+    ],
+
+    'imprint' => [
+        'name'     => env('IMPRINT_NAME'),
+        'address1' => env('IMPRINT_ADDRESS1'),
+        'address2' => env('IMPRINT_ADDRESS2'),
+        'tel'      => env('IMPRINT_TEL'),
+        'email'    => env('IMPRINT_EMAIL')
     ],
 
 ];
