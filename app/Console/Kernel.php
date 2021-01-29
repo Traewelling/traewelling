@@ -25,15 +25,7 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
-        // $schedule->command('inspire')
-        //          ->hourly();
-
-        $schedule->call(function() {
-            DB::table('users')->update(array('points' => '0'));
-        })->weeklyOn(5, '03:14')
-            ->runInBackground();
+    protected function schedule(Schedule $schedule) {
 
         //delete new users without GDPR Agreement
         $schedule->call(function() {

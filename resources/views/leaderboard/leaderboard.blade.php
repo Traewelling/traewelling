@@ -17,7 +17,7 @@
                             <li class="nav-item">
                                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#top20" role="tab"
                                    aria-controls="home"
-                                   aria-selected="true">{{ __('leaderboard.top') }} {{$usersCount}}</a>
+                                   aria-selected="true">{{ __('leaderboard.top') }} {{$users->count()}}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#top20k" role="tab"
@@ -44,16 +44,16 @@
                                         <td>{{ __('leaderboard.points') }}</td>
                                     </tr>
                                     </thead>
-                                    @foreach($users as $key=>$user)
+                                    @foreach($users as $user)
                                         <tr>
-                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $loop->index + 1 }}</td>
                                             <td>
-                                                <a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a>
+                                                <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
                                             </td>
-                                            <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                            <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                            <td>{{ number($user->averageSpeed) }}<small>km/h</small></td>
-                                            <td>{{ $user->points }}</td>
+                                            <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
+                                            <td>{{ number($user['distance']) }}<small>km</small></td>
+                                            <td>{{ number($user['speed']) }}<small>km/h</small></td>
+                                            <td>{{ $user['points'] }}</td>
                                         </tr>
                                     @endforeach
                                 </table>
@@ -71,16 +71,16 @@
                                         <td>{{ __('leaderboard.points') }}</td>
                                     </tr>
                                     </thead>
-                                    @foreach($kilometers as $key=>$user)
+                                    @foreach($kilometers as $user)
                                         <tr>
-                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $loop->index + 1 }}</td>
                                             <td>
-                                                <a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a>
+                                                <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
                                             </td>
-                                            <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                            <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                            <td>{{ number($user->averageSpeed) }}<small>km/h</small></td>
-                                            <td>{{ $user->points }}</td>
+                                            <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
+                                            <td>{{ number($user['distance']) }}<small>km</small></td>
+                                            <td>{{ number($user['speed']) }}<small>km/h</small></td>
+                                            <td>{{ $user['points'] }}</td>
                                         </tr>
                                     @endforeach
                                 </table>
@@ -95,18 +95,20 @@
                                             <td>{{ __('leaderboard.user') }}</td>
                                             <td>{{ __('leaderboard.duration') }}</td>
                                             <td>{{ __('leaderboard.distance') }}</td>
+                                            <td>{{ __('leaderboard.averagespeed') }}</td>
                                             <td>{{ __('leaderboard.points') }}</td>
                                         </tr>
                                         </thead>
-                                        @foreach($friends as $key=>$user)
+                                        @foreach($friends as $user)
                                             <tr>
-                                                <td>{{ $key+1 }}</td>
+                                                <td>{{ $loop->index + 1 }}</td>
                                                 <td>
-                                                    <a href="{{ route('account.show', ['username' => $user->username]) }}">{{ $user->username }}</a>
+                                                    <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
                                                 </td>
-                                                <td>{!! durationToSpan(secondsToDuration(60 * $user->train_duration)) !!}</td>
-                                                <td>{{ number($user->train_distance) }}<small>km</small></td>
-                                                <td>{{ $user->points }}</td>
+                                                <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
+                                                <td>{{ number($user['distance']) }}<small>km</small></td>
+                                                <td>{{ number($user['speed']) }}<small>km/h</small></td>
+                                                <td>{{ $user['points'] }}</td>
                                             </tr>
                                         @endforeach
                                     </table>

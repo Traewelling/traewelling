@@ -6,6 +6,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Models\Follow;
 use App\Models\MastodonServer;
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -343,41 +345,45 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $user    = Auth::user();
-        $friends = null;
+        $trainCheckIns = TrainCheckin::with('status')
+                                     ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
+                                     ->get()
+                                     ->groupBy('status.user_id')
+                                     ->map(function($trainCheckIns) {
+                                         return [
+                                             'user'     => $trainCheckIns->first()->status->user,
+                                             'points'   => $trainCheckIns->sum('points'),
+                                             'distance' => $trainCheckIns->sum('distance'),
+                                             'duration' => $trainCheckIns->sum('duration'),
+                                             'speed'    => $trainCheckIns->avg('speed')
+                                         ];
+                                     });
 
-        if ($user != null) {
-            $userIds   = $user->follows->pluck('id');
-            $userIds[] = $user->id;
-            $friends   = User::select('username',
-                                      'train_duration',
-                                      'train_distance',
-                                      'points')
-                             ->where('points', '<>', 0)
-                             ->whereIn('id', $userIds)
-                             ->orderby('points', 'desc')
-                             ->limit(20)
-                             ->get();
-        }
-        $users      = User::select('username',
-                                   'train_duration',
-                                   'train_distance',
-                                   'points')
-                          ->where('points', '<>', 0)
-                          ->orderby('points', 'desc')
-                          ->limit(20)
-                          ->get();
-        $kilometers = User::select('username',
-                                   'train_duration',
-                                   'train_distance',
-                                   'points')
-                          ->where('points', '<>', 0)
-                          ->orderby('train_distance', 'desc')
-                          ->limit(20)
-                          ->get();
+        $friendsTrainCheckIns = TrainCheckin::with('status')
+                                            ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
+                                            ->get()
+                                            ->filter(function($trainCheckIn) {
+                                                return Auth::user()->follows
+                                                        ->pluck('id')
+                                                        ->contains($trainCheckIn->status->user_id)
+                                                    || $trainCheckIn->status->user_id == Auth::user()->id;
+                                            })
+                                            ->groupBy('status.user_id')
+                                            ->map(function($trainCheckIns) {
+                                                return [
+                                                    'user'     => $trainCheckIns->first()->status->user,
+                                                    'points'   => $trainCheckIns->sum('points'),
+                                                    'distance' => $trainCheckIns->sum('distance'),
+                                                    'duration' => $trainCheckIns->sum('duration'),
+                                                    'speed'    => $trainCheckIns->avg('speed')
+                                                ];
+                                            });
 
-
-        return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
+        return [
+            'users'      => (clone $trainCheckIns)->sortByDesc('points'),
+            'friends'    => $friendsTrainCheckIns->sortByDesc('points'),
+            'kilometers' => (clone $trainCheckIns)->sortByDesc('distance')
+        ];
     }
 
     public static function registerByDay(Carbon $date): int {
