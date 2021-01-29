@@ -51,6 +51,13 @@ class FrontendUserController extends Controller
         ]);
     }
 
+    public function renderMonthlyLeaderboard(string $date): Renderable {
+        return view('leaderboard.month', [
+            'leaderboard' => UserBackend::getMonthlyLeaderboard(Carbon::parse($date)),
+            'date'        => $date
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return JsonResponse
