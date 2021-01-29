@@ -112,16 +112,22 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public static function updateProfilePicture($avatar) {
-        $user     = Auth::user();
-        $filename = $user->name . time() . '.png'; // Croppie always uploads a png
-        Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
+    #[ArrayShape(['status' => "string"])]
+    public static function updateProfilePicture($avatar): array {
+        $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
+                                                 ':userId' => Auth::user()->id,
+                                                 ':time'   => time()
+        ]);
+        Image::make($avatar)->resize(300, 300)
+             ->save(public_path('/uploads/avatars/' . $filename));
 
-        if ($user->avatar != 'user.jpg') {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        if (Auth::user()->avatar != 'user.jpg') {
+            File::delete(public_path('/uploads/avatars/' . Auth::user()->avatar));
         }
-        $user->avatar = $filename;
-        $user->save();
+
+        Auth::user()->update([
+                                 'avatar' => $filename
+                             ]);
 
         return ['status' => ':ok'];
     }
