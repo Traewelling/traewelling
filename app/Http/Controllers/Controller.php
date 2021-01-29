@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\PolyLine;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public static function searchForId($stationId, $array)
-    {
+    public static function searchForId($stationId, $array) {
         foreach ($array as $key => $val) {
             if ($val['stop']['id'] === $stationId) {
                 return $key;
@@ -22,8 +21,7 @@ class Controller extends BaseController
         return null;
     }
 
-    public static function polyline($idStart, $idStop, $hash)
-    {
+    public static function polyline($idStart, $idStop, $hash) {
         $polyline = PolyLine::where('hash', $hash)->first();
         if ($polyline === null) {
             return null;
@@ -32,7 +30,7 @@ class Controller extends BaseController
         $offset   = [];
         foreach ($polyline as $key => $val) {
             if (isset($val['properties']['id']) && $val['properties']['id'] === $idStart) {
-                 $offset[0] = $key;
+                $offset[0] = $key;
             }
             if (isset($val['properties']['id']) && $val['properties']['id'] === $idStop) {
                 $offset[1] = $key;
@@ -47,8 +45,7 @@ class Controller extends BaseController
         return $polyline;
     }
 
-    public static function distanceCalculation($longitudeA, $latitudeA, $longitudeB, $latitudeB, $decimals = 3)
-    {
+    public static function distanceCalculation($longitudeA, $latitudeA, $longitudeB, $latitudeB, $decimals = 3): float {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
         }
@@ -56,9 +53,9 @@ class Controller extends BaseController
         $equatorialRadiusInKilometers = 6378.137;
 
         $pi       = pi();
-        $latA     = $latitudeA  / 180 * $pi;
+        $latA     = $latitudeA / 180 * $pi;
         $lonA     = $longitudeA / 180 * $pi;
-        $latB     = $latitudeB  / 180 * $pi;
+        $latB     = $latitudeB / 180 * $pi;
         $lonB     = $longitudeB / 180 * $pi;
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
             * $equatorialRadiusInKilometers;

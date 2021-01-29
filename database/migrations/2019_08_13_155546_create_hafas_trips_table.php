@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateHafasTripsTable extends Migration
 {
@@ -11,9 +11,8 @@ class CreateHafasTripsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('hafas_trips', function (Blueprint $table) {
+    public function up() {
+        Schema::create('hafas_trips', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('trip_id');
             $table->string('category');
@@ -37,8 +36,7 @@ class CreateHafasTripsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('hafas_trips');
     }
 }

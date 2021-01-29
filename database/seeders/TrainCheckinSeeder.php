@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\HafasTrip;
-use Illuminate\Database\Seeder;
 use App\Http\Controllers\TransportController;
+use App\Models\HafasTrip;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class TrainCheckinSeeder extends Seeder
 {

@@ -5,7 +5,6 @@ namespace App\Exceptions;
 use App\Models\Status;
 use App\Models\User;
 use Exception;
-use Throwable;
 
 class StatusAlreadyLikedException extends Exception
 {

@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\HafasTrip;
 use App\Http\Controllers\TransportController;
+use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class HafasTripFactory extends Factory
 {
@@ -132,7 +132,7 @@ class HafasTripFactory extends Factory
             for ($i = 1; $i < $cnt; $i++) {
                 $stopOvers[$i]->arrival   = $startTime->clone()->addSeconds($add)->format('c');
                 $stopOvers[$i]->departure = $stopOvers[$i]->arrival;
-                $add                     += $interval;
+                $add                      += $interval;
             }
             $stopOvers[0]->arrival          = $startTime->format('c');
             $stopOvers[0]->departure        = $startTime->format('c');

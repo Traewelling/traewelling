@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\NotificationController as NotificationBackend;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class NotificationController extends ResponseController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index()
-    {
+    public function index() {
         $notificationResponse = NotificationBackend::latest();
         return $this->sendResponse($notificationResponse);
     }
@@ -20,25 +21,23 @@ class NotificationController extends ResponseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $notificationID
+     * @param Request $request
+     * @param int $notificationID
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function update($notificationID)
-    {
+    public function update($notificationID) {
         return NotificationBackend::toggleReadState($notificationID);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $notificationID
+     * @param int $notificationID
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function destroy($notificationID)
-    {
+    public function destroy($notificationID) {
         $deleteNotificationResponse = NotificationBackend::destroy($notificationID);
         return $deleteNotificationResponse;
     }

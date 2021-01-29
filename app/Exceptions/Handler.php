@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,8 +35,7 @@ class Handler extends ExceptionHandler
      * @return void
      * @throws Throwable
      */
-    public function report(Throwable $exception)
-    {
+    public function report(Throwable $exception) {
         parent::report($exception);
     }
 
@@ -49,8 +47,7 @@ class Handler extends ExceptionHandler
      * @return Response
      * @throws Throwable
      */
-    public function render($request, Throwable $exception)
-    {
+    public function render($request, Throwable $exception) {
         return parent::render($request, $exception);
     }
 }

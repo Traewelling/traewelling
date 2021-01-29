@@ -11,21 +11,20 @@ class AddForeignKeysToStatuses extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+    public function up() {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->bigInteger('user_id')->unsigned()->change();
 
             $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
             $table->foreign('event_id')
-                ->references('id')
-                ->on('events')
-                ->onDelete('set null')
-                ->onUpdate('cascade');
+                  ->references('id')
+                  ->on('events')
+                  ->onDelete('set null')
+                  ->onUpdate('cascade');
         });
     }
 
@@ -34,13 +33,12 @@ class AddForeignKeysToStatuses extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+    public function down() {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->dropForeign("statuses_user_id_foreign");
             $table->dropForeign("statuses_event_id_foreign");
         });
-        Schema::table('statuses', function (Blueprint $table) {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->integer('user_id')->unsigned()->change();
         });
     }

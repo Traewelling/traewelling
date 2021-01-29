@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateStatusesTable extends Migration
 {
@@ -11,9 +11,8 @@ class CreateStatusesTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('statuses', function (Blueprint $table) {
+    public function up() {
+        Schema::create('statuses', function(Blueprint $table) {
             $table->id();
             $table->text('body')->nullable();
             $table->integer('user_id')->unsigned();
@@ -28,8 +27,7 @@ class CreateStatusesTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('statuses');
     }
 }
