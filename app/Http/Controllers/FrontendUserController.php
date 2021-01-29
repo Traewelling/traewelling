@@ -2,53 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\User;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
 {
-    public function getProfilePage($username)
-    {
+    public function getProfilePage($username): Renderable {
         $profilePage = UserBackend::getProfilePage($username);
         if ($profilePage === null) {
             abort(404);
         }
 
         return view('profile', [
-            'username' => $profilePage['username'],
-            'statuses' => $profilePage['statuses'],
-            'user' => $profilePage['user'],
+            'username'    => $profilePage['username'],
+            'statuses'    => $profilePage['statuses'],
+            'user'        => $profilePage['user'],
             'currentUser' => Auth::user(),
-            'twitterUrl' => $profilePage['twitterUrl'],
+            'twitterUrl'  => $profilePage['twitterUrl'],
             'mastodonUrl' => $profilePage['mastodonUrl']
         ]);
     }
 
-    public function getProfilePicture($username)
-    {
+    public function getProfilePicture($username) {
         $profilePicture = UserBackend::getProfilePicture($username);
 
-        if($profilePicture === null) {
+        if ($profilePicture === null) {
             abort(404);
         }
 
         return response($profilePicture['picture'])
-            ->header('Content-Type', 'image/'. $profilePicture['extension'])
+            ->header('Content-Type', 'image/' . $profilePicture['extension'])
             ->header('Cache-Control', 'public, no-transform, max-age:900');
     }
 
-    public function getLeaderboard()
-    {
+    public function getLeaderboard(): Renderable {
         $leaderboardResponse = UserBackend::getLeaderboard();
 
         return view('leaderboard', [
             'usersCount' => count($leaderboardResponse['users']),
-            'users' => $leaderboardResponse['users'],
-            'friends' => $leaderboardResponse['friends'],
+            'users'      => $leaderboardResponse['users'],
+            'friends'    => $leaderboardResponse['friends'],
             'kilometers' => $leaderboardResponse['kilometers']
         ]);
     }
@@ -57,7 +56,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function CreateFollow(Request $request) {
+    public function CreateFollow(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'follow_id' => ['required', 'exists:users,id']
                                         ]);
@@ -75,7 +74,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function DestroyFollow(Request $request) {
+    public function DestroyFollow(Request $request): JsonResponse {
         $validated      = $request->validate([
                                                  'follow_id' => ['required', 'exists:users,id']
                                              ]);
@@ -88,14 +87,13 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function updateProfilePicture(Request $request)
-    {
+    public function updateProfilePicture(Request $request): JsonResponse {
         $avatar                 = $request->input('image');
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return response()->json($profilePictureResponse);
     }
 
-    public function searchUser(Request $request) {
+    public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
         } catch (HttpException $exception) {

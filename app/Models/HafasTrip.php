@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class HafasTrip extends Model
 {
@@ -17,15 +19,15 @@ class HafasTrip extends Model
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
 
-    public function getPolyLine() {
+    public function getPolyLine(): HasOne {
         return $this->hasOne(PolyLine::class, 'hash', 'polyline');
     }
 
-    public function originStation() {
+    public function originStation(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'origin', 'ibnr');
     }
 
-    public function destinationStation() {
+    public function destinationStation(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
     }
 }

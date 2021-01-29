@@ -68,10 +68,7 @@ class UserRedirectionTest extends TestCase
 
         // Signs the terms and sleep a little while so `$gdpr->valid_at` is
         // real-greater than `$user->privacy_ack_at`.
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
         sleep(1);
 
         // Now the träwelling team puts up a new terms iteration:
@@ -90,9 +87,6 @@ class UserRedirectionTest extends TestCase
              ->assertSee(__('privacy.we-changed'), false);
 
         // At this point, we can sign the new agreement and get redirected again:
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
     }
 }

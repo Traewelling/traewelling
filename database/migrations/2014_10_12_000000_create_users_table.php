@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -11,9 +11,8 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('users', function (Blueprint $table) {
+    public function up() {
+        Schema::create('users', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('username')->unique();
@@ -27,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('points')->default(0);
             $table->boolean('always_dbl')->default(false);
             $table->integer('home_id')->unsigned()
-                ->default(0);
+                  ->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -38,8 +37,7 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('users');
     }
 }

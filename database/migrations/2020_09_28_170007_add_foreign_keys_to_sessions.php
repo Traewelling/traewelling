@@ -11,14 +11,13 @@ class AddForeignKeysToSessions extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('sessions', function (Blueprint $table) {
+    public function up() {
+        Schema::table('sessions', function(Blueprint $table) {
             $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
         });
     }
 
@@ -27,9 +26,8 @@ class AddForeignKeysToSessions extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('sessions', function (Blueprint $table) {
+    public function down() {
+        Schema::table('sessions', function(Blueprint $table) {
             $table->dropForeign("sessions_user_id_foreign");
         });
     }

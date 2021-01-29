@@ -17,12 +17,14 @@ use App\Notifications\MastodonNotSent;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
 class TransportController extends Controller
@@ -54,7 +56,7 @@ class TransportController extends Controller
         return $array;
     }
 
-    public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null) {
+    public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
             return false;
         }
@@ -95,6 +97,13 @@ class TransportController extends Controller
         return null;
     }
 
+    /**
+     * @param $latitude
+     * @param $longitude
+     * @return mixed|null
+     * @throws GuzzleException
+     * @todo move to HafasController
+     */
     public static function StationByCoordinates($latitude, $longitude) {
         $client   = new Client(['base_uri' => config('trwl.db_rest')]);
         $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
@@ -165,9 +174,8 @@ class TransportController extends Controller
      * @param string $lineName Line Name in Hafas format
      * @param $start
      * @return array|null
-     * @throws GuzzleException
      */
-    public static function TrainTrip(string $tripId, string $lineName, $start) {
+    public static function TrainTrip(string $tripId, string $lineName, $start): ?array {
 
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $stopovers = json_decode($hafasTrip->stopovers, true);
@@ -188,7 +196,7 @@ class TransportController extends Controller
         ];
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay) {
+    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
         $now      = time();
         $factorDB = DB::table('pointscalculation')
                       ->where([
@@ -233,21 +241,16 @@ class TransportController extends Controller
         return 1;
     }
 
-    /**
-     * @param $tripId
-     * @param $start
-     * @param $destination
-     * @param $body
-     * @param $user
-     * @param $businessCheck
-     * @param $tweetCheck
-     * @param $tootCheck
-     * @param int $eventId
-     * @return array
-     * @throws CheckInCollisionException
-     * @throws GuzzleException
-     * @throws HafasException
-     */
+    #[ArrayShape([
+        'success'              => "bool",
+        'statusId'             => "int",
+        'points'               => "int",
+        'alsoOnThisConnection' => "Illuminate\\Support\\Collection",
+        'lineName'             => "string",
+        'distance'             => "float",
+        'duration'             => "float",
+        'event'                => "mixed"
+    ])]
     public static function TrainCheckin($tripId,
                                         $start,
                                         $destination,
@@ -256,7 +259,7 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
-                                        $eventId = 0) {
+                                        $eventId = 0): array {
         $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
         $offset1               = self::searchForId($start, $stopovers);
@@ -393,7 +396,7 @@ class TransportController extends Controller
     /**
      * @param Status $status
      */
-    private static function postTwitter(Status $status) {
+    private static function postTwitter(Status $status): void {
         if (config('trwl.post_social') !== true) {
             return;
         }
@@ -426,7 +429,7 @@ class TransportController extends Controller
             if ($connection->getLastHttpCode() != 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception);
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
@@ -436,7 +439,7 @@ class TransportController extends Controller
     /**
      * @param Status $status
      */
-    private static function postMastodon(Status $status) {
+    private static function postMastodon(Status $status): void {
         if (config('trwl.post_social') !== true) {
             return;
         }
@@ -451,7 +454,7 @@ class TransportController extends Controller
             Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
         } catch (RequestException $e) {
             $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error($e);
         }
     }
@@ -536,7 +539,7 @@ class TransportController extends Controller
         return $trainStation;
     }
 
-    public static function usageByDay(Carbon $date) {
+    public static function usageByDay(Carbon $date): array {
         $hafas = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
                           ->where("created_at", "<=", $date->copy()->endOfDay())
                           ->count();

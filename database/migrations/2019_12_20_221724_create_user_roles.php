@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserRoles extends Migration
 {
@@ -11,9 +11,8 @@ class CreateUserRoles extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table("users", function (Blueprint $table) {
+    public function up() {
+        Schema::table("users", function(Blueprint $table) {
             $table->tinyInteger('role')->default('0')->after('home_id');
         });
     }
@@ -23,8 +22,7 @@ class CreateUserRoles extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropColumns('users', ['role']);
     }
 }

@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +26,7 @@ use Mastodon;
 
 class UserController extends Controller
 {
-    public static function getProfilePicture($username)
-    {
+    public static function getProfilePicture($username): ?array {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
             return null;
@@ -33,7 +34,7 @@ class UserController extends Controller
         try {
             $ext     = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
             $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $user->avatar = 'user.jpg';
         }
 
@@ -54,8 +55,7 @@ class UserController extends Controller
         return ['picture' => $picture, 'extension' => $ext];
     }
 
-    public function deleteProfilePicture()
-    {
+    public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -63,14 +63,13 @@ class UserController extends Controller
             $user->save();
         }
 
-        return redirect(route('settings'));
+        return redirect()->route('settings');
     }
 
-    public function updateSettings(Request $request)
-    {
+    public function updateSettings(Request $request): Renderable {
         $user = Auth::user();
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:50'],
+            'name'   => ['required', 'string', 'max:50'],
             'avatar' => 'image'
         ]);
         if ($user->username != $request->username) {
@@ -102,8 +101,7 @@ class UserController extends Controller
         return $this->getAccount();
     }
 
-    public function updatePassword(Request $request)
-    {
+    public function updatePassword(Request $request): RedirectResponse {
         $user = Auth::user();
         if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
@@ -135,12 +133,12 @@ class UserController extends Controller
     }
 
     //Return Settings-page
-    public function getAccount() {
+    public function getAccount(): Renderable {
         $user     = Auth::user();
-        $sessions = array();
-        $tokens   = array();
-        foreach($user->sessions as $session) {
-            $sessionArray = array();
+        $sessions = [];
+        $tokens   = [];
+        foreach ($user->sessions as $session) {
+            $sessionArray = [];
             $result       = new Agent();
             $result->setUserAgent($session->user_agent);
             $sessionArray['platform'] = $result->platform();
@@ -158,14 +156,14 @@ class UserController extends Controller
             array_push($sessions, $sessionArray);
         }
 
-        foreach($user->tokens as $token) {
+        foreach ($user->tokens as $token) {
             if ($token->revoked != 1) {
-                $tokenInfo               = array();
+                $tokenInfo               = [];
                 $tokenInfo['id']         = $token->id;
                 $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (String) $token->created_at;
-                $tokenInfo['updated_at'] = (String) $token->updated_at;
-                $tokenInfo['expires_at'] = (String) $token->expires_at;
+                $tokenInfo['created_at'] = (string) $token->created_at;
+                $tokenInfo['updated_at'] = (string) $token->updated_at;
+                $tokenInfo['expires_at'] = (string) $token->expires_at;
 
                 array_push($tokens, $tokenInfo);
             }
@@ -175,7 +173,7 @@ class UserController extends Controller
     }
 
     //delete sessions from user
-    public function deleteSession() {
+    public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
         foreach ($user->sessions as $session) {
@@ -185,8 +183,8 @@ class UserController extends Controller
     }
 
     //delete a specific session for user
-    public function deleteToken($tokenId) {
-        $user = Auth::user();
+    public function deleteToken($tokenId): RedirectResponse {
+        $user  = Auth::user();
         $token = Token::find($tokenId);
         if ($token->user == $user) {
             $token->revoke();
@@ -194,7 +192,7 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-    public function destroyUser() {
+    public function destroyUser(): RedirectResponse {
         $user = Auth::user();
 
         if ($user->avatar != 'user.jpg') {
@@ -219,7 +217,7 @@ class UserController extends Controller
     }
 
     //Save Changes on Settings-Page
-    public function SaveAccount(Request $request) {
+    public function SaveAccount(Request $request): RedirectResponse {
 
         $this->validate($request, [
             'name' => 'required|max:120'
@@ -230,7 +228,7 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public static function getProfilePage($username) {
+    public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
@@ -285,11 +283,11 @@ class UserController extends Controller
         $user->unsetRelation('socialProfile');
 
         return [
-            'username' => $username,
-            'twitterUrl' => $twitterUrl,
+            'username'    => $username,
+            'twitterUrl'  => $twitterUrl,
             'mastodonUrl' => $mastodonUrl,
-            'statuses' => $statuses,
-            'user' => $user
+            'statuses'    => $statuses,
+            'user'        => $user
         ];
     }
 
@@ -339,7 +337,12 @@ class UserController extends Controller
         return $user->follows->contains('id', $userFollow->id);
     }
 
-    public static function getLeaderboard() {
+    #[ArrayShape([
+        'users'      => "Illuminate\\Support\\Collection",
+        'friends'    => "Illuminate\\Support\\Collection",
+        'kilometers' => "Illuminate\\Support\\Collection"
+    ])]
+    public static function getLeaderboard(): array {
         $user    = Auth::user();
         $friends = null;
 
@@ -377,20 +380,18 @@ class UserController extends Controller
         return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
     }
 
-    public static function registerByDay(Carbon $date)
-    {
+    public static function registerByDay(Carbon $date): int {
         return User::where("created_at", ">=", $date->copy()->startOfDay())
                    ->where("created_at", "<=", $date->copy()->endOfDay())
                    ->count();
     }
 
-    public static function updateDisplayName($displayname)
-    {
+    public static function updateDisplayName($displayname): void {
         $request   = new Request(['displayname' => $displayname]);
         $validator = Validator::make($request->all(), [
             'displayname' => 'required|max:120'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             abort(400);
         }
         $user       = User::where('id', Auth::user()->id)->first();

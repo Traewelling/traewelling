@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTrainCheckinsTable extends Migration
 {
@@ -11,12 +11,11 @@ class CreateTrainCheckinsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('train_checkins', function (Blueprint $table) {
+    public function up() {
+        Schema::create('train_checkins', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('status_id')
-                ->unique();
+                  ->unique();
             $table->string('trip_id');
             $table->string('origin');
             $table->string('destination');
@@ -34,8 +33,7 @@ class CreateTrainCheckinsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('train_checkins');
     }
 }
