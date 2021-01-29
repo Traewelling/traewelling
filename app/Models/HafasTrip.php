@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -29,5 +30,10 @@ class HafasTrip extends Model
 
     public function destinationStation(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
+    }
+
+    public function stopoversNEW(): HasMany {
+        //TODO: Rename to ->stopovers when old attribute is gone
+        return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')->orderBy('arrival_planned');
     }
 }

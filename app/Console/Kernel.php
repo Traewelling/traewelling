@@ -43,6 +43,8 @@ class Kernel extends ConsoleKernel
                 $user->delete();
             }
         })->daily()->runInBackground();
+
+        $schedule->command('trwl:refreshTrips')->everyMinute();
     }
 
     /**
