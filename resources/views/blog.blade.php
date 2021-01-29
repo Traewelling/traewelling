@@ -11,11 +11,8 @@
 @section('content')
     <div class="container blog">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            @if($page == "home")
-            <h1>{{__('menu.blog')}}</h1>
-
-            @elseif($page == "single")
+        <div class="col-md-9">
+            @if($page == "single")
             <p><a href="{{route('blog.all')}}">{!! __('pagination.back') !!}</a></p>
 
             @elseif($page == "category")
@@ -25,19 +22,27 @@
             @endif
 
             @foreach($blogposts as $blogpost)
-            <div class="card mb-4">
-                <div class="card-header">
-                    <p class="mb-0 float-right">
-                        <code class="pr-2">{{ $blogpost->published_at->format('d.m.Y') }}</code>
-                    </p>
+            <div class="mt-5">
+                <div>
                     <a href="{{ route('blog.show', ['slug' => $blogpost->slug]) }}">
-                        <h3 class="mb-0">{{$blogpost->title}}</h3>
+                        <h3 class="font-weight-bold">{{$blogpost->title}}</h3>
                     </a>
                 </div>
-                <div class="card-body">
-                    {!! Markdown::parse($blogpost->body) !!}
+                <div>
+                    @if($page == "home")
+                        <div class="row">
+                        <div class="col-md-10"{!! Markdown::parse($blogpost->preview) !!}</div>
+                        <div class="col-md-2"><a class="mt-0 mb-5" href="{{ route('blog.show', ['slug' => $blogpost->slug]) }}">{{ __('menu.readmore') }} &raquo;</a></div>
+                        </div>
+                    @else
+                        {!! Markdown::parse($blogpost->body) !!}
+                    @endif
+
                 </div>
-                <div class="card-footer text-muted">
+                <div class="text-muted">
+                    <p class="float-right">
+                        <samp class="pr-2">{{ $blogpost->published_at->format('d.m.Y') }}</samp>
+                    </p>
                     <ul class="list-inline mb-0">
                         <li class="list-inline-item">
                             @if(!empty($blogpost->twitter_handle))
@@ -60,6 +65,7 @@
                     </ul>
                 </div>
             </div>
+            <hr/>
             @endforeach
         </div>
     </div>
