@@ -359,29 +359,32 @@ class UserController extends Controller
                                          ];
                                      });
 
-        $friendsTrainCheckIns = TrainCheckin::with('status')
-                                            ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
-                                            ->get()
-                                            ->filter(function($trainCheckIn) {
-                                                return Auth::user()->follows
-                                                        ->pluck('id')
-                                                        ->contains($trainCheckIn->status->user_id)
-                                                    || $trainCheckIn->status->user_id == Auth::user()->id;
-                                            })
-                                            ->groupBy('status.user_id')
-                                            ->map(function($trainCheckIns) {
-                                                return [
-                                                    'user'     => $trainCheckIns->first()->status->user,
-                                                    'points'   => $trainCheckIns->sum('points'),
-                                                    'distance' => $trainCheckIns->sum('distance'),
-                                                    'duration' => $trainCheckIns->sum('duration'),
-                                                    'speed'    => $trainCheckIns->avg('speed')
-                                                ];
-                                            });
+        $friendsTrainCheckIns = null;
+        if (Auth::check()) {
+            $friendsTrainCheckIns = TrainCheckin::with('status')
+                                                ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
+                                                ->get()
+                                                ->filter(function($trainCheckIn) {
+                                                    return Auth::user()->follows
+                                                            ->pluck('id')
+                                                            ->contains($trainCheckIn->status->user_id)
+                                                        || $trainCheckIn->status->user_id == Auth::user()->id;
+                                                })
+                                                ->groupBy('status.user_id')
+                                                ->map(function($trainCheckIns) {
+                                                    return [
+                                                        'user'     => $trainCheckIns->first()->status->user,
+                                                        'points'   => $trainCheckIns->sum('points'),
+                                                        'distance' => $trainCheckIns->sum('distance'),
+                                                        'duration' => $trainCheckIns->sum('duration'),
+                                                        'speed'    => $trainCheckIns->avg('speed')
+                                                    ];
+                                                });
+        }
 
         return [
             'users'      => (clone $trainCheckIns)->sortByDesc('points'),
-            'friends'    => $friendsTrainCheckIns->sortByDesc('points'),
+            'friends'    => $friendsTrainCheckIns?->sortByDesc('points') ?? null,
             'kilometers' => (clone $trainCheckIns)->sortByDesc('distance')
         ];
     }

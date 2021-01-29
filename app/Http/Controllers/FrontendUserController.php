@@ -43,12 +43,7 @@ class FrontendUserController extends Controller
 
     public function getLeaderboard(): Renderable {
         $leaderboard = UserBackend::getLeaderboard();
-
-        return view('leaderboard.leaderboard', [
-            'users'      => $leaderboard['users']->take(15),
-            'friends'    => $leaderboard['friends']->take(15),
-            'kilometers' => $leaderboard['kilometers']->take(15)
-        ]);
+        return view('leaderboard.leaderboard', $leaderboard);
     }
 
     /**
