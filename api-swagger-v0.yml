@@ -746,9 +746,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  usersCount:
-                    type: integer
-                    example: 20
                   users:
                     $ref: '#/components/schemas/leaderboardarray'
                   friends:

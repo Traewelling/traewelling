@@ -15,7 +15,7 @@ class TrainCheckin extends Model
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
-    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover'];
+    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
 
     public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
@@ -90,6 +90,10 @@ class TrainCheckin extends Model
      */
     public function getDurationAttribute(): int {
         return $this->arrival->diffInMinutes($this->departure);
+    }
+
+    public function getSpeedAttribute(): float {
+        return $this->duration == 0 ? 0 : $this->distance / ($this->duration / 60);
     }
 
     public function getAlsoOnThisConnectionAttribute(): Collection {
