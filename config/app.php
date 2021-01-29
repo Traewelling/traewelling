@@ -241,4 +241,12 @@ return [
 
     ],
 
+    'imprint' => [
+        'name'     => env('IMPRINT_NAME'),
+        'address1' => env('IMPRINT_ADDRESS1'),
+        'address2' => env('IMPRINT_ADDRESS2'),
+        'tel'      => env('IMPRINT_TEL'),
+        'email'    => env('IMPRINT_EMAIL')
+    ],
+
 ];
