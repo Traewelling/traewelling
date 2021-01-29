@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
-use App\Models\TrainStopOver;
+use App\Models\TrainStopover;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class RefreshCurrentTrips extends Command
 
     public function handle(): int {
 
-        $qStops = TrainStopOver::where('arrival_planned', '>=', DB::raw('CURRENT_TIMESTAMP'))
+        $qStops = TrainStopover::where('arrival_planned', '>=', DB::raw('CURRENT_TIMESTAMP'))
                                ->orWhere('arrival_real', '>=', DB::raw('CURRENT_TIMESTAMP'))
                                ->select('trip_id')
                                ->distinct();

@@ -4,12 +4,12 @@ namespace Database\Factories;
 
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
-use App\Models\TrainStopOver;
+use App\Models\TrainStopover;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TrainStopOverFactory extends Factory
+class TrainStopoverFactory extends Factory
 {
-    protected $model = TrainStopOver::class;
+    protected $model = TrainStopover::class;
 
     public function definition(): array {
         return [

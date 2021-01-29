@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\HafasException;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
-use App\Models\TrainStopOver;
+use App\Models\TrainStopover;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -220,7 +220,7 @@ abstract class HafasController extends Controller
                 }
             }
 
-            TrainStopOver::updateOrCreate(
+            TrainStopover::updateOrCreate(
                 [
                     'trip_id'          => $tripID,
                     'train_station_id' => $hafasStop->id

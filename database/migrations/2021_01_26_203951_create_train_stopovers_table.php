@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\HafasController;
-use App\Models\TrainStopOver;
+use App\Models\TrainStopover;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrainStopOversTable extends Migration
+class CreateTrainStopoversTable extends Migration
 {
     public function up(): void {
-        Schema::create('train_stop_overs', function(Blueprint $table) {
+        Schema::create('train_stopovers', function(Blueprint $table) {
             $table->id();
 
             $table->string('trip_id');
@@ -52,7 +52,7 @@ class CreateTrainStopOversTable extends Migration
 
                       $hafasStop = HafasController::parseHafasStopObject($stopover->stop);
 
-                      TrainStopOver::updateOrCreate(
+                      TrainStopover::updateOrCreate(
                           [
                               'trip_id'          => $hafasTrip->trip_id,
                               'train_station_id' => $hafasStop->id
@@ -74,6 +74,6 @@ class CreateTrainStopOversTable extends Migration
     }
 
     public function down(): void {
-        Schema::dropIfExists('train_stop_overs');
+        Schema::dropIfExists('train_stopovers');
     }
 }
