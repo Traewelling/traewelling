@@ -40,13 +40,12 @@ class UserController extends ResponseController
 
     public function getLeaderboard(): JsonResponse {
         $leaderboardResponse = UserBackend::getLeaderboard();
-
         $mapping = function($user) {
             return [
-                'username'       => $user->username,
-                'train_duration' => $user->duration,
-                'train_distance' => $user->distance,
-                'points'         => $user->points
+                'username'       => $user['user']->username,
+                'train_duration' => $user['duration'],
+                'train_distance' => $user['distance'],
+                'points'         => $user['points']
             ];
         };
 
