@@ -56,10 +56,7 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
     public function testProfilePageGet() {
         // GIVEN: A gdpr-acked user
         $user = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
 
         // WHEN: Someone visits the user's profile page
         $response = $this->get(route('account.show', ["username" => $user->username]));
