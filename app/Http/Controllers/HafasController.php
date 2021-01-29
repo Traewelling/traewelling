@@ -67,7 +67,7 @@ abstract class HafasController extends Controller
         }
     }
 
-    private static function parseHafasStopObject(stdClass $hafasStop): TrainStation {
+    public static function parseHafasStopObject(stdClass $hafasStop): TrainStation {
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $hafasStop->id
                                             ], [
@@ -235,15 +235,5 @@ abstract class HafasController extends Controller
         }
 
         return $hafasTrip;
-    }
-
-    public static function parseHafasStopObject(\stdClass $hafasStop): TrainStation {
-        return TrainStation::updateOrCreate([
-                                                'ibnr' => $hafasStop->id
-                                            ], [
-                                                'name'      => $hafasStop->name,
-                                                'latitude'  => $hafasStop?->location?->latitude,
-                                                'longitude' => $hafasStop?->location?->longitude,
-                                            ]);
     }
 }
