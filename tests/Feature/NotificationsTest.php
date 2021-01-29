@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\TransportController;
 use App\Models\Like;
+use Carbon\Carbon;
 use DateTime;
 use App\Models\User;
 use Exception;
@@ -38,7 +39,7 @@ class NotificationsTest extends TestCase
             $user = $this->user;
         }
         $trainStationboard = TransportController::TrainStationboard($stationname,
-                                                                    $now->format('U'),
+                                                                    Carbon::createFromTimestamp($now->format('U')),
                                                                     'express');
 
         $countDepartures = count($trainStationboard['departures']);

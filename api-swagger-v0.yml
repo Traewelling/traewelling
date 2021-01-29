@@ -459,8 +459,8 @@ paths:
         - in: query
           name: when
           schema:
-            type: string
-            example: 1575232872
+            type: timestamp
+            example: 2021-01-01T13:14:15+01:00
           required: false
           description: The time of the query
         - in: query
@@ -563,6 +563,10 @@ paths:
                     - $ref: '#/components/schemas/trip_id'
                   required:
                     - tripID
+                lineName:
+                  description: Required if /trains/trips isn't called before
+                  nullable: true
+                  example: "STB 7"
                 start:
                   allOf:
                     - $ref: '#/components/schemas/ibnr'
