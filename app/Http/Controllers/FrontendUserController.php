@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -55,34 +54,8 @@ class FrontendUserController extends Controller
     }
 
     public function renderMonthlyLeaderboard(string $date): Renderable {
-        $date = Carbon::parse($date);
-
-        $leaderboard = Status::join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                             ->where(
-                                 'train_checkins.departure',
-                                 '>=',
-                                 $date->clone()->firstOfMonth()->toDateString()
-                             )
-                             ->where(
-                                 'train_checkins.departure',
-                                 '<=',
-                                 $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                             )
-                             ->get()
-                             ->groupBy('user_id')
-                             ->map(function($statuses) {
-                                 return [
-                                     'user'        => $statuses->first()->user,
-                                     'points'      => $statuses->sum('trainCheckin.points'),
-                                     'distance'    => $statuses->sum('distance'),
-                                     'duration'    => $statuses->sum('trainCheckin.duration'),
-                                     'statusCount' => $statuses->count()
-                                 ];
-                             })
-                             ->sortByDesc('points');
-
         return view('leaderboard.month', [
-            'leaderboard' => $leaderboard,
+            'leaderboard' => UserBackend::getMonthlyLeaderboard(Carbon::parse($date)),
             'date'        => $date
         ]);
     }
