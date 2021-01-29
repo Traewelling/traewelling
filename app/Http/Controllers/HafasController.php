@@ -195,23 +195,29 @@ abstract class HafasController extends Controller
             //so.. just save data we really got. :)
             $updatePayload = [];
 
-            if ($stopover->plannedArrival != null)
+            if ($stopover->plannedArrival != null) {
                 $updatePayload['arrival_planned'] = $stopover->plannedArrival;
+            }
             if ($stopover->arrival != null && Carbon::parse($stopover->arrival)->isFuture()) {
                 $updatePayload['arrival_real'] = $stopover->arrival;
-                if ($stopover->plannedArrivalPlatform != null)
+                if ($stopover->plannedArrivalPlatform != null) {
                     $updatePayload['arrival_platform_planned'] = $stopover->plannedArrivalPlatform;
-                if ($stopover->arrivalPlatform != null)
+                }
+                if ($stopover->arrivalPlatform != null) {
                     $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
+                }
             }
-            if ($stopover->plannedDeparture != null)
+            if ($stopover->plannedDeparture != null) {
                 $updatePayload['departure_planned'] = $stopover->plannedDeparture;
+            }
             if ($stopover->departure != null && Carbon::parse($stopover->departure)->isFuture()) {
                 $updatePayload['departure_real'] = $stopover->departure;
-                if ($stopover->plannedDeparturePlatform != null)
+                if ($stopover->plannedDeparturePlatform != null) {
                     $updatePayload['departure_platform_planned'] = $stopover->plannedDeparturePlatform;
-                if ($stopover->departurePlatform != null)
+                }
+                if ($stopover->departurePlatform != null) {
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
+                }
             }
 
             TrainStopOver::updateOrCreate(
@@ -225,7 +231,6 @@ abstract class HafasController extends Controller
         return $hafasTrip;
 
     }
-
 
     public static function parseHafasStopObject(\stdClass $hafasStop): TrainStation {
         return TrainStation::updateOrCreate([

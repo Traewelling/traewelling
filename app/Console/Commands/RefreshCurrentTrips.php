@@ -33,9 +33,9 @@ class RefreshCurrentTrips extends Command
             try {
                 echo "Refreshing " . $trip->linename . "...\r\n";
                 HafasController::fetchHafasTrip($trip->trip_id, $trip->linename);
-            } catch (Exception | Throwable $e) {
-                report($e);
-                echo "Error while refreshing " . $trip->linename . "! " . $e->getMessage() . "\r\n";
+            } catch (Exception | Throwable $exception) {
+                report($exception);
+                echo "Error while refreshing " . $trip->linename . "! " . $exception->getMessage() . "\r\n";
                 echo "Full error is available in the server log.\r\n";
             }
         }

@@ -48,14 +48,16 @@ class TrainStopOver extends Model
     }
 
     public function getIsArrivalDelayedAttribute(): bool {
-        if ($this->arrival_real == null) return false;
-        if ($this->arrival_planned == null) return false;
+        if ($this->arrival_real == null || $this->arrival_planned == null) {
+            return false;
+        }
         return $this->arrival_real->isAfter($this->arrival_planned);
     }
 
     public function getIsDepartureDelayedAttribute(): bool {
-        if ($this->departure_real == null) return false;
-        if ($this->departure_planned == null) return false;
+        if ($this->departure_real == null || $this->departure_planned == null) {
+            return false;
+        }
         return $this->departure_real->isAfter($this->departure_planned);
     }
 }
