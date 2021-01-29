@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h4>Träweller des Monats <b>{{$date->isoFormat('MMMM YYYY')}}</b></h4>
+                <h4>{{__('leaderboard.month')}} <b>{{$date->isoFormat('MMMM YYYY')}}</b></h4>
                 <hr/>
                 <a href="{{route('leaderboard.month', ['date' => $date->clone()->subMonth()->format('Y-m')])}}"
                    class="btn btn-sm btn-primary float-left">
@@ -28,7 +28,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body text-center text-danger text-bold">
-                            In diesem Monat steht leider keine Topliste zur Verfügung.
+                            {{__('leaderboard.no_data')}}
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
             @foreach($leaderboard->take(3) as $place)
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Rang {{$loop->index + 1}}</div>
+                        <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
                             <div class="image-box pr-0 d-none d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
@@ -119,3 +119,4 @@
         @endif
     </div>
 @endsection
+
