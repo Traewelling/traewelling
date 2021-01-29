@@ -193,28 +193,23 @@ abstract class HafasController extends Controller
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
             //so.. just save data we really got. :)
-            $updatePayload = [];
+            $updatePayload = [
+                'arrival_planned'            => $stopover->plannedArrival,
+                'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
+                'departure_planned'          => $stopover->plannedDeparture,
+                'departure_platform_planned' => $stopover->plannedDeparturePlatform
+            ];
+            //remove "null" values
+            $updatePayload = array_filter($updatePayload, 'strlen');
 
-            if ($stopover->plannedArrival != null) {
-                $updatePayload['arrival_planned'] = $stopover->plannedArrival;
-            }
             if ($stopover->arrival != null && Carbon::parse($stopover->arrival)->isFuture()) {
                 $updatePayload['arrival_real'] = $stopover->arrival;
-                if ($stopover->plannedArrivalPlatform != null) {
-                    $updatePayload['arrival_platform_planned'] = $stopover->plannedArrivalPlatform;
-                }
                 if ($stopover->arrivalPlatform != null) {
                     $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
                 }
             }
-            if ($stopover->plannedDeparture != null) {
-                $updatePayload['departure_planned'] = $stopover->plannedDeparture;
-            }
             if ($stopover->departure != null && Carbon::parse($stopover->departure)->isFuture()) {
                 $updatePayload['departure_real'] = $stopover->departure;
-                if ($stopover->plannedDeparturePlatform != null) {
-                    $updatePayload['departure_platform_planned'] = $stopover->plannedDeparturePlatform;
-                }
                 if ($stopover->departurePlatform != null) {
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
