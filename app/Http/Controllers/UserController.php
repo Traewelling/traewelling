@@ -347,7 +347,7 @@ class UserController extends Controller
     ])]
     public static function getLeaderboard(): array {
         $trainCheckIns = TrainCheckin::with('status')
-                                     ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
+                                     ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                                      ->get()
                                      ->groupBy('status.user_id')
                                      ->map(function($trainCheckIns) {
@@ -363,7 +363,7 @@ class UserController extends Controller
         $friendsTrainCheckIns = null;
         if (Auth::check()) {
             $friendsTrainCheckIns = TrainCheckin::with('status')
-                                                ->where('departure', '>=', DB::raw('(NOW() - INTERVAL 7 DAY)'))
+                                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                                                 ->get()
                                                 ->filter(function($trainCheckIn) {
                                                     return Auth::user()->follows

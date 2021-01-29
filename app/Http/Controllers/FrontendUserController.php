@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -44,13 +43,11 @@ class FrontendUserController extends Controller
 
     public function getLeaderboard(): Renderable {
         $leaderboard = UserBackend::getLeaderboard();
-        return view('leaderboard.leaderboard', $leaderboard);
-    }
 
-    public function renderMonthlyLeaderboard(string $date): Renderable {
-        return view('leaderboard.month', [
-            'leaderboard' => UserBackend::getMonthlyLeaderboard(Carbon::parse($date)),
-            'date'        => $date
+        return view('leaderboard.leaderboard', [
+            'users'      => $leaderboard['users']->take(15),
+            'friends'    => $leaderboard['friends']?->take(15),
+            'kilometers' => $leaderboard['kilometers']->take(15)
         ]);
     }
 

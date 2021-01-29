@@ -88,7 +88,7 @@
                                     @endforeach
                                 </table>
                             </div>
-                            @if($friends != null)
+                            @isset($friends)
                                 <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
                                      aria-labelledby="contact-tab">
                                     <table class="table">
@@ -116,7 +116,7 @@
                                         @endforeach
                                     </table>
                                 </div>
-                            @endif
+                            @endisset
                         </div>
                     </div>
                 </div>
