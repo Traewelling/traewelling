@@ -21,7 +21,7 @@
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
-                            <small style="text-decoration: line-through;">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>&nbsp;
+                            <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>&nbsp;
                             {{ $status->trainCheckin->origin_stopover->departure_real->format('H:i') }}
                         @else
                             {{ $status->trainCheckin?->origin_stopover?->departure->format('H:i') ?? $status->trainCheckin->departure->format('H:i') }}
@@ -57,7 +57,7 @@
                     <i>&nbsp;</i>
                     <span class="text-trwl float-right">
                         @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
-                            <small style="text-decoration: line-through;">{{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}</small>&nbsp;
+                            <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}</small>&nbsp;
                             {{ $status->trainCheckin->destination_stopover->arrival_real->format('H:i') }}
                         @else
                             {{ $status->trainCheckin?->destination_stopover?->arrival?->format('H:i') ?? $status->trainCheckin->arrival->format('H:i') }}
