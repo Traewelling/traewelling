@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\SocialLoginProfile;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use JetBrains\PhpStorm\NoReturn;
 use Validator,Redirect,Response,File;
 use Socialite;
 use App\Models\User;
 use App\Models\MastodonServer;
-use Auth;
 use Mastodon;
 use GuzzleHttp\Exception\ClientException;
 
@@ -19,10 +23,11 @@ class SocialController extends Controller
      * Redirects to login-provider authentication
      *
      * @param $provider
-     *
-     * @return redirect
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
      */
-    public function redirect($provider, Request $request) {
+    public function redirect($provider, Request $request): RedirectResponse {
 
         // If a user tries to login with mastodon and the domain doesn't start with https,
         // then add a 'https://' beforehand.
@@ -80,10 +85,9 @@ class SocialController extends Controller
      *
      * @param $provider
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function callback($provider)
-    {
+    public function callback($provider): RedirectResponse {
         $domain = '';
         if ($provider === 'mastodon') {
             $domain = session('mastodon_domain');
@@ -105,7 +109,7 @@ class SocialController extends Controller
             auth()->login($user, true);
         }
 
-        return redirect()->to('/dashboard');
+        return redirect()->route('dashboard');
 
     }
 
@@ -116,10 +120,10 @@ class SocialController extends Controller
      *
      * @param $getInfo (response of Socialite->user())
      * @param $provider (String of login-provider)
-     *
-     * @return user model
+     * @param $domain
+     * @return User|RedirectResponse|null model
      */
-    function createUser($getInfo, $provider, $domain){
+    function createUser($getInfo, $provider, $domain): User|RedirectResponse|null {
         if ($provider === 'mastodon') {
             $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->where('mastodon_server', MastodonServer::where('domain', $domain)->first()->id)->first();
         } else {
@@ -146,7 +150,7 @@ class SocialController extends Controller
                                          'email' => $getInfo->email,
                                      ]);
             }
-            catch (\Illuminate\Database\QueryException $exception) {
+            catch (QueryException $exception) {
                 return null;
             }
         } else {
@@ -203,7 +207,10 @@ class SocialController extends Controller
         return response(__('controller.social.deleted'), 200);
     }
 
-    public function testMastodon() {
+    /**
+     * @deprecated Will be removed in future versions if it's not needed anymore
+     */
+    public function testMastodon(): void {
         $user = Auth::user();
         $socialProfile = $user->socialProfile;
         $mastodonDomain = MastodonServer::where('id', $socialProfile->mastodon_server)->first()->domain;

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use JetBrains\PhpStorm\Pure;
 
 class Controller extends BaseController
 {
@@ -47,8 +48,7 @@ class Controller extends BaseController
         return $polyline;
     }
 
-    public static function distanceCalculation($longitudeA, $latitudeA, $longitudeB, $latitudeB, $decimals = 3)
-    {
+    public static function distanceCalculation($longitudeA, $latitudeA, $longitudeB, $latitudeB, $decimals = 3): float {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
         }

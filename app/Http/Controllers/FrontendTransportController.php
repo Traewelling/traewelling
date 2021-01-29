@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,12 +16,12 @@ use Illuminate\Validation\Rule;
 
 class FrontendTransportController extends Controller
 {
-    public function TrainAutocomplete($station) {
+    public function TrainAutocomplete($station): JsonResponse {
         $TrainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
         return response()->json($TrainAutocompleteResponse);
     }
 
-    public function BusAutocomplete($station) {
+    public function BusAutocomplete($station): JsonResponse {
         $BusAutocompleteResponse = TransportBackend::BusAutocomplete($station);
         return response()->json($BusAutocompleteResponse);
     }
@@ -62,25 +63,24 @@ class FrontendTransportController extends Controller
         );
     }
 
-    public function StationByCoordinates(Request $request)
-    {
+    public function StationByCoordinates(Request $request): RedirectResponse {
         $validatedInput = $request->validate([
-            'latitude' => 'required|numeric|min:-180|max:180',
-            'longitude' => 'required|numeric|min:-180|max:180'
-        ]);
+                                                 'latitude'  => 'required|numeric|min:-180|max:180',
+                                                 'longitude' => 'required|numeric|min:-180|max:180'
+                                             ]);
 
         $nearestStation = HafasController::getNearbyStations($validatedInput['latitude'], $validatedInput['longitude'], 1)->first();
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
-        return redirect(route('trains.stationboard', [
-            'station' => $nearestStation->name,
+        return redirect()->route('trains.stationboard', [
+            'station'  => $nearestStation->name,
             'provider' => 'train'
-        ]));
+        ]);
     }
 
-    public function TrainTrip(Request $request) {
+    public function TrainTrip(Request $request): Renderable|RedirectResponse {
         $TrainTripResponse = TransportBackend::TrainTrip(
             $request->tripID,
             $request->lineName,
@@ -108,7 +108,7 @@ class FrontendTransportController extends Controller
         ]);
     }
 
-    public function TrainCheckin(Request $request) {
+    public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
             'body' => 'max:280',
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
@@ -161,7 +161,7 @@ class FrontendTransportController extends Controller
 
     }
 
-    public function setHome(Request $request) {
+    public function setHome(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'ibnr' => ['required', 'numeric']
                                         ]);
@@ -175,7 +175,7 @@ class FrontendTransportController extends Controller
         }
     }
 
-    public function FastTripAccess(Request $request) {
+    public function FastTripAccess(Request $request): RedirectResponse {
         $fastTripResponse = TransportBackend::FastTripAccess($request->start,
                                                              $request->lineName,
                                                              $request->number,

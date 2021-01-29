@@ -11,6 +11,9 @@ use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +22,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 
 class StatusController extends Controller
 {
-    public static function getStatus($statusId)
-    {
+    public static function getStatus($statusId): ?Status {
         return Status::where('id', $statusId)->with('user',
                                                     'trainCheckin',
                                                     'trainCheckin.Origin',
@@ -34,10 +36,9 @@ class StatusController extends Controller
      *
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
-     * @return Status|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return Status|array|Builder|Model|object|null
      */
-    public static function getActiveStatuses ($userId = null, bool $array = true)
-    {
+    public static function getActiveStatuses ($userId = null, bool $array = true) {
         if ($userId === null) {
             $statuses = Status::with('user',
                 'trainCheckin',
@@ -83,8 +84,7 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getStatusesByEvent(int $eventId)
-    {
+    public static function getStatusesByEvent(int $eventId): Paginator {
         return Status::with('user',
             'trainCheckin',
             'trainCheckin.Origin',
@@ -98,7 +98,7 @@ class StatusController extends Controller
             ->simplePaginate(15);
     }
 
-    public static function getDashboard ($user) {
+    public static function getDashboard ($user): Paginator {
         $userIds = $user->follows->pluck('id');
         $userIds[] = $user->id;
         return Status::with([
@@ -115,7 +115,7 @@ class StatusController extends Controller
             ->simplePaginate(15);
     }
 
-    public static function getGlobalDashboard () {
+    public static function getGlobalDashboard (): Paginator {
         return Status::with([
                 'event', 'likes', 'user', 'trainCheckin',
                 'trainCheckin.Origin', 'trainCheckin.Destination',
@@ -129,7 +129,7 @@ class StatusController extends Controller
             ->simplePaginate(15);
     }
 
-    public static function DeleteStatus ($user, $statusId) {
+    public static function DeleteStatus ($user, $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
@@ -152,7 +152,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus ($user, $statusId, $body, $businessCheck) {
+    public static function EditStatus ($user, $statusId, $body, $businessCheck): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -187,7 +187,7 @@ class StatusController extends Controller
         return $like;
     }
 
-    public static function DestroyLike ($user, $statusId) {
+    public static function DestroyLike ($user, $statusId): bool {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
             $like->delete();
@@ -307,7 +307,7 @@ class StatusController extends Controller
         return Response::json($trainCheckins, 200, $headers);
     }
 
-    public static function usageByDay (Carbon $date) {
+    public static function usageByDay (Carbon $date): int {
         return Status::where("created_at", ">=", $date->copy()->startOfDay())
             ->where("created_at", "<=", $date->copy()->endOfDay())
             ->count();

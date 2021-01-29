@@ -6,17 +6,19 @@ use App\Models\Event;
 use App\Models\Status;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
 class EventController extends Controller {
 
-    public static function all() {
+    public static function all(): Collection {
         return Event::orderBy('end', 'desc')->get();
     }
 
-    public static function save(Request $request, Event $event) {
+    public static function save(Request $request, Event $event): RedirectResponse {
         $validated = $request->validate([
             'name' => 'required|max:255',
             'hashtag' => 'required|max:30',
@@ -64,15 +66,16 @@ class EventController extends Controller {
 
         $event->save();
 
-        return redirect(route('events.show', ['slug' => $event->slug]))->with('message', $event->slug . " saved.");
+        return redirect()->route('events.show', ['slug' => $event->slug])
+                         ->with('message', $event->slug . " saved.");
     }
 
 
-    public static function getBySlug(String $slug) {
+    public static function getBySlug(string $slug): ?Event {
         return Event::where('slug', '=', $slug)->firstOrFail();
     }
 
-    public static function destroy(String $slug) {
+    public static function destroy(string $slug): string {
         $event = Event::where('slug', '=', $slug)->firstOrFail();
         Status::where('event_id', '=', $event->id)->update(['event_id' => NULL]);
         $event->delete();
@@ -80,7 +83,7 @@ class EventController extends Controller {
         return $slug;
     }
 
-    public static function activeEvents() {
+    public static function activeEvents(): ?Collection {
         $now = Carbon::now();
 
         return Event::where([
