@@ -9,5 +9,5 @@ return [
     "top"          => "Top",
     "user"         => "User",
     "month"        => "Träweller of the month",
-    'no_data'      => 'In diesem Monat steht leider keine Topliste zur Verfügung.'
+    'no_data'      => 'There is no data available this month.'
 ];
