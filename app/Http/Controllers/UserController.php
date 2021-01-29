@@ -4,26 +4,21 @@ namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Models\Follow;
-use App\Models\HafasTrip;
-use App\Models\Like;
 use App\Models\MastodonServer;
-use App\Notifications\UserFollowed;
-use App\Models\SocialLoginProfile;
 use App\Models\Status;
-use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Carbon\Carbon;
-use \Exception;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use Jenssegers\Agent\Agent;
 use Intervention\Image\ImageManagerStatic as Image;
+use Jenssegers\Agent\Agent;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\Token;
 use Mastodon;
 
@@ -119,16 +114,22 @@ class UserController extends Controller
         return redirect()->back()->withErrors(__('controller.user.password-wrong'));
     }
 
-    public static function updateProfilePicture($avatar) {
-        $user     = Auth::user();
-        $filename = $user->name . time() . '.png'; // Croppie always uploads a png
-        Image::make($avatar)->resize(300, 300)->save( public_path('/uploads/avatars/' . $filename));
+    #[ArrayShape(['status' => "string"])]
+    public static function updateProfilePicture($avatar): array {
+        $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
+                                                 ':userId' => Auth::user()->id,
+                                                 ':time'   => time()
+        ]);
+        Image::make($avatar)->resize(300, 300)
+             ->save(public_path('/uploads/avatars/' . $filename));
 
-        if ($user->avatar != 'user.jpg') {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+        if (Auth::user()->avatar != 'user.jpg') {
+            File::delete(public_path('/uploads/avatars/' . Auth::user()->avatar));
         }
-        $user->avatar = $filename;
-        $user->save();
+
+        Auth::user()->update([
+                                 'avatar' => $filename
+                             ]);
 
         return ['status' => ':ok'];
     }
