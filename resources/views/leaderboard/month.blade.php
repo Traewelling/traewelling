@@ -88,7 +88,7 @@
                                     <td>{{ __('leaderboard.points') }}</td>
                                 </tr>
                                 </thead>
-                                @foreach($leaderboard as $place)
+                                @foreach($leaderboard->take(100) as $place)
                                     @if($loop->index < 3) @continue @endif
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
