@@ -6,6 +6,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
@@ -27,7 +28,12 @@ class CheckinTest extends TestCase
         $requestDate       = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
-        $trainStationboard = TransportController::TrainStationboard($stationname, $requestDate->format('U'));
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::createFromTimestamp(
+                $requestDate->format('U')
+            )
+        );
         $station           = $trainStationboard['station'];
         $departures        = $trainStationboard['departures'];
 
@@ -54,10 +60,7 @@ class CheckinTest extends TestCase
     public function stationboardByLocationPositiveTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
 
         // GIVEN: A bunch of locations around Europe that should return true
         $locations = [
@@ -89,10 +92,7 @@ class CheckinTest extends TestCase
     public function stationboardByLocationNegativeTest() {
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
 
         // GIVEN: A bunch of Locations
         $locations = [
@@ -136,7 +136,11 @@ class CheckinTest extends TestCase
         $now               = new DateTime($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
-        $trainStationboard = TransportController::TrainStationboard($stationname, $now->format('U'), 'express');
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::createFromTimestamp($now->format('U')),
+            'express'
+        );
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -209,10 +213,7 @@ class CheckinTest extends TestCase
 
         // GIVEN: A logged-in and gdpr-acked user
         $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
 
         /*
          * We're now generating a 'base checkin' on which we are comparing all possible collision types
@@ -329,10 +330,7 @@ class CheckinTest extends TestCase
     public function testCheckinSuccessFlash() {
         // GIVEN: A gdpr-acked user
         $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($user);
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [

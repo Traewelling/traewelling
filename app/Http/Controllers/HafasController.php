@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use stdClass;
 
 abstract class HafasController extends Controller
 {
@@ -64,6 +65,16 @@ abstract class HafasController extends Controller
             $response = $e->getResponse()->getBody()->getContents();
             throw new HafasException($response->msg ?? $e->getMessage());
         }
+    }
+
+    private static function parseHafasStopObject(stdClass $hafasStop): TrainStation {
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $hafasStop->id
+                                            ], [
+                                                'name'      => $hafasStop->name,
+                                                'latitude'  => $hafasStop?->location?->latitude,
+                                                'longitude' => $hafasStop?->location?->longitude,
+                                            ]);
     }
 
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
@@ -224,7 +235,6 @@ abstract class HafasController extends Controller
         }
 
         return $hafasTrip;
-
     }
 
     public static function parseHafasStopObject(\stdClass $hafasStop): TrainStation {
@@ -236,5 +246,4 @@ abstract class HafasController extends Controller
                                                 'longitude' => $hafasStop?->location?->longitude,
                                             ]);
     }
-
 }

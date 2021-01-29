@@ -67,7 +67,7 @@
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <div class="navbar-toggler">
-                    <button class="navbar-toggler" type="button" data-toggle="modal" data-target="#notifications-board" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Show notifications') }}">
+                    <button class="navbar-toggler notifications-board-toggle" type="button" data-toggle="modal" data-target="#notifications-board" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Show notifications') }}">
                         <span class="notifications-bell far fa-bell"></span>
                     </button>
 
@@ -114,7 +114,7 @@
                                 </div>
                             </form>
                             <li class="nav-item d-none d-md-inline-block">
-                                <a href="#" id="notifications-toggle" class="nav-link" data-toggle="modal" data-target="#notifications-board">
+                                <a href="javascript:void(0)" id="notifications-toggle" class="nav-link notifications-board-toggle" data-toggle="modal" data-target="#notifications-board">
                                     <span class="notifications-bell far fa-bell"></span>
                                 </a>
                             </li>
@@ -178,7 +178,7 @@
                     <span class="footer-nav-link">/ <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a></span>
                 </p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
-                <p class="mb-0">&copy; 2020 Tr&auml;welling</p>
+                <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
                 <p class="mb-0 text-muted small">commit: {{ get_current_git_commit() }}</p>
             </div>
         </footer>

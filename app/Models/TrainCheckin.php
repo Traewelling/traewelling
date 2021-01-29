@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 class TrainCheckin extends Model
 {
@@ -14,19 +17,19 @@ class TrainCheckin extends Model
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
     protected $appends  = ['duration', 'origin_stopover', 'destination_stopover'];
 
-    public function status() {
+    public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
     }
 
-    public function Origin() {
+    public function Origin(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
     }
 
-    public function Destination() {
+    public function Destination(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
     }
 
-    public function HafasTrip() {
+    public function HafasTrip(): HasOne {
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
@@ -85,11 +88,11 @@ class TrainCheckin extends Model
      * The duration of the journey in minutes
      * @return int
      */
-    public function getDurationAttribute() {
+    public function getDurationAttribute(): int {
         return $this->arrival->diffInMinutes($this->departure);
     }
 
-    public function getAlsoOnThisConnectionAttribute() {
+    public function getAlsoOnThisConnectionAttribute(): Collection {
         return TrainCheckin::with(['status'])
                            ->where([
                                        ['status_id', '<>', $this->status->id],

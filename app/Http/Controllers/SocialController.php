@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SocialLoginProfile;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Validator,Redirect,Response,File;
-use Socialite;
-use App\Models\User;
 use App\Models\MastodonServer;
-use Auth;
-use Mastodon;
+use App\Models\SocialLoginProfile;
+use App\Models\User;
+use Exception;
+use File;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Mastodon;
+use Redirect;
+use Response;
+use Socialite;
+use Validator;
 
 class SocialController extends Controller
 {
@@ -19,14 +26,15 @@ class SocialController extends Controller
      * Redirects to login-provider authentication
      *
      * @param $provider
-     *
-     * @return redirect
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
      */
-    public function redirect($provider, Request $request) {
+    public function redirect($provider, Request $request): RedirectResponse {
 
         // If a user tries to login with mastodon and the domain doesn't start with https,
         // then add a 'https://' beforehand.
-        if($provider === 'mastodon' && substr($request->input('domain'), 0, 8) !== "https://") {
+        if ($provider === 'mastodon' && substr($request->input('domain'), 0, 8) !== "https://") {
             $request->request->set('domain', "https://" . $request->input('domain'));
         }
 
@@ -49,11 +57,11 @@ class SocialController extends Controller
 
                     //save app info
                     $server = MastodonServer::create([
-                                                'domain'        => $domain,
-                                                'client_id'     => $info['client_id'],
-                                                'client_secret' => $info['client_secret'],
-                                            ]);
-                } catch(ClientException $e) {
+                                                         'domain'        => $domain,
+                                                         'client_id'     => $info['client_id'],
+                                                         'client_secret' => $info['client_secret'],
+                                                     ]);
+                } catch (ClientException $e) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
                 }
             }
@@ -69,7 +77,7 @@ class SocialController extends Controller
         }
         try {
             return Socialite::driver($provider)->redirect();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             abort(404);
         }
     }
@@ -80,10 +88,9 @@ class SocialController extends Controller
      *
      * @param $provider
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function callback($provider)
-    {
+    public function callback($provider): RedirectResponse {
         $domain = '';
         if ($provider === 'mastodon') {
             $domain = session('mastodon_domain');
@@ -97,15 +104,15 @@ class SocialController extends Controller
 
 
         $getInfo = Socialite::driver($provider)->user();
-        $user = $this->createUser($getInfo, $provider, $domain);
+        $user    = $this->createUser($getInfo, $provider, $domain);
         if ($user === null) {
-            return redirect()->to('/login')->withErrors([ __('controller.social.create-error')]);
+            return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             auth()->login($user, true);
         }
 
-        return redirect()->to('/dashboard');
+        return redirect()->route('dashboard');
 
     }
 
@@ -116,14 +123,14 @@ class SocialController extends Controller
      *
      * @param $getInfo (response of Socialite->user())
      * @param $provider (String of login-provider)
-     *
-     * @return user model
+     * @param $domain
+     * @return User|RedirectResponse|null model
      */
-    function createUser($getInfo, $provider, $domain){
+    function createUser($getInfo, $provider, $domain): User|RedirectResponse|null {
         if ($provider === 'mastodon') {
-            $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->where('mastodon_server', MastodonServer::where('domain', $domain)->first()->id)->first();
+            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)->where('mastodon_server', MastodonServer::where('domain', $domain)->first()->id)->first();
         } else {
-            $identifier = SocialLoginProfile::where($provider.'_id', $getInfo->id)->first();
+            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)->first();
         }
 
         if (Auth::check()) {
@@ -133,36 +140,35 @@ class SocialController extends Controller
             }
         } elseif ($identifier === null) {
             $existingUser = User::where('username', $getInfo->nickname)->first();
-            $errorCount = 0;
+            $errorCount   = 0;
             while ($errorCount < 10 && $existingUser !== null) {
-                $getInfo->nickname = $getInfo->nickname . rand(1,10);
-                $existingUser = User::where('username', $getInfo->nickname)->first();
+                $getInfo->nickname = $getInfo->nickname . rand(1, 10);
+                $existingUser      = User::where('username', $getInfo->nickname)->first();
                 $errorCount++;
             }
-            try{
+            try {
                 $user = User::create([
-                                         'name' => $getInfo->name,
+                                         'name'     => $getInfo->name,
                                          'username' => $getInfo->nickname,
-                                         'email' => $getInfo->email,
+                                         'email'    => $getInfo->email,
                                      ]);
-            }
-            catch (\Illuminate\Database\QueryException $exception) {
+            } catch (QueryException $exception) {
                 return null;
             }
         } else {
             $user = User::where('id', $identifier->user_id)->first();
         }
 
-        $socialProfile = $user->socialProfile ?: new SocialLoginProfile;
-        $providerField = "{$provider}_id";
+        $socialProfile                   = $user->socialProfile ?: new SocialLoginProfile;
+        $providerField                   = "{$provider}_id";
         $socialProfile->{$providerField} = $getInfo->id;
 
         if ($provider === 'twitter') {
-            $socialProfile->twitter_token = $getInfo->token;
+            $socialProfile->twitter_token       = $getInfo->token;
             $socialProfile->twitter_tokenSecret = $getInfo->tokenSecret;
         }
         if ($provider === 'mastodon') {
-            $socialProfile->mastodon_token = $getInfo->token;
+            $socialProfile->mastodon_token  = $getInfo->token;
             $socialProfile->mastodon_server = MastodonServer::where('domain', $domain)->first()->id;
         }
 
@@ -203,9 +209,12 @@ class SocialController extends Controller
         return response(__('controller.social.deleted'), 200);
     }
 
-    public function testMastodon() {
-        $user = Auth::user();
-        $socialProfile = $user->socialProfile;
+    /**
+     * @deprecated Will be removed in future versions if it's not needed anymore
+     */
+    public function testMastodon(): void {
+        $user           = Auth::user();
+        $socialProfile  = $user->socialProfile;
         $mastodonDomain = MastodonServer::where('id', $socialProfile->mastodon_server)->first()->domain;
 
         Mastodon::domain($mastodonDomain)->token($socialProfile->mastodon_token);

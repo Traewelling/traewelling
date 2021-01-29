@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blogpost;
-use Illuminate\Http\Request;
+use DateTime;
+use Illuminate\Contracts\Support\Renderable;
 
-class BlogController extends Controller {
-    public function all() {
-        $blogposts = Blogpost::where("published_at", "<", new \DateTime())->latest('published_at')->simplePaginate(5);
+class BlogController extends Controller
+{
+    public function all(): Renderable {
+        $blogposts = Blogpost::where("published_at", "<", new DateTime())->latest('published_at')->simplePaginate(5);
 
         return view('blog', ['blogposts' => $blogposts, "page" => "home"]);
     }
 
-    public function show(String $slug) {
+    public function show(string $slug): Renderable {
         $blogposts = Blogpost::where("slug", $slug)->simplePaginate(1);
 
         if ($blogposts->count() == 0) {
@@ -21,7 +23,8 @@ class BlogController extends Controller {
 
         return view('blog', ['blogposts' => $blogposts, "page" => "single"]);
     }
-    public function category(String $cat) {
+
+    public function category(string $cat): Renderable {
         $blogposts = Blogpost::where("category", $cat)->orderBy('published_at', 'desc')->simplePaginate(5);
 
         if ($blogposts->count() == 0) {

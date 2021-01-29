@@ -6,15 +6,14 @@ use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Status;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 
 class StatusController extends ResponseController
 {
 
-    public function enRoute ()
-    {
+    public function enRoute() {
         $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $response               = [];
         if ($activeStatusesResponse['statuses'] !== null) {
@@ -26,25 +25,23 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
-    public function getByEvent($eventID)
-    {
+    public function getByEvent($eventID) {
         $eventStatusResponse = StatusBackend::getStatusesByEvent($eventID);
         return $this->sendResponse($eventStatusResponse);
     }
 
-    public function index (Request $request)
-    {
+    public function index(Request $request) {
         $validator = Validator::make($request->all(), [
             'maxStatuses' => 'integer',
-            'username' => 'string|required_if:view,user',
-            'view' => 'in:user,global,personal'
+            'username'    => 'string|required_if:view,user',
+            'view'        => 'in:user,global,personal'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
 
-            $view = 'global';
+        $view = 'global';
         if (!empty($request->view)) {
             $view = $request->view;
         }
@@ -61,19 +58,17 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show ($statusId)
-    {
+    public function show($statusId) {
         $statusResponse = StatusBackend::getStatus($statusId);
         return $this->sendResponse($statusResponse);
     }
 
-    public function update (Request $request)
-    {
+    public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'body' => 'max:280',
+            'body'     => 'max:280',
             'business' => 'integer',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
         $editStatusResponse = StatusBackend::EditStatus(
@@ -91,8 +86,7 @@ class StatusController extends ResponseController
         return $this->sendResponse(['newBody' => $editStatusResponse]);
     }
 
-    public function destroy ($statusId)
-    {
+    public function destroy($statusId) {
         $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $statusId);
 
         if ($deleteStatusResponse === null) {
@@ -104,9 +98,9 @@ class StatusController extends ResponseController
         return $this->sendResponse(__('controller.status.delete-ok'));
     }
 
-    public function createLike ($statusId) {
+    public function createLike($statusId) {
         $status = Status::find($statusId);
-        if($status == null) {
+        if ($status == null) {
             return $this->sendError(false, 404);
         }
         try {
@@ -118,13 +112,13 @@ class StatusController extends ResponseController
 
     }
 
-    public function destroyLike ($statusId) {
+    public function destroyLike($statusId) {
         $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $statusId);
 
         return $this->sendResponse($destroyLikeResponse);
     }
 
-    public function getLikes ($statusId) {
+    public function getLikes($statusId) {
         $getLikesResponse = StatusBackend::getLikes($statusId);
 
         return $this->sendResponse($getLikesResponse);

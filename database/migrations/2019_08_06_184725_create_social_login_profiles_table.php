@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSocialLoginProfilesTable extends Migration
 {
@@ -11,9 +11,8 @@ class CreateSocialLoginProfilesTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('social_login_profiles', function (Blueprint $table) {
+    public function up() {
+        Schema::create('social_login_profiles', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('twitter_id')->nullable();
@@ -21,7 +20,7 @@ class CreateSocialLoginProfilesTable extends Migration
             $table->text('twitter_tokenSecret')->nullable();
             $table->string('mastodon_id')->nullable();
             $table->integer('mastodon_server')
-                ->nullable();
+                  ->nullable();
             $table->text('mastodon_token')->nullable();
             $table->timestamps();
         });
@@ -32,8 +31,7 @@ class CreateSocialLoginProfilesTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('social_login_profiles');
     }
 }

@@ -6,68 +6,63 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
-use Carbon\Carbon;
 use App\Models\HafasTrip;
-use GuzzleHttp\Exception\GuzzleException;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Throwable;
 
 class TransportController extends ResponseController
 {
-    public function TrainAutocomplete($station)
-    {
+    public function TrainAutocomplete($station) {
         $trainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
         return $this->sendResponse($trainAutocompleteResponse);
     }
 
-    public function TrainStationboard(Request $request)
-    {
+    public function TrainStationboard(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'station' => 'string|required',
-            'travelType' => 'string|in:nationalExpress,
-                                        national,
-                                        regionalExp,
-                                        regional,
-                                        suburban,
-                                        bus,
-                                        ferry,
-                                        subway,
-                                        tram,
-                                        taxi'
+            'station'    => ['required', 'string'],
+            'when'       => ['nullable', 'date'],
+            'travelType' => ['nullable', Rule::in([
+                                                      'nationalExpress', 'express', 'regionalExp', 'regional',
+                                                      'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi'
+                                                  ])]
         ]);
 
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
 
+        $validated = $validator->validate();
+
         $trainStationboardResponse = TransportBackend::TrainStationboard(
-            $request->station,
-            //workaround... api should use ISO8601 input instead of unixtime
-            Carbon::createFromTimestamp($request->when)->toIso8601String(),
-            $request->travelType
+            $validated['station'],
+            isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+            $validated['travelType'] ?? null
         );
         if ($trainStationboardResponse === false) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
         }
         if ($trainStationboardResponse === null) {
 
-            return  $this->sendError(404, __('controller.transport.no-station-found'));
+            return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
         return $this->sendResponse([
-                                      'station' => $trainStationboardResponse['station'],
-                                      'when' => $trainStationboardResponse['when'],
-                                      'departures' => $trainStationboardResponse['departures']
-                                  ]);
+                                       'station'    => $trainStationboardResponse['station'],
+                                       'when'       => $trainStationboardResponse['when'],
+                                       'departures' => $trainStationboardResponse['departures']
+                                   ]);
     }
 
-    public function TrainTrip(Request $request)
-    {
+    public function TrainTrip(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID' => 'required',
+            'tripID'   => 'required',
             'lineName' => 'required',
-            'start' => 'required'
+            'start'    => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -84,11 +79,11 @@ class TransportController extends ResponseController
         }
 
         return $this->sendResponse([
-            'start' => $trainTripResponse['start'],
-            'destination' => $trainTripResponse['destination'],
-            'train' => $trainTripResponse['train'],
-            'stopovers' => $trainTripResponse['stopovers']
-        ]);
+                                       'start'       => $trainTripResponse['start'],
+                                       'destination' => $trainTripResponse['destination'],
+                                       'train'       => $trainTripResponse['train'],
+                                       'stopovers'   => $trainTripResponse['stopovers']
+                                   ]);
     }
 
     public function TrainCheckin(Request $request) {
@@ -143,14 +138,13 @@ class TransportController extends ResponseController
                                         'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->sendError('Unknown Error occured', 500);
         }
 
     }
 
-    public function TrainLatestArrivals()
-    {
+    public function TrainLatestArrivals() {
         $arrivals = TransportBackend::getLatestArrivals(auth()->user());
 
         return $this->sendResponse($arrivals);
@@ -158,7 +152,7 @@ class TransportController extends ResponseController
 
     public function StationByCoordinates(Request $request) {
         $validator = Validator::make($request->all(), [
-            'latitude' => 'required|numeric|min:-180|max:180',
+            'latitude'  => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
         ]);
         if ($validator->fails()) {
@@ -173,17 +167,15 @@ class TransportController extends ResponseController
         return $this->sendResponse($nearestStation);
     }
 
-    public function getHome()
-    {
+    public function getHome() {
         $home = auth()->user()->home;
-        if($home === null) {
+        if ($home === null) {
             return $this->sendError('user has not set a home station.');
         }
         return $this->sendResponse($home);
     }
 
-    public function setHome(Request $request)
-    {
+    public function setHome(Request $request) {
         $validator = Validator::make($request->all(), [
             'ibnr' => 'required'
         ]);

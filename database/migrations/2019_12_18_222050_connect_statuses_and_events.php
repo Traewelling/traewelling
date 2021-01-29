@@ -11,9 +11,8 @@ class ConnectStatusesAndEvents extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+    public function up() {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->bigInteger('event_id')->nullable(true)->unsigned()->after('type');
         });
     }
@@ -23,9 +22,8 @@ class ConnectStatusesAndEvents extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+    public function down() {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->dropColumn('event_id');
         });
     }

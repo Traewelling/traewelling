@@ -3,18 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Models\Event;
 use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Models\Event;
 use App\Models\Status;
 use Carbon\Carbon;
+use DateTime;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FrontendStatusController extends Controller
 {
-    public function getDashboard() {
+    public static function nextStation(&$status) {
+        $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
+        $nextStopIndex = count($stops) - 1;
+
+        // Wir rollen die Reise von hinten auf, damit der nächste Stop als letztes vorkommt.
+        for ($i = count($stops) - 1; $i > 0; $i--) {
+            $arrival = Carbon::parse($stops[$i]->arrival);
+            if ($arrival != null && $arrival->isFuture()) {
+                $nextStopIndex = $i;
+                continue;
+            }
+            break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
+        }
+        return $stops[$nextStopIndex]->stop->name;
+    }
+
+    public function getDashboard(): Renderable|RedirectResponse {
         $user     = Auth::user();
         $statuses = StatusBackend::getDashboard($user);
 
@@ -35,20 +56,20 @@ class FrontendStatusController extends Controller
         return view('dashboard', [
             'statuses'    => $statuses,
             'currentUser' => $user,
-            'latest'      => \App\Http\Controllers\TransportController::getLatestArrivals($user)
+            'latest'      => TransportController::getLatestArrivals($user)
         ]);
     }
 
-    public function getGlobalDashboard() {
+    public function getGlobalDashboard(): Renderable {
         $statuses = StatusBackend::getGlobalDashboard();
         return view('dashboard', [
             'statuses'    => $statuses,
             'currentUser' => Auth::user(),
-            'latest'      => \App\Http\Controllers\TransportController::getLatestArrivals(Auth::user())
+            'latest'      => TransportController::getLatestArrivals(Auth::user())
         ]);
     }
 
-    public function DeleteStatus(Request $request) {
+    public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
         $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
         if ($deleteStatusResponse === false) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
@@ -56,7 +77,7 @@ class FrontendStatusController extends Controller
         return response()->json(['message' => __('controller.status.delete-ok')], 200);
     }
 
-    public function EditStatus(Request $request) {
+    public function EditStatus(Request $request): JsonResponse|RedirectResponse {
         $this->validate($request, [
             'body'          => 'max:280',
             'businessCheck' => 'max:1',
@@ -95,29 +116,28 @@ class FrontendStatusController extends Controller
         return response(__('controller.status.like-not-found'), 404);
     }
 
-    public function exportLanding() {
+    public function exportLanding(): Renderable {
         return view('export')->with([
-                                        'begin_of_month' => (new \DateTime("first day of this month"))
+                                        'begin_of_month' => (new DateTime("first day of this month"))
                                             ->format("Y-m-d"),
-                                        'end_of_month'   => (new \DateTime("last day of this month"))
+                                        'end_of_month'   => (new DateTime("last day of this month"))
                                             ->format("Y-m-d")
                                     ]);
     }
 
-    public function export(Request $request) {
+    public function export(Request $request): JsonResponse|StreamedResponse {
         $this->validate($request, [
             'begin'    => 'required|date|before_or_equal:end',
             'end'      => 'required|date|after_or_equal:begin',
             'filetype' => 'required|in:json,csv,pdf'
         ]);
 
-        $export = StatusBackend::ExportStatuses($request->input('begin'),
-                                                $request->input('end'),
-                                                $request->input('filetype'));
-        return $export;
+        return StatusBackend::ExportStatuses($request->input('begin'),
+                                             $request->input('end'),
+                                             $request->input('filetype'));
     }
 
-    public function getActiveStatuses() {
+    public function getActiveStatuses(): Renderable {
         $activeStatusesResponse = StatusBackend::getActiveStatuses(null, false);
         $activeEvents           = EventBackend::activeEvents();
         return view('activejourneys', [
@@ -129,7 +149,7 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function statusesByEvent(string $event) {
+    public function statusesByEvent(string $event): Renderable {
         $events = Event::where('slug', '=', $event)->get();
         if ($events->count() == 0) {
             abort(404);
@@ -147,24 +167,24 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus($statusId) {
+    public function getStatus($statusId): Renderable {
         $statusResponse = StatusBackend::getStatus($statusId);
 
         return view('status', [
-            'status' => $statusResponse,
-            'time' => time(),
-            'title' => __('status.ogp-title', ['name' => $statusResponse->user->username]),
+            'status'      => $statusResponse,
+            'time'        => time(),
+            'title'       => __('status.ogp-title', ['name' => $statusResponse->user->username]),
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
                 'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,
                 'distance'    => $statusResponse->trainCheckin->distance,
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image' => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
+            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
         ]);
     }
 
-    public function usageboard(Request $request) {
+    public function usageboard(Request $request): Renderable|RedirectResponse {
         $begin = Carbon::now()->copy()->addDays(-14);
         $end   = Carbon::now();
 
