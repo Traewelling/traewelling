@@ -30,11 +30,11 @@ class TrainCheckin extends Model
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getOriginStopoverAttribute(): TrainStopOver {
+    public function getOriginStopoverAttribute(): ?TrainStopOver {
         return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)->first();
     }
 
-    public function getDestinationStopoverAttribute(): TrainStopOver {
+    public function getDestinationStopoverAttribute(): ?TrainStopOver {
         return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)->first();
     }
 
