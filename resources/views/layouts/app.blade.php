@@ -53,7 +53,7 @@
                 <div>
                     <button type="button" class="close" id="mark-all-read"
                             aria-label="{{ __('notifications.mark-all-read') }}"><span aria-hidden="true"><i
-                                    class="fas fa-check-double"></i></button>
+                                    class="fas fa-check-double"></i></span></button>
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
