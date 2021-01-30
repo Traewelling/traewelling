@@ -36,10 +36,10 @@
 
             @foreach($leaderboard->take(3) as $place)
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card" style="margin-bottom: 7px;">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
-                            <div class="image-box pr-0 d-none d-lg-flex">
+                            <div class="image-box pr-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                          style="width: 50%;">
@@ -93,10 +93,9 @@
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
-                                            <div class="image-box pr-0 d-none d-lg-flex">
+                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
-                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                                         style="height: 75px;">
+                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}" />
                                                 </a>
                                             </div>
                                         </td>
