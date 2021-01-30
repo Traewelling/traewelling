@@ -10,7 +10,7 @@
     <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?1611964800"></script>
 
     <!-- Fonts -->
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
