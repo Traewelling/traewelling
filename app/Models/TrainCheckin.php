@@ -42,11 +42,11 @@ class TrainCheckin extends Model
     }
 
     public function getMapLines() {
-        $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
+        $hafas = $this->HafasTrip->getPolyLine;
         if ($hafas === null) {
-            $origin = $this->Origin()->first();
+            $origin = $this->Origin;
 
-            $destination = $this->Destination()->first();
+            $destination = $this->Destination;
             $route       = [];
             $route[0]    = [$origin->longitude, $origin->latitude];
             $route[1]    = [$destination->longitude, $destination->latitude];
