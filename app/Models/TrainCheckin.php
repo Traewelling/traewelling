@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -34,11 +35,15 @@ class TrainCheckin extends Model
     }
 
     public function getOriginStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)->first();
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+                                             ->where('departure_planned', $this->departure->toIso8601String())
+                                             ->first();
     }
 
     public function getDestinationStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)->first();
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+                                             ->where('arrival_planned', $this->arrival->toIso8601String())
+                                             ->first();
     }
 
     public function getMapLines() {
