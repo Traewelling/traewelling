@@ -51,7 +51,6 @@ $(document)
             .data("start");
         var destination = $(this).data("ibnr");
         var stopname = $(this).data("stopname");
-        var arrivalTime = $(this).data("arrivaltime");
         var linename = $(this)
             .parent()
             .parent()
@@ -69,7 +68,6 @@ $(document)
                 modal.find("#input-tripID").val(tripID);
                 modal.find("#input-destination").val(destination);
                 modal.find("#input-start").val(start);
-                modal.find("#input-arrivaltime").val(arrivalTime);
             });
         }
     })
