@@ -18,8 +18,8 @@ class Controller extends BaseController
             if($val['stop']['id'] != $stationId) {
                 continue;
             }
-            $stopDeparture = Carbon::parse($val['plannedDeparture']);
-            $stopArrival = Carbon::parse($val['plannedArrival']);
+            $stopDeparture = Carbon::parse($val['plannedDeparture'] ?? $val['departure']);
+            $stopArrival = Carbon::parse($val['plannedArrival'] ?? $val['arrival']);
             $departureTimeMatches = $departure == null || $departure == $stopDeparture;
             $arrivalTimeMatches   = $arrival == null || $arrival == $stopArrival;
 
