@@ -64,7 +64,7 @@ class HafasTripFactory extends Factory
                 ]
             ]);
             array_push($stopOvers, [
-                'stop'              => [
+                'stop'                     => [
                     'type'     => 'stop',
                     'id'       => $stop->ibnr,
                     'name'     => $stop->name,
@@ -87,12 +87,16 @@ class HafasTripFactory extends Factory
                         'taxi'            => $this->faker->boolean(50),
                     ],
                 ],
-                'arrival'           => $time->format('c'),
-                'arrivalDelay'      => null,
-                'arrivalPlatform'   => null,
-                'departure'         => $time->format('c'),
-                'departureDelay'    => null,
-                'departurePlatform' => null,
+                'arrival'                  => $time->toIso8601String(),
+                'plannedArrival'           => $time->toIso8601String(),
+                'arrivalDelay'             => null,
+                'arrivalPlatform'          => null,
+                'plannedArrivalPlatform'   => null,
+                'departure'                => $time->toIso8601String(),
+                'plannedDeparture'         => $time->toIso8601String(),
+                'departureDelay'           => null,
+                'departurePlatform'        => null,
+                'plannedDeparturePlatform' => null,
             ]);
             $time->addMinutes(30);
         }
