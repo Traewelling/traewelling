@@ -37,13 +37,15 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
         if ($userId === null) {
-            $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
-                              ->withCount('likes')
+            $statuses = Status::with([
+                                         'likes',
+                                         'user',
+                                         'trainCheckin.Origin',
+                                         'trainCheckin.Destination',
+                                         'trainCheckin.HafasTrip.getPolyLine',
+                                         'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                         'event'
+                                     ])
                               ->whereHas('trainCheckin', function($query) {
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -53,12 +55,13 @@ class StatusController extends Controller
                                   return $status->trainCheckin->departure;
                               })->values();
         } else {
-            $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
+            $statuses = Status::with([
+                                         'user',
+                                         'trainCheckin.Origin',
+                                         'trainCheckin.Destination',
+                                         'trainCheckin.HafasTrip.getPolyLine',
+                                         'event'
+                                     ])
                               ->whereHas('trainCheckin', function($query) {
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -101,14 +104,13 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip'
+                                'trainCheckin.HafasTrip.stopoversNEW'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $userIds)
                      ->withCount('likes')
-                     ->latest()
                      ->simplePaginate(15);
     }
 
@@ -116,13 +118,12 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip'
+                                'trainCheckin.HafasTrip.stopoversNEW'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
-                     ->latest()
                      ->simplePaginate(15);
     }
 

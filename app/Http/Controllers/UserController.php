@@ -346,41 +346,41 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $trainCheckIns = TrainCheckin::with('status')
-                                     ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                     ->get()
-                                     ->groupBy('status.user_id')
-                                     ->map(function($trainCheckIns) {
-                                         return [
-                                             'user'     => $trainCheckIns->first()->status->user,
-                                             'points'   => $trainCheckIns->sum('points'),
-                                             'distance' => $trainCheckIns->sum('distance'),
-                                             'duration' => $trainCheckIns->sum('duration'),
-                                             'speed'    => $trainCheckIns->avg('speed')
-                                         ];
-                                     });
+        $checkIns = TrainCheckin::with('status.user')
+                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                                ->get();
+
+        $trainCheckIns = (clone $checkIns)
+            ->groupBy('status.user_id')
+            ->map(function($trainCheckIns) {
+                return [
+                    'user'     => $trainCheckIns->first()->status->user,
+                    'points'   => $trainCheckIns->sum('points'),
+                    'distance' => $trainCheckIns->sum('distance'),
+                    'duration' => $trainCheckIns->sum('duration'),
+                    'speed'    => $trainCheckIns->avg('speed')
+                ];
+            });
 
         $friendsTrainCheckIns = null;
         if (Auth::check()) {
-            $friendsTrainCheckIns = TrainCheckin::with('status')
-                                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                                ->get()
-                                                ->filter(function($trainCheckIn) {
-                                                    return Auth::user()->follows
-                                                            ->pluck('id')
-                                                            ->contains($trainCheckIn->status->user_id)
-                                                        || $trainCheckIn->status->user_id == Auth::user()->id;
-                                                })
-                                                ->groupBy('status.user_id')
-                                                ->map(function($trainCheckIns) {
-                                                    return [
-                                                        'user'     => $trainCheckIns->first()->status->user,
-                                                        'points'   => $trainCheckIns->sum('points'),
-                                                        'distance' => $trainCheckIns->sum('distance'),
-                                                        'duration' => $trainCheckIns->sum('duration'),
-                                                        'speed'    => $trainCheckIns->avg('speed')
-                                                    ];
-                                                });
+            $friendsTrainCheckIns = (clone $checkIns)
+                ->filter(function($trainCheckIn) {
+                    return Auth::user()->follows
+                            ->pluck('id')
+                            ->contains($trainCheckIn->status->user_id)
+                        || $trainCheckIn->status->user_id == Auth::user()->id;
+                })
+                ->groupBy('status.user_id')
+                ->map(function($trainCheckIns) {
+                    return [
+                        'user'     => $trainCheckIns->first()->status->user,
+                        'points'   => $trainCheckIns->sum('points'),
+                        'distance' => $trainCheckIns->sum('distance'),
+                        'duration' => $trainCheckIns->sum('duration'),
+                        'speed'    => $trainCheckIns->avg('speed')
+                    ];
+                });
         }
 
         return [
@@ -423,28 +423,29 @@ class UserController extends Controller
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        return Status::join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                             ->where(
-                                 'train_checkins.departure',
-                                 '>=',
-                                 $date->clone()->firstOfMonth()->toDateString()
-                             )
-                             ->where(
-                                 'train_checkins.departure',
-                                 '<=',
-                                 $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                             )
-                             ->get()
-                             ->groupBy('user_id')
-                             ->map(function($statuses) {
-                                 return [
-                                     'user'        => $statuses->first()->user,
-                                     'points'      => $statuses->sum('trainCheckin.points'),
-                                     'distance'    => $statuses->sum('distance'),
-                                     'duration'    => $statuses->sum('trainCheckin.duration'),
-                                     'statusCount' => $statuses->count()
-                                 ];
-                             })
-                             ->sortByDesc('points');
+        return Status::with(['trainCheckin', 'user'])
+                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->where(
+                         'train_checkins.departure',
+                         '>=',
+                         $date->clone()->firstOfMonth()->toDateString()
+                     )
+                     ->where(
+                         'train_checkins.departure',
+                         '<=',
+                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                     )
+                     ->get()
+                     ->groupBy('user_id')
+                     ->map(function($statuses) {
+                         return [
+                             'user'        => $statuses->first()->user,
+                             'points'      => $statuses->sum('trainCheckin.points'),
+                             'distance'    => $statuses->sum('distance'),
+                             'duration'    => $statuses->sum('trainCheckin.duration'),
+                             'statusCount' => $statuses->count()
+                         ];
+                     })
+                     ->sortByDesc('points');
     }
 }
