@@ -241,7 +241,8 @@ class CheckinTest extends TestCase
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('12:00')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))
-            ]);
+            ]
+        );
 
         //Trips Case 1 - 4 for which a collisionException should be thrown
         array_push($collisionTrips, HafasTrip::factory()->create(

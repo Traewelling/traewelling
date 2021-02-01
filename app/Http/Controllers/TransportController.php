@@ -265,8 +265,10 @@ class TransportController extends Controller
                                         Carbon $arrival = null): array {
         $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
+
         $offset1               = self::searchForId($start, $stopovers, $departure);
         $offset2               = self::searchForId($destination, $stopovers, null, $arrival);
+        
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
