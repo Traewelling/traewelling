@@ -397,21 +397,21 @@ class CheckinTest extends TestCase
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard');
 
         // dd($trip);
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'           => 'Example Body',
-                             'tripID'         => $departure->tripId,
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
                              // Höhenstr ist die nächste Haltestelle hinter Schloss Cecilienhof. Dort steigen wir ein
-                             'start'          => $trip['stopovers'][0]['stop']['id'],
-                             'departure_time' => $trip['stopovers'][0]['departure'],
+                             'start'       => $trip['stopovers'][0]['stop']['id'],
+                             'departure'   => $trip['stopovers'][0]['departure'],
                              // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
-                             'destination'    => $trip['stopovers'][5]['stop']['id'], // Reiterweg
-                             'arrival_time'   => $trip['stopovers'][5]['arrival']
+                             'destination' => $trip['stopovers'][5]['stop']['id'], // Reiterweg
+                             'arrival'     => $trip['stopovers'][5]['arrival']
                          ]);
 
         $response->assertStatus(302);
@@ -474,19 +474,19 @@ class CheckinTest extends TestCase
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard');
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'           => 'Example Body',
-                             'tripID'         => $departure->tripId,
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
                              // Westkreuz is right behind Messe Nord / ICC. We hop in there.
-                             'start'          => $trip['stopovers'][0]['stop']['id'],
-                             'departure_time' => $trip['stopovers'][0]['departure'],
+                             'start'       => $trip['stopovers'][0]['stop']['id'],
+                             'departure'   => $trip['stopovers'][0]['departure'],
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-                             'destination'    => $trip['stopovers'][8]['stop']['id'], // Tempelhof
-                             'arrival_time'   => $trip['stopovers'][8]['arrival']
+                             'destination' => $trip['stopovers'][8]['stop']['id'], // Tempelhof
+                             'arrival'     => $trip['stopovers'][8]['arrival']
                          ]);
 
         $response->assertStatus(302);
