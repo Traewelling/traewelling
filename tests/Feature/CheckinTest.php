@@ -374,7 +374,11 @@ class CheckinTest extends TestCase
         // First: Get a train that's fine for our stuff
         $now               = new \DateTime("+1 days 10:00");
         $stationname       = "Schloss Cecilienhof, Potsdam";
-        $trainStationboard = TransportController::TrainStationboard($stationname, Carbon::parse('+1 days 10:00'), 'bus');
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::parse('+1 days 10:00'),
+            'bus'
+        );
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -382,7 +386,8 @@ class CheckinTest extends TestCase
             return;
         }
 
-        $departure = $trainStationboard['departures'][0]; // The bus runs in a 20min interval
+        // The bus runs in a 20min interval
+        $departure = $trainStationboard['departures'][0];
         $this->isCorrectHafasTrip($departure, $now);
 
         // Third: Get the trip information
@@ -398,8 +403,6 @@ class CheckinTest extends TestCase
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
-
-        // dd($trip);
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
@@ -418,7 +421,8 @@ class CheckinTest extends TestCase
         $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
 
         $checkin = TrainCheckin::first();
-        $this->assertTrue($checkin->arrival > $checkin->departure); // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        $this->assertTrue($checkin->arrival > $checkin->departure);
     }
 
     /**
@@ -436,9 +440,14 @@ class CheckinTest extends TestCase
      */
     public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {
         // First: Get a train that's fine for our stuff
-        $now               = new \DateTime("+1 days 10:03"); // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
+        // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
+        $now               = new \DateTime("+1 days 10:03");
         $stationname       = "Messe Nord / ICC, Berlin";
-        $trainStationboard = TransportController::TrainStationboard($stationname, Carbon::parse('+1 days 10:00'), 'suburban');
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::parse('+1 days 10:00'),
+            'suburban'
+        );
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -493,6 +502,7 @@ class CheckinTest extends TestCase
         $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
 
         $checkin = $user->statuses->first()->trainCheckin;
-        $this->assertTrue($checkin->arrival > $checkin->departure); // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        $this->assertTrue($checkin->arrival > $checkin->departure);
     }
 }

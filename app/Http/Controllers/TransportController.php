@@ -315,7 +315,6 @@ class TransportController extends Controller
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
-
         if ($stopovers[$offset2]['arrival']) {
             $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
             $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
@@ -336,7 +335,7 @@ class TransportController extends Controller
                                  ]);
 
         $plannedDeparture = Carbon::parse($stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']);
-        $plannedArrival = Carbon::parse($stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']);
+        $plannedArrival   = Carbon::parse($stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']);
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
