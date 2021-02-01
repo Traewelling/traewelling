@@ -335,8 +335,12 @@ class TransportController extends Controller
                                      'business' => isset($businessCheck) && $businessCheck == 'on'
                                  ]);
 
-        $plannedDeparture = Carbon::parse($stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']);
-        $plannedArrival   = Carbon::parse($stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']);
+            $plannedDeparture = Carbon::parse(
+                $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
+            );
+            $plannedArrival   = Carbon::parse(
+                $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
+            );
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
