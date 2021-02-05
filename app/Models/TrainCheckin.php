@@ -93,8 +93,12 @@ class TrainCheckin extends Model
      * The duration of the journey in minutes
      * @return int
      */
-    public function getDurationAttribute(): int {
+    public function getDurationAttribute(): int {try {
+        return $this->origin_stopover->departure_planned->diffInMinutes($this->destination_stopover->arrival_planned);
+    } catch (\Exception) {
+        //We need the try-catch to support old checkins, where no stopovers are saved.
         return $this->arrival->diffInMinutes($this->departure);
+    }
     }
 
     public function getSpeedAttribute(): float {
