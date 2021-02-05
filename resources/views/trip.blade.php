@@ -30,13 +30,17 @@
                             </tr>
                         </thead>
                         @foreach($stopovers as $stop)
+                            @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
+                                @continue
+                            @endif
+
                             @if(@$stop['cancelled'] == 'true')
                                 <tr>
                                     <td>{{ $stop['stop']['name'] }}</td>
                                     <td><span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;</td>
                                     <td>{{ $stop['departurePlatform'] }}</td>
                             @else
-                                <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}">
+                                <tr class="train-destinationrow" data-ibnr="{{$stop['stop']['id']}}" data-stopname="{{$stop['stop']['name']}}" data-arrival="{{$stop['plannedArrival']}}">
                                 <td>{{ $stop['stop']['name'] }}</td>
                                 <td>@if($stop['arrival'] != null)
                                         {{ __('stationboard.arr') }}&nbsp;@if(isset($stop['arrivalDelay'])){{ date('H:i', strtotime($stop['arrival'])-$stop['arrivalDelay']) }}&nbsp;<small>(<span class="traindelay">+{{ $stop['arrivalDelay']/60 }}</span>)</small>@else{{ date('H:i', strtotime($stop['arrival'])) }}@endif
@@ -47,7 +51,6 @@
                                 </td>
                                 <td>{{ $stop['departurePlatform'] }}</td>
                             @endif
-                            </tr>
                             @endforeach
                     </table>
                 </div>
@@ -106,11 +109,12 @@
                             <input type="hidden" name="event" value="0">
                         @endif
 
-
                         <input type="hidden" id="business_check" name="business_check" value="">
                         <input type="hidden" id="input-tripID" name="tripID" value="">
                         <input type="hidden" id="input-destination" name="destination" value="">
-                        <input type="hidden" id="input-start" name="start" value="">
+                        <input type="hidden" name="start" value="{{request()->start}}" />
+                        <input type="hidden" name="departure" value="{{request()->departure}}"/>
+                        <input type="hidden" id="input-arrival" name="arrival" />
                         @csrf
                     </form>
                 </div>

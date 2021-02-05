@@ -3,15 +3,16 @@
 namespace Tests\Feature;
 
 use App\Exceptions\CheckInCollisionException;
+use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
+use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Controllers\TransportController;
+use Tests\TestCase;
 
 class CheckinTest extends TestCase
 {
@@ -212,8 +213,7 @@ class CheckinTest extends TestCase
         TrainStation::factory()->count(4)->create();
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $this->acceptGDPR($user);
+        $user = $this->createGDPRAckedUser();
 
         /*
          * We're now generating a 'base checkin' on which we are comparing all possible collision types
@@ -238,30 +238,51 @@ class CheckinTest extends TestCase
         $collisionTrips    = [];
         $nonCollisionTrips = [];
         $baseTrip          = HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('12:00')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))]);
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('12:00')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))
+            ]
+        );
 
         //Trips Case 1 - 4 for which a collisionException should be thrown
         array_push($collisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))
+            ]
+        ));
         array_push($collisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('12:45')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('12:45')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
+            ]
+        ));
         array_push($collisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('12:15')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('12:15')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))
+            ]
+        ));
         array_push($collisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
+            ]
+        ));
 
         //Trips case 5 & 6 for which no Exception should be thrown
         array_push($nonCollisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('11:15')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('11:15')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))
+            ]
+        ));
         array_push($nonCollisionTrips, HafasTrip::factory()->create(
-            ['departure' => date('Y-m-d H:i:s', strtotime('13:30')),
-             'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))]));
+            [
+                'departure' => date('Y-m-d H:i:s', strtotime('13:30')),
+                'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))
+            ]
+        ));
 
 
         TransportController::TrainCheckin(
@@ -273,7 +294,9 @@ class CheckinTest extends TestCase
             0,
             0,
             0,
-            0
+            0,
+            Carbon::parse($baseTrip->departure),
+            Carbon::parse($baseTrip->arrival)
         );
 
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
@@ -288,7 +311,9 @@ class CheckinTest extends TestCase
                     0,
                     0,
                     0,
-                    0
+                    0,
+                    Carbon::parse($trip->departure),
+                    Carbon::parse($trip->arrival)
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
@@ -309,7 +334,9 @@ class CheckinTest extends TestCase
                     0,
                     0,
                     0,
-                    0
+                    0,
+                    Carbon::parse($trip->departure),
+                    Carbon::parse($trip->arrival)
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
@@ -359,5 +386,149 @@ class CheckinTest extends TestCase
         // Usual Dashboard stuff
         $response->assertSee(__('stationboard.where-are-you'), false);
         $response->assertSee(__('menu.developed'), false);
+    }
+
+    /**
+     * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus). Previously,
+     * TRWL produced negative trip durations, or unexpected route distances.
+     *
+     * @author jeyemwey
+     * @see https://github.com/Traewelling/traewelling/issues/37
+     * @test
+     */
+    public function testCheckinAtBus603Potsdam() {
+        // First: Get a train that's fine for our stuff
+        $now               = new \DateTime("+1 days 10:00");
+        $stationname       = "Schloss Cecilienhof, Potsdam";
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::parse('+1 days 10:00'),
+            'bus'
+        );
+
+        $countDepartures = count($trainStationboard['departures']);
+        if ($countDepartures == 0) {
+            $this->markTestSkipped("Unable to find matching bus. Is it night in $stationname?");
+            return;
+        }
+
+        // The bus runs in a 20min interval
+        $departure = $trainStationboard['departures'][0];
+        $this->isCorrectHafasTrip($departure, $now);
+
+        // Third: Get the trip information
+        $trip = TransportController::TrainTrip(
+            $departure->tripId,
+            $departure->line->name,
+            $departure->stop->location->id
+        );
+
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = User::factory()->create();
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/dashboard');
+
+        // WHEN: User tries to check-in
+        $response = $this->actingAs($user)
+                         ->post(route('trains.checkin'), [
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
+                             // Höhenstr ist die nächste Haltestelle hinter Schloss Cecilienhof. Dort steigen wir ein
+                             'start'       => $trip['stopovers'][0]['stop']['id'],
+                             'departure'   => $trip['stopovers'][0]['departure'],
+                             // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
+                             'destination' => $trip['stopovers'][5]['stop']['id'], // Reiterweg
+                             'arrival'     => $trip['stopovers'][5]['arrival']
+                         ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
+
+        $checkin = TrainCheckin::first();
+        // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        $this->assertTrue($checkin->arrival > $checkin->departure);
+    }
+
+    /**
+     * Testing checkins where the line forms a ring structure, e.g. Berlins Ringbahn. The API
+     * represents the Ringbahn as a fluid double-ring. If you choose to check-in at Westkreuz in a
+     * counter-clockwise driving train, the API will give you the last ring (Südkreuz -
+     * Gesundbrunnen - Westkreuz) and the following ring up to Südkreuz (Westkreuz - Südkreuz -
+     * Gesundbrunnen - Westkreuz - Südkreuz). If you choose to get into the second ring (e.g. exit
+     * at Tempelhof), TRWL has assumed, you meant the Tempelhof the first time it appeared which
+     * was negative in time from our trip. This led to negative durations.
+     *
+     * @author jeyemwey
+     * @see https://github.com/Traewelling/traewelling/issues/37
+     * @test
+     */
+    public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {
+        // First: Get a train that's fine for our stuff
+        // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
+        $now               = new \DateTime("+1 days 10:03");
+        $stationname       = "Messe Nord / ICC, Berlin";
+        $trainStationboard = TransportController::TrainStationboard(
+            $stationname,
+            Carbon::parse('+1 days 10:00'),
+            'suburban'
+        );
+
+        $countDepartures = count($trainStationboard['departures']);
+        if ($countDepartures == 0) {
+            $this->markTestSkipped("Unable to find matching train.");
+            return;
+        }
+
+        $i         = 0;
+        $departure = [];
+        while ($i < $countDepartures) {
+            $departure = $trainStationboard['departures'][$i];
+            // We're searching for a counter-clockwise running train which are labeled "S 42"
+            if ($departure->line->name == "S 42") {
+                break;
+            }
+            $i++; // Maybe the next one?
+            if ($i == $countDepartures) {
+                $this->markTestSkipped("Berlins Ringbahn only runs in one direction right now.");
+            }
+        }
+
+        $this->isCorrectHafasTrip($departure, $now);
+
+        // Third: Get the trip information
+        $trip = TransportController::TrainTrip(
+            $departure->tripId,
+            $departure->line->name,
+            $departure->stop->location->id
+        );
+
+        // GIVEN: A logged-in and gdpr-acked user
+        $user     = User::factory()->create();
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/dashboard');
+
+        // WHEN: User tries to check-in
+        $response = $this->actingAs($user)
+                         ->post(route('trains.checkin'), [
+                             'body'        => 'Example Body',
+                             'tripID'      => $departure->tripId,
+                             // Westkreuz is right behind Messe Nord / ICC. We hop in there.
+                             'start'       => $trip['stopovers'][0]['stop']['id'],
+                             'departure'   => $trip['stopovers'][0]['departure'],
+                             // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
+                             'destination' => $trip['stopovers'][8]['stop']['id'], // Tempelhof
+                             'arrival'     => $trip['stopovers'][8]['arrival']
+                         ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
+
+        $checkin = $user->statuses->first()->trainCheckin;
+        // Es wird tatsächlich die zeitlich spätere Station angenommen.
+        $this->assertTrue($checkin->arrival > $checkin->departure);
     }
 }

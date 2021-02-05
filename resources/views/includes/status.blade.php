@@ -37,7 +37,7 @@
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure))) !!}</span>
+                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
 
                         @if($status->event != null)
                             <br class="d-sm-none">

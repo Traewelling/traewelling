@@ -173,13 +173,14 @@ class TransportController extends Controller
      * @param string $tripId TripID in Hafas format
      * @param string $lineName Line Name in Hafas format
      * @param $start
+     * @param Carbon|null $departure
      * @return array|null
      */
-    public static function TrainTrip(string $tripId, string $lineName, $start): ?array {
+    public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
 
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $stopovers = json_decode($hafasTrip->stopovers, true);
-        $offset    = self::searchForId($start, $stopovers);
+        $offset    = self::searchForId($start, $stopovers, $departure);
         if ($offset === null) {
             return null;
         }
@@ -259,11 +260,14 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
-                                        $eventId = 0): array {
+                                        $eventId = 0,
+                                        Carbon $departure = null,
+                                        Carbon $arrival = null): array {
+
         $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
-        $offset1               = self::searchForId($start, $stopovers);
-        $offset2               = self::searchForId($destination, $stopovers);
+            $offset1           = self::searchForId($start, $stopovers, $departure);
+            $offset2           = self::searchForId($destination, $stopovers, null, $arrival);
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
@@ -312,7 +316,6 @@ class TransportController extends Controller
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
-
         if ($stopovers[$offset2]['arrival']) {
             $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
             $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
@@ -332,6 +335,13 @@ class TransportController extends Controller
                                      'business' => isset($businessCheck) && $businessCheck == 'on'
                                  ]);
 
+            $plannedDeparture = Carbon::parse(
+                $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
+            );
+            $plannedArrival   = Carbon::parse(
+                $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
+            );
+
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
                                                  'trip_id'     => $tripId,
@@ -340,8 +350,8 @@ class TransportController extends Controller
                                                  'distance'    => $distance,
                                                  'delay'       => $hafasTrip->delay,
                                                  'points'      => $points,
-                                                 'departure'   => $departure,
-                                                 'arrival'     => $arrival
+                                                 'departure'   => $plannedDeparture,
+                                                 'arrival'     => $plannedArrival
                                              ]);
 
         $user->load(['statuses']);
