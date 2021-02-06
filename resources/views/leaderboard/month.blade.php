@@ -78,7 +78,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-vertical-center">
+                            <table class="table table-responsive table-vertical-center">
                                 <thead>
                                 <tr>
                                     <td>{{ __('leaderboard.rank') }}</td>
