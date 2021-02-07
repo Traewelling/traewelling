@@ -1,0 +1,1 @@
+401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied."

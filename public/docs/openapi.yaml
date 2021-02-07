@@ -1,0 +1,1258 @@
+openapi: 3.0.3
+info:
+    title: Träwelling
+    description: ''
+    version: 1.0.0
+servers:
+    -
+        url: 'http://localhost'
+paths:
+    /api/v0/user/accept_privacy:
+        put:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+    /api/v0/getuser:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    /api/v0/user/leaderboard:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    '/api/v0/user/{username}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: username
+                description: ''
+                example: possimus
+                required: true
+                schema:
+                    type: string
+    '/api/v0/user/search/{query}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: query
+                description: ''
+                example: ipsa
+                required: true
+                schema:
+                    type: string
+    '/api/v0/user/{username}/active':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: username
+                description: ''
+                example: atque
+                required: true
+                schema:
+                    type: string
+    /api/v0/user/profilepicture:
+        put:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+    /api/v0/user/displayname:
+        put:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+    /api/v0/statuses/enroute/all:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    '/api/v0/statuses/event/{statusId}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: statusId
+                description: ''
+                example: labore
+                required: true
+                schema:
+                    type: string
+    '/api/v0/statuses/{statusId}/like':
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        delete:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: statusId
+                description: ''
+                example: ea
+                required: true
+                schema:
+                    type: string
+    '/api/v0/statuses/{statusId}/likes':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: statusId
+                description: ''
+                example: tenetur
+                required: true
+                schema:
+                    type: string
+    /api/v0/statuses:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    '/api/v0/statuses/{status}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        put:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        delete:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: status
+                description: ''
+                example: aut
+                required: true
+                schema:
+                    type: string
+    /api/v0/notifications:
+        get:
+            summary: 'Display a listing of the resource.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    '/api/v0/notifications/{notification}':
+        put:
+            summary: 'Update the specified resource in storage.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        delete:
+            summary: 'Remove the specified resource from storage.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: notification
+                description: ''
+                example: odit
+                required: true
+                schema:
+                    type: string
+    '/api/v0/trains/autocomplete/{station}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        parameters:
+            -
+                in: path
+                name: station
+                description: ''
+                example: totam
+                required: true
+                schema:
+                    type: string
+    /api/v0/trains/stationboard:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    /api/v0/trains/trip:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    /api/v0/trains/checkin:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+    /api/v0/trains/latest:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    /api/v0/trains/home:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+        put:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+    /api/v0/trains/nearby:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                401:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: Unauthenticated.
+                                properties:
+                                    message: { type: string, example: Unauthenticated. }
+            tags:
+                - Endpoints
+    /api/v0/auth/login:
+        post:
+            summary: "Login\nThis endpoint handles a normal user login"
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxYjIzZGFlNTc0YzlhOTk3MzQ5MTQwMWZhNjRkMmU2MzgwNGQ4MWJhOTI0MjRlMmQ2ZmYyZjIyZjFiZmU1ZDUyOTExZjE0N2M4YWM5MTI3In0.eyJhdWQiOiIzIiwianRpIjoiZDFiMjNkYWU1NzRjOWE5OTczNDkxNDAxZmE2NGQyZTYzODA0ZDgxYmE5MjQyNGUyZDZmZjJmMjJmMWJmZTVkNTI5MTFmMTQ3YzhhYzkxMjciLCJpYXQiOjE1ODI5MDIyMDIsIm5iZiI6MTU4MjkwMjIwMiwiZXhwIjoxNjE0NTI0NjAyLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.XWJcsbhgOQXqk-OrjKaRMRouo5AS4TkniyShH50O8K8KjaJYHP9Ltm3eMCpqarZpaBVucnsSKKimVVT9c1AD-Iq5n8AqZ3Mhgbh6Ik5-VqMAs89mLBwWj8seh_hgUmS0AqZMxUvkzZDpaU7Ub_EtoBUQ6l7up2tNXrA12mvg57LpvibWl6tXVLI2cBlEvNoTY3DPEjLFKMkdela7bhkoh4OAtJAnv1iNspuxcuhHp4PfgWlmaVGn4HdyfchNDJdSiWuiYy1LbRzpb9gdmmZtrDa--OfVRxodzE9sVIrLWXD_RRldejqyarbSke88ucMlALgCbBL88r00X2LEAXq565_s7ILbqEfVh1YN9ehfP8kCM9bf_Yop4G9QxgkO_xEhcv-Sj72rUph6TgS68QjEXculgizeVRTeCgW5X07UxCxy12jGuZMq3JjYU_kOmF1Sr79KSSZnFe27_f1kjbgEGSVwVKq_R4HcmM9ZGazpfbRPqaZnjUl3H5_0YAa7hZh0P1MYcJywx0tdY3inkZFBXhz1_3Xt6sULqlFRS4Lh0hP0o2E5jrCtVmeKGTgUvvbumEVyKpisjzpQK08i-rMSnYXSUbI6JNXc9z3PVgWzVt1lAdG66xNci7JQ3gdIoM4cQFBcGI8qQmfRMjvzXmmvoWY_hottmtOSK9AV_AP4zSw
+                                    expires_at: '2021-10-01T12:00:00+02:00'
+                                properties:
+                                    token: { type: string, example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxYjIzZGFlNTc0YzlhOTk3MzQ5MTQwMWZhNjRkMmU2MzgwNGQ4MWJhOTI0MjRlMmQ2ZmYyZjIyZjFiZmU1ZDUyOTExZjE0N2M4YWM5MTI3In0.eyJhdWQiOiIzIiwianRpIjoiZDFiMjNkYWU1NzRjOWE5OTczNDkxNDAxZmE2NGQyZTYzODA0ZDgxYmE5MjQyNGUyZDZmZjJmMjJmMWJmZTVkNTI5MTFmMTQ3YzhhYzkxMjciLCJpYXQiOjE1ODI5MDIyMDIsIm5iZiI6MTU4MjkwMjIwMiwiZXhwIjoxNjE0NTI0NjAyLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.XWJcsbhgOQXqk-OrjKaRMRouo5AS4TkniyShH50O8K8KjaJYHP9Ltm3eMCpqarZpaBVucnsSKKimVVT9c1AD-Iq5n8AqZ3Mhgbh6Ik5-VqMAs89mLBwWj8seh_hgUmS0AqZMxUvkzZDpaU7Ub_EtoBUQ6l7up2tNXrA12mvg57LpvibWl6tXVLI2cBlEvNoTY3DPEjLFKMkdela7bhkoh4OAtJAnv1iNspuxcuhHp4PfgWlmaVGn4HdyfchNDJdSiWuiYy1LbRzpb9gdmmZtrDa--OfVRxodzE9sVIrLWXD_RRldejqyarbSke88ucMlALgCbBL88r00X2LEAXq565_s7ILbqEfVh1YN9ehfP8kCM9bf_Yop4G9QxgkO_xEhcv-Sj72rUph6TgS68QjEXculgizeVRTeCgW5X07UxCxy12jGuZMq3JjYU_kOmF1Sr79KSSZnFe27_f1kjbgEGSVwVKq_R4HcmM9ZGazpfbRPqaZnjUl3H5_0YAa7hZh0P1MYcJywx0tdY3inkZFBXhz1_3Xt6sULqlFRS4Lh0hP0o2E5jrCtVmeKGTgUvvbumEVyKpisjzpQK08i-rMSnYXSUbI6JNXc9z3PVgWzVt1lAdG66xNci7JQ3gdIoM4cQFBcGI8qQmfRMjvzXmmvoWY_hottmtOSK9AV_AP4zSw }
+                                    expires_at: { type: string, example: '2021-10-01T12:00:00+02:00' }
+                400:
+                    description: '400, Bad Request The parameters are wrong or not given.'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: '<<>>'
+            tags:
+                - 'User management'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    description: ''
+                                    example: dolor
+                                password:
+                                    type: string
+                                    description: ''
+                                    example: pariatur
+                            required:
+                                - email
+                                - password
+    /api/v0/auth/signup:
+        post:
+            summary: "Sign-Up\nThis endpoint is meant for creating a new user with username & password."
+            description: 'You should probably start here.'
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxYjIzZGFlNTc0YzlhOTk3MzQ5MTQwMWZhNjRkMmU2MzgwNGQ4MWJhOTI0MjRlMmQ2ZmYyZjIyZjFiZmU1ZDUyOTExZjE0N2M4YWM5MTI3In0.eyJhdWQiOiIzIiwianRpIjoiZDFiMjNkYWU1NzRjOWE5OTczNDkxNDAxZmE2NGQyZTYzODA0ZDgxYmE5MjQyNGUyZDZmZjJmMjJmMWJmZTVkNTI5MTFmMTQ3YzhhYzkxMjciLCJpYXQiOjE1ODI5MDIyMDIsIm5iZiI6MTU4MjkwMjIwMiwiZXhwIjoxNjE0NTI0NjAyLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.XWJcsbhgOQXqk-OrjKaRMRouo5AS4TkniyShH50O8K8KjaJYHP9Ltm3eMCpqarZpaBVucnsSKKimVVT9c1AD-Iq5n8AqZ3Mhgbh6Ik5-VqMAs89mLBwWj8seh_hgUmS0AqZMxUvkzZDpaU7Ub_EtoBUQ6l7up2tNXrA12mvg57LpvibWl6tXVLI2cBlEvNoTY3DPEjLFKMkdela7bhkoh4OAtJAnv1iNspuxcuhHp4PfgWlmaVGn4HdyfchNDJdSiWuiYy1LbRzpb9gdmmZtrDa--OfVRxodzE9sVIrLWXD_RRldejqyarbSke88ucMlALgCbBL88r00X2LEAXq565_s7ILbqEfVh1YN9ehfP8kCM9bf_Yop4G9QxgkO_xEhcv-Sj72rUph6TgS68QjEXculgizeVRTeCgW5X07UxCxy12jGuZMq3JjYU_kOmF1Sr79KSSZnFe27_f1kjbgEGSVwVKq_R4HcmM9ZGazpfbRPqaZnjUl3H5_0YAa7hZh0P1MYcJywx0tdY3inkZFBXhz1_3Xt6sULqlFRS4Lh0hP0o2E5jrCtVmeKGTgUvvbumEVyKpisjzpQK08i-rMSnYXSUbI6JNXc9z3PVgWzVt1lAdG66xNci7JQ3gdIoM4cQFBcGI8qQmfRMjvzXmmvoWY_hottmtOSK9AV_AP4zSw
+                                    expires_at: '2021-10-01T12:00:00+02:00'
+                                    message: 'Registration successfull..'
+                                properties:
+                                    token: { type: string, example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQxYjIzZGFlNTc0YzlhOTk3MzQ5MTQwMWZhNjRkMmU2MzgwNGQ4MWJhOTI0MjRlMmQ2ZmYyZjIyZjFiZmU1ZDUyOTExZjE0N2M4YWM5MTI3In0.eyJhdWQiOiIzIiwianRpIjoiZDFiMjNkYWU1NzRjOWE5OTczNDkxNDAxZmE2NGQyZTYzODA0ZDgxYmE5MjQyNGUyZDZmZjJmMjJmMWJmZTVkNTI5MTFmMTQ3YzhhYzkxMjciLCJpYXQiOjE1ODI5MDIyMDIsIm5iZiI6MTU4MjkwMjIwMiwiZXhwIjoxNjE0NTI0NjAyLCJzdWIiOiIxMCIsInNjb3BlcyI6W119.XWJcsbhgOQXqk-OrjKaRMRouo5AS4TkniyShH50O8K8KjaJYHP9Ltm3eMCpqarZpaBVucnsSKKimVVT9c1AD-Iq5n8AqZ3Mhgbh6Ik5-VqMAs89mLBwWj8seh_hgUmS0AqZMxUvkzZDpaU7Ub_EtoBUQ6l7up2tNXrA12mvg57LpvibWl6tXVLI2cBlEvNoTY3DPEjLFKMkdela7bhkoh4OAtJAnv1iNspuxcuhHp4PfgWlmaVGn4HdyfchNDJdSiWuiYy1LbRzpb9gdmmZtrDa--OfVRxodzE9sVIrLWXD_RRldejqyarbSke88ucMlALgCbBL88r00X2LEAXq565_s7ILbqEfVh1YN9ehfP8kCM9bf_Yop4G9QxgkO_xEhcv-Sj72rUph6TgS68QjEXculgizeVRTeCgW5X07UxCxy12jGuZMq3JjYU_kOmF1Sr79KSSZnFe27_f1kjbgEGSVwVKq_R4HcmM9ZGazpfbRPqaZnjUl3H5_0YAa7hZh0P1MYcJywx0tdY3inkZFBXhz1_3Xt6sULqlFRS4Lh0hP0o2E5jrCtVmeKGTgUvvbumEVyKpisjzpQK08i-rMSnYXSUbI6JNXc9z3PVgWzVt1lAdG66xNci7JQ3gdIoM4cQFBcGI8qQmfRMjvzXmmvoWY_hottmtOSK9AV_AP4zSw }
+                                    expires_at: { type: string, example: '2021-10-01T12:00:00+02:00' }
+                                    message: { type: string, example: 'Registration successfull..' }
+                400:
+                    description: '400, Bad Request The parameters are wrong or not given.'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: '<<>>'
+            tags:
+                - 'User management'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                    description: 'The @-name of a user. Must be uniqe, max 15 chars and apply to regex:/^[a-zA-Z0-9_]*$/'
+                                    example: Gertrud123
+                                name:
+                                    type: string
+                                    description: 'The displayname of a user. Max 50 chars.'
+                                    example: Gertrud
+                                email:
+                                    type: string
+                                    description: 'The mail of the user.'
+                                    example: gertrud@traewelling.de
+                                password:
+                                    type: string
+                                    description: ''
+                                    example: thisisnotasecurepassword123
+                                confirm_password:
+                                    type: string
+                                    description: 'Must be equal to password.'
+                                    example: thisisnotasecurepassword123
+                            required:
+                                - username
+                                - name
+                                - email
+                                - password
+                                - confirm_password
+            security: []
+    /api/v0/auth/logout:
+        post:
+            summary: "Logout\nThis terminates the session and invalidates the bearer token"
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Successfully logged out.'
+                                properties:
+                                    message: { type: string, example: 'Successfully logged out.' }
+            tags:
+                - 'User management'
+components:
+    securitySchemes:
+        default:
+            type: http
+            scheme: bearer
+            description: ''
+security:
+    -
+        default: []
