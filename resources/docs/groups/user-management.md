@@ -16,7 +16,7 @@ curl -X POST \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"email":"dolor","password":"pariatur"}'
+    -d '{"email":"optio","password":"modi"}'
 
 ```
 
@@ -32,8 +32,8 @@ let headers = {
 };
 
 let body = {
-    "email": "dolor",
-    "password": "pariatur"
+    "email": "optio",
+    "password": "modi"
 }
 
 fetch(url, {
@@ -266,6 +266,80 @@ fetch(url, {
 </p>
 <p>
 <label id="auth-POSTapi-v0-auth-logout" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="POSTapi-v0-auth-logout" data-component="header"></label>
+</p>
+</form>
+
+
+## Get current user
+Gets the info for the currently logged in user
+
+<small class="badge badge-darkred">requires authentication</small>
+
+
+
+> Example request:
+
+```bash
+curl -X GET \
+    -G "http://localhost/api/v0/getuser" \
+    -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"
+```
+
+```javascript
+const url = new URL(
+    "http://localhost/api/v0/getuser"
+);
+
+let headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response => response.json());
+```
+
+
+> Example response (200):
+
+```json
+{
+    "id": 1,
+    "name": "J. Doe",
+    "username": "jdoe",
+    "train_distance": "454.59",
+    "train_duration": "317",
+    "points": "66",
+    "averageSpeed": 100.5678954
+}
+```
+<div id="execution-results-GETapi-v0-getuser" hidden>
+    <blockquote>Received response<span id="execution-response-status-GETapi-v0-getuser"></span>:</blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v0-getuser"></code></pre>
+</div>
+<div id="execution-error-GETapi-v0-getuser" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v0-getuser"></code></pre>
+</div>
+<form id="form-GETapi-v0-getuser" data-method="GET" data-path="api/v0/getuser" data-authed="1" data-hasfiles="0" data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('GETapi-v0-getuser', this);">
+<h3>
+    Request&nbsp;&nbsp;&nbsp;
+        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-GETapi-v0-getuser" onclick="tryItOut('GETapi-v0-getuser');">Try it out ⚡</button>
+    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-GETapi-v0-getuser" onclick="cancelTryOut('GETapi-v0-getuser');" hidden>Cancel</button>&nbsp;&nbsp;
+    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-GETapi-v0-getuser" hidden>Send Request 💥</button>
+    </h3>
+<p>
+<small class="badge badge-green">GET</small>
+ <b><code>api/v0/getuser</code></b>
+</p>
+<p>
+<label id="auth-GETapi-v0-getuser" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="GETapi-v0-getuser" data-component="header"></label>
 </p>
 </form>
 

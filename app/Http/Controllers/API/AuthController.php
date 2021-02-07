@@ -140,9 +140,16 @@ class AuthController extends ResponseController
 
     }
 
-    //getuser
+    /**
+     * Get current user
+     * Gets the info for the currently logged in user
+     *
+     * @group User management
+     * @responseFile storage/responses/v0/userdetails.get.json
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getUser(Request $request) {
-        //$id = $request->user()->id;
         $user = $request->user();
         if ($user) {
             return $this->sendResponse($user);

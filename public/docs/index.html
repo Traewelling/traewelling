@@ -63,7 +63,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 <p>Base URL</p>
 </blockquote>
 <pre><code class="language-yaml">http://localhost</code></pre><h1>Authenticating requests</h1>
-<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>Authenticate requests to this API's endpoints by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.</p><h1>Endpoints</h1>
 <h2>api/v0/user/accept_privacy</h2>
@@ -111,59 +111,6 @@ fetch(url, {
 </p>
 <p>
 <label id="auth-PUTapi-v0-user-accept_privacy" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="PUTapi-v0-user-accept_privacy" data-component="header"></label>
-</p>
-</form>
-<h2>api/v0/getuser</h2>
-<p><small class="badge badge-darkred">requires authentication</small></p>
-<blockquote>
-<p>Example request:</p>
-</blockquote>
-<pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/getuser" \
-    -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json"</code></pre>
-<pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/getuser"
-);
-
-let headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre>
-<blockquote>
-<p>Example response (401):</p>
-</blockquote>
-<pre><code class="language-json">{
-    "message": "Unauthenticated."
-}</code></pre>
-<div id="execution-results-GETapi-v0-getuser" hidden>
-    <blockquote>Received response<span id="execution-response-status-GETapi-v0-getuser"></span>:</blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v0-getuser"></code></pre>
-</div>
-<div id="execution-error-GETapi-v0-getuser" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v0-getuser"></code></pre>
-</div>
-<form id="form-GETapi-v0-getuser" data-method="GET" data-path="api/v0/getuser" data-authed="1" data-hasfiles="0" data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('GETapi-v0-getuser', this);">
-<h3>
-    Request&nbsp;&nbsp;&nbsp;
-        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-GETapi-v0-getuser" onclick="tryItOut('GETapi-v0-getuser');">Try it out ⚡</button>
-    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-GETapi-v0-getuser" onclick="cancelTryOut('GETapi-v0-getuser');" hidden>Cancel</button>&nbsp;&nbsp;
-    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-GETapi-v0-getuser" hidden>Send Request 💥</button>
-    </h3>
-<p>
-<small class="badge badge-green">GET</small>
- <b><code>api/v0/getuser</code></b>
-</p>
-<p>
-<label id="auth-GETapi-v0-getuser" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="GETapi-v0-getuser" data-component="header"></label>
 </p>
 </form>
 <h2>api/v0/user/leaderboard</h2>
@@ -225,12 +172,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/user/possimus" \
+    -G "http://localhost/api/v0/user/perspiciatis" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/user/possimus"
+    "http://localhost/api/v0/user/perspiciatis"
 );
 
 let headers = {
@@ -284,12 +231,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/user/search/ipsa" \
+    -G "http://localhost/api/v0/user/search/consequatur" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/user/search/ipsa"
+    "http://localhost/api/v0/user/search/consequatur"
 );
 
 let headers = {
@@ -343,12 +290,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/user/atque/active" \
+    -G "http://localhost/api/v0/user/veritatis/active" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/user/atque/active"
+    "http://localhost/api/v0/user/veritatis/active"
 );
 
 let headers = {
@@ -549,12 +496,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/statuses/event/labore" \
+    -G "http://localhost/api/v0/statuses/event/officia" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/event/labore"
+    "http://localhost/api/v0/statuses/event/officia"
 );
 
 let headers = {
@@ -608,12 +555,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X POST \
-    "http://localhost/api/v0/statuses/ea/like" \
+    "http://localhost/api/v0/statuses/est/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/ea/like"
+    "http://localhost/api/v0/statuses/est/like"
 );
 
 let headers = {
@@ -661,12 +608,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X DELETE \
-    "http://localhost/api/v0/statuses/voluptas/like" \
+    "http://localhost/api/v0/statuses/inventore/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/voluptas/like"
+    "http://localhost/api/v0/statuses/inventore/like"
 );
 
 let headers = {
@@ -714,12 +661,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/statuses/tenetur/likes" \
+    -G "http://localhost/api/v0/statuses/perferendis/likes" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/tenetur/likes"
+    "http://localhost/api/v0/statuses/perferendis/likes"
 );
 
 let headers = {
@@ -826,12 +773,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/statuses/aut" \
+    -G "http://localhost/api/v0/statuses/velit" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/aut"
+    "http://localhost/api/v0/statuses/velit"
 );
 
 let headers = {
@@ -885,12 +832,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X PUT \
-    "http://localhost/api/v0/statuses/aut" \
+    "http://localhost/api/v0/statuses/corrupti" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/aut"
+    "http://localhost/api/v0/statuses/corrupti"
 );
 
 let headers = {
@@ -942,12 +889,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X DELETE \
-    "http://localhost/api/v0/statuses/quo" \
+    "http://localhost/api/v0/statuses/et" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/statuses/quo"
+    "http://localhost/api/v0/statuses/et"
 );
 
 let headers = {
@@ -1048,12 +995,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X PUT \
-    "http://localhost/api/v0/notifications/odit" \
+    "http://localhost/api/v0/notifications/at" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/notifications/odit"
+    "http://localhost/api/v0/notifications/at"
 );
 
 let headers = {
@@ -1105,12 +1052,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X DELETE \
-    "http://localhost/api/v0/notifications/consequuntur" \
+    "http://localhost/api/v0/notifications/eum" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/notifications/consequuntur"
+    "http://localhost/api/v0/notifications/eum"
 );
 
 let headers = {
@@ -1158,12 +1105,12 @@ fetch(url, {
 <p>Example request:</p>
 </blockquote>
 <pre><code class="language-bash">curl -X GET \
-    -G "http://localhost/api/v0/trains/autocomplete/totam" \
+    -G "http://localhost/api/v0/trains/autocomplete/porro" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"</code></pre>
 <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v0/trains/autocomplete/totam"
+    "http://localhost/api/v0/trains/autocomplete/porro"
 );
 
 let headers = {
@@ -1581,7 +1528,7 @@ fetch(url, {
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"email":"dolor","password":"pariatur"}'
+    -d '{"email":"optio","password":"modi"}'
 </code></pre>
 <pre><code class="language-javascript">const url = new URL(
     "http://localhost/api/v0/auth/login"
@@ -1594,8 +1541,8 @@ let headers = {
 };
 
 let body = {
-    "email": "dolor",
-    "password": "pariatur"
+    "email": "optio",
+    "password": "modi"
 }
 
 fetch(url, {
@@ -1796,6 +1743,66 @@ fetch(url, {
 </p>
 <p>
 <label id="auth-POSTapi-v0-auth-logout" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="POSTapi-v0-auth-logout" data-component="header"></label>
+</p>
+</form>
+<h2>Get current user</h2>
+<p>Gets the info for the currently logged in user</p>
+<p><small class="badge badge-darkred">requires authentication</small></p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "http://localhost/api/v0/getuser" \
+    -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v0/getuser"
+);
+
+let headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "id": 1,
+    "name": "J. Doe",
+    "username": "jdoe",
+    "train_distance": "454.59",
+    "train_duration": "317",
+    "points": "66",
+    "averageSpeed": 100.5678954
+}</code></pre>
+<div id="execution-results-GETapi-v0-getuser" hidden>
+    <blockquote>Received response<span id="execution-response-status-GETapi-v0-getuser"></span>:</blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v0-getuser"></code></pre>
+</div>
+<div id="execution-error-GETapi-v0-getuser" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v0-getuser"></code></pre>
+</div>
+<form id="form-GETapi-v0-getuser" data-method="GET" data-path="api/v0/getuser" data-authed="1" data-hasfiles="0" data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('GETapi-v0-getuser', this);">
+<h3>
+    Request&nbsp;&nbsp;&nbsp;
+        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-GETapi-v0-getuser" onclick="tryItOut('GETapi-v0-getuser');">Try it out ⚡</button>
+    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-GETapi-v0-getuser" onclick="cancelTryOut('GETapi-v0-getuser');" hidden>Cancel</button>&nbsp;&nbsp;
+    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-GETapi-v0-getuser" hidden>Send Request 💥</button>
+    </h3>
+<p>
+<small class="badge badge-green">GET</small>
+ <b><code>api/v0/getuser</code></b>
+</p>
+<p>
+<label id="auth-GETapi-v0-getuser" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="GETapi-v0-getuser" data-component="header"></label>
 </p>
 </form>
     </div>

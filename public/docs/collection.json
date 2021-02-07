@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Tr\u00e4welling",
-        "_postman_id": "b6bd3121-9db7-4c45-81f1-45a643870f74",
+        "_postman_id": "71f2ba7e-6b4b-4420-a0ec-f08259a0606e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -30,32 +30,6 @@
                             "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/accept_privacy"
                         },
                         "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/getuser",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/getuser",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/getuser"
-                        },
-                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -110,7 +84,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "possimus",
+                                    "value": "perspiciatis",
                                     "description": ""
                                 }
                             ]
@@ -144,7 +118,7 @@
                                 {
                                     "id": "query",
                                     "key": "query",
-                                    "value": "ipsa",
+                                    "value": "consequatur",
                                     "description": ""
                                 }
                             ]
@@ -178,7 +152,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "atque",
+                                    "value": "veritatis",
                                     "description": ""
                                 }
                             ]
@@ -290,7 +264,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "labore",
+                                    "value": "officia",
                                     "description": ""
                                 }
                             ]
@@ -324,7 +298,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "ea",
+                                    "value": "est",
                                     "description": ""
                                 }
                             ]
@@ -358,7 +332,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "voluptas",
+                                    "value": "inventore",
                                     "description": ""
                                 }
                             ]
@@ -392,7 +366,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "tenetur",
+                                    "value": "perferendis",
                                     "description": ""
                                 }
                             ]
@@ -452,7 +426,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "aut",
+                                    "value": "velit",
                                     "description": ""
                                 }
                             ]
@@ -486,7 +460,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "aut",
+                                    "value": "corrupti",
                                     "description": ""
                                 }
                             ]
@@ -520,7 +494,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "quo",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -580,7 +554,7 @@
                                 {
                                     "id": "notification",
                                     "key": "notification",
-                                    "value": "odit",
+                                    "value": "at",
                                     "description": ""
                                 }
                             ]
@@ -614,7 +588,7 @@
                                 {
                                     "id": "notification",
                                     "key": "notification",
-                                    "value": "consequuntur",
+                                    "value": "eum",
                                     "description": ""
                                 }
                             ]
@@ -648,7 +622,7 @@
                                 {
                                     "id": "station",
                                     "key": "station",
-                                    "value": "totam",
+                                    "value": "porro",
                                     "description": ""
                                 }
                             ]
@@ -880,7 +854,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"dolor\",\n    \"password\": \"pariatur\"\n}"
+                            "raw": "{\n    \"email\": \"optio\",\n    \"password\": \"modi\"\n}"
                         },
                         "description": ""
                     },
@@ -929,6 +903,32 @@
                             "raw": "http:\/\/{{baseUrl}}\/api\/v0\/auth\/logout"
                         },
                         "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get current user\nGets the info for the currently logged in user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/getuser",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/getuser"
+                        },
+                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",

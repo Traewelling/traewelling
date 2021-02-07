@@ -36,45 +36,6 @@ paths:
             responses: {  }
             tags:
                 - Endpoints
-    /api/v0/getuser:
-        get:
-            summary: ''
-            description: ''
-            parameters:
-                -
-                    in: header
-                    name: Authorization
-                    description: ''
-                    example: 'Bearer {YOUR_AUTH_KEY}'
-                    schema:
-                        type: string
-                -
-                    in: header
-                    name: Content-Type
-                    description: ''
-                    example: application/json
-                    schema:
-                        type: string
-                -
-                    in: header
-                    name: Accept
-                    description: ''
-                    example: application/json
-                    schema:
-                        type: string
-            responses:
-                401:
-                    description: ''
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                example:
-                                    message: Unauthenticated.
-                                properties:
-                                    message: { type: string, example: Unauthenticated. }
-            tags:
-                - Endpoints
     /api/v0/user/leaderboard:
         get:
             summary: ''
@@ -158,7 +119,7 @@ paths:
                 in: path
                 name: username
                 description: ''
-                example: possimus
+                example: perspiciatis
                 required: true
                 schema:
                     type: string
@@ -206,7 +167,7 @@ paths:
                 in: path
                 name: query
                 description: ''
-                example: ipsa
+                example: consequatur
                 required: true
                 schema:
                     type: string
@@ -254,7 +215,7 @@ paths:
                 in: path
                 name: username
                 description: ''
-                example: atque
+                example: veritatis
                 required: true
                 schema:
                     type: string
@@ -399,7 +360,7 @@ paths:
                 in: path
                 name: statusId
                 description: ''
-                example: labore
+                example: officia
                 required: true
                 schema:
                     type: string
@@ -465,7 +426,7 @@ paths:
                 in: path
                 name: statusId
                 description: ''
-                example: ea
+                example: est
                 required: true
                 schema:
                     type: string
@@ -513,7 +474,7 @@ paths:
                 in: path
                 name: statusId
                 description: ''
-                example: tenetur
+                example: perferendis
                 required: true
                 schema:
                     type: string
@@ -656,7 +617,7 @@ paths:
                 in: path
                 name: status
                 description: ''
-                example: aut
+                example: velit
                 required: true
                 schema:
                     type: string
@@ -761,7 +722,7 @@ paths:
                 in: path
                 name: notification
                 description: ''
-                example: odit
+                example: at
                 required: true
                 schema:
                     type: string
@@ -809,7 +770,7 @@ paths:
                 in: path
                 name: station
                 description: ''
-                example: totam
+                example: porro
                 required: true
                 schema:
                     type: string
@@ -1123,11 +1084,11 @@ paths:
                                 email:
                                     type: string
                                     description: ''
-                                    example: dolor
+                                    example: optio
                                 password:
                                     type: string
                                     description: ''
-                                    example: pariatur
+                                    example: modi
                             required:
                                 - email
                                 - password
@@ -1245,6 +1206,57 @@ paths:
                                     message: 'Successfully logged out.'
                                 properties:
                                     message: { type: string, example: 'Successfully logged out.' }
+            tags:
+                - 'User management'
+    /api/v0/getuser:
+        get:
+            summary: "Get current user\nGets the info for the currently logged in user"
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Authorization
+                    description: ''
+                    example: 'Bearer {YOUR_AUTH_KEY}'
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    id: 1
+                                    name: 'J. Doe'
+                                    username: jdoe
+                                    train_distance: '454.59'
+                                    train_duration: '317'
+                                    points: '66'
+                                    averageSpeed: 100.5678954
+                                properties:
+                                    id: { type: integer, example: 1 }
+                                    name: { type: string, example: 'J. Doe' }
+                                    username: { type: string, example: jdoe }
+                                    train_distance: { type: string, example: '454.59' }
+                                    train_duration: { type: string, example: '317' }
+                                    points: { type: string, example: '66' }
+                                    averageSpeed: { type: number, example: 100.5678954 }
             tags:
                 - 'User management'
 components:

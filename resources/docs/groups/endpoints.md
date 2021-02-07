@@ -61,73 +61,6 @@ fetch(url, {
 </form>
 
 
-## api/v0/getuser
-
-<small class="badge badge-darkred">requires authentication</small>
-
-
-
-> Example request:
-
-```bash
-curl -X GET \
-    -G "http://localhost/api/v0/getuser" \
-    -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    -H "Content-Type: application/json" \
-    -H "Accept: application/json"
-```
-
-```javascript
-const url = new URL(
-    "http://localhost/api/v0/getuser"
-);
-
-let headers = {
-    "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response => response.json());
-```
-
-
-> Example response (401):
-
-```json
-{
-    "message": "Unauthenticated."
-}
-```
-<div id="execution-results-GETapi-v0-getuser" hidden>
-    <blockquote>Received response<span id="execution-response-status-GETapi-v0-getuser"></span>:</blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v0-getuser"></code></pre>
-</div>
-<div id="execution-error-GETapi-v0-getuser" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v0-getuser"></code></pre>
-</div>
-<form id="form-GETapi-v0-getuser" data-method="GET" data-path="api/v0/getuser" data-authed="1" data-hasfiles="0" data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('GETapi-v0-getuser', this);">
-<h3>
-    Request&nbsp;&nbsp;&nbsp;
-        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-GETapi-v0-getuser" onclick="tryItOut('GETapi-v0-getuser');">Try it out ⚡</button>
-    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-GETapi-v0-getuser" onclick="cancelTryOut('GETapi-v0-getuser');" hidden>Cancel</button>&nbsp;&nbsp;
-    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-GETapi-v0-getuser" hidden>Send Request 💥</button>
-    </h3>
-<p>
-<small class="badge badge-green">GET</small>
- <b><code>api/v0/getuser</code></b>
-</p>
-<p>
-<label id="auth-GETapi-v0-getuser" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="GETapi-v0-getuser" data-component="header"></label>
-</p>
-</form>
-
-
 ## api/v0/user/leaderboard
 
 <small class="badge badge-darkred">requires authentication</small>
@@ -205,7 +138,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/user/possimus" \
+    -G "http://localhost/api/v0/user/perspiciatis" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -213,7 +146,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/user/possimus"
+    "http://localhost/api/v0/user/perspiciatis"
 );
 
 let headers = {
@@ -278,7 +211,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/user/search/ipsa" \
+    -G "http://localhost/api/v0/user/search/consequatur" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -286,7 +219,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/user/search/ipsa"
+    "http://localhost/api/v0/user/search/consequatur"
 );
 
 let headers = {
@@ -351,7 +284,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/user/atque/active" \
+    -G "http://localhost/api/v0/user/veritatis/active" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -359,7 +292,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/user/atque/active"
+    "http://localhost/api/v0/user/veritatis/active"
 );
 
 let headers = {
@@ -611,7 +544,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/event/labore" \
+    -G "http://localhost/api/v0/statuses/event/officia" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -619,7 +552,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/event/labore"
+    "http://localhost/api/v0/statuses/event/officia"
 );
 
 let headers = {
@@ -684,7 +617,7 @@ fetch(url, {
 
 ```bash
 curl -X POST \
-    "http://localhost/api/v0/statuses/ea/like" \
+    "http://localhost/api/v0/statuses/est/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -692,7 +625,7 @@ curl -X POST \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/ea/like"
+    "http://localhost/api/v0/statuses/est/like"
 );
 
 let headers = {
@@ -750,7 +683,7 @@ fetch(url, {
 
 ```bash
 curl -X DELETE \
-    "http://localhost/api/v0/statuses/voluptas/like" \
+    "http://localhost/api/v0/statuses/inventore/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -758,7 +691,7 @@ curl -X DELETE \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/voluptas/like"
+    "http://localhost/api/v0/statuses/inventore/like"
 );
 
 let headers = {
@@ -816,7 +749,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/tenetur/likes" \
+    -G "http://localhost/api/v0/statuses/perferendis/likes" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -824,7 +757,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/tenetur/likes"
+    "http://localhost/api/v0/statuses/perferendis/likes"
 );
 
 let headers = {
@@ -956,7 +889,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/aut" \
+    -G "http://localhost/api/v0/statuses/velit" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -964,7 +897,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/aut"
+    "http://localhost/api/v0/statuses/velit"
 );
 
 let headers = {
@@ -1029,7 +962,7 @@ fetch(url, {
 
 ```bash
 curl -X PUT \
-    "http://localhost/api/v0/statuses/aut" \
+    "http://localhost/api/v0/statuses/corrupti" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1037,7 +970,7 @@ curl -X PUT \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/aut"
+    "http://localhost/api/v0/statuses/corrupti"
 );
 
 let headers = {
@@ -1099,7 +1032,7 @@ fetch(url, {
 
 ```bash
 curl -X DELETE \
-    "http://localhost/api/v0/statuses/quo" \
+    "http://localhost/api/v0/statuses/et" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1107,7 +1040,7 @@ curl -X DELETE \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/quo"
+    "http://localhost/api/v0/statuses/et"
 );
 
 let headers = {
@@ -1232,7 +1165,7 @@ fetch(url, {
 
 ```bash
 curl -X PUT \
-    "http://localhost/api/v0/notifications/odit" \
+    "http://localhost/api/v0/notifications/at" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1240,7 +1173,7 @@ curl -X PUT \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/notifications/odit"
+    "http://localhost/api/v0/notifications/at"
 );
 
 let headers = {
@@ -1302,7 +1235,7 @@ fetch(url, {
 
 ```bash
 curl -X DELETE \
-    "http://localhost/api/v0/notifications/consequuntur" \
+    "http://localhost/api/v0/notifications/eum" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1310,7 +1243,7 @@ curl -X DELETE \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/notifications/consequuntur"
+    "http://localhost/api/v0/notifications/eum"
 );
 
 let headers = {
@@ -1368,7 +1301,7 @@ fetch(url, {
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/trains/autocomplete/totam" \
+    -G "http://localhost/api/v0/trains/autocomplete/porro" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1376,7 +1309,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/trains/autocomplete/totam"
+    "http://localhost/api/v0/trains/autocomplete/porro"
 );
 
 let headers = {
