@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Tr\u00e4welling",
-        "_postman_id": "71f2ba7e-6b4b-4420-a0ec-f08259a0606e",
+        "_postman_id": "ccd8d9ca-9bed-406a-8931-06bc831d877a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -84,7 +84,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "perspiciatis",
+                                    "value": "modi",
                                     "description": ""
                                 }
                             ]
@@ -118,7 +118,7 @@
                                 {
                                     "id": "query",
                                     "key": "query",
-                                    "value": "consequatur",
+                                    "value": "temporibus",
                                     "description": ""
                                 }
                             ]
@@ -152,7 +152,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "veritatis",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -264,7 +264,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "officia",
+                                    "value": "sed",
                                     "description": ""
                                 }
                             ]
@@ -298,7 +298,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "est",
+                                    "value": "voluptatem",
                                     "description": ""
                                 }
                             ]
@@ -332,7 +332,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "inventore",
+                                    "value": "rerum",
                                     "description": ""
                                 }
                             ]
@@ -366,7 +366,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "perferendis",
+                                    "value": "rerum",
                                     "description": ""
                                 }
                             ]
@@ -426,7 +426,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "velit",
+                                    "value": "in",
                                     "description": ""
                                 }
                             ]
@@ -460,7 +460,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "corrupti",
+                                    "value": "accusamus",
                                     "description": ""
                                 }
                             ]
@@ -494,101 +494,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "et",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Display a listing of the resource.",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/notifications",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update the specified resource in storage.",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/notifications\/:notification",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications\/:notification",
-                            "variable": [
-                                {
-                                    "id": "notification",
-                                    "key": "notification",
-                                    "value": "at",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Remove the specified resource from storage.",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/notifications\/:notification",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications\/:notification",
-                            "variable": [
-                                {
-                                    "id": "notification",
-                                    "key": "notification",
-                                    "value": "eum",
+                                    "value": "nam",
                                     "description": ""
                                 }
                             ]
@@ -622,7 +528,7 @@
                                 {
                                     "id": "station",
                                     "key": "station",
-                                    "value": "porro",
+                                    "value": "ut",
                                     "description": ""
                                 }
                             ]
@@ -828,6 +734,106 @@
             ]
         },
         {
+            "name": "Notifications",
+            "description": "",
+            "item": [
+                {
+                    "name": "List Notifications\nDisplay a listing of the resource.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/notifications",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Read\/Unread notification\nsets the current notification to \"read\"",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/notifications\/:notification",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications\/:notification",
+                            "variable": [
+                                {
+                                    "id": "notification",
+                                    "key": "notification",
+                                    "value": "87eed448-6ddc-44bc-97c6-bb4fe2c8d9e0",
+                                    "description": "The ID of the to-be-changed notification."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete the notification",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/notifications\/:notification",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/notifications\/:notification",
+                            "variable": [
+                                {
+                                    "id": "notification",
+                                    "key": "notification",
+                                    "value": "87eed448-6ddc-44bc-97c6-bb4fe2c8d9e0",
+                                    "description": "The ID of the to-be-deleted notification."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
             "name": "User management",
             "description": "",
             "item": [
@@ -854,7 +860,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"optio\",\n    \"password\": \"modi\"\n}"
+                            "raw": "{\n    \"email\": \"nesciunt\",\n    \"password\": \"quas\"\n}"
                         },
                         "description": ""
                     },

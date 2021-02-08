@@ -9,13 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-/**
- *
- *
- *
- * Class AuthController
- * @package App\Http\Controllers\API
- */
+
 class AuthController extends ResponseController
 {
     /**

@@ -16,7 +16,7 @@ curl -X POST \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"email":"optio","password":"modi"}'
+    -d '{"email":"nesciunt","password":"quas"}'
 
 ```
 
@@ -32,8 +32,8 @@ let headers = {
 };
 
 let body = {
-    "email": "optio",
-    "password": "modi"
+    "email": "nesciunt",
+    "password": "quas"
 }
 
 fetch(url, {
