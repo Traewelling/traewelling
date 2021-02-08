@@ -12,7 +12,16 @@ use Illuminate\Support\Facades\Validator;
 
 class StatusController extends ResponseController
 {
-
+    /**
+     * Show active statuses
+     * Returns all statuses of currently active trains
+     *
+     * @group Statuses
+     * @responseFile status=200 storage/responses/v0/statuses.enroute.get.json
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function enRoute() {
         $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $response               = [];
@@ -25,14 +34,47 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
+    /**
+     * Event-Statuses
+     * Displays all statuses concerning a specific event as a paginated object.
+     *
+     * @group Statuses
+     * @urlParam eventID string required the slug of the event
+     * @responseFile status=200 storage/responses/v0/statuses.event.get.
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $eventID
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getByEvent($eventID) {
         $eventStatusResponse = StatusBackend::getStatusesByEvent($eventID);
         return $this->sendResponse($eventStatusResponse);
     }
 
+    /**
+     * Dashboard & User-statuses
+     * Retrieves either the (global) dashboard for the logged in user or all statuses of a specified user
+     *
+     * @group Statuses
+     * @queryParam view string
+     * Filters the list of statuses so that it will either return the global view
+     * (i.e. all public statuses == global dashboard), just the statuses of the current user’s follows
+     * (i.e. the user’s dashboard). Can be user,global or personal. Example: user
+     * @queryParam username string Only required if view is set to user. Example: gertrud123
+     * @queryParam page int Needed to display the specified page
+     * @responseFile status=200 storage/responses/v0/statuses.get.json
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request) {
         $validator = Validator::make($request->all(), [
-            'maxStatuses' => 'integer',
             'username'    => 'string|required_if:view,user',
             'view'        => 'in:user,global,personal'
         ]);
@@ -58,11 +100,44 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show($statusId) {
-        $statusResponse = StatusBackend::getStatus($statusId);
+    /**
+     * Retrieve Status
+     * Retrieves a single status.
+     *
+     * @group Statuses
+     * @urlParam statusId int required The id of a status.
+     * @responseFile storage/responses/v0/statuses.single.get.json
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $status
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($status) {
+        $statusResponse = StatusBackend::getStatus($status);
         return $this->sendResponse($statusResponse);
     }
 
+    /**
+     * Update status
+     * Updates the status text that a user previously posted
+     *
+     * @group Statuses
+     * @urlParam status int required ID of the status
+     * @bodyParam {} string New body of the status. Example: This is an updated status body! 🥳
+     * ToDo: This accepts plaintext as body, not a key=>value pair.
+     * @response status=200 scenario="The status object has been modified on the server (i.e. the status text was changed). The response contains the modified version of the status." {"This is an updated status body! 🥳"}
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 403 scenario="Forbidden The logged in user is not permitted to perform this action. (e.g. edit a status of another user.)" <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'body'     => 'max:280',
@@ -86,8 +161,23 @@ class StatusController extends ResponseController
         return $this->sendResponse(['newBody' => $editStatusResponse]);
     }
 
-    public function destroy($statusId) {
-        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $statusId);
+    /**
+     * Destroy status
+     * Removes a status that a user has posted previously.
+     *
+     * @group Statuses
+     * @urlParam status int required ID of the status
+     * @response status=204 scenario="No content. The status with the given ID has been deleted. Nothing further needs to be said, so the response will not have any content." <<>>
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $status
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($status) {
+        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $status);
 
         if ($deleteStatusResponse === null) {
             return $this->sendError('Not found');
@@ -98,6 +188,22 @@ class StatusController extends ResponseController
         return $this->sendResponse(__('controller.status.delete-ok'));
     }
 
+    /**
+     * Like a Status
+     * Creates a like for a given status
+     *
+     * @group Statuses
+     * @urlParam statusId int required id for the to-be-liked status
+     * @response 200 scenario="Like successfully created" <<true>>
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 403 scenario="Forbidden The logged in user is not permitted to perform this action. (e.g. edit a status of another user.)" <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $statusId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createLike($statusId) {
         $status = Status::find($statusId);
         if ($status == null) {
@@ -112,12 +218,44 @@ class StatusController extends ResponseController
 
     }
 
+    /**
+     * Unlike a Status
+     * Removes a like for a given status
+     *
+     * @group Statuses
+     * @urlParam statusId int required id for the to-be-unliked status
+     * @response 200 scenario="Like successfully destroyed" <<true>>
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 403 scenario="Forbidden The logged in user is not permitted to perform this action. (e.g. edit a status of another user.)" <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $statusId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroyLike($statusId) {
         $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $statusId);
 
         return $this->sendResponse($destroyLikeResponse);
     }
 
+    /**
+     * Retrieve Likes
+     * Retrieves all likes for a status
+     *
+     * @group Statuses
+     * @urlParam statusId int required
+     * @queryParam page int Needed to display the specified page
+     * @responseFile status=200 storage/responses/v0/statuses.likes.get.json
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $statusId
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getLikes($statusId) {
         $getLikesResponse = StatusBackend::getLikes($statusId);
 

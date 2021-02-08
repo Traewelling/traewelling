@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Tr\u00e4welling",
-        "_postman_id": "ccd8d9ca-9bed-406a-8931-06bc831d877a",
+        "_postman_id": "11dfc340-eda2-4fbc-b051-14e147ece19a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -84,7 +84,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "modi",
+                                    "value": "in",
                                     "description": ""
                                 }
                             ]
@@ -118,7 +118,7 @@
                                 {
                                     "id": "query",
                                     "key": "query",
-                                    "value": "temporibus",
+                                    "value": "reiciendis",
                                     "description": ""
                                 }
                             ]
@@ -152,7 +152,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "et",
+                                    "value": "iure",
                                     "description": ""
                                 }
                             ]
@@ -226,296 +226,6 @@
                     "response": []
                 },
                 {
-                    "name": "api\/v0\/statuses\/enroute\/all",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/enroute\/all",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/enroute\/all"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/event\/{statusId}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/event\/:statusId",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/event\/:statusId",
-                            "variable": [
-                                {
-                                    "id": "statusId",
-                                    "key": "statusId",
-                                    "value": "sed",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{statusId}\/like",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:statusId\/like",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/like",
-                            "variable": [
-                                {
-                                    "id": "statusId",
-                                    "key": "statusId",
-                                    "value": "voluptatem",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{statusId}\/like",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:statusId\/like",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/like",
-                            "variable": [
-                                {
-                                    "id": "statusId",
-                                    "key": "statusId",
-                                    "value": "rerum",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{statusId}\/likes",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:statusId\/likes",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes",
-                            "variable": [
-                                {
-                                    "id": "statusId",
-                                    "key": "statusId",
-                                    "value": "rerum",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{status}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:status",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
-                            "variable": [
-                                {
-                                    "id": "status",
-                                    "key": "status",
-                                    "value": "in",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{status}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:status",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
-                            "variable": [
-                                {
-                                    "id": "status",
-                                    "key": "status",
-                                    "value": "accusamus",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/statuses\/{status}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/statuses\/:status",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
-                            "variable": [
-                                {
-                                    "id": "status",
-                                    "key": "status",
-                                    "value": "nam",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
                     "name": "api\/v0\/trains\/autocomplete\/{station}",
                     "request": {
                         "url": {
@@ -528,7 +238,7 @@
                                 {
                                     "id": "station",
                                     "key": "station",
-                                    "value": "ut",
+                                    "value": "reprehenderit",
                                     "description": ""
                                 }
                             ]
@@ -834,6 +544,343 @@
             ]
         },
         {
+            "name": "Statuses",
+            "description": "",
+            "item": [
+                {
+                    "name": "Show active statuses\nReturns all statuses of currently active trains",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/enroute\/all",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/enroute\/all"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Event-Statuses\nDisplays all statuses concerning a specific event as a paginated object.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/event\/:statusId",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/event\/:statusId",
+                            "variable": [
+                                {
+                                    "id": "statusId",
+                                    "key": "statusId",
+                                    "value": "ab",
+                                    "description": ""
+                                },
+                                {
+                                    "id": "eventID",
+                                    "key": "eventID",
+                                    "value": "amet",
+                                    "description": "the slug of the event"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Like a Status\nCreates a like for a given status",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:statusId\/like",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/like",
+                            "variable": [
+                                {
+                                    "id": "statusId",
+                                    "key": "statusId",
+                                    "value": "10",
+                                    "description": "id for the to-be-liked status"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Unlike a Status\nRemoves a like for a given status",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:statusId\/like",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/like",
+                            "variable": [
+                                {
+                                    "id": "statusId",
+                                    "key": "statusId",
+                                    "value": "17",
+                                    "description": "id for the to-be-unliked status"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Retrieve Likes\nRetrieves all likes for a status",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:statusId\/likes",
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "5",
+                                    "description": "Needed to display the specified page",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes?page=5",
+                            "variable": [
+                                {
+                                    "id": "statusId",
+                                    "key": "statusId",
+                                    "value": "7",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Dashboard & User-statuses\nRetrieves either the (global) dashboard for the logged in user or all statuses of a specified user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses",
+                            "query": [
+                                {
+                                    "key": "view",
+                                    "value": "user",
+                                    "description": "(i.e. the user\u2019s dashboard). Can be user,global or personal.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "username",
+                                    "value": "gertrud123",
+                                    "description": "Only required if view is set to user.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "7",
+                                    "description": "Needed to display the specified page",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses?view=user&username=gertrud123&page=7"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Retrieve Status\nRetrieves a single status.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:status",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
+                            "variable": [
+                                {
+                                    "id": "status",
+                                    "key": "status",
+                                    "value": "perferendis",
+                                    "description": ""
+                                },
+                                {
+                                    "id": "statusId",
+                                    "key": "statusId",
+                                    "value": "5",
+                                    "description": "The id of a status."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update status\nUpdates the status text that a user previously posted",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:status",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
+                            "variable": [
+                                {
+                                    "id": "status",
+                                    "key": "status",
+                                    "value": "1",
+                                    "description": "ID of the status"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"{}\": \"This is an updated status body! \\ud83e\\udd73\\nToDo: This accepts plaintext as body, not a key=>value pair.\"\n}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Destroy status\nRemoves a status that a user has posted previously.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/statuses\/:status",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:status",
+                            "variable": [
+                                {
+                                    "id": "status",
+                                    "key": "status",
+                                    "value": "4",
+                                    "description": "ID of the status"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
             "name": "User management",
             "description": "",
             "item": [
@@ -860,7 +907,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"nesciunt\",\n    \"password\": \"quas\"\n}"
+                            "raw": "{\n    \"email\": \"quae\",\n    \"password\": \"non\"\n}"
                         },
                         "description": ""
                     },
