@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Schema;
 class AddUniqueKeyToPolyLines extends Migration
 {
     public function up(): void {
-        Schema::table('likes', function(Blueprint $table) {
-            $table->unique(['poly_lines']);
+        Schema::table('poly_lines', function(Blueprint $table) {
+            $table->unique(['hash']);
         });
     }
 
 
     public function down(): void {
         Schema::table('poly_lines', function(Blueprint $table) {
-            $table->dropUnique(['poly_lines']);
+            $table->dropUnique(['hash']);
         });
     }
 }
