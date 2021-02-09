@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Tr\u00e4welling",
-        "_postman_id": "11dfc340-eda2-4fbc-b051-14e147ece19a",
+        "_postman_id": "cbea9e90-8884-45bd-aabe-c3acddc670ac",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -84,7 +84,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "in",
+                                    "value": "et",
                                     "description": ""
                                 }
                             ]
@@ -118,7 +118,7 @@
                                 {
                                     "id": "query",
                                     "key": "query",
-                                    "value": "reiciendis",
+                                    "value": "voluptatem",
                                     "description": ""
                                 }
                             ]
@@ -152,7 +152,7 @@
                                 {
                                     "id": "username",
                                     "key": "username",
-                                    "value": "iure",
+                                    "value": "nisi",
                                     "description": ""
                                 }
                             ]
@@ -210,222 +210,6 @@
                             "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/displayname"
                         },
                         "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/autocomplete\/{station}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/autocomplete\/:station",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/autocomplete\/:station",
-                            "variable": [
-                                {
-                                    "id": "station",
-                                    "key": "station",
-                                    "value": "reprehenderit",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/stationboard",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/stationboard",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/stationboard"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/trip",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/trip",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/trip"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/checkin",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/checkin",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/checkin"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/latest",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/latest",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/latest"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/home",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/home",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/home"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/home",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/home",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/home"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/trains\/nearby",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/trains\/nearby",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/nearby"
-                        },
-                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -586,13 +370,13 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "ab",
+                                    "value": "dolorem",
                                     "description": ""
                                 },
                                 {
                                     "id": "eventID",
                                     "key": "eventID",
-                                    "value": "amet",
+                                    "value": "sed",
                                     "description": "the slug of the event"
                                 }
                             ]
@@ -660,7 +444,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "17",
+                                    "value": "20",
                                     "description": "id for the to-be-unliked status"
                                 }
                             ]
@@ -691,17 +475,17 @@
                             "query": [
                                 {
                                     "key": "page",
-                                    "value": "5",
+                                    "value": "14",
                                     "description": "Needed to display the specified page",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes?page=5",
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes?page=14",
                             "variable": [
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "7",
+                                    "value": "14",
                                     "description": ""
                                 }
                             ]
@@ -744,12 +528,12 @@
                                 },
                                 {
                                     "key": "page",
-                                    "value": "7",
+                                    "value": "10",
                                     "description": "Needed to display the specified page",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses?view=user&username=gertrud123&page=7"
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses?view=user&username=gertrud123&page=10"
                         },
                         "method": "GET",
                         "header": [
@@ -780,13 +564,13 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "perferendis",
+                                    "value": "quos",
                                     "description": ""
                                 },
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "5",
+                                    "value": "10",
                                     "description": "The id of a status."
                                 }
                             ]
@@ -820,7 +604,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "1",
+                                    "value": "6",
                                     "description": "ID of the status"
                                 }
                             ]
@@ -857,12 +641,335 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "4",
+                                    "value": "9",
                                     "description": "ID of the status"
                                 }
                             ]
                         },
                         "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Trains",
+            "description": "",
+            "item": [
+                {
+                    "name": "Autocomplete\nThis endpoint can be called multiple times in succession when searching stations by name to provide suggestions\nfor the user to select from. Please provide at least 3 characters when retrieving suggestions. Otherwise,\nonly call this endpoint with less than 3 characters if the user explicitly requested a search.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/autocomplete\/:station",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/autocomplete\/:station",
+                            "variable": [
+                                {
+                                    "id": "station",
+                                    "key": "station",
+                                    "value": "Kar",
+                                    "description": "String to be searched for in the stations"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Stations nearby\nSearches for nearby train stations",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/nearby",
+                            "query": [
+                                {
+                                    "key": "latitude",
+                                    "value": "48.994348",
+                                    "description": "min:-180, max:180",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "longitude",
+                                    "value": "48.994348",
+                                    "description": "min:-180, max:180",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/nearby?latitude=48.994348&longitude=48.994348"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Stationboard\nReturns the trains that will depart from a station in the near future or at a specific point in time.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/stationboard",
+                            "query": [
+                                {
+                                    "key": "station",
+                                    "value": "Karlsruhe",
+                                    "description": "The name of the train station",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "when",
+                                    "value": "2019-12-01T21%3A03%3A00%2B01%3A00",
+                                    "description": "date nullable Timestamp of the query",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "travelType",
+                                    "value": "express",
+                                    "description": "nullable Must be one of the following: 'nationalExpress', 'express', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi'",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/stationboard?station=Karlsruhe&when=2019-12-01T21%3A03%3A00%2B01%3A00&travelType=express"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Responses can be filtered for types of public transport e.g. busses, regional and national trains."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Train trip\nReturns the stopovers and other details of a specific train.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/trip",
+                            "query": [
+                                {
+                                    "key": "tripID",
+                                    "value": "1%7C1937395%7C17%7C80%7C24112019",
+                                    "description": "The given ID of the trip.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "lineName",
+                                    "value": "62",
+                                    "description": "The given name of the line.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start",
+                                    "value": "8079041",
+                                    "description": "The IBNR of the starting point of the train.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/trip?tripID=1%7C1937395%7C17%7C80%7C24112019&lineName=62&start=8079041"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check in\nCreates a check in for a train",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/checkin",
+                            "query": [
+                                {
+                                    "key": "tripID",
+                                    "value": "1%7C1937395%7C17%7C80%7C24112019",
+                                    "description": "ID of the to-be-ckecked-in trip.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "lineName",
+                                    "value": "62",
+                                    "description": "ID of the to-be-checked-in trip.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "start",
+                                    "value": "8079041",
+                                    "description": "The IBNR of the starting point of the train.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "destination",
+                                    "value": "8079041",
+                                    "description": "The IBNR of the destination.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "body",
+                                    "value": "This+is+my+first+Check-in%21",
+                                    "description": "max:280 The body of the status.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "tweet",
+                                    "value": "1",
+                                    "description": "Should this post be tweeted?",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "toot",
+                                    "value": "",
+                                    "description": "Should this post be posted to mastodon?",
+                                    "disabled": true
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/checkin?tripID=1%7C1937395%7C17%7C80%7C24112019&lineName=62&start=8079041&destination=8079041&body=This+is+my+first+Check-in%21&tweet=1&toot="
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Latest train stations\nRetrieves the last 5 station the logged in user arrived at",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/latest",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/latest"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Home Station\nGets the home station of the logged in user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/home",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/home"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Home Station\nSets the home station for the logged in user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/trains\/home",
+                            "query": [
+                                {
+                                    "key": "ibnr",
+                                    "value": "8123",
+                                    "description": "",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/trains\/home?ibnr=8123"
+                        },
+                        "method": "PUT",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -907,7 +1014,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"quae\",\n    \"password\": \"non\"\n}"
+                            "raw": "{\n    \"email\": \"perspiciatis\",\n    \"password\": \"quo\"\n}"
                         },
                         "description": ""
                     },

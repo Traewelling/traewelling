@@ -1,0 +1,75 @@
+{
+  "station": {
+    "ibnr": "8079041",
+    "name": "Karlsruhe Bahnhofsvorplatz",
+    "provider": "train"
+  },
+  "when": 1575230596,
+  "departures": {
+    "trip_id": "1|1937395|17|80|24112019",
+    "stop": {
+      "type": "stop",
+      "id": "8079041",
+      "name": "Karlsruhe Bahnhofsvorplatz",
+      "location": {
+        "type": "location",
+        "id": "8079041",
+        "latitude": 48.994348,
+        "longitude": 8.399583
+      },
+      "products": {
+        "nationalExpress": true,
+        "national": true,
+        "regionalExp": true,
+        "regional": true,
+        "suburban": true,
+        "bus": true,
+        "ferry": true,
+        "subway": true,
+        "tram": true,
+        "taxi": true
+      },
+      "station": {
+        "type": "station",
+        "id": "8000191",
+        "name": "Karlsruhe Hbf",
+        "location": {
+          "type": "location",
+          "id": "8079041",
+          "latitude": 48.994348,
+          "longitude": 8.399583
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": true,
+          "subway": true,
+          "tram": true,
+          "taxi": true
+        }
+      },
+      "when": "2019-12-01T21:03:00+01:00",
+      "directoin": "3 Tivoli",
+      "line": {
+        "type": "line",
+        "id": "re-6",
+        "fahrtNr": "12042",
+        "name": "RE 6",
+        "public": true,
+        "operator": {
+          "type": "operator",
+          "id": "db-regio-ag-mitte",
+          "name": "DB Regio AG Mitte"
+        },
+        "additionalName": "RE 6"
+      },
+      "remarks": "string",
+      "delay": 60,
+      "platform": "string"
+    }
+  }
+}

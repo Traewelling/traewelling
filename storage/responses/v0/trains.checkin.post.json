@@ -1,0 +1,18 @@
+{
+  "distance": 16.152,
+  "duration": 900,
+  "statusId": 34,
+  "points": 1,
+  "lineName": "S 32",
+  "alsoOnThisConnection": [
+    {
+      "id": 1,
+      "name": "J. Doe",
+      "username": "jdoe",
+      "train_distance": "454.59",
+      "train_duration": "317",
+      "points": "66",
+      "averageSpeed": 100.5678954
+    }
+  ]
+}
