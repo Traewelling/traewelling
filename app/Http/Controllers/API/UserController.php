@@ -8,8 +8,27 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group User
+ * Stuff for the user I guess
+ *
+ * @package App\Http\Controllers\API */
 class UserController extends ResponseController
 {
+    /**
+     * Get User
+     *
+     * @urlParam username string required The username of the requested user. Example:gertrud123
+     *
+     * @responseFile status=200 storage/responses/v0/user.get.json
+     * @response 400 scenario="Bad Request The parameters are wrong or not given." <<>>
+     * @response 401 scenario="Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied." <<>>
+     * @response 404 scenario="Not found The parameters in the request were valid, but the server did not find a corresponding object." <<>>
+     * @responseFile status=406 scenario="Not Acceptable The privacy agreement has not yet been accepted." storage/responses/v0/server.406.json
+     *
+     * @param $username
+     * @return JsonResponse
+     */
     public function show($username) {
         $userResponse = UserBackend::getProfilePage($username);
         return $this->sendResponse($userResponse);
@@ -49,8 +68,8 @@ class UserController extends ResponseController
             ];
         };
 
-        $users      = $leaderboardResponse['users']->take(15)->map($mapping);
-        $friends    = $leaderboardResponse['friends']?->take(15)->map($mapping);
+        $users   = $leaderboardResponse['users']->take(15)->map($mapping);
+        $friends = $leaderboardResponse['friends'] ?->take(15)->map($mapping);
         $kilometers = $leaderboardResponse['kilometers']->take(15)->map($mapping);
 
         return $this->sendResponse([
