@@ -185,11 +185,17 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    //delete a specific session for user
-    public function deleteToken($tokenId): RedirectResponse {
-        $user  = Auth::user();
-        $token = Token::find($tokenId);
-        if ($token->user == $user) {
+    /**
+     * delete a specific session for user
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteToken(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
+                                        ]);
+        $token     = Token::find($validated['tokenId']);
+        if ($token->user->id == Auth::user()->id) {
             $token->revoke();
         }
         return redirect()->route('settings');
