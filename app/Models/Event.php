@@ -18,7 +18,15 @@ class Event extends Model
     }
 
     public function statuses(): HasMany {
-        return $this->hasMany(Status::class, 'event_id', 'id');
+        return $this->hasMany(Status::class, 'event_id', 'id')
+                    ->with(['user',
+                            'trainCheckin',
+                            'trainCheckin.Origin',
+                            'trainCheckin.Destination',
+                            'trainCheckin.HafasTrip',
+                            'event'])
+                    ->withCount('likes')
+                    ->orderBy('created_at', 'desc');
     }
 
     /**
