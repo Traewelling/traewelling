@@ -42,11 +42,15 @@ class FrontendTransportController extends Controller
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
-        $TrainStationboardResponse = TransportBackend::TrainStationboard(
-            $validated['station'],
-            $when,
-            $validated['travelType'] ?? null
-        );
+        try {
+            $TrainStationboardResponse = TransportBackend::TrainStationboard(
+                $validated['station'],
+                $when,
+                $validated['travelType'] ?? null
+            );
+        } catch (HafasException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
         if ($TrainStationboardResponse === false) {
             return redirect()->back()->with('error', __('controller.transport.no-name-given'));
         }
@@ -90,12 +94,16 @@ class FrontendTransportController extends Controller
                                'departure' => ['required', 'date']
                            ]);
 
-        $TrainTripResponse = TransportBackend::TrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start,
-            Carbon::parse($request->departure)
-        );
+        try {
+            $TrainTripResponse = TransportBackend::TrainTrip(
+                $request->tripID,
+                $request->lineName,
+                $request->start,
+                Carbon::parse($request->departure)
+            );
+        } catch (HafasException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
         if ($TrainTripResponse === null) {
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
