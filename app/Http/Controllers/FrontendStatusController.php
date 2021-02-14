@@ -143,9 +143,8 @@ class FrontendStatusController extends Controller
                                   ->simplePaginate(15);
 
         return view('eventsMap', [
-            'statuses'    => $statusesResponse,
-            'event'       => $event,
-            'currentUser' => Auth::user(),
+            'statuses' => $statusesResponse,
+            'event'    => $event
         ]);
     }
 
