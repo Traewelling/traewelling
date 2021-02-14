@@ -78,10 +78,10 @@
         <div
             class="progress-bar progress-time"
             role="progressbar"
-            style="width: 0%"
-            data-now="{{ time() }}"
-            data-min="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
-            data-max="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
+            style="width: 0"
+            data-valuenow="{{ time() }}"
+            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
+            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
             ></div>
     </div>
     <div class="card-footer text-muted interaction">
