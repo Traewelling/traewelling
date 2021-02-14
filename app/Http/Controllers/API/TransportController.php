@@ -89,12 +89,16 @@ class TransportController extends ResponseController
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => 'required',
-            'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
+            //Should be required in future API Releases due to DB Rest
+            'lineName'    => ['nullable'],
             'start'       => 'required',
             'destination' => 'required',
             'body'        => 'max:280',
             'tweet'       => 'boolean',
-            'toot'        => 'boolean'
+            'toot'        => 'boolean',
+            //nullable, so that it is not a breaking change
+            'departure'   => ['nullable', 'date'],
+            'arrival'     => ['nullable', 'date'],
         ]);
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
@@ -116,7 +120,10 @@ class TransportController extends ResponseController
                 auth()->user(),
                 0,
                 $request->input('tweet'),
-                $request->input('toot')
+                $request->input('toot'),
+                0,
+                isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
+                isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
             );
 
             return $this->sendResponse([

@@ -584,6 +584,14 @@ paths:
                   type: boolean
                 toot:
                   type: boolean
+                departure:
+                  description: Time of departure at the start station
+                  nullable: true
+                  example: "2021-01-01T12:00:00+01:00"
+                arrival:
+                  description: Time of arrival at the destination station
+                  nullable: true
+                  example: "2021-01-01T12:00:00+01:00"
       responses:
         200:
           description: OK
