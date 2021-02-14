@@ -396,7 +396,7 @@ class UserController extends Controller
                    ->count();
     }
 
-    public static function updateDisplayName($displayname): void {
+    public static function updateDisplayName($displayname): bool {
         $request   = new Request(['displayname' => $displayname]);
         $validator = Validator::make($request->all(), [
             'displayname' => 'required|max:120'
@@ -404,9 +404,14 @@ class UserController extends Controller
         if ($validator->fails()) {
             abort(400);
         }
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $displayname;
-        $user->save();
+        try {
+            $user       = User::where('id', Auth::user()->id)->first();
+            $user->name = $displayname;
+            $user->save();
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     public static function searchUser(?string $searchQuery) {
