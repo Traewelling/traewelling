@@ -244,6 +244,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
@@ -1347,7 +1349,9 @@ components:
         mastodonUrl:
           $ref: '#/components/schemas/mastodonUrl'
         statuses:
-          $ref: '#/components/schemas/status_paginate'
+          allOf:
+            - $ref: '#/components/schemas/status_paginate'
+            - nullable: true
         user:
           $ref: '#/components/schemas/User'
     Status:
@@ -1408,6 +1412,9 @@ components:
           type: string
           format: integer
           example: "66"
+        private_profile:
+          type: boolean
+          example: false
         averageSpeed:
           type: number
           format: float

@@ -29,6 +29,7 @@ use Mastodon;
 
 class UserController extends Controller
 {
+
     public static function getProfilePicture($username): ?array {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
@@ -91,10 +92,11 @@ class UserController extends Controller
             $user->email_verified_at = null;
         }
 
-        $user->email      = $request->email;
-        $user->username   = $request->username;
-        $user->name       = $request->name;
-        $user->always_dbl = $request->always_dbl == "on";
+        $user->email           = $request->email;
+        $user->username        = $request->username;
+        $user->name            = $request->name;
+        $user->always_dbl      = $request->always_dbl == "on";
+        $user->private_profile = $request->private_profile == "on";
         $user->save();
 
         if (!$user->hasVerifiedEmail()) {
@@ -242,12 +244,19 @@ class UserController extends Controller
         if ($user === null) {
             return null;
         }
-        $statuses = $user->statuses()->with('user',
-                                            'trainCheckin',
-                                            'trainCheckin.Origin',
-                                            'trainCheckin.Destination',
-                                            'trainCheckin.HafasTrip',
-                                            'event')->orderBy('created_at', 'DESC')->paginate(15);
+        $statuses = null;
+
+        //PrivateProfile change to "also following"
+        if (!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
+
+
+            $statuses = $user->statuses()->with('user',
+                                                'trainCheckin',
+                                                'trainCheckin.Origin',
+                                                'trainCheckin.Destination',
+                                                'trainCheckin.HafasTrip',
+                                                'event')->orderBy('created_at', 'DESC')->paginate(15);
+        }
 
 
         $twitterUrl  = "";
