@@ -54,9 +54,10 @@ Then, generate some application keys and migrate the database to the latest leve
 ```sh
 php artisan key:generate
 php artisan migrate 
-#for example data use 
-#php artisan migrate --seed
+# for example data use 
+# php artisan migrate --seed
 php artisan passport:install
+php artisan scribe:generate # This generates the API documentation in DOMAINROOT/docs
 ```
 
 Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
