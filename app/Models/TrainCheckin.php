@@ -37,13 +37,13 @@ class TrainCheckin extends Model
 
     public function getOriginStopoverAttribute(): ?TrainStopover {
         return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
-                                             ->where('departure_planned', $this->departure->toIso8601String())
+                                             ->where('departure_planned', $this->departure)
                                              ->first();
     }
 
     public function getDestinationStopoverAttribute(): ?TrainStopover {
         return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
-                                             ->where('arrival_planned', $this->arrival->toIso8601String())
+                                             ->where('arrival_planned', $this->arrival)
                                              ->first();
     }
 

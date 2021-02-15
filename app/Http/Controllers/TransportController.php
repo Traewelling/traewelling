@@ -57,6 +57,13 @@ class TransportController extends Controller
         return $array;
     }
 
+    /**
+     * @param $stationName
+     * @param Carbon|null $when
+     * @param null $travelType
+     * @return bool|array|null
+     * @throws HafasException
+     */
     public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
             return false;
@@ -176,6 +183,7 @@ class TransportController extends Controller
      * @param $start
      * @param Carbon|null $departure
      * @return array|null
+     * @throws HafasException
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
 
@@ -624,7 +632,7 @@ class TransportController extends Controller
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
 
-        $user->loadMissing(['statuses', 'statuses.trainCheckin']);
+        $user->load(['statuses.trainCheckin']);
 
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(2);
@@ -633,9 +641,20 @@ class TransportController extends Controller
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
         })->filter(function($trainCheckIn) use ($start, $end) {
-            return ($trainCheckIn->arrival->isAfter($start) && $trainCheckIn->departure->isBefore($end))
-                || ($trainCheckIn->arrival->isAfter($end) && $trainCheckIn->departure->isBefore($start))
-                || ($trainCheckIn->departure->isAfter($start) && $trainCheckIn->arrival->isBefore($start));
+            //use realtime-data or use planned if not available
+            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
+            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
+
+            return (
+                    $arrival->isAfter($start) &&
+                    $departure->isBefore($end)
+                ) || (
+                    $arrival->isAfter($end) &&
+                    $departure->isBefore($start)
+                ) || (
+                    $departure->isAfter($start) &&
+                    $arrival->isBefore($start)
+                );
         });
     }
 }

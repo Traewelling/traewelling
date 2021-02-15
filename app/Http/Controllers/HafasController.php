@@ -103,6 +103,23 @@ abstract class HafasController extends Controller
         }
     }
 
+    /**
+     * @param TrainStation $station
+     * @param Carbon $when
+     * @param int $duration
+     * @param bool $nationalExpress
+     * @param bool $national
+     * @param bool $regionalExp
+     * @param bool $regional
+     * @param bool $suburban
+     * @param bool $bus
+     * @param bool $ferry
+     * @param bool $subway
+     * @param bool $tram
+     * @param bool $taxi
+     * @return Collection
+     * @throws HafasException
+     */
     public static function getDepartures(
         TrainStation $station,
         Carbon $when,
@@ -150,6 +167,12 @@ abstract class HafasController extends Controller
         }
     }
 
+    /**
+     * @param string $tripID
+     * @param string $lineName
+     * @return HafasTrip
+     * @throws HafasException
+     */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
         if ($trip !== null) {
@@ -159,16 +182,27 @@ abstract class HafasController extends Controller
         return self::fetchHafasTrip($tripID, $lineName);
     }
 
+    /**
+     * @param string $tripID
+     * @param string $lineName
+     * @return HafasTrip
+     * @throws HafasException
+     */
     public static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $tripResponse = $tripClient->get("trips/$tripID", [
-            'query' => [
-                'lineName'  => $lineName,
-                'polyline'  => 'true',
-                'stopovers' => 'true'
-            ]
-        ]);
-        $tripJson     = json_decode($tripResponse->getBody()->getContents());
+        $tripClient = new Client(['base_uri' => config('trwl.db_rest')]);
+        try {
+            $tripResponse = $tripClient->get("trips/$tripID", [
+                'query' => [
+                    'lineName'  => $lineName,
+                    'polyline'  => 'true',
+                    'stopovers' => 'true'
+                ]
+            ]);
+        } catch (GuzzleException) {
+            //sometimes DB-Rest gives 502 Bad Request
+            throw new HafasException(__('messages.exception.generalHafas'));
+        }
+        $tripJson = json_decode($tripResponse->getBody()->getContents());
 
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);

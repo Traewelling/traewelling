@@ -39,11 +39,15 @@ class TransportController extends ResponseController
 
         $validated = $validator->validate();
 
-        $trainStationboardResponse = TransportBackend::TrainStationboard(
-            $validated['station'],
-            isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-            $validated['travelType'] ?? null
-        );
+        try {
+            $trainStationboardResponse = TransportBackend::TrainStationboard(
+                $validated['station'],
+                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                $validated['travelType'] ?? null
+            );
+        } catch (HafasException $exception) {
+            return $this->sendError(400, $exception->getMessage());
+        }
         if ($trainStationboardResponse === false) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
         }
@@ -95,7 +99,10 @@ class TransportController extends ResponseController
             'destination' => ['required', 'numeric'],
             'body'        => 'max:280',
             'tweet'       => 'boolean',
-            'toot'        => 'boolean'
+            'toot'        => 'boolean',
+            //nullable, so that it is not a breaking change
+            'departure'   => ['nullable', 'date'],
+            'arrival'     => ['nullable', 'date'],
         ]);
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
@@ -105,7 +112,11 @@ class TransportController extends ResponseController
         if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
         } else if ($hafasTrip == null) {
-            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+            try {
+                $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+            } catch (HafasException $exception) {
+                return $this->sendError($exception->getMessage(), 400);
+            }
         }
 
         try {
@@ -117,7 +128,10 @@ class TransportController extends ResponseController
                 auth()->user(),
                 0,
                 $request->input('tweet'),
-                $request->input('toot')
+                $request->input('toot'),
+                0,
+                isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
+                isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
             );
 
             return $this->sendResponse([

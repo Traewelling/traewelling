@@ -20,9 +20,9 @@
                                 <div class="col-md-6 text-center">
                                     <div class="image-box">
                                         <img
-                                            src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}"
-                                            style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                            id="theProfilePicture"/>
+                                                src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}"
+                                                style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
+                                                id="theProfilePicture"/>
                                     </div>
 
                                     <a href="#" class="btn btn-primary" data-toggle="modal"
@@ -295,7 +295,7 @@
                                                            aria-describedby="button-addon4">
                                                     <div id="button-addon4" class="input-group-append">
                                                         <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                                class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                                                    class="fab fa-mastodon"></i> {{ __('settings.connect') }}
                                                         </button>
                                                     </div>
                                                 </div>
@@ -323,7 +323,7 @@
                                                        aria-describedby="button-addon4">
                                                 <div id="button-addon4" class="input-group-append">
                                                     <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                            class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                                                class="fab fa-mastodon"></i> {{ __('settings.connect') }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -359,8 +359,13 @@
                             @endforeach
 
                         </table>
-                        <a href="{{ route('delsession') }}" class="btn btn-block btn-outline-danger mx-0"
-                           role="button">{{ __('settings.deleteallsessions') }}</a>
+                        <form method="POST" action="{{ route('delsession') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-block btn-outline-danger mx-0">
+                                {{ __('settings.deleteallsessions') }}
+                            </button>
+                        </form>
+
                     </div>
                 </div>
 
@@ -389,10 +394,15 @@
                                         <td>{{ $token['updated_at'] }}</td>
                                         <td>{{ $token['expires_at'] }}</td>
                                         <td>
-                                            <a href="{{ route('deltoken', ['id' => $token['id']]) }}"
-                                               alt="{{ __('settings.deletetokenfor') }}  {{ $token['clientName'] }}"
-                                               class="btn btn-block btn-danger mx-0"
-                                               role="button"><i class="fas fa-trash"></i></a></td>
+                                            <form method="POST" action="{{ route('deltoken') }}">
+                                                @csrf
+                                                <input type="hidden" name="tokenId" value="{{$token['id']}}"/>
+                                                <button class="btn btn-block btn-danger mx-0" role="button">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+
+                                        </td>
                                     </tr>
                                 @endforeach
                             </table>

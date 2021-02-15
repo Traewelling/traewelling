@@ -188,6 +188,10 @@ class SocialController extends Controller
             && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
             return response(__('controller.social.delete-set-password'), 406);
         }
+        if ($user->email === null
+            && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
+            return response(__('controller.social.delete-set-email'), 406);
+        }
 
         if ($user->socialProfile === null) {
             return response(__('controller.social.delete-never-connected'), 404);
