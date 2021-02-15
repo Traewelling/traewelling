@@ -11,8 +11,6 @@
 |
 */
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
@@ -23,6 +21,8 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
@@ -44,6 +44,9 @@ Route::get('/profile/{username}/profilepicture', [FrontendUserController::class,
 
 Route::get('/leaderboard', [FrontendUserController::class, 'getLeaderboard'])
      ->name('leaderboard');
+
+Route::get('/leaderboard/{date}', [FrontendUserController::class, 'renderMonthlyLeaderboard'])
+     ->name('leaderboard.month');
 
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
      ->name('statuses.active');
@@ -137,10 +140,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/settings/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
          ->name('settings.delete-profile-picture');
 
-    Route::get('/settings/delsession', [UserController::class, 'deleteSession'])
+    Route::post('/settings/delsession', [UserController::class, 'deleteSession'])
          ->name('delsession');
 
-    Route::get('/settings/deltoken/{id}', [UserController::class, 'deleteToken'])
+    Route::post('/settings/deltoken', [UserController::class, 'deleteToken'])
          ->name('deltoken');
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])

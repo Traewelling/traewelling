@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 class TrainCheckin extends Model
 {
@@ -12,30 +17,42 @@ class TrainCheckin extends Model
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
-    protected $appends  = ['duration'];
+    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
 
-    public function status() {
+    public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
     }
 
-    public function Origin() {
+    public function Origin(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
     }
 
-    public function Destination() {
+    public function Destination(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
     }
 
-    public function HafasTrip() {
+    public function HafasTrip(): HasOne {
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getMapLines() {
-        $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
-        if ($hafas === null) {
-            $origin = $this->Origin()->first();
+    public function getOriginStopoverAttribute(): ?TrainStopover {
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+                                             ->where('departure_planned', $this->departure)
+                                             ->first();
+    }
 
-            $destination = $this->Destination()->first();
+    public function getDestinationStopoverAttribute(): ?TrainStopover {
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+                                             ->where('arrival_planned', $this->arrival)
+                                             ->first();
+    }
+
+    public function getMapLines() {
+        $hafas = $this->HafasTrip->getPolyLine;
+        if ($hafas === null) {
+            $origin = $this->Origin;
+
+            $destination = $this->Destination;
             $route       = [];
             $route[0]    = [$origin->longitude, $origin->latitude];
             $route[1]    = [$destination->longitude, $destination->latitude];
@@ -77,11 +94,22 @@ class TrainCheckin extends Model
      * The duration of the journey in minutes
      * @return int
      */
-    public function getDurationAttribute() {
-        return $this->arrival->diffInMinutes($this->departure);
+    public function getDurationAttribute(): int {
+        try {
+            return $this->origin_stopover->departure_planned->diffInMinutes(
+                $this->destination_stopover->arrival_planned
+            );
+        } catch (Exception) {
+            //We need the try-catch to support old checkins, where no stopovers are saved.
+            return $this->arrival->diffInMinutes($this->departure);
+        }
     }
 
-    public function getAlsoOnThisConnectionAttribute() {
+    public function getSpeedAttribute(): float {
+        return $this->duration == 0 ? 0 : $this->distance / ($this->duration / 60);
+    }
+
+    public function getAlsoOnThisConnectionAttribute(): Collection {
         return TrainCheckin::with(['status'])
                            ->where([
                                        ['status_id', '<>', $this->status->id],

@@ -19,10 +19,7 @@ class ExportTripsTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $response   = $this->actingAs($this->user)
-                           ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $this->acceptGDPR($this->user);
 
         $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070003", new DateTime("+1 day 8:00"));
         $this->checkin("Essen Hbf", "8000098", new DateTime("+2 day 7:30"));

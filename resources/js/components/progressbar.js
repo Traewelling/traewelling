@@ -1,11 +1,11 @@
 Array.from(document.getElementsByClassName("progress-time")).forEach(
     element => {
-        const departure = element.dataset.valuemin
-        const arrival = element.dataset.valuemax
+        const departure = element.dataset.valuemin;
+        const arrival = element.dataset.valuemax;
 
         const update = () => {
             const now = Math.floor(new Date().getTime() / 1000);
-            element.dataset.now = now;
+            element.dataset.valuenow = now;
 
             let percentage = 0;
             if (departure == arrival) {

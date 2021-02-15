@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
 {
-    public function getProfilePage($username) {
+    public function getProfilePage($username): Renderable {
         $profilePage = UserBackend::getProfilePage($username);
         if ($profilePage === null) {
             abort(404);
@@ -39,14 +42,21 @@ class FrontendUserController extends Controller
             ->header('Cache-Control', 'public, no-transform, max-age:900');
     }
 
-    public function getLeaderboard() {
-        $leaderboardResponse = UserBackend::getLeaderboard();
+    public function getLeaderboard(): Renderable {
+        $leaderboard = UserBackend::getLeaderboard();
 
-        return view('leaderboard', [
-            'usersCount' => count($leaderboardResponse['users']),
-            'users'      => $leaderboardResponse['users'],
-            'friends'    => $leaderboardResponse['friends'],
-            'kilometers' => $leaderboardResponse['kilometers']
+        return view('leaderboard.leaderboard', [
+            'users'      => $leaderboard['users']->take(15),
+            'friends'    => $leaderboard['friends']?->take(15),
+            'kilometers' => $leaderboard['kilometers']->take(15)
+        ]);
+    }
+
+    public function renderMonthlyLeaderboard(string $date): Renderable {
+        $date = Carbon::parse($date);
+        return view('leaderboard.month', [
+            'leaderboard' => UserBackend::getMonthlyLeaderboard($date),
+            'date'        => $date
         ]);
     }
 
@@ -54,7 +64,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function CreateFollow(Request $request) {
+    public function CreateFollow(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'follow_id' => ['required', 'exists:users,id']
                                         ]);
@@ -72,7 +82,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function DestroyFollow(Request $request) {
+    public function DestroyFollow(Request $request): JsonResponse {
         $validated      = $request->validate([
                                                  'follow_id' => ['required', 'exists:users,id']
                                              ]);
@@ -85,13 +95,13 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function updateProfilePicture(Request $request) {
+    public function updateProfilePicture(Request $request): JsonResponse {
         $avatar                 = $request->input('image');
         $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
         return response()->json($profilePictureResponse);
     }
 
-    public function searchUser(Request $request) {
+    public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
         } catch (HttpException $exception) {

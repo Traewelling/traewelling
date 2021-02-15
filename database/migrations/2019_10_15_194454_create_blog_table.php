@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 class CreateBlogTable extends Migration
 {
@@ -12,9 +12,8 @@ class CreateBlogTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('blogposts', function (Blueprint $table) {
+    public function up() {
+        Schema::create('blogposts', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('slug');
@@ -29,26 +28,26 @@ class CreateBlogTable extends Migration
 
         // Import the existing blogposts
         DB::table('blogposts')->insert([
-            [
-                'title' => 'Wir haben einen Blog, yay!',
-                'slug' => 'wir-haben-einen-blog-yay',
-                'author_name' => 'Levin Herr',
-                'twitter_handle' => 'HerrLevin_',
-                'published_at' => '2013-11-02 00:00:00',
-                'body' => 'In unserem ersten Blogpost möchte ich unsere zwei neuen Mitglieder im #Träwelling-Team recht herzlich begrüßen: @janh97 (Account inzwischen gelöscht) im Bereich “Design&Code” und @nerdhair_ (Account inzwischen gelöscht) im Bereich “Marketing".
+                                           [
+                                               'title'          => 'Wir haben einen Blog, yay!',
+                                               'slug'           => 'wir-haben-einen-blog-yay',
+                                               'author_name'    => 'Levin Herr',
+                                               'twitter_handle' => 'HerrLevin_',
+                                               'published_at'   => '2013-11-02 00:00:00',
+                                               'body'           => 'In unserem ersten Blogpost möchte ich unsere zwei neuen Mitglieder im #Träwelling-Team recht herzlich begrüßen: @janh97 (Account inzwischen gelöscht) im Bereich “Design&Code” und @nerdhair_ (Account inzwischen gelöscht) im Bereich “Marketing".
 
 Wir arbeiten momentan hart daran, Fernbus-Unternehmen in unser System zu integrieren, die Benutzeroberfläche zu optimieren und viele neue Funktionen einzubauen.
 
 Grüße, Levin.',
-                'category' => 'Bekanntmachungen'
-            ],
-            [
-                'title' => 'Neues Update - 0.1.2.5-0009 β',
-                'slug' => 'neues_update',
-                'author_name' => 'Levin Herr',
-                'twitter_handle' => 'HerrLevin_',
-                'published_at' => '2013-11-29 00:00:00',
-                'body' => '
+                                               'category'       => 'Bekanntmachungen'
+                                           ],
+                                           [
+                                               'title'          => 'Neues Update - 0.1.2.5-0009 β',
+                                               'slug'           => 'neues_update',
+                                               'author_name'    => 'Levin Herr',
+                                               'twitter_handle' => 'HerrLevin_',
+                                               'published_at'   => '2013-11-29 00:00:00',
+                                               'body'           => '
 Heute habe ich ein kleines Update (Version 0.1.2.5-0009 β) herausgebracht, mit einem Feature, das “vieles” verändern wird.
 
 Bis jetzt wurde der Nutzerrang immer nach den bis jetzt erreichten Punkten ausgerechnet, wodurch diejenigen profitierten, die #Träwelling schon etwas länger haben. Weshalb die Nutzer mit 1000 Punkten+ eigentlich fast nicht zu erreichen waren.
@@ -65,15 +64,15 @@ Weiteres:
 * Auf dem Server wurde ein wenig aufgeräumt, wodurch das alles (hoffentlich) etwas schneller läuft.
 
 Grüße, Levin',
-                'category' => 'Update'
-            ],
-            [
-                'title' => 'Wir haben eine App! Irgendwie...',
-                'slug' => 'wir-haben-eine-app',
-                'author_name' => 'Levin Herr',
-                'twitter_handle' => 'HerrLevin_',
-                'published_at' => '2014-07-16 00:00:00',
-                'body' => 'Ihr wartet alle schon sehnsüchtig auf eine App und endlich habe ich (Levin) es geschafft, eine total crappige App zu schreiben. Yay!
+                                               'category'       => 'Update'
+                                           ],
+                                           [
+                                               'title'          => 'Wir haben eine App! Irgendwie...',
+                                               'slug'           => 'wir-haben-eine-app',
+                                               'author_name'    => 'Levin Herr',
+                                               'twitter_handle' => 'HerrLevin_',
+                                               'published_at'   => '2014-07-16 00:00:00',
+                                               'body'           => 'Ihr wartet alle schon sehnsüchtig auf eine App und endlich habe ich (Levin) es geschafft, eine total crappige App zu schreiben. Yay!
 
 Um diese App auf Herz und Nieren zu testen, brauchen wir natürlich ein paar Alpha-/Beta-Tester und dafür brauchen wir Dich! Ja, genau Dich!
 
@@ -90,15 +89,15 @@ Es ist eigentlich ganz einfach:
 
 Wir freuen uns auf euere Bewerbungen.
 ',
-                'category' => 'Bekanntmachungen',
-            ],
-            [
-                'title' => 'API-Probleme im In- & Ausland',
-                'slug' => 'api-probleme',
-                'author_name' => 'Levin Herr',
-                'twitter_handle' => 'HerrLevin_',
-                'published_at' => '2017-08-01 00:00:00',
-                'body' => '
+                                               'category'       => 'Bekanntmachungen',
+                                           ],
+                                           [
+                                               'title'          => 'API-Probleme im In- & Ausland',
+                                               'slug'           => 'api-probleme',
+                                               'author_name'    => 'Levin Herr',
+                                               'twitter_handle' => 'HerrLevin_',
+                                               'published_at'   => '2017-08-01 00:00:00',
+                                               'body'           => '
 Bei uns ist intern einiges schief gelaufen. Es ging total an uns vorbei, dass opendata.ch ihre [Api abgeändert hat](https://opendata.ch/2017/06/search-ch-rettet-transport-opendata-ch/). So dachten wir, die Fehler, wie fehlende Abfahrten an gewissen Bahnhöfen, die gestern und heute (ab 31.07.2017) auftraten, waren ein typischer Schluckauf der SBB-API. Weit gefehlt.
 
 ![Nachricht auf der API-Webseite, alles kaputt.](/img/blog/api-umstellung-sbb.png)
@@ -113,9 +112,9 @@ Bis dahin euch allen noch eine gute Reise und viel Spaß mit Träwelling.
 
 Grüße
 Levin',
-                'category' => 'Fehlerbehebung',
-            ],
-        ]);
+                                               'category'       => 'Fehlerbehebung',
+                                           ],
+                                       ]);
     }
 
     /**
@@ -123,8 +122,7 @@ Levin',
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::dropIfExists('blogposts');
     }
 }

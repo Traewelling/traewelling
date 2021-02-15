@@ -6,13 +6,18 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Models\Follow;
 use App\Models\MastodonServer;
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +29,8 @@ use Mastodon;
 
 class UserController extends Controller
 {
-    public static function getProfilePicture($username) {
+
+    public static function getProfilePicture($username): ?array {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
             return null;
@@ -32,7 +38,7 @@ class UserController extends Controller
         try {
             $ext     = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
             $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $user->avatar = 'user.jpg';
         }
 
@@ -53,7 +59,7 @@ class UserController extends Controller
         return ['picture' => $picture, 'extension' => $ext];
     }
 
-    public function deleteProfilePicture() {
+    public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
         if ($user->avatar != 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
@@ -61,10 +67,10 @@ class UserController extends Controller
             $user->save();
         }
 
-        return redirect(route('settings'));
+        return redirect()->route('settings');
     }
 
-    public function updateSettings(Request $request) {
+    public function updateSettings(Request $request): Renderable {
         $user = Auth::user();
         $this->validate($request, [
             'name'   => ['required', 'string', 'max:50'],
@@ -100,7 +106,7 @@ class UserController extends Controller
         return $this->getAccount();
     }
 
-    public function updatePassword(Request $request) {
+    public function updatePassword(Request $request): RedirectResponse {
         $user = Auth::user();
         if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
             $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
@@ -132,7 +138,7 @@ class UserController extends Controller
     }
 
     //Return Settings-page
-    public function getAccount() {
+    public function getAccount(): Renderable {
         $user     = Auth::user();
         $sessions = [];
         $tokens   = [];
@@ -172,7 +178,7 @@ class UserController extends Controller
     }
 
     //delete sessions from user
-    public function deleteSession() {
+    public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
         foreach ($user->sessions as $session) {
@@ -181,17 +187,23 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    //delete a specific session for user
-    public function deleteToken($tokenId) {
-        $user  = Auth::user();
-        $token = Token::find($tokenId);
-        if ($token->user == $user) {
+    /**
+     * delete a specific session for user
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteToken(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
+                                        ]);
+        $token     = Token::find($validated['tokenId']);
+        if ($token->user->id == Auth::user()->id) {
             $token->revoke();
         }
         return redirect()->route('settings');
     }
 
-    public function destroyUser() {
+    public function destroyUser(): RedirectResponse {
         $user = Auth::user();
 
         if ($user->avatar != 'user.jpg') {
@@ -216,7 +228,7 @@ class UserController extends Controller
     }
 
     //Save Changes on Settings-Page
-    public function SaveAccount(Request $request) {
+    public function SaveAccount(Request $request): RedirectResponse {
 
         $this->validate($request, [
             'name' => 'required|max:120'
@@ -227,7 +239,7 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
-    public static function getProfilePage($username) {
+    public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
@@ -343,61 +355,78 @@ class UserController extends Controller
         return $user->follows->contains('id', $userFollow->id);
     }
 
-    public static function getLeaderboard() {
-        $user    = Auth::user();
-        $friends = null;
+    #[ArrayShape([
+        'users'      => "Illuminate\\Support\\Collection",
+        'friends'    => "Illuminate\\Support\\Collection",
+        'kilometers' => "Illuminate\\Support\\Collection"
+    ])]
+    public static function getLeaderboard(): array {
+        $checkIns = TrainCheckin::with('status.user')
+                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                                ->get();
 
-        if ($user != null) {
-            $userIds   = $user->follows->pluck('id');
-            $userIds[] = $user->id;
-            $friends   = User::select('username',
-                                      'train_duration',
-                                      'train_distance',
-                                      'points')
-                             ->where('points', '<>', 0)
-                             ->whereIn('id', $userIds)
-                             ->orderby('points', 'desc')
-                             ->limit(20)
-                             ->get();
+        $trainCheckIns = (clone $checkIns)
+            ->groupBy('status.user_id')
+            ->map(function($trainCheckIns) {
+                return [
+                    'user'     => $trainCheckIns->first()->status->user,
+                    'points'   => $trainCheckIns->sum('points'),
+                    'distance' => $trainCheckIns->sum('distance'),
+                    'duration' => $trainCheckIns->sum('duration'),
+                    'speed'    => $trainCheckIns->avg('speed')
+                ];
+            });
+
+        $friendsTrainCheckIns = null;
+        if (Auth::check()) {
+            $friendsTrainCheckIns = (clone $checkIns)
+                ->filter(function($trainCheckIn) {
+                    return Auth::user()->follows
+                            ->pluck('id')
+                            ->contains($trainCheckIn->status->user_id)
+                        || $trainCheckIn->status->user_id == Auth::user()->id;
+                })
+                ->groupBy('status.user_id')
+                ->map(function($trainCheckIns) {
+                    return [
+                        'user'     => $trainCheckIns->first()->status->user,
+                        'points'   => $trainCheckIns->sum('points'),
+                        'distance' => $trainCheckIns->sum('distance'),
+                        'duration' => $trainCheckIns->sum('duration'),
+                        'speed'    => $trainCheckIns->avg('speed')
+                    ];
+                });
         }
-        $users      = User::select('username',
-                                   'train_duration',
-                                   'train_distance',
-                                   'points')
-                          ->where('points', '<>', 0)
-                          ->orderby('points', 'desc')
-                          ->limit(20)
-                          ->get();
-        $kilometers = User::select('username',
-                                   'train_duration',
-                                   'train_distance',
-                                   'points')
-                          ->where('points', '<>', 0)
-                          ->orderby('train_distance', 'desc')
-                          ->limit(20)
-                          ->get();
 
-
-        return ['users' => $users, 'friends' => $friends, 'kilometers' => $kilometers];
+        return [
+            'users'      => (clone $trainCheckIns)->sortByDesc('points'),
+            'friends'    => $friendsTrainCheckIns?->sortByDesc('points') ?? null,
+            'kilometers' => (clone $trainCheckIns)->sortByDesc('distance')
+        ];
     }
 
-    public static function registerByDay(Carbon $date) {
+    public static function registerByDay(Carbon $date): int {
         return User::where("created_at", ">=", $date->copy()->startOfDay())
                    ->where("created_at", "<=", $date->copy()->endOfDay())
                    ->count();
     }
 
-    public static function updateDisplayName($displayname) {
-        $request   = new Request(['displayname' => $displayname]);
+    public static function updateDisplayName(string $displayName): bool {
+        $request   = new Request(['displayName' => $displayName]);
         $validator = Validator::make($request->all(), [
-            'displayname' => 'required|max:120'
+            'displayName' => ['required', 'max:120']
         ]);
         if ($validator->fails()) {
             abort(400);
         }
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $displayname;
-        $user->save();
+        try {
+            Auth::user()->update([
+                                     'name' => $displayName
+                                 ]);
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     public static function searchUser(?string $searchQuery) {
@@ -411,5 +440,32 @@ class UserController extends Controller
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
         )->simplePaginate(10);
+    }
+
+    public static function getMonthlyLeaderboard(Carbon $date): Collection {
+        return Status::with(['trainCheckin', 'user'])
+                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->where(
+                         'train_checkins.departure',
+                         '>=',
+                         $date->clone()->firstOfMonth()->toDateString()
+                     )
+                     ->where(
+                         'train_checkins.departure',
+                         '<=',
+                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                     )
+                     ->get()
+                     ->groupBy('user_id')
+                     ->map(function($statuses) {
+                         return [
+                             'user'        => $statuses->first()->user,
+                             'points'      => $statuses->sum('trainCheckin.points'),
+                             'distance'    => $statuses->sum('distance'),
+                             'duration'    => $statuses->sum('trainCheckin.duration'),
+                             'statusCount' => $statuses->count()
+                         ];
+                     })
+                     ->sortByDesc('points');
     }
 }

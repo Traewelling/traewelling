@@ -21,15 +21,18 @@ $(document)
         var lineName = $(this).data("linename");
         var tripID = $(this).data("tripid");
         var start = $(this).data("start");
+        let departure = $(this).data("departure");
         if (touchmoved != true) {
             window.location =
                 urlTrainTrip +
                 "?tripID=" +
-                tripID +
+                encodeURIComponent(tripID) +
                 "&lineName=" +
-                lineName +
+                encodeURIComponent(lineName) +
                 "&start=" +
-                start;
+                encodeURIComponent(start) +
+                "&departure=" +
+                encodeURIComponent(departure);
         }
     })
     .on("touchmove", function (e) {
@@ -45,12 +48,9 @@ $(document)
             .parent()
             .parent()
             .data("tripid");
-        var start = $(this)
-            .parent()
-            .parent()
-            .data("start");
         var destination = $(this).data("ibnr");
         var stopname = $(this).data("stopname");
+        var arrival = $(this).data("arrival");
         var linename = $(this)
             .parent()
             .parent()
@@ -67,7 +67,7 @@ $(document)
                     );
                 modal.find("#input-tripID").val(tripID);
                 modal.find("#input-destination").val(destination);
-                modal.find("#input-start").val(start);
+                modal.find("#input-arrival").val(arrival);
             });
         }
     })

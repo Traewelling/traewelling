@@ -13,8 +13,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
+    public function register() {
         //
     }
 
@@ -23,12 +22,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
         $socialite->extend(
             'mastodon',
-            function ($app) use ($socialite) {
+            function($app) use ($socialite) {
                 $config = $app['config']['services.mastodon'];
                 return $socialite->buildProvider(MastodonProvider::class, $config);
             }

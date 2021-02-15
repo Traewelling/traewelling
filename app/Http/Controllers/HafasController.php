@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Exceptions\HafasException;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use stdClass;
 
 abstract class HafasController extends Controller
 {
@@ -65,6 +67,16 @@ abstract class HafasController extends Controller
         }
     }
 
+    public static function parseHafasStopObject(stdClass $hafasStop): TrainStation {
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $hafasStop->id
+                                            ], [
+                                                'name'      => $hafasStop->name,
+                                                'latitude'  => $hafasStop?->location?->latitude,
+                                                'longitude' => $hafasStop?->location?->longitude,
+                                            ]);
+    }
+
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
@@ -91,6 +103,23 @@ abstract class HafasController extends Controller
         }
     }
 
+    /**
+     * @param TrainStation $station
+     * @param Carbon $when
+     * @param int $duration
+     * @param bool $nationalExpress
+     * @param bool $national
+     * @param bool $regionalExp
+     * @param bool $regional
+     * @param bool $suburban
+     * @param bool $bus
+     * @param bool $ferry
+     * @param bool $subway
+     * @param bool $tram
+     * @param bool $taxi
+     * @return Collection
+     * @throws HafasException
+     */
     public static function getDepartures(
         TrainStation $station,
         Carbon $when,
@@ -138,6 +167,12 @@ abstract class HafasController extends Controller
         }
     }
 
+    /**
+     * @param string $tripID
+     * @param string $lineName
+     * @return HafasTrip
+     * @throws HafasException
+     */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
         $trip = HafasTrip::where('trip_id', $tripID)->first();
         if ($trip !== null) {
@@ -147,16 +182,27 @@ abstract class HafasController extends Controller
         return self::fetchHafasTrip($tripID, $lineName);
     }
 
-    private static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $tripClient   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $tripResponse = $tripClient->get("trips/$tripID", [
-            'query' => [
-                'lineName'  => $lineName,
-                'polyline'  => 'true',
-                'stopovers' => 'true'
-            ]
-        ]);
-        $tripJson     = json_decode($tripResponse->getBody()->getContents());
+    /**
+     * @param string $tripID
+     * @param string $lineName
+     * @return HafasTrip
+     * @throws HafasException
+     */
+    public static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
+        $tripClient = new Client(['base_uri' => config('trwl.db_rest')]);
+        try {
+            $tripResponse = $tripClient->get("trips/$tripID", [
+                'query' => [
+                    'lineName'  => $lineName,
+                    'polyline'  => 'true',
+                    'stopovers' => 'true'
+                ]
+            ]);
+        } catch (GuzzleException) {
+            //sometimes DB-Rest gives 502 Bad Request
+            throw new HafasException(__('messages.exception.generalHafas'));
+        }
+        $tripJson = json_decode($tripResponse->getBody()->getContents());
 
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
@@ -171,32 +217,57 @@ abstract class HafasController extends Controller
 
         $polylineHash = TransportController::getPolylineHash(json_encode($tripJson->polyline))->hash;
 
-        return HafasTrip::updateOrCreate([
-                                             'trip_id' => $tripID
-                                         ], [
-                                             'category'    => $tripJson->line->product,
-                                             'number'      => $tripJson->line->id,
-                                             'linename'    => $tripJson->line->name,
-                                             'origin'      => $origin->ibnr,
-                                             'destination' => $destination->ibnr,
-                                             'stopovers'   => json_encode($tripJson->stopovers),
-                                             'polyline'    => $polylineHash,
-                                             'departure'   => $tripJson->plannedDeparture,
-                                             'arrival'     => $tripJson->plannedArrival,
-                                             'delay'       => $tripJson->arrivalDelay ?? null
-                                         ]);
+        $hafasTrip = HafasTrip::updateOrCreate([
+                                                   'trip_id' => $tripID
+                                               ], [
+                                                   'category'    => $tripJson->line->product,
+                                                   'number'      => $tripJson->line->id,
+                                                   'linename'    => $tripJson->line->name,
+                                                   'origin'      => $origin->ibnr,
+                                                   'destination' => $destination->ibnr,
+                                                   'stopovers'   => json_encode($tripJson->stopovers),
+                                                   'polyline'    => $polylineHash,
+                                                   'departure'   => $tripJson->plannedDeparture,
+                                                   'arrival'     => $tripJson->plannedArrival,
+                                                   'delay'       => $tripJson->arrivalDelay ?? null
+                                               ]);
 
+        foreach ($tripJson->stopovers as $stopover) {
+            $hafasStop = self::parseHafasStopObject($stopover->stop);
+
+            //This array is a workaround because Hafas doesn't give
+            //us delay-data if the train already passed this station
+            //so.. just save data we really got. :)
+            $updatePayload = [
+                'arrival_planned'            => $stopover->plannedArrival,
+                'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
+                'departure_planned'          => $stopover->plannedDeparture,
+                'departure_platform_planned' => $stopover->plannedDeparturePlatform
+            ];
+            //remove "null" values
+            $updatePayload = array_filter($updatePayload, 'strlen');
+
+            if ($stopover->arrival != null && Carbon::parse($stopover->arrival)->isFuture()) {
+                $updatePayload['arrival_real'] = $stopover->arrival;
+                if ($stopover->arrivalPlatform != null) {
+                    $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
+                }
+            }
+            if ($stopover->departure != null && Carbon::parse($stopover->departure)->isFuture()) {
+                $updatePayload['departure_real'] = $stopover->departure;
+                if ($stopover->departurePlatform != null) {
+                    $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
+                }
+            }
+
+            TrainStopover::updateOrCreate(
+                [
+                    'trip_id'          => $tripID,
+                    'train_station_id' => $hafasStop->id
+                ], $updatePayload
+            );
+        }
+
+        return $hafasTrip;
     }
-
-
-    private static function parseHafasStopObject(\stdClass $hafasStop): TrainStation {
-        return TrainStation::updateOrCreate([
-                                                'ibnr' => $hafasStop->id
-                                            ], [
-                                                'name'      => $hafasStop->name,
-                                                'latitude'  => $hafasStop?->location?->latitude,
-                                                'longitude' => $hafasStop?->location?->longitude,
-                                            ]);
-    }
-
 }

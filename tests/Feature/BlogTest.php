@@ -77,7 +77,7 @@ class BlogTest extends TestCase
         BlogPost::all()->map(function($blogpost) {
             $response = $this->get(route('blog.show', ['slug' => $blogpost->slug]));
             $response->assertOk();
-            $response->assertSee("<h3 class=\"mb-0\">" . e($blogpost->title) . "</h3>", false);
+            $response->assertSee("<h3 class=\"font-weight-bold\">" . e($blogpost->title) . "</h3>", false);
         });
     }
 

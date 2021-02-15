@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\StatusLiked;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
+use DateInterval;
+use DateTime;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class StatusController extends Controller
 {
@@ -39,7 +39,6 @@ class StatusController extends Controller
         }
 
         abort(403);
-
     }
 
     /**
@@ -47,7 +46,7 @@ class StatusController extends Controller
      *
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
-     * @return Status|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return Status|array|Builder|Model|object|null
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
         //PrivateProfile change to "also following"
@@ -57,18 +56,20 @@ class StatusController extends Controller
         }
 
         if ($userId === null) {
-            $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
-                              ->withCount('likes')
+            $statuses = Status::with([
+                                         'likes',
+                                         'user',
+                                         'trainCheckin.Origin',
+                                         'trainCheckin.Destination',
+                                         'trainCheckin.HafasTrip.getPolyLine',
+                                         'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                         'event'
+                                     ])
                               ->whereHas('trainCheckin', function($query) {
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                //PrivateProfile This needs to be removed with the Follow-Request-Feature
+                              //PrivateProfile This needs to be removed with the Follow-Request-Feature
                               ->whereHas('user', function($query) use ($authID) {
                                   return $query->where('private_profile', false)->orWhere('id', $authID);
                               })
@@ -77,12 +78,13 @@ class StatusController extends Controller
                                   return $status->trainCheckin->departure;
                               })->values();
         } else {
-            $statuses = Status::with('user',
-                                     'trainCheckin',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip',
-                                     'event')
+            $statuses = Status::with([
+                                         'user',
+                                         'trainCheckin.Origin',
+                                         'trainCheckin.Destination',
+                                         'trainCheckin.HafasTrip.getPolyLine',
+                                         'event'
+                                     ])
                               ->whereHas('trainCheckin', function($query) {
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
@@ -108,33 +110,21 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getStatusesByEvent(int $eventId) {
-        return Status::with('user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event')
-                     ->withCount('likes')
-                     ->where('event_id', '=', $eventId)
-                     ->orderBy('created_at', 'desc')
-                     ->latest()
-                     ->simplePaginate(15);
-    }
-
-    public static function getDashboard($user) {
+    public static function getDashboard($user): Paginator {
+        $userIds   = $user->follows->pluck('id');
+        $userIds[] = $user->id;
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip'
+                                'trainCheckin.HafasTrip.stopoversNEW'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-            //PrivateProfile This needs to be removed with the Follow-Request-Feature
+                     //PrivateProfile This needs to be removed with the Follow-Request-Feature
                      ->whereHas('user', function($query) {
                          return $query->where('private_profile', false);
                      })
@@ -143,11 +133,12 @@ class StatusController extends Controller
                      ->simplePaginate(15);
     }
 
-    public static function getGlobalDashboard() {
+
+    public static function getGlobalDashboard(): Paginator {
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip'
+                                'trainCheckin.HafasTrip.stopoversNEW'
                             ])
                      ->whereHas('user', function($query) {
                          return $query->where('private_profile', false)->orWhere('user_id', Auth::user()->id);
@@ -156,11 +147,10 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
-                     ->latest()
                      ->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId) {
+    public static function DeleteStatus($user, $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
@@ -183,7 +173,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck) {
+    public static function EditStatus($user, $statusId, $body, $businessCheck): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -218,7 +208,7 @@ class StatusController extends Controller
         return $like;
     }
 
-    public static function DestroyLike($user, $statusId) {
+    public static function DestroyLike($user, $statusId): bool {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
             $like->delete();
@@ -239,7 +229,7 @@ class StatusController extends Controller
         if (!$privateTrips && !$businessTrips) {
             abort(400, __('controller.status.export-neither-business'));
         }
-        $endInclLastOfMonth = (new \DateTime($endDate))->add(new \DateInterval("P1D"))->format("Y-m-d");
+        $endInclLastOfMonth = (new DateTime($endDate))->add(new DateInterval("P1D"))->format("Y-m-d");
 
         $user          = Auth::user();
         $trainCheckins = Status::with('user',
@@ -262,12 +252,10 @@ class StatusController extends Controller
                                                   $t->trainCheckin->hafastrip->category,
                                                   $t->trainCheckin->hafastrip->linename,
                                                   $t->trainCheckin->Origin->name,
-                                                  $t->trainCheckin->Origin->latitude
-                                                  . ', ' . $t->trainCheckin->Origin->longitude,
+                                                  $t->trainCheckin->Origin->latitude . ', ' . $t->trainCheckin->Origin->longitude,
                                                   $t->trainCheckin->departure,
                                                   $t->trainCheckin->Destination->name,
-                                                  $t->trainCheckin->Destination->latitude
-                                                  . ', ' . $t->trainCheckin->Destination->longitude,
+                                                  $t->trainCheckin->Destination->latitude . ', ' . $t->trainCheckin->Destination->longitude,
                                                   $t->trainCheckin->arrival,
                                                   $interval->h . ":" . sprintf('%02d', $interval->i),
                                                   $t->trainCheckin->distance,
@@ -340,7 +328,7 @@ class StatusController extends Controller
         return Response::json($trainCheckins, 200, $headers);
     }
 
-    public static function usageByDay(Carbon $date) {
+    public static function usageByDay(Carbon $date): int {
         return Status::where("created_at", ">=", $date->copy()->startOfDay())
                      ->where("created_at", "<=", $date->copy()->endOfDay())
                      ->count();

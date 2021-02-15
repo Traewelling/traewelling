@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,15 +11,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
-    Route::group(['middleware' => ['guest:api']], function () {
-        Route::group(['prefix' => 'auth'], function () {
+Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
+    Route::group(['middleware' => ['guest:api']], function() {
+        Route::group(['prefix' => 'auth'], function() {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
             Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
     });
     Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
-        ->name('api.v0.user.accept_privacy');
+         ->name('api.v0.user.accept_privacy');
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], function() {
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
@@ -37,7 +35,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
         });
 
         // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], function () {
+        Route::group(['prefix' => 'statuses'], function() {
             Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
             Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
             Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
@@ -51,7 +49,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function (){
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
             Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')->name('api.v0.checkin.train.autocomplete');
-            Route::get('stationboard', 'API\TransportController@TrainStationboard')->name('api.v0.checkin.train.stationboard');;
+            Route::get('stationboard', 'API\TransportController@TrainStationboard')->name('api.v0.checkin.train.stationboard');
             Route::get('trip', 'API\TransportController@TrainTrip')->name('api.v0.checkin.train.trip');
             Route::post('checkin', 'API\TransportController@TrainCheckin')->name('api.v0.checkin.train.checkin');
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');

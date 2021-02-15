@@ -26,7 +26,7 @@ ul.timeline {
       display: inline-block;
       position: absolute;
       border-radius: 50%;
-      border: 3px solid rgb(192, 57, 43);
+      border: 3px solid $bahnrot;
       left: 20px;
       width: 20px;
       height: 20px;
@@ -62,12 +62,8 @@ p.train-status:before {
   background: #f5f5f5;
 }
 
-.text-trwl {
-  color: rgb(199, 39, 48) !important;
-}
-
 .bg-trwl {
-  background-color: #c72730 !important;
+  background-color: $trwlRot !important;
 }
 
 .navbar-dark .navbar-brand {
@@ -80,4 +76,9 @@ p.train-status:before {
 
 .nav-tabs {
   border-bottom: 0; // Fix double line in Leaderboards.
+}
+
+.blog :is(h1, h2, h3, h4, h5, h6),
+.text-trwl {
+  color: $trwlRot !important;
 }

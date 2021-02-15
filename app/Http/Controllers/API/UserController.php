@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends ResponseController
 {
@@ -35,17 +36,28 @@ class UserController extends ResponseController
     public function PutDisplayname(Request $request) {
         $displayname         = $request->getContent();
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
-        return $this->sendResponse($displaynameResponse);
+        return $this->sendResponse(['success' => $displaynameResponse]);
     }
 
-    public function getLeaderboard(Request $request) {
+    public function getLeaderboard(): JsonResponse {
         $leaderboardResponse = UserBackend::getLeaderboard();
+        $mapping             = function($user) {
+            return [
+                'username'       => $user['user']->username,
+                'train_duration' => $user['duration'],
+                'train_distance' => $user['distance'],
+                'points'         => $user['points']
+            ];
+        };
+
+        $users      = $leaderboardResponse['users']->take(15)->map($mapping);
+        $friends    = $leaderboardResponse['friends']?->take(15)->map($mapping);
+        $kilometers = $leaderboardResponse['kilometers']->take(15)->map($mapping);
 
         return $this->sendResponse([
-                                       'usersCount' => count($leaderboardResponse['users']),
-                                       'users'      => $leaderboardResponse['users'],
-                                       'friends'    => $leaderboardResponse['friends'],
-                                       'kilometers' => $leaderboardResponse['kilometers']
+                                       'users'      => $users,
+                                       'friends'    => $friends,
+                                       'kilometers' => $kilometers
                                    ]);
     }
 

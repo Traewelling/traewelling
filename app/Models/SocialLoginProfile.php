@@ -10,19 +10,12 @@ class SocialLoginProfile extends Model
 
     use Encryptable;
 
-    protected $fillable = [
+    protected $fillable    = [
         'user_id',
-        'twitter_id',
-        'twitter_token',
-        'twitter_tokenSecret',
-        'mastodon_id',
-        'mastodon_server',
-        'mastodon_token'
+        'twitter_id', 'twitter_token', 'twitter_tokenSecret',
+        'mastodon_id', 'mastodon_server', 'mastodon_token'
     ];
-
     protected $encryptable = [
-        'twitter_token',
-        'twitter_tokenSecret',
-        'mastodon_token'
+        'twitter_token', 'twitter_tokenSecret', 'mastodon_token'
     ];
 }
