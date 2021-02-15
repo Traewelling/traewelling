@@ -56,6 +56,13 @@ class TransportController extends Controller
         return $array;
     }
 
+    /**
+     * @param $stationName
+     * @param Carbon|null $when
+     * @param null $travelType
+     * @return bool|array|null
+     * @throws HafasException
+     */
     public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
             return false;
@@ -175,6 +182,7 @@ class TransportController extends Controller
      * @param $start
      * @param Carbon|null $departure
      * @return array|null
+     * @throws HafasException
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
 

@@ -38,11 +38,15 @@ class TransportController extends ResponseController
 
         $validated = $validator->validate();
 
-        $trainStationboardResponse = TransportBackend::TrainStationboard(
-            $validated['station'],
-            isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-            $validated['travelType'] ?? null
-        );
+        try {
+            $trainStationboardResponse = TransportBackend::TrainStationboard(
+                $validated['station'],
+                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                $validated['travelType'] ?? null
+            );
+        } catch (HafasException $exception) {
+            return $this->sendError(400, $exception->getMessage());
+        }
         if ($trainStationboardResponse === false) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
         }
@@ -108,7 +112,11 @@ class TransportController extends ResponseController
         if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
         } else if ($hafasTrip == null) {
-            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+            try {
+                $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+            } catch (HafasException $exception) {
+                return $this->sendError($exception->getMessage(), 400);
+            }
         }
 
         try {
