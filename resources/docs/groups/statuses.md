@@ -163,7 +163,7 @@ Displays all statuses concerning a specific event as a paginated object.
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/event/dolorem" \
+    -G "http://localhost/api/v0/statuses/event/ipsum" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -171,7 +171,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/event/dolorem"
+    "http://localhost/api/v0/statuses/event/ipsum"
 );
 
 let headers = {
@@ -263,7 +263,7 @@ Creates a like for a given status
 
 ```bash
 curl -X POST \
-    "http://localhost/api/v0/statuses/10/like" \
+    "http://localhost/api/v0/statuses/4/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -271,7 +271,7 @@ curl -X POST \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/10/like"
+    "http://localhost/api/v0/statuses/4/like"
 );
 
 let headers = {
@@ -370,7 +370,7 @@ Removes a like for a given status
 
 ```bash
 curl -X DELETE \
-    "http://localhost/api/v0/statuses/20/like" \
+    "http://localhost/api/v0/statuses/9/like" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -378,7 +378,7 @@ curl -X DELETE \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/20/like"
+    "http://localhost/api/v0/statuses/9/like"
 );
 
 let headers = {
@@ -477,7 +477,7 @@ Retrieves all likes for a status
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/14/likes?page=14" \
+    -G "http://localhost/api/v0/statuses/6/likes?page=10" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -485,11 +485,11 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/14/likes"
+    "http://localhost/api/v0/statuses/6/likes"
 );
 
 let params = {
-    "page": "14",
+    "page": "10",
 };
 Object.keys(params)
     .forEach(key => url.searchParams.append(key, params[key]));
@@ -616,7 +616,7 @@ Retrieves either the (global) dashboard for the logged in user or all statuses o
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses?view=user&username=gertrud123&page=10" \
+    -G "http://localhost/api/v0/statuses?view=user&username=gertrud123&page=15" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -630,7 +630,7 @@ const url = new URL(
 let params = {
     "view": "user",
     "username": "gertrud123",
-    "page": "10",
+    "page": "15",
 };
 Object.keys(params)
     .forEach(key => url.searchParams.append(key, params[key]));
@@ -809,7 +809,7 @@ Retrieves a single status.
 
 ```bash
 curl -X GET \
-    -G "http://localhost/api/v0/statuses/quos" \
+    -G "http://localhost/api/v0/statuses/aut" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -817,7 +817,7 @@ curl -X GET \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/quos"
+    "http://localhost/api/v0/statuses/aut"
 );
 
 let headers = {
@@ -981,7 +981,7 @@ Updates the status text that a user previously posted
 
 ```bash
 curl -X PUT \
-    "http://localhost/api/v0/statuses/6" \
+    "http://localhost/api/v0/statuses/13" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
@@ -991,7 +991,7 @@ curl -X PUT \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/6"
+    "http://localhost/api/v0/statuses/13"
 );
 
 let headers = {
@@ -1105,7 +1105,7 @@ Removes a status that a user has posted previously.
 
 ```bash
 curl -X DELETE \
-    "http://localhost/api/v0/statuses/9" \
+    "http://localhost/api/v0/statuses/13" \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json"
@@ -1113,7 +1113,7 @@ curl -X DELETE \
 
 ```javascript
 const url = new URL(
-    "http://localhost/api/v0/statuses/9"
+    "http://localhost/api/v0/statuses/13"
 );
 
 let headers = {

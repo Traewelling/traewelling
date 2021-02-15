@@ -2,6 +2,9 @@ vendor/
 node_modules/
 npm-debug.log
 
+# generated api docs
+public/docs
+
 # Profile pictures
 public/uploads/avatars/*
 !public/uploads/avatars/user.jpg

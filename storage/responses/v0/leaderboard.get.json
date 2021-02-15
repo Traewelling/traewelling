@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "username": "testuser",
+      "train_duration": "90",
+      "train_distance": "26711.37",
+      "points": "1337"
+    }
+  ],
+  "friends": [
+    {
+      "username": "testuser",
+      "train_duration": "90",
+      "train_distance": "26711.37",
+      "points": "1337"
+    }
+  ],
+  "kilometers": [
+    {
+      "username": "testuser",
+      "train_duration": "90",
+      "train_distance": "26711.37",
+      "points": "1337"
+    }
+  ]
+}

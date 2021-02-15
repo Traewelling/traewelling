@@ -16,7 +16,7 @@ curl -X POST \
     -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d '{"email":"perspiciatis","password":"quo"}'
+    -d '{"email":"aspernatur","password":"quia"}'
 
 ```
 
@@ -32,8 +32,8 @@ let headers = {
 };
 
 let body = {
-    "email": "perspiciatis",
-    "password": "quo"
+    "email": "aspernatur",
+    "password": "quia"
 }
 
 fetch(url, {
@@ -199,6 +199,86 @@ The mail of the user.</p>
 <br>
 Must be equal to password.</p>
 
+</form>
+
+
+## Accept privacy
+Accepts the current privacy agreement
+
+<small class="badge badge-darkred">requires authentication</small>
+
+
+
+> Example request:
+
+```bash
+curl -X PUT \
+    "http://localhost/api/v0/user/accept_privacy" \
+    -H "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"
+```
+
+```javascript
+const url = new URL(
+    "http://localhost/api/v0/user/accept_privacy"
+);
+
+let headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "PUT",
+    headers,
+}).then(response => response.json());
+```
+
+
+> Example response (200):
+
+```json
+{
+    "message": "privacy agreement successfully accepted"
+}
+```
+> Example response (400, Bad Request The parameters are wrong or not given.):
+
+```json
+
+<<>>
+```
+> Example response (401, Unauthorized. Will be returned by the server if no user was logged in or wrong credentials were supplied.):
+
+```json
+
+<<>>
+```
+<div id="execution-results-PUTapi-v0-user-accept_privacy" hidden>
+    <blockquote>Received response<span id="execution-response-status-PUTapi-v0-user-accept_privacy"></span>:</blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-v0-user-accept_privacy"></code></pre>
+</div>
+<div id="execution-error-PUTapi-v0-user-accept_privacy" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-v0-user-accept_privacy"></code></pre>
+</div>
+<form id="form-PUTapi-v0-user-accept_privacy" data-method="PUT" data-path="api/v0/user/accept_privacy" data-authed="1" data-hasfiles="0" data-headers='{"Authorization":"Bearer {YOUR_AUTH_KEY}","Content-Type":"application\/json","Accept":"application\/json"}' onsubmit="event.preventDefault(); executeTryOut('PUTapi-v0-user-accept_privacy', this);">
+<h3>
+    Request&nbsp;&nbsp;&nbsp;
+        <button type="button" style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-tryout-PUTapi-v0-user-accept_privacy" onclick="tryItOut('PUTapi-v0-user-accept_privacy');">Try it out ⚡</button>
+    <button type="button" style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-canceltryout-PUTapi-v0-user-accept_privacy" onclick="cancelTryOut('PUTapi-v0-user-accept_privacy');" hidden>Cancel</button>&nbsp;&nbsp;
+    <button type="submit" style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;" id="btn-executetryout-PUTapi-v0-user-accept_privacy" hidden>Send Request 💥</button>
+    </h3>
+<p>
+<small class="badge badge-darkblue">PUT</small>
+ <b><code>api/v0/user/accept_privacy</code></b>
+</p>
+<p>
+<label id="auth-PUTapi-v0-user-accept_privacy" hidden>Authorization header: <b><code>Bearer </code></b><input type="text" name="Authorization" data-prefix="Bearer " data-endpoint="PUTapi-v0-user-accept_privacy" data-component="header"></label>
+</p>
 </form>
 
 

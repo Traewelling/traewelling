@@ -14,15 +14,5 @@
     <editorconfig>
       <option name="ENABLED" value="false" />
     </editorconfig>
-    <codeStyleSettings language="PHP">
-      <option name="METHOD_BRACE_STYLE" value="1" />
-      <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
-      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
-      <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
-      <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
-      <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
-      <option name="SPACE_AFTER_TYPE_CAST" value="true" />
-      <option name="WRAP_ON_TYPING" value="0" />
-    </codeStyleSettings>
   </code_scheme>
 </component>

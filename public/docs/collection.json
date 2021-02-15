@@ -10,223 +10,11 @@
     ],
     "info": {
         "name": "Tr\u00e4welling",
-        "_postman_id": "cbea9e90-8884-45bd-aabe-c3acddc670ac",
+        "_postman_id": "942c5471-00d8-49b0-aaa0-fb121ecf2116",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
-        {
-            "name": "Endpoints",
-            "description": "",
-            "item": [
-                {
-                    "name": "api\/v0\/user\/accept_privacy",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/accept_privacy",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/accept_privacy"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/leaderboard",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/leaderboard",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/leaderboard"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/{username}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/:username",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/:username",
-                            "variable": [
-                                {
-                                    "id": "username",
-                                    "key": "username",
-                                    "value": "et",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/search\/{query}",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/search\/:query",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/search\/:query",
-                            "variable": [
-                                {
-                                    "id": "query",
-                                    "key": "query",
-                                    "value": "voluptatem",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/{username}\/active",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/:username\/active",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/:username\/active",
-                            "variable": [
-                                {
-                                    "id": "username",
-                                    "key": "username",
-                                    "value": "nisi",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/profilepicture",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/profilepicture",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/profilepicture"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "api\/v0\/user\/displayname",
-                    "request": {
-                        "url": {
-                            "protocol": "http",
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v0\/user\/displayname",
-                            "query": [],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/displayname"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                }
-            ]
-        },
         {
             "name": "Notifications",
             "description": "",
@@ -370,13 +158,13 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "dolorem",
+                                    "value": "ipsum",
                                     "description": ""
                                 },
                                 {
                                     "id": "eventID",
                                     "key": "eventID",
-                                    "value": "sed",
+                                    "value": "fuga",
                                     "description": "the slug of the event"
                                 }
                             ]
@@ -410,7 +198,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "10",
+                                    "value": "4",
                                     "description": "id for the to-be-liked status"
                                 }
                             ]
@@ -444,7 +232,7 @@
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "20",
+                                    "value": "9",
                                     "description": "id for the to-be-unliked status"
                                 }
                             ]
@@ -475,17 +263,17 @@
                             "query": [
                                 {
                                     "key": "page",
-                                    "value": "14",
+                                    "value": "10",
                                     "description": "Needed to display the specified page",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes?page=14",
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses\/:statusId\/likes?page=10",
                             "variable": [
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "14",
+                                    "value": "6",
                                     "description": ""
                                 }
                             ]
@@ -528,12 +316,12 @@
                                 },
                                 {
                                     "key": "page",
-                                    "value": "10",
+                                    "value": "15",
                                     "description": "Needed to display the specified page",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses?view=user&username=gertrud123&page=10"
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/statuses?view=user&username=gertrud123&page=15"
                         },
                         "method": "GET",
                         "header": [
@@ -564,13 +352,13 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "quos",
+                                    "value": "aut",
                                     "description": ""
                                 },
                                 {
                                     "id": "statusId",
                                     "key": "statusId",
-                                    "value": "10",
+                                    "value": "14",
                                     "description": "The id of a status."
                                 }
                             ]
@@ -604,7 +392,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "6",
+                                    "value": "13",
                                     "description": "ID of the status"
                                 }
                             ]
@@ -641,7 +429,7 @@
                                 {
                                     "id": "status",
                                     "key": "status",
-                                    "value": "9",
+                                    "value": "13",
                                     "description": "ID of the status"
                                 }
                             ]
@@ -988,6 +776,210 @@
             ]
         },
         {
+            "name": "User",
+            "description": "Stuff for the user I guess",
+            "item": [
+                {
+                    "name": "Leaderboard\nGets the leaderboard for friends, kilometers and users.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/leaderboard",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/leaderboard"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/:username",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/:username",
+                            "variable": [
+                                {
+                                    "id": "username",
+                                    "key": "username",
+                                    "value": "gertrud123",
+                                    "description": "The username of the requested user."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Search\nSearches for users with a query",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/search\/:query",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/search\/:query",
+                            "variable": [
+                                {
+                                    "id": "query",
+                                    "key": "query",
+                                    "value": "non",
+                                    "description": ""
+                                },
+                                {
+                                    "id": "searchQuery",
+                                    "key": "searchQuery",
+                                    "value": "nesciunt",
+                                    "description": "The string to be searched for in all registered users"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get active status\nGets the currently active status for a given user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/:username\/active",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/:username\/active",
+                            "variable": [
+                                {
+                                    "id": "username",
+                                    "key": "username",
+                                    "value": "gertrud123",
+                                    "description": "The username of the requested user."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update avatar\nGets the avatar of a given user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/profilepicture",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/profilepicture"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update DisplayName\nUpdates the display name of the current user",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/displayname",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/displayname"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"incidunt\"\n}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
             "name": "User management",
             "description": "",
             "item": [
@@ -1014,7 +1006,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"perspiciatis\",\n    \"password\": \"quo\"\n}"
+                            "raw": "{\n    \"email\": \"aspernatur\",\n    \"password\": \"quia\"\n}"
                         },
                         "description": ""
                     },
@@ -1049,6 +1041,32 @@
                         "auth": {
                             "type": "noauth"
                         }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Accept privacy\nAccepts the current privacy agreement",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v0\/user\/accept_privacy",
+                            "query": [],
+                            "raw": "http:\/\/{{baseUrl}}\/api\/v0\/user\/accept_privacy"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
                     },
                     "response": []
                 },

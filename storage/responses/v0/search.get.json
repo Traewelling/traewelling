@@ -1,0 +1,21 @@
+{
+  "current_page": 1,
+  "data": [
+    {
+      "id": 1,
+      "name": "J. Doe",
+      "username": "jdoe",
+      "train_distance": "454.59",
+      "train_duration": "317",
+      "points": "66",
+      "averageSpeed": 100.5678954
+    }
+  ],
+  "first_page_url": "https://traewelling.de/api/v0/user/search/jdo?page=1",
+  "from": 1,
+  "next_page_url": "https://traewelling.de/api/v0/user/search/jdo?page=2",
+  "path": "https://traewelling.de/api/v0/user/search/jdo",
+  "per_page": 5,
+  "prev_page_url": null,
+  "to": 5
+}
