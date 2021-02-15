@@ -84,20 +84,6 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getStatusesByEvent(int $eventId): Paginator {
-        return Status::with('user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event')
-                     ->withCount('likes')
-                     ->where('event_id', '=', $eventId)
-                     ->orderBy('created_at', 'desc')
-                     ->latest()
-                     ->simplePaginate(15);
-    }
-
     public static function getDashboard($user): Paginator {
         $userIds   = $user->follows->pluck('id');
         $userIds[] = $user->id;

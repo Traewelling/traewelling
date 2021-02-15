@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\Event;
 use App\Models\Status;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -25,8 +27,9 @@ class StatusController extends ResponseController
         return $this->sendResponse($response);
     }
 
-    public function getByEvent($eventID) {
-        $eventStatusResponse = StatusBackend::getStatusesByEvent($eventID);
+    public function getByEvent(int $eventID): JsonResponse {
+        $eventStatusResponse = Event::findOrFail($eventID)->statuses()
+                                    ->simplePaginate(15);
         return $this->sendResponse($eventStatusResponse);
     }
 
