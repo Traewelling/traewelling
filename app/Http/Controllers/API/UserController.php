@@ -35,7 +35,7 @@ class UserController extends ResponseController
     public function PutDisplayname(Request $request) {
         $displayname         = $request->getContent();
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
-        return $this->sendResponse($displaynameResponse);
+        return $this->sendResponse(['success' => $displaynameResponse]);
     }
 
     public function getLeaderboard(): JsonResponse {

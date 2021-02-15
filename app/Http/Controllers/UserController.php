@@ -396,17 +396,22 @@ class UserController extends Controller
                    ->count();
     }
 
-    public static function updateDisplayName($displayname): void {
-        $request   = new Request(['displayname' => $displayname]);
+    public static function updateDisplayName(string $displayName): bool {
+        $request   = new Request(['displayName' => $displayName]);
         $validator = Validator::make($request->all(), [
-            'displayname' => 'required|max:120'
+            'displayName' => ['required', 'max:120']
         ]);
         if ($validator->fails()) {
             abort(400);
         }
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $displayname;
-        $user->save();
+        try {
+            Auth::user()->update([
+                                     'name' => $displayName
+                                 ]);
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     public static function searchUser(?string $searchQuery) {
