@@ -23,6 +23,8 @@
             <property name="lineLimit" value="120"/>
             <property name="absoluteLineLimit" value="150"/>
         </properties>
+        <exclude-pattern>*/lang/*</exclude-pattern>
+        <exclude name="Squiz.PHP.CommentedOutCode"/>
     </rule>
     <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
     <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
