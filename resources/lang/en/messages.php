@@ -5,6 +5,6 @@ return [
     "cookie-notice-learn"  => "Learn more",
     "exception"            => [
         "general"      => "An unknown error occurred. Please try again.",
-        'generalHafas' => "There has been a Problem while getting the timetable data. Please try again."
+        'generalHafas' => "There was a problem with the interface to the timetable data. Please try again."
     ]
 ];
