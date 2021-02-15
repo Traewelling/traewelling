@@ -15,8 +15,8 @@
     "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.0",
-        "ext-json": "*",
         "ext-gd": "*",
+        "ext-json": "*",
         "abraham/twitteroauth": "^2.0",
         "barryvdh/laravel-dompdf": "^0.9",
         "doctrine/dbal": "^3.0",
@@ -30,6 +30,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "revolution/laravel-mastodon-api": "^2.0",
+        "spatie/icalendar-generator": "^2.0",
         "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
