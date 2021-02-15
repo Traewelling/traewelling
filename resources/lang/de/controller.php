@@ -4,6 +4,7 @@ return [
         "already-connected-error" => "Dieser Account ist bereits mit einem anderen Nutzer verknüpft.",
         "create-error"            => "Es gab ein Problem beim Erstellen Deines Accounts.",
         "delete-never-connected"  => "Du hast keinen Social-Login-Provider.",
+        "delete-set-email"        => "Bevor du einen SSO-Provider löschst, musst du eine E-Mail Adresse festlegen, um dich nicht auszusperren.",
         "delete-set-password"     => "Bevor du einen SSO-Provider löschst, musst du ein Passwort festlegen, um dich nicht auszusperren.",
         "deleted"                 => "Die Verbindung wurde aufgehoben."
     ],

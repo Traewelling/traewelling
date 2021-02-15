@@ -64,7 +64,7 @@ class HafasTripFactory extends Factory
                 ]
             ]);
             array_push($stopOvers, [
-                'stop'              => [
+                'stop'                     => [
                     'type'     => 'stop',
                     'id'       => $stop->ibnr,
                     'name'     => $stop->name,
@@ -87,12 +87,16 @@ class HafasTripFactory extends Factory
                         'taxi'            => $this->faker->boolean(50),
                     ],
                 ],
-                'arrival'           => $time->format('c'),
-                'arrivalDelay'      => null,
-                'arrivalPlatform'   => null,
-                'departure'         => $time->format('c'),
-                'departureDelay'    => null,
-                'departurePlatform' => null,
+                'arrival'                  => $time->toIso8601String(),
+                'plannedArrival'           => $time->toIso8601String(),
+                'arrivalDelay'             => null,
+                'arrivalPlatform'          => null,
+                'plannedArrivalPlatform'   => null,
+                'departure'                => $time->toIso8601String(),
+                'plannedDeparture'         => $time->toIso8601String(),
+                'departureDelay'           => null,
+                'departurePlatform'        => null,
+                'plannedDeparturePlatform' => null,
             ]);
             $time->addMinutes(30);
         }
@@ -130,14 +134,20 @@ class HafasTripFactory extends Factory
             $add       = $interval;
 
             for ($i = 1; $i < $cnt; $i++) {
-                $stopOvers[$i]->arrival   = $startTime->clone()->addSeconds($add)->format('c');
-                $stopOvers[$i]->departure = $stopOvers[$i]->arrival;
-                $add                      += $interval;
+                $stopOvers[$i]->plannedArrival   = $startTime->clone()->addSeconds($add)->format('c');
+                $stopOvers[$i]->arrival          = $startTime->clone()->addSeconds($add)->format('c');
+                $stopOvers[$i]->plannedDeparture = $stopOvers[$i]->arrival;
+                $stopOvers[$i]->departure        = $stopOvers[$i]->arrival;
+                $add                             += $interval;
             }
-            $stopOvers[0]->arrival          = $startTime->format('c');
-            $stopOvers[0]->departure        = $startTime->format('c');
-            $stopOvers[$cnt - 1]->arrival   = $endTime->format('c');
-            $stopOvers[$cnt - 1]->departure = $endTime->format('c');
+            $stopOvers[0]->arrival                 = $startTime->format('c');
+            $stopOvers[0]->plannedArrival          = $startTime->format('c');
+            $stopOvers[0]->departure               = $startTime->format('c');
+            $stopOvers[0]->plannedDeparture        = $startTime->format('c');
+            $stopOvers[$cnt - 1]->arrival          = $endTime->format('c');
+            $stopOvers[$cnt - 1]->plannedArrival   = $endTime->format('c');
+            $stopOvers[$cnt - 1]->departure        = $endTime->format('c');
+            $stopOvers[$cnt - 1]->plannedDeparture = $endTime->format('c');
 
             $hafasTrip->update(['stopovers' => json_encode($stopOvers)]);
         });

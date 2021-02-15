@@ -140,10 +140,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/settings/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
          ->name('settings.delete-profile-picture');
 
-    Route::get('/settings/delsession', [UserController::class, 'deleteSession'])
+    Route::post('/settings/delsession', [UserController::class, 'deleteSession'])
          ->name('delsession');
 
-    Route::get('/settings/deltoken/{id}', [UserController::class, 'deleteToken'])
+    Route::post('/settings/deltoken', [UserController::class, 'deleteToken'])
          ->name('deltoken');
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])

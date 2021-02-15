@@ -42,11 +42,15 @@ class FrontendTransportController extends Controller
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
-        $TrainStationboardResponse = TransportBackend::TrainStationboard(
-            $validated['station'],
-            $when,
-            $validated['travelType'] ?? null
-        );
+        try {
+            $TrainStationboardResponse = TransportBackend::TrainStationboard(
+                $validated['station'],
+                $when,
+                $validated['travelType'] ?? null
+            );
+        } catch (HafasException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
         if ($TrainStationboardResponse === false) {
             return redirect()->back()->with('error', __('controller.transport.no-name-given'));
         }
@@ -82,11 +86,24 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainTrip(Request $request): Renderable|RedirectResponse {
-        $TrainTripResponse = TransportBackend::TrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start
-        );
+
+        $request->validate([
+                               'tripID'    => ['required'],
+                               'lineName'  => ['required'],
+                               'start'     => ['required', 'numeric'],
+                               'departure' => ['required', 'date']
+                           ]);
+
+        try {
+            $TrainTripResponse = TransportBackend::TrainTrip(
+                $request->tripID,
+                $request->lineName,
+                $request->start,
+                Carbon::parse($request->departure)
+            );
+        } catch (HafasException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
         if ($TrainTripResponse === null) {
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
@@ -115,7 +132,9 @@ class FrontendTransportController extends Controller
             'business_check' => 'max:0', // Wenn wir Businesstrips wieder einbringen, kann man das wieder auf mehr stellen.
             'tweet_check'    => 'max:2',
             'toot_check'     => 'max:2',
-            'event'          => 'integer'
+            'event'          => 'integer',
+            'departure'      => ['required', 'date'],
+            'arrival'        => ['required', 'date'],
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
@@ -127,7 +146,9 @@ class FrontendTransportController extends Controller
                 $request->business_check,
                 $request->tweet_check,
                 $request->toot_check,
-                $request->event
+                $request->event,
+                Carbon::parse($request->departure),
+                Carbon::parse($request->arrival),
             );
 
             return redirect()->route('dashboard')->with('checkin-success', [
@@ -139,21 +160,21 @@ class FrontendTransportController extends Controller
                 'event'                => $trainCheckin['event']
             ]);
 
-        } catch (CheckInCollisionException $e) {
+        } catch (CheckInCollisionException $exception) {
 
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
                     'controller.transport.overlapping-checkin',
                     [
-                        'url'      => url('/status/' . $e->getCollision()->status->id),
-                        'id'       => $e->getCollision()->status->id,
-                        'linename' => $e->getCollision()->HafasTrip->linename
+                        'url'      => url('/status/' . $exception->getCollision()->status->id),
+                        'id'       => $exception->getCollision()->status->id,
+                        'linename' => $exception->getCollision()->HafasTrip->linename
                     ]
                 ));
 
-        } catch (Throwable $e) {
-
+        } catch (Throwable $exception) {
+            report($exception);
             return redirect()
                 ->route('dashboard')
                 ->with('error', __('messages.exception.general'));

@@ -185,11 +185,17 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    //delete a specific session for user
-    public function deleteToken($tokenId): RedirectResponse {
-        $user  = Auth::user();
-        $token = Token::find($tokenId);
-        if ($token->user == $user) {
+    /**
+     * delete a specific session for user
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteToken(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
+                                        ]);
+        $token     = Token::find($validated['tokenId']);
+        if ($token->user->id == Auth::user()->id) {
             $token->revoke();
         }
         return redirect()->route('settings');
@@ -396,17 +402,22 @@ class UserController extends Controller
                    ->count();
     }
 
-    public static function updateDisplayName($displayname): void {
-        $request   = new Request(['displayname' => $displayname]);
+    public static function updateDisplayName(string $displayName): bool {
+        $request   = new Request(['displayName' => $displayName]);
         $validator = Validator::make($request->all(), [
-            'displayname' => 'required|max:120'
+            'displayName' => ['required', 'max:120']
         ]);
         if ($validator->fails()) {
             abort(400);
         }
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $displayname;
-        $user->save();
+        try {
+            Auth::user()->update([
+                                     'name' => $displayName
+                                 ]);
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     public static function searchUser(?string $searchQuery) {
