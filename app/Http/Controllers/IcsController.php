@@ -19,7 +19,7 @@ class IcsController extends Controller
                                             'token'   => ['required', 'exists:ics_tokens,token'],
                                             'limit'   => ['nullable', 'numeric', 'gte:1', 'lte:10000'],
                                             'from'    => ['nullable', 'date'],
-                                            'to'      => ['nullable', 'date']
+                                            'until'   => ['nullable', 'date']
                                         ]);
 
         $icsToken = IcsToken::where('token', $validated['token'])->first();
@@ -47,10 +47,10 @@ class IcsController extends Controller
             });
         }
 
-        if (isset($validated['to'])) {
-            $to            = Carbon::parse($validated['to']);
-            $trainCheckIns = $trainCheckIns->filter(function($checkIn) use ($to) {
-                return $checkIn->departure->isBefore($to);
+        if (isset($validated['until'])) {
+            $until         = Carbon::parse($validated['until']);
+            $trainCheckIns = $trainCheckIns->filter(function($checkIn) use ($until) {
+                return $checkIn->departure->isBefore($until);
             });
         }
 
@@ -91,7 +91,7 @@ class IcsController extends Controller
                 'token'   => $icsToken->token,
                 'limit'   => 10000,
                 'from'    => '2010-01-01',
-                'to'      => '2030-12-31'
+                'until'   => '2030-12-31'
             ])
         ]));
     }
