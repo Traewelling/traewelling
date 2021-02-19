@@ -50,5 +50,6 @@ return [
         'manage'          => 'Follower verwalten',
         'following-since' => 'Folgt dir seit',
         'delete-success'  => 'Du hast den Follower erfolgreich entfernt.',
+        'delete'          => 'Follower entfernen',
     ],
 ];

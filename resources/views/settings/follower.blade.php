@@ -46,7 +46,7 @@
                                             <input type="hidden" name="user_id" value="{{$follower->id}}"/>
                                             <button type="submit" class="btn btn-sm btn-danger">
                                                 <i class="fas fa-users-slash"></i>
-                                                Remove follower
+                                                {{__('settings.follower.delete')}}
                                             </button>
                                         </form>
                                     </td>

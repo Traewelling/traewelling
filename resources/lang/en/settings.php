@@ -50,5 +50,6 @@ return [
         'manage'          => 'Manage followers',
         'following-since' => 'Following since',
         'delete-success'  => 'You successfully removed the follower.',
+        'delete'          => 'Remove follower',
     ],
 ];
