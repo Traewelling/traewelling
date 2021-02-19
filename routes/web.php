@@ -17,8 +17,10 @@ use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
+use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +75,6 @@ Route::prefix('blog')->group(function() {
          ->name('blog.category');
 });
 
-
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
@@ -116,10 +117,17 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
          ->name('events.update');
 });
 
+Route::get('/ics', [IcsController::class, 'renderIcs'])
+     ->name('ics');
+
 /**
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
+    Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
+         ->name('ics.createToken');
+    Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
+         ->name('ics.revokeToken');
 
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
@@ -131,8 +139,12 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     //will leave settings inside of UserController...
     Route::get('/settings', [UserController::class, 'getAccount'])
          ->name('settings');
+    Route::get('/settings/follower', [SettingsController::class, 'renderFollowerSettings'])
+         ->name('settings.follower');
 
     Route::post('/settings', [UserController::class, 'updateSettings']);
+    Route::post('/settings/follower/remove', [SettingsController::class, 'removeFollower'])
+         ->name('settings.follower.remove');
 
     Route::post('/settings/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
          ->name('settings.upload-image');

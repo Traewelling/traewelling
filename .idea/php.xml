@@ -172,6 +172,8 @@
       <path value="$PROJECT_DIR$/vendor/windwalker/renderer" />
       <path value="$PROJECT_DIR$/vendor/windwalker/structure" />
       <path value="$PROJECT_DIR$/vendor/mpociot/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/spatie/enum" />
+      <path value="$PROJECT_DIR$/vendor/spatie/icalendar-generator" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />

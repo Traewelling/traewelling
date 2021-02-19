@@ -17,7 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'username', 'name', 'avatar', 'email', 'password', 'home_id'
+        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'private_profile'
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $casts    = [
         'email_verified_at' => 'datetime',
+        'private_profile' => 'boolean'
     ];
     protected $appends  = [
         'averageSpeed'
@@ -55,11 +56,15 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function followers(): BelongsToMany {
-        return $this->belongsToMany(User::class, 'follows', 'user_id', 'user_id');
+        return $this->belongsToMany(User::class, 'follows', 'follow_id', 'user_id');
     }
 
     public function sessions(): HasMany {
         return $this->hasMany(Session::class);
+    }
+
+    public function icsTokens(): HasMany {
+        return $this->hasMany(IcsToken::class, 'user_id', 'id');
     }
 
 }

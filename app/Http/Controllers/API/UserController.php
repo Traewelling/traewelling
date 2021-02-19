@@ -51,7 +51,8 @@ class UserController extends ResponseController
      * @return JsonResponse
      */
     public function active($username) {
-        $user           = User::where('username', $username)->firstOrFail();
+        //Somehow this breaks without a LIKE.
+        $user           = User::where('username', 'LIKE', $username)->firstOrFail();
         $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
         return $this->sendResponse($statusResponse);
     }
