@@ -24,7 +24,7 @@ class IcsController extends Controller
 
         $icsToken = IcsToken::where('token', $validated['token'])->first();
 
-        if ($icsToken == null || $icsToken->user_id != $validated['user_id']) {
+        if ($icsToken->user_id != $validated['user_id']) {
             abort(404);
         }
 
