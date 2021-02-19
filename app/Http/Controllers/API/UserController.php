@@ -131,7 +131,7 @@ class UserController extends ResponseController
         };
 
         $users      = $leaderboardResponse['users']->take(15)->map($mapping);
-        $friends = $leaderboardResponse['friends'] ?->take(15)->map($mapping);
+        $friends    = $leaderboardResponse['friends']?->take(15)->map($mapping);
         $kilometers = $leaderboardResponse['kilometers']->take(15)->map($mapping);
 
         return $this->sendResponse([
