@@ -381,6 +381,8 @@
                     </div>
                 </div>
 
+                @include('settings.cards.ics')
+
                 <!-- API Tokens -->
                 <div class="card mt-3">
                     <div class="card-header">{{ __('settings.title-tokens') }}</div>

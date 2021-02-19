@@ -63,4 +63,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Session::class);
     }
 
+    public function icsTokens(): HasMany {
+        return $this->hasMany(IcsToken::class, 'user_id', 'id');
+    }
+
 }
