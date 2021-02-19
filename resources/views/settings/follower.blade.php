@@ -14,7 +14,7 @@
                             <thead>
                             <tr>
                                 <th colspan="2">Follower</th>
-                                <th>Following since</th>
+                                <th>{{__('settings.follower.following-since')}}</th>
                                 <th></th>
                             </tr>
                             </thead>

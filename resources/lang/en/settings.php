@@ -47,7 +47,8 @@ return [
     "create-ics-token-success"    => "The calendar token has been created. You can embed it with the following link to every software which support ICS files: :link",
     "revoke-ics-token-success"    => "The calendar token has been revoked.",
     'follower'                    => [
-        'manage'         => 'Manage followers',
-        'delete-success' => 'You successfully removed the follower.',
+        'manage'          => 'Manage followers',
+        'following-since' => 'Following since',
+        'delete-success'  => 'You successfully removed the follower.',
     ],
 ];
