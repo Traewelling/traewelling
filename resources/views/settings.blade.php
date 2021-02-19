@@ -121,6 +121,10 @@
                                         <label class="custom-control-label"
                                                for="private_profile">{{ __('user.private-profile') }}</label>
                                     </div>
+                                    <br/>
+                                    <a href="{{route('settings.follower')}}">
+                                        {{__('settings.follower.manage')}}
+                                    </a>
                                     @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -381,9 +385,9 @@
                     </div>
                 </div>
 
-                @include('settings.cards.ics')
+            @include('settings.cards.ics')
 
-                <!-- API Tokens -->
+            <!-- API Tokens -->
                 <div class="card mt-3">
                     <div class="card-header">{{ __('settings.title-tokens') }}</div>
 
