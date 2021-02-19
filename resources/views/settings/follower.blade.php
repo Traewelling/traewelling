@@ -33,6 +33,10 @@
                                     <td style="vertical-align: middle">
                                         <a href="{{route('account.show', ['username' => $follower->username])}}">
                                             {{$follower->name}}
+                                            @if($follower->name != $follower->username)
+                                                <br/>
+                                                <small>{{'@' . $follower->username}}</small>
+                                            @endif
                                         </a>
                                     </td>
                                     <td style="vertical-align: middle">{{$follower->created_at->diffForHumans()}}</td>
