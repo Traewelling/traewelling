@@ -30,7 +30,11 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td style="vertical-align: middle">{{$follower->name}}</td>
+                                    <td style="vertical-align: middle">
+                                        <a href="{{route('account.show', ['username' => $follower->username])}}">
+                                            {{$follower->name}}
+                                        </a>
+                                    </td>
                                     <td style="vertical-align: middle">{{$follower->created_at->diffForHumans()}}</td>
                                     <td>
                                         <form method="POST" action="{{route('settings.follower.remove')}}">
