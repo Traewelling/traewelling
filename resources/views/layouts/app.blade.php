@@ -100,7 +100,6 @@
                                 <a class="nav-link" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
                         </ul>
-
                         <ul class="navbar-nav ml-auto">
                             @guest
                                 <li class="nav-item">
