@@ -34,8 +34,7 @@
                             @endif
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active table-responsive" id="top20" role="tabpanel"
-                                 aria-labelledby="home-tab">
+                            <div class="tab-pane fade show active table-responsive" id="top20" role="tabpanel">
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -61,8 +60,7 @@
                                     @endforeach
                                 </table>
                             </div>
-                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel"
-                                 aria-labelledby="profile-tab">
+                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel">
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -89,8 +87,7 @@
                                 </table>
                             </div>
                             @isset($friends)
-                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
-                                     aria-labelledby="contact-tab">
+                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel">
                                     <table class="table">
                                         <thead>
                                         <tr>
