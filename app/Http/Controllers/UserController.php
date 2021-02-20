@@ -69,41 +69,7 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-    public function updateSettings(Request $request): Renderable {
-        $user = Auth::user();
-        $this->validate($request, [
-            'name'   => ['required', 'string', 'max:50'],
-            'avatar' => 'image'
-        ]);
-        if ($user->username != $request->username) {
-            $this->validate($request, ['username' => ['required',
-                                                      'string',
-                                                      'max:25',
-                                                      'regex:/^[a-zA-Z0-9_]*$/',
-                                                      'unique:users']]);
-        }
-        if ($user->email != $request->email) {
-            $this->validate($request, ['email' => ['required',
-                                                   'string',
-                                                   'email',
-                                                   'max:255',
-                                                   'unique:users']]);
-            $user->email_verified_at = null;
-        }
 
-        $user->email           = $request->email;
-        $user->username        = $request->username;
-        $user->name            = $request->name;
-        $user->always_dbl      = $request->always_dbl == "on";
-        $user->private_profile = $request->private_profile == "on";
-        $user->save();
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-        }
-
-        return $this->getAccount();
-    }
 
     public function updatePassword(Request $request): RedirectResponse {
         $user = Auth::user();

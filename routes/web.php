@@ -142,7 +142,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/settings/follower', [SettingsController::class, 'renderFollowerSettings'])
          ->name('settings.follower');
 
-    Route::post('/settings', [UserController::class, 'updateSettings']);
+    Route::post('/settings', [SettingsController::class, 'updateMainSettings']);
     Route::post('/settings/follower/remove', [SettingsController::class, 'removeFollower'])
          ->name('settings.follower.remove');
 
