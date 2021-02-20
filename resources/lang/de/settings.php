@@ -44,7 +44,7 @@ return [
     "token"                       => "Token",
     "revoke-token"                => "Zugriff entziehen",
     "create-ics-token"            => "Neue Freigabe erstellen",
-    "create-ics-token-success"    => "Die Kalenderfreigabe wurde erstellt. Du kannst folgenden Link in einen Kalender einbinden, der das ICS-Format unterstützt: :link",
+    "create-ics-token-success"    => 'Die Kalenderfreigabe wurde erstellt. Du kannst folgenden Link in einen Kalender einbinden, der das ICS-Format unterstützt: <a href=":link">:link</a>',
     "revoke-ics-token-success"    => "Die Kalenderfreigabe wurde gelöscht.",
     'follower'                    => [
         'no-follower'     => 'Du hast keine Follower.',

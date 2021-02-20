@@ -18,7 +18,7 @@
                             </b>
                         @else
 
-                            <table class="table table-responsive table-striped">
+                            <table class="table table-responsive-md table-striped table-hover">
                                 <thead>
                                 <tr>
                                     <th colspan="2">Follower</th>
