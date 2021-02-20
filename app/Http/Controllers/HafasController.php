@@ -39,7 +39,7 @@ abstract class HafasController extends Controller
         }
     }
 
-    public static function getTrainStationByDS100(string $rilIdentifier): ?TrainStation {
+    public static function getTrainStationByRilIdentifier(string $rilIdentifier): ?TrainStation {
         $trainStation = TrainStation::where('rilIdentifier', $rilIdentifier)->first();
         if ($trainStation != null) {
             return $trainStation;
