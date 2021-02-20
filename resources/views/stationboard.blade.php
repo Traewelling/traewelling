@@ -72,6 +72,7 @@
                                         data-departure="{{ $departure->plannedWhen }}">
                                         <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                                 <img class="product-icon"
+                                                     alt="Icon of {{$departure->line->product}}"
                                                      src="{{ asset('img/'.$departure->line->product.'.svg') }}">
                                             @else
                                                 <i class="fa fa-train"></i>
