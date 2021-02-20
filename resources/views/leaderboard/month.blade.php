@@ -36,7 +36,7 @@
 
             @foreach($leaderboard->take(3) as $place)
                 <div class="col-md-4">
-                    <div class="card" style="margin-bottom: 7px;">
+                    <div class="card mb-2">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
                             <div class="image-box pr-0 d-lg-flex">
