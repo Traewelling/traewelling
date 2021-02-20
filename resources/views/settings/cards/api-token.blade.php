@@ -14,24 +14,26 @@
                         <th></th>
                     </tr>
                 </thead>
-                @foreach($tokens as $token)
-                    <tr>
-                        <td>{{ $token['clientName'] }}</td>
-                        <td>{{ $token['created_at'] }}</td>
-                        <td>{{ $token['updated_at'] }}</td>
-                        <td>{{ $token['expires_at'] }}</td>
-                        <td>
-                            <form method="POST" action="{{ route('deltoken') }}">
-                                @csrf
-                                <input type="hidden" name="tokenId" value="{{$token['id']}}"/>
-                                <button class="btn btn-block btn-danger mx-0">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                <tbody>
+                    @foreach($tokens as $token)
+                        <tr>
+                            <td>{{ $token['clientName'] }}</td>
+                            <td>{{ $token['created_at'] }}</td>
+                            <td>{{ $token['updated_at'] }}</td>
+                            <td>{{ $token['expires_at'] }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('deltoken') }}">
+                                    @csrf
+                                    <input type="hidden" name="tokenId" value="{{$token['id']}}"/>
+                                    <button class="btn btn-block btn-danger mx-0">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
 
-                        </td>
-                    </tr>
-                @endforeach
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         @endif
     </div>

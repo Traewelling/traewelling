@@ -16,21 +16,30 @@
                         <td>Twitter</td>
                         @if ($user->socialProfile->twitter_id != null)
                             <td>{{ __('settings.connected') }}</td>
-                            <td><a href="#" data-provider="twitter"
-                                   class="btn btn-sm btn-outline-danger disconnect">{{ __('settings.disconnect') }}</a>
+                            <td>
+                                <a href="javascript:void(0)" data-provider="twitter"
+                                   class="btn btn-sm btn-outline-danger disconnect">
+                                    {{ __('settings.disconnect') }}
+                                </a>
                             </td>
                         @else
                             <td>{{ __('settings.notconnected') }}</td>
-                            <td><a href="{{ url('/auth/redirect/twitter') }}"
-                                   class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
+                            <td>
+                                <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">
+                                    {{ __('settings.connect') }}
+                                </a>
+                            </td>
                         @endif
                     </tr>
                     <tr>
                         <td>Mastodon</td>
                         @if ($user->socialProfile->mastodon_id != null)
                             <td>{{ __('settings.connected') }}</td>
-                            <td><a href="#" data-provider="mastodon"
-                                   class="btn btn-sm btn-outline-danger disconnect">{{ __('settings.disconnect') }}</a>
+                            <td>
+                                <a href="javascript:void(0)" data-provider="mastodon"
+                                   class="btn btn-sm btn-outline-danger disconnect">
+                                    {{ __('settings.disconnect') }}
+                                </a>
                             </td>
                         @else
                             <td>{{ __('settings.notconnected') }}</td>
@@ -39,11 +48,10 @@
                                     <div class="input-group mt-0">
                                         <input type="text" name="domain" class="form-control"
                                                placeholder="{{__('user.mastodon-instance-url')}}"
-                                               aria-describedby="button-addon4">
+                                               aria-describedby="button-addon4"/>
                                         <div id="button-addon4" class="input-group-append">
-                                            <button class="btn btn-md btn-primary m-0 px-3"
-                                                    type="submit"><i
-                                                        class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                            <button class="btn btn-md btn-primary m-0 px-3" type="submit">
+                                                <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
                                             </button>
                                         </div>
                                     </div>
@@ -55,8 +63,11 @@
                     <tr>
                         <td>Twitter</td>
                         <td>{{ __('settings.notconnected') }}</td>
-                        <td><a href="{{ url('/auth/redirect/twitter') }}"
-                               class="btn btn-sm btn-primary">{{ __('settings.connect') }}</a></td>
+                        <td>
+                            <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">
+                                {{ __('settings.connect') }}
+                            </a>
+                        </td>
                     </tr>
                     <tr>
                         <td>Mastodon</td>
@@ -66,10 +77,10 @@
                                 <div class="input-group mt-0">
                                     <input type="text" name="domain" class="form-control"
                                            placeholder="{{__('user.mastodon-instance-url')}}"
-                                           aria-describedby="button-addon4">
+                                           aria-describedby="button-addon4"/>
                                     <div id="button-addon4" class="input-group-append">
-                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                    class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
+                                            <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
                                         </button>
                                     </div>
                                 </div>

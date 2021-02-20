@@ -7,27 +7,29 @@
         @else
             <table class="table table-responsive">
                 <thead>
-                <tr>
-                    <th>{{ __('settings.token') }}</th>
-                    <th>{{ __('settings.created') }}</th>
-                    <th></th>
-                </tr>
-                </thead>
-                @foreach(auth()->user()->icsTokens as $icsToken)
                     <tr>
-                        <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
-                        <td>{{ $icsToken->created_at->format('d.m.Y H:i') }}</td>
-                        <td>
-                            <form method="POST" action="{{route('ics.revokeToken')}}">
-                                @csrf
-                                <input type="hidden" name="id" value="{{$icsToken->id}}"/>
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    {{__('settings.revoke-token')}}
-                                </button>
-                            </form>
-                        </td>
+                        <th>{{ __('settings.token') }}</th>
+                        <th>{{ __('settings.created') }}</th>
+                        <th></th>
                     </tr>
-                @endforeach
+                </thead>
+                <tbody>
+                    @foreach(auth()->user()->icsTokens as $icsToken)
+                        <tr>
+                            <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
+                            <td>{{ $icsToken->created_at->format('d.m.Y H:i') }}</td>
+                            <td>
+                                <form method="POST" action="{{route('ics.revokeToken')}}">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{$icsToken->id}}"/>
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        {{__('settings.revoke-token')}}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         @endif
 

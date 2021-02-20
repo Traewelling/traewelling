@@ -11,15 +11,16 @@
                     <th>{{ __('settings.lastactivity') }}</th>
                 </tr>
             </thead>
-            @foreach($sessions as $session)
-                <tr>
-                    <td><i class="fas fa-{{ $session['device'] }}"></i></td>
-                    <td>{{ $session['platform'] }}</td>
-                    <td>{{ $session['ip'] }}</td>
-                    <td>{{ date('Y-m-d H:i:s', $session['last']) }}</td>
-                </tr>
-            @endforeach
-
+            <tbody>
+                @foreach($sessions as $session)
+                    <tr>
+                        <td><i class="fas fa-{{ $session['device'] }}"></i></td>
+                        <td>{{ $session['platform'] }}</td>
+                        <td>{{ $session['ip'] }}</td>
+                        <td>{{ date('Y-m-d H:i:s', $session['last']) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
         </table>
         <form method="POST" action="{{ route('delsession') }}">
             @csrf
@@ -27,6 +28,5 @@
                 {{ __('settings.deleteallsessions') }}
             </button>
         </form>
-
     </div>
 </div>
