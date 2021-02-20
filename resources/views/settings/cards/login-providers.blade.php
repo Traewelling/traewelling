@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mt-3">
     <div class="card-header">{{ __('settings.title-loginservices') }}</div>
 
     <div class="card-body">
