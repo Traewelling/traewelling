@@ -45,17 +45,15 @@
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
-             aria-labelledby="notifications-modal" aria-hidden="true">
+             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">{{ __('notifications.title') }}</h4>
-                        <div>
-                            <button type="button" class="close" id="mark-all-read"
-                                    aria-label="{{ __('notifications.mark-all-read') }}">
-                                <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
-                            </button>
-                        </div>
+                        <button type="button" class="close" id="mark-all-read"
+                                aria-label="{{ __('notifications.mark-all-read') }}">
+                            <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
+                        </button>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
