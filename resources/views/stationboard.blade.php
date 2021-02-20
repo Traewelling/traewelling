@@ -91,9 +91,7 @@
                                             @else
                                                 {{\Carbon\Carbon::parse($departure->plannedWhen)->format('H:i')}}
                                                 @if(isset($departure->delay))
-                                                    <small>(<span class="traindelay">
-                                                            +{{ $departure->delay / 60 }}
-                                                        </span>)</small>
+                                                    <small>(<span class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
                                                 @endif
                                             @endif
                                         </td>
