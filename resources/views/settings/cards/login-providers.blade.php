@@ -11,10 +11,10 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($user->socialProfile != null)
+                @if (auth()->user()->socialProfile != null)
                     <tr>
                         <td>Twitter</td>
-                        @if ($user->socialProfile->twitter_id != null)
+                        @if (auth()->user()->socialProfile->twitter_id != null)
                             <td>{{ __('settings.connected') }}</td>
                             <td>
                                 <a href="javascript:void(0)" data-provider="twitter"
@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <td>Mastodon</td>
-                        @if ($user->socialProfile->mastodon_id != null)
+                        @if (auth()->user()->socialProfile->mastodon_id != null)
                             <td>{{ __('settings.connected') }}</td>
                             <td>
                                 <a href="javascript:void(0)" data-provider="mastodon"

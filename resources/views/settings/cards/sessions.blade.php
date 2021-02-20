@@ -14,10 +14,10 @@
             <tbody>
                 @foreach($sessions as $session)
                     <tr>
-                        <td><i class="fas fa-{{ $session['device'] }}"></i></td>
-                        <td>{{ $session['platform'] }}</td>
-                        <td>{{ $session['ip'] }}</td>
-                        <td>{{ date('Y-m-d H:i:s', $session['last']) }}</td>
+                        <td><i class="fas fa-{{ $session->device_icon }}"></i></td>
+                        <td>{{ $session->platform }}</td>
+                        <td>{{ $session->ip_address }}</td>
+                        <td>{{ \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -138,42 +138,26 @@ class UserController extends Controller
 
     //Return Settings-page
     public function getAccount(): Renderable {
-        $user     = Auth::user();
-        $sessions = [];
-        $tokens   = [];
-        foreach ($user->sessions as $session) {
-            $sessionArray = [];
+        $sessions = auth()->user()->sessions->map(function($session) {
             $result       = new Agent();
             $result->setUserAgent($session->user_agent);
-            $sessionArray['platform'] = $result->platform();
+            $session->platform = $result->platform();
 
             if ($result->isphone()) {
-                $sessionArray['device'] = 'mobile-alt';
+                $session->device_icon = 'mobile-alt';
             } elseif ($result->isTablet()) {
-                $sessionArray['device'] = 'tablet';
+                $session->device_icon = 'tablet';
             } else {
-                $sessionArray['device'] = 'desktop';
+                $session->device_icon = 'desktop';
             }
-            $sessionArray['id']   = $session->id;
-            $sessionArray['ip']   = $session->ip_address;
-            $sessionArray['last'] = $session->last_activity;
-            array_push($sessions, $sessionArray);
-        }
 
-        foreach ($user->tokens as $token) {
-            if ($token->revoked != 1) {
-                $tokenInfo               = [];
-                $tokenInfo['id']         = $token->id;
-                $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (string) $token->created_at;
-                $tokenInfo['updated_at'] = (string) $token->updated_at;
-                $tokenInfo['expires_at'] = (string) $token->expires_at;
+            return $session;
+        });
 
-                array_push($tokens, $tokenInfo);
-            }
-        }
-
-        return view('settings.settings', compact('user', 'sessions', 'tokens'));
+        return view('settings.settings', [
+            'sessions' => $sessions,
+            'tokens'   => auth()->user()->tokens->where('revoked', '0')
+        ]);
     }
 
     //delete sessions from user

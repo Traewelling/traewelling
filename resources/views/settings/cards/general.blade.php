@@ -11,7 +11,7 @@
                 <div class="col-md-6 text-center">
                     <div class="image-box">
                         <img
-                                src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}"
+                                src="{{ route('account.showProfilePicture', ['username' => auth()->user()->username]) }}"
                                 style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
                                 id="theProfilePicture"
                         />
@@ -21,7 +21,7 @@
                         {{__('settings.upload-image')}}
                     </a>
 
-                    @if($user->avatar != 'user.jpg')
+                    @if(auth()->user()->avatar != 'user.jpg')
                         <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm"
                            data-toggle="modal"
                            data-target="#deleteProfilePictureModal"
@@ -46,7 +46,7 @@
                         </div>
                         <input id="username" type="text"
                                class="form-control @error('username') is-invalid @enderror"
-                               name="username" value="{{ $user->username }}" required autofocus/>
+                               name="username" value="{{ auth()->user()->username }}" required autofocus/>
                     </div>
 
                     @error('username')
@@ -62,7 +62,7 @@
                 <div class="col-md-6">
                     <input id="name" type="text"
                            class="form-control @error('name') is-invalid @enderror" name="name"
-                           value="{{ $user->name }}" required autocomplete="name"/>
+                           value="{{ auth()->user()->name }}" required autocomplete="name"/>
 
                     @error('name')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -77,7 +77,7 @@
                 <div class="col-md-6">
                     <input id="email" type="email"
                            class="form-control @error('email') is-invalid @enderror" name="email"
-                           value="{{ $user->email }}" autocomplete="email"/>
+                           value="{{ auth()->user()->email }}" autocomplete="email"/>
 
                     @error('email')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -90,7 +90,7 @@
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="always_dbl" type="checkbox"
                                class="custom-control-input @error('always_dbl') is-invalid @enderror"
-                               name="always_dbl" {{ $user->always_dbl ? 'checked' : '' }} />
+                               name="always_dbl" {{ auth()->user()->always_dbl ? 'checked' : '' }} />
                         <label class="custom-control-label" for="always_dbl">
                             {{ __('user.always-dbl') }}
                         </label>
@@ -103,7 +103,7 @@
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="private_profile" type="checkbox"
                                class="custom-control-input @error('private_profile') is-invalid @enderror"
-                               name="private_profile" {{ $user->private_profile ? 'checked' : '' }} />
+                               name="private_profile" {{ auth()->user()->private_profile ? 'checked' : '' }} />
                         <label class="custom-control-label" for="private_profile">
                             {{ __('user.private-profile') }}
                         </label>

@@ -9,7 +9,6 @@
                     <tr>
                         <th>{{ __('settings.client-name') }}</th>
                         <th>{{ __('settings.created') }}</th>
-                        <th>{{ __('settings.updated') }}</th>
                         <th>{{ __('settings.expires') }}</th>
                         <th></th>
                     </tr>
@@ -17,19 +16,17 @@
                 <tbody>
                     @foreach($tokens as $token)
                         <tr>
-                            <td>{{ $token['clientName'] }}</td>
-                            <td>{{ $token['created_at'] }}</td>
-                            <td>{{ $token['updated_at'] }}</td>
-                            <td>{{ $token['expires_at'] }}</td>
+                            <td>{{ $token->client->name }}</td>
+                            <td>{{ \Carbon\Carbon::parse($token->created_at)->format('d.m.Y H:i') }}</td>
+                            <td>{{ $token->expires_at->diffForHumans() }}</td>
                             <td>
                                 <form method="POST" action="{{ route('deltoken') }}">
                                     @csrf
-                                    <input type="hidden" name="tokenId" value="{{$token['id']}}"/>
+                                    <input type="hidden" name="tokenId" value="{{$token->id}}"/>
                                     <button class="btn btn-block btn-danger mx-0">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-
                             </td>
                         </tr>
                     @endforeach
