@@ -18,14 +18,14 @@
 
                             @if($latest->count() > 0 || Auth::user()->home)
                             <div class="input-group-append" id="history-button" title="{{__('stationboard.last-stations')}}">
-                                <span class="input-group-text" id="basic-addon2">
+                                <span class="input-group-text">
                                     <i class="fa fa-history"></i>
                                 </span>
                             </div>
                             @endif
                             
                             <div class="input-group-append" id="gps-button" title="{{__('stationboard.search-by-location')}}">
-                                <span class="input-group-text" id="basic-addon2">
+                                <span class="input-group-text">
                                     <i class="fa fa-map-marker-alt"></i>
                                 </span>
                             </div>
