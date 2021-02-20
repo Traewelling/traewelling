@@ -18,7 +18,6 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Jenssegers\Agent\Agent;
@@ -69,10 +68,6 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-
-
-
-
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
         $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
@@ -93,28 +88,7 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    public function getAccount(): Renderable {
-        $sessions = auth()->user()->sessions->map(function($session) {
-            $result       = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $session->platform = $result->platform();
 
-            if ($result->isphone()) {
-                $session->device_icon = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $session->device_icon = 'tablet';
-            } else {
-                $session->device_icon = 'desktop';
-            }
-
-            return $session;
-        });
-
-        return view('settings.settings', [
-            'sessions' => $sessions,
-            'tokens'   => auth()->user()->tokens->where('revoked', '0')
-        ]);
-    }
 
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();

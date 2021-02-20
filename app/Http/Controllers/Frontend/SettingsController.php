@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Jenssegers\Agent\Agent;
 
 class SettingsController extends Controller
 {
@@ -55,5 +57,28 @@ class SettingsController extends Controller
                                ]);
 
         return back()->with('info', __('controller.user.password-changed-ok'));
+    }
+
+    public function renderSettings(): Renderable {
+        $sessions = auth()->user()->sessions->map(function($session) {
+            $result = new Agent();
+            $result->setUserAgent($session->user_agent);
+            $session->platform = $result->platform();
+
+            if ($result->isphone()) {
+                $session->device_icon = 'mobile-alt';
+            } elseif ($result->isTablet()) {
+                $session->device_icon = 'tablet';
+            } else {
+                $session->device_icon = 'desktop';
+            }
+
+            return $session;
+        });
+
+        return view('settings.settings', [
+            'sessions' => $sessions,
+            'tokens'   => auth()->user()->tokens->where('revoked', '0')
+        ]);
     }
 }
