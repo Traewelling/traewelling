@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -174,7 +173,7 @@ class UserController extends Controller
             }
         }
 
-        return view('settings', compact('user', 'sessions', 'tokens'));
+        return view('settings.settings', compact('user', 'sessions', 'tokens'));
     }
 
     //delete sessions from user
