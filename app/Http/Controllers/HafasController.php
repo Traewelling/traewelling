@@ -57,8 +57,8 @@ abstract class HafasController extends Controller
                                                     'longitude'     => $data->location->longitude
                                                 ]);
         } catch (GuzzleException) {
+            return null;
         }
-        return null;
     }
 
     public static function getStations(string $query, int $results = 10): Collection {
