@@ -136,7 +136,6 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    //Return Settings-page
     public function getAccount(): Renderable {
         $sessions = auth()->user()->sessions->map(function($session) {
             $result       = new Agent();
@@ -160,7 +159,6 @@ class UserController extends Controller
         ]);
     }
 
-    //delete sessions from user
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
