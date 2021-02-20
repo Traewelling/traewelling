@@ -414,7 +414,7 @@
                                             <form method="POST" action="{{ route('deltoken') }}">
                                                 @csrf
                                                 <input type="hidden" name="tokenId" value="{{$token['id']}}"/>
-                                                <button class="btn btn-block btn-danger mx-0" role="button">
+                                                <button class="btn btn-block btn-danger mx-0">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -430,7 +430,7 @@
                 <div class="card mt-3">
                     <div class="card-header">{{ __('settings.delete-account') }}</div>
                     <div class="card-body">
-                        <button class="btn btn-block btn-outline-danger mx-0" role="button" data-toggle="modal"
+                        <button class="btn btn-block btn-outline-danger mx-0" data-toggle="modal"
                                 data-target="#deleteUserModal">{{ __('settings.delete-account') }}</button>
 
 
