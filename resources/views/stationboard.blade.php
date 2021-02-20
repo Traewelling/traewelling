@@ -89,12 +89,11 @@
                                             @if(isset($departure->cancelled))
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span>
                                             @else
+                                                {{\Carbon\Carbon::parse($departure->plannedWhen)->format('H:i')}}
                                                 @if(isset($departure->delay))
-                                                    {{ date('H:i', strtotime($departure->when) - $departure->delay) }}
-                                                    <small>(<span
-                                                                class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
-                                                @else
-                                                    {{ date('H:i', strtotime($departure->when)) }}
+                                                    <small>(<span class="traindelay">
+                                                            +{{ $departure->delay / 60 }}
+                                                        </span>)</small>
                                                 @endif
                                             @endif
                                         </td>
