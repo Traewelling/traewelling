@@ -10,11 +10,11 @@
                     {{ __('settings.current-password') }}
                 </label>
                 <div class="col-md-6">
-                    <input id="currentpassword" type="password"
-                           class="form-control @error('currentpassword') is-invalid @enderror"
-                           name="currentpassword" autocomplete="current-password"/>
+                    <input id="currentPassword" type="password"
+                           class="form-control @error('currentPassword') is-invalid @enderror"
+                           name="currentPassword" autocomplete="current-password"/>
 
-                    @error('currentpassword')
+                    @error('currentPassword')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                     @enderror
                 </div>

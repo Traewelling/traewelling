@@ -71,16 +71,7 @@ class UserController extends Controller
 
 
 
-    public function updatePassword(Request $request): RedirectResponse {
-        $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
-            $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
-            $user->password = Hash::make($request->password);
-            $user->save();
-            return redirect()->back()->with('info', __('controller.user.password-changed-ok'));
-        }
-        return redirect()->back()->withErrors(__('controller.user.password-wrong'));
-    }
+
 
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {

@@ -132,7 +132,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
 
-    Route::post('/settings/password', [UserController::class, 'updatePassword'])
+    Route::post('/settings/password', [\App\Http\Controllers\Frontend\SettingsController::class, 'updatePassword'])
          ->name('password.change');
 
     //this has too much dumb logic, that it'll remain inside of the UserController...
@@ -142,7 +142,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/settings/follower', [SettingsController::class, 'renderFollowerSettings'])
          ->name('settings.follower');
 
-    Route::post('/settings', [SettingsController::class, 'updateMainSettings']);
+    Route::post('/settings', [\App\Http\Controllers\Frontend\SettingsController::class, 'updateMainSettings']);
     Route::post('/settings/follower/remove', [SettingsController::class, 'removeFollower'])
          ->name('settings.follower.remove');
 
