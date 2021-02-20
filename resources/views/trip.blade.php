@@ -93,7 +93,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{__('stationboard.new-checkin')}}</h5>
+                    <h5 class="modal-title">{{__('stationboard.new-checkin')}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -120,9 +120,10 @@
                             @if (auth()->user()->socialProfile->mastodon_id != null)
                                 <div class="custom-control custom-checkbox custom-control-inline">
                                     <input type="checkbox" class="custom-control-input" id="toot_check"
-                                           name="toot_check">
-                                    <label class="custom-control-label"
-                                           for="toot_check">{{__('stationboard.check-toot')}}</label>
+                                           name="toot_check"/>
+                                    <label class="custom-control-label" for="toot_check">
+                                        {{__('stationboard.check-toot')}}
+                                    </label>
                                 </div>
                             @endif
                         @endif
@@ -130,14 +131,16 @@
                         @if($events->count() == 1)
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="event_check" name="event"
-                                       value="{{ $events[0]->id }}">
-                                <label class="custom-control-label"
-                                       for="event_check">{{ __('events.on-my-way-to', ['name' => $events[0]->name]) }}</label>
+                                       value="{{ $events[0]->id }}"/>
+                                <label class="custom-control-label" for="event_check">
+                                    {{ __('events.on-my-way-to', ['name' => $events[0]->name]) }}
+                                </label>
                             </div>
                         @elseif($events->count() > 1)
                             <div class="form-group">
-                                <label for="event-dropdown"
-                                       class="col-form-label">{{__('events.on-my-way-dropdown')}}</label>
+                                <label for="event-dropdown" class="col-form-label">
+                                    {{__('events.on-my-way-dropdown')}}
+                                </label>
                                 <select class="form-control" id="event-dropdown" name="event">
                                     <option value="0" selected>{{ __('events.no-event-dropdown') }}</option>
                                     @foreach($events as $event)
@@ -146,12 +149,12 @@
                                 </select>
                             </div>
                         @else
-                            <input type="hidden" name="event" value="0">
+                            <input type="hidden" name="event" value="0"/>
                         @endif
 
-                        <input type="hidden" id="business_check" name="business_check" value="">
-                        <input type="hidden" id="input-tripID" name="tripID" value="">
-                        <input type="hidden" id="input-destination" name="destination" value="">
+                        <input type="hidden" id="business_check" name="business_check" value=""/>
+                        <input type="hidden" id="input-tripID" name="tripID" value=""/>
+                        <input type="hidden" id="input-destination" name="destination" value=""/>
                         <input type="hidden" name="start" value="{{request()->start}}"/>
                         <input type="hidden" name="departure" value="{{request()->departure}}"/>
                         <input type="hidden" id="input-arrival" name="arrival"/>
