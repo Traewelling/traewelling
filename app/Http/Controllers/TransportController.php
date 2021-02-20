@@ -74,7 +74,7 @@ class TransportController extends Controller
             //first check if the query is a valid DS100 identifier
             $station = HafasController::getTrainStationByDS100($stationName);
         }
-        if (!isset($station)) {
+        if (!isset($station) || $station == null) {
             //if we cannot find any station by DS100 identifier continue to search normal
             $station = HafasController::getStations($stationName)->first();
         }
