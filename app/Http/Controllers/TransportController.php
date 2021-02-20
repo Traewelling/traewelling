@@ -380,7 +380,6 @@ class TransportController extends Controller
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += $trainCheckin->duration;
-        $user->points         += $trainCheckin->points;
 
         $user->update();
 

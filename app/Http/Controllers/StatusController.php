@@ -164,10 +164,6 @@ class StatusController extends Controller
         $user->train_distance -= $trainCheckin->distance;
         $user->train_duration -= $trainCheckin->duration;
 
-        //Don't subtract points, if status outside of current point calculation
-        if ($trainCheckin->departure->isAfter(Carbon::parse('last thursday 3:14am'))) {
-            $user->points -= $trainCheckin->points;
-        }
         $user->update();
         $status->delete();
         return true;
