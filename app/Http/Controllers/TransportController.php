@@ -70,7 +70,14 @@ class TransportController extends Controller
         if ($when === null) {
             $when = Carbon::now()->subMinutes(5);
         }
-        $station = HafasController::getStations($stationName)->first();
+        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
+            //first check if the query is a valid DS100 identifier
+            $station = HafasController::getTrainStationByDS100($stationName);
+        }
+        if (!isset($station)) {
+            //if we cannot find any station by DS100 identifier continue to search normal
+            $station = HafasController::getStations($stationName)->first();
+        }
         if ($station == null) {
             return null;
         }
@@ -274,8 +281,8 @@ class TransportController extends Controller
 
         $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
-            $offset1           = self::searchForId($start, $stopovers, $departure);
-            $offset2           = self::searchForId($destination, $stopovers, null, $arrival);
+        $offset1               = self::searchForId($start, $stopovers, $departure);
+        $offset2               = self::searchForId($destination, $stopovers, null, $arrival);
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
@@ -343,12 +350,12 @@ class TransportController extends Controller
                                      'business' => isset($businessCheck) && $businessCheck == 'on'
                                  ]);
 
-            $plannedDeparture = Carbon::parse(
-                $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
-            );
-            $plannedArrival   = Carbon::parse(
-                $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
-            );
+        $plannedDeparture = Carbon::parse(
+            $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
+        );
+        $plannedArrival   = Carbon::parse(
+            $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
+        );
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
