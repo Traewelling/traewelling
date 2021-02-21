@@ -46,7 +46,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Träwelling') }}
                 </div>
 
                 <div class="links">
@@ -62,7 +62,6 @@
 
             <div class="bottom-center links" style="">
                 <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
-
                 <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a>
             </div>
         </div>
