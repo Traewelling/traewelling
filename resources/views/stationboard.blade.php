@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title')
-    RIS
-@endsection
+
+@section('title')RIS@endsection
+
 @section('content')
     @include('includes.station-autocomplete')
     <div class="container">
@@ -57,12 +57,12 @@
                         @else
                             <table class="table table-dark table-borderless table-hover m-0">
                                 <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{{__('stationboard.line')}}</th>
-                                    <th>{{__('stationboard.destination')}}</th>
-                                    <th>{{__('stationboard.dep-time')}}</th>
-                                </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>{{__('stationboard.line')}}</th>
+                                        <th>{{__('stationboard.destination')}}</th>
+                                        <th>{{__('stationboard.dep-time')}}</th>
+                                    </tr>
                                 </thead>
                                 @foreach($departures as $departure)
                                     <tr @if(!isset($departure->cancelled)) class="trainrow"
@@ -92,7 +92,8 @@
                                             @else
                                                 {{\Carbon\Carbon::parse($departure->plannedWhen)->format('H:i')}}
                                                 @if(isset($departure->delay))
-                                                    <small>(<span class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
+                                                    <small>(<span
+                                                                class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
                                                 @endif
                                             @endif
                                         </td>

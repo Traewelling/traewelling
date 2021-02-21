@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    FAQ - {{ __('about.faq-heading') }}
-@endsection
+@section('title')FAQ - {{ __('about.faq-heading') }}@endsection
 
 @section('content')
     <div class="container">
@@ -23,7 +21,8 @@
                 <p class="lead">{{ __('about.no-train') }}</p>
 
                 <h3>{{ __('about.feature-missing-heading') }}</h3>
-                <p class="lead">{{ __('about.feature-missing') }} <a href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
+                <p class="lead">{{ __('about.feature-missing') }} <a
+                            href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
 
                 <h3>{{ __('about.points-heading') }}</h3>
                 <p class="lead">
@@ -31,17 +30,32 @@
                 </p>
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th scope="col">{{ __('about.productclass') }}</th>
-                        <th scope="col">{{ __('about.basepoints') }}</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">{{ __('about.productclass') }}</th>
+                            <th scope="col">{{ __('about.basepoints') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr><th scope="row">{{ __('about.tram') }}</th><td>2</td></tr>
-                    <tr><th scope="row">{{ __('about.suburban') }}</th><td>3</td></tr>
-                    <tr><th scope="row">{{ __('about.regional') }}</th><td>5</td></tr>
-                    <tr><th scope="row">{{ __('about.express') }}</th><td>10</td></tr>
-                    <tr><th scope="row">{{ __('about.international') }}</th><td>10</td></tr>
+                        <tr>
+                            <th scope="row">{{ __('about.tram') }}</th>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ __('about.suburban') }}</th>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ __('about.regional') }}</th>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ __('about.express') }}</th>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{ __('about.international') }}</th>
+                            <td>10</td>
+                        </tr>
                     </tbody>
                 </table>
 

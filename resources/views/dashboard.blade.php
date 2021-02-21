@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    Dashboard
-@endsection
+@section('title')Dashboard@endsection
 
 @section('content')
     @include('includes.station-autocomplete')
@@ -17,5 +15,5 @@
         </div>
         @include('includes.edit-modal')
         @include('includes.delete-modal')
-    </div><!--- /container -->
+    </div>
 @endsection

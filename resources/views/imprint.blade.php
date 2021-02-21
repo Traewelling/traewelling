@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    {{__('menu.imprint')}}
-@endsection
+@section('title'){{__('menu.imprint')}}@endsection
 
 @section('content')
     <div class="container">
