@@ -40,10 +40,7 @@
                     <a href="{{ url('/dashboard') }}">{{__('menu.dashboard')}}</a>
                 @else
                     <a href="{{ route('login') }}">{{__('menu.login')}}</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}">{{__('menu.register')}}</a>
-                    @endif
+                    <a href="{{ route('register') }}">{{__('menu.register')}}</a>
                 @endauth
             </div>
 
