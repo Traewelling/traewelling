@@ -132,31 +132,29 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
 
-    Route::post('/settings/password', [UserController::class, 'updatePassword'])
-         ->name('password.change');
+    Route::prefix('settings')->group(function() {
+        Route::get('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'renderSettings'])
+             ->name('settings');
+        Route::post('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'updateMainSettings']);
 
-    //this has too much dumb logic, that it'll remain inside of the UserController...
-    //will leave settings inside of UserController...
-    Route::get('/settings', [UserController::class, 'getAccount'])
-         ->name('settings');
-    Route::get('/settings/follower', [SettingsController::class, 'renderFollowerSettings'])
-         ->name('settings.follower');
+        Route::post('/password', [\App\Http\Controllers\Frontend\SettingsController::class, 'updatePassword'])
+             ->name('password.change');
 
-    Route::post('/settings', [UserController::class, 'updateSettings']);
-    Route::post('/settings/follower/remove', [SettingsController::class, 'removeFollower'])
-         ->name('settings.follower.remove');
+        Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
+             ->name('settings.follower');
+        Route::post('/follower/remove', [SettingsController::class, 'removeFollower'])
+             ->name('settings.follower.remove');
 
-    Route::post('/settings/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
-         ->name('settings.upload-image');
+        Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
+             ->name('settings.upload-image');
+        Route::get('/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
+             ->name('settings.delete-profile-picture');
 
-    Route::get('/settings/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
-         ->name('settings.delete-profile-picture');
-
-    Route::post('/settings/delsession', [UserController::class, 'deleteSession'])
-         ->name('delsession');
-
-    Route::post('/settings/deltoken', [UserController::class, 'deleteToken'])
-         ->name('deltoken');
+        Route::post('/delsession', [UserController::class, 'deleteSession'])
+             ->name('delsession');
+        Route::post('/deltoken', [UserController::class, 'deleteToken'])
+             ->name('deltoken');
+    });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
          ->name('dashboard');

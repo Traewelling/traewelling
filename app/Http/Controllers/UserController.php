@@ -17,9 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Jenssegers\Agent\Agent;
@@ -70,53 +68,6 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-    public function updateSettings(Request $request): Renderable {
-        $user = Auth::user();
-        $this->validate($request, [
-            'name'   => ['required', 'string', 'max:50'],
-            'avatar' => 'image'
-        ]);
-        if ($user->username != $request->username) {
-            $this->validate($request, ['username' => ['required',
-                                                      'string',
-                                                      'max:25',
-                                                      'regex:/^[a-zA-Z0-9_]*$/',
-                                                      'unique:users']]);
-        }
-        if ($user->email != $request->email) {
-            $this->validate($request, ['email' => ['required',
-                                                   'string',
-                                                   'email',
-                                                   'max:255',
-                                                   'unique:users']]);
-            $user->email_verified_at = null;
-        }
-
-        $user->email           = $request->email;
-        $user->username        = $request->username;
-        $user->name            = $request->name;
-        $user->always_dbl      = $request->always_dbl == "on";
-        $user->private_profile = $request->private_profile == "on";
-        $user->save();
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-        }
-
-        return $this->getAccount();
-    }
-
-    public function updatePassword(Request $request): RedirectResponse {
-        $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
-            $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
-            $user->password = Hash::make($request->password);
-            $user->save();
-            return redirect()->back()->with('info', __('controller.user.password-changed-ok'));
-        }
-        return redirect()->back()->withErrors(__('controller.user.password-wrong'));
-    }
-
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
         $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
@@ -137,47 +88,8 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    //Return Settings-page
-    public function getAccount(): Renderable {
-        $user     = Auth::user();
-        $sessions = [];
-        $tokens   = [];
-        foreach ($user->sessions as $session) {
-            $sessionArray = [];
-            $result       = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $sessionArray['platform'] = $result->platform();
 
-            if ($result->isphone()) {
-                $sessionArray['device'] = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $sessionArray['device'] = 'tablet';
-            } else {
-                $sessionArray['device'] = 'desktop';
-            }
-            $sessionArray['id']   = $session->id;
-            $sessionArray['ip']   = $session->ip_address;
-            $sessionArray['last'] = $session->last_activity;
-            array_push($sessions, $sessionArray);
-        }
 
-        foreach ($user->tokens as $token) {
-            if ($token->revoked != 1) {
-                $tokenInfo               = [];
-                $tokenInfo['id']         = $token->id;
-                $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (string) $token->created_at;
-                $tokenInfo['updated_at'] = (string) $token->updated_at;
-                $tokenInfo['expires_at'] = (string) $token->expires_at;
-
-                array_push($tokens, $tokenInfo);
-            }
-        }
-
-        return view('settings', compact('user', 'sessions', 'tokens'));
-    }
-
-    //delete sessions from user
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();

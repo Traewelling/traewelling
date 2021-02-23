@@ -6,6 +6,7 @@ use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
@@ -89,7 +90,7 @@ class StatusLiked extends Notification
                 preg_match('/\s/', $hafas->linename),
                 [
                     'line'        => $hafas->linename,
-                    'createdDate' => date("Y-m-d", strtotime($hafas->departure))
+                    'createdDate' => Carbon::parse($hafas->departure)->format('Y-m-d')
                 ]
             ),
             'date_for_humans' => $notification->created_at->diffForHumans(),

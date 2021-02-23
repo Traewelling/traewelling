@@ -18,14 +18,14 @@
 
                             @if($latest->count() > 0 || Auth::user()->home)
                             <div class="input-group-append" id="history-button" title="{{__('stationboard.last-stations')}}">
-                                <span class="input-group-text" id="basic-addon2">
+                                <span class="input-group-text">
                                     <i class="fa fa-history"></i>
                                 </span>
                             </div>
                             @endif
                             
                             <div class="input-group-append" id="gps-button" title="{{__('stationboard.search-by-location')}}">
-                                <span class="input-group-text" id="basic-addon2">
+                                <span class="input-group-text">
                                     <i class="fa fa-map-marker-alt"></i>
                                 </span>
                             </div>
@@ -51,8 +51,8 @@
                         </div>
 
                         <input type="hidden" name="when" value="{{@$request->when}}">
-                        <button class="btn btn-outline-primary float-right" type="Submit">{{__('stationboard.submit-search')}}</button>
-                        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseExample">{{__('stationboard.filter-products')}}</button>
+                        <button class="btn btn-outline-primary float-right" type="submit">{{__('stationboard.submit-search')}}</button>
+                        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false">{{__('stationboard.filter-products')}}</button>
                         <div class="collapse" id="collapseFilter">
                             <div class="mt-3 d-flex justify-content-center">
                                 <div class="btn-group flex-wrap btn-group-sm" role="group">
