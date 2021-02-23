@@ -31,7 +31,9 @@ class FrontendUserController extends Controller
     }
 
     public function getProfilePicture($username) {
-        $profilePicture = UserBackend::getProfilePicture($username);
+        $user = User::where('username', $username)->firstOrFail();
+
+        $profilePicture = UserBackend::getProfilePicture($user);
 
         if ($profilePicture === null) {
             abort(404);
