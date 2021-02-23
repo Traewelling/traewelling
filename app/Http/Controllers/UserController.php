@@ -115,30 +115,6 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-    public function destroyUser(): RedirectResponse {
-        $user = Auth::user();
-
-        if ($user->avatar != 'user.jpg') {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-        }
-        foreach (Status::where('user_id', $user->id)->get() as $status) {
-            $status->trainCheckin->delete();
-            $status->likes()->delete();
-            $status->delete();
-        }
-
-        $user->socialProfile()->delete();
-        //This would delete the user not. When PR #110 is merged the DB will delete these automaticly
-        //$user->follows()->delete();
-        //$user->followers()->delete();
-        DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
-
-
-        $user->delete();
-
-        return redirect()->route('static.welcome');
-    }
-
     //Save Changes on Settings-Page
     public function SaveAccount(Request $request): RedirectResponse {
 

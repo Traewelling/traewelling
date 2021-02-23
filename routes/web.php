@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -86,7 +87,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/gdpr-ack', [PrivacyAgreementController::class, 'ack'])
          ->name('gdpr.ack');
 
-    Route::get('/settings/destroy', [UserController::class, 'destroyUser'])
+    Route::post('/settings/destroy', [AccountController::class, 'deleteUserAccount'])
          ->name('account.destroy');
 });
 
