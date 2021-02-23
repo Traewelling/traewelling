@@ -52,9 +52,14 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @param User $user
+     * @return string Encoded PNG Image
+     */
     private static function generateDefaultAvatar(User $user): string {
-        $hash = 0;
-        for ($i = 0; $i < strlen($user->username); $i++) {
+        $hash           = 0;
+        $usernameLength = strlen($user->username);
+        for ($i = 0; $i < $usernameLength; $i++) {
             $hash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
         }
 
