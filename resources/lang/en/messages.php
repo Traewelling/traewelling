@@ -8,6 +8,6 @@ return [
         'generalHafas' => "There was a problem with the interface to the timetable data. Please try again."
     ],
     'account'              => [
-        'please-confirm' => 'Please type ":delete" to confirm.'
+        'please-confirm' => 'Please type <i><b>:delete</b></i> to confirm.'
     ]
 ];
