@@ -26,7 +26,7 @@ use Mastodon;
 class UserController extends Controller
 {
 
-    public static function getProfilePicture(User $user): ?array {
+    public static function getProfilePicture(User $user): array {
         $publicPath = public_path('/uploads/avatars/' . $user->avatar);
 
         if ($user->avatar == null || !file_exists($publicPath)) {
