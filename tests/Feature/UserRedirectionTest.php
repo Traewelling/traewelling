@@ -40,7 +40,7 @@ class UserRedirectionTest extends TestCase
         // When: They delete their account
         $response = $this->actingAs($user)
                          ->post(route('account.destroy'), [
-                             'confirmation' => 'delete ' . $user->username
+                             'confirmation' => $user->username
                          ]);
         $response->assertStatus(302);
         $response->assertRedirect('/');

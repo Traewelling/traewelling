@@ -12,7 +12,7 @@ class AccountController extends Controller
 {
     public function deleteUserAccount(Request $request): RedirectResponse {
         $request->validate([
-                               'confirmation' => ['required', 'regex:(delete ' . auth()->user()->username . ')']
+                               'confirmation' => ['required', 'regex:(' . auth()->user()->username . ')']
                            ]);
 
         $user = auth()->user();

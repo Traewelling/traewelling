@@ -12,8 +12,8 @@
                 <div class="modal-body">
                     {!! __('settings.delete-account-verify', ['appname' => config('app.name')])  !!}
                     <hr/>
-                    <label>{!! strtr(__('messages.account.please-confirm'), [':delete' => 'delete ' . auth()->user()->username]) !!}</label>
-                    <input type="text" placeholder="delete {{auth()->user()->username}}" required
+                    <label>{!! strtr(__('messages.account.please-confirm'), [':delete' => auth()->user()->username]) !!}</label>
+                    <input type="text" placeholder="{{auth()->user()->username}}" required
                            name="confirmation" class="form-control"/>
                 </div>
                 <div class="modal-footer">

@@ -260,7 +260,7 @@ class NotificationsTest extends TestCase
         // When: Bob deletes its account
         $delete = $delete = $this->actingAs($bob)
                                  ->post(route('account.destroy'), [
-                                     'confirmation' => 'delete ' . $bob->username
+                                     'confirmation' => $bob->username
                                  ]);
         $delete->assertStatus(302);
         $delete->assertRedirect('/');
