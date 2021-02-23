@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title')
-{{ $event->name }}
-@endsection
+@section('title'){{ $event->name }}@endsection
 
 @section('content')
-    <div class="jumbotron mt-n4" style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="jumbotron mt-n4"
+         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container" id="event-header">
             <div class="row justify-content-center">
                 <div class="text-white col-md-8">
                     <h1 class="card-title font-bold">
-                        <strong>{{ __('events.header', ['name' => $event->name]) }} <code class="text-white">#{{ $event->hashtag }}</code></strong>
+                        <strong>{{ __('events.header', ['name' => $event->name]) }} <code
+                                    class="text-white">#{{ $event->hashtag }}</code></strong>
                     </h1>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{
@@ -30,7 +30,8 @@
                             <i class="fa fa-user"></i>&nbsp;{{ $event->host }}
                         </span>
                         <span class="font-weight-bold pl-sm-2">
-                            <i class="fa fa-link text-white"></i>&nbsp;<a href="{{ $event->url }}" class="text-white">{{ parse_url($event->url)['host'] }}</a>
+                            <i class="fa fa-link text-white"></i>&nbsp;<a href="{{ $event->url }}"
+                                                                          class="text-white">{{ parse_url($event->url)['host'] }}</a>
                         </span>
                     </h2>
                     <h2 class="h2-responsive">

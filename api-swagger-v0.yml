@@ -244,6 +244,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
         404:
           $ref: '#/components/responses/NotFoundError'
         406:
@@ -584,6 +586,14 @@ paths:
                   type: boolean
                 toot:
                   type: boolean
+                departure:
+                  description: Time of departure at the start station
+                  nullable: true
+                  example: "2021-01-01T12:00:00+01:00"
+                arrival:
+                  description: Time of arrival at the destination station
+                  nullable: true
+                  example: "2021-01-01T12:00:00+01:00"
       responses:
         200:
           description: OK
@@ -1339,7 +1349,9 @@ components:
         mastodonUrl:
           $ref: '#/components/schemas/mastodonUrl'
         statuses:
-          $ref: '#/components/schemas/status_paginate'
+          allOf:
+            - $ref: '#/components/schemas/status_paginate'
+            - nullable: true
         user:
           $ref: '#/components/schemas/User'
     Status:
@@ -1400,6 +1412,9 @@ components:
           type: string
           format: integer
           example: "66"
+        private_profile:
+          type: boolean
+          example: false
         averageSpeed:
           type: number
           format: float

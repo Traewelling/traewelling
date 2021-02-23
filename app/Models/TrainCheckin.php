@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -34,19 +36,23 @@ class TrainCheckin extends Model
     }
 
     public function getOriginStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)->first();
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+                                             ->where('departure_planned', $this->departure)
+                                             ->first();
     }
 
     public function getDestinationStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)->first();
+        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+                                             ->where('arrival_planned', $this->arrival)
+                                             ->first();
     }
 
     public function getMapLines() {
-        $hafas = $this->HafasTrip()->first()->getPolyLine()->first();
+        $hafas = $this->HafasTrip->getPolyLine;
         if ($hafas === null) {
-            $origin = $this->Origin()->first();
+            $origin = $this->Origin;
 
-            $destination = $this->Destination()->first();
+            $destination = $this->Destination;
             $route       = [];
             $route[0]    = [$origin->longitude, $origin->latitude];
             $route[1]    = [$destination->longitude, $destination->latitude];
@@ -89,7 +95,14 @@ class TrainCheckin extends Model
      * @return int
      */
     public function getDurationAttribute(): int {
-        return $this->arrival->diffInMinutes($this->departure);
+        try {
+            return $this->origin_stopover->departure_planned->diffInMinutes(
+                $this->destination_stopover->arrival_planned
+            );
+        } catch (Exception) {
+            //We need the try-catch to support old checkins, where no stopovers are saved.
+            return $this->arrival->diffInMinutes($this->departure);
+        }
     }
 
     public function getSpeedAttribute(): float {

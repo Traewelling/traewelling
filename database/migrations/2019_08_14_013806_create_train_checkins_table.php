@@ -11,7 +11,7 @@ class CreateTrainCheckinsTable extends Migration
      *
      * @return void
      */
-    public function up() {
+    public function up(): void {
         Schema::create('train_checkins', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('status_id')
@@ -20,8 +20,11 @@ class CreateTrainCheckinsTable extends Migration
             $table->string('origin');
             $table->string('destination');
             $table->integer('distance');
-            $table->timestampTz('departure');
-            $table->timestampTz('arrival')->nullable();
+            $table->timestampTz('departure')
+                  ->comment('planned departure');
+            $table->timestampTz('arrival')
+                  ->nullable()
+                  ->comment('planned arrival');
             $table->integer('points')->nullable();
             $table->integer('delay')->nullable();
             $table->timestamps();
@@ -33,7 +36,7 @@ class CreateTrainCheckinsTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('train_checkins');
     }
 }

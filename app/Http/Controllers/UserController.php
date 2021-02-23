@@ -17,9 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Jenssegers\Agent\Agent;
@@ -29,6 +27,7 @@ use Mastodon;
 
 class UserController extends Controller
 {
+
     public static function getProfilePicture($username): ?array {
         $user = User::where('username', $username)->first();
         if (empty($user)) {
@@ -69,52 +68,6 @@ class UserController extends Controller
         return redirect()->route('settings');
     }
 
-    public function updateSettings(Request $request): Renderable {
-        $user = Auth::user();
-        $this->validate($request, [
-            'name'   => ['required', 'string', 'max:50'],
-            'avatar' => 'image'
-        ]);
-        if ($user->username != $request->username) {
-            $this->validate($request, ['username' => ['required',
-                                                      'string',
-                                                      'max:25',
-                                                      'regex:/^[a-zA-Z0-9_]*$/',
-                                                      'unique:users']]);
-        }
-        if ($user->email != $request->email) {
-            $this->validate($request, ['email' => ['required',
-                                                   'string',
-                                                   'email',
-                                                   'max:255',
-                                                   'unique:users']]);
-            $user->email_verified_at = null;
-        }
-
-        $user->email      = $request->email;
-        $user->username   = $request->username;
-        $user->name       = $request->name;
-        $user->always_dbl = $request->always_dbl == "on";
-        $user->save();
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-        }
-
-        return $this->getAccount();
-    }
-
-    public function updatePassword(Request $request): RedirectResponse {
-        $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
-            $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
-            $user->password = Hash::make($request->password);
-            $user->save();
-            return redirect()->back()->with('info', __('controller.user.password-changed-ok'));
-        }
-        return redirect()->back()->withErrors(__('controller.user.password-wrong'));
-    }
-
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
         $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
@@ -135,47 +88,8 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    //Return Settings-page
-    public function getAccount(): Renderable {
-        $user     = Auth::user();
-        $sessions = [];
-        $tokens   = [];
-        foreach ($user->sessions as $session) {
-            $sessionArray = [];
-            $result       = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $sessionArray['platform'] = $result->platform();
 
-            if ($result->isphone()) {
-                $sessionArray['device'] = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $sessionArray['device'] = 'tablet';
-            } else {
-                $sessionArray['device'] = 'desktop';
-            }
-            $sessionArray['id']   = $session->id;
-            $sessionArray['ip']   = $session->ip_address;
-            $sessionArray['last'] = $session->last_activity;
-            array_push($sessions, $sessionArray);
-        }
 
-        foreach ($user->tokens as $token) {
-            if ($token->revoked != 1) {
-                $tokenInfo               = [];
-                $tokenInfo['id']         = $token->id;
-                $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (string) $token->created_at;
-                $tokenInfo['updated_at'] = (string) $token->updated_at;
-                $tokenInfo['expires_at'] = (string) $token->expires_at;
-
-                array_push($tokens, $tokenInfo);
-            }
-        }
-
-        return view('settings', compact('user', 'sessions', 'tokens'));
-    }
-
-    //delete sessions from user
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
@@ -185,11 +99,17 @@ class UserController extends Controller
         return redirect()->route('static.welcome');
     }
 
-    //delete a specific session for user
-    public function deleteToken($tokenId): RedirectResponse {
-        $user  = Auth::user();
-        $token = Token::find($tokenId);
-        if ($token->user == $user) {
+    /**
+     * delete a specific session for user
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteToken(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
+                                        ]);
+        $token     = Token::find($validated['tokenId']);
+        if ($token->user->id == Auth::user()->id) {
             $token->revoke();
         }
         return redirect()->route('settings');
@@ -236,12 +156,19 @@ class UserController extends Controller
         if ($user === null) {
             return null;
         }
-        $statuses = $user->statuses()->with('user',
-                                            'trainCheckin',
-                                            'trainCheckin.Origin',
-                                            'trainCheckin.Destination',
-                                            'trainCheckin.HafasTrip',
-                                            'event')->orderBy('created_at', 'DESC')->paginate(15);
+        $statuses = null;
+
+        //PrivateProfile change to "also following"
+        if (!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
+
+
+            $statuses = $user->statuses()->with('user',
+                                                'trainCheckin',
+                                                'trainCheckin.Origin',
+                                                'trainCheckin.Destination',
+                                                'trainCheckin.HafasTrip',
+                                                'event')->orderBy('created_at', 'DESC')->paginate(15);
+        }
 
 
         $twitterUrl  = "";
@@ -346,41 +273,41 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $trainCheckIns = TrainCheckin::with('status')
-                                     ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                     ->get()
-                                     ->groupBy('status.user_id')
-                                     ->map(function($trainCheckIns) {
-                                         return [
-                                             'user'     => $trainCheckIns->first()->status->user,
-                                             'points'   => $trainCheckIns->sum('points'),
-                                             'distance' => $trainCheckIns->sum('distance'),
-                                             'duration' => $trainCheckIns->sum('duration'),
-                                             'speed'    => $trainCheckIns->avg('speed')
-                                         ];
-                                     });
+        $checkIns = TrainCheckin::with('status.user')
+                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                                ->get();
+
+        $trainCheckIns = (clone $checkIns)
+            ->groupBy('status.user_id')
+            ->map(function($trainCheckIns) {
+                return [
+                    'user'     => $trainCheckIns->first()->status->user,
+                    'points'   => $trainCheckIns->sum('points'),
+                    'distance' => $trainCheckIns->sum('distance'),
+                    'duration' => $trainCheckIns->sum('duration'),
+                    'speed'    => $trainCheckIns->avg('speed')
+                ];
+            });
 
         $friendsTrainCheckIns = null;
         if (Auth::check()) {
-            $friendsTrainCheckIns = TrainCheckin::with('status')
-                                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                                ->get()
-                                                ->filter(function($trainCheckIn) {
-                                                    return Auth::user()->follows
-                                                            ->pluck('id')
-                                                            ->contains($trainCheckIn->status->user_id)
-                                                        || $trainCheckIn->status->user_id == Auth::user()->id;
-                                                })
-                                                ->groupBy('status.user_id')
-                                                ->map(function($trainCheckIns) {
-                                                    return [
-                                                        'user'     => $trainCheckIns->first()->status->user,
-                                                        'points'   => $trainCheckIns->sum('points'),
-                                                        'distance' => $trainCheckIns->sum('distance'),
-                                                        'duration' => $trainCheckIns->sum('duration'),
-                                                        'speed'    => $trainCheckIns->avg('speed')
-                                                    ];
-                                                });
+            $friendsTrainCheckIns = (clone $checkIns)
+                ->filter(function($trainCheckIn) {
+                    return Auth::user()->follows
+                            ->pluck('id')
+                            ->contains($trainCheckIn->status->user_id)
+                        || $trainCheckIn->status->user_id == Auth::user()->id;
+                })
+                ->groupBy('status.user_id')
+                ->map(function($trainCheckIns) {
+                    return [
+                        'user'     => $trainCheckIns->first()->status->user,
+                        'points'   => $trainCheckIns->sum('points'),
+                        'distance' => $trainCheckIns->sum('distance'),
+                        'duration' => $trainCheckIns->sum('duration'),
+                        'speed'    => $trainCheckIns->avg('speed')
+                    ];
+                });
         }
 
         return [
@@ -396,17 +323,22 @@ class UserController extends Controller
                    ->count();
     }
 
-    public static function updateDisplayName($displayname): void {
-        $request   = new Request(['displayname' => $displayname]);
+    public static function updateDisplayName(string $displayName): bool {
+        $request   = new Request(['displayName' => $displayName]);
         $validator = Validator::make($request->all(), [
-            'displayname' => 'required|max:120'
+            'displayName' => ['required', 'max:120']
         ]);
         if ($validator->fails()) {
             abort(400);
         }
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $displayname;
-        $user->save();
+        try {
+            Auth::user()->update([
+                                     'name' => $displayName
+                                 ]);
+            return true;
+        } catch (Exception) {
+            return false;
+        }
     }
 
     public static function searchUser(?string $searchQuery) {
@@ -423,28 +355,29 @@ class UserController extends Controller
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        return Status::join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                             ->where(
-                                 'train_checkins.departure',
-                                 '>=',
-                                 $date->clone()->firstOfMonth()->toDateString()
-                             )
-                             ->where(
-                                 'train_checkins.departure',
-                                 '<=',
-                                 $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                             )
-                             ->get()
-                             ->groupBy('user_id')
-                             ->map(function($statuses) {
-                                 return [
-                                     'user'        => $statuses->first()->user,
-                                     'points'      => $statuses->sum('trainCheckin.points'),
-                                     'distance'    => $statuses->sum('distance'),
-                                     'duration'    => $statuses->sum('trainCheckin.duration'),
-                                     'statusCount' => $statuses->count()
-                                 ];
-                             })
-                             ->sortByDesc('points');
+        return Status::with(['trainCheckin', 'user'])
+                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->where(
+                         'train_checkins.departure',
+                         '>=',
+                         $date->clone()->firstOfMonth()->toDateString()
+                     )
+                     ->where(
+                         'train_checkins.departure',
+                         '<=',
+                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                     )
+                     ->get()
+                     ->groupBy('user_id')
+                     ->map(function($statuses) {
+                         return [
+                             'user'        => $statuses->first()->user,
+                             'points'      => $statuses->sum('trainCheckin.points'),
+                             'distance'    => $statuses->sum('distance'),
+                             'duration'    => $statuses->sum('trainCheckin.duration'),
+                             'statusCount' => $statuses->count()
+                         ];
+                     })
+                     ->sortByDesc('points');
     }
 }

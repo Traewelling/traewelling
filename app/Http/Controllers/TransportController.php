@@ -56,6 +56,13 @@ class TransportController extends Controller
         return $array;
     }
 
+    /**
+     * @param $stationName
+     * @param Carbon|null $when
+     * @param null $travelType
+     * @return bool|array|null
+     * @throws HafasException
+     */
     public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
             return false;
@@ -63,7 +70,14 @@ class TransportController extends Controller
         if ($when === null) {
             $when = Carbon::now()->subMinutes(5);
         }
-        $station = HafasController::getStations($stationName)->first();
+        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
+            //first check if the query is a valid DS100 identifier
+            $station = HafasController::getTrainStationByRilIdentifier($stationName);
+        }
+        if (!isset($station) || $station == null) {
+            //if we cannot find any station by DS100 identifier continue to search normal
+            $station = HafasController::getStations($stationName)->first();
+        }
         if ($station == null) {
             return null;
         }
@@ -173,13 +187,15 @@ class TransportController extends Controller
      * @param string $tripId TripID in Hafas format
      * @param string $lineName Line Name in Hafas format
      * @param $start
+     * @param Carbon|null $departure
      * @return array|null
+     * @throws HafasException
      */
-    public static function TrainTrip(string $tripId, string $lineName, $start): ?array {
+    public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
 
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $stopovers = json_decode($hafasTrip->stopovers, true);
-        $offset    = self::searchForId($start, $stopovers);
+        $offset    = self::searchForId($start, $stopovers, $departure);
         if ($offset === null) {
             return null;
         }
@@ -259,11 +275,14 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
-                                        $eventId = 0): array {
+                                        $eventId = 0,
+                                        Carbon $departure = null,
+                                        Carbon $arrival = null): array {
+
         $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers             = json_decode($hafasTrip->stopovers, true);
-        $offset1               = self::searchForId($start, $stopovers);
-        $offset2               = self::searchForId($destination, $stopovers);
+            $offset1           = self::searchForId($start, $stopovers, $departure);
+            $offset2           = self::searchForId($destination, $stopovers, null, $arrival);
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
@@ -312,7 +331,6 @@ class TransportController extends Controller
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
-
         if ($stopovers[$offset2]['arrival']) {
             $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
             $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
@@ -332,6 +350,13 @@ class TransportController extends Controller
                                      'business' => isset($businessCheck) && $businessCheck == 'on'
                                  ]);
 
+        $plannedDeparture = Carbon::parse(
+            $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
+        );
+        $plannedArrival   = Carbon::parse(
+            $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
+        );
+
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
                                                  'trip_id'     => $tripId,
@@ -340,8 +365,8 @@ class TransportController extends Controller
                                                  'distance'    => $distance,
                                                  'delay'       => $hafasTrip->delay,
                                                  'points'      => $points,
-                                                 'departure'   => $departure,
-                                                 'arrival'     => $arrival
+                                                 'departure'   => $plannedDeparture,
+                                                 'arrival'     => $plannedArrival
                                              ]);
 
         $user->load(['statuses']);
@@ -362,7 +387,6 @@ class TransportController extends Controller
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += $trainCheckin->duration;
-        $user->points         += $trainCheckin->points;
 
         $user->update();
 
@@ -593,7 +617,7 @@ class TransportController extends Controller
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
 
-        $user->loadMissing(['statuses', 'statuses.trainCheckin']);
+        $user->load(['statuses.trainCheckin']);
 
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(2);
@@ -602,9 +626,20 @@ class TransportController extends Controller
         return $user->statuses->map(function($status) {
             return $status->trainCheckin;
         })->filter(function($trainCheckIn) use ($start, $end) {
-            return ($trainCheckIn->arrival->isAfter($start) && $trainCheckIn->departure->isBefore($end))
-                || ($trainCheckIn->arrival->isAfter($end) && $trainCheckIn->departure->isBefore($start))
-                || ($trainCheckIn->departure->isAfter($start) && $trainCheckIn->arrival->isBefore($start));
+            //use realtime-data or use planned if not available
+            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
+            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
+
+            return (
+                    $arrival->isAfter($start) &&
+                    $departure->isBefore($end)
+                ) || (
+                    $arrival->isAfter($end) &&
+                    $departure->isBefore($start)
+                ) || (
+                    $departure->isAfter($start) &&
+                    $arrival->isBefore($start)
+                );
         });
     }
 }

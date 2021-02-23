@@ -37,7 +37,7 @@
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
                         <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration(strtotime($status->trainCheckin->arrival) - strtotime($status->trainCheckin->departure))) !!}</span>
+                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
 
                         @if($status->event != null)
                             <br class="d-sm-none">
@@ -78,10 +78,10 @@
         <div
             class="progress-bar progress-time"
             role="progressbar"
-            style="width: 0%"
+            style="width: 0"
             data-valuenow="{{ time() }}"
-            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->format('H:i') }}"
-            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->format('H:i') }}"
+            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
+            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
             ></div>
     </div>
     <div class="card-footer text-muted interaction">

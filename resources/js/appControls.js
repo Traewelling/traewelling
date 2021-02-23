@@ -144,7 +144,3 @@ $(document).on("click", ".disconnect", function (event) {
         }
     });
 });
-
-$(document).on("click", "#timepicker-button", function (event) {
-    event.preventDefault();
-});

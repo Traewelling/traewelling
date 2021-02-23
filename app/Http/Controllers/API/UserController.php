@@ -16,7 +16,8 @@ class UserController extends ResponseController
     }
 
     public function active($username) {
-        $user           = User::where('username', $username)->firstOrFail();
+        //Somehow this breaks without a LIKE.
+        $user           = User::where('username', 'LIKE', $username)->firstOrFail();
         $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
         return $this->sendResponse($statusResponse);
     }
@@ -35,7 +36,7 @@ class UserController extends ResponseController
     public function PutDisplayname(Request $request) {
         $displayname         = $request->getContent();
         $displaynameResponse = UserBackend::updateDisplayName($displayname);
-        return $this->sendResponse($displaynameResponse);
+        return $this->sendResponse(['success' => $displaynameResponse]);
     }
 
     public function getLeaderboard(): JsonResponse {

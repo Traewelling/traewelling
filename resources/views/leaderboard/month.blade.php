@@ -42,7 +42,7 @@
                             <div class="image-box pr-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                         style="width: 50%;">
+                                         alt="{{$place['user']->username}}" style="width: 50%;">
                                 </a>
                             </div>
                             <a href="{{ route('account.show', ['username' => $place['user']->username]) }}"
@@ -80,13 +80,13 @@
                         <div class="card-body">
                             <table class="table table-responsive table-vertical-center">
                                 <thead>
-                                <tr>
-                                    <td>{{ __('leaderboard.rank') }}</td>
-                                    <td colspan="2">{{ __('leaderboard.user') }}</td>
-                                    <td>{{ __('leaderboard.duration') }}</td>
-                                    <td>{{ __('leaderboard.distance') }}</td>
-                                    <td>{{ __('leaderboard.points') }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ __('leaderboard.rank') }}</td>
+                                        <td colspan="2">{{ __('leaderboard.user') }}</td>
+                                        <td>{{ __('leaderboard.duration') }}</td>
+                                        <td>{{ __('leaderboard.distance') }}</td>
+                                        <td>{{ __('leaderboard.points') }}</td>
+                                    </tr>
                                 </thead>
                                 @foreach($leaderboard->take(100) as $place)
                                     @if($loop->index < 3) @continue @endif
@@ -95,7 +95,8 @@
                                         <td>
                                             <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
-                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}" />
+                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
+                                                         alt="{{$place['user']->username}}" style="height: 75px;">
                                                 </a>
                                             </div>
                                         </td>

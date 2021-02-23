@@ -21,21 +21,11 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule) {
-
-        //delete new users without GDPR Agreement
-        $schedule->call(function() {
-            $privacyUsers = User::where('privacy_ack_at', null)
-                                ->where('created_at', '>', DB::raw('(NOW() - INTERVAL 1 DAY)'))
-                                ->get();
-            foreach ($privacyUsers as $user) {
-                $user->delete();
-            }
-        })->daily()->runInBackground();
-
+    protected function schedule(Schedule $schedule): void {
+        $schedule->command('trwl:cleanUpUsers')->daily();
         $schedule->command('trwl:refreshTrips')->everyMinute();
     }
 
@@ -44,9 +34,8 @@ class Kernel extends ConsoleKernel
      *
      * @return void
      */
-    protected function commands()
-    {
-        $this->load(__DIR__.'/Commands');
+    protected function commands(): void {
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
