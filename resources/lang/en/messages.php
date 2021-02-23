@@ -6,5 +6,8 @@ return [
     "exception"            => [
         "general"      => "An unknown error occurred. Please try again.",
         'generalHafas' => "There was a problem with the interface to the timetable data. Please try again."
+    ],
+    'account'              => [
+        'please-confirm' => 'Please type <i><b>:delete</b></i> to confirm.'
     ]
 ];
