@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class HafasTrip extends Model
@@ -14,7 +14,7 @@ class HafasTrip extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id', 'category', 'number', 'linename', 'origin', 'destination',
+        'trip_id', 'category', 'number', 'linename', 'operator_id', 'origin', 'destination',
         'stopovers', 'polyline', 'departure', 'arrival', 'delay'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -30,6 +30,10 @@ class HafasTrip extends Model
 
     public function destinationStation(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
+    }
+
+    public function operator(): BelongsTo {
+        return $this->belongsTo(HafasOperator::class, 'operator_id', 'id');
     }
 
     public function stopoversNEW(): HasMany {
