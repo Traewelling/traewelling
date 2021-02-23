@@ -21,12 +21,12 @@
                         {{__('settings.upload-image')}}
                     </a>
 
-                    @if(auth()->user()->avatar != 'user.jpg')
+                    @isset(auth()->user()->avatar)
                         <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm"
                            data-toggle="modal"
                            data-target="#deleteProfilePictureModal"
                         >{{ __('settings.delete-profile-picture-btn') }}</a>
-                    @endif
+                    @endisset
 
                     @error('avatar')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
