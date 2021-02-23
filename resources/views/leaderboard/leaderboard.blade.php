@@ -92,6 +92,7 @@
                                 <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
                                      aria-labelledby="contact-tab">
                                     <table class="table table-striped table-hover">
+
                                         <thead>
                                         <tr>
                                             <td>{{ __('leaderboard.rank') }}</td>

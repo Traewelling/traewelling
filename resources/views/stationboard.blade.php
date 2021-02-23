@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title')
-    RIS
-@endsection
+
+@section('title')RIS@endsection
+
 @section('content')
     @include('includes.station-autocomplete')
     <div class="container">
@@ -9,12 +9,12 @@
             <div class="row justify-content-center">
                 <div class="btn-group" role="group">
                     <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->subMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                       alt="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i
+                       title="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i
                                 class="fas fa-arrow-circle-left"></i></a>
-                    <a href="#" id="timepicker-reveal" alt="{{__('stationboard.dt-picker')}}"
+                    <a href="#" id="timepicker-reveal" title="{{__('stationboard.dt-picker')}}"
                        class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
                     <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->addMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                       alt="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i
+                       title="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i
                                 class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
@@ -57,12 +57,12 @@
                         @else
                             <table class="table table-dark table-borderless table-hover m-0">
                                 <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{{__('stationboard.line')}}</th>
-                                    <th>{{__('stationboard.destination')}}</th>
-                                    <th>{{__('stationboard.dep-time')}}</th>
-                                </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>{{__('stationboard.line')}}</th>
+                                        <th>{{__('stationboard.destination')}}</th>
+                                        <th>{{__('stationboard.dep-time')}}</th>
+                                    </tr>
                                 </thead>
                                 @foreach($departures as $departure)
                                     <tr @if(!isset($departure->cancelled)) class="trainrow"
@@ -72,6 +72,7 @@
                                         data-departure="{{ $departure->plannedWhen }}">
                                         <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
                                                 <img class="product-icon"
+                                                     alt="Icon of {{$departure->line->product}}"
                                                      src="{{ asset('img/'.$departure->line->product.'.svg') }}">
                                             @else
                                                 <i class="fa fa-train"></i>
@@ -89,12 +90,10 @@
                                             @if(isset($departure->cancelled))
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span>
                                             @else
+                                                {{\Carbon\Carbon::parse($departure->plannedWhen)->format('H:i')}}
                                                 @if(isset($departure->delay))
-                                                    {{ date('H:i', strtotime($departure->when) - $departure->delay) }}
                                                     <small>(<span
                                                                 class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
-                                                @else
-                                                    {{ date('H:i', strtotime($departure->when)) }}
                                                 @endif
                                             @endif
                                         </td>
