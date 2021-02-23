@@ -88,11 +88,11 @@
     </div>
 
     <div class="modal fade" id="checkinModal" tabindex="-1" role="dialog"
-         aria-hidden="true" aria-labelledby="checkinModal-title">
+         aria-hidden="true" aria-labelledby="checkinModalTitle">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="checkinModal-title">{{__('stationboard.new-checkin')}}</h5>
+                    <h5 class="modal-title" id="checkinModalTitle">{{__('stationboard.new-checkin')}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
