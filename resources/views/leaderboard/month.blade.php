@@ -36,10 +36,10 @@
 
             @foreach($leaderboard->take(3) as $place)
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card mb-2">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
-                            <div class="image-box pr-0 d-none d-lg-flex">
+                            <div class="image-box pr-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                          alt="{{$place['user']->username}}" style="width: 50%;">
@@ -78,7 +78,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-vertical-center">
+                            <table class="table table-responsive table-vertical-center">
                                 <thead>
                                     <tr>
                                         <td>{{ __('leaderboard.rank') }}</td>
@@ -93,7 +93,7 @@
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
-                                            <div class="image-box pr-0 d-none d-lg-flex">
+                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                                          alt="{{$place['user']->username}}" style="height: 75px;">
