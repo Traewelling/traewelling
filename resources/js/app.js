@@ -15,7 +15,6 @@ window.addEventListener("load", () => {
     require("./components/alert");
     require("./components/notifications-board");
     require("./components/progressbar");
-    require("./components/pwa_fix");
     require("./components/settings");
     require("./components/station-autocomplete");
     require("./components/stationboard");
