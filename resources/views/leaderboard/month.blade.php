@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    {{ __('menu.leaderboard') }}
-@endsection
+@section('title'){{ __('menu.leaderboard') }}@endsection
 
 @section('content')
     <div class="container">

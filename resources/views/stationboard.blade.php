@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title')RIS@endsection
+@section('title')RIS @endsection
 
 @section('content')
     @include('includes.station-autocomplete')
