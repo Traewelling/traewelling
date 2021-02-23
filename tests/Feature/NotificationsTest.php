@@ -4,12 +4,12 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\TransportController;
 use App\Models\Like;
+use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
-use App\Models\User;
 use Exception;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\DatabaseNotification;
 use Tests\TestCase;
 
 class NotificationsTest extends TestCase
@@ -236,7 +236,7 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function deleting_a_user_should_delete_its_notifications() {
+    public function deleting_a_user_should_delete_its_notifications(): void {
         // Given: Users Alice and Bob
         $alice = $this->user;
         $bob   = User::factory()->create();
@@ -258,8 +258,10 @@ class NotificationsTest extends TestCase
                                            ]);
 
         // When: Bob deletes its account
-        $delete = $this->actingAs($bob)
-                       ->get(route('account.destroy'));
+        $delete = $delete = $this->actingAs($bob)
+                                 ->post(route('account.destroy'), [
+                                     'confirmation' => 'delete ' . $bob->username
+                                 ]);
         $delete->assertStatus(302);
         $delete->assertRedirect('/');
 
