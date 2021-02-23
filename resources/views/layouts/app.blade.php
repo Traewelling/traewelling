@@ -21,16 +21,6 @@
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
-
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="#c72730">
-        <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/icons/touch-icon-ipad.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/icons/touch-icon-iphone-retina.png') }}">
-        <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('images/icons/touch-icon-ipad-retina.png') }}">
-
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="theme-color" content="#c72730">
-        <meta name="name" content="{{ config('app.name') }}">
         <link rel="author" href="/humans.txt">
         <meta name="copyright" content="Träwelling Team">
         <meta name="description" content="{{__('about.block1')}}">
@@ -41,6 +31,7 @@
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
 
+        @include('layouts.includes.meta-pwa')
         @yield('metadata')
     </head>
     <body>

@@ -6,9 +6,6 @@
 
         <title>{{ config('app.name', 'Träwelling') }}</title>
 
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="theme-color" content="#c72730">
-        <meta name="name" content="{{ config('app.name') }}">
         <link rel="author" href="/humans.txt">
         <meta name="copyright" content="Träwelling Team">
         <meta name="description" content="{{__('about.block1')}}">
@@ -18,6 +15,7 @@
         <meta name="DC.Rights" content="Träwelling Team">
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
+        @include('layouts.includes.meta-pwa')
 
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
