@@ -73,7 +73,7 @@ class HelperMethodTest extends TestCase
 
             $response = $this->actingAs($user)
                             ->get($links[0]->getAttribute('href'));
-            $response->assertSee('<input type="text" id="station-autocomplete" name="station" class="form-control" placeholder="Haltestelle"  value="' . $alternatedTo . '"', false);
+            $response->assertSee('placeholder="Haltestelle / DS100"  value="' . $alternatedTo . '"', false);
         }
     }
 
