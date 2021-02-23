@@ -10,8 +10,12 @@
                          data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
                          data-tripid="{{ $hafasTrip->trip_id }}">
                         <div class="float-right">
-                            <a href="#" class="train-destinationrow" data-ibnr="{{$terminalStop['stop']['id']}}"
-                               data-stopname="{{$terminalStop['stop']['name']}}"><i class="fa fa-fast-forward"></i></a>
+                            <a href="#" class="train-destinationrow"
+                               data-ibnr="{{$terminalStop['stop']['id']}}"
+                               data-stopname="{{$terminalStop['stop']['name']}}"
+                               data-arrival="{{$terminalStop['plannedArrival']}}">
+                                <i class="fa fa-fast-forward"></i>
+                            </a>
                         </div>
                         @if (file_exists(public_path('img/'.$hafasTrip->category.'.svg')))
                             <img class="product-icon" src="{{ asset('img/'.$hafasTrip->category.'.svg') }}"/>
