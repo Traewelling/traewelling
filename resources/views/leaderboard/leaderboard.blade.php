@@ -34,8 +34,9 @@
                             @endif
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active table-responsive" id="top20" role="tabpanel">
-                                <table class="table">
+                            <div class="tab-pane fade show active table-responsive" id="top20" role="tabpanel"
+                                 aria-labelledby="home-tab">
+                                <table class="table table-striped table-hover">
                                     <thead>
                                     <tr>
                                         <td>{{ __('leaderboard.rank') }}</td>
@@ -60,8 +61,9 @@
                                     @endforeach
                                 </table>
                             </div>
-                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel">
-                                <table class="table">
+                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel"
+                                 aria-labelledby="profile-tab">
+                                <table class="table table-striped table-hover">
                                     <thead>
                                     <tr>
                                         <td>{{ __('leaderboard.rank') }}</td>
@@ -87,8 +89,10 @@
                                 </table>
                             </div>
                             @isset($friends)
-                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel">
-                                    <table class="table">
+                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
+                                     aria-labelledby="contact-tab">
+                                    <table class="table table-striped table-hover">
+
                                         <thead>
                                         <tr>
                                             <td>{{ __('leaderboard.rank') }}</td>
