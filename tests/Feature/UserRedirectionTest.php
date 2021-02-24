@@ -33,13 +33,15 @@ class UserRedirectionTest extends TestCase
      * Check if users can delete their fresh account.
      * @test
      */
-    public function user_can_delete_account() {
+    public function user_can_delete_account(): void {
         // Given: A new user
         $user = User::factory()->create();
 
         // When: They delete their account
         $response = $this->actingAs($user)
-                         ->get(route('account.destroy'));
+                         ->post(route('account.destroy'), [
+                             'confirmation' => $user->username
+                         ]);
         $response->assertStatus(302);
         $response->assertRedirect('/');
 

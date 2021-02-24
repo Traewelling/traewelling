@@ -11,18 +11,14 @@ use App\Models\User;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
-use Jenssegers\Agent\Agent;
 use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\Token;
 use Mastodon;
@@ -30,91 +26,59 @@ use Mastodon;
 class UserController extends Controller
 {
 
-    public static function getProfilePicture($username): ?array {
-        $user = User::where('username', $username)->first();
-        if (empty($user)) {
-            return null;
+    public static function getProfilePicture(User $user): array {
+        $publicPath = public_path('/uploads/avatars/' . $user->avatar);
+
+        if ($user->avatar == null || !file_exists($publicPath)) {
+            return [
+                'picture'   => self::generateDefaultAvatar($user),
+                'extension' => 'png'
+            ];
         }
+
         try {
-            $ext     = pathinfo(public_path('/uploads/avatars/' . $user->avatar), PATHINFO_EXTENSION);
-            $picture = File::get(public_path('/uploads/avatars/' . $user->avatar));
+            $ext     = pathinfo($publicPath, PATHINFO_EXTENSION);
+            $picture = File::get($publicPath);
+            return [
+                'picture'   => $picture,
+                'extension' => $ext
+            ];
         } catch (Exception $e) {
-            $user->avatar = 'user.jpg';
+            report($e);
+            return [
+                'picture'   => self::generateDefaultAvatar($user),
+                'extension' => 'png'
+            ];
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return string Encoded PNG Image
+     */
+    private static function generateDefaultAvatar(User $user): string {
+        $hash           = 0;
+        $usernameLength = strlen($user->username);
+        for ($i = 0; $i < $usernameLength; $i++) {
+            $hash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
         }
 
-        if ($user->avatar === 'user.jpg') {
-            $hash = 0;
-            for ($i = 0; $i < strlen($username); $i++) {
-                $hash = ord(substr($username, $i, 1)) + (($hash << 5) - $hash);
-            }
+        $hex = dechex($hash & 0x00FFFFFF);
 
-            $hex = dechex($hash & 0x00FFFFFF);
-
-            $picture = Image::canvas(512, 512, $hex)
-                            ->insert(public_path('/img/user.png'))
-                            ->encode('png')->getEncoded();
-            $ext     = 'png';
-        }
-
-        return ['picture' => $picture, 'extension' => $ext];
+        return Image::canvas(512, 512, $hex)
+                    ->insert(public_path('/img/user.png'))
+                    ->encode('png')->getEncoded();
     }
 
     public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
-        if ($user->avatar != 'user.jpg') {
+
+        if ($user->avatar != null) {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            $user->avatar = 'user.jpg';
-            $user->save();
+            $user->update(['avatar' => null]);
         }
 
-        return redirect()->route('settings');
-    }
-
-    public function updateSettings(Request $request): Renderable {
-        $user = Auth::user();
-        $this->validate($request, [
-            'name'   => ['required', 'string', 'max:50'],
-            'avatar' => 'image'
-        ]);
-        if ($user->username != $request->username) {
-            $this->validate($request, ['username' => ['required',
-                                                      'string',
-                                                      'max:25',
-                                                      'regex:/^[a-zA-Z0-9_]*$/',
-                                                      'unique:users']]);
-        }
-        if ($user->email != $request->email) {
-            $this->validate($request, ['email' => ['required',
-                                                   'string',
-                                                   'email',
-                                                   'max:255',
-                                                   'unique:users']]);
-            $user->email_verified_at = null;
-        }
-
-        $user->email           = $request->email;
-        $user->username        = $request->username;
-        $user->name            = $request->name;
-        $user->always_dbl      = $request->always_dbl == "on";
-        $user->private_profile = $request->private_profile == "on";
-        $user->save();
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-        }
-
-        return $this->getAccount();
-    }
-
-    public function updatePassword(Request $request): RedirectResponse {
-        $user = Auth::user();
-        if (Hash::check($request->currentpassword, $user->password) || empty($user->password)) {
-            $this->validate($request, ['password' => ['required', 'string', 'min:8', 'confirmed']]);
-            $user->password = Hash::make($request->password);
-            $user->save();
-            return redirect()->back()->with('info', __('controller.user.password-changed-ok'));
-        }
-        return redirect()->back()->withErrors(__('controller.user.password-wrong'));
+        return back();
     }
 
     #[ArrayShape(['status' => "string"])]
@@ -126,7 +90,7 @@ class UserController extends Controller
         Image::make($avatar)->resize(300, 300)
              ->save(public_path('/uploads/avatars/' . $filename));
 
-        if (Auth::user()->avatar != 'user.jpg') {
+        if (Auth::user()->avatar != null) {
             File::delete(public_path('/uploads/avatars/' . Auth::user()->avatar));
         }
 
@@ -137,47 +101,7 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    //Return Settings-page
-    public function getAccount(): Renderable {
-        $user     = Auth::user();
-        $sessions = [];
-        $tokens   = [];
-        foreach ($user->sessions as $session) {
-            $sessionArray = [];
-            $result       = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $sessionArray['platform'] = $result->platform();
 
-            if ($result->isphone()) {
-                $sessionArray['device'] = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $sessionArray['device'] = 'tablet';
-            } else {
-                $sessionArray['device'] = 'desktop';
-            }
-            $sessionArray['id']   = $session->id;
-            $sessionArray['ip']   = $session->ip_address;
-            $sessionArray['last'] = $session->last_activity;
-            array_push($sessions, $sessionArray);
-        }
-
-        foreach ($user->tokens as $token) {
-            if ($token->revoked != 1) {
-                $tokenInfo               = [];
-                $tokenInfo['id']         = $token->id;
-                $tokenInfo['clientName'] = $token->client->name;
-                $tokenInfo['created_at'] = (string) $token->created_at;
-                $tokenInfo['updated_at'] = (string) $token->updated_at;
-                $tokenInfo['expires_at'] = (string) $token->expires_at;
-
-                array_push($tokens, $tokenInfo);
-            }
-        }
-
-        return view('settings', compact('user', 'sessions', 'tokens'));
-    }
-
-    //delete sessions from user
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
@@ -201,30 +125,6 @@ class UserController extends Controller
             $token->revoke();
         }
         return redirect()->route('settings');
-    }
-
-    public function destroyUser(): RedirectResponse {
-        $user = Auth::user();
-
-        if ($user->avatar != 'user.jpg') {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-        }
-        foreach (Status::where('user_id', $user->id)->get() as $status) {
-            $status->trainCheckin->delete();
-            $status->likes()->delete();
-            $status->delete();
-        }
-
-        $user->socialProfile()->delete();
-        //This would delete the user not. When PR #110 is merged the DB will delete these automaticly
-        //$user->follows()->delete();
-        //$user->followers()->delete();
-        DatabaseNotification::where(['notifiable_id' => $user->id, 'notifiable_type' => get_class($user)])->delete();
-
-
-        $user->delete();
-
-        return redirect()->route('static.welcome');
     }
 
     //Save Changes on Settings-Page

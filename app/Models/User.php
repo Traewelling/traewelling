@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,7 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'private_profile'
+        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'always_dbl', 'private_profile'
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -25,10 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $casts    = [
         'email_verified_at' => 'datetime',
-        'private_profile' => 'boolean'
+        'private_profile'   => 'boolean'
     ];
     protected $appends  = [
-        'averageSpeed'
+        'averageSpeed', 'points'
     ];
 
     public function getAverageSpeedAttribute(): float {
@@ -65,6 +66,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function icsTokens(): HasMany {
         return $this->hasMany(IcsToken::class, 'user_id', 'id');
+    }
+
+    public function getPointsAttribute(): int {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                           ->select('points')
+                           ->sum('points');
     }
 
 }

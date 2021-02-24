@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\HafasException;
+use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
@@ -39,6 +40,27 @@ abstract class HafasController extends Controller
         }
     }
 
+    public static function getTrainStationByRilIdentifier(string $rilIdentifier): ?TrainStation {
+        $trainStation = TrainStation::where('rilIdentifier', $rilIdentifier)->first();
+        if ($trainStation != null) {
+            return $trainStation;
+        }
+        try {
+            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
+            $response = $client->get("/stations/$rilIdentifier");
+            $data     = json_decode($response->getBody()->getContents());
+            return TrainStation::updateOrCreate([
+                                                    'ibnr' => $data->id
+                                                ], [
+                                                    'rilIdentifier' => $data->ril100,
+                                                    'name'          => $data->name,
+                                                    'latitude'      => $data->location->latitude,
+                                                    'longitude'     => $data->location->longitude
+                                                ]);
+        } catch (GuzzleException) {
+            return null;
+        }
+    }
 
     public static function getStations(string $query, int $results = 10): Collection {
         try {
@@ -206,6 +228,15 @@ abstract class HafasController extends Controller
 
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
+        $operator    = null;
+
+        if (isset($tripJson->line->operator->id)) {
+            $operator = HafasOperator::updateOrCreate([
+                                                          'hafas_id' => $tripJson->line->operator->id,
+                                                      ], [
+                                                          'name' => $tripJson->line->operator->name,
+                                                      ]);
+        }
 
         if ($tripJson->line->name === null) {
             $tripJson->line->name = $tripJson->line->fahrtNr;
@@ -223,6 +254,7 @@ abstract class HafasController extends Controller
                                                    'category'    => $tripJson->line->product,
                                                    'number'      => $tripJson->line->id,
                                                    'linename'    => $tripJson->line->name,
+                                                   'operator_id' => $operator?->id,
                                                    'origin'      => $origin->ibnr,
                                                    'destination' => $destination->ibnr,
                                                    'stopovers'   => json_encode($tripJson->stopovers),

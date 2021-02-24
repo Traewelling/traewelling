@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    {{ __('menu.leaderboard') }}
-@endsection
+@section('title'){{ __('menu.leaderboard') }}@endsection
 
 @section('content')
     <div class="container">
@@ -36,13 +34,13 @@
 
             @foreach($leaderboard->take(3) as $place)
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card mb-2">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
-                            <div class="image-box pr-0 d-none d-lg-flex">
+                            <div class="image-box pr-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                         style="width: 50%;">
+                                         alt="{{$place['user']->username}}" style="width: 50%;">
                                 </a>
                             </div>
                             <a href="{{ route('account.show', ['username' => $place['user']->username]) }}"
@@ -78,25 +76,25 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-vertical-center">
+                            <table class="table table-responsive table-vertical-center">
                                 <thead>
-                                <tr>
-                                    <td>{{ __('leaderboard.rank') }}</td>
-                                    <td colspan="2">{{ __('leaderboard.user') }}</td>
-                                    <td>{{ __('leaderboard.duration') }}</td>
-                                    <td>{{ __('leaderboard.distance') }}</td>
-                                    <td>{{ __('leaderboard.points') }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ __('leaderboard.rank') }}</td>
+                                        <td colspan="2">{{ __('leaderboard.user') }}</td>
+                                        <td>{{ __('leaderboard.duration') }}</td>
+                                        <td>{{ __('leaderboard.distance') }}</td>
+                                        <td>{{ __('leaderboard.points') }}</td>
+                                    </tr>
                                 </thead>
                                 @foreach($leaderboard->take(100) as $place)
                                     @if($loop->index < 3) @continue @endif
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
-                                            <div class="image-box pr-0 d-none d-lg-flex">
+                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                                         style="height: 75px;">
+                                                         alt="{{$place['user']->username}}" style="height: 75px;">
                                                 </a>
                                             </div>
                                         </td>

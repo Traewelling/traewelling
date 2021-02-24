@@ -70,7 +70,14 @@ class TransportController extends Controller
         if ($when === null) {
             $when = Carbon::now()->subMinutes(5);
         }
-        $station = HafasController::getStations($stationName)->first();
+        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
+            //first check if the query is a valid DS100 identifier
+            $station = HafasController::getTrainStationByRilIdentifier($stationName);
+        }
+        if (!isset($station) || $station == null) {
+            //if we cannot find any station by DS100 identifier continue to search normal
+            $station = HafasController::getStations($stationName)->first();
+        }
         if ($station == null) {
             return null;
         }
@@ -343,12 +350,12 @@ class TransportController extends Controller
                                      'business' => isset($businessCheck) && $businessCheck == 'on'
                                  ]);
 
-            $plannedDeparture = Carbon::parse(
-                $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
-            );
-            $plannedArrival   = Carbon::parse(
-                $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
-            );
+        $plannedDeparture = Carbon::parse(
+            $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
+        );
+        $plannedArrival   = Carbon::parse(
+            $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
+        );
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
@@ -380,7 +387,6 @@ class TransportController extends Controller
 
         $user->train_distance += $trainCheckin->distance;
         $user->train_duration += $trainCheckin->duration;
-        $user->points         += $trainCheckin->points;
 
         $user->update();
 

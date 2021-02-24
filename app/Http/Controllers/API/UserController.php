@@ -63,8 +63,12 @@ class UserController extends ResponseController
      * @param $username
      * @return JsonResponse
      */
-    public function avatar($username) {
-        $profilePictureResponse = UserBackend::getProfilePicture($username);
+    public function avatar(string $username): JsonResponse {
+        $user = User::where('username', $username)->first();
+        if ($user == null) {
+            return $this->sendResponse(null);
+        }
+        $profilePictureResponse = UserBackend::getProfilePicture($user);
         return $this->sendResponse($profilePictureResponse);
     }
 

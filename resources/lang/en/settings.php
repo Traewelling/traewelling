@@ -44,7 +44,7 @@ return [
     "token"                       => "Token",
     "revoke-token"                => "Revoke access",
     "create-ics-token"            => "Create new token",
-    "create-ics-token-success"    => "The calendar token has been created. You can embed it with the following link to every software which support ICS files: :link",
+    "create-ics-token-success"    => 'The calendar token has been created. You can embed it with the following link to every software which support ICS files: <a href=":link">:link</a>',
     "revoke-ics-token-success"    => "The calendar token has been revoked.",
     'follower'                    => [
         'no-follower'     => 'You don\'t have any followers.',

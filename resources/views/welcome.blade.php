@@ -4,11 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Träwelling') }}</title>
 
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="theme-color" content="#c72730">
-        <meta name="name" content="{{ config('app.name') }}">
         <link rel="author" href="/humans.txt">
         <meta name="copyright" content="Träwelling Team">
         <meta name="description" content="{{__('about.block1')}}">
@@ -18,8 +15,9 @@
         <meta name="DC.Rights" content="Träwelling Team">
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
+        @include('layouts.includes.meta-pwa')
 
-        <link rel="shortcutt favicon" rel="{{ asset('images/icons/favicon.ico') }}">
+        <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
 
@@ -40,16 +38,13 @@
                     <a href="{{ url('/dashboard') }}">{{__('menu.dashboard')}}</a>
                 @else
                     <a href="{{ route('login') }}">{{__('menu.login')}}</a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}">{{__('menu.register')}}</a>
-                    @endif
+                    <a href="{{ route('register') }}">{{__('menu.register')}}</a>
                 @endauth
             </div>
 
             <div class="content">
                 <div class="title m-b-md">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Träwelling') }}
                 </div>
 
                 <div class="links">
@@ -65,7 +60,6 @@
 
             <div class="bottom-center links" style="">
                 <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
-
                 <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a>
             </div>
         </div>
