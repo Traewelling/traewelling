@@ -294,7 +294,7 @@ class TransportController extends Controller
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset1   = self::searchForId($start, $stopovers, $departure);
         $offset2   = self::searchForId($destination, $stopovers, null, $arrival);
-        if ($offset1 == null || $offset2 == null) {
+        if ($offset1 === null || $offset2 === null) {
             throw new StationNotOnTripException();
         }
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
