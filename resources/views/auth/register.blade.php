@@ -22,9 +22,8 @@
                                 <div class="col-md-6">
 
                                     <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">@</span>
-                                        </div>
+                                        <span class="input-group-text" id="basic-addon1">@</span>
+
                                         <input id="name" type="text"
                                                class="form-control @error('username') is-invalid @enderror"
                                                name="username" value="{{ old('username') }}" required autofocus>

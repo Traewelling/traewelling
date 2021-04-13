@@ -8,7 +8,7 @@ $(document).on("click", ".edit", function (event) {
     statusId = event.target.parentElement.dataset["statusid"];
     statusBody = document.getElementById("status-" + statusId).dataset["body"];
     $("#status-body").val(statusBody);
-    $("#edit-modal").modal();
+    $("#edit-modal").modal("show");
 });
 
 $(document).on("click", "#modal-save", function () {

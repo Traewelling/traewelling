@@ -17,12 +17,13 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary mb-3" data-mdb-toggle="modal" data-mdb-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary mb-3" data-mdb-toggle="modal"
+                       data-mdb-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
 
                     @isset(auth()->user()->avatar)
-                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm"
+                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
                            data-mdb-toggle="modal"
                            data-mdb-target="#deleteProfilePictureModal"
                         >{{ __('settings.delete-profile-picture-btn') }}</a>
@@ -41,9 +42,7 @@
 
                 <div class="col-md-6">
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">@</span>
-                        </div>
+                        <span class="input-group-text">@</span>
                         <input id="username" type="text"
                                class="form-control @error('username') is-invalid @enderror"
                                name="username" value="{{ auth()->user()->username }}" required autofocus/>

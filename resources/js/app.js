@@ -19,6 +19,7 @@ window.addEventListener("load", () => {
     require("./components/stationboard");
     require("./components/statusMap");
     require("./components/timepicker");
+    require("./../../node_modules/bootstrap/js/dist/modal");
     require("./appControls");
     require("bootstrap-cookie-alert/cookiealert");
 });
