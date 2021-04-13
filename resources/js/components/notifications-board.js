@@ -22,7 +22,14 @@ if (notificationsToggle !== undefined && notificationsToggle !== null) {
             // If there are no notifications, we can just quit here. Else, show the items.
             if (notifications.length == 0) return;
             empty.classList.add('d-none');
-            ringBell(notifications);
+            // if there are unread notifications, make the bell ring.
+            if (notifications.some(n => n.read_at == null)) {
+                Array.from(document.getElementsByClassName('notifications-bell'))
+                    .forEach(bell => {
+                        bell.classList.replace("far", "fa")
+                        bell.classList.add("bell");
+                    });
+            }
 
             var html = notifications.reduce((sum, add) => {
                 return sum + add.html;
@@ -82,11 +89,3 @@ const toggleRead = (notificationId, isNewStateRead) => {
         row.classList.add('unread');
     }
 };
-
-function ringBell(notifications) {
-    // if there are unread notifications, make the bell ring.
-    if (notifications.some(n => n.read_at == null)) {
-        Array.from(document.getElementsByClassName('notifications-bell'))
-            .forEach(bell => bell.classList.replace("far", "fa"));
-    }
-}

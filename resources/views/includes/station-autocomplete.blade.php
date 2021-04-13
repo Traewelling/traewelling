@@ -12,24 +12,25 @@
                     </div>
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
                         <input type="hidden" id="autocomplete-provider" name="provider" value="train">
+                        <div id="station-autocomplete-container">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <input type="text" id="station-autocomplete" name="station" class="form-control"
+                                       placeholder="{{ __('stationboard.station-placeholder') }} / DS100"
+                                       @isset(request()->station) value="{{request()->station}}" @endisset
+                                />
 
-                        <div class="input-group mb-2 mr-sm-2">
-                            <input type="text" id="station-autocomplete" name="station" class="form-control"
-                                   placeholder="{{ __('stationboard.station-placeholder') }} / DS100"
-                                   @isset(request()->station) value="{{request()->station}}" @endisset
-                            />
+                                @if($latest->count() > 0 || Auth::user()->home)
+                                    <div class="btn btn-outline-dark" data-mdb-toggle="collapse"
+                                         data-mdb-target="#last-stations"
+                                         title="{{__('stationboard.last-stations')}}">
+                                        <i class="fa fa-history"></i>
+                                    </div>
+                                @endif
 
-                            @if($latest->count() > 0 || Auth::user()->home)
-                                <div class="btn btn-outline-dark" data-mdb-toggle="collapse"
-                                     data-mdb-target="#last-stations"
-                                        title="{{__('stationboard.last-stations')}}">
-                                    <i class="fa fa-history"></i>
+                                <div class="btn btn-outline-dark" id="gps-button"
+                                     title="{{__('stationboard.search-by-location')}}">
+                                    <i class="fa fa-map-marker-alt"></i>
                                 </div>
-                            @endif
-
-                            <div class="btn btn-outline-dark" id="gps-button"
-                                    title="{{__('stationboard.search-by-location')}}">
-                                <i class="fa fa-map-marker-alt"></i>
                             </div>
                         </div>
                         <div class="list-group collapse" id="last-stations">
@@ -64,7 +65,8 @@
                         <div class="collapse" id="collapseFilter">
                             <div class="mt-3 d-flex justify-content-center">
                                 <div class="btn-group flex-wrap btn-group-sm" role="group">
-                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType" value="ferry">
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType"
+                                            value="ferry">
                                         {{ __('transport_types.ferry') }}
                                     </button>
                                     <button type="submit" class="btn btn-primary btn-sm" name="travelType" value="bus">
