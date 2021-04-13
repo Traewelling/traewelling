@@ -47,7 +47,7 @@
                                 aria-label="{{ __('notifications.mark-all-read') }}">
                             <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
                         </button>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -80,20 +80,20 @@
                         </button>
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
+                        <ul class="navbar-nav me-auto">
                             @auth
-                                <li class="nav-item {{ request()->is('dashboard/*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}" href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                                 </li>
                             @endauth
-                            <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}" href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
                             </li>
-                            <li class="nav-item {{ request()->is('statuses/active') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
                         </ul>
-                        <ul class="navbar-nav ml-auto">
+                        <ul class="navbar-nav w-auto">
                             @guest
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('menu.login') }}</a>
@@ -107,11 +107,9 @@
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="Search" aria-label="User suchen">
-                                        <div class="input-group-append">
-                                            <button class="input-group-text btn-primary lighten-2" type="submit">
-                                                <i class="fas fa-search text-grey" aria-hidden="true"></i>
+                                            <button class="input-group-text btn-primary" type="submit">
+                                                <i class="fas fa-search" aria-hidden="true"></i>
                                             </button>
-                                        </div>
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
@@ -124,8 +122,7 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select"
-                                       href="javascript:void(0)"
-                                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       role="button" data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{ Auth::user()->name }} <span class="caret"></span>
                                     </a>
 

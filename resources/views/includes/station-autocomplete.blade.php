@@ -20,7 +20,8 @@
                             />
 
                             @if($latest->count() > 0 || Auth::user()->home)
-                                <div class="btn btn-outline-dark" id="history-button"
+                                <div class="btn btn-outline-dark" data-mdb-toggle="collapse"
+                                     data-mdb-target="#last-stations"
                                         title="{{__('stationboard.last-stations')}}">
                                     <i class="fa fa-history"></i>
                                 </div>
@@ -31,7 +32,7 @@
                                 <i class="fa fa-map-marker-alt"></i>
                             </div>
                         </div>
-                        <div class="list-group d-none" id="last-stations">
+                        <div class="list-group collapse" id="last-stations">
                             @if(Auth::user()->home)
                                 <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => Auth::user()->home->name ]) }}"
                                    title="{{ Auth::user()->home->name }}" id="home-button"
@@ -56,35 +57,35 @@
                         <button class="btn btn-outline-primary float-end" type="submit">
                             {{__('stationboard.submit-search')}}
                         </button>
-                        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse"
-                                data-target="#collapseFilter" aria-expanded="false">
+                        <button class="btn btn-outline-secondary" type="button" data-mdb-toggle="collapse"
+                                data-mdb-target="#collapseFilter" aria-expanded="false">
                             {{__('stationboard.filter-products')}}
                         </button>
                         <div class="collapse" id="collapseFilter">
                             <div class="mt-3 d-flex justify-content-center">
                                 <div class="btn-group flex-wrap btn-group-sm" role="group">
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="ferry">
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType" value="ferry">
                                         {{ __('transport_types.ferry') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="bus">
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType" value="bus">
                                         {{ __('transport_types.bus') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType" value="tram">
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType" value="tram">
                                         {{ __('transport_types.tram') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType"
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType"
                                             value="subway">
                                         {{ __('transport_types.subway') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType"
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType"
                                             value="suburban">
                                         {{ __('transport_types.suburban') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType"
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType"
                                             value="regional">
                                         {{ __('transport_types.regional') }}
                                     </button>
-                                    <button type="submit" class="btn btn-unique btn-sm" name="travelType"
+                                    <button type="submit" class="btn btn-primary btn-sm" name="travelType"
                                             value="express">
                                         {{ __('transport_types.express') }}
                                     </button>

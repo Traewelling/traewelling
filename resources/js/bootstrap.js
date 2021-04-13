@@ -5,15 +5,23 @@ window._ = require("lodash");
  * for JavaScript based Bootstrap features such as modals and tabs. This
  * code may be modified to fit the specific needs of your application.
  */
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        window.Popper = require("popper.js").default;
+        window.$      = window.jQuery = require("jquery");
 
-try {
-    window.Popper = require("popper.js").default;
-    window.$ = window.jQuery = require("jquery");
-
-    require("./../../node_modules/mdb-ui-kit/js/mdb.min");
-    require("./../../node_modules/bootstrap/js/dist/alert");
-} catch (e) {}
-
+        require("./../../node_modules/bootstrap/js/dist/collapse");
+        require("./../../node_modules/bootstrap/js/dist/alert");
+        require("./../../node_modules/bootstrap/js/dist/button");
+        require("./../../node_modules/bootstrap/js/dist/modal");
+        require("./../../node_modules/bootstrap/js/dist/tab");
+        require("./../../node_modules/bootstrap/js/dist/dropdown");
+        require("./../../node_modules/mdb-ui-kit/js/mdb.min");
+        console.log("bootstrap should be loaded");
+    } catch (e) {
+        console.log(e);
+    }
+});
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the

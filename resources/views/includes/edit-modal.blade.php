@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">{{__('modals.editStatus-title')}}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <form>
@@ -14,7 +14,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">{{__('menu.discard')}}</button>
+                <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.discard')}}</button>
                 <button type="button" class="btn btn-primary" id="modal-save">{{__('modals.edit-confirm')}}</button>
             </div>
         </div><!-- /.modal-content -->
