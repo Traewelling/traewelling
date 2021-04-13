@@ -8,7 +8,7 @@
         </p>
         {!! $notice !!}&nbsp;
     </a>
-    <div class="col col-sm-3 text-right">
+    <div class="col col-sm-3 text-end">
         <button type="button" class="interact toggleReadState" data-id="{{ $notificationId }}" aria-label="{{ $read ? __('notifications.mark-as-unread') : __('notifications.mark-as-read') }}">
             <span aria-hidden="true"><i class="far {{ $read ? 'fa-envelope-open' : 'fa-envelope' }}"></i></span>
         </button>
