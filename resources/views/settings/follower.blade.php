@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-header">{{ __('menu.settings-myFollower') }}</div>
 
-                    <div class="card-body">
+                    <div class="card-body table-responsive ">
 
                         @if($followers->count() == 0)
                             <b class="text-danger">
@@ -18,7 +18,7 @@
                             </b>
                         @else
 
-                            <table class="table table-responsive-md table-striped table-hover">
+                            <table class="table table-striped table-hover">
                                 <thead>
                                 <tr>
                                     <th colspan="2">Follower</th>
@@ -30,7 +30,7 @@
                                 @foreach($followers as $follower)
                                     <tr>
                                         <td>
-                                            <div class="image-box pr-0 d-none d-lg-flex">
+                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $follower->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $follower->username]) }}"
                                                          style="height: 3em;"

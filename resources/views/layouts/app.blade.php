@@ -66,31 +66,36 @@
                         {{ config('app.name', 'Träwelling') }}
                     </a>
                     <div class="navbar-toggler">
-                        <button class="navbar-toggler notifications-board-toggle" type="button" data-toggle="modal"
-                                data-target="#notifications-board" aria-controls="navbarSupportedContent"
-                                aria-expanded="false"
-                                aria-label="{{ __('Show notifications') }}">
-                            <span class="notifications-bell far fa-bell"></span>
-                        </button>
-
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        @auth
+                            <button class="navbar-toggler notifications-board-toggle" type="button"
+                                    data-mdb-toggle="modal"
+                                    data-mdb-target="#notifications-board" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false"
+                                    aria-label="{{ __('Show notifications') }}">
+                                <span class="notifications-bell far fa-bell"></span>
+                            </button>
+                        @endauth
+                        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                            <span class="navbar-toggler-icon"></span>
+                            <i class="fas fa-bars"></i>
                         </button>
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto">
                             @auth
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}" href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
+                                    <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}"
+                                       href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                                 </li>
                             @endauth
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}" href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
+                                   href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                                <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
+                                   href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav w-auto">
@@ -107,22 +112,23 @@
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="Search" aria-label="User suchen">
-                                            <button class="input-group-text btn-primary" type="submit">
-                                                <i class="fas fa-search" aria-hidden="true"></i>
-                                            </button>
+                                        <button class="input-group-text btn-primary" type="submit">
+                                            <i class="fas fa-search" aria-hidden="true"></i>
+                                        </button>
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
                                     <a href="javascript:void(0)" id="notifications-toggle"
                                        class="nav-link notifications-board-toggle"
-                                       data-toggle="modal"
-                                       data-target="#notifications-board">
+                                       data-mdb-toggle="modal"
+                                       data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select"
-                                       role="button" data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">
                                         {{ Auth::user()->name }} <span class="caret"></span>
                                     </a>
 

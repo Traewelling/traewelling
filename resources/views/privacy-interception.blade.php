@@ -36,8 +36,8 @@
                                 <div class="row justify-content-center">
                                     <div class="col-md-8">
 
-                                        <a class="btn btn-link pr-0" href="#" role="button" data-toggle="modal"
-                                           data-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
+                                        <a class="btn btn-link pr-0" href="#" role="button" data-mdb-toggle="modal"
+                                           data-mdb-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
                                         <input type="submit" value="{{__('privacy.sign')}}" class="btn btn-success">
 
                                     </div>

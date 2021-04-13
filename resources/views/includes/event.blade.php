@@ -21,7 +21,7 @@
                 </a>
             </li>
             <li class="list-inline-item">
-                <a href="#" role="button" data-toggle="modal" data-target="#delete-modal-{{ $event->id }}">
+                <a href="#" role="button" data-mdb-toggle="modal" data-mdb-target="#delete-modal-{{ $event->id }}">
                     <i class="fas fa-trash"></i>
                 </a>
             </li>

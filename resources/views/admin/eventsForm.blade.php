@@ -65,7 +65,7 @@
                 <input type="submit" class="btn btn-primary" value="{{ __('modals.edit-confirm') }}">
 
                 @if($event->id != 0)
-                    <a href="#" class="btn btn-danger" role="button" data-toggle="modal" data-target="#delete-modal-{{ $event->id }}">
+                    <a href="#" class="btn btn-danger" role="button" data-mdb-toggle="modal" data-mdb-target="#delete-modal-{{ $event->id }}">
                         {{ __('modals.delete-confirm') }}
                     </a>
                 @endif

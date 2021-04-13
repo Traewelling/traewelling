@@ -17,14 +17,14 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
 
                     @isset(auth()->user()->avatar)
                         <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm"
-                           data-toggle="modal"
-                           data-target="#deleteProfilePictureModal"
+                           data-mdb-toggle="modal"
+                           data-mdb-target="#deleteProfilePictureModal"
                         >{{ __('settings.delete-profile-picture-btn') }}</a>
                     @endisset
 

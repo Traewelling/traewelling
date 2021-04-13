@@ -70,7 +70,7 @@
                         </ul>
                     </div>
             </div>
-            <hr/>
+            <hr class="w-100"/>
             @endforeach
         </div>
     </div>
