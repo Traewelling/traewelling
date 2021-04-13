@@ -75,15 +75,16 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-body">
-                            <table class="table table-responsive table-vertical-center">
+                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive">
+                            <table class="table table-vertical-center">
                                 <thead>
                                     <tr>
-                                        <td>{{ __('leaderboard.rank') }}</td>
-                                        <td colspan="2">{{ __('leaderboard.user') }}</td>
-                                        <td>{{ __('leaderboard.duration') }}</td>
-                                        <td>{{ __('leaderboard.distance') }}</td>
-                                        <td>{{ __('leaderboard.points') }}</td>
+                                        <th scope="col">{{ __('leaderboard.rank') }}</th>
+                                        <th scope="col" colspan="2">{{ __('leaderboard.user') }}</th>
+                                        <th scope="col">{{ __('leaderboard.duration') }}</th>
+                                        <th scope="col">{{ __('leaderboard.distance') }}</th>
+                                        <th scope="col">{{ __('leaderboard.points') }}</th>
                                     </tr>
                                 </thead>
                                 @foreach($leaderboard->take(100) as $place)
@@ -94,7 +95,7 @@
                                             <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                                         alt="{{$place['user']->username}}" style="height: 75px;">
+                                                         alt="{{$place['user']->username}}">
                                                 </a>
                                             </div>
                                         </td>
