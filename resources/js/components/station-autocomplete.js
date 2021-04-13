@@ -10,7 +10,7 @@ const popularStations = [
 ];
 (function () {
     const input = document.getElementById("station-autocomplete");
-    const container = document.getElementById("station-autocomplete-container")
+    const container = document.getElementById("station-autocomplete-container");
     if (input == null) {
         return;
     }

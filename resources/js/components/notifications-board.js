@@ -2,12 +2,12 @@ let notificationsToggle = $('.notifications-board-toggle');
 if (notificationsToggle !== undefined && notificationsToggle !== null) {
 
 
-    let list  = document.getElementById("notifications-list")
-    let empty = document.getElementById("notifications-empty")
-    empty.classList.remove("d-none")
+    let list  = document.getElementById("notifications-list");
+    let empty = document.getElementById("notifications-empty");
+    empty.classList.remove("d-none");
 
     while (list.childNodes.length > 3) {
-        list.removeChild(list.firstChild)
+        list.removeChild(list.firstChild);
     }
     fetch("/notifications/latest", {
         credentials: "same-origin",
@@ -38,7 +38,7 @@ if (notificationsToggle !== undefined && notificationsToggle !== null) {
             list.insertAdjacentHTML("afterbegin", html);
         })
         .then(() => { // After the notification rows have been created, we can add eventlisteners for them
-            Array.from(document.getElementsByClassName("toggleReadState")).forEach(btn =>
+            Array.from(document.getElementsByClassName("toggleReadState")).forEach((btn) =>
                 btn.addEventListener("click", () => {
 
                     fetch("/notifications/toggleReadState/" + btn.dataset.id, {
@@ -67,7 +67,7 @@ document.getElementById("mark-all-read").addEventListener("click", () => {
             "X-CSRF-TOKEN": token
         }
     }).then(() => {
-        Array.from(document.getElementsByClassName("toggleReadState")).forEach(btn => {
+        Array.from(document.getElementsByClassName("toggleReadState")).forEach((btn) => {
             toggleRead(btn.dataset.id, true);
         });
     })
