@@ -126,7 +126,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select"
+                                    <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
                                        role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="false">
                                         {{ Auth::user()->name }} <span class="caret"></span>

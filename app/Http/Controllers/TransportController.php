@@ -464,7 +464,6 @@ class TransportController extends Controller
      * @param Status $status
      */
     private static function postMastodon(Status $status): void {
-        dd($status);
         if (config('trwl.post_social') !== true) {
             return;
         }

@@ -110,29 +110,29 @@
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
                         @if (auth()->user()->socialProfile != null)
-                            @if (auth()->user()->socialProfile->twitter_id != null)
-                                <div class="custom-control custom-checkbox custom-control-inline">
+                            <div class="mt-2">
+                                @if (auth()->user()->socialProfile->twitter_id != null)
                                     <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
                                            name="tweet_check">
-                                    <label class="btn btn-primary" for="tweet_check">Single toggle</label>
-                                    {{__('stationboard.check-tweet')}}
+                                    <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
+                                        <i class="fab fa-twitter"></i>
+                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
                                     </label>
-                                </div>
-                            @endif
+                                @endif
 
-                            @if (auth()->user()->socialProfile->mastodon_id != null)
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="toot_check"
+                                @if (auth()->user()->socialProfile->mastodon_id != null)
+                                    <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
                                            name="toot_check"/>
-                                    <label class="custom-control-label" for="toot_check">
-                                        {{__('stationboard.check-toot')}}
+                                    <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
+                                        <i class="fab fa-mastodon"></i>
+                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
                                     </label>
-                                </div>
-                            @endif
+                                @endif
+                            </div>
                         @endif
 
                         @if($events->count() == 1)
-                            <div class="custom-control custom-checkbox">
+                            <div class="custom-control custom-checkbox mt-2">
                                 <input type="checkbox" class="custom-control-input" id="event_check" name="event"
                                        value="{{ $events[0]->id }}"/>
                                 <label class="custom-control-label" for="event_check">
