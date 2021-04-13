@@ -3,7 +3,7 @@
 @section('title'){{ $user->name }}@endsection
 
 @section('content')
-    <div class="jumbotron mt-n4"
+    <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
