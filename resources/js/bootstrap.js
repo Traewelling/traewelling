@@ -10,8 +10,8 @@ try {
     window.Popper = require("popper.js").default;
     window.$ = window.jQuery = require("jquery");
 
-    require("./../../node_modules/mdbootstrap/js/bootstrap.js");
-    require("./../../node_modules/mdbootstrap/js/mdb.js");
+    require("./../../node_modules/mdb-ui-kit/js/mdb.min");
+    require("./../../node_modules/bootstrap/js/dist/alert");
 } catch (e) {}
 
 /**

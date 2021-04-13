@@ -19,7 +19,7 @@
             <ul class="timeline">
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">
+                    <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>&nbsp;
                             {{ $status->trainCheckin->origin_stopover->departure_real->format('H:i') }}
@@ -55,7 +55,7 @@
                 </li>
                 <li>
                     <i>&nbsp;</i>
-                    <span class="text-trwl float-right">
+                    <span class="text-trwl float-end">
                         @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">{{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}</small>&nbsp;
                             {{ $status->trainCheckin->destination_stopover->arrival_real->format('H:i') }}
@@ -85,7 +85,7 @@
             ></div>
     </div>
     <div class="card-footer text-muted interaction">
-        <span class="float-right like-text">
+        <span class="float-end like-text">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 @if(Auth::check())
                     @if(auth()->user()->id == $status->user_id)

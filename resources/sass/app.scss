@@ -10,9 +10,7 @@
 // Bootstrap
 //@import "~bootstrap/scss/bootstrap";
 // mdbootstrap pro
-@import "~mdbootstrap/css/mdb.css";
-@import "~mdbootstrap/css/bootstrap.css";
-@import "~mdbootstrap/scss/mdb-free";
+@import '~mdb-ui-kit/css/mdb.min.css';
 
 body {
   font-family: "Nunito", sans-serif;

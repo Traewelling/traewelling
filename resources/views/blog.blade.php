@@ -44,7 +44,7 @@
 
                     </div>
                     <div class="text-muted">
-                        <p class="float-right">
+                        <p class="float-end">
                             <samp class="pr-2">{{ $blogpost->published_at->format('d.m.Y') }}</samp>
                         </p>
                         <ul class="list-inline mb-0">

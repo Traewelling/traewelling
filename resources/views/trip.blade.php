@@ -9,7 +9,7 @@
                     <div class="card-header" data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
                          data-tripid="{{ $hafasTrip->trip_id }}">
-                        <div class="float-right">
+                        <div class="float-end">
                             <a href="#" class="train-destinationrow"
                                data-ibnr="{{$terminalStop['stop']['id']}}"
                                data-stopname="{{$terminalStop['stop']['name']}}"
@@ -112,10 +112,10 @@
                         @if (auth()->user()->socialProfile != null)
                             @if (auth()->user()->socialProfile->twitter_id != null)
                                 <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="tweet_check"
-                                           name="tweet_check"/>
-                                    <label class="custom-control-label" for="tweet_check">
-                                        {{__('stationboard.check-tweet')}}
+                                    <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
+                                           name="tweet_check">
+                                    <label class="btn btn-primary" for="tweet_check">Single toggle</label>
+                                    {{__('stationboard.check-tweet')}}
                                     </label>
                                 </div>
                             @endif

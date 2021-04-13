@@ -40,7 +40,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-right">
+                        <div class="float-end">
                             <a href="{{ route('user.setHome', ['ibnr' => $station['id']]) }}"><i class="fa fa-home"></i></a>
                         </div>
                         {{ $station['name'] }} <small><i

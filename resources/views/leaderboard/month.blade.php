@@ -14,7 +14,7 @@
                 </a>
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
-                       class="btn btn-sm btn-primary float-right">
+                       class="btn btn-sm btn-primary float-end">
                         {{$date->clone()->addMonth()->isoFormat('MMMM YYYY')}} <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif

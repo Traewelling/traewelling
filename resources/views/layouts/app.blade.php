@@ -168,7 +168,7 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="text-muted mb-0 float-right">
+                    <div class="text-muted mb-0 float-end">
                         |
                         @foreach(config('app.locales') as $key=>$lang)
                             <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |

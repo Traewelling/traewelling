@@ -15,23 +15,20 @@
 
                         <div class="input-group mb-2 mr-sm-2">
                             <input type="text" id="station-autocomplete" name="station" class="form-control"
-                                   placeholder="{{ __('stationboard.station-placeholder') }} / DS100" @isset(request()->station) value="{{request()->station}}" @endisset
+                                   placeholder="{{ __('stationboard.station-placeholder') }} / DS100"
+                                   @isset(request()->station) value="{{request()->station}}" @endisset
                             />
 
                             @if($latest->count() > 0 || Auth::user()->home)
-                                <div class="input-group-append" id="history-button"
-                                     title="{{__('stationboard.last-stations')}}">
-                                <span class="input-group-text">
+                                <div class="btn btn-outline-dark" id="history-button"
+                                        title="{{__('stationboard.last-stations')}}">
                                     <i class="fa fa-history"></i>
-                                </span>
                                 </div>
                             @endif
 
-                            <div class="input-group-append" id="gps-button"
-                                 title="{{__('stationboard.search-by-location')}}">
-                                <span class="input-group-text">
-                                    <i class="fa fa-map-marker-alt"></i>
-                                </span>
+                            <div class="btn btn-outline-dark" id="gps-button"
+                                    title="{{__('stationboard.search-by-location')}}">
+                                <i class="fa fa-map-marker-alt"></i>
                             </div>
                         </div>
                         <div class="list-group d-none" id="last-stations">
@@ -56,7 +53,7 @@
                         </div>
 
                         <input type="hidden" name="when" value="{{@$request->when}}">
-                        <button class="btn btn-outline-primary float-right" type="submit">
+                        <button class="btn btn-outline-primary float-end" type="submit">
                             {{__('stationboard.submit-search')}}
                         </button>
                         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse"

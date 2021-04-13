@@ -7,7 +7,7 @@
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
-                 width="20%" class="float-right img-thumbnail rounded-circle img-fluid">
+                 width="20%" class="float-end img-thumbnail rounded-circle img-fluid">
             <div class="text-white px-4">
                 <h2 class="card-title h1-responsive font-bold">
                     <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
