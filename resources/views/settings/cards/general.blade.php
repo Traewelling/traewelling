@@ -17,7 +17,7 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary mb-3" data-mdb-toggle="modal" data-mdb-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
 
