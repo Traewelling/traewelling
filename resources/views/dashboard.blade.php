@@ -10,9 +10,8 @@
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
             </div>
         </div>
-        <div class="row justify-content-center mt-5">
             {{ $statuses->links() }}
-        </div>
+
         @include('includes.edit-modal')
         @include('includes.delete-modal')
     </div>
