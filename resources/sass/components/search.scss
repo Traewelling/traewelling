@@ -1,4 +1,5 @@
 @import "../variables";
+
 .navbar.navbar-dark form .md-form input:focus:not([readonly]) {
   border-color: $blueCounterColor;
 }

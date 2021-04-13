@@ -5,7 +5,7 @@ window._ = require("lodash");
  * for JavaScript based Bootstrap features such as modals and tabs. This
  * code may be modified to fit the specific needs of your application.
  */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
     try {
         window.Popper = require("popper.js").default;
         window.$      = window.jQuery = require("jquery");
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         require("./../../node_modules/bootstrap/js/dist/tab");
         require("./../../node_modules/bootstrap/js/dist/dropdown");
         require("./../../node_modules/mdb-ui-kit/js/mdb.min");
-        console.log("bootstrap should be loaded");
     } catch (e) {
         console.log(e);
     }
