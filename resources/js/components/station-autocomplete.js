@@ -1,4 +1,4 @@
-// Hier kommen jetzt die 25 größten Städte Deutschlands rein, damit die MaschinepopularStations
+// Hier kommen jetzt die 25 größten Städte Deutschlands rein, damit die Maschine
 // schon mal was zum Zeigen hat, auch wenn noch kein AJAX-Request passiert ist.
 // Liste: https://de.wikipedia.org/wiki/Liste_der_Gro%C3%9Fst%C3%A4dte_in_Deutschland#Tabelle
 const popularStations = [

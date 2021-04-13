@@ -73,7 +73,8 @@ class HelperMethodTest extends TestCase
 
             $response = $this->actingAs($user)
                             ->get($links[0]->getAttribute('href'));
-            $response->assertSee('placeholder="Haltestelle / DS100"  value="' . $alternatedTo . '"', false);
+            $response->assertSee('placeholder="Haltestelle / DS100"', false);
+            $response->assertSee('value="' . $alternatedTo . '"', false);
         }
     }
 
