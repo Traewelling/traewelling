@@ -146,6 +146,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/fakerphp/faker" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/enum" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/icalendar-generator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel-lang/lang" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
