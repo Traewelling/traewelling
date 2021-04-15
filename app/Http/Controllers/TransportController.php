@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -257,6 +258,23 @@ class TransportController extends Controller
         return 1;
     }
 
+    /**
+     * @param $tripId
+     * @param $start
+     * @param $destination
+     * @param $body
+     * @param $user
+     * @param $businessCheck
+     * @param $tweetCheck
+     * @param $tootCheck
+     * @param int $eventId
+     * @param Carbon|null $departure
+     * @param Carbon|null $arrival
+     * @return array
+     * @throws CheckInCollisionException
+     * @throws HafasException
+     * @throws StationNotOnTripException
+     */
     #[ArrayShape([
         'success'              => "bool",
         'statusId'             => "int",
@@ -279,10 +297,13 @@ class TransportController extends Controller
                                         Carbon $departure = null,
                                         Carbon $arrival = null): array {
 
-        $hafasTrip             = HafasTrip::where('trip_id', $tripId)->first();
-        $stopovers             = json_decode($hafasTrip->stopovers, true);
-            $offset1           = self::searchForId($start, $stopovers, $departure);
-            $offset2           = self::searchForId($destination, $stopovers, null, $arrival);
+        $hafasTrip = HafasTrip::where('trip_id', $tripId)->first();
+        $stopovers = json_decode($hafasTrip->stopovers, true);
+        $offset1   = self::searchForId($start, $stopovers, $departure);
+        $offset2   = self::searchForId($destination, $stopovers, null, $arrival);
+        if ($offset1 === null || $offset2 === null) {
+            throw new StationNotOnTripException();
+        }
         $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
