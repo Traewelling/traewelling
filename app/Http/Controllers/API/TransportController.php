@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
@@ -172,10 +173,9 @@ class TransportController extends ResponseController
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => 'required',
-            //Should be required in future API Releases due to DB Rest
-            'lineName'    => ['nullable'],
-            'start'       => 'required',
-            'destination' => 'required',
+            'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
+            'start'       => ['required', 'numeric'],
+            'destination' => ['required', 'numeric'],
             'body'        => 'max:280',
             'tweet'       => 'boolean',
             'toot'        => 'boolean',
@@ -232,7 +232,10 @@ class TransportController extends ResponseController
                                         'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
-        } catch (Throwable $e) {
+        } catch (StationNotOnTripException) {
+            return $this->sendError('Given stations are not on the trip.', 400);
+        } catch (Throwable $exception) {
+            report($exception);
             return $this->sendError('Unknown Error occured', 500);
         }
 

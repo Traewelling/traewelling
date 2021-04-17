@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::group(['middleware' => ['guest:api']], function() {
         Route::group(['prefix' => 'auth'], function() {
