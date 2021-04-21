@@ -149,6 +149,7 @@
   "export.guarantee": "Created with <a href=\":url\">:name</a>. All information without guarantee.",
   "export.page": "Page",
   "export.journey-from-to": "Journey from :origin to :destination",
+  "export.reason": "Reason",
   "leaderboard.distance": "Distance",
   "leaderboard.averagespeed": "Speed",
   "leaderboard.duration": "Duration",
