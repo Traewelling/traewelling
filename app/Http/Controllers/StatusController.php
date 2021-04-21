@@ -177,8 +177,9 @@ class StatusController extends Controller
         if ($user != $status->user) {
             return false;
         }
+
         $status->body     = $body;
-        $status->business = $businessCheck >= 1 ? 1 : 0;
+        $status->business = $businessCheck;
         $status->update();
         return $status->body;
     }
