@@ -11,7 +11,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
 
                 @if($user != null)
 
@@ -35,7 +35,7 @@
                             @csrf
                             <div class="container">
                                 <div class="row justify-content-center">
-                                    <div class="col-md-8 my-2">
+                                    <div class="col-md-8 col-lg-7 my-2">
 
                                         <a class="btn btn-link pr-0" href="#" role="button" data-mdb-toggle="modal"
                                            data-mdb-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>

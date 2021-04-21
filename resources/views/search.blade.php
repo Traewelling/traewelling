@@ -5,9 +5,9 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 @if($userSearchResponse->count() == 0)
-                    <div class="col-md-8 offset-md-2">
+                    <div class="col-md-8 col-lg-7 offset-md-2">
                         <div class="alert my-3 alert-danger" role="alert">
                             {{ __('user.no-user') }}
                         </div>

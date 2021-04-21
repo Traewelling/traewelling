@@ -62,18 +62,18 @@
     @include('includes.message-block')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <header><h3>&nbsp;</h3></header>
             </div>
         </div>
         <div class="row justify-content-center">
             @if($user->private_profile && $user != $currentUser)
-                <div class="col-md-8 text-center mb-5">
+                <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>
                 </div>
             @else
-                <div class="col-md-8">
+                <div class="col-md-8 col-lg-7">
                     <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
                     @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 </div>

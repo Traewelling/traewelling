@@ -7,7 +7,7 @@
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container" id="event-header">
             <div class="row justify-content-center">
-                <div class="text-white col-md-8">
+                <div class="text-white col-md-8 col-lg-7">
                     <h1 class="card-title font-bold">
                         <strong>{{ __('events.header', ['name' => $event->name]) }} <code
                                     class="text-white">#{{ $event->hashtag }}</code></strong>
@@ -44,7 +44,7 @@
     </div>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8" id="activeJourneys">
+            <div class="col-md-8 col-lg-7" id="activeJourneys">
                 <!-- The status cards -->
                 @foreach($statuses as $status)
                     @include('includes.status')

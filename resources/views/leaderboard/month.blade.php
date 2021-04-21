@@ -73,7 +73,7 @@
         <hr/>
         @if($leaderboard->count() > 3)
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-8 col-lg-7">
                     <div class="card">
                         <div class="card-body table-responsive">
                         <div class="card-body table-responsive">
