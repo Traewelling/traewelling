@@ -109,8 +109,8 @@
                             </label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
+                        <div class="mt-2">
                         @if (auth()->user()->socialProfile != null)
-                            <div class="mt-2">
                                 @if (auth()->user()->socialProfile->twitter_id != null)
                                     <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
                                            name="tweet_check">
@@ -128,8 +128,25 @@
                                         <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
                                     </label>
                                 @endif
-                            </div>
                         @endif
+                            <input type="hidden" id="privacy_check" name="privacy_check" class="form-control" value="0"/>
+                            <div class="dropdown">
+                                <label class="btn btn-sm btn-outline-twitter dropdown-toggle"
+                                       type="button"
+                                       id="dropdownMenuButton"
+                                       data-mdb-toggle="dropdown"
+                                       aria-expanded="false"
+                                >
+                                    <i class="fa fa-lock" id="privacy-lock"></i>
+                                    <i class="fa fa-globe d-none" id="privacy-globe"></i>
+                                    <i class="fa fa-unlock d-none" id="privacy-unlock"></i>
+                                </label>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li class="dropdown-item" id="privacy-li-lock"><i class="fa fa-lock"></i> IPSUM LOREM</li>
+                                    <li class="dropdown-item" id="privacy-li-globe"><i class="fa fa-globe"></i> IPSUM LOREM</li>
+                                    <li class="dropdown-item" id="privacy-li-unlock"><i class="fa fa-unlock"></i> IPSUM LOREM</li>
+                                </ul>
+                        </div>
 
                         @if($events->count() == 1)
                             <div class="custom-control custom-checkbox mt-2">
