@@ -30,11 +30,12 @@
                     @endif
 
                     @if($user->privacy_ack_at < $agreement->valid_at || $user->privacy_ack_at == null)
-                        <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom bg-light text-right">
+                        <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
+                              style="background-color: hsl(216, 25%, 95.1%);">
                             @csrf
                             <div class="container">
                                 <div class="row justify-content-center">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 my-2">
 
                                         <a class="btn btn-link pr-0" href="#" role="button" data-mdb-toggle="modal"
                                            data-mdb-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
