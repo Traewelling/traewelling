@@ -43,6 +43,12 @@
                             <br class="d-sm-none">
                             <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
                         @endif
+                        @if($status->business == 1)
+                            <span class="pl-sm-2"><i class="fa fa-briefcase"></i></span>
+                        @endif
+                        @if($status->business == 2)
+                            <span class="pl-sm-2"><i class="fa fa-building"></i></span>
+                        @endif
                     </p>
 
                     @if(!empty($status->body))
