@@ -18,4 +18,5 @@ return [
     "guarantee"       => "Erstellt mit <a href=\":url\">:name</a>. Alle Angaben ohne Gewähr.",
     "page"            => "Seite",
     "journey-from-to" => "Fahrt von :origin nach :destination",
+    "reason"          => "Grund"
 ];

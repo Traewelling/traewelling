@@ -18,4 +18,5 @@ return [
     "guarantee"       => "Created with <a href=\":url\">:name</a>. All information without guarantee.",
     "page"            => "Page",
     "journey-from-to" => "Journey from :origin to :destination",
+    "reason"          => "Reason"
 ];
