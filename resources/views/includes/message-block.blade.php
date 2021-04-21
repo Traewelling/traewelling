@@ -1,6 +1,6 @@
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-lg-7 offset-md-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
             @if ($errors->any())
                 @foreach ($errors->all() as $error)
                     <div class="alert my-3 alert-danger alert-dismissible" role="alert">

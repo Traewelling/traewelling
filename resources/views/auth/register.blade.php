@@ -15,7 +15,7 @@
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="name"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
 
@@ -37,7 +37,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="name"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.displayname') }}</label>
 
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="email"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.email') }}</label>
 
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="password"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
 
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="password-confirm"
                                        class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
 
