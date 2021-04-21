@@ -1,4 +1,4 @@
-<?php
+<?php1
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
