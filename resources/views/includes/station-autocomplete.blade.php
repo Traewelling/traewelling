@@ -20,14 +20,14 @@
                                 />
 
                                 @if($latest->count() > 0 || Auth::user()->home)
-                                    <div class="btn btn-outline-dark" data-mdb-toggle="collapse"
+                                    <div class="btn btn-outline-grey" data-mdb-toggle="collapse"
                                          data-mdb-target="#last-stations"
                                          title="{{__('stationboard.last-stations')}}">
                                         <i class="fa fa-history"></i>
                                     </div>
                                 @endif
 
-                                <div class="btn btn-outline-dark" id="gps-button"
+                                <div class="btn btn-outline-grey" id="gps-button"
                                      title="{{__('stationboard.search-by-location')}}">
                                     <i class="fa fa-map-marker-alt"></i>
                                 </div>
