@@ -9,13 +9,13 @@
     @endif
 
     <div class="card-body row">
-        <div class="col-2 image-box pr-0 d-none d-lg-flex">
+        <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}">
             </a>
         </div>
 
-        <div class="col pl-0">
+        <div class="col ps-0">
             <ul class="timeline">
                 <li>
                     <i>&nbsp;</i>
@@ -36,12 +36,12 @@
                                 <i class="fa fa-train d-inline"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
-                        <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
+                        <span class="ps-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
+                        <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
 
                         @if($status->event != null)
                             <br class="d-sm-none">
-                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
+                            <span class="ps-sm-2"><i class="fa fa-calendar-day"></i> <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
                         @endif
                     </p>
 
@@ -114,7 +114,7 @@
 
                 <li class="list-inline-item like-text">
                     <span class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}" data-statusid="{{ $status->id }}"></span>
-                    <span class="pl-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
+                    <span class="ps-1 @if($status->likes->count() == 0) d-none @endif" id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
@@ -145,7 +145,7 @@
                 </a>
             </div>
             <div class="col-xs-10">
-                <span class="like-text pl-2 d-table-cell">
+                <span class="like-text ps-2 d-table-cell">
                     <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
                         {{$like->user->username}}
                     </a>

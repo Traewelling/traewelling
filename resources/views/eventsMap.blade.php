@@ -18,7 +18,7 @@
                                 return $carry + $s->trainCheckin->distance;
                             }), 0)
                         }}</span><span class="small font-weight-lighter">km</span>
-                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(
+                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(
                             secondsToDuration(
                                 $statuses->reduce(function($carry, $s) {
                                     return $carry + (strtotime($s->trainCheckin->arrival) - strtotime($s->trainCheckin->departure));
@@ -26,10 +26,10 @@
                             )
                         ) !!}</span>
                         <br class="d-block d-sm-none">
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <i class="fa fa-user"></i>&nbsp;{{ $event->host }}
                         </span>
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <i class="fa fa-link text-white"></i>&nbsp;<a href="{{ $event->url }}"
                                                                           class="text-white">{{ parse_url($event->url)['host'] }}</a>
                         </span>

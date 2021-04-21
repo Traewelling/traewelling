@@ -108,7 +108,7 @@
                                 </li>
                             @else
                                 <form class="form-inline" action="{{ route('userSearch') }}">
-                                    <div class="input-group md-form form-sm form-2 pl-0 m-0">
+                                    <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="Search" aria-label="User suchen">

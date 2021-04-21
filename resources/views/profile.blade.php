@@ -37,18 +37,18 @@
                 <h2>
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance) }}</span><span
                             class="small font-weight-lighter">km</span>
-                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
+                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
                             class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                     @if($twitterUrl)
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <a href="{{ $twitterUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-twitter d-inline"></i>
                             </a>
                         </span>
                     @endif
                     @if($mastodonUrl)
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-mastodon d-inline"></i>
                             </a>
