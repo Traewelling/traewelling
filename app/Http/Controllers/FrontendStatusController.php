@@ -64,14 +64,14 @@ class FrontendStatusController extends Controller
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
         $this->validate($request, [
-            'body'          => 'max:280',
-            'businessCheck' => 'max:1',
+            'body'           => 'max:280',
+            'business_check' => 'integer|max:2',
         ]);
         $editStatusResponse = StatusBackend::EditStatus(
             Auth::user(),
             $request['statusId'],
             $request['body'],
-            $request['businessCheck']
+            $request['business_check']
         );
         if ($editStatusResponse === false) {
             return redirect()->back();

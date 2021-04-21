@@ -19,6 +19,7 @@ $(document).on("click", "#modal-save", function () {
             body: $("#status-body").val(),
             statusId: statusId,
             businessCheck: $("#business_check:checked").length,
+            //ToDo this needs to be integer-shit.
             _token: token
         }
     }).done(function (msg) {
