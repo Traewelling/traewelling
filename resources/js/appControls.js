@@ -30,7 +30,7 @@ $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
     statusId = event.target.parentElement.dataset["statusid"];
-    $("#delete-modal").modal();
+    $("#delete-modal").modal("show");
 });
 
 $(document).on("click", "#modal-delete", function () {
