@@ -129,22 +129,21 @@
                                     </label>
                                 @endif
                         @endif
-                            <input type="hidden" id="privacy_check" name="privacy_check" class="form-control" value="0"/>
-                            <div class="dropdown">
+                            <input type="hidden" id="business_check" name="business_check" class="form-control" value="0"/>
                                 <label class="btn btn-sm btn-outline-twitter dropdown-toggle"
                                        type="button"
                                        id="dropdownMenuButton"
                                        data-mdb-toggle="dropdown"
                                        aria-expanded="false"
                                 >
-                                    <i class="fa fa-lock" id="privacy-lock"></i>
-                                    <i class="fa fa-globe d-none" id="privacy-globe"></i>
-                                    <i class="fa fa-unlock d-none" id="privacy-unlock"></i>
+                                    <i class="fa fa-user" id="business-user"></i>
+                                    <i class="fa fa-briefcase d-none" id="business-briefcase"></i>
+                                    <i class="fa fa-building d-none" id="business-building"></i>
                                 </label>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li class="dropdown-item" id="privacy-li-lock"><i class="fa fa-lock"></i> IPSUM LOREM</li>
-                                    <li class="dropdown-item" id="privacy-li-globe"><i class="fa fa-globe"></i> IPSUM LOREM</li>
-                                    <li class="dropdown-item" id="privacy-li-unlock"><i class="fa fa-unlock"></i> IPSUM LOREM</li>
+                                    <li class="dropdown-item" id="business-li-user"><i class="fa fa-user"></i> Normaler User Check-in</li>
+                                    <li class="dropdown-item" id="business-li-briefcase"><i class="fa fa-briefcase"></i> Geschäftlicher Check-in (für die Arbeit)</li>
+                                    <li class="dropdown-item" id="business-li-building"><i class="fa fa-building"></i> Arbeitsweg Check-in (für eine Strecke zum Arbeitsplatz)</li>
                                 </ul>
                         </div>
 
