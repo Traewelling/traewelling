@@ -124,7 +124,7 @@
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="edit" data-statusid="{{ $status->id }}" data-businessid="{{ $status->business }}"><i class="fas fa-edit"></i></a>
                     </li>
 
                     <li class="list-inline-item like-text">

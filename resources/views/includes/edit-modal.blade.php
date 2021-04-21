@@ -12,6 +12,24 @@
                         <label for="status-body">{{__('modals.editStatus-label')}}</label>
                         <textarea class="form-control" name="status-body" id="status-body" rows="5"></textarea>
                     </div>
+                    <div class="mt-2">
+                        <input type="hidden" id="business_check" name="business_check" class="form-control" value="0"/>
+                        <label class="btn btn-sm btn-outline-twitter dropdown-toggle"
+                               type="button"
+                               id="dropdownMenuButton"
+                               data-mdb-toggle="dropdown"
+                               aria-expanded="false"
+                        >
+                            <i class="fa fa-user" id="business-user"></i>
+                            <i class="fa fa-briefcase d-none" id="business-briefcase"></i>
+                            <i class="fa fa-building d-none" id="business-building"></i>
+                        </label>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li class="dropdown-item" id="business-li-user"><i class="fa fa-user"></i> Normaler User Check-in</li>
+                            <li class="dropdown-item" id="business-li-briefcase"><i class="fa fa-briefcase"></i> Geschäftlicher Check-in (für die Arbeit)</li>
+                            <li class="dropdown-item" id="business-li-building"><i class="fa fa-building"></i> Arbeitsweg Check-in (für eine Strecke zum Arbeitsplatz)</li>
+                        </ul>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

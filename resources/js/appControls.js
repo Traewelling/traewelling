@@ -1,5 +1,6 @@
 var statusId = 0;
 var statusBodyElement = null;
+let statusBusiness;
 
 $(document).on("click", ".edit", function (event) {
     console.log("edit");
@@ -7,7 +8,29 @@ $(document).on("click", ".edit", function (event) {
 
     statusId = event.target.parentElement.dataset["statusid"];
     statusBody = document.getElementById("status-" + statusId).dataset["body"];
+    statusBusiness = document.getElementById("status-" + statusId).dataset["businessid"];
     $("#status-body").val(statusBody);
+    $("#business_check").val(statusBusiness);
+    switch (statusBusiness){
+        case 0:
+            $(businessUserIcon).removeClass("d-none");
+            $(businessBriefcaseIcon).addClass("d-none");
+            $(businessBuildingIcon).addClass("d-none");
+            $(businessCheckInput).val("0");
+            break;
+        case 1:
+            $(businessUserIcon).addClass("d-none");
+            $(businessBriefcaseIcon).removeClass("d-none");
+            $(businessBuildingIcon).addClass("d-none");
+            $(businessCheckInput).val("1");
+            break;
+        case 2:
+            $(businessUserIcon).addClass("d-none");
+            $(businessBriefcaseIcon).addClass("d-none");
+            $(businessBuildingIcon).removeClass("d-none");
+            $(businessCheckInput).val("2");
+            break;
+    }
     $("#edit-modal").modal("show");
 });
 
