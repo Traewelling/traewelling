@@ -8,7 +8,11 @@ use App\Models\TrainStopover;
 
 class GeoController extends Controller
 {
-    public static function calculateDistance(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination): float|int {
+    public static function calculateDistance(
+        HafasTrip $hafasTrip,
+        TrainStopover $origin,
+        TrainStopover $destination
+    ): float|int {
         if ($hafasTrip->polyline == null || $hafasTrip?->getPolyLine?->polyline == null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
@@ -38,12 +42,14 @@ class GeoController extends Controller
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance     += self::calculateDistanceBetweenCoordinates(
+
+            $distance += self::calculateDistanceBetweenCoordinates(
                 latitudeA: $lastStopover->geometry->coordinates[0],
                 longitudeA: $lastStopover->geometry->coordinates[1],
                 latitudeB: $stopover->geometry->coordinates[0],
                 longitudeB: $stopover->geometry->coordinates[1]
             );
+
             $lastStopover = $stopover;
         }
         return $distance;
@@ -56,11 +62,16 @@ class GeoController extends Controller
      * @param TrainStopover $destination
      * @return float
      */
-    private static function calculateDistanceByStopovers(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination): float {
+    private static function calculateDistanceByStopovers(
+        HafasTrip $hafasTrip,
+        TrainStopover $origin,
+        TrainStopover $destination
+    ): float {
         $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
         $originStopoverIndex      = $stopovers->search($origin);
         $destinationStopoverIndex = $stopovers->search($destination);
-        $stopovers                = $stopovers->slice($originStopoverIndex, $destinationStopoverIndex - $originStopoverIndex + 1);
+
+        $stopovers = $stopovers->slice($originStopoverIndex, $destinationStopoverIndex - $originStopoverIndex + 1);
 
         $distance     = 0;
         $lastStopover = null;
@@ -79,7 +90,13 @@ class GeoController extends Controller
         return $distance;
     }
 
-    private static function calculateDistanceBetweenCoordinates(float $latitudeA, float $longitudeA, float $latitudeB, float $longitudeB, int $decimals = 3): float {
+    private static function calculateDistanceBetweenCoordinates(
+        float $latitudeA,
+        float $longitudeA,
+        float $latitudeB,
+        float $longitudeB,
+        int $decimals = 3
+    ): float {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
         }

@@ -322,18 +322,18 @@ class TransportController extends Controller
             $destinationAttributes['stop']['location']['longitude']
         );
 
-        $departureStopover = $hafasTrip->stopoversNEW
-            ->where('train_station_id', $originStation->id)
-            ->where('departure_planned', $departure)
-            ->first();
-        $arrivalStopover   = $hafasTrip->stopoversNEW
-            ->where('train_station_id', $destinationStation->id)
-            ->where('arrival_planned', $arrival)
-            ->first();
+            $departureStopover = $hafasTrip->stopoversNEW
+                ->where('train_station_id', $originStation->id)
+                ->where('departure_planned', $departure)
+                ->first();
+            $arrivalStopover   = $hafasTrip->stopoversNEW
+                ->where('train_station_id', $destinationStation->id)
+                ->where('arrival_planned', $arrival)
+                ->first();
 
         $distance = 0;
         if($departureStopover != null && $arrivalStopover != null) {
-            $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
+                $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
         }
 
         $points = self::CalculateTrainPoints(
