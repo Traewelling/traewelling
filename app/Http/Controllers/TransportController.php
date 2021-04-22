@@ -331,10 +331,10 @@ class TransportController extends Controller
                 ->where('arrival_planned', $arrival)
                 ->first();
 
-        $distance = 0;
-        if($departureStopover != null && $arrivalStopover != null) {
+            $distance = 0;
+            if($departureStopover != null && $arrivalStopover != null) {
                 $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
-        }
+            }
 
         $points = self::CalculateTrainPoints(
             $distance,
