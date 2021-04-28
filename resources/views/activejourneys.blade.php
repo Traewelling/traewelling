@@ -71,7 +71,7 @@
                                     try {
                                         map.removeLayer(map._layers[i]);
                                     } catch (e) {
-                                        console.log("problem with " + e + map._layers[i]);
+                                        console.error("problem with " + e + map._layers[i]);
                                     }
                                 }
                             }

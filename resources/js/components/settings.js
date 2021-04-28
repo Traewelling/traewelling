@@ -24,9 +24,6 @@ $("#image").on("change", function() {
         resize
             .croppie("bind", {
                 url: e.target.result
-            })
-            .then(function() {
-                console.log("jQuery bind complete");
             });
     };
     reader.readAsDataURL(this.files[0]);

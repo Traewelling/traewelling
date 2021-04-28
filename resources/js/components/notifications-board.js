@@ -74,10 +74,6 @@ document.getElementById("mark-all-read").addEventListener("click", () => {
 });
 
 const toggleRead = (notificationId, isNewStateRead) => {
-    console.log(notificationId, isNewStateRead);
-    console.log("#notification-" + notificationId + " .toggleReadState i");
-
-
     const icon = document.querySelector("#notification-" + notificationId + " .toggleReadState i");
     const row  = document.getElementById("notification-" + notificationId);
 

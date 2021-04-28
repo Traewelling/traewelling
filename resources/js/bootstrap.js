@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         require("./../../node_modules/bootstrap/js/dist/dropdown");
         require("./../../node_modules/mdb-ui-kit/js/mdb.min");
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 });
 /**
