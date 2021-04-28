@@ -1,5 +1,7 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}"
-     data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}">
+     data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}"
+     data-businessid="{{ $status->business }}"
+    >
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
             <div class="card-img-top">
@@ -136,7 +138,7 @@
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-statusid="{{ $status->id }}" data-businessid="{{ $status->business }}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
                     </li>
 
                     <li class="list-inline-item like-text">

@@ -129,7 +129,7 @@ class FrontendTransportController extends Controller
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
             'body'           => 'max:280',
-            'business_check' => 'integer|max:2',
+            'business_check_new_travel' => 'digits_between:0,2',
             'tweet_check'    => 'max:2',
             'toot_check'     => 'max:2',
             'event'          => 'integer',
@@ -143,7 +143,7 @@ class FrontendTransportController extends Controller
                 $request->destination,
                 $request->body,
                 Auth::user(),
-                $request->business_check,
+                $request->business_check_new_travel,
                 $request->tweet_check,
                 $request->toot_check,
                 $request->event,

@@ -129,7 +129,7 @@
                                     </label>
                                 @endif
                         @endif
-                            <input type="hidden" id="business_check" name="business_check" class="form-control" value="0"/>
+                            <input type="hidden" id="business_check_new_travel" name="business_check_new_travel" class="form-control" value="0"/>
                                 <label class="btn btn-sm btn-outline-twitter dropdown-toggle"
                                        type="button"
                                        id="dropdownMenuButton"
