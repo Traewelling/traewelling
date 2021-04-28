@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Jenssegers\Agent\Agent;
 
 class SettingsController extends Controller
@@ -43,12 +44,14 @@ class SettingsController extends Controller
     }
 
     public function updatePassword(Request $request): RedirectResponse {
+        $userHasPassword = auth()->user()->password != null;
+
         $validated = $request->validate([
-                                            'currentPassword' => ['required'],
+                                            'currentPassword' => [Rule::requiredIf($userHasPassword)],
                                             'password'        => ['required', 'string', 'min:8', 'confirmed']
                                         ]);
 
-        if (!Hash::check($validated['currentPassword'], auth()->user()->password)) {
+        if ($userHasPassword && !Hash::check($validated['currentPassword'], auth()->user()->password)) {
             return back()->withErrors(__('controller.user.password-wrong'));
         }
 
