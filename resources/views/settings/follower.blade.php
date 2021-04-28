@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-header">{{ __('menu.settings-myFollower') }}</div>
 
-                    <div class="card-body table-responsive ">
+                    <div class="card-body table-responsive">
 
                         @if($followers->count() == 0)
                             <b class="text-danger">
@@ -22,7 +22,6 @@
                                 <thead>
                                 <tr>
                                     <th colspan="2">Follower</th>
-                                    <th>{{__('settings.follower.following-since')}}</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -47,7 +46,6 @@
                                                 @endif
                                             </a>
                                         </td>
-                                        <td style="vertical-align: middle">{{$follower->created_at->diffForHumans()}}</td>
                                         <td>
                                             <form method="POST" action="{{route('settings.follower.remove')}}">
                                                 @csrf
