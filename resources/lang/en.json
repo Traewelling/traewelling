@@ -298,7 +298,6 @@
   "settings.revoke-ics-token-success": "The calendar token has been revoked.",
   "settings.follower.no-follower": "You don't have any followers.",
   "settings.follower.manage": "Manage followers",
-  "settings.follower.following-since": "Following since",
   "settings.follower.delete-success": "You successfully removed the follower.",
   "settings.follower.delete": "Remove follower",
   "stationboard.arr": "arr",
