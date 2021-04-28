@@ -283,7 +283,6 @@
   "settings.revoke-ics-token-success": "Die Kalenderfreigabe wurde gelöscht.",
   "settings.follower.no-follower": "Du hast keine Follower.",
   "settings.follower.manage": "Follower verwalten",
-  "settings.follower.following-since": "Folgt dir seit",
   "settings.follower.delete-success": "Du hast den Follower erfolgreich entfernt.",
   "settings.follower.delete": "Follower entfernen",
   "stationboard.arr": "an",
