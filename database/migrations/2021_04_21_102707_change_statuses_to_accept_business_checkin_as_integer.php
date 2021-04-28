@@ -16,13 +16,7 @@ class ChangeStatusesToAcceptBusinessCheckinAsInteger extends Migration
 
         DB::table('statuses')
             ->whereNull('business')
-            ->update(['business' => '0']);
-        DB::table('statuses')
-            ->where('business', 'true')
-            ->update(['business' => '1']);
-        DB::table('statuses')
-            ->where('business', 'false')
-            ->update(['business' => '0']);
+            ->update(['business' => 0]);
     }
 
     public function down() {
@@ -33,9 +27,6 @@ class ChangeStatusesToAcceptBusinessCheckinAsInteger extends Migration
 
         DB::table('statuses')
             ->where('business', '>=', '1')
-            ->update(['business' => true]);
-        DB::table('statuses')
-            ->where('business', '0')
-            ->update(['business' => false]);
+            ->update(['business' => 1]);
     }
 }
