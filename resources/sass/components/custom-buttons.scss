@@ -35,3 +35,17 @@
   color: #fff;
   background-color: #2a90d9;
 }
+
+.btn-outline-grey {
+  color: #495057;
+  border-color: #495057;
+}
+
+.btn-check:active + .btn-outline-grey,
+.btn-check:checked + .btn-outline-grey,
+.btn-outline-grey.active,
+.btn-outline-grey:active,
+.show > .btn-outline-grey.dropdown-toggle {
+  color: #fff;
+  background-color: #495057;
+}

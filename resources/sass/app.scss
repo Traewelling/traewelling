@@ -17,6 +17,10 @@ body {
   font-weight: 300;
 }
 
+.card {
+  box-shadow: 0 10px 20px 0 rgba(0,0,0,.1);
+}
+
 // Overall site layout
 @import "site";
 @import "small-phones";

@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <div class="card">
                     <div class="card-header">{{ __('menu.settings-myFollower') }}</div>
 
@@ -30,7 +30,7 @@
                                 @foreach($followers as $follower)
                                     <tr>
                                         <td>
-                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                            <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $follower->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $follower->username]) }}"
                                                          style="height: 3em;"

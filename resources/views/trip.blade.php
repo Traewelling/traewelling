@@ -4,7 +4,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <div class="card">
                     <div class="card-header" data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
@@ -109,6 +109,7 @@
                             </label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
+						
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
                                 @if (auth()->user()->socialProfile->twitter_id != null)

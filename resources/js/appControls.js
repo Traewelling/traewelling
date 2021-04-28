@@ -1,10 +1,35 @@
 var statusBodyElement = null;
 
+$(document).on("click", ".edit", function (event) {
+    console.log("edit");
+    event.preventDefault();
+
+    statusId = event.target.parentElement.dataset["statusid"];
+    statusBody = document.getElementById("status-" + statusId).dataset["body"];
+    $("#status-body").val(statusBody);
+    $("#edit-modal").modal("show");
+});
+
+$(document).on("click", "#modal-save", function () {
+    $.ajax({
+        method: "POST",
+        url: urlEdit,
+        data: {
+            body: $("#status-body").val(),
+            statusId: statusId,
+            businessCheck: $("#business_check:checked").length,
+            _token: token
+        }
+    }).done(function (msg) {
+        window.location.reload();
+    });
+});
+
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
     statusId = event.target.parentElement.dataset["statusid"];
-    $("#delete-modal").modal();
+    $("#delete-modal").modal("show");
 });
 
 $(document).on("click", "#modal-delete", function () {

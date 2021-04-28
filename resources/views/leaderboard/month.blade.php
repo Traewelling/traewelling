@@ -37,7 +37,7 @@
                     <div class="card mb-2">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
-                            <div class="image-box pr-0 d-lg-flex">
+                            <div class="image-box pe-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                          alt="{{$place['user']->username}}" style="width: 50%;">
@@ -73,7 +73,7 @@
         <hr/>
         @if($leaderboard->count() > 3)
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-8 col-lg-7">
                     <div class="card">
                         <div class="card-body table-responsive">
                         <div class="card-body table-responsive">
@@ -92,7 +92,7 @@
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
-                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                            <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                                          alt="{{$place['user']->username}}">

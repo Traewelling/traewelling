@@ -12,13 +12,13 @@
     @endif
 
     <div class="card-body row">
-        <div class="col-2 image-box pr-0 d-none d-lg-flex">
+        <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}">
             </a>
         </div>
 
-        <div class="col pl-0">
+        <div class="col ps-0">
             <ul class="timeline">
                 <li>
                     <i>&nbsp;</i>
@@ -42,8 +42,8 @@
                                 <i class="fa fa-train d-inline"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
-                        <span class="pl-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="pl-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
+                        <span class="ps-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
+                        <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
 
                         @if($status->business == 1)
                             <span class="pl-sm-2"><i class="fa fa-briefcase"></i></span>
