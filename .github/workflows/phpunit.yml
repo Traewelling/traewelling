@@ -25,7 +25,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, bcmath, ctype, fileinfo, json, openssl, pdo, tokenizer, xml, gd
-          coverage: none
+          coverage: xdebug
 
       - name: Copy .env
         run: cp .env.example .env
@@ -52,9 +52,6 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test
-
-      - name: Write clover.xml
-        run: vendor/bin/phpunit --coverage-clover clover.xml
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1
