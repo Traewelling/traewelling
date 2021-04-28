@@ -45,7 +45,6 @@
                     <i class="fas fa-plus"></i>
                     {{__('settings.create-ics-token')}}
                 </button>
-
             </div>
         </form>
     </div>
