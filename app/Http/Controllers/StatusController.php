@@ -288,21 +288,22 @@ class StatusController extends Controller
             ];
             $callback = function() use ($export) {
                 $fileStream = fopen('php://output', 'w');
-                fputcsv($fileStream, ['Status-ID',
-                                      'Zugart',
-                                      'Zugnummer',
-                                      'Abfahrtsort',
-                                      'Abfahrtskoordinaten',
-                                      'Abfahrtszeit',
-                                      'Ankunftsort',
-                                      'Ankunftskoordinaten',
-                                      'Ankunftszeit',
-                                      'Reisezeit',
-                                      'Kilometer',
-                                      'Punkte',
-                                      'Status',
-                                      'Zwischenhalte',
-                                      'Fahrttyp'
+                fputcsv($fileStream, [
+                    __('export.title.status-id'),
+                    __('export.title.train-type'),
+                    __('export.title.train-number'),
+                    __('export.title.origin.location'),
+                    __('export.title.origin.coordinates'),
+                    __('export.title.origin.time'),
+                    __('export.title.destination.location'),
+                    __('export.title.destination.coordinates'),
+                    __('export.title.destination.time'),
+                    __('export.title.travel-time'),
+                    __('export.title.kilometer'),
+                    __('export.title.points'),
+                    __('export.title.status'),
+                    __('export.title.stopovers'),
+                    __('export.title.type'),
                 ], "\t");
                 foreach ($export as $t) {
                     fputcsv($fileStream, $t, "\t");
