@@ -14,8 +14,8 @@ let businessUser = $("#business-li-user");
 let businessBriefcase = $("#business-li-briefcase");
 let businessBuilding = $("#business-li-building");
 
-function setIconsForCheckIn(number){
-    switch (number){
+function setIconsForCheckIn(number) {
+    switch (number) {
         case 1:
             $(businessUserIcon).addClass("d-none");
             $(businessBriefcaseIcon).removeClass("d-none");
@@ -40,17 +40,17 @@ function setIconsForCheckIn(number){
     }
 }
 
-$(businessUser).on("click", function (){
-    setIconsForCheckIn(0)
-})
+$(businessUser).on("click", function () {
+    setIconsForCheckIn(0);
+});
 
-$(businessBriefcase).on("click", function (){
-    setIconsForCheckIn(1)
-})
+$(businessBriefcase).on("click", function () {
+    setIconsForCheckIn(1);
+});
 
-$(businessBuilding).on("click", function (){
-    setIconsForCheckIn(2)
-})
+$(businessBuilding).on("click", function () {
+    setIconsForCheckIn(2);
+});
 
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
