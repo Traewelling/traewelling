@@ -9,7 +9,7 @@ class ChangeStatusesToAcceptBusinessCheckinAsInteger extends Migration
 {
     public function up() {
         Schema::table('statuses', function(Blueprint $table) {
-            $table->integer('business')
+            $table->unsignedTinyInteger('business')
                   ->default(0)
                   ->change();
         });
