@@ -368,7 +368,7 @@ class TransportController extends Controller
         $status = Status::create([
                                      'user_id'  => $user->id,
                                      'body'     => $body,
-                                     'business' => isset($businessCheck) && $businessCheck == 'on'
+                                     'business' => $businessCheck
                                  ]);
 
         $plannedDeparture = Carbon::parse(

@@ -1,4 +1,3 @@
-var statusId = 0;
 var statusBodyElement = null;
 
 $(document).on("click", ".edit", function (event) {

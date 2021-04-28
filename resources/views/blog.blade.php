@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('title')
     @if($page == "home")
         {{__('menu.blog')}}
@@ -8,6 +9,7 @@
         {{__('menu.blog')}}: {{ $category }}
     @endif
 @endsection
+
 @section('content')
     <div class="container blog">
         <div class="row justify-content-center">
