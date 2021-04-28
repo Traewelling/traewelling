@@ -53,7 +53,6 @@ $(businessBuilding).on("click", function (){
 })
 
 $(document).on("click", ".edit", function (event) {
-    console.log("edit");
     event.preventDefault();
 
     statusId = event.target.parentElement.dataset["statusid"];
