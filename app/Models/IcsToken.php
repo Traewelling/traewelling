@@ -10,7 +10,8 @@ class IcsToken extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'token'];
+    protected $fillable = ['user_id', 'name', 'token', 'last_accessed'];
+    protected $dates    = ['last_accessed'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
