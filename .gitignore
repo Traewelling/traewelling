@@ -1,6 +1,8 @@
 vendor/
 node_modules/
 npm-debug.log
+report/
+clover.xml
 
 # Profile pictures
 public/uploads/avatars/*
