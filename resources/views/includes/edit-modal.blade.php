@@ -25,9 +25,17 @@
                             <i class="fa fa-building d-none" id="business-building"></i>
                         </label>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li class="dropdown-item" id="business-li-user"><i class="fa fa-user"></i> Normaler User Check-in</li>
-                            <li class="dropdown-item" id="business-li-briefcase"><i class="fa fa-briefcase"></i> Geschäftlicher Check-in (für die Arbeit)</li>
-                            <li class="dropdown-item" id="business-li-building"><i class="fa fa-building"></i> Arbeitsweg Check-in (für eine Strecke zum Arbeitsplatz)</li>
+                            <li class="dropdown-item" id="business-li-user"><i
+                                        class="fa fa-user"></i> {{ __('stationboard.business.private') }}</li>
+                            <li class="dropdown-item" id="business-li-briefcase"><i
+                                        class="fa fa-briefcase"></i> {{ __('stationboard.business.business') }}
+                                <br/> <span
+                                        class="text-muted"> {{ __('stationboard.business.business.detail') }}</span>
+                            </li>
+                            <li class="dropdown-item" id="business-li-building"><i
+                                        class="fa fa-building"></i> {{ __('stationboard.business.commute') }} <br/>
+                                <span class="text-muted"> {{ __('stationboard.business.commute.detail') }}</span>
+                            </li>
                         </ul>
                     </div>
                 </form>
