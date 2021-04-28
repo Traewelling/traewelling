@@ -1,6 +1,7 @@
 vendor/
 node_modules/
 npm-debug.log
+report
 
 # Profile pictures
 public/uploads/avatars/*
