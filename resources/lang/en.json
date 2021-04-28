@@ -150,6 +150,8 @@
   "export.page": "Page",
   "export.journey-from-to": "Journey from :origin to :destination",
   "export.reason": "Reason",
+  "export.reason.business": "Business travel",
+  "export.reason.commute": "Commute",
   "leaderboard.distance": "Distance",
   "leaderboard.averagespeed": "Speed",
   "leaderboard.duration": "Duration",

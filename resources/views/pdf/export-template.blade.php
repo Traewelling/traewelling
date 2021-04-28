@@ -70,6 +70,14 @@
             }
 
             .footer {
+                font-size: 9px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin:0;
+            }
+
+            .footer-wrapper {
                 position: fixed;
                 bottom: -60px;
                 left: 0px;
@@ -81,15 +89,26 @@
                 float: right;
             }
 
+            .center {
+
+                text-align: center;
+                font-style: italic;
+            }
+
         </style>
     </head>
     <body>
-        <div class="footer fixed-section">
-            <div class="right">
-                <span class="page-number">{{ __('export.page') }} </span>
-            </div>
-            <div class="left">
-                <span class="promo">{!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}</span>
+        <div class="footer-wrapper">
+            <div class="footer fixed-section">
+                <div class="right">
+                    <span class="page-number">{{ __('export.page') }}</span>
+                </div>
+                <div class="center">
+                    1 {{ __('export.reason.business') }} | 2 {{ __('export.reason.commute') }}
+                </div>
+                <div class="left">
+                    <span class="promo">{!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}</span>
+                </div>
             </div>
         </div>
         <div class="export-container">
@@ -113,7 +132,6 @@
                         <th>{{ __('export.duration') }}</th>
                         <th>{{ __('export.kilometers') }}</th>
                         <th>{{ __('export.reason') }}</th>
-                        {{--            TODO IMPORTANT: This translation has to be moved to the json, as soon as this branch is up to date --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -127,15 +145,7 @@
                             <td>{{ $e[8] }}</td>
                             <td>{{ $e[9] }}</td>
                             <td>{{ $e[10] }}</td>
-                            <td><i class="fa fa-
-                            @if($e[14] == 2)
-                                        building
-@elseif($e[14] == 1)
-                                        briefcase
-@else
-                                        user
-@endif
-                                        "></i></td>
+                            <td><i>{{ $e[14] > 0 ? $e[14] : ''  }}</i></td>
                             {{--                            ToDo This is not showing up yet... weird.--}}
                         </tr>
                     @endforeach
