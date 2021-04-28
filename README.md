@@ -74,4 +74,10 @@ If you add code:
 * Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to have half-baked languages that have missing strings after a while.
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
+### Translations
+We currently support the languages German and English. A few translations also in Swedish. We would like to become even more international and for this we need you and your language skills.
+
+We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add new translations and correct mistakes.
+
+## License
 We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you are required to publish changes that you make to this software. Please refrain from creating your own public instance of Träwelling, instead try to create a better version for everyone.
