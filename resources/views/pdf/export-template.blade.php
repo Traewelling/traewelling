@@ -146,7 +146,6 @@
                             <td>{{ $e[9] }}</td>
                             <td>{{ $e[10] }}</td>
                             <td><i>{{ $e[14] > 0 ? $e[14] : ''  }}</i></td>
-                            {{--                            ToDo This is not showing up yet... weird.--}}
                         </tr>
                     @endforeach
                 </tbody>
