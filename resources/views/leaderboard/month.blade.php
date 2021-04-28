@@ -14,7 +14,7 @@
                 </a>
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
-                       class="btn btn-sm btn-primary float-right">
+                       class="btn btn-sm btn-primary float-end">
                         {{$date->clone()->addMonth()->isoFormat('MMMM YYYY')}} <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
@@ -37,7 +37,7 @@
                     <div class="card mb-2">
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
-                            <div class="image-box pr-0 d-lg-flex">
+                            <div class="image-box pe-0 d-lg-flex">
                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
                                          alt="{{$place['user']->username}}" style="width: 50%;">
@@ -73,17 +73,18 @@
         <hr/>
         @if($leaderboard->count() > 3)
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-8 col-lg-7">
                     <div class="card">
-                        <div class="card-body">
-                            <table class="table table-responsive table-vertical-center">
+                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive">
+                            <table class="table table-vertical-center">
                                 <thead>
                                     <tr>
-                                        <td>{{ __('leaderboard.rank') }}</td>
-                                        <td colspan="2">{{ __('leaderboard.user') }}</td>
-                                        <td>{{ __('leaderboard.duration') }}</td>
-                                        <td>{{ __('leaderboard.distance') }}</td>
-                                        <td>{{ __('leaderboard.points') }}</td>
+                                        <th scope="col">{{ __('leaderboard.rank') }}</th>
+                                        <th scope="col" colspan="2">{{ __('leaderboard.user') }}</th>
+                                        <th scope="col">{{ __('leaderboard.duration') }}</th>
+                                        <th scope="col">{{ __('leaderboard.distance') }}</th>
+                                        <th scope="col">{{ __('leaderboard.points') }}</th>
                                     </tr>
                                 </thead>
                                 @foreach($leaderboard->take(100) as $place)
@@ -91,10 +92,10 @@
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
-                                            <div class="image-box pr-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                            <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                                         alt="{{$place['user']->username}}" style="height: 75px;">
+                                                         alt="{{$place['user']->username}}">
                                                 </a>
                                             </div>
                                         </td>

@@ -10,13 +10,15 @@
 // Bootstrap
 //@import "~bootstrap/scss/bootstrap";
 // mdbootstrap pro
-@import "~mdbootstrap/css/mdb.css";
-@import "~mdbootstrap/css/bootstrap.css";
-@import "~mdbootstrap/scss/mdb-free";
+@import '~mdb-ui-kit/css/mdb.min.css';
 
 body {
   font-family: "Nunito", sans-serif;
   font-weight: 300;
+}
+
+.card {
+  box-shadow: 0 10px 20px 0 rgba(0,0,0,.1);
 }
 
 // Overall site layout
@@ -44,6 +46,7 @@ body {
 @import "./components/notifications-board";
 @import "./components/leaderboard";
 @import "./components/search";
+@import "./components/custom-buttons";
 
 .table-vertical-center td {
   vertical-align: middle;

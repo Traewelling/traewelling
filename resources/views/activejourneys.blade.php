@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8" id="activeJourneys">
+            <div class="col-md-8 col-lg-7" id="activeJourneys">
                 <h4>{{ __('menu.active') }}</h4>
 
                 <div id="map" class="embed-responsive embed-responsive-1by1"></div>

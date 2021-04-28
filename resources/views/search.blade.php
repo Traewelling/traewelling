@@ -5,9 +5,9 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 @if($userSearchResponse->count() == 0)
-                    <div class="col-md-8 offset-md-2">
+                    <div class="col-md-8 col-lg-7">
                         <div class="alert my-3 alert-danger" role="alert">
                             {{ __('user.no-user') }}
                         </div>
@@ -23,7 +23,7 @@
                                 </a>
                             </div>
 
-                            <div class="col pl-0">
+                            <div class="col ps-0">
                                 <a href="{{ route('account.show', ['username' => $user->username]) }}">
                                     <h4>{{ $user->name }}@if($user->private_profile)<i
                                                 class="fas fa-user-lock"></i>@endif <small
@@ -33,8 +33,8 @@
                                     <small>
                                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ $user->train_distance }}</span><span
                                                 class="small font-weight-lighter">km</span>
-                                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                                        <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
+                                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
                                                 class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                                     </small>
                                 </h6>
