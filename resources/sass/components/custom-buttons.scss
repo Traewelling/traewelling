@@ -1,0 +1,51 @@
+.btn-outline-twitter {
+  color: #1da1f2;
+  border-color: #1da1f2;
+}
+
+.btn-twitter {
+  color: #fff;
+  background-color: #1da1f2;
+}
+
+.btn-check:active + .btn-outline-twitter,
+.btn-check:checked + .btn-outline-twitter,
+.btn-outline-twitter.active,
+.btn-outline-twitter:active,
+.show > .btn-outline-twitter.dropdown-toggle {
+  color: #fff;
+  background-color: #1da1f2;
+}
+
+.btn-outline-mastodon {
+  color: #2a90d9;
+  border-color: #2a90d9;
+}
+
+.btn-mastodon {
+  color: #fff;
+  background-color: #2a90d9;
+}
+
+.btn-check:active + .btn-outline-mastodon,
+.btn-check:checked + .btn-outline-mastodon,
+.btn-outline-mastodon.active,
+.btn-outline-mastodon:active,
+.show > .btn-outline-mastodon.dropdown-toggle {
+  color: #fff;
+  background-color: #2a90d9;
+}
+
+.btn-outline-grey {
+  color: #495057;
+  border-color: #495057;
+}
+
+.btn-check:active + .btn-outline-grey,
+.btn-check:checked + .btn-outline-grey,
+.btn-outline-grey.active,
+.btn-outline-grey:active,
+.show > .btn-outline-grey.dropdown-toggle {
+  color: #fff;
+  background-color: #495057;
+}

@@ -49,11 +49,10 @@
                                         <input type="text" name="domain" class="form-control"
                                                placeholder="{{__('user.mastodon-instance-url')}}"
                                                aria-describedby="button-addon4"/>
-                                        <div id="button-addon4" class="input-group-append">
-                                            <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                                <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
-                                            </button>
-                                        </div>
+                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
+                                            <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                        </button>
+
                                     </div>
                                 </form>
                             </td>

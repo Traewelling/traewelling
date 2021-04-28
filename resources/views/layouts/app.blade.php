@@ -47,7 +47,7 @@
                                 aria-label="{{ __('notifications.mark-all-read') }}">
                             <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
                         </button>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -66,34 +66,39 @@
                         {{ config('app.name', 'Träwelling') }}
                     </a>
                     <div class="navbar-toggler">
-                        <button class="navbar-toggler notifications-board-toggle" type="button" data-toggle="modal"
-                                data-target="#notifications-board" aria-controls="navbarSupportedContent"
-                                aria-expanded="false"
-                                aria-label="{{ __('Show notifications') }}">
-                            <span class="notifications-bell far fa-bell"></span>
-                        </button>
-
-                        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        @auth
+                            <button class="navbar-toggler notifications-board-toggle" type="button"
+                                    data-mdb-toggle="modal"
+                                    data-mdb-target="#notifications-board" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false"
+                                    aria-label="{{ __('Show notifications') }}">
+                                <span class="notifications-bell far fa-bell"></span>
+                            </button>
+                        @endauth
+                        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                            <span class="navbar-toggler-icon"></span>
+                            <i class="fas fa-bars"></i>
                         </button>
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
+                        <ul class="navbar-nav me-auto">
                             @auth
-                                <li class="nav-item {{ request()->is('dashboard/*') ? 'active' : '' }}">
-                                    <a class="nav-link" href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}"
+                                       href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                                 </li>
                             @endauth
-                            <li class="nav-item {{ request()->is('leaderboard') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
+                                   href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
                             </li>
-                            <li class="nav-item {{ request()->is('statuses/active') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
+                                   href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
                         </ul>
-                        <ul class="navbar-nav ml-auto">
+                        <ul class="navbar-nav w-auto">
                             @guest
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('menu.login') }}</a>
@@ -103,29 +108,27 @@
                                 </li>
                             @else
                                 <form class="form-inline" action="{{ route('userSearch') }}">
-                                    <div class="input-group md-form form-sm form-2 pl-0 m-0">
+                                    <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="Search" aria-label="User suchen">
-                                        <div class="input-group-append">
-                                            <button class="input-group-text btn-primary lighten-2" type="submit">
-                                                <i class="fas fa-search text-grey" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
+                                        <button class="input-group-text btn-primary" type="submit">
+                                            <i class="fas fa-search" aria-hidden="true"></i>
+                                        </button>
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
                                     <a href="javascript:void(0)" id="notifications-toggle"
                                        class="nav-link notifications-board-toggle"
-                                       data-toggle="modal"
-                                       data-target="#notifications-board">
+                                       data-mdb-toggle="modal"
+                                       data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle mdb-select"
-                                       href="javascript:void(0)"
-                                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
+                                       role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">
                                         {{ Auth::user()->name }} <span class="caret"></span>
                                     </a>
 
@@ -168,7 +171,7 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="text-muted mb-0 float-right">
+                    <div class="text-muted mb-0 float-end">
                         |
                         @foreach(config('app.locales') as $key=>$lang)
                             <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |

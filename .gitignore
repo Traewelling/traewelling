@@ -6,6 +6,9 @@ npm-debug.log
 public/uploads/avatars/*
 !public/uploads/avatars/user.jpg
 
+# vendor-views
+!resources/views/vendor
+
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
@@ -62,7 +65,7 @@ Homestead.json
 # auto-import.
 # .idea/modules.xml
 # .idea/*.iml
-# .idea/modules
+# .idea/modulesK
 # *.iml
 # *.ipr
 

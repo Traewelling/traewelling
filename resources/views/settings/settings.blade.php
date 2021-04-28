@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 @include('settings.cards.general')
                 @include('settings.cards.password')
                 @include('settings.cards.login-providers')

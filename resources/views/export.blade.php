@@ -25,9 +25,9 @@
                             </div>
                             <div class="row pt-2">
                                 <input type="checkbox" class="custom-control-input" id="private-trips"
-                                       name="private-trips" value="true" checked>
+                                       name="private-trips" value="true" checked hidden>
                                 <input type="checkbox" class="custom-control-input" id="business-trips"
-                                       name="business-trips" value="false" checked>
+                                       name="business-trips" value="false" checked hidden>
 
                                 <div class="col text-right">
                                     <div class="btn-group">
