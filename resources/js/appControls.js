@@ -1,7 +1,6 @@
 var statusBodyElement = null;
 
 $(document).on("click", ".edit", function (event) {
-    console.log("edit");
     event.preventDefault();
 
     statusId = event.target.parentElement.dataset["statusid"];
@@ -101,7 +100,6 @@ $(document).on("click", ".follow", function (event) {
     event.preventDefault();
 
     userId = event.target.dataset["userid"];
-    console.log(userId);
     if (event.target.dataset["following"] == "no") {
         $.ajax({
             method: "POST",
