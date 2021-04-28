@@ -42,7 +42,7 @@ class BlogTest extends TestCase
         $this->assertNotEquals($this->getBlogpostsCount($response), 0);
 
         // We expect to see a page title with the expected category name
-        $response->assertSee('<h1><i class="fa fa-tag pr-2"></i>Fehlerbehebung</h1>', false);
+        $response->assertSee('<h1><i class="fa fa-tag pe-2"></i>Fehlerbehebung</h1>', false);
 
         // This is likely to fail when we start to use the TAG icon with Category names in our blog posts.
         // In this case, please get add a space or a zero-width space (&#x200b;) between those words.
