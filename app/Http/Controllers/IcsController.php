@@ -74,14 +74,19 @@ class IcsController extends Controller
             $calendar->event($event);
         }
 
+        $icsToken->update(['last_accessed' => Carbon::now()]);
+
         return response($calendar->get())
             ->header('Content-Type', 'text/calendar')
             ->header('charset', 'utf-8');
     }
 
-    public function createIcsToken(): RedirectResponse {
+    public function createIcsToken(Request $request): RedirectResponse {
+        $validated = $request->validate(['name' => ['required', 'max:255']]);
+
         $icsToken = IcsToken::create([
                                          'user_id' => auth()->user()->id,
+                                         'name'    => $validated['name'],
                                          'token'   => Str::uuid()->toString()
                                      ]);
 
