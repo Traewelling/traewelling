@@ -25,7 +25,7 @@
 
 ## Set up an instance
 
-We're using the [Laravel framework](https://laravel.com/docs/8.0) which depends on:
+We're using the [Laravel framework](https://laravel.com/docs/8.x) which depends on:
 
 * PHP 8.0 (or higher)
   * PHP GD library 
