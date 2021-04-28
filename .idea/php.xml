@@ -169,7 +169,6 @@
       <path value="$PROJECT_DIR$/vendor/spatie/icalendar-generator" />
       <path value="$PROJECT_DIR$/vendor/paragonie/constant_time_encoding" />
       <path value="$PROJECT_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
-      <path value="$PROJECT_DIR$/vendor/laravel-lang/lang" />
       <path value="$PROJECT_DIR$/vendor/doctrine/deprecations" />
     </include_path>
   </component>
