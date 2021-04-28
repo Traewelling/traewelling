@@ -3,12 +3,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">{{__('modals.deleteStatus-title')}}</h4>
-                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.abort')}}</button>
                 <button type="button" class="btn btn-danger" id="modal-delete">{{__('modals.delete-confirm')}}</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+</div>
