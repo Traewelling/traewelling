@@ -9,7 +9,6 @@
 [![Codacy Badge](https://img.shields.io/codacy/grade/60765ceacee5494184476eae9bf27a1f)](https://app.codacy.com/gh/Traewelling/traewelling?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Coverage Badge](https://img.shields.io/codacy/coverage/60765ceacee5494184476eae9bf27a1f)](https://www.codacy.com/gh/Traewelling/traewelling/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Coverage)
 [![Translation status](https://weblate.bubu1.eu/widgets/trawelling/-/common/svg-badge.svg)](https://weblate.bubu1.eu/engage/trawelling/)
-[![Twitter Follow](https://img.shields.io/twitter/follow/traewelling?color=blue&style=flat)](https://twitter.com/traewelling)
 ![License](https://img.shields.io/github/license/traewelling/traewelling)
 [![Träwelling Screenshot](traewelling.jpg)](https://traewelling.de)
 
