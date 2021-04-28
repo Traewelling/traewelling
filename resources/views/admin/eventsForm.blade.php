@@ -65,7 +65,7 @@
                 <input type="submit" class="btn btn-primary" value="{{ __('modals.edit-confirm') }}">
 
                 @if($event->id != 0)
-                    <a href="#" class="btn btn-danger" role="button" data-toggle="modal" data-target="#delete-modal-{{ $event->id }}">
+                    <a href="#" class="btn btn-danger" role="button" data-mdb-toggle="modal" data-mdb-target="#delete-modal-{{ $event->id }}">
                         {{ __('modals.delete-confirm') }}
                     </a>
                 @endif
@@ -81,13 +81,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{__('modals.deleteEvent-title')}}</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     {!! __('modals.deleteEvent-body', ['name' => $event->name]) !!}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">{{__('menu.abort')}}</button>
+                    <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.abort')}}</button>
                     <a href="{{ URL::signedRoute('events.delete', ['slug' => $event->slug]) }}" class="btn btn-danger" id="modal-delete">{{__('modals.delete-confirm')}}</a>
                 </div>
             </div><!-- /.modal-content -->

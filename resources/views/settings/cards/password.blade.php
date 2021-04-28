@@ -5,20 +5,23 @@
         <form method="POST" action="{{ route('password.change') }}">
             @csrf
             <input type="hidden" name="username" autocomplete="username">
-            <div class="form-group row">
-                <label for="name" class="col-md-4 col-form-label text-md-right">
-                    {{ __('settings.current-password') }}
-                </label>
-                <div class="col-md-6">
-                    <input id="currentPassword" type="password"
-                           class="form-control @error('currentPassword') is-invalid @enderror"
-                           name="currentPassword" autocomplete="current-password"/>
 
-                    @error('currentPassword')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                    @enderror
+            @if(auth()->user()->password != null)
+                <div class="form-group row">
+                    <label for="name" class="col-md-4 col-form-label text-md-right">
+                        {{ __('settings.current-password') }}
+                    </label>
+                    <div class="col-md-6">
+                        <input id="currentPassword" type="password"
+                               class="form-control @error('currentPassword') is-invalid @enderror"
+                               name="currentPassword" autocomplete="current-password"/>
+
+                        @error('currentPassword')
+                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <div class="form-group row">
                 <label for="email" class="col-md-4 col-form-label text-md-right">

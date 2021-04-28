@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FollowTableSeeder::class);
         TrainStation::factory()->count(50)->create();
         $this->call(EventSeeder::class);
-        HafasTrip::factory()->count(50)->create();
+        $this->call(HafasTripSeeder::class);
         $this->call(TrainCheckinSeeder::class);
     }
 }

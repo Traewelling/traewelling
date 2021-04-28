@@ -4,12 +4,12 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <div class="card">
                     <div class="card-header" data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
                          data-tripid="{{ $hafasTrip->trip_id }}">
-                        <div class="float-right">
+                        <div class="float-end">
                             <a href="#" class="train-destinationrow"
                                data-ibnr="{{$terminalStop['stop']['id']}}"
                                data-stopname="{{$terminalStop['stop']['name']}}"
@@ -97,7 +97,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="checkinModalTitle">{{__('stationboard.new-checkin')}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -109,30 +109,56 @@
                             </label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
-                        @if (auth()->user()->socialProfile != null)
-                            @if (auth()->user()->socialProfile->twitter_id != null)
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="tweet_check"
-                                           name="tweet_check"/>
-                                    <label class="custom-control-label" for="tweet_check">
-                                        {{__('stationboard.check-tweet')}}
+						
+                        <div class="mt-2">
+                            @if (auth()->user()->socialProfile != null)
+                                @if (auth()->user()->socialProfile->twitter_id != null)
+                                    <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
+                                           name="tweet_check">
+                                    <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
+                                        <i class="fab fa-twitter"></i>
+                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
                                     </label>
-                                </div>
-                            @endif
+                                @endif
 
-                            @if (auth()->user()->socialProfile->mastodon_id != null)
-                                <div class="custom-control custom-checkbox custom-control-inline">
-                                    <input type="checkbox" class="custom-control-input" id="toot_check"
+                                @if (auth()->user()->socialProfile->mastodon_id != null)
+                                    <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
                                            name="toot_check"/>
-                                    <label class="custom-control-label" for="toot_check">
-                                        {{__('stationboard.check-toot')}}
+                                    <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
+                                        <i class="fab fa-mastodon"></i>
+                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
                                     </label>
-                                </div>
+                                @endif
                             @endif
-                        @endif
+                            <input type="hidden" id="business_check_new_travel" name="business_check_new_travel"
+                                   class="form-control" value="0"/>
+                            <label class="btn btn-sm btn-outline-twitter dropdown-toggle"
+                                   type="button"
+                                   id="dropdownMenuButton"
+                                   data-mdb-toggle="dropdown"
+                                   aria-expanded="false"
+                            >
+                                <i class="fa fa-user" id="business-user"></i>
+                                <i class="fa fa-briefcase d-none" id="business-briefcase"></i>
+                                <i class="fa fa-building d-none" id="business-building"></i>
+                            </label>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li class="dropdown-item" id="business-li-user"><i
+                                            class="fa fa-user"></i> {{ __('stationboard.business.private') }}</li>
+                                <li class="dropdown-item" id="business-li-briefcase"><i
+                                            class="fa fa-briefcase"></i> {{ __('stationboard.business.business') }}
+                                    <br/> <span
+                                            class="text-muted"> {{ __('stationboard.business.business.detail') }}</span>
+                                </li>
+                                <li class="dropdown-item" id="business-li-building"><i
+                                            class="fa fa-building"></i> {{ __('stationboard.business.commute') }} <br/>
+                                    <span class="text-muted"> {{ __('stationboard.business.commute.detail') }}</span>
+                                </li>
+                            </ul>
+                        </div>
 
                         @if($events->count() == 1)
-                            <div class="custom-control custom-checkbox">
+                            <div class="custom-control custom-checkbox mt-2">
                                 <input type="checkbox" class="custom-control-input" id="event_check" name="event"
                                        value="{{ $events[0]->id }}"/>
                                 <label class="custom-control-label" for="event_check">
@@ -165,7 +191,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">
+                    <button type="button" class="btn btn-light" data-mdb-dismiss="modal">
                         {{ __('menu.abort') }}
                     </button>
                     <button type="button" class="btn btn-primary" id="checkinButton">

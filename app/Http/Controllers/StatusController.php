@@ -69,10 +69,10 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                              //PrivateProfile This needs to be removed with the Follow-Request-Feature
+                //PrivateProfile This needs to be removed with the Follow-Request-Feature
                               ->whereHas('user', function($query) use ($authID) {
-                                  return $query->where('private_profile', false)->orWhere('id', $authID);
-                              })
+                    return $query->where('private_profile', false)->orWhere('id', $authID);
+                })
                               ->get()
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -111,8 +111,8 @@ class StatusController extends Controller
     }
 
     public static function getDashboard($user): Paginator {
-        $userIds   = $user->follows->pluck('id');
-        $userIds[] = $user->id;
+        $userIds        = $user->follows->pluck('id');
+        $userIds[]      = $user->id;
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
@@ -124,10 +124,10 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-                     //PrivateProfile This needs to be removed with the Follow-Request-Feature
+            //PrivateProfile This needs to be removed with the Follow-Request-Feature
                      ->whereHas('user', function($query) {
-                         return $query->where('private_profile', false);
-                     })
+                return $query->where('private_profile', false);
+            })
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -177,8 +177,9 @@ class StatusController extends Controller
         if ($user != $status->user) {
             return false;
         }
+
         $status->body     = $body;
-        $status->business = $businessCheck >= 1 ? 1 : 0;
+        $status->business = $businessCheck;
         $status->update();
         return $status->body;
     }
@@ -256,8 +257,9 @@ class StatusController extends Controller
                                                   $interval->h . ":" . sprintf('%02d', $interval->i),
                                                   $t->trainCheckin->distance,
                                                   $t->trainCheckin->points,
-                                                  (string) $t->trainCheckin->body,
-                                                  ''
+                                                  (string) $t->body,
+                                                  '',
+                                                  $t->business,
                                               ]]);
         }
         if ($fileType == 'pdf') {
@@ -286,20 +288,22 @@ class StatusController extends Controller
             ];
             $callback = function() use ($export) {
                 $fileStream = fopen('php://output', 'w');
-                fputcsv($fileStream, ['Status-ID',
-                                      'Zugart',
-                                      'Zugnummer',
-                                      'Abfahrtsort',
-                                      'Abfahrtskoordinaten',
-                                      'Abfahrtszeit',
-                                      'Ankunftsort',
-                                      'Ankunftskoordinaten',
-                                      'Ankunftszeit',
-                                      'Reisezeit',
-                                      'Kilometer',
-                                      'Punkte',
-                                      'Status',
-                                      'Zwischenhalte'
+                fputcsv($fileStream, [
+                    __('export.title.status-id'),
+                    __('export.title.train-type'),
+                    __('export.title.train-number'),
+                    __('export.title.origin.location'),
+                    __('export.title.origin.coordinates'),
+                    __('export.title.origin.time'),
+                    __('export.title.destination.location'),
+                    __('export.title.destination.coordinates'),
+                    __('export.title.destination.time'),
+                    __('export.title.travel-time'),
+                    __('export.title.kilometer'),
+                    __('export.title.points'),
+                    __('export.title.status'),
+                    __('export.title.stopovers'),
+                    __('export.title.type'),
                 ], "\t");
                 foreach ($export as $t) {
                     fputcsv($fileStream, $t, "\t");

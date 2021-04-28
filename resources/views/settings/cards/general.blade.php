@@ -17,14 +17,15 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary mb-3" data-mdb-toggle="modal"
+                       data-mdb-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
 
                     @isset(auth()->user()->avatar)
-                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm"
-                           data-toggle="modal"
-                           data-target="#deleteProfilePictureModal"
+                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
+                           data-mdb-toggle="modal"
+                           data-mdb-target="#deleteProfilePictureModal"
                         >{{ __('settings.delete-profile-picture-btn') }}</a>
                     @endisset
 
@@ -41,9 +42,7 @@
 
                 <div class="col-md-6">
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">@</span>
-                        </div>
+                        <span class="input-group-text">@</span>
                         <input id="username" type="text"
                                class="form-control @error('username') is-invalid @enderror"
                                name="username" value="{{ auth()->user()->username }}" required autofocus/>
@@ -134,7 +133,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="mb-0">{{__('settings.upload-image')}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -163,7 +162,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="mb-0">{{__('settings.delete-profile-picture')}}:</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">x</span>
                 </button>
             </div>
@@ -171,7 +170,7 @@
                 <p>{!! __('settings.delete-profile-picture-desc') !!}</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline-danger" data-dismiss="modal"
+                <button class="btn btn-outline-danger" data-mdb-dismiss="modal"
                         aria-label="{{ __('settings.delete-profile-picture-no') }}">
                     {{ __('settings.delete-profile-picture-no') }}
                 </button>

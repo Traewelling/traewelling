@@ -8,16 +8,19 @@
             <table class="table table-responsive">
                 <thead>
                     <tr>
-                        <th>{{ __('settings.token') }}</th>
+                        <th colspan="2">{{ __('settings.token') }}</th>
                         <th>{{ __('settings.created') }}</th>
+                        <th>{{ __('settings.last-accessed') }}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach(auth()->user()->icsTokens as $icsToken)
                         <tr>
+                            <td>{{$icsToken->name}}</td>
                             <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
                             <td>{{ $icsToken->created_at->format('d.m.Y H:i') }}</td>
+                            <td>{{ $icsToken?->last_accessed?->format('d.m.Y H:i') ?? __('settings.never') }}</td>
                             <td>
                                 <form method="POST" action="{{route('ics.revokeToken')}}">
                                     @csrf
@@ -35,9 +38,14 @@
 
         <form method="POST" action="{{route('ics.createToken')}}">
             @csrf
-            <button type="submit" class="btn btn-sm btn-primary">
-                {{__('settings.create-ics-token')}}
-            </button>
+            <div class="input-group mt-0">
+                <input type="text" name="name" class="form-control" required
+                       placeholder="{{__('settings.ics.name-placeholder')}}"/>
+                <button class="btn btn-sm btn-primary m-0 px-3" type="submit">
+                    <i class="fas fa-plus"></i>
+                    {{__('settings.create-ics-token')}}
+                </button>
+            </div>
         </form>
     </div>
 </div>

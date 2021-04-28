@@ -19,7 +19,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <h5>{{ $status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY') }}</h5>
                 @include('includes.status')
             </div>

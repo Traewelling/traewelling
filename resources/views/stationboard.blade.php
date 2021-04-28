@@ -6,7 +6,7 @@
     @include('includes.station-autocomplete')
     <div class="container">
         <div id="timepicker-wrapper">
-            <div class="row justify-content-center">
+            <div class="text-center">
                 <div class="btn-group" role="group">
                     <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->subMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
                        title="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i
@@ -18,29 +18,27 @@
                                 class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="text-center mt-4">
                 <form class="form-inline opacity-null" id="timepicker-form" method="GET">
                     <input type="hidden" name="provider" value="train"/>
                     <input type="hidden" name="station" value="{{$station->name}}"/>
                     <input type="hidden" name="travelType" value="{{$request->travelType}}"/>
-                    <div class="input-group">
+                    <div class="input-group mb-3 mx-auto">
                         <input type="datetime-local" class="form-control" id="timepicker" name="when"
-                               value="{{  $when->format("Y-m-d\TH:i") }}"/>
-                        <div class="input-group-append">
-                            <button type="submit" class="input-group-text btn-primary text-white">
-                                {{__('stationboard.set-time')}}
-                            </button>
-                        </div>
+                               aria-describedby="button-addontime" value="{{  $when->format("Y-m-d\TH:i") }}"/>
+                        <button class="btn btn-outline-primary" type="submit" id="button-addontime" data-mdb-ripple-color="dark">
+                            {{__('stationboard.set-time')}}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
         <div class="row justify-content-center mt-3">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-right">
+                        <div class="float-end">
                             <a href="{{ route('user.setHome', ['ibnr' => $station['id']]) }}"><i class="fa fa-home"></i></a>
                         </div>
                         {{ $station['name'] }} <small><i

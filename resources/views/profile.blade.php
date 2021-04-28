@@ -3,11 +3,11 @@
 @section('title'){{ $user->name }}@endsection
 
 @section('content')
-    <div class="jumbotron mt-n4"
+    <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
             <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
-                 width="20%" class="float-right img-thumbnail rounded-circle img-fluid">
+                 width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
             <div class="text-white px-4">
                 <h2 class="card-title h1-responsive font-bold">
                     <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
@@ -37,18 +37,18 @@
                 <h2>
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance) }}</span><span
                             class="small font-weight-lighter">km</span>
-                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                    <span class="font-weight-bold pl-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
+                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
                             class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                     @if($twitterUrl)
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <a href="{{ $twitterUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-twitter d-inline"></i>
                             </a>
                         </span>
                     @endif
                     @if($mastodonUrl)
-                        <span class="font-weight-bold pl-sm-2">
+                        <span class="font-weight-bold ps-sm-2">
                             <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
                                 <i class="fab fa-mastodon d-inline"></i>
                             </a>
@@ -62,18 +62,18 @@
     @include('includes.message-block')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-8 col-lg-7">
                 <header><h3>&nbsp;</h3></header>
             </div>
         </div>
         <div class="row justify-content-center">
             @if($user->private_profile && $user != $currentUser)
-                <div class="col-md-8 text-center mb-5">
+                <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>
                 </div>
             @else
-                <div class="col-md-8">
+                <div class="col-md-8 col-lg-7">
                     <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
                     @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 </div>

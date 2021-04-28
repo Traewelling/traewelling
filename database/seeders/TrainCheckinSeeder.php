@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\User;
@@ -17,17 +18,21 @@ class TrainCheckinSeeder extends Seeder
     public function run() {
         foreach (User::all() as $user) {
             $trip = HafasTrip::all()->random();
-            TransportController::TrainCheckin(
-                $trip->trip_id,
-                $trip->origin,
-                $trip->destination,
-                '',
-                $user,
-                0,
-                0,
-                0,
-                rand(0, 1)
-            );
+            try {
+                TransportController::TrainCheckin(
+                    $trip->trip_id,
+                    $trip->origin,
+                    $trip->destination,
+                    '',
+                    $user,
+                    0,
+                    0,
+                    0,
+                    rand(0, 1)
+                );
+            } catch (CheckInCollisionException $e) {
+                continue;
+            }
         }
     }
 }
