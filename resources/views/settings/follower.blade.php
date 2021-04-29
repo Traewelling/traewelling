@@ -19,12 +19,6 @@
                         @else
 
                             <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Follower</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                     @foreach($followers as $follower)
                                         <tr>
@@ -32,7 +26,7 @@
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('account.show', ['username' => $follower->username]) }}">
                                                         <img src="{{ route('account.showProfilePicture', ['username' => $follower->username]) }}"
-                                                             style="height: 3em;"
+                                                             style="height: 4em;"
                                                         />
                                                     </a>
                                                 </div>
