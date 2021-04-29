@@ -184,6 +184,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create');
 
+    Route::post('/requestfollow', [FrontendUserController::class, 'RequestFollow'])
+         ->name('follow.request');
+
     Route::post('/destroyfollow', [FrontendUserController::class, 'DestroyFollow'])
          ->name('follow.destroy');
 

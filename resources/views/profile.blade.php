@@ -6,7 +6,7 @@
     <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
-            <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
+            <img alt="{{ __('settings.picture') }}" src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
                  width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
             <div class="text-white px-4">
                 <h2 class="card-title h1-responsive font-bold">
@@ -14,24 +14,7 @@
                     </strong> <br/>
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @if($currentUser)
-                        {{-- What the actual fuck are these stupid nested if-statements?! --}}
-                        {{-- ToDo This needs to be refined with the "request follow"-feature --}}
-                        @if($user->id !== $currentUser->id && Auth::check() && !$user->private_profile)
-                            @if($currentUser->follows->where('id', $user->id)->first() === null)
-                                <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
-                                   data-following="no">{{__('profile.follow')}}</a>
-                            @else
-                                <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}"
-                                   data-following="yes">{{__('profile.unfollow')}}</a>
-                            @endif
-                            <script>
-                                window.translFollow = "{{__('profile.follow')}}";
-                                window.translUnfollow = "{{__('profile.unfollow')}}";
-                            </script>
-                        @elseif($user->id == $currentUser->id)
-                            <a href="{{ route('settings') }}"
-                               class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
-                        @endif
+                        @include('includes.follow-button')
                     @endif
                 </h2>
                 <h2>

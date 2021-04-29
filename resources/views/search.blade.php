@@ -38,23 +38,7 @@
                                                 class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                                     </small>
                                 </h6>
-                                @if($user !== Auth::user() && !$user->private_profile)
-                                    {{-- This needs to be refined with the "request follow"-feature --}}
-                                    @if(Auth::user()->follows->where('id', $user->id)->first() === null)
-                                        <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
-                                           data-following="no">{{__('profile.follow')}}</a>
-                                    @else
-                                        <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}"
-                                           data-following="yes">{{__('profile.unfollow')}}</a>
-                                    @endif
-                                    <script>
-                                        window.translFollow = "{{__('profile.follow')}}";
-                                        window.translUnfollow = "{{__('profile.unfollow')}}";
-                                    </script>
-                                @elseif($user == Auth::user())
-                                    <a href="{{ route('settings') }}"
-                                       class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
-                                @endif
+                                @include('includes.follow-button')
                             </div>
                         </div>
                     </div>

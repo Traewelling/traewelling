@@ -20,15 +20,15 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'password', 'home_id', 'always_dbl', 'private_profile'
     ];
-    protected $hidden   = [
+    protected     $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
         'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at'
     ];
-    protected $casts    = [
+    protected     $casts    = [
         'email_verified_at' => 'datetime',
         'private_profile'   => 'boolean'
     ];
-    protected $appends  = [
+    protected     $appends  = [
         'averageSpeed', 'points'
     ];
 
@@ -54,6 +54,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function follows(): BelongsToMany {
         return $this->belongsToMany(User::class, 'follows', 'user_id', 'follow_id');
+    }
+
+    public function followRequests(): HasMany {
+        return $this->hasMany(FollowRequest::class);
     }
 
     public function followers(): BelongsToMany {

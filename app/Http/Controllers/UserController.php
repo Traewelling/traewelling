@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\MastodonServer;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -216,7 +217,9 @@ class UserController extends Controller
      * @return bool
      */
     public static function createFollow(User $user, User $userToFollow): bool {
-        if (self::isFollowing($user, $userToFollow)) {
+        //disallow re-following, if you already follow them
+        //Also disallow following, if user is a private profile
+        if (self::isFollowing($user, $userToFollow) || $userToFollow->private_profile) {
             return false;
         }
 
@@ -228,6 +231,27 @@ class UserController extends Controller
         $userToFollow->notify(new UserFollowed($follow));
         $user->load('follows');
         return self::isFollowing($user, $userToFollow);
+    }
+
+    /**
+     * Add $userToFollow to $user's FollowerRequests
+     * @param User $user
+     * @param User $userToFollow The user of the person who is followed
+     * @return bool
+     */
+    public static function requestFollow(User $user, User $userToFollow): bool {
+        if ($user->followRequests->contains('follow_id', $userToFollow->id)) {
+            return false;
+        }
+
+        $follow = FollowRequest::create([
+                                     'user_id'   => $user->id,
+                                     'follow_id' => $userToFollow->id
+                                 ]);
+
+        $userToFollow->notify(new FollowRequestIssued($follow));
+        $user->load('followRequests');
+        return $user->followRequests->contains('follow_id', $userToFollow->id);
     }
 
     /**

@@ -84,6 +84,23 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    public function RequestFollow(Request $request): JsonResponse {
+        $validated = $request->validate([
+                                            'follow_id' => ['required', 'exists:users,id']
+                                        ]);
+
+        $userToFollow = User::find($validated['follow_id']);
+
+        $createFollowResponse = UserBackend::requestFollow(Auth::user(), $userToFollow);
+        if ($createFollowResponse === false) {
+            return response()->json(['message' => __('controller.user.follow-request-already-exists')], 409);
+        }
+        return response()->json(['message' => __('controller.user.follow-request-ok')], 201);
+    }
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function DestroyFollow(Request $request): JsonResponse {
         $validated      = $request->validate([
                                                  'follow_id' => ['required', 'exists:users,id']
