@@ -25,7 +25,7 @@
 
 ## Set up an instance
 
-We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
+We're using the [Laravel framework](https://laravel.com/docs/8.x) which depends on:
 
 * PHP 8.0 (or higher)
   * PHP GD library 
@@ -34,7 +34,7 @@ We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends 
   * [npm](https://www.npmjs.com/)
 * A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
   * If you're using SQLite, make sure you have `php-sqlite` installed 
-* A local instance of [db-rest v3](https://github.com/derhuerst/db-rest/tree/3)
+* A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 
 After setting up those things, you can clone the repository and get the dependencies:
 
