@@ -145,6 +145,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('settings.follower');
         Route::post('/follower/remove', [SettingsController::class, 'removeFollower'])
              ->name('settings.follower.remove');
+        Route::post('/follower/approve', [\App\Http\Controllers\Frontend\SettingsController::class, 'approveFollower'])
+             ->name('settings.follower.approve');
+        Route::post('/follower/reject', [\App\Http\Controllers\Frontend\SettingsController::class, 'rejectFollower'])
+             ->name('settings.follower.reject');
 
         Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
              ->name('settings.upload-image');

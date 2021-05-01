@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use App\Models\FollowRequest;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -12,8 +14,7 @@ class SettingsController extends Controller
 {
     public function renderFollowerSettings(): Renderable {
         return view('settings.follower', [
-            'test' => auth()->user(),
-            'requests' => auth()->user()->followRequests()->paginate(15),
+            'requests'  => auth()->user()->followRequests()->paginate(15),
             'followers' => auth()->user()->followers()->paginate(15)
         ]);
     }
@@ -31,5 +32,26 @@ class SettingsController extends Controller
         $follow->delete();
 
         return back()->with('success', __('settings.follower.delete-success'));
+    }
+
+    /**
+     *
+     * @param Int $userId The id of the user who is approving a follower
+     * @param Int $approverId The Id of a to-be-approved follower
+     * @throws ModelNotFoundException
+     */
+    public static function approveFollower(Int $userId, Int $approverId): Bool {
+        $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
+
+        $follow = UserController::createFollow($request->user, $request->requestedFollow, true);
+
+        if ($follow) {
+            $request->delete();
+        }
+        return $follow;
+    }
+
+    public function rejectFollower($userId, $followerID) {
+
     }
 }

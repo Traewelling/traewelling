@@ -225,6 +225,7 @@
   "notifications.userFollowed.lead": "<b>@:followerUsername</b> folgt Dir jetzt.",
   "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> möchte dir folgen.",
   "notifications.userRequestedFollow.notice": "Um die Folgen-Anfrage zu akzeptieren, bzw. zu löschen, klicke hier oder gehe in die Einstellungen.",
+  "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> hat deine Folgen-Anfrage akzeptiert",
   "notifications.socialNotShared.lead": "Dein Check-in wurde nicht auf :Platform geteilt.",
   "notifications.socialNotShared.mastodon.401": "Deine Instanz hat uns einen <code>401 Unauthorized</code>-Fehler gemeldet, als wir versucht haben, Deinen Check-In zu tooten. Vielleicht hilft es, Mastodon erneut mit Träwelling zu verbinden?",
   "notifications.socialNotShared.mastodon.429": "Es scheint, dass Träwelling temporär von Deiner Instanz gesperrt wurde. (<code>429 Too Many Requests</code>)",

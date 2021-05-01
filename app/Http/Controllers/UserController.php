@@ -9,6 +9,7 @@ use App\Models\MastodonServer;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
@@ -211,15 +212,16 @@ class UserController extends Controller
     }
 
     /**
-     * Add $userToFollow to $user's Follower
-     * @param User $user
-     * @param User $userToFollow The user of the person who is followed
+     * Add $userToFollow to $user's Followings
+     * @param User $user The user who initiated the follow
+     * @param User $userToFollow The user who is followed
+     * @param bool $isApprovedRequest Differentiates between who to be notified
      * @return bool
      */
-    public static function createFollow(User $user, User $userToFollow): bool {
+    public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest=false): bool {
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
-        if (self::isFollowing($user, $userToFollow) || $userToFollow->private_profile) {
+        if (self::isFollowing($user, $userToFollow) || ($userToFollow->private_profile && !$isApprovedRequest)) {
             return false;
         }
 
@@ -227,8 +229,11 @@ class UserController extends Controller
                                      'user_id'   => $user->id,
                                      'follow_id' => $userToFollow->id
                                  ]);
-
-        $userToFollow->notify(new UserFollowed($follow));
+        if (!$isApprovedRequest) {
+            $userToFollow->notify(new UserFollowed($follow));
+        } else {
+            $user->notify(new FollowRequestApproved($follow));
+        }
         $user->load('follows');
         return self::isFollowing($user, $userToFollow);
     }
@@ -240,18 +245,17 @@ class UserController extends Controller
      * @return bool
      */
     public static function requestFollow(User $user, User $userToFollow): bool {
-        if ($user->followRequests->contains('follow_id', $userToFollow->id)) {
+        if ($userToFollow->followRequests->contains('user_id', $user->id)) {
             return false;
         }
-
         $follow = FollowRequest::create([
                                      'user_id'   => $user->id,
                                      'follow_id' => $userToFollow->id
                                  ]);
 
         $userToFollow->notify(new FollowRequestIssued($follow));
-        $user->load('followRequests');
-        return $user->followRequests->contains('follow_id', $userToFollow->id);
+        $userToFollow->load('followRequests');
+        return $userToFollow->followRequests->contains('user_id', $user->id);
     }
 
     /**

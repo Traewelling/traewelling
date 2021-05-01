@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -83,5 +85,28 @@ class SettingsController extends Controller
             'sessions' => $sessions,
             'tokens'   => auth()->user()->tokens->where('revoked', '0')
         ]);
+    }
+
+    public function approveFollower(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'user_id' => ['required', Rule::in(auth()->user()->followRequests->pluck('user_id'))]
+                                        ]);
+
+        //$this->authorize('delete', $follow);
+        try {
+            $approval = SettingsBackend::approveFollower(auth()->user()->id, $validated['user_id']);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        if ($approval) {
+            return back()->with('success', 'Success');
+        }
+        return back()->with('danger', 'failure'); //ToDo THIS NEEDS TRANSLATIONS!
+
+    }
+
+    public function rejectFollower(Request $request) {
+
     }
 }

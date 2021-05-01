@@ -1,6 +1,6 @@
 @if($user->id == Auth::user()->id)
     <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
-@elseif($user->private_profile && Auth::user()->followRequests->contains('follow_id', $user->id))
+@elseif($user->private_profile && $user->followRequests->contains('user_id', Auth::user()->id))
     <a href="#" class="btn btn-sm btn-primary disabled" aria-disabled="true">{{ __('profile.follow_req.pending') }}</a>
 @elseif($user->private_profile && !Auth::user()->follows->contains('id', $user->id))
     <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"

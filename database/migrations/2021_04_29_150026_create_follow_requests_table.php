@@ -18,6 +18,8 @@ class CreateFollowRequestsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('follow_id');
             $table->timestamps();
+
+            $table->unique(['user_id', 'follow_id']);
         });
     }
 

@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row justify-content-center">
             @if($requests->count() > 0)
-                <div class="col-md-8 col-lg-5">
+                <div class="col-md-8 col-lg-5 mb-3">
                     <div class="card">
                         <div class="card-header">{{ __('menu.settings.follower-requests') }}</div>
                         <div class="card-body table-responsive">
@@ -32,8 +32,8 @@
                                                     @endif
                                                 </a>
                                             </td>
-                                            <td class="gx-5">
-                                                <form method="POST" action="{{route('settings.follower.remove')}}">
+                                            <td class="pe-0">
+                                                <form method="POST" action="{{route('settings.follower.reject')}}">
                                                     @csrf
                                                     <input type="hidden" name="user_id" value="{{$request->user->id}}"/>
                                                     <button type="submit" class="btn btn-danger"
@@ -42,6 +42,12 @@
                                                             title="{{__('settings.request.delete')}}">
                                                         <i class="fas fa-user-times"></i>
                                                     </button>
+                                                </form>
+                                            </td>
+                                            <td class="ps-0">
+                                                <form method="POST" action="{{route('settings.follower.approve')}}">
+                                                    @csrf
+                                                    <input type="hidden" name="user_id" value="{{$request->user->id}}"/>
                                                     <button type="submit" class="btn btn-success"
                                                             data-mdb-toggle="tooltip"
                                                             data-mdb-placement="top"
