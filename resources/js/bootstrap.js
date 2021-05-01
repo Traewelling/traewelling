@@ -16,12 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         require("./../../node_modules/bootstrap/js/dist/modal");
         require("./../../node_modules/bootstrap/js/dist/tab");
         require("./../../node_modules/bootstrap/js/dist/dropdown");
-        window.bootstrap = require("./../../node_modules/mdb-ui-kit/js/mdb.min");
-
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle='tooltip']"));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new window.bootstrap.Tooltip(tooltipTriggerEl);
-        });
+        require("./../../node_modules/mdb-ui-kit/js/mdb.min");
     } catch (e) {
         console.error(e);
     }

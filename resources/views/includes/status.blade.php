@@ -53,13 +53,13 @@
 
                         @if($status->business == 1)
                             <span class="pl-sm-2">
-                                <i class="fa fa-briefcase" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.business') }}"></i>
                             </span>
                         @endif
                         @if($status->business == 2)
                             <span class="pl-sm-2">
-                                <i class="fa fa-building" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.commute') }}"></i>
                             </span>
                         @endif
