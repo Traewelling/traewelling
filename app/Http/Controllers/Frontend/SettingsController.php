@@ -49,7 +49,8 @@ class SettingsController extends Controller
 
         auth()->user()->update([
                                    'prevent_index'   => $validated['prevent_index'],
-                                   'private_profile' => isset($validated['private_profile']) && $validated['private_profile'] == 'on',
+                                   'private_profile' => isset($validated['private_profile'])
+                                       && $validated['private_profile'] == 'on',
                                ]);
 
         return back()->with('success', __('settings.privacy.update.success'));
