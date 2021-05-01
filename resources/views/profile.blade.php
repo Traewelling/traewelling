@@ -66,22 +66,34 @@
                 <header><h3>&nbsp;</h3></header>
             </div>
         </div>
-        <div class="row justify-content-center">
-            @if($user->private_profile && $user != $currentUser)
+
+        @if($user->private_profile && $user != $currentUser)
+            <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>
                 </div>
-            @else
+            </div>
+        @elseif($statuses->count() > 0)
+            <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-7">
                     <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
                     @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 </div>
-        </div>
-        <div class="row justify-content-center mt-5">
-            {{ $statuses->links() }}
-        </div>
+            </div>
+            <div class="row justify-content-center mt-5">
+                {{ $statuses->links() }}
+            </div>
+        @else
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-7">
+                    <h3 class="text-danger">
+                        {{strtr(__('profile.no-statuses'), [':username' => $user->name])}}
+                    </h3>
+                </div>
+            </div>
         @endif
+
         @include('includes.edit-modal')
         @include('includes.delete-modal')
     </div>
