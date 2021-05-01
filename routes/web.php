@@ -137,6 +137,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::get('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'renderSettings'])
              ->name('settings');
         Route::post('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'updateMainSettings']);
+        Route::post('/update/privacy', [\App\Http\Controllers\Frontend\SettingsController::class, 'updatePrivacySettings'])
+             ->name('settings.privacy');
 
         Route::post('/password', [\App\Http\Controllers\Frontend\SettingsController::class, 'updatePassword'])
              ->name('password.change');

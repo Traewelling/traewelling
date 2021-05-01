@@ -28,11 +28,10 @@ class SettingsController extends Controller
             auth()->user()->update(['email_verified_at' => null]);
         }
         auth()->user()->update([
-                                   'email'           => $validated['email'],
-                                   'username'        => $validated['username'],
-                                   'name'            => $validated['name'],
-                                   'always_dbl'      => $request->always_dbl == "on",
-                                   'private_profile' => $request->private_profile == "on",
+                                   'email'      => $validated['email'],
+                                   'username'   => $validated['username'],
+                                   'name'       => $validated['name'],
+                                   'always_dbl' => $request->always_dbl == "on",
                                ]);
 
         if (!auth()->user()->hasVerifiedEmail()) {
@@ -40,6 +39,20 @@ class SettingsController extends Controller
         }
 
         return back();
+    }
+
+    public function updatePrivacySettings(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'private_profile' => ['nullable'],
+                                            'prevent_index'   => ['required', 'gte:0', 'lte:1'],
+                                        ]);
+
+        auth()->user()->update([
+                                   'prevent_index'   => $validated['prevent_index'],
+                                   'private_profile' => isset($validated['private_profile']) && $validated['private_profile'] == 'on',
+                               ]);
+
+        return back()->with('success', __('settings.privacy.update.success'));
     }
 
     public function updatePassword(Request $request): RedirectResponse {
