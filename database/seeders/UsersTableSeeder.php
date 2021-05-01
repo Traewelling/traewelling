@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Follow;
 use App\Models\IcsToken;
 use App\Models\User;
 use Illuminate\Database\Seeder;

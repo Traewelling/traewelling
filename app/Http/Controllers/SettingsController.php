@@ -12,6 +12,8 @@ class SettingsController extends Controller
 {
     public function renderFollowerSettings(): Renderable {
         return view('settings.follower', [
+            'test' => auth()->user(),
+            'requests' => auth()->user()->followRequests()->paginate(15),
             'followers' => auth()->user()->followers()->paginate(15)
         ]);
     }
