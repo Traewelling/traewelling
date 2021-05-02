@@ -217,6 +217,10 @@ class UserController extends Controller
      * @return bool
      */
     public static function createFollow(User $user, User $userToFollow): bool {
+        if ($user->is($userToFollow)) {
+            return false;
+        }
+
         if (self::isFollowing($user, $userToFollow)) {
             return false;
         }

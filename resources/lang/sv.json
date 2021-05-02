@@ -49,9 +49,9 @@
   "controller.transport.social-post-for": " åt ",
   "controller.transport.no-station-found": "Inget stopp hittades för denna sökning.",
   "controller.user.follow-404": "Denna follow existerar inte.",
-  "controller.user.follow-already-exists": "Du följer redan den här personen.",
   "controller.user.follow-delete-not-permitted": "Denna aktion är inte tillåten.",
   "controller.user.follow-destroyed": "Du följer inte längre den här personen.",
+  "controller.user.follow-error": "Du kan inte följa den här personen.",
   "controller.user.follow-ok": "Användaren följdes.",
   "controller.user.password-changed-ok": "Lösenordet har ändrats.",
   "controller.user.password-wrong": "Det gamla lösenordet är fel"

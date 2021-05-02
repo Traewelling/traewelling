@@ -75,7 +75,7 @@ class FrontendUserController extends Controller
 
         $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
         if ($createFollowResponse === false) {
-            return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
+            return response()->json(['message' => __('controller.user.follow-error')], 409);
         }
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
