@@ -97,6 +97,12 @@
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                   href="{{ route('stats') }}">
+                                    Statistiken
+                                </a>
+                            </li>
                         </ul>
                         <ul class="navbar-nav w-auto">
                             @guest

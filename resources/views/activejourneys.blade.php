@@ -265,7 +265,7 @@ ${event.closestLink}`);
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => false])
             </div>
         </div>
-    </div><!--- /container -->
+    </div>
 
     @include('includes.edit-modal')
     @include('includes.delete-modal')
