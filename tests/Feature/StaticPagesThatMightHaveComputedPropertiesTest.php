@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * Load the publicly accessable files that any visitor can load without logging in.
@@ -55,8 +54,7 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
 
     public function testProfilePageGet() {
         // GIVEN: A gdpr-acked user
-        $user = User::factory()->create();
-        $this->acceptGDPR($user);
+        $user = $this->createGDPRAckedUser();
 
         // WHEN: Someone visits the user's profile page
         $response = $this->get(route('account.show', ["username" => $user->username]));
