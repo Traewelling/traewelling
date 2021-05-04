@@ -19,7 +19,6 @@ class FollowTableSeeder extends Seeder
         $gertrud = User::first();
         $bob     = User::where('username', 'bob')->first();
 
-        dd(UserController::createFollow($gertrud, $bob));
         DB::table('follows')->insert([
                                          'user_id'   => User::all()->random()->id,
                                          'follow_id' => User::all()->random()->id,
