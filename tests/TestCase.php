@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\TransportController;
 use App\Models\User;
 use Carbon\Carbon;
@@ -77,20 +79,18 @@ abstract class TestCase extends BaseTestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      * @param $stationname
-     * @param $ibnr
      * @param DateTime $now
      * @param User|null $user
      * @throws Exception
      */
-    protected function checkin($stationname, $ibnr, DateTime $now, User $user = null) {
+    protected function checkin($stationname, DateTime $now, User $user = null) {
         if ($user == null) {
             $user = $this->user;
         }
         $trainStationboard = TransportController::TrainStationboard($stationname,
                                                                     Carbon::createFromTimestamp($now->format('U')),
                                                                     'express');
-
-        $countDepartures = count($trainStationboard['departures']);
+        $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
             return;
@@ -119,12 +119,19 @@ abstract class TestCase extends BaseTestCase
         );
 
         // WHEN: User tries to check-in
-        $this->actingAs($user)
-             ->post(route('trains.checkin'), [
-                 'body'        => 'Example Body',
-                 'tripID'      => $departure->tripId,
-                 'start'       => $ibnr,
-                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-             ]);
+        try {
+            TransportController::TrainCheckin($trip['train']['trip_id'],
+                                              $trip['stopovers'][0]['stop']['id'],
+                                              end($trip['stopovers'])['stop']['id'],
+                                              '',
+                                              $user,
+                                              0,
+                                              0,
+                                              0);
+        } catch (StationNotOnTripException) {
+            $this->markTestSkipped("failure in checkin creation for " . $stationname . ": Station not in stopovers");
+        } catch (CheckInCollisionException) {
+            $this->markTestSkipped("failure for " . $now->format('Y-m-d H:i:s') . ": Collision");
+        }
     }
 }
