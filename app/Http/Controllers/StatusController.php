@@ -29,7 +29,7 @@ class StatusController extends Controller
 
         $authID = null;
 
-        //PrivateProfile change to "also following"
+        //ToDo PrivateProfile change to "also following"
         if (Auth::check()) {
             $authID = Auth::user()->id;
         }
@@ -49,7 +49,7 @@ class StatusController extends Controller
      * @return Status|array|Builder|Model|object|null
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
-        //PrivateProfile change to "also following"
+        //ToDo PrivateProfile change to "also following"
         $authID = null;
         if (Auth::check()) {
             $authID = Auth::user()->id;
@@ -69,7 +69,7 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                //PrivateProfile This needs to be removed with the Follow-Request-Feature
+                //ToDo PrivateProfile This needs to be removed with the Follow-Request-Feature
                               ->whereHas('user', function($query) use ($authID) {
                     return $query->where('private_profile', false)->orWhere('id', $authID);
                 })
@@ -124,7 +124,7 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-            //PrivateProfile This needs to be removed with the Follow-Request-Feature
+            //ToDo PrivateProfile This needs to be removed with the Follow-Request-Feature
                      ->whereHas('user', function($query) {
                 return $query->where('private_profile', false);
             })

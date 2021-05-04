@@ -149,10 +149,10 @@ class UserController extends Controller
         }
         $statuses = null;
 
-        //PrivateProfile change to "also following"
-        if (!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
-
-
+        //ToDo PrivateProfile change to "also following"
+        if (!$user->private_profile ||
+            (Auth::check() && (Auth::user()->id == $user->id || Auth::user()->follows->contains('id', $user->id)))
+        ) {
             $statuses = $user->statuses()->with('user',
                                                 'trainCheckin',
                                                 'trainCheckin.Origin',
@@ -176,7 +176,7 @@ class UserController extends Controller
                                                    ->get("/accounts/" . $user->socialProfile->mastodon_id);
                     $mastodonUrl         = $mastodonAccountInfo["url"];
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // The connection might be broken, or the instance is down, or $user has removed the api rights
                 // but has not told us yet.
             }
@@ -220,7 +220,7 @@ class UserController extends Controller
      * @return bool
      * @throws AlreadyFollowingException
      */
-    public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest=false): bool {
+    public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
         if (self::isFollowing($user, $userToFollow)) {
@@ -256,9 +256,9 @@ class UserController extends Controller
             throw new AlreadyFollowingException($user, $userToFollow);
         }
         $follow = FollowRequest::create([
-                                     'user_id'   => $user->id,
-                                     'follow_id' => $userToFollow->id
-                                 ]);
+                                            'user_id'   => $user->id,
+                                            'follow_id' => $userToFollow->id
+                                        ]);
 
         $userToFollow->notify(new FollowRequestIssued($follow));
         $userToFollow->load('followRequests');
