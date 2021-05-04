@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use PDOException;
 use stdClass;
 
 abstract class HafasController extends Controller
@@ -291,13 +292,16 @@ abstract class HafasController extends Controller
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
-
-            TrainStopover::updateOrCreate(
-                [
-                    'trip_id'          => $tripID,
-                    'train_station_id' => $hafasStop->id
-                ], $updatePayload
-            );
+            try {
+                TrainStopover::updateOrCreate(
+                    [
+                        'trip_id'          => $tripID,
+                        'train_station_id' => $hafasStop->id
+                    ], $updatePayload
+                );
+            } catch (PDOException $exception) {
+                report($exception);
+            }
         }
 
         return $hafasTrip;

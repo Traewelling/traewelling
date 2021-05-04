@@ -251,6 +251,7 @@
   "profile.follow_req": "Anfragen",
   "profile.follow_req.pending": "Ausstehend",
   "profile.last-journeys-of": "Letzte Reisen von",
+  "profile.no-statuses": ":username hat bisher in keine Reisen eingecheckt.",
   "profile.points-abbr": "Pkt",
   "profile.settings": "Einstellungen",
   "profile.statistics-for": "Statistiken für",

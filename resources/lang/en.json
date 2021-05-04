@@ -251,6 +251,7 @@
     "profile.follow_req": "Request follow",
     "profile.follow_req.pending": "Pending",
     "profile.last-journeys-of": "Last journeys of",
+    "profile.no-statuses": ":username hasn't checked into any trips yet.",
     "profile.points-abbr": "pts",
     "profile.settings": "Settings",
     "profile.statistics-for": "Statistics for",
