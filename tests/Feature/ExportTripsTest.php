@@ -19,8 +19,8 @@ class ExportTripsTest extends TestCase
 
         $this->user = $this->createGDPRAckedUser();
 
-        $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070003", new DateTime("+1 day 8:00"));
-        $this->checkin("Essen Hbf", "8000098", new DateTime("+2 day 7:30"));
+        $this->checkin("Frankfurt(M) Flughafen Fernbf", new DateTime("+1 day 8:00"));
+        $this->checkin("Essen Hbf", new DateTime("+2 day 7:45"));
     }
 
     /**
