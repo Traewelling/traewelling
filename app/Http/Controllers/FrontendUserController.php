@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Carbon\Carbon;
@@ -73,10 +74,12 @@ class FrontendUserController extends Controller
 
         $userToFollow = User::find($validated['follow_id']);
 
-        $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
-        if ($createFollowResponse === false) {
+        try {
+            $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
+        } catch(AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
         }
+        if ($createFollowResponse == false) { abort(409); }
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
 
@@ -91,10 +94,12 @@ class FrontendUserController extends Controller
 
         $userToFollow = User::find($validated['follow_id']);
 
-        $createFollowResponse = UserBackend::requestFollow(Auth::user(), $userToFollow);
-        if ($createFollowResponse === false) {
+        try{
+            $createFollowResponse = UserBackend::requestFollow(Auth::user(), $userToFollow);
+        } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-request-already-exists')], 409);
         }
+        if ($createFollowResponse === false) { abort(409); }
         return response()->json(['message' => __('controller.user.follow-request-ok')], 201);
     }
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\AlreadyFollowingException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\MastodonServer;
@@ -217,12 +218,17 @@ class UserController extends Controller
      * @param User $userToFollow The user who is followed
      * @param bool $isApprovedRequest Differentiates between who to be notified
      * @return bool
+     * @throws AlreadyFollowingException
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest=false): bool {
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
-        if (self::isFollowing($user, $userToFollow) || ($userToFollow->private_profile && !$isApprovedRequest)) {
-            return false;
+        if (self::isFollowing($user, $userToFollow)) {
+            throw new AlreadyFollowingException($user, $userToFollow);
+        }
+        // Request follow if user is a private profile
+        if ($userToFollow->private_profile && !$isApprovedRequest) {
+            return self::requestFollow($user, $userToFollow);
         }
 
         $follow = Follow::create([
@@ -243,10 +249,11 @@ class UserController extends Controller
      * @param User $user
      * @param User $userToFollow The user of the person who is followed
      * @return bool
+     * @throws AlreadyFollowingException
      */
     public static function requestFollow(User $user, User $userToFollow): bool {
         if ($userToFollow->followRequests->contains('user_id', $user->id)) {
-            return false;
+            throw new AlreadyFollowingException($user, $userToFollow);
         }
         $follow = FollowRequest::create([
                                      'user_id'   => $user->id,
