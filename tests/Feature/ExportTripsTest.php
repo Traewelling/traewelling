@@ -35,7 +35,7 @@ class ExportTripsTest extends TestCase
         $trainStationboard = TransportController::TrainStationboard(
             $stationName,
             Carbon::createFromTimestamp($now->format('U')),
-            'nationalExpress'
+            'express'
         );
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
