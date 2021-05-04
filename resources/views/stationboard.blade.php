@@ -39,9 +39,9 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-end">
-                            <a href="{{ route('user.setHome', ['ibnr' => $station['id']]) }}"><i class="fa fa-home"></i></a>
+                            <a href="{{ route('user.setHome', ['ibnr' => $station->idnr]) }}"><i class="fa fa-home"></i></a>
                         </div>
-                        {{ $station['name'] }} <small><i
+                        {{ $station->name }} <small><i
                                     class="far fa-clock fa-sm"></i>{{ $when->format('H:i (Y-m-d)') }}</small>
                     </div>
 
