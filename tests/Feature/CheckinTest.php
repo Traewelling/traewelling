@@ -175,7 +175,7 @@ class CheckinTest extends TestCase
         $response = $this->actingAs($user)
                          ->post('/gdpr-ack');
         $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard');
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
