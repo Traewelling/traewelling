@@ -2,26 +2,21 @@
 
 namespace Tests\Feature;
 
-use App\Exceptions\CheckInCollisionException;
-use App\Http\Controllers\TransportController;
+use App\Http\Controllers\UserController;
 use App\Models\Follow;
-use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Status;
 use App\Models\User;
-use Database\Seeders\EventSeeder;
-use Database\Seeders\HafasTripSeeder;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\ApiTestCase;
-use Tests\TestCase;
 
 class PrivateProfileVisibilityTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    private User $gertrud;
     private User $bob;
     private User $alice;
+    private User $gertrud;
 
     /**
      * We want to test, if a private profile and/or status is visible to the user itself, a following user, a
@@ -30,35 +25,26 @@ class PrivateProfileVisibilityTest extends ApiTestCase
      */
     public function setUp(): void {
         parent::setUp();
-        TrainStation::factory()->count(5)->create();
-        HafasTrip::factory()->count(2)->create();
-        $this->gertrud = $this->createGDPRAckedUser();
+        $this->loginGertrudAndAckGDPR();
+        $gertrudResult = json_decode($this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+                                          ->json('GET', route('api.v0.getUser'))->getContent(), true);
+        $this->gertrud = User::where('id', $gertrudResult['id'])->firstOrFail();
         $this->bob     = $this->createGDPRAckedUser();
         $this->alice   = $this->createGDPRAckedUser();
+        UserController::createFollow($this->gertrud, $this->bob);
         $this->bob->update(['private_profile' => 'true']);
-        $trip = HafasTrip::all()->random();
-        try {
-            TransportController::TrainCheckin(
-                $trip->trip_id,
-                $trip->origin,
-                $trip->destination,
-                '',
-                $this->bob,
-                0,
-                0,
-                0
-            );
-        } catch (CheckInCollisionException $e) {
-            $this->fail($e);
-        }
-        Follow::create(['user_id' => $this->gertrud->id, 'follow_id' => $this->bob->id]);
+        $now = new DateTime("+2 day 12:45");
+        $this->checkin("Frankfurt Hbf", $now, $this->bob);
     }
 
     /**
      * @test
      */
     public function view_profile_without_following() {
-        $statuses = $this->bob->statuses()->get();
-        $this->actingAs($this->gertrud);
+        $statuses = Status::where('user_id', $this->bob->id)->get();
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+                         ->json('GET', route('api.v0.user', ['username' => $this->bob->username]));
+        $response = json_decode($response->getContent(), true);
+        $this->assertNotEquals(null, $response['statuses']);
     }
 }
