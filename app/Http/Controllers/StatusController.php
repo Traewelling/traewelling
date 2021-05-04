@@ -26,15 +26,8 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-
-        $authID = null;
-
-        //ToDo PrivateProfile change to "also following"
-        if (Auth::check()) {
-            $authID = Auth::user()->id;
-        }
-
-        if ($status->user->id == $authID || !$status->user->private_profile) {
+        //ToDo Test This
+        if (!$status->user->userInvisibleToMe) {
             return $status;
         }
 
@@ -49,12 +42,6 @@ class StatusController extends Controller
      * @return Status|array|Builder|Model|object|null
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
-        //ToDo PrivateProfile change to "also following"
-        $authID = null;
-        if (Auth::check()) {
-            $authID = Auth::user()->id;
-        }
-
         if ($userId === null) {
             $statuses = Status::with([
                                          'likes',
@@ -69,32 +56,32 @@ class StatusController extends Controller
                                   $query->where('departure', '<', date('Y-m-d H:i:s'))
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
-                //ToDo PrivateProfile This needs to be removed with the Follow-Request-Feature
-                              ->whereHas('user', function($query) use ($authID) {
-                    return $query->where('private_profile', false)->orWhere('id', $authID);
-                })
                               ->get()
+                              ->filter(function($status) {
+                                  return !$status->user->userInvisibleToMe;
+                                  //ToDo Test this
+                              })
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
                               })->values();
         } else {
-            $statuses = Status::with([
-                                         'user',
-                                         'trainCheckin.Origin',
-                                         'trainCheckin.Destination',
-                                         'trainCheckin.HafasTrip.getPolyLine',
-                                         'event'
-                                     ])
-                              ->whereHas('trainCheckin', function($query) {
-                                  $query->where('departure', '<', date('Y-m-d H:i:s'))
-                                        ->where('arrival', '>', date('Y-m-d H:i:s'));
-                              })
-                              ->whereHas('user', function($query) use ($authID) {
-                                  return $query->where('private_profile', false)->orWhere('id', $authID);
-                              })
-                              ->where('user_id', $userId)
-                              ->first();
-            return $statuses;
+            $status = Status::with([
+                                       'user',
+                                       'trainCheckin.Origin',
+                                       'trainCheckin.Destination',
+                                       'trainCheckin.HafasTrip.getPolyLine',
+                                       'event'
+                                   ])
+                            ->whereHas('trainCheckin', function($query) {
+                                $query->where('departure', '<', date('Y-m-d H:i:s'))
+                                      ->where('arrival', '>', date('Y-m-d H:i:s'));
+                            })
+                            ->where('user_id', $userId)
+                            ->first();
+            if ($status?->user?->userInvisibleToMe) {
+                return null;
+            }
+            return $status;
             //This line is important since we're using this method for two different purposes and I forgot that.
         }
         if ($statuses === null) {
@@ -124,10 +111,6 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-            //ToDo PrivateProfile This needs to be removed with the Follow-Request-Feature
-                     ->whereHas('user', function($query) {
-                return $query->where('private_profile', false);
-            })
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -135,13 +118,16 @@ class StatusController extends Controller
 
 
     public static function getGlobalDashboard(): Paginator {
+        $follows = Auth::user()->follows()->select('follow_id');
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW'
                             ])
-                     ->whereHas('user', function($query) {
-                         return $query->where('private_profile', false)->orWhere('user_id', Auth::user()->id);
+                     ->whereHas('user', function($query) use ($follows) {
+                         return $query->where('private_profile', false)
+                                      ->orWhere('user_id', Auth::user()->id)
+                                      ->orWhereIn('user_id', $follows); //ToDo Test this!
                      })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')

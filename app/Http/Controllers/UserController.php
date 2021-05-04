@@ -151,10 +151,7 @@ class UserController extends Controller
         }
         $statuses = null;
 
-        //ToDo PrivateProfile change to "also following"
-        if (!$user->private_profile ||
-            (Auth::check() && (Auth::user()->id == $user->id || Auth::user()->follows->contains('id', $user->id)))
-        ) {
+        if (!$user->userInvisibleToMe) {
             $statuses = $user->statuses()->with('user',
                                                 'trainCheckin',
                                                 'trainCheckin.Origin',

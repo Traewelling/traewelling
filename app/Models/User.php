@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -22,14 +23,14 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected     $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
-        'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at'
+        'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected     $casts    = [
         'email_verified_at' => 'datetime',
         'private_profile'   => 'boolean'
     ];
     protected     $appends  = [
-        'averageSpeed', 'points'
+        'averageSpeed', 'points', 'userInvisibleToMe'
     ];
 
     public function getAverageSpeedAttribute(): float {
@@ -77,6 +78,32 @@ class User extends Authenticatable implements MustVerifyEmail
                            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                            ->select('points')
                            ->sum('points');
+    }
+
+    /**
+     * Checks if this user is invisible to "me".
+     * +---------+---------------+-----------+--------+
+     * | Private | authenticated | following | result |
+     * +---------+---------------+-----------+--------+
+     * |       0 |             0 |         0 | 0      |
+     * |       0 |             0 |         1 | 0      |
+     * |       0 |             1 |         0 | 0      |
+     * |       0 |             1 |         1 | 0      |
+     * |       1 |             0 |         0 | 1      |
+     * |       1 |             0 |         1 | ?      |
+     * |       1 |             1 |         0 | 1      |
+     * |       1 |             1 |         1 | 0      |
+     * +---------+---------------+-----------+--------+
+     *
+     * @return bool
+     */
+    public function getUserInvisibleToMeAttribute(): bool {
+        return $this->private_profile
+            && (!Auth::check()
+                || (Auth::check()
+                    && ($this != Auth::user() && !Auth::user()->follows->contains('id', $this->id))
+                )
+            );
     }
 
 }

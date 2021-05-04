@@ -257,7 +257,7 @@
     "profile.statistics-for": "Statistics for",
     "profile.unfollow": "Unfollow",
     "profile.private-profile-text": "This profile is private.",
-    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click Follow.",
+    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click \":request\".",
     "settings.action": "Action",
     "settings.btn-update": "Update",
     "settings.choose-file": "Choose file",

@@ -13,9 +13,9 @@
                     <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
                     </strong> <br/>
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
-                    @if($currentUser)
+                    @auth
                         @include('includes.follow-button')
-                    @endif
+                    @endauth
                 </h2>
                 <h2>
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance) }}</span><span
@@ -51,10 +51,10 @@
         </div>
 
         <div class="row justify-content-center">
-            @if($user->private_profile && $user != $currentUser)
+            @if($user->userInvisibleToMe)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
-                    <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>
+                    <h5>{{__('profile.private-profile-information-text', ["username" => $user->username, "request" => __('profile.follow_req')])}}</h5>
                 </div>
             @elseif($statuses->count() > 0)
                 <div class="col-md-8 col-lg-7">
