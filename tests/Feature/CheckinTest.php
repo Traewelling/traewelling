@@ -60,7 +60,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationPositiveTest() {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
+        $user = User::factory()->create();
         $this->acceptGDPR($user);
 
         // GIVEN: A bunch of locations around Europe that should return true
@@ -92,7 +92,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationNegativeTest() {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
+        $user = User::factory()->create();
         $this->acceptGDPR($user);
 
         // GIVEN: A bunch of Locations
@@ -184,6 +184,8 @@ class CheckinTest extends TestCase
                              'tripID'      => $departure->tripId,
                              'start'       => $ibnr,
                              'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+                             'departure'   => Carbon::parse($departure->plannedWhen),
+                             'arrival'     => Carbon::parse($trip['stopovers'][0]['plannedArrival'])
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -356,7 +358,7 @@ class CheckinTest extends TestCase
      */
     public function testCheckinSuccessFlash() {
         // GIVEN: A gdpr-acked user
-        $user     = User::factory()->create();
+        $user = User::factory()->create();
         $this->acceptGDPR($user);
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
