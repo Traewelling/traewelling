@@ -13,8 +13,7 @@ abstract class TestCase extends BaseTestCase
 
         // Creates user
         $user = User::factory()->create();
-        $this->actingAs($user)
-             ->post('/gdpr-ack');
+        $this->acceptGDPR($user);
 
         return $user;
     }

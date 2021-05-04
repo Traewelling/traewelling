@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Http\Controllers\TransportController;
 use Carbon\Carbon;
 use DateTime;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Http\Controllers\TransportController;
+use Tests\TestCase;
 
 class ExportTripsTest extends TestCase
 {
@@ -18,8 +17,7 @@ class ExportTripsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user = User::factory()->create();
-        $this->acceptGDPR($this->user);
+        $this->user = $this->createGDPRAckedUser();
 
         $this->checkin("Frankfurt(M) Flughafen Fernbf", "8070003", new DateTime("+1 day 8:00"));
         $this->checkin("Essen Hbf", "8000098", new DateTime("+2 day 7:30"));
