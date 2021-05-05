@@ -46,7 +46,11 @@ class StatisticController extends Controller
                  ->select(['hafas_trips.category', DB::raw('COUNT(*) AS count')])
                  ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
-                 ->get();
+                 ->get()
+                 ->map(function($data) {
+                     $data->category = __('transport_types.' . $data->category);
+                     return $data;
+                 });
     }
 
     public static function getTopTripOperatorByUser(User $user, Carbon $since = null, Carbon $until = null, int $limit = 10): Collection {
