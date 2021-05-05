@@ -100,7 +100,7 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
                                    href="{{ route('stats') }}">
-                                    Statistiken
+                                    {{__('stats')}}
                                 </a>
                             </li>
                         </ul>
