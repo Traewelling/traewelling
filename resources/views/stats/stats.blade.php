@@ -6,6 +6,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
+
+                <h4>Persönliche Statistiken vom {{$from->format('d.m.Y')}} bis {{$to->format('d.m.Y')}}</h4>
+                <hr />
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <div class="card">
@@ -14,22 +17,12 @@
                                 <canvas id="myChart" style="width: 100%; height: 300px;"></canvas>
                                 <hr/>
                                 <table>
-                                    <tr>
-                                        <td>12%</td>
-                                        <td>DB Fernverkehr AG</td>
-                                    </tr>
-                                    <tr>
-                                        <td>19%</td>
-                                        <td>metronom Eisenbahngesellschaft mbH</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3%</td>
-                                        <td>üstra Hannoversche Verkehrsbetriebe AG</td>
-                                    </tr>
-                                    <tr>
-                                        <td>5%</td>
-                                        <td>Wiener Linien</td>
-                                    </tr>
+                                    @foreach($topOperators as $operator)
+                                        <tr>
+                                            <td>{{$operator->count}} Fahrten</td>
+                                            <td>{{$operator->name}}</td>
+                                        </tr>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>
@@ -39,14 +32,17 @@
                                 type: 'pie',
                                 data: {
                                     labels: [
-                                        'DB Fernverkehr AG',
-                                        'metronom Eisenbahngesellschaft mbH',
-                                        'üstra Hannoversche Verkehrsbetriebe AG',
-                                        'Wiener Linien',
+                                        @foreach($topOperators as $operator)
+                                            '{{$operator->name}}',
+                                        @endforeach
                                     ],
                                     datasets: [{
                                         label: '# of Votes',
-                                        data: [12, 19, 3, 5],
+                                        data: [
+                                            @foreach($topOperators as $operator)
+                                                '{{$operator->count}}',
+                                            @endforeach
+                                        ],
                                         backgroundColor: [
                                             'rgba(255, 99, 132, 0.4)',
                                             'rgba(54, 162, 235, 0.4)',
@@ -87,22 +83,12 @@
                                 <canvas id="chart_favourite_types" style="width: 100%; height: 300px;"></canvas>
                                 <hr/>
                                 <table>
-                                    <tr>
-                                        <td>12%</td>
-                                        <td>ICE</td>
-                                    </tr>
-                                    <tr>
-                                        <td>19%</td>
-                                        <td>RE</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3%</td>
-                                        <td>Tram</td>
-                                    </tr>
-                                    <tr>
-                                        <td>5%</td>
-                                        <td>S</td>
-                                    </tr>
+                                    @foreach($topCategories as $category)
+                                        <tr>
+                                            <td>{{$category->count}} Fahrten</td>
+                                            <td>{{$category->category}}</td>
+                                        </tr>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>
@@ -112,14 +98,17 @@
                                 type: 'pie',
                                 data: {
                                     labels: [
-                                        'DB Fernverkehr AG',
-                                        'metronom Eisenbahngesellschaft mbH',
-                                        'üstra Hannoversche Verkehrsbetriebe AG',
-                                        'Wiener Linien',
+                                        @foreach($topCategories as $category)
+                                            '{{$category->category}}',
+                                        @endforeach
                                     ],
                                     datasets: [{
                                         label: '# of Votes',
-                                        data: [12, 19, 3, 5],
+                                        data: [
+                                            @foreach($topCategories as $category)
+                                                '{{$category->count}}',
+                                            @endforeach
+                                        ],
                                         backgroundColor: [
                                             'rgba(255, 99, 132, 0.4)',
                                             'rgba(54, 162, 235, 0.4)',
@@ -153,6 +142,7 @@
                         </script>
                     </div>
 
+                    <hr />
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
@@ -174,7 +164,7 @@
                                         label: '# of Votes',
                                         data: [
                                             @for($date = \Carbon\Carbon::today()->subDays(100); $date->isBefore(\Carbon\Carbon::today()); $date->addDay())
-                                            {{rand(1,360)}},
+                                                    {{rand(1,360)}},
                                             @endfor
                                         ],
                                         backgroundColor: [
@@ -199,7 +189,7 @@
             </div>
             <div class="col-md-4">
                 <h4>Globale Statistiken</h4>
-                <small class="text-muted">betrifft die Reisen aller Träwelling Nutzer der letzten 24 Stunden</small>
+                <hr />
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row">
@@ -207,7 +197,7 @@
                                 <i class="fas fa-ruler fa-5x"></i>
                             </div>
                             <div class="col-9 text-center">
-                                <span style="font-size: 40px;" class="font-weight-bold">1.423 km</span>
+                                <span style="font-size: 40px;" class="font-weight-bold">{{number($globalStats->distance, 0)}} km</span>
                                 <br/>
                                 <small class="text-muted">(Reisen aller Träwelling Nutzer in den letzten 24h)</small>
                             </div>
@@ -221,7 +211,9 @@
                                 <i class="fas fa-clock fa-5x"></i>
                             </div>
                             <div class="col-9 text-center">
-                                <span style="font-size: 40px;" class="font-weight-bold">827h 23min</span>
+                                <span style="font-size: 40px;" class="font-weight-bold">
+                                    {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
+                                </span>
                                 <br/>
                                 <small class="text-muted">(Reisen aller Träwelling Nutzer in den letzten 24h)</small>
                             </div>
@@ -235,7 +227,8 @@
                                 <i class="fas fa-users fa-5x"></i>
                             </div>
                             <div class="col-9 text-center">
-                                <span style="font-size: 40px;" class="font-weight-bold">34x</span>
+                                <span style="font-size: 40px;"
+                                      class="font-weight-bold">{{$globalStats->user_count}}x</span>
                                 <br/>
                                 <small class="text-muted">aktive Träwelling Nutzer in den letzten 24h</small>
                             </div>
@@ -249,10 +242,8 @@
                                 <i class="fas fa-train fa-5x"></i>
                             </div>
                             <div class="col-9 text-center">
-                                <span style="font-size: 40px;" class="font-weight-bold">6x ICE, </span>
-                                <span style="font-size: 30px;" class="font-weight-bold">3x RE, </span>
-                                <span style="font-size: 20px;" class="font-weight-bold">2x Bus, </span>
-                                <span style="font-size: 15px;" class="font-weight-bold">1x S</span>
+                                <span style="font-size: 40px;" class="font-weight-bold">DEV, </span>
+                                <span style="font-size: 30px;" class="font-weight-bold">DEV </span>
                                 <br/>
                                 <small class="text-muted">Meistgenutze Reisearten der letzten 24h</small>
                             </div>
@@ -266,14 +257,14 @@
                                 <i class="fas fa-home fa-5x"></i>
                             </div>
                             <div class="col-9 text-center">
-                                <span style="font-size: 40px;" class="font-weight-bold">Hannover Hbf</span>
+                                <span style="font-size: 40px;" class="font-weight-bold">DEV</span>
                                 <br/>
                                 <small class="text-muted">Bahnhof mit den meisten Zwischenhalten der letzten 24h</small>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <hr />
             </div>
         </div>
     </div>
