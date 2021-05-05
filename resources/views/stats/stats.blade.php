@@ -8,7 +8,7 @@
             <div class="col-md-8">
 
                 <h4>Persönliche Statistiken vom {{$from->format('d.m.Y')}} bis {{$to->format('d.m.Y')}}</h4>
-                <hr />
+                <hr/>
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <div class="card">
@@ -142,30 +142,30 @@
                         </script>
                     </div>
 
-                    <hr />
+                    <hr/>
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>Dein Reisevolumen</h5>
+                                <h5>Dein Reisevolumen <small>pro Kalenderwoche</small></h5>
                                 <canvas id="chart_triptime_calendar" style="width: 100%; height: 300px;"></canvas>
                             </div>
                         </div>
                         <script>
                             var ctx = document.getElementById('chart_triptime_calendar').getContext('2d');
-                            var myChart = new Chart(ctx, {
+                            new Chart(ctx, {
                                 type: 'line',
                                 data: {
                                     labels: [
-                                        @for($date = \Carbon\Carbon::today()->subDays(100); $date->isBefore(\Carbon\Carbon::today()); $date->addDay())
-                                            '{{$date->format('d.m.Y')}}',
-                                        @endfor
+                                        @foreach($travelTime as $row)
+                                            'KW {{$row->date->isoFormat('w / Y')}}',
+                                        @endforeach
                                     ],
                                     datasets: [{
-                                        label: '# of Votes',
+                                        label: 'Reisezeit in Minuten',
                                         data: [
-                                            @for($date = \Carbon\Carbon::today()->subDays(100); $date->isBefore(\Carbon\Carbon::today()); $date->addDay())
-                                                    {{rand(1,360)}},
-                                            @endfor
+                                            @foreach($travelTime as $row)
+                                                    {{$row->duration}},
+                                            @endforeach
                                         ],
                                         backgroundColor: [
                                             '#c72730'
@@ -189,7 +189,7 @@
             </div>
             <div class="col-md-4">
                 <h4>Globale Statistiken</h4>
-                <hr />
+                <hr/>
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row">
@@ -264,7 +264,7 @@
                         </div>
                     </div>
                 </div>
-                <hr />
+                <hr/>
             </div>
         </div>
     </div>

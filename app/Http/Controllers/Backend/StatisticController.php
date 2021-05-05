@@ -78,4 +78,36 @@ class StatisticController extends Controller
                  ->limit($limit)
                  ->get();
     }
+
+    public static function getWeeklyTravelTimeByUser(User $user, Carbon $since = null, Carbon $until = null): Collection {
+
+        if ($since == null) {
+            $since = Carbon::now()->subWeek();
+        }
+        if ($until == null) {
+            $until = Carbon::now();
+        }
+        if ($since->isAfter($until)) {
+            throw new InvalidArgumentException('since cannot be after until');
+        }
+
+        return DB::table('train_checkins')
+                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                 ->where('statuses.user_id', '=', $user->id)
+                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                 ->groupBy([DB::raw('YEAR(train_checkins.departure)'), DB::raw('WEEK(train_checkins.departure, 1)')])
+                 ->select([
+                              DB::raw('YEAR(train_checkins.departure) AS year'),
+                              DB::raw('WEEK(train_checkins.departure, 1) AS kw'),
+                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
+                          ])
+                 ->orderBy(DB::raw('YEAR(train_checkins.departure)'))
+                 ->orderBy(DB::raw('WEEK(train_checkins.departure, 1)'))
+                 ->get()
+                 ->map(function($row) {
+                     $row->date = Carbon::today()->setISODate($row->year, $row->kw);
+                     return $row;
+                 });
+    }
 }
