@@ -8,15 +8,14 @@ use App\Models\Status;
 use App\Models\User;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use stdClass;
 use Tests\ApiTestCase;
 
 class PrivateProfileVisibilityTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    private User $bob;
-    private User $alice;
-    private User $gertrud;
+    private stdClass $users;
 
     /**
      * We want to test, if a private profile and/or status is visible to the user itself, a following user, a
@@ -25,26 +24,74 @@ class PrivateProfileVisibilityTest extends ApiTestCase
      */
     public function setUp(): void {
         parent::setUp();
-        $this->loginGertrudAndAckGDPR();
-        $gertrudResult = json_decode($this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                                          ->json('GET', route('api.v0.getUser'))->getContent(), true);
-        $this->gertrud = User::where('id', $gertrudResult['id'])->firstOrFail();
-        $this->bob     = $this->createGDPRAckedUser();
-        $this->alice   = $this->createGDPRAckedUser();
-        UserController::createFollow($this->gertrud, $this->bob);
-        $this->bob->update(['private_profile' => 'true']);
-        $now = new DateTime("+2 day 12:45");
-        $this->checkin("Frankfurt Hbf", $now, $this->bob);
+        $this->users = $this->createAliceBobAndGertrud();
     }
 
     /**
+     * Watching a private profile is characterized by being able to see ones statuses on a profile page.
+     * If the statuses are returned as null, you're not allowed to see the statuses.
+     *
      * @test
      */
-    public function view_profile_without_following() {
-        $statuses = Status::where('user_id', $this->bob->id)->get();
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->json('GET', route('api.v0.user', ['username' => $this->bob->username]));
+    public function view_profile_of_private_user() {
+        // Can Gertrud see the profile of Bob? => yes
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->gertrud->token])
+                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
         $response = json_decode($response->getContent(), true);
         $this->assertNotEquals(null, $response['statuses']);
+
+        // Can Bob see the profile of bob? => yes
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->bob->token])
+                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
+        $response = json_decode($response->getContent(), true);
+        $this->assertNotEquals(null, $response['statuses']);
+
+        // Can Alice see the profile of bob? => no
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->alice->token])
+                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
+        $response = json_decode($response->getContent(), true);
+        $this->assertEquals(null, $response['statuses']);
+    }
+
+    /**
+     * This method creates thee users: Gertrud, Alice and Bob.
+     * Bob is a private profile, followed by Gertrud. Alice is a seperate user, following nobody.
+     * Bob has one check in.
+     *
+     * @return stdClass
+     * @throws \App\Exceptions\AlreadyFollowingException
+     */
+    public function createAliceBobAndGertrud(): stdClass {
+        $data          = new stdClass();
+        $data->bob     = new stdClass();
+        $data->gertrud = new stdClass();
+        $data->alice   = new stdClass();
+        // Create Gertrud, Alice and Bob
+        $data->bob->user                     = $this->createGDPRAckedUser();
+        $data->bob->token                    = $data->bob->user->createToken('token')->accessToken;
+        $data->bob->user->privacy_ack_at     = now();
+        $data->gertrud->user                 = $this->createGDPRAckedUser();
+        $data->gertrud->token                = $data->gertrud->user->createToken('token')->accessToken;
+        $data->gertrud->user->privacy_ack_at = now();
+        $data->alice->user                   = $this->createGDPRAckedUser();
+        $data->alice->token                  = $data->alice->user->createToken('token')->accessToken;
+        $data->alice->user->privacy_ack_at   = now();
+        $data->bob->user->save();
+        $data->gertrud->user->save();
+        $data->alice->user->save();
+
+        // Create new CheckIn for Bob
+        $now = new DateTime("+2 day 12:45");
+        $this->checkin("Frankfurt Hbf", $now, $data->bob->user);
+
+        // Make Gertrud follow bob and make bob's profile private
+        UserController::destroyFollow($data->alice->user, $data->bob->user);
+        UserController::createFollow($data->gertrud->user, $data->bob->user);
+        $data->bob->user->update(['private_profile' => 'true']);
+
+        $this->assertTrue($data->bob->user->private_profile);
+
+        return $data;
+
     }
 }
