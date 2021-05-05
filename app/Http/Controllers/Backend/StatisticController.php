@@ -12,10 +12,21 @@ use stdClass;
 
 class StatisticController extends Controller
 {
-    public static function getGlobalCheckInStats(): stdClass {
+    public static function getGlobalCheckInStats(Carbon $since = null, Carbon $until = null): stdClass {
+        if ($since == null) {
+            $since = Carbon::now()->subWeek();
+        }
+        if ($until == null) {
+            $until = Carbon::now();
+        }
+        if ($since->isAfter($until)) {
+            throw new InvalidArgumentException('since cannot be after until');
+        }
+
         return DB::table('train_checkins')
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('train_checkins.departure', '>', DB::raw('(NOW() - INTERVAL 1 DAY)'))
+                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->select([
                               DB::raw('SUM(train_checkins.distance) AS distance'),
                               DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration'),
