@@ -1,4 +1,4 @@
-<h4>Globale Statistiken</h4>
+<h4>{{__('stats.global')}}</h4>
 <hr/>
 <div class="card mb-4">
     <div class="card-body">
@@ -11,7 +11,7 @@
                     {{number($globalStats->distance, 0)}} km
                 </span>
                 <br/>
-                <small class="text-muted">Reisedistanz aller Träwelling Nutzer</small>
+                <small class="text-muted">{{__('stats.global.distance')}}</small>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
                     {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
                 </span>
                 <br/>
-                <small class="text-muted">Reisezeit aller Träwelling Nutzer</small>
+                <small class="text-muted">{{__('stats.global.duration')}}</small>
             </div>
         </div>
     </div>
@@ -43,12 +43,14 @@
                     {{$globalStats->user_count}}x
                 </span>
                 <br/>
-                <small class="text-muted">Aktive Träwelling Nutzer</small>
+                <small class="text-muted">{{__('stats.global.active')}}</small>
             </div>
         </div>
     </div>
 </div>
 <hr/>
-<small class="text-muted">*Die Globalen Statistiken beziehen sich auf die CheckIns aller Träwelling Nutzer im Zeitraum
-    von x bis x.</small>
+<small class="text-muted">*{{strtr(__('stats.global.explain'), [
+                                ':fromDate' => $from->format('d.m.Y'),
+                                ':toDate' => $to->format('d.m.Y')
+                            ])}}</small>
 <hr/>

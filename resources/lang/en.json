@@ -344,6 +344,20 @@
     "transport_types.regional": "regional",
     "transport_types.suburban": "suburban",
     "transport_types.subway": "subway",
-    "transport_types.tram": "tram"
+    "transport_types.tram": "tram",
+    "stats": "Statistics",
+    "stats.personal" : "Personal statistics from :fromDate to :toDate",
+    "stats.global" : "Global Statistics",
+    "stats.companies": "Your favorite transport companies",
+    "stats.volume": "Your travel volume",
+    "stats.per-week": "per week",
+    "stats.trips": "Journeys",
+    "stats.no-data": "There are no data available in the period.",
+    "stats.time-in-minutes": "Travel time in minutes",
+    "stats.week-short": "Week",
+    "stats.global.distance": "Travel distance of all Träwelling users",
+    "stats.global.duration": "Travel time of all Träwelling users",
+    "stats.global.active": "Active Träwelling users",
+    "stats.global.explain": "The Global Statistics refer to the CheckIns of all Träwelling users in the period from :fromDate to :toDate."
 }
 

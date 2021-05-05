@@ -8,13 +8,13 @@
             <table>
                 @foreach($topCategories as $category)
                     <tr>
-                        <td>{{$category->count}} Fahrten</td>
+                        <td>{{$category->count}} {{__('stats.trips')}}</td>
                         <td>{{$category->category}}</td>
                     </tr>
                 @endforeach
             </table>
         @else
-            <p class="text-danger font-weight-bold mt-2">Es sind keine Daten in dem Zeitraum vorhanden.</p>
+            <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
     </div>
 </div>

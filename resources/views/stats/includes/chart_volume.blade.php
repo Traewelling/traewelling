@@ -1,10 +1,10 @@
 <div class="card">
     <div class="card-body">
-        <h5>Dein Reisevolumen <small>pro Kalenderwoche</small></h5>
+        <h5>{{__('stats.volume')}} <small>{{__('stats.per-week')}}</small></h5>
         @if($travelTime->count() > 0)
             <canvas id="chart_triptime_calendar" style="width: 100%; height: 300px;"></canvas>
         @else
-            <p class="text-danger font-weight-bold mt-2">Es sind keine Daten in dem Zeitraum vorhanden.</p>
+            <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
     </div>
 </div>
@@ -18,11 +18,11 @@
                 data: {
                     labels: [
                         @foreach($travelTime as $row)
-                            'KW {{$row->date->isoFormat('w / Y')}}',
+                            '{{__('stats.week-short')}} {{$row->date->isoFormat('w / Y')}}',
                         @endforeach
                     ],
                     datasets: [{
-                        label: 'Reisezeit in Minuten',
+                        label: '{{__('stats.time-in-minutes')}}',
                         data: [
                             @foreach($travelTime as $row)
                                     {{$row->duration}},

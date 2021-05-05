@@ -348,5 +348,19 @@
   "transport_types.regional": "Regional",
   "transport_types.suburban": "S-Bahn",
   "transport_types.subway": "U-Bahn",
-  "transport_types.tram": "Tram"
+  "transport_types.tram": "Tram",
+  "stats": "Statistiken",
+  "stats.personal" : "Persönliche Statistiken vom :fromDate bis :toDate",
+  "stats.global" : "Globale Statistiken",
+  "stats.companies": "Deine Lieblingsverkehrsunternehmen",
+  "stats.volume": "Dein Reisevolumen",
+  "stats.per-week": "pro Kalenderwoche",
+  "stats.trips": "Fahrten",
+  "stats.no-data": "Es sind keine Daten in dem Zeitraum vorhanden.",
+  "stats.time-in-minutes": "Reisezeit in Minuten",
+  "stats.week-short": "KW",
+  "stats.global.distance": "Reisedistanz aller Träwelling Nutzer",
+  "stats.global.duration": "Reisedauer aller Träwelling Nutzer",
+  "stats.global.active": "Aktive Träwelling Nutzer",
+  "stats.global.explain": "Die Globalen Statistiken beziehen sich auf die CheckIns aller Träwelling Nutzer im Zeitraum von :fromDate bis :toDate."
 }

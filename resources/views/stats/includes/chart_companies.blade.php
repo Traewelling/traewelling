@@ -1,19 +1,19 @@
 <div class="card">
     <div class="card-body">
-        <h5>Deine Lieblingsverkehrsunternehmen</h5>
+        <h5>{{__('stats.companies')}}</h5>
         @if($topOperators->count() > 0)
             <canvas id="myChart" style="width: 100%; height: 300px;"></canvas>
             <hr/>
             <table>
                 @foreach($topOperators as $operator)
                     <tr>
-                        <td>{{$operator->count}} Fahrten</td>
+                        <td>{{$operator->count}} {{__('stats.trips')}}</td>
                         <td>{{$operator->name}}</td>
                     </tr>
                 @endforeach
             </table>
         @else
-            <p class="text-danger font-weight-bold mt-2">Es sind keine Daten in dem Zeitraum vorhanden.</p>
+            <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
     </div>
 </div>
