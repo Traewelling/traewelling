@@ -3,10 +3,10 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="row">
-            <div class="col-3 text-center">
-                <i class="fas fa-ruler fa-5x"></i>
+            <div class="col-4 text-center">
+                <i class="fas fa-ruler fa-4x mt-1"></i>
             </div>
-            <div class="col-9 text-center">
+            <div class="col-8 text-center">
                 <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {{number($globalStats->distance, 0)}} km
                 </span>
@@ -19,10 +19,10 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="row">
-            <div class="col-3 text-center">
-                <i class="fas fa-clock fa-5x"></i>
+            <div class="col-4 text-center">
+                <i class="fas fa-clock fa-4x mt-1"></i>
             </div>
-            <div class="col-9 text-center">
+            <div class="col-8 text-center">
                 <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
                 </span>
@@ -35,10 +35,10 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="row">
-            <div class="col-3 text-center">
-                <i class="fas fa-users fa-5x"></i>
+            <div class="col-4 text-center">
+                <i class="fas fa-users fa-4x mt-1"></i>
             </div>
-            <div class="col-9 text-center">
+            <div class="col-8 text-center">
                 <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {{$globalStats->user_count}}x
                 </span>
