@@ -29,9 +29,9 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->select([
                               DB::raw('SUM(train_checkins.distance) AS distance'),
-                              DB::raw('SUM('
-                                      . 'TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)'
-                                      . ') AS duration'),
+                              DB::raw(
+                                  'SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration'
+                              ),
                               DB::raw('COUNT(DISTINCT statuses.user_id) AS user_count')
                           ])
                  ->first();
