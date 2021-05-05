@@ -24,65 +24,11 @@ class NotificationsTest extends TestCase
         $this->user = $this->createGDPRAckedUser();
     }
 
-    /**
-     * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
-     * @param $stationname
-     * @param $ibnr
-     * @param DateTime $now
-     * @param User|null $user
-     * @throws Exception
-     */
-    protected function checkin($stationname, $ibnr, DateTime $now, User $user = null) {
-        if ($user == null) {
-            $user = $this->user;
-        }
-        $trainStationboard = TransportController::TrainStationboard($stationname,
-                                                                    Carbon::createFromTimestamp($now->format('U')),
-                                                                    'express');
-
-        $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
-            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
-            return;
-        }
-
-        // Second: We don't like broken or cancelled trains.
-        $i = 0;
-        while ((isset($trainStationboard['departures'][$i]->cancelled)
-                && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0) {
-            $i++;
-            if ($i == $countDepartures) {
-                $this->markTestSkipped("Unable to find unbroken train.
-                Is it stormy in $stationname?");
-                return;
-            }
-        }
-        $departure = $trainStationboard['departures'][$i];
-        CheckinTest::isCorrectHafasTrip($departure, $now);
-
-        // Third: Get the trip information
-        $trip = TransportController::TrainTrip(
-            $departure->tripId,
-            $departure->line->name,
-            $departure->stop->location->id
-        );
-
-        // WHEN: User tries to check-in
-        $this->actingAs($user)
-             ->post(route('trains.checkin'), [
-                 'body'        => 'Example Body',
-                 'tripID'      => $departure->tripId,
-                 'start'       => $ibnr,
-                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-             ]);
-    }
-
     /** @test */
     public function likes_appear_in_notifications() {
         // Given: There is a likable status
-        $now = new DateTime("+2 day 7:30");
-        $this->checkin("Essen Hbf", "8000098", $now);
+        $now = new DateTime("+2 day 7:45");
+        $this->checkin("Essen Hbf", $now);
 
         $status = $this->user->statuses->first();
 
@@ -106,8 +52,8 @@ class NotificationsTest extends TestCase
     /** @test */
     public function removed_likes_dont_appear_in_notifications() {
         // Given: There is a likable status
-        $now = new DateTime("+2 day 7:30");
-        $this->checkin("Essen Hbf", "8000098", $now);
+        $now = new DateTime("+2 day 7:45");
+        $this->checkin("Essen Hbf", $now);
 
         $status = $this->user->statuses->first();
         $like   = $this->actingAs($this->user)
@@ -169,12 +115,12 @@ class NotificationsTest extends TestCase
     public function bob_joining_on_alices_connection_should_spawn_a_notification() {
         // GIVEN: Alice checked-into a train.
         $alice = $this->createGDPRAckedUser();
-        $now   = new DateTime("+2 day 7:30");
-        $this->checkin("Essen Hbf", "8000098", $now, $alice);
+        $now   = new DateTime("+2 day 7:45");
+        $this->checkin("Essen Hbf", $now, $alice);
 
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
-        $this->checkin("Essen Hbf", "8000098", $now, $bob);
+        $this->checkin("Essen Hbf", $now, $bob);
 
         // THEN: Alice should see that in their notification
         $notifications = $this->actingAs($alice)
