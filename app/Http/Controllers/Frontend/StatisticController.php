@@ -21,9 +21,15 @@ class StatisticController extends Controller
 
         $globalStats = \App\Http\Controllers\Backend\StatisticController::getGlobalCheckInStats();
 
-        $topCategories = \App\Http\Controllers\Backend\StatisticController::getTopTravelCategoryByUser(auth()->user(), $from, $to);
-        $topOperators  = \App\Http\Controllers\Backend\StatisticController::getTopTripOperatorByUser(auth()->user(), $from, $to);
-        $travelTime    = \App\Http\Controllers\Backend\StatisticController::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
+        $topCategories = \App\Http\Controllers\Backend\StatisticController::getTopTravelCategoryByUser(
+            auth()->user(), $from, $to
+        );
+        $topOperators  = \App\Http\Controllers\Backend\StatisticController::getTopTripOperatorByUser(
+            auth()->user(), $from, $to
+        );
+        $travelTime    = \App\Http\Controllers\Backend\StatisticController::getWeeklyTravelTimeByUser(
+            auth()->user(), $from, $to
+        );
 
         return view('stats.stats', [
             'from'          => $from,

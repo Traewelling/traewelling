@@ -29,13 +29,20 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->select([
                               DB::raw('SUM(train_checkins.distance) AS distance'),
-                              DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration'),
+                              DB::raw('SUM('
+                                      . 'TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)'
+                                      . ') AS duration'),
                               DB::raw('COUNT(DISTINCT statuses.user_id) AS user_count')
                           ])
                  ->first();
     }
 
-    public static function getTopTravelCategoryByUser(User $user, Carbon $since = null, Carbon $until = null, int $limit = 10): Collection {
+    public static function getTopTravelCategoryByUser(
+        User $user,
+        Carbon $since = null,
+        Carbon $until = null,
+        int $limit = 10
+    ): Collection {
 
         if ($since == null) {
             $since = Carbon::now()->subWeek();
@@ -64,7 +71,12 @@ class StatisticController extends Controller
                  });
     }
 
-    public static function getTopTripOperatorByUser(User $user, Carbon $since = null, Carbon $until = null, int $limit = 10): Collection {
+    public static function getTopTripOperatorByUser(
+        User $user,
+        Carbon $since = null,
+        Carbon $until = null,
+        int $limit = 10
+    ): Collection {
 
         if ($since == null) {
             $since = Carbon::now()->subWeek();
@@ -90,7 +102,11 @@ class StatisticController extends Controller
                  ->get();
     }
 
-    public static function getWeeklyTravelTimeByUser(User $user, Carbon $since = null, Carbon $until = null): Collection {
+    public static function getWeeklyTravelTimeByUser(
+        User $user,
+        Carbon $since = null,
+        Carbon $until = null
+    ): Collection {
 
         if ($since == null) {
             $since = Carbon::now()->subWeek();
