@@ -349,6 +349,7 @@
     "stats.personal" : "Personal statistics from :fromDate to :toDate",
     "stats.global" : "Global Statistics",
     "stats.companies": "Your favorite transport companies",
+    "stats.categories": "Your favorite travel types",
     "stats.volume": "Your travel volume",
     "stats.per-week": "per week",
     "stats.trips": "Journeys",

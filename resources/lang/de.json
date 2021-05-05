@@ -353,6 +353,7 @@
   "stats.personal" : "Persönliche Statistiken vom :fromDate bis :toDate",
   "stats.global" : "Globale Statistiken",
   "stats.companies": "Deine Lieblingsverkehrsunternehmen",
+  "stats.categories": "Deine Lieblingsreisetypen",
   "stats.volume": "Dein Reisevolumen",
   "stats.per-week": "pro Kalenderwoche",
   "stats.trips": "Fahrten",

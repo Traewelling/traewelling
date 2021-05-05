@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h5>Deine Lieblingsreisetypen</h5>
+        <h5>{{__('stats.categories')}}</h5>
 
         @if($topCategories->count() > 0)
             <canvas id="chart_favourite_types" style="width: 100%; height: 300px;"></canvas>
