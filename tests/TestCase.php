@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\TransportController;
@@ -89,7 +90,7 @@ abstract class TestCase extends BaseTestCase
         }
         $trainStationboard = TransportController::TrainStationboard($stationname,
                                                                     Carbon::createFromTimestamp($now->format('U')),
-                                                                    'express');
+                                                                    TravelType::EXPRESS);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");

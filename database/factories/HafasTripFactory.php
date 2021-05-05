@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
@@ -42,18 +43,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    'products' => [
-                        'nationalExpress' => $this->faker->boolean(50),
-                        'national'        => $this->faker->boolean(50),
-                        'regionalExp'     => $this->faker->boolean(50),
-                        'regional'        => $this->faker->boolean(50),
-                        'suburban'        => $this->faker->boolean(50),
-                        'bus'             => $this->faker->boolean(50),
-                        'ferry'           => $this->faker->boolean(50),
-                        'subway'          => $this->faker->boolean(50),
-                        'tram'            => $this->faker->boolean(50),
-                        'taxi'            => $this->faker->boolean(50),
-                    ],
+                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
                 ],
                 'geometry'   => [
                     'type'        => 'Point',
@@ -74,18 +64,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    'products' => [
-                        'nationalExpress' => $this->faker->boolean(50),
-                        'national'        => $this->faker->boolean(50),
-                        'regionalExp'     => $this->faker->boolean(50),
-                        'regional'        => $this->faker->boolean(50),
-                        'suburban'        => $this->faker->boolean(50),
-                        'bus'             => $this->faker->boolean(50),
-                        'ferry'           => $this->faker->boolean(50),
-                        'subway'          => $this->faker->boolean(50),
-                        'tram'            => $this->faker->boolean(50),
-                        'taxi'            => $this->faker->boolean(50),
-                    ],
+                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
                 ],
                 'arrival'                  => $time->toIso8601String(),
                 'plannedArrival'           => $time->toIso8601String(),
