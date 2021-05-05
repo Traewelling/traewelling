@@ -234,5 +234,6 @@
             var urlUnfollow = '{{ route('follow.destroy') }}';
             var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
         </script>
+        @yield('javascript-end')
     </body>
 </html>
