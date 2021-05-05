@@ -7,7 +7,7 @@
                 <i class="fas fa-ruler fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {{number($globalStats->distance, 0)}} km
                 </span>
                 <br/>
@@ -23,7 +23,7 @@
                 <i class="fas fa-clock fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
                 </span>
                 <br/>
@@ -39,7 +39,7 @@
                 <i class="fas fa-users fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold color-main">
                     {{$globalStats->user_count}}x
                 </span>
                 <br/>
