@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 <h4>Persönliche Statistiken vom {{$from->format('d.m.Y')}} bis {{$to->format('d.m.Y')}}</h4>
                 <hr/>
                 <div class="row">
@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 @include('stats.includes.global_cards')
             </div>
         </div>

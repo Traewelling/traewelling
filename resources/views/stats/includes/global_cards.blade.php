@@ -7,11 +7,11 @@
                 <i class="fas fa-ruler fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 40px;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold">
                     {{number($globalStats->distance, 0)}} km
                 </span>
                 <br/>
-                <small class="text-muted">(Reisen aller Träwelling Nutzer in den letzten 24h)</small>
+                <small class="text-muted">Reisedistanz aller Träwelling Nutzer</small>
             </div>
         </div>
     </div>
@@ -23,11 +23,11 @@
                 <i class="fas fa-clock fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 40px;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold">
                     {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
                 </span>
                 <br/>
-                <small class="text-muted">(Reisen aller Träwelling Nutzer in den letzten 24h)</small>
+                <small class="text-muted">Reisezeit aller Träwelling Nutzer</small>
             </div>
         </div>
     </div>
@@ -39,13 +39,16 @@
                 <i class="fas fa-users fa-5x"></i>
             </div>
             <div class="col-9 text-center">
-                <span style="font-size: 40px;" class="font-weight-bold">
+                <span style="font-size: 2em;" class="font-weight-bold">
                     {{$globalStats->user_count}}x
                 </span>
                 <br/>
-                <small class="text-muted">aktive Träwelling Nutzer in den letzten 24h</small>
+                <small class="text-muted">Aktive Träwelling Nutzer</small>
             </div>
         </div>
     </div>
 </div>
+<hr/>
+<small class="text-muted">*Die Globalen Statistiken beziehen sich auf die CheckIns aller Träwelling Nutzer im Zeitraum
+    von x bis x.</small>
 <hr/>
