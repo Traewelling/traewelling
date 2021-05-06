@@ -34,23 +34,28 @@ class PrivateProfileVisibilityTest extends ApiTestCase
      * @test
      */
     public function view_profile_of_private_user() {
-        // Can Gertrud see the profile of Bob? => yes
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->gertrud->token])
-                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
-        $response = json_decode($response->getContent(), true);
-        $this->assertNotEquals(null, $response['statuses']);
-
         // Can Bob see the profile of bob? => yes
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->bob->token])
-                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
-        $response = json_decode($response->getContent(), true);
-        $this->assertNotEquals(null, $response['statuses']);
+        $bob = $this->actingAs($this->users->bob->user)
+                    ->withHeaders(['Authorization' => 'Bearer ' . $this->users->bob->token])
+                    ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
+        $bob = json_decode($bob->getContent(), true);
+        $this->assertNotEquals(null, $bob['statuses']);
 
-        // Can Alice see the profile of bob? => no
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->users->alice->token])
-                         ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
-        $response = json_decode($response->getContent(), true);
-        $this->assertEquals(null, $response['statuses']);
+        // Can Alice see the profile of Bob? => no
+        $alice = $this->actingAs($this->users->alice->user)
+                      ->withHeaders(['Authorization' => 'Bearer ' . $this->users->alice->token])
+                      ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
+        $alice = json_decode($alice->getContent(), true);
+        $this->assertEquals(null, $alice['statuses']);
+
+
+
+        // Can Gertrud see the profile of bob? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user)
+                        ->withHeaders(['Authorization' => 'Bearer ' . $this->users->gertrud->token])
+                        ->json('GET', route('api.v0.user', ['username' => $this->users->bob->user->username]));
+        $gertrud = json_decode($gertrud->getContent(), true);
+        $this->assertNotEquals(null, $gertrud['statuses']);
     }
 
     /**
