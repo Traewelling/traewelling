@@ -101,7 +101,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->private_profile
             && (!Auth::check()
                 || (Auth::check()
-                    && ($this != Auth::user() && !Auth::user()->follows->contains('id', $this->id))
+                    && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
                 )
             );
     }

@@ -48,8 +48,6 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $alice = json_decode($alice->getContent(), true);
         $this->assertEquals(null, $alice['statuses']);
 
-
-
         // Can Gertrud see the profile of bob? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user)
                         ->withHeaders(['Authorization' => 'Bearer ' . $this->users->gertrud->token])
