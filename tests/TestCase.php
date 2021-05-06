@@ -81,9 +81,10 @@ abstract class TestCase extends BaseTestCase
      * @param $stationname
      * @param DateTime $now
      * @param User|null $user
-     * @throws Exception
+     * @return array|null
+     * @throws \App\Exceptions\HafasException
      */
-    protected function checkin($stationname, DateTime $now, User $user = null) {
+    protected function checkin($stationname, DateTime $now, User $user = null): ?array {
         if ($user == null) {
             $user = $this->user;
         }
@@ -93,7 +94,6 @@ abstract class TestCase extends BaseTestCase
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
-            return;
         }
 
         // Second: We don't like broken or cancelled trains.
@@ -105,7 +105,6 @@ abstract class TestCase extends BaseTestCase
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train.
                 Is it stormy in $stationname?");
-                return;
             }
         }
         $departure = $trainStationboard['departures'][$i];
@@ -120,14 +119,14 @@ abstract class TestCase extends BaseTestCase
 
         // WHEN: User tries to check-in
         try {
-            TransportController::TrainCheckin($trip['train']['trip_id'],
-                                              $trip['stopovers'][0]['stop']['id'],
-                                              end($trip['stopovers'])['stop']['id'],
-                                              '',
-                                              $user,
-                                              0,
-                                              0,
-                                              0);
+            return TransportController::TrainCheckin($trip['train']['trip_id'],
+                                                     $trip['stopovers'][0]['stop']['id'],
+                                                     end($trip['stopovers'])['stop']['id'],
+                                                     '',
+                                                     $user,
+                                                     0,
+                                                     0,
+                                                     0);
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationname . ": Station not in stopovers");
         } catch (CheckInCollisionException) {
