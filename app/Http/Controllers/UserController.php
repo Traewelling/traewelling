@@ -262,7 +262,7 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $checkIns = TrainCheckin::with('status.user')
+        $checkIns = TrainCheckin::with(['status.user', 'HafasTrip.stopoversNEW.trainStation', 'Origin', 'Destination'])
                                 ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                                 ->get();
 
