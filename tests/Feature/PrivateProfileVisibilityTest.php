@@ -65,39 +65,130 @@ class PrivateProfileVisibilityTest extends ApiTestCase
     }
 
     /**
-     * Watching a private profile is characterized by being able to see ones statuses on a profile page.
-     * If the statuses are returned as null, you're not allowed to see the statuses.
-     *
      * @test
      */
     public function view_status_of_private_user() {
-        // Can a guest see the profile of bob? => no
+        // Can a guest see the status of bob? => no
         Auth::logout();
         $guest = $this->get(route('statuses.get', ['id' => $this->users->bob->checkin['statusId']]));
         $this->assertGuest();
         $guest->assertStatus(403);
 
-        // Can Bob see the profile of bob? => yes
+        // Can Bob see the status of bob? => yes
         $bob = $this->actingAs($this->users->bob->user, 'api')
                     ->json('GET', route('api.v0.statuses.show', ['status' => $this->users->bob->checkin['statusId']]));
         $bob->assertSuccessful();
         $bob->assertJson(['id' => $this->users->bob->checkin['statusId']]);
 
 
-        // Can Alice see the profile of Bob? => no
+        // Can Alice see the status of bob? => no
         $alice = $this->actingAs($this->users->alice->user, 'api')
                       ->json('GET',
                              route('api.v0.statuses.show', ['status' => $this->users->bob->checkin['statusId']])
                       );
         $alice->assertStatus(403);
 
-        // Can Gertrud see the profile of bob? => yes
+        // Can Gertrud see the status of bob? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
                         ->json('GET',
                                route('api.v0.statuses.show', ['status' => $this->users->bob->checkin['statusId']])
                         );
         $gertrud->assertSuccessful();
         $bob->assertJson(['id' => $this->users->bob->checkin['statusId']]);
+    }
+
+    /**
+     * If a user is private, only authorized (not explicitly authenticated) users should be able to see their statuses
+     * on the dashboard
+     * @test
+     */
+    public function view_status_of_private_user_on_global_dashboard() {
+        // Can a guest see the statuses of bob on the dashboard? => no, because they can't access the dashboard
+        // Can Bob see the statuses of bob on the dashboard? => yes
+        $bob = $this->actingAs($this->users->bob->user, 'api')
+                    ->json('GET', route('api.v0.statuses.index'));
+        $bob->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $bob->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
+        $bob->assertSuccessful();
+
+
+        // Can Alice see the statuses of bob on the dashboard? => no
+        $alice = $this->actingAs($this->users->alice->user, 'api')
+                      ->json('GET', route('api.v0.statuses.index'));
+        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice->assertJsonMissing(["id" => $this->users->bob->checkin['statusId']]);
+        $alice->assertSuccessful();
+
+        // Can Gertrud see the statuses of bob on the dashboard? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
+                        ->json('GET', route('api.v0.statuses.index'));
+        $gertrud->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $gertrud->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
+        $gertrud->assertSuccessful();
+    }
+
+    /**
+     * If a user is private, only authorized (not explicitly authenticated) users should be able to see their statuses
+     * on the private dashboard
+     * @test
+     */
+    public function view_status_of_private_user_on_private_dashboard() {
+        // Can a guest see the statuses of bob on the dashboard? => no, because they can't access the dashboard
+        // Can Bob see the statuses of bob on the dashboard? => yes
+        $bob = $this->actingAs($this->users->bob->user, 'api')
+                    ->json('GET', route('api.v0.statuses.index').'?view=personal');
+        $bob->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $bob->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
+        $bob->assertSuccessful();
+
+
+        // Can Alice see the statuses of bob on the dashboard? => no
+        $alice = $this->actingAs($this->users->alice->user, 'api')
+                      ->json('GET', route('api.v0.statuses.index').'?view=personal');
+        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice->assertJsonMissing(["id" => $this->users->bob->checkin['statusId']]);
+        $alice->assertSuccessful();
+
+        // Can Gertrud see the statuses of bob on the dashboard? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
+                        ->json('GET', route('api.v0.statuses.index').'?view=personal');
+        $gertrud->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $gertrud->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
+        $gertrud->assertSuccessful();
+    }
+
+    /**
+     * If a user is private, only authorized (not explicitly authenticated) users should be able to see their statuses
+     * on the en route page
+     * @test
+     */
+    public function view_status_of_private_user_on_en_route() {
+        // Can a guest see the statuses of bob on the dashboard? => no
+        Auth::logout();
+        $guest = $this->get(route('statuses.active'));
+        $this->assertGuest();
+        $guest->assertDontSee($this->users->bob->user->username);
+
+        // Can Bob see the statuses of bob on the dashboard? => yes
+        $bob = $this->actingAs($this->users->bob->user, 'api')
+                    ->json('GET', route('api.v0.statuses.enroute'));
+        $bob->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $bob->assertJsonFragment(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
+        $bob->assertSuccessful();
+
+        // Can Alice see the statuses of bob on the dashboard? => no
+        $alice = $this->actingAs($this->users->alice->user, 'api')
+                      ->json('GET', route('api.v0.statuses.enroute'));
+        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice->assertJsonMissing(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
+        $alice->assertSuccessful();
+
+        // Can Gertrud see the statuses of bob on the dashboard? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
+                        ->json('GET', route('api.v0.statuses.enroute'));
+        $gertrud->assertJsonFragment(["username" => $this->users->bob->user->username]);
+        $gertrud->assertJsonFragment(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
+        $gertrud->assertSuccessful();
     }
 
     /**
@@ -125,7 +216,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $data->alice->user->save();
 
         // Create new CheckIn for Bob
-        $now                = new DateTime("+2 day 12:45");
+        $now                = new DateTime("-30min");
         $data->bob->checkin = $this->checkin("Frankfurt Hbf", $now, $data->bob->user);
 
         // Make Gertrud follow bob and make bob's profile private
