@@ -328,7 +328,7 @@ class StatusController extends Controller
      * @return array
      * @throws ModelNotFoundException
      */
-    public static function getStatusesByEvent(?string $slug, int $id):array {
+    public static function getStatusesByEvent(?string $slug, ?int $id): array {
         if ($slug != null) {
             $event = Event::where('slug', $slug)->firstOrFail();
         }
@@ -338,11 +338,14 @@ class StatusController extends Controller
 
 
         $statusesResponse = $event->statuses()
-                                  ->simplePaginate(15)
-                                  ->filter(function($status) {
-                                      return !$status->user->userInvisibleToMe;
-                                      //ToDo test this
-                                  });
+                                  ->with('user')
+                                  ->whereHas('user', function($query) {
+                                      //ToDo Not a bug, but a feature
+                                      // This is a hacky implementation to just __not__ show private profiles in events
+                                      // b/c it's just... not worth it.
+                                      return $query->where('private_profile', false);
+                                  })
+                                  ->simplePaginate(15);
 
         return ['event' => $event, 'statuses' => $statusesResponse];
     }

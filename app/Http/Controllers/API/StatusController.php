@@ -28,7 +28,7 @@ class StatusController extends ResponseController
     }
 
     public function getByEvent(int $eventID): JsonResponse {
-        $eventStatusResponse = StatusController::getStatusesByEvent(null, $eventID);
+        $eventStatusResponse = StatusBackend::getStatusesByEvent(null, $eventID);
         return $this->sendResponse($eventStatusResponse['statuses']);
     }
 

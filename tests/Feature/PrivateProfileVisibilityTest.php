@@ -136,7 +136,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         // Can a guest see the statuses of bob on the dashboard? => no, because they can't access the dashboard
         // Can Bob see the statuses of bob on the dashboard? => yes
         $bob = $this->actingAs($this->users->bob->user, 'api')
-                    ->json('GET', route('api.v0.statuses.index').'?view=personal');
+                    ->json('GET', route('api.v0.statuses.index') . '?view=personal');
         $bob->assertJsonFragment(["username" => $this->users->bob->user->username]);
         $bob->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
         $bob->assertSuccessful();
@@ -144,14 +144,14 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'api')
-                      ->json('GET', route('api.v0.statuses.index').'?view=personal');
+                      ->json('GET', route('api.v0.statuses.index') . '?view=personal');
         $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
         $alice->assertJsonMissing(["id" => $this->users->bob->checkin['statusId']]);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
-                        ->json('GET', route('api.v0.statuses.index').'?view=personal');
+                        ->json('GET', route('api.v0.statuses.index') . '?view=personal');
         $gertrud->assertJsonFragment(["username" => $this->users->bob->user->username]);
         $gertrud->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
         $gertrud->assertSuccessful();
@@ -190,6 +190,44 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $gertrud->assertSuccessful();
     }
 
+
+    /**
+     * If a user is private, only authorized (not explicitly authenticated) users should be able to see their statuses
+     * on event pages
+     * @test
+     */
+    public function view_status_of_private_user_on_event_pages() {
+        // Can a guest see the statuses of bob on the dashboard? => no
+        Auth::logout();
+        $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $this->assertGuest();
+        $guest->assertDontSee($this->users->bob->user->username);
+
+        // Can Bob see the statuses of bob on the event page? => no, because we were lazy
+        $bob = $this->actingAs($this->users->bob->user, 'api')
+                    ->json('GET',
+                           route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
+                    );
+        $bob->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $bob->assertSuccessful();
+
+        // Can Alice see the statuses of bob on the dashboard? => no
+        $alice = $this->actingAs($this->users->alice->user, 'api')
+                      ->json('GET',
+                             route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
+                      );
+        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice->assertSuccessful();
+
+        // Can Gertrud see the statuses of bob on the dashboard? => no, because we were lazy
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
+                        ->json('GET',
+                               route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
+                        );
+        $gertrud->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $gertrud->assertSuccessful();
+    }
+
     /**
      * This method creates thee users: Gertrud, Alice and Bob.
      * Bob is a private profile, followed by Gertrud. Alice is a seperate user, following nobody.
@@ -216,7 +254,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Create new CheckIn for Bob
         $now                = new DateTime("-30min");
-        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $now, $data->bob->user);
+        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $now, $data->bob->user, 1);
 
         // Make Gertrud follow bob and make bob's profile private
         UserController::destroyFollow($data->alice->user, $data->bob->user);
