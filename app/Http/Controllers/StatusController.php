@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Models\Event;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -14,6 +15,7 @@ use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
@@ -318,5 +320,30 @@ class StatusController extends Controller
         return Status::where("created_at", ">=", $date->copy()->startOfDay())
                      ->where("created_at", "<=", $date->copy()->endOfDay())
                      ->count();
+    }
+
+    /**
+     * @param string|null $slug
+     * @param int $id
+     * @return array
+     * @throws ModelNotFoundException
+     */
+    public static function getStatusesByEvent(?string $slug, int $id):array {
+        if ($slug != null) {
+            $event = Event::where('slug', $slug)->firstOrFail();
+        }
+        if ($id != null) {
+            $event = Event::findOrFail($id);
+        }
+
+
+        $statusesResponse = $event->statuses()
+                                  ->simplePaginate(15)
+                                  ->filter(function($status) {
+                                      return !$status->user->userInvisibleToMe;
+                                      //ToDo test this
+                                  });
+
+        return ['event' => $event, 'statuses' => $statusesResponse];
     }
 }
