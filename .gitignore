@@ -119,7 +119,9 @@ fabric.properties
 
 
 public/js/admin.js
+public/js/admin.js.map
 public/js/app.js
+public/js/app.js.map
 public/css/admin.css
 public/css/app.css
 .phpunit.result.cache
