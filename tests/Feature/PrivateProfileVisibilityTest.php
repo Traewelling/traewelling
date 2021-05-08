@@ -173,21 +173,20 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $bob = $this->actingAs($this->users->bob->user, 'api')
                     ->json('GET', route('api.v0.statuses.enroute'));
         $bob->assertJsonFragment(["username" => $this->users->bob->user->username]);
-        $bob->assertJsonFragment(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
+        $bob->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'api')
                       ->json('GET', route('api.v0.statuses.enroute'));
         $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
-        $alice->assertJsonMissing(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
                         ->json('GET', route('api.v0.statuses.enroute'));
         $gertrud->assertJsonFragment(["username" => $this->users->bob->user->username]);
-        $gertrud->assertJsonFragment(["train_checkin"=> ["id" => $this->users->bob->checkin['statusId']]]);
+        $gertrud->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
         $gertrud->assertSuccessful();
     }
 
