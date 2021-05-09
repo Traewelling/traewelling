@@ -300,7 +300,7 @@
     "settings.deletetokenfor": "Invalidate token for:",
     "settings.no-tokens": "There are no third-party applications with access to your account.",
     "settings.no-ics-tokens": "You haven't created a calendar share for your journeys yet.",
-    "settings.ics.name-placeholder": "Tokendescription - e.g. Google Calendar, Outlook, ...",
+    "settings.ics.name-placeholder": "Tokendescription - e.g. Google Calendar, Outlook, …",
     "settings.token": "Token",
     "settings.revoke-token": "Revoke access",
     "settings.create-ics-token": "Create new token",
