@@ -106,7 +106,11 @@ class FrontendUserController extends Controller
     public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
-        } catch (HttpException $exception) {
+
+            if($userSearchResponse->count() == 1) {
+                return redirect()->route('account.show', ['username' => $userSearchResponse->first()->username]);
+            }
+        } catch (HttpException) {
             return redirect()->back();
         }
 

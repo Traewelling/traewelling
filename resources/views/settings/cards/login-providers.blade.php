@@ -3,90 +3,71 @@
 
     <div class="card-body">
         <table class="table table-responsive">
-            <thead>
-                <tr>
-                    <th>{{ __('settings.service') }}</th>
-                    <th></th>
-                    <th>{{ __('settings.action') }}</th>
-                </tr>
-            </thead>
             <tbody>
-                @if (auth()->user()->socialProfile != null)
-                    <tr>
-                        <td>Twitter</td>
-                        @if (auth()->user()->socialProfile->twitter_id != null)
-                            <td>{{ __('settings.connected') }}</td>
-                            <td>
-                                <a href="javascript:void(0)" data-provider="twitter"
-                                   class="btn btn-sm btn-outline-danger disconnect">
-                                    {{ __('settings.disconnect') }}
-                                </a>
-                            </td>
-                        @else
-                            <td>{{ __('settings.notconnected') }}</td>
-                            <td>
-                                <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">
-                                    {{ __('settings.connect') }}
-                                </a>
-                            </td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Mastodon</td>
-                        @if (auth()->user()->socialProfile->mastodon_id != null)
-                            <td>{{ __('settings.connected') }}</td>
-                            <td>
-                                <a href="javascript:void(0)" data-provider="mastodon"
-                                   class="btn btn-sm btn-outline-danger disconnect">
-                                    {{ __('settings.disconnect') }}
-                                </a>
-                            </td>
-                        @else
-                            <td>{{ __('settings.notconnected') }}</td>
-                            <td>
-                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                    <div class="input-group mt-0">
-                                        <input type="text" name="domain" class="form-control"
-                                               placeholder="{{__('user.mastodon-instance-url')}}"
-                                               aria-describedby="button-addon4"/>
-                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                            <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
-                                        </button>
-
-                                    </div>
-                                </form>
-                            </td>
-                        @endif
-                    </tr>
-                @else
-                    <tr>
-                        <td>Twitter</td>
-                        <td>{{ __('settings.notconnected') }}</td>
+                <tr>
+                    <td>
+                        <i class="fab fa-twitter"></i>
+                        Twitter
+                    </td>
+                    @if (auth()->user()?->socialProfile?->twitter_id != null)
+                        <td class="text-success">
+                            <i class="fas fa-check"></i>
+                            {{ __('settings.connected') }}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" data-provider="twitter"
+                               class="btn btn-sm btn-outline-danger disconnect">
+                                {{ __('settings.disconnect') }}
+                            </a>
+                        </td>
+                    @else
+                        <td class="text-danger">
+                            <i class="fas fa-times"></i>
+                            {{ __('settings.notconnected') }}
+                        </td>
                         <td>
                             <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">
                                 {{ __('settings.connect') }}
                             </a>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>Mastodon</td>
-                        <td>{{ __('settings.notconnected') }}</td>
+                    @endif
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fab fa-mastodon"></i>
+                        Mastodon
+                    </td>
+                    @if (auth()->user()?->socialProfile?->mastodon_id != null)
+                        <td class="text-success">
+                            <i class="fas fa-check"></i>
+                            {{ __('settings.connected') }}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" data-provider="mastodon"
+                               class="btn btn-sm btn-outline-danger disconnect">
+                                {{ __('settings.disconnect') }}
+                            </a>
+                        </td>
+                    @else
+                        <td class="text-danger">
+                            <i class="fas fa-times"></i>
+                            {{ __('settings.notconnected') }}
+                        </td>
                         <td>
                             <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
                                 <div class="input-group mt-0">
                                     <input type="text" name="domain" class="form-control"
                                            placeholder="{{__('user.mastodon-instance-url')}}"
                                            aria-describedby="button-addon4"/>
-                                    <div id="button-addon4" class="input-group-append">
-                                        <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                            <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
-                                        </button>
-                                    </div>
+                                    <button class="btn btn-md btn-primary m-0 px-3" type="submit">
+                                        <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                                    </button>
+
                                 </div>
                             </form>
                         </td>
-                    </tr>
-                @endif
+                    @endif
+                </tr>
             </tbody>
         </table>
     </div>
