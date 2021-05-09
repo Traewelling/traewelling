@@ -1,6 +1,6 @@
 let statusBusiness;
 let statusBody;
-var statusId = 0;
+let statusId = 0;
 
 let businessUserIcon = $("#business-user");
 let businessBriefcaseIcon = $("#business-briefcase");
@@ -58,7 +58,6 @@ $(document).on("click", ".edit", function (event) {
     statusId = event.target.parentElement.dataset["statusid"];
     statusBody = document.getElementById("status-" + statusId).dataset["body"];
     statusBusiness = document.getElementById("status-" + statusId).dataset["businessid"];
-
     $("#status-body").val(statusBody);
     $("#business_check").val(statusBusiness);
     setIconsForCheckIn(parseInt(statusBusiness));

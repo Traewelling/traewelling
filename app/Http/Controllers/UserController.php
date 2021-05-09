@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -261,7 +262,7 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $checkIns = TrainCheckin::with('status.user')
+        $checkIns = TrainCheckin::with(['status.user', 'HafasTrip.stopoversNEW.trainStation', 'Origin', 'Destination'])
                                 ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                                 ->get();
 
@@ -329,7 +330,7 @@ class UserController extends Controller
         }
     }
 
-    public static function searchUser(?string $searchQuery) {
+    public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
         if ($validator->fails()) {
             abort(400);

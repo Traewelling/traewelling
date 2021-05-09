@@ -2,8 +2,15 @@
 
 namespace Tests;
 
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\StationNotOnTripException;
+use App\Http\Controllers\TransportController;
 use App\Models\User;
+use Carbon\Carbon;
+use DateTime;
+use Exception;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Tests\Feature\CheckinTest;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -13,8 +20,7 @@ abstract class TestCase extends BaseTestCase
 
         // Creates user
         $user = User::factory()->create();
-        $this->actingAs($user)
-             ->post('/gdpr-ack');
+        $this->acceptGDPR($user);
 
         return $user;
     }
@@ -69,4 +75,63 @@ abstract class TestCase extends BaseTestCase
         $response->assertRedirect('/dashboard');
     }
 
+
+    /**
+     * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
+     * @param $stationname
+     * @param DateTime $now
+     * @param User|null $user
+     * @throws Exception
+     */
+    protected function checkin($stationname, DateTime $now, User $user = null) {
+        if ($user == null) {
+            $user = $this->user;
+        }
+        $trainStationboard = TransportController::TrainStationboard($stationname,
+                                                                    Carbon::createFromTimestamp($now->format('U')),
+                                                                    'express');
+        $countDepartures   = count($trainStationboard['departures']);
+        if ($countDepartures == 0) {
+            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
+            return;
+        }
+
+        // Second: We don't like broken or cancelled trains.
+        $i = 0;
+        while ((isset($trainStationboard['departures'][$i]->cancelled)
+                && $trainStationboard['departures'][$i]->cancelled)
+            || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            $i++;
+            if ($i == $countDepartures) {
+                $this->markTestSkipped("Unable to find unbroken train.
+                Is it stormy in $stationname?");
+                return;
+            }
+        }
+        $departure = $trainStationboard['departures'][$i];
+        CheckinTest::isCorrectHafasTrip($departure, $now);
+
+        // Third: Get the trip information
+        $trip = TransportController::TrainTrip(
+            $departure->tripId,
+            $departure->line->name,
+            $departure->stop->location->id
+        );
+
+        // WHEN: User tries to check-in
+        try {
+            TransportController::TrainCheckin($trip['train']['trip_id'],
+                                              $trip['stopovers'][0]['stop']['id'],
+                                              end($trip['stopovers'])['stop']['id'],
+                                              '',
+                                              $user,
+                                              0,
+                                              0,
+                                              0);
+        } catch (StationNotOnTripException) {
+            $this->markTestSkipped("failure in checkin creation for " . $stationname . ": Station not in stopovers");
+        } catch (CheckInCollisionException) {
+            $this->markTestSkipped("failure for " . $now->format('Y-m-d H:i:s') . ": Collision");
+        }
+    }
 }

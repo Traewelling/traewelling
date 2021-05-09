@@ -5,7 +5,7 @@
 ![Resources build with `prod`](https://img.shields.io/github/workflow/status/Traewelling/traewelling/Resources%20build%20with%20%60prod%60?label=npm%20prod&logo=github)
 ![Resources build with `dev`](https://img.shields.io/github/workflow/status/Traewelling/traewelling/Resources%20build%20with%20%60dev%60?label=npm%20dev&logo=github)
 ![Composer install and test Laravel](https://img.shields.io/github/workflow/status/Traewelling/traewelling/Laravel?label=Laravel&logo=github)
-[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.dev)
+[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev)
 [![Codacy Badge](https://img.shields.io/codacy/grade/60765ceacee5494184476eae9bf27a1f)](https://app.codacy.com/gh/Traewelling/traewelling?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Coverage Badge](https://img.shields.io/codacy/coverage/60765ceacee5494184476eae9bf27a1f)](https://www.codacy.com/gh/Traewelling/traewelling/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Coverage)
 [![Translation status](https://weblate.bubu1.eu/widgets/trawelling/-/common/svg-badge.svg)](https://weblate.bubu1.eu/engage/trawelling/)
@@ -25,7 +25,7 @@
 
 ## Set up an instance
 
-We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends on:
+We're using the [Laravel framework](https://laravel.com/docs/8.x) which depends on:
 
 * PHP 8.0 (or higher)
   * PHP GD library 
@@ -34,7 +34,7 @@ We're using the [Laravel framework](https://laravel.com/docs/5.8) which depends 
   * [npm](https://www.npmjs.com/)
 * A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
   * If you're using SQLite, make sure you have `php-sqlite` installed 
-* A local instance of [db-rest v3](https://github.com/derhuerst/db-rest/tree/3)
+* A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 
 After setting up those things, you can clone the repository and get the dependencies:
 

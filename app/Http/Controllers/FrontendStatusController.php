@@ -64,7 +64,7 @@ class FrontendStatusController extends Controller
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
         $this->validate($request, [
-            'body'           => ['required', 'max:280'],
+            'body'           => ['max:280'],
             'business_check' => ['required', 'digits_between:0,2'],
         ]);
         $editStatusResponse = StatusBackend::EditStatus(
