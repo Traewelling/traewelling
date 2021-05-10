@@ -38,7 +38,7 @@ class SettingsController extends Controller
      *
      * @param Int $userId The id of the user who is approving a follower
      * @param Int $approverId The Id of a to-be-approved follower
-     * @throws ModelNotFoundException
+     * @throws ModelNotFoundException|\App\Exceptions\AlreadyFollowingException
      */
     public static function approveFollower(Int $userId, Int $approverId): Bool {
         $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
@@ -51,7 +51,18 @@ class SettingsController extends Controller
         return $follow;
     }
 
-    public function rejectFollower($userId, $followerID) {
+    /**
+     * @param $userId
+     * @param $followerID
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public static function rejectFollower($userId, $followerID) {
+        $request = FollowRequest::where('user_id', $followerID)->where('follow_id', $userId)->firstOrFail();
+
+        $request->delete();
+
+        return $request;
 
     }
 }
