@@ -99,7 +99,7 @@ abstract class TestCase extends BaseTestCase
                   'event' => "mixed"])]
     protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent=null): ?array {
         if ($user == null) {
-            $user = $this->user;
+            $user = $this->bob;
         }
         $trainStationboard = TransportController::TrainStationboard($stationName,
                                                                     Carbon::createFromTimestamp($now->format('U')),
