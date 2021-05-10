@@ -13,9 +13,9 @@
         <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}" data-following="yes"
            data-private="{{ $user->private_profile ? 'yes' : 'no' }}">{{__('profile.unfollow')}}</a>
     @endif
-    <script>
-        window.translFollow = "{{__('profile.follow')}}";
-        window.translUnfollow = "{{__('profile.unfollow')}}";
-        window.translPending = "{{__('profile.follow_req.pending')}}";
-    </script>
 @endif
+<script>
+    window.translFollow = "{{__('profile.follow')}}";
+    window.translUnfollow = "{{__('profile.unfollow')}}";
+    window.translPending = "{{__('profile.follow_req.pending')}}";
+</script>
