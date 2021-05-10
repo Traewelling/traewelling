@@ -28,7 +28,6 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        //ToDo Test This
         if (!$status->user->userInvisibleToMe) {
             return $status;
         }
@@ -61,7 +60,6 @@ class StatusController extends Controller
                               ->get()
                               ->filter(function($status) {
                                   return !$status->user->userInvisibleToMe;
-                                  //ToDo Test this
                               })
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -129,7 +127,7 @@ class StatusController extends Controller
                      ->whereHas('user', function($query) use ($follows) {
                          return $query->where('private_profile', false)
                                       ->orWhere('user_id', Auth::user()->id)
-                                      ->orWhereIn('user_id', $follows); //ToDo Test this!
+                                      ->orWhereIn('user_id', $follows);
                      })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')

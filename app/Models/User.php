@@ -22,16 +22,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'username', 'name', 'avatar', 'email', 'password', 'home_id',
         'always_dbl', 'private_profile', 'prevent_index', 'language'
     ];
-    protected     $hidden   = [
+    protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
         'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
-    protected     $casts    = [
+    protected $casts    = [
         'email_verified_at' => 'datetime',
         'private_profile'   => 'boolean',
         'prevent_index'     => 'boolean',
     ];
-    protected     $appends  = [
+    protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe'
     ];
 

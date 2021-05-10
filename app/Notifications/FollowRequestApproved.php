@@ -79,7 +79,8 @@ class FollowRequestApproved extends Notification
         return view("includes.notification", [
             'color' => 'neutral',
             'icon' => 'fas fa-user-plus',
-            'lead' => __('notifications.userApprovedFollow.lead', ['followerRequestUsername' => $detail->sender->username]),
+            'lead' => __('notifications.userApprovedFollow.lead',
+                         ['followerRequestUsername' => $detail->sender->username]),
             'link' => route('account.show', ['username' => $detail->sender->username]),
             'notice' => '',
             'date_for_humans' => $notification->created_at->diffForHumans(),

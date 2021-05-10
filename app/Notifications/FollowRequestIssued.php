@@ -10,6 +10,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use JetBrains\PhpStorm\ArrayShape;
+use stdClass;
 
 class FollowRequestIssued extends Notification
 {
@@ -29,20 +31,19 @@ class FollowRequestIssued extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
      * @return array
      */
-    public function via($notifiable) {
+    public function via(): array {
         return ['database'];
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed $notifiable
      * @return array
      */
-    public function toArray($notifiable) {
+    #[ArrayShape(['follow_id' => "mixed"])]
+    public function toArray(): array {
         return [
             'follow_id' => $this->followRequest->id,
         ];
@@ -50,21 +51,22 @@ class FollowRequestIssued extends Notification
 
     /**Detail-Handler of notification
      *
-     * @param mixed $notification
+     * @param $notification
+     * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification) {
-        $data = $notification->data;
-        $notification->detail = new \stdClass();
+    public static function detail($notification): stdClass {
+        $data                 = $notification->data;
+        $notification->detail = new stdClass();
         try {
             $followRequest = FollowRequest::findOrFail($data['follow_id']);
-            $sender = User::findOrFail($followRequest->user_id);
+            $sender        = User::findOrFail($followRequest->user_id);
         } catch (ModelNotFoundException $e) {
             // The follow request doesn't exist anymore or the user doesn't exist anymore
             throw new ShouldDeleteNotificationException();
         }
         $notification->detail->followRequest = $followRequest;
-        $notification->detail->sender = $sender;
+        $notification->detail->sender        = $sender;
 
         return $notification->detail;
     }
@@ -78,11 +80,12 @@ class FollowRequestIssued extends Notification
         }
 
         return view("includes.notification", [
-            'color' => 'neutral',
-            'icon' => 'fas fa-user-plus',
-            'lead' => __('notifications.userRequestedFollow.lead', ['followerRequestUsername' => $detail->sender->username]),
-            'link' => route('settings.follower'),
-            'notice' => __('notifications.userRequestedFollow.notice'),
+            'color'           => 'neutral',
+            'icon'            => 'fas fa-user-plus',
+            'lead'            => __('notifications.userRequestedFollow.lead',
+                                    ['followerRequestUsername' => $detail->sender->username]),
+            'link'            => route('settings.follower'),
+            'notice'          => __('notifications.userRequestedFollow.notice'),
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read'            => $notification->read_at != null,
             'notificationId'  => $notification->id

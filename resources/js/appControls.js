@@ -108,7 +108,7 @@ $(document).on("click", ".follow", function (event) {
                 data: {follow_id: userId, _token: token}
             }).done(function () {
                 event.target.dataset["following"] = "yes";
-                event.target.classList.add("disabled")
+                event.target.classList.add("disabled");
                 event.target.innerText = window.translPending;
             });
         } else {
