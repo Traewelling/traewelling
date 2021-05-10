@@ -7,8 +7,8 @@ use Exception;
 
 class AlreadyFollowingException extends Exception
 {
-    private $user;
-    private $initiator;
+    private User $user;
+    private User $initiator;
 
     /**
      * AlreadyFollowingException constructor.

@@ -71,7 +71,7 @@ class FollowRequestIssued extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {

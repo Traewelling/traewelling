@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
+use JetBrains\PhpStorm\ArrayShape;
 use stdClass;
 
 class FollowRequestApproved extends Notification
@@ -31,7 +32,7 @@ class FollowRequestApproved extends Notification
      *
      * @return array
      */
-    public function via() {
+    public function via(): array {
         return ['database'];
     }
 
@@ -40,7 +41,8 @@ class FollowRequestApproved extends Notification
      *
      * @return array
      */
-    public function toArray() {
+    #[ArrayShape(['follow_id' => "mixed"])]
+    public function toArray(): array {
         return [
             'follow_id' => $this->follow->id,
         ];
@@ -49,9 +51,10 @@ class FollowRequestApproved extends Notification
     /**Detail-Handler of notification
      *
      * @param mixed $notification
+     * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification) {
+    public static function detail(mixed $notification): stdClass {
         $data                 = $notification->data;
         $notification->detail = new stdClass();
         try {
@@ -68,7 +71,7 @@ class FollowRequestApproved extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {

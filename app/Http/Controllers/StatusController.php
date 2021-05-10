@@ -322,9 +322,8 @@ class StatusController extends Controller
 
     /**
      * @param string|null $slug
-     * @param int $id
+     * @param int|null $id
      * @return array
-     * @throws ModelNotFoundException
      */
     public static function getStatusesByEvent(?string $slug, ?int $id): array {
         if ($slug != null) {

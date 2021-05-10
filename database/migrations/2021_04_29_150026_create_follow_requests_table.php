@@ -11,15 +11,22 @@ class CreateFollowRequestsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('follow_requests', function (Blueprint $table) {
+    public function up(): void {
+        Schema::create('follow_requests', function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('follow_id');
             $table->timestamps();
 
             $table->unique(['user_id', 'follow_id']);
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->cascadeOnDelete();
+            $table->foreign('follow_id')
+                  ->references('id')
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
     }
 
@@ -28,8 +35,7 @@ class CreateFollowRequestsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('follow_requests');
     }
 }

@@ -116,8 +116,7 @@ abstract class TestCase extends BaseTestCase
             || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
-                $this->markTestSkipped("Unable to find unbroken train.
-                Is it stormy in $stationName?");
+                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
             }
         }
         $departure = $trainStationboard['departures'][$i];

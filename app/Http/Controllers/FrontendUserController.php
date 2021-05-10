@@ -87,7 +87,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function RequestFollow(Request $request): JsonResponse {
+    public function requestFollow(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'follow_id' => ['required', 'exists:users,id']
                                         ]);
@@ -106,7 +106,7 @@ class FrontendUserController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function DestroyFollow(Request $request): JsonResponse {
+    public function destroyFollow(Request $request): JsonResponse {
         $validated      = $request->validate([
                                                  'follow_id' => ['required', 'exists:users,id']
                                              ]);

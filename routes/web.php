@@ -187,10 +187,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create');
 
-    Route::post('/requestfollow', [FrontendUserController::class, 'RequestFollow'])
+    Route::post('/requestfollow', [FrontendUserController::class, 'requestFollow'])
          ->name('follow.request');
 
-    Route::post('/destroyfollow', [FrontendUserController::class, 'DestroyFollow'])
+    Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
          ->name('follow.destroy');
 
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])

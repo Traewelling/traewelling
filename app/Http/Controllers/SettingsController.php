@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Follow;
 use App\Models\FollowRequest;
+use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -36,11 +37,11 @@ class SettingsController extends Controller
 
     /**
      *
-     * @param Int $userId The id of the user who is approving a follower
-     * @param Int $approverId The Id of a to-be-approved follower
+     * @param int $userId The id of the user who is approving a follower
+     * @param int $approverId The id of a to-be-approved follower
      * @throws ModelNotFoundException|\App\Exceptions\AlreadyFollowingException
      */
-    public static function approveFollower(Int $userId, Int $approverId): Bool {
+    public static function approveFollower(int $userId, int $approverId): bool {
         $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
 
         $follow = UserController::createFollow($request->user, $request->requestedFollow, true);
@@ -52,16 +53,14 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param $userId
-     * @param $followerID
-     * @return mixed
-     * @throws ModelNotFoundException
+     * @param User $userId
+     * @param User $followerID
+     * @return Follow|null
      */
-    public static function rejectFollower($userId, $followerID) {
+    public static function rejectFollower(User $userId, User $followerID): Follow|null {
         $request = FollowRequest::where('user_id', $followerID)->where('follow_id', $userId)->firstOrFail();
 
         $request->delete();
-
         return $request;
 
     }

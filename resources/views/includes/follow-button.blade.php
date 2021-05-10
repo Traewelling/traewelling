@@ -3,7 +3,7 @@
 @elseif($user->private_profile && $user->followRequests->contains('user_id', Auth::user()->id))
     <a href="#" class="btn btn-sm btn-primary disabled" aria-disabled="true">{{ __('profile.follow_req.pending') }}</a>
 @elseif($user->private_profile && !Auth::user()->follows->contains('id', $user->id))
-    <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
+    <a href="javascript:void()0" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
        data-following="no" data-private="yes">{{ __('profile.follow_req') }}</a>
 @else
     @if(!Auth::user()->follows->contains('id', $user->id))
