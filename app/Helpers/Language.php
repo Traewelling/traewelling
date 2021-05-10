@@ -31,7 +31,7 @@ function __($key = null, $replace = [], $locale = null) {
         return $translation;
     }
 
-    //What? Why we don't have these translation in german? This is out main language.
+    //What? Why we don't have these translation in german? This is our main language.
     //When we are reaching this line something is broken. Please fix it.
     //But nevermind, first return the key:
     return trans($key, $replace, $locale);
