@@ -170,11 +170,18 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="text-muted mb-0 float-end">
-                        |
-                        @foreach(config('app.locales') as $key=>$lang)
-                            <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |
-                        @endforeach
+                    <div class="btn-group dropup float-end">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                        </button>
+                        <div class="dropdown-menu">
+                            @foreach(config('app.locales') as $key => $lang)
+                                <a class="dropdown-item" href="?language={{ $key }}">
+                                    {{ $lang }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                     <p class="text-muted mb-0">
                 <span class="footer-nav-link">

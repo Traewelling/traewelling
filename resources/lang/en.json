@@ -322,6 +322,7 @@
     "settings.request.accept": "Accept follow request",
     "settings.request.accept-success": "Successfully accepted follow request.",
     "settings.request.reject-success": "Successfully rejected follow request.",
+    "settings.language.set": "Change language",
     "stationboard.arr": "arr",
     "stationboard.btn-checkin": "Check in!",
     "stationboard.check-business": "Business trip",
