@@ -239,7 +239,7 @@
     "passwords.user": "We can't find a user with that e-mail address.",
     "privacy.title": "Privacy Policy",
     "privacy.not-signed-yet": "<b>You have not signed our privacy policy yet.</b> To use Träwelling, you'll need to agree to our privacy policy. If you don't agree, you can delete your account with the button below.",
-    "privacy.we-changed": "<b>We changed our privacy policy.</b> To continue using our service, you have to agree to the latest changes. If you don't agree, you can delete your account with the button below. ",
+    "privacy.we-changed": "<b>We changed our privacy policy.</b> To continue using our service, you have to agree to the latest changes. If you don't agree, you can delete your account with the button below.",
     "privacy.sign": "Sign",
     "profile.follow": "Follow",
     "profile.follow_req": "Request follow",
