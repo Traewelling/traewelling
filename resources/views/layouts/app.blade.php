@@ -26,7 +26,6 @@
         <meta name="description" content="{{__('about.block1')}}">
         <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
         <meta name="audience" content="Travellers">
-        <meta name="robots" content="index, nofollow">
         <meta name="DC.Rights" content="Träwelling Team">
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">

@@ -2,6 +2,12 @@
 
 @section('title'){{ $user->name }}@endsection
 
+@section('metadata')
+    @if($user->prevent_index)
+        <meta name="robots" content="noindex"/>
+    @endif
+@endsection
+
 @section('content')
     <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
