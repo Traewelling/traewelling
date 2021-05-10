@@ -83,7 +83,12 @@ return [
     */
 
     'locale'  => 'de',
-    'locales' => ['de' => 'Deutsch', 'en' => 'English'],
+    'locales' => [
+        'de'    => 'Deutsch',
+        'de_he' => 'Deutsch (südhessisch)',
+        'en'    => 'English',
+        'fr'    => 'Français',
+    ],
 
     /*
     |--------------------------------------------------------------------------

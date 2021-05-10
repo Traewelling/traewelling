@@ -4,61 +4,70 @@ namespace App\Http\Middleware;
 
 use App;
 use Closure;
-use Session;
-use Request;
-use Config;
+use Illuminate\Http\Request;
 
 class Language
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
+    public function handle(Request $request, Closure $next): mixed {
 
-            // Set default session language if none is set
-            if(!Session::has('language'))
-            {
-                // detect browser language
-                $headerlang = Request::server('http_accept_language');
-                if(isset($headerlang))
-                {
-                    $headerlang = substr(Request::server('http_accept_language'), 0, 2);
+        if ($request->has('language')) {
 
-                    if(array_key_exists($headerlang, Config::get('app.locales')))
-                    {
-                        // browser lang is supported, use it
-                        $lang = $headerlang;
-                    }
-                    // use default application lang
-                    else
-                    {
-                        $lang = Config::get('app.locale');
-                    }
-                }
-                // use default
-                else
-                {
-                    // use default application lang
-                    $lang = Config::get('app.locale');
-                }
-
-                // set application language for that user
-                Session::put('language', $lang);
-                App::setLocale(Session::get('language'));
-            }
-            // session is available
-            else
-            {
-                // set application to session lang
-                App::setLocale(Session::get('language'));
+            if (!self::isValidLanguageCode($request->get('language'))) {
+                return $next($request);
             }
 
+            //update language setting for user
+            if (auth()->check()) {
+                auth()->user()->update([
+                                           'language' => $request->get('language')
+                                       ]);
+            }
 
+            //update language for current session
+            app()->setLocale($request->get('language'));
+            return $next($request);
+        }
+
+        //If the user has set a language use it for the call
+        if (auth()->check() && auth()->user()->language != null) {
+            app()->setLocale(auth()->user()->language);
+            return $next($request);
+        }
+
+        //If the session has set a language use it for the call
+        if (session()->has('language')) {
+            app()->setLocale(session()->get('language'));
+            return $next($request);
+        }
+
+        // Use default session language if none is set -> detect browser language
+        $browserLanguage = request()->server('http_accept_language');
+        if (isset($browserLanguage)) {
+            $browserLanguage = substr(request()->server('http_accept_language'), 0, 2);
+
+            if (self::isValidLanguageCode($browserLanguage)) {
+                // browser lang is supported, use it
+                app()->setLocale($browserLanguage);
+            } else {
+                //if browser lang is NOT supported, we should use english so every user can understand
+                app()->setLocale('en');
+            }
+            return $next($request);
+        }
+
+        // use default application lang
+        app()->setLocale(config('app.locale'));
         return $next($request);
+    }
+
+    private static function isValidLanguageCode(string $langCode): bool {
+        return array_key_exists($langCode, config('app.locales'));
     }
 }

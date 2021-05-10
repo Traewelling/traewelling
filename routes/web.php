@@ -33,9 +33,6 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');
 
-Route::get('/lang/{lang?}', [FrontendStaticController::class, 'changeLanguage'])
-     ->name('static.lang');
-
 Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
      ->name('static.privacy');
 
