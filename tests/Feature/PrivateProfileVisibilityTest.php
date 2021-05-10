@@ -252,7 +252,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $data->alice->user->save();
 
         // Create new CheckIn for Bob
-        $now                = new DateTime("-30min");
+        $now                = new DateTime("-40min");
         $data->bob->checkin = $this->checkin("Frankfurt Hbf", $now, $data->bob->user, 1);
 
         // Make Gertrud follow bob and make bob's profile private
