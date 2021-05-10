@@ -320,6 +320,7 @@
     "settings.request.delete": "Folgen-Anfrage ablehnen",
     "settings.request.accept-success": "Folgen-Anfrage erfolgreich akzeptiert.",
     "settings.request.reject-success": "Folgen-Anfrage erfolgreich abgelehnt.",
+    "settings.language.set": "Sprache ändern",
     "stationboard.arr": "an",
     "stationboard.btn-checkin": "Einchecken!",
     "stationboard.check-business": "Geschäftliche Reise",
