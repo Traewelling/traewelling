@@ -116,7 +116,6 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $alice = $this->actingAs($this->users->alice->user, 'api')
                       ->json('GET', route('api.v0.statuses.index'));
         $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
-        $alice->assertJsonMissing(["id" => $this->users->bob->checkin['statusId']]);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
