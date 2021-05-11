@@ -5,11 +5,11 @@ namespace App\Enum;
 
 final class TravelType extends BasicEnum
 {
-    public const EXPRESS = 'express';
+    public const EXPRESS  = 'express';
     public const REGIONAL = 'regional';
     public const SUBURBAN = 'suburban';
-    public const BUS = 'bus';
-    public const FERRY = 'ferry';
-    public const SUBWAY = 'subway';
-    public const TRAM = 'tram';
+    public const BUS      = 'bus';
+    public const FERRY    = 'ferry';
+    public const SUBWAY   = 'subway';
+    public const TRAM     = 'tram';
 }
