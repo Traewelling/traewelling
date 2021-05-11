@@ -26,7 +26,6 @@
         <meta name="description" content="{{__('about.block1')}}">
         <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
         <meta name="audience" content="Travellers">
-        <meta name="robots" content="index, nofollow">
         <meta name="DC.Rights" content="Träwelling Team">
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
@@ -177,11 +176,18 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="text-muted mb-0 float-end">
-                        |
-                        @foreach(config('app.locales') as $key=>$lang)
-                            <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |
-                        @endforeach
+                    <div class="btn-group dropup float-end">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                        </button>
+                        <div class="dropdown-menu">
+                            @foreach(config('app.locales') as $key => $lang)
+                                <a class="dropdown-item" href="?language={{ $key }}">
+                                    {{ $lang }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                     <p class="text-muted mb-0">
                 <span class="footer-nav-link">
@@ -229,6 +235,7 @@
             var urlDislike = '{{ route('like.destroy') }}';
             var urlEdit = '{{ route('edit') }}';
             var urlFollow = '{{ route('follow.create') }}';
+            var urlFollowRequest = '{{ route('follow.request') }}';
             var urlLike = '{{ route('like.create') }}';
             var urlTrainTrip = '{{ route('trains.trip') }}';
             var urlUnfollow = '{{ route('follow.destroy') }}';

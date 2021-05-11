@@ -109,7 +109,7 @@
                             </label>
                             <textarea name="body" class="form-control" id="message-text"></textarea>
                         </div>
-						
+
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
                                 @if (auth()->user()->socialProfile->twitter_id != null)
@@ -143,15 +143,17 @@
                                 <i class="fa fa-building d-none" id="business-building"></i>
                             </label>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li class="dropdown-item" id="business-li-user"><i
-                                            class="fa fa-user"></i> {{ __('stationboard.business.private') }}</li>
-                                <li class="dropdown-item" id="business-li-briefcase"><i
-                                            class="fa fa-briefcase"></i> {{ __('stationboard.business.business') }}
-                                    <br/> <span
-                                            class="text-muted"> {{ __('stationboard.business.business.detail') }}</span>
+                                <li class="dropdown-item" id="business-li-user">
+                                    <i class="fa fa-user"></i> {{ __('stationboard.business.private') }}
                                 </li>
-                                <li class="dropdown-item" id="business-li-building"><i
-                                            class="fa fa-building"></i> {{ __('stationboard.business.commute') }} <br/>
+                                <li class="dropdown-item" id="business-li-briefcase">
+                                    <i class="fa fa-briefcase"></i> {{ __('stationboard.business.business') }}
+                                    <br/>
+                                    <span class="text-muted"> {{ __('stationboard.business.business.detail') }}</span>
+                                </li>
+                                <li class="dropdown-item" id="business-li-building">
+                                    <i class="fa fa-building"></i> {{ __('stationboard.business.commute') }}
+                                    <br/>
                                     <span class="text-muted"> {{ __('stationboard.business.commute.detail') }}</span>
                                 </li>
                             </ul>

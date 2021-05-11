@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\AlreadyFollowingException;
 use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\MastodonServer;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Notifications\FollowRequestApproved;
+use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
@@ -147,10 +151,7 @@ class UserController extends Controller
         }
         $statuses = null;
 
-        //PrivateProfile change to "also following"
-        if (!$user->private_profile || (Auth::check() && Auth::user()->id == $user->id)) {
-
-
+        if (!$user->userInvisibleToMe) {
             $statuses = $user->statuses()->with('user',
                                                 'trainCheckin',
                                                 'trainCheckin.Origin',
@@ -174,7 +175,7 @@ class UserController extends Controller
                                                    ->get("/accounts/" . $user->socialProfile->mastodon_id);
                     $mastodonUrl         = $mastodonAccountInfo["url"];
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // The connection might be broken, or the instance is down, or $user has removed the api rights
                 // but has not told us yet.
             }
@@ -211,24 +212,56 @@ class UserController extends Controller
     }
 
     /**
-     * Add $userToFollow to $user's Follower
-     * @param User $user
-     * @param User $userToFollow The user of the person who is followed
+     * Add $userToFollow to $user's Followings
+     * @param User $user The user who initiated the follow
+     * @param User $userToFollow The user who is followed
+     * @param bool $isApprovedRequest Differentiates between who to be notified
      * @return bool
+     * @throws AlreadyFollowingException
      */
-    public static function createFollow(User $user, User $userToFollow): bool {
+    public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
+        //disallow re-following, if you already follow them
+        //Also disallow following, if user is a private profile
         if (self::isFollowing($user, $userToFollow)) {
-            return false;
+            throw new AlreadyFollowingException($user, $userToFollow);
+        }
+        // Request follow if user is a private profile
+        if ($userToFollow->private_profile && !$isApprovedRequest) {
+            return self::requestFollow($user, $userToFollow);
         }
 
         $follow = Follow::create([
                                      'user_id'   => $user->id,
                                      'follow_id' => $userToFollow->id
                                  ]);
-
-        $userToFollow->notify(new UserFollowed($follow));
+        if (!$isApprovedRequest) {
+            $userToFollow->notify(new UserFollowed($follow));
+        } else {
+            $user->notify(new FollowRequestApproved($follow));
+        }
         $user->load('follows');
         return self::isFollowing($user, $userToFollow);
+    }
+
+    /**
+     * Add $userToFollow to $user's FollowerRequests
+     * @param User $user
+     * @param User $userToFollow The user of the person who is followed
+     * @return bool
+     * @throws AlreadyFollowingException
+     */
+    public static function requestFollow(User $user, User $userToFollow): bool {
+        if ($userToFollow->followRequests->contains('user_id', $user->id)) {
+            throw new AlreadyFollowingException($user, $userToFollow);
+        }
+        $follow = FollowRequest::create([
+                                            'user_id'   => $user->id,
+                                            'follow_id' => $userToFollow->id
+                                        ]);
+
+        $userToFollow->notify(new FollowRequestIssued($follow));
+        $userToFollow->load('followRequests');
+        return $userToFollow->followRequests->contains('user_id', $user->id);
     }
 
     /**
@@ -262,7 +295,7 @@ class UserController extends Controller
         'kilometers' => "Illuminate\\Support\\Collection"
     ])]
     public static function getLeaderboard(): array {
-        $checkIns = TrainCheckin::with('status.user')
+        $checkIns = TrainCheckin::with(['status.user', 'HafasTrip.stopoversNEW.trainStation', 'Origin', 'Destination'])
                                 ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                                 ->get();
 

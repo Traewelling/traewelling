@@ -135,17 +135,11 @@ class FrontendStatusController extends Controller
     }
 
     public function statusesByEvent(string $event): Renderable {
-        $event = Event::where('slug', $event)->first();
-        if ($event == null) {
-            abort(404);
-        }
-
-        $statusesResponse = $event->statuses()
-                                  ->simplePaginate(15);
+        $response = StatusController::getStatusesByEvent($event, null);
 
         return view('eventsMap', [
-            'statuses' => $statusesResponse,
-            'event'    => $event
+            'statuses' => $response['statuses'],
+            'event'    => $response['event']
         ]);
     }
 

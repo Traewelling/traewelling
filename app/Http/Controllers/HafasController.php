@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\HafasTravelType;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use PDOException;
 use stdClass;
 
 abstract class HafasController extends Controller
@@ -161,18 +163,18 @@ abstract class HafasController extends Controller
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
                 'query' => [
-                    'when'            => $when->toIso8601String(),
-                    'duration'        => $duration,
-                    'nationalExpress' => $nationalExpress ? 'true' : 'false',
-                    'national'        => $national ? 'true' : 'false',
-                    'regionalExp'     => $regionalExp ? 'true' : 'false',
-                    'regional'        => $regional ? 'true' : 'false',
-                    'suburban'        => $suburban ? 'true' : 'false',
-                    'bus'             => $bus ? 'true' : 'false',
-                    'ferry'           => $ferry ? 'true' : 'false',
-                    'subway'          => $subway ? 'true' : 'false',
-                    'tram'            => $tram ? 'true' : 'false',
-                    'taxi'            => $taxi ? 'true' : 'false',
+                    'when'                            => $when->toIso8601String(),
+                    'duration'                        => $duration,
+                    HafasTravelType::NATIONAL_EXPRESS => $nationalExpress ? 'true' : 'false',
+                    HafasTravelType::NATIONAL         => $national ? 'true' : 'false',
+                    HafasTravelType::REGIONAL_EXP     => $regionalExp ? 'true' : 'false',
+                    HafasTravelType::REGIONAL         => $regional ? 'true' : 'false',
+                    HafasTravelType::SUBURBAN         => $suburban ? 'true' : 'false',
+                    HafasTravelType::BUS              => $bus ? 'true' : 'false',
+                    HafasTravelType::FERRY            => $ferry ? 'true' : 'false',
+                    HafasTravelType::SUBWAY           => $subway ? 'true' : 'false',
+                    HafasTravelType::TRAM             => $tram ? 'true' : 'false',
+                    HafasTravelType::TAXI             => $taxi ? 'true' : 'false',
                 ]
             ]);
 
@@ -291,13 +293,16 @@ abstract class HafasController extends Controller
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
-
-            TrainStopover::updateOrCreate(
-                [
-                    'trip_id'          => $tripID,
-                    'train_station_id' => $hafasStop->id
-                ], $updatePayload
-            );
+            try {
+                TrainStopover::updateOrCreate(
+                    [
+                        'trip_id'          => $tripID,
+                        'train_station_id' => $hafasStop->id
+                    ], $updatePayload
+                );
+            } catch (PDOException $exception) {
+                report($exception);
+            }
         }
 
         return $hafasTrip;

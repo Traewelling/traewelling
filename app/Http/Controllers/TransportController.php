@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Enum\HafasTravelType;
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
@@ -86,15 +88,15 @@ class TransportController extends Controller
             $station,
             $when,
             15,
-            $travelType == null || $travelType == 'nationalExpress',
-            $travelType == null || $travelType == 'express',
-            $travelType == null || $travelType == 'regionalExp',
-            $travelType == null || $travelType == 'regional',
-            $travelType == null || $travelType == 'suburban',
-            $travelType == null || $travelType == 'bus',
-            $travelType == null || $travelType == 'ferry',
-            $travelType == null || $travelType == 'subway',
-            $travelType == null || $travelType == 'tram',
+            $travelType == null || $travelType == TravelType::EXPRESS,
+            $travelType == null || $travelType == TravelType::EXPRESS,
+            $travelType == null || $travelType == TravelType::REGIONAL,
+            $travelType == null || $travelType == TravelType::REGIONAL,
+            $travelType == null || $travelType == TravelType::SUBURBAN,
+            $travelType == null || $travelType == TravelType::BUS,
+            $travelType == null || $travelType == TravelType::FERRY,
+            $travelType == null || $travelType == TravelType::SUBWAY,
+            $travelType == null || $travelType == TravelType::TRAM,
             false
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
@@ -134,13 +136,13 @@ class TransportController extends Controller
     private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
         $trainTypes = [
-            'suburban' => 'false',
-            'subway'   => 'false',
-            'tram'     => 'false',
-            'bus'      => 'false',
-            'ferry'    => 'false',
-            'express'  => 'false',
-            'regional' => 'false',
+            TravelType::SUBURBAN => 'false',
+            TravelType::SUBWAY   => 'false',
+            TravelType::TRAM     => 'false',
+            TravelType::BUS      => 'false',
+            TravelType::FERRY    => 'false',
+            TravelType::EXPRESS  => 'false',
+            TravelType::REGIONAL => 'false',
         ];
         $appendix   = '';
 
@@ -152,7 +154,7 @@ class TransportController extends Controller
         $json     = json_decode($response->getBody()->getContents());
 
         //remove express trains in filtered results
-        if ($trainType != null && $trainType != 'express') {
+        if ($trainType != null && $trainType != TravelType::EXPRESS) {
             foreach ($json as $key => $item) {
                 if ($item->line->product != $trainType) {
                     unset($json[$key]);
@@ -602,16 +604,16 @@ class TransportController extends Controller
         $returnArray['polylines'] = $polylines;
 
         $transportTypes = [
-            'nationalExpress',
-            'national',
-            'express',
-            'regionalExp',
-            'regional',
-            'suburban',
-            'bus',
-            'tram',
-            'subway',
-            'ferry'
+            HafasTravelType::NATIONAL_EXPRESS,
+            HafasTravelType::NATIONAL,
+            TravelType::EXPRESS,
+            HafasTravelType::REGIONAL_EXP,
+            HafasTravelType::REGIONAL,
+            HafasTravelType::SUBURBAN,
+            HafasTravelType::BUS,
+            HafasTravelType::TRAM,
+            HafasTravelType::SUBWAY,
+            HafasTravelType::FERRY,
         ];
 
         $seenCheckins = 0;

@@ -14,6 +14,10 @@
     <meta name="twitter:title" content="{{ $title }}"/>
     <meta name="twitter:description" content="{{ $description }}"/>
     <meta name="twitter:image" content="{{ $image }}"/>
+
+    @if($status->user->prevent_index)
+        <meta name="robots" content="noindex"/>
+    @endif
 @endsection
 
 @section('content')
@@ -26,5 +30,5 @@
         </div>
         @include('includes.edit-modal')
         @include('includes.delete-modal')
-    </div><!--- /container -->
+    </div>
 @endsection
