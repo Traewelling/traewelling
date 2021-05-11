@@ -355,5 +355,6 @@
     "settings.platform": "Platform",
     "settings.title-loginservices": "Bijbehorende diensten",
     "settings.service": "Dienst",
-    "settings.title-sessions": "Sessies"
+    "settings.title-sessions": "Sessies",
+    "settings.title-tokens": "API-Token"
 }
