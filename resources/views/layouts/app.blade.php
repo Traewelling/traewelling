@@ -72,6 +72,7 @@
                                     aria-expanded="false"
                                     aria-label="{{ __('Show notifications') }}">
                                 <span class="notifications-bell far fa-bell"></span>
+                                <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                             </button>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
@@ -122,6 +123,7 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
