@@ -173,7 +173,7 @@
             <footer class="footer mt-auto py-3">
                 <div class="container">
                     <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
                         </button>
