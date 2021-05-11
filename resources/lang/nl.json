@@ -353,5 +353,6 @@
     "profile.statistics-for": "Statistieken voor",
     "settings.deleteallsessions": "Beëindig alle sessies",
     "settings.platform": "Platform",
-    "settings.title-loginservices": "Bijbehorende diensten"
+    "settings.title-loginservices": "Bijbehorende diensten",
+    "settings.service": "Dienst"
 }
