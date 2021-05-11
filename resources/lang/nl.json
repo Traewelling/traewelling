@@ -307,7 +307,7 @@
     "settings.connect": "verbinden",
     "settings.connected": "verbonden",
     "settings.delete-profile-picture-btn": "profiel foto verwijdern",
-    "settings.upload-image": "Profiel foto uploaden",
+    "settings.upload-image": "Upload profielfoto",
     "settings.delete-profile-picture-desc": "Je wilt jouw profiel foto verwijdern. Deze actie kan <strong>niet ongedaan gemaakt</strong> worden. Weet je het zeker?",
     "settings.delete-profile-picture-yes": "Verwijdern",
     "settings.delete-profile-picture-no": "Terug",
@@ -359,5 +359,8 @@
     "settings.title-tokens": "API-Token",
     "settings.title-ics": "Kalender exporteren",
     "settings.client-name": "Dienst",
-    "settings.deletetokenfor": "Token ongeldig maken voor:"
+    "settings.deletetokenfor": "Token ongeldig maken voor:",
+    "settings.expires": "Verloopt op",
+    "settings.last-accessed": "Laatst bekeken",
+    "settings.ics.name-placeholder": "Naam van het token - bijv. Google Agenda, Outlook, …"
 }
