@@ -13,5 +13,7 @@
     "about.name-heading": "Waar komt de naam vandaan?",
     "about.no-train": "Wij gebruiken een interface van Deutsche Bahn, waar niet alle aanbiedingen rechtstreeks worden weergegeven. Helaas kunnen we niet veel doen als uw trein er niet bij zit.",
     "about.no-train-heading": "Waarom staat mijn trein er niet bij?",
-    "about.points1": "De punten zijn samengesteld uit de productklasse en de distantie van uw reis."
+    "about.points1": "De punten zijn samengesteld uit de productklasse en de distantie van uw reis.",
+    "about.productclass": "Productklasse",
+    "about.tram": "Tram, Bus, Metro"
 }
