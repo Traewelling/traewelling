@@ -54,6 +54,7 @@ jobs:
         run: php artisan test
 
       - name: Run codacy-coverage-reporter
+        if: github.repository == 'Traewelling/traewelling'
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
