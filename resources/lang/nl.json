@@ -193,5 +193,10 @@
     "export.page": "Pagina",
     "export.journey-from-to": "Reis van :oorsprong naar :bestemming",
     "user.displayname": "Weergavenaam",
-    "dates.Sunday": "Zondag"
+    "dates.Sunday": "Zondag",
+    "export.title.train-number": "Treinnummer",
+    "export.reason.commute": "Woon-werkverkeer",
+    "export.title.status-id": "Status-ID",
+    "export.title.train-type": "Type trein",
+    "export.title.origin.location": "Vertrekpunt"
 }
