@@ -65,7 +65,7 @@
     "controller.user.follow-delete-not-permitted": "Diese Aktion ist nicht erlaubt.",
     "controller.user.follow-destroyed": "Du folgst dieser Person nicht mehr.",
     "controller.user.follow-ok": "Benutzer gefolgt.",
-    "controller.user.follow-request-already-exists": "Du hast dieser Person bereits ein angefragt zu folgen.",
+    "controller.user.follow-request-already-exists": "Du hast dieser Person bereits angefragt zu folgen.",
     "controller.user.follow-request-ok": "Folgen angefragt.",
     "controller.user.password-changed-ok": "Passwort geändert.",
     "controller.user.password-wrong": "Altes Passwort ist falsch.",
