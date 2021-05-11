@@ -330,5 +330,22 @@
     "settings.btn-update": "actualiseren",
     "settings.current-password": "Actueeles wachtwoord",
     "settings.delete-profile-picture": "Profiel foto verwijdern",
-    "user.home-set": "Jouw thuis is nu :Station."
+    "user.home-set": "Jouw thuis is nu :Station.",
+    "notifications.userJoinedConnection.notice": "@:username reist met <b>:linename</b> van <b>:origin</b> naar <b>:destination</b>.|@:username reist met lijn <b>:linename</b> van <b>:origin</b> naar <b>:destination</b>.",
+    "pagination.next": "Volgende pagina &raquo;",
+    "pagination.previous": "&laquo; Vorige pagina",
+    "pagination.back": "&laquo; Terug",
+    "passwords.reset": "Uw wachtwoord is opnieuw ingesteld.",
+    "passwords.sent": "Wij hebben u een link gestuurd om uw wachtwoord te resetten.",
+    "passwords.token": "Deze wachtwoord reset link is ongeldig.",
+    "passwords.user": "We konden geen gebruiker vinden met dit e-mail adres",
+    "profile.follow": "Volgen",
+    "profile.follow_req": "Aanvragen",
+    "passwords.password": "Wachtwoorden moeten ten minste zes tekens lang zijn en overeenkomen met de wachtwoordbevestiging.",
+    "privacy.sign": "Oké",
+    "privacy.not-signed-yet": "<b>U bent nog niet akkoord gegaan met ons privacybeleid.</b> Dit is echter wel vereist om gebruik te kunnen maken van Träwelling. Indien u niet akkoord gaat, kunt u uw account op dit punt ook verwijderen.",
+    "privacy.we-changed": "<b>We hebben ons privacybeleid gewijzigd.</b> Om deze dienst te blijven gebruiken, moet u akkoord gaan met de nieuwe voorwaarden. Indien u niet akkoord gaat, kunt u uw account op dit punt ook verwijderen.",
+    "profile.follow_req.pending": "Achterstallig",
+    "profile.last-journeys-of": "Laatste reizen van",
+    "profile.no-statuses": ":username  heeft nog niet ingecheckt voor een reis."
 }
