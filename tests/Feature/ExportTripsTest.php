@@ -20,7 +20,7 @@ class ExportTripsTest extends TestCase
         $this->user = $this->createGDPRAckedUser();
 
         $this->checkin("Frankfurt(M) Flughafen Fernbf", new DateTime("+1 day 8:00"));
-        $this->checkin("Essen Hbf", new DateTime("+2 day 7:45"));
+        $this->checkin("Hamburg Hbf", new DateTime("+2 day 7:45"));
     }
 
     public function test_two_checkins_have_been_created_at_setup() {
