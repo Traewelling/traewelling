@@ -27,7 +27,7 @@ class NotificationsTest extends TestCase
     public function likes_appear_in_notifications() {
         // Given: There is a likable status
         $now = new DateTime("+2 day 7:45");
-        $this->checkin("Essen Hbf", $now);
+        $this->checkin("Hamburg Hbf", $now);
 
         $status = $this->user->statuses->first();
 
@@ -52,7 +52,7 @@ class NotificationsTest extends TestCase
     public function removed_likes_dont_appear_in_notifications() {
         // Given: There is a likable status
         $now = new DateTime("+2 day 7:45");
-        $this->checkin("Essen Hbf", $now);
+        $this->checkin("Hamburg Hbf", $now);
 
         $status = $this->user->statuses->first();
         $like   = $this->actingAs($this->user)
@@ -115,11 +115,11 @@ class NotificationsTest extends TestCase
         // GIVEN: Alice checked-into a train.
         $alice = $this->createGDPRAckedUser();
         $now   = new DateTime("+2 day 7:45");
-        $this->checkin("Essen Hbf", $now, $alice);
+        $this->checkin("Hamburg Hbf", $now, $alice);
 
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
-        $this->checkin("Essen Hbf", $now, $bob);
+        $this->checkin("Hamburg Hbf", $now, $bob);
 
         // THEN: Alice should see that in their notification
         $notifications = $this->actingAs($alice)
