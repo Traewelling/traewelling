@@ -72,7 +72,7 @@
     "profile.unfollow": "Ne plus suivre",
     "dates.July": "juillet",
     "modals.deleteStatus-title": "Est-ce que tu veux vraiment supprimer cet enregistrement ?",
-    "controller.transport.social-post-with-event": "",
+    "controller.transport.social-post-with-event": "Je suis actuellement en :lineName à destination de :destination pour #:hashtag ! #NowTräwelling | Je suis actuellement en :lineName à destination de :destination pour #:hashtag ! #NowTräwelling | ",
     "export.number": "Numéro de train",
     "messages.cookie-notice-learn": "En savoir plus",
     "profile.private-profile-text": "Ce profil est privé.",
@@ -87,7 +87,7 @@
     "events.upcoming": "Évènements à venir",
     "controller.status.create-success": "Enregistrement créé.",
     "settings.btn-update": "Mettre à jour",
-    "about.points1": "",
+    "about.points1": "Les points sont calculés en respectant la classe de produit et la distance du trajet.",
     "events.new": "Créer un évènement",
     "auth.throttle": "Trop de tentatives de connexion. Réessaye dans :seconds secondes.",
     "settings.expires": "Expire",
@@ -267,7 +267,7 @@
     "stationboard.minus-15": "-15 minutes",
     "settings.upload-image": "Téléverser l’image de profil",
     "settings.create-ics-token-success": "Le partage de calendrier a été créé. Tu peux inclure le lien suivant dans un calendrier prenant en charge le format ICS : <a href=\":link\">:link</a>",
-    "controller.transport.checkin-ok": "",
+    "controller.transport.checkin-ok": "Tu as publié un enregistrement en :lineName avec succès !|Tu as publié un enregistrement en :lineName avec succès !",
     "controller.social.delete-set-password": "Avant de supprimer un fournisseur SSO, tu dois définir un mot de passe pour ne pas perdre ton accès.",
     "about.points-heading": "Comment sont calculés les points ?",
     "settings.client-name": "Service",
@@ -357,5 +357,9 @@
     "settings.ics.name-placeholder": "Indication de jeton – par ex. Google Calendrier, Outlook…",
     "export.title.type": "Type de trajet",
     "settings.hide-search-engines": "Référencement des moteurs de recherche",
-    "settings.language.set": "Changer la langue"
+    "settings.language.set": "Changer la langue",
+    "controller.user.follow-request-ok": "Demandé de suivre.",
+    "menu.settings.myFollower": "Mes abonnés",
+    "menu.settings.follower-requests": "Demandes de suivre",
+    "controller.user.follow-request-already-exists": "Tu as déjà demandé de suivre à cette personne."
 }
