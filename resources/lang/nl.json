@@ -350,5 +350,8 @@
     "profile.no-statuses": ":username heeft nog niet ingecheckt voor een reis.",
     "profile.points-abbr": "Pnt",
     "profile.settings": "Instellingen",
-    "profile.statistics-for": "Statistieken voor"
+    "profile.statistics-for": "Statistieken voor",
+    "settings.deleteallsessions": "Beëindig alle sessies",
+    "settings.platform": "Platform",
+    "settings.title-loginservices": "Bijbehorende diensten"
 }
