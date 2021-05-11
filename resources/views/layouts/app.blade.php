@@ -229,6 +229,7 @@
             var urlDislike = '{{ route('like.destroy') }}';
             var urlEdit = '{{ route('edit') }}';
             var urlFollow = '{{ route('follow.create') }}';
+            var urlFollowRequest = '{{ route('follow.request') }}';
             var urlLike = '{{ route('like.create') }}';
             var urlTrainTrip = '{{ route('trains.trip') }}';
             var urlUnfollow = '{{ route('follow.destroy') }}';

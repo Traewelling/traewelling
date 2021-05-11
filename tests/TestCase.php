@@ -6,11 +6,15 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\TransportController;
+use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use JetBrains\PhpStorm\ArrayShape;
 use Tests\Feature\CheckinTest;
 
 abstract class TestCase extends BaseTestCase
@@ -47,9 +51,9 @@ abstract class TestCase extends BaseTestCase
      * @throws \Exception
      */
     public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
-        $requestDateMinusMinusOneDay = (clone $requestDate)->sub(new \DateInterval('P2D'));
-        $requestDateMinusOneDay      = (clone $requestDate)->sub(new \DateInterval('P1D'));
-        $requestDatePlusOneDay       = (clone $requestDate)->add(new \DateInterval('P1D'));
+        $requestDateMinusMinusOneDay = (clone $requestDate)->sub(new DateInterval('P2D'));
+        $requestDateMinusOneDay      = (clone $requestDate)->sub(new DateInterval('P1D'));
+        $requestDatePlusOneDay       = (clone $requestDate)->add(new DateInterval('P1D'));
 
         // All Hafas Trips should have four pipe characters
         $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
@@ -79,22 +83,31 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
-     * @param $stationname
+     * @param $stationName
      * @param DateTime $now
      * @param User|null $user
-     * @throws Exception
+     * @param bool|null $forEvent
+     * @return array|null
+     * @throws \App\Exceptions\HafasException
      */
-    protected function checkin($stationname, DateTime $now, User $user = null) {
+    #[ArrayShape(['success' => "bool",
+                  'statusId' => "int",
+                  'points' => "int",
+                  'alsoOnThisConnection' => "\Illuminate\Support\Collection",
+                  'lineName' => "string",
+                  'distance' => "float",
+                  'duration' => "float",
+                  'event' => "mixed"])]
+    protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent=null): ?array {
         if ($user == null) {
             $user = $this->user;
         }
-        $trainStationboard = TransportController::TrainStationboard($stationname,
+        $trainStationboard = TransportController::TrainStationboard($stationName,
                                                                     Carbon::createFromTimestamp($now->format('U')),
                                                                     TravelType::EXPRESS);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
-            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
-            return;
+            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
 
         // Second: We don't like broken or cancelled trains.
@@ -104,9 +117,7 @@ abstract class TestCase extends BaseTestCase
             || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
-                $this->markTestSkipped("Unable to find unbroken train.
-                Is it stormy in $stationname?");
-                return;
+                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
             }
         }
         $departure = $trainStationboard['departures'][$i];
@@ -119,18 +130,28 @@ abstract class TestCase extends BaseTestCase
             $departure->stop->location->id
         );
 
+        $eventId = 0;
+        if ($forEvent != null) {
+            try {
+                $eventId = Event::firstOrFail()->id;
+            } catch(ModelNotFoundException) {
+                $this->markTestSkipped("No event found even though required");
+            }
+        }
+
         // WHEN: User tries to check-in
         try {
-            TransportController::TrainCheckin($trip['train']['trip_id'],
-                                              $trip['stopovers'][0]['stop']['id'],
-                                              end($trip['stopovers'])['stop']['id'],
-                                              '',
-                                              $user,
-                                              0,
-                                              0,
-                                              0);
+            return TransportController::TrainCheckin($trip['train']['trip_id'],
+                                                     $trip['stopovers'][0]['stop']['id'],
+                                                     end($trip['stopovers'])['stop']['id'],
+                                                     '',
+                                                     $user,
+                                                     0,
+                                                     0,
+                                                     0,
+                                                     $eventId);
         } catch (StationNotOnTripException) {
-            $this->markTestSkipped("failure in checkin creation for " . $stationname . ": Station not in stopovers");
+            $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
         } catch (CheckInCollisionException) {
             $this->markTestSkipped("failure for " . $now->format('Y-m-d H:i:s') . ": Collision");
         }

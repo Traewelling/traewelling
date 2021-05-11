@@ -12,33 +12,16 @@
     <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
-            <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
+            <img alt="{{ __('settings.picture') }}" src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
                  width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
             <div class="text-white px-4">
                 <h2 class="card-title h1-responsive font-bold">
                     <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
                     </strong> <br/>
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
-                    @if($currentUser)
-                        {{-- What the actual fuck are these stupid nested if-statements?! --}}
-                        {{-- ToDo This needs to be refined with the "request follow"-feature --}}
-                        @if($user->id !== $currentUser->id && Auth::check() && !$user->private_profile)
-                            @if($currentUser->follows->where('id', $user->id)->first() === null)
-                                <a href="#" class="btn btn-sm btn-primary follow" data-userid="{{ $user->id }}"
-                                   data-following="no">{{__('profile.follow')}}</a>
-                            @else
-                                <a href="#" class="btn btn-sm btn-danger follow" data-userid="{{ $user->id }}"
-                                   data-following="yes">{{__('profile.unfollow')}}</a>
-                            @endif
-                            <script>
-                                window.translFollow = "{{__('profile.follow')}}";
-                                window.translUnfollow = "{{__('profile.unfollow')}}";
-                            </script>
-                        @elseif($user->id == $currentUser->id)
-                            <a href="{{ route('settings') }}"
-                               class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
-                        @endif
-                    @endif
+                    @auth
+                        @include('includes.follow-button')
+                    @endauth
                 </h2>
                 <h2>
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance) }}</span><span
@@ -74,10 +57,10 @@
         </div>
 
         <div class="row justify-content-center">
-            @if($user->private_profile && $user != $currentUser)
+            @if($user->userInvisibleToMe)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
-                    <h5 hidden>{{__('profile.private-profile-information-text', ["username" => $user->username])}}</h5>
+                    <h5>{{__('profile.private-profile-information-text', ["username" => $user->username, "request" => __('profile.follow_req')])}}</h5>
                 </div>
             @elseif($statuses->count() > 0)
                 <div class="col-md-8 col-lg-7">

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -97,5 +99,56 @@ class SettingsController extends Controller
             'sessions' => $sessions,
             'tokens'   => auth()->user()->tokens->where('revoked', '0')
         ]);
+    }
+
+    /**
+     * Approve a follow request
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \App\Exceptions\AlreadyFollowingException
+     */
+    public function approveFollower(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'user_id' => [
+                                                'required',
+                                                Rule::in(auth()->user()->followRequests->pluck('user_id'))
+                                            ]
+                                        ]);
+
+        try {
+            $approval = SettingsBackend::approveFollower(auth()->user()->id, $validated['user_id']);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        if ($approval) {
+            return back()->with('success', __('settings.request.accept-success'));
+        }
+        return back()->with('danger', __('messages.exception.general'));
+    }
+
+    /**
+     * Reject a follow request
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function rejectFollower(Request $request) {
+        $validated = $request->validate([
+                                            'user_id' => [
+                                                'required',
+                                                Rule::in(auth()->user()->followRequests->pluck('user_id'))
+                                            ]
+                                        ]);
+        try {
+            $approval = SettingsBackend::rejectFollower(auth()->user()->id, $validated['user_id']);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        if ($approval) {
+            return back()->with('success', __('settings.request.reject-success'));
+        }
+        return back()->with('danger', __('messages.exception.general'));
     }
 }

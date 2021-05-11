@@ -7,7 +7,6 @@ use App\Models\Like;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
 use Tests\TestCase;

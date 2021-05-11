@@ -4,21 +4,22 @@ namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use JetBrains\PhpStorm\ArrayShape;
+use stdClass;
 
-class UserFollowed extends Notification
+class FollowRequestApproved extends Notification
 {
     use Queueable;
 
-    public $follow;
+    public FollowRequest $followRequest;
 
     /**
-     * Create a new notification instance
+     * Create a new notification instance.
      *
      * @return void
      */
@@ -29,37 +30,37 @@ class UserFollowed extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed
      * @return array
      */
-    public function via() {
+    public function via(): array {
         return ['database'];
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed
      * @return array
      */
-    public function toArray() {
+    #[ArrayShape(['follow_id' => "mixed"])]
+    public function toArray(): array {
         return [
             'follow_id' => $this->follow->id,
         ];
     }
 
-    /**
-     * Detail-Handler of notification
+    /**Detail-Handler of notification
      *
+     * @param mixed $notification
+     * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification) {
+    public static function detail(mixed $notification): stdClass {
         $data                 = $notification->data;
-        $notification->detail = new \stdClass();
+        $notification->detail = new stdClass();
         try {
             $follow = Follow::findOrFail($data['follow_id']);
-            $sender = User::findOrFail($follow->user_id);
-        } catch (ModelNotFoundException $e) {
+            $sender = User::findOrFail($follow->follow_id);
+        } catch (ModelNotFoundException) {
             // The follow doesn't exist anymore or the user following you was deleted. Eitherway,
             // we can delete the notification.
             throw new ShouldDeleteNotificationException();
@@ -70,7 +71,7 @@ class UserFollowed extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render(mixed $notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {
@@ -79,11 +80,12 @@ class UserFollowed extends Notification
         }
 
         return view("includes.notification", [
-            'color'           => "neutral",
-            'icon'            => "fas fa-user-friends",
-            'lead'            => __('notifications.userFollowed.lead', ['followerUsername' => $detail->sender->username]),
-            "link"            => route('account.show', ['username' => $detail->sender->username]),
-            'notice'          => "",
+            'color' => 'neutral',
+            'icon' => 'fas fa-user-plus',
+            'lead' => __('notifications.userApprovedFollow.lead',
+                         ['followerRequestUsername' => $detail->sender->username]),
+            'link' => route('account.show', ['username' => $detail->sender->username]),
+            'notice' => '',
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read'            => $notification->read_at != null,
             'notificationId'  => $notification->id
