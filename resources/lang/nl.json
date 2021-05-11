@@ -149,7 +149,7 @@
     "dates.Wednesday": "Woensdag",
     "events.header": "Event: :naam",
     "events.name": "Naam",
-    "events.hashtag": "Hashtag",
+    "events.hashtag": "hashtag",
     "events.website": "Website",
     "events.host": "Organisator",
     "events.begin": "Start",
@@ -191,5 +191,7 @@
     "export.number": "Treinnummer",
     "export.guarantee": "Gemaakt met <a href=\":url\">:naam</a>. Alle informatie zonder garantie.",
     "export.page": "Pagina",
-    "export.journey-from-to": "Reis van :oorsprong naar :bestemming"
+    "export.journey-from-to": "Reis van :oorsprong naar :bestemming",
+    "user.displayname": "Weergavenaam",
+    "dates.Sunday": "Zondag"
 }
