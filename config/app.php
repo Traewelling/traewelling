@@ -84,10 +84,11 @@ return [
 
     'locale'  => 'de',
     'locales' => [
-        'de'    => 'Deutsch',
-        'de_he' => 'Deutsch (südhessisch)',
-        'en'    => 'English',
-        'fr'    => 'Français',
+        'de'     => 'Deutsch',
+        'de_he'  => 'Deutsch (südhessisch)',
+        'de_pfl' => 'Deutsch (Pfälzisch)',
+        'en'     => 'English',
+        'fr'     => 'Français',
     ],
 
     /*
