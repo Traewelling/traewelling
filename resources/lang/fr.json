@@ -232,7 +232,7 @@
     "settings.follower.delete": "Enlever l’abonné",
     "admin.checkins": "Enregistrements",
     "controller.transport.social-post": "Je suis actuellement dans :lineName pour :Destination ! #NowTräwelling |Je suis actuellement sur la ligne :lineName pour :Destination ! #NowTräwelling ",
-    "admin.hafas-entries-by-polylines": "",
+    "admin.hafas-entries-by-polylines": "Entrée HAFAS et nombre de ligne Poly liées",
     "export.page": "Page",
     "profile.follow_req": "Demander de suivre",
     "user.login": "Se connecter",
@@ -260,7 +260,7 @@
     "dates.thousands_sep": " ",
     "about.international": "InterCityExpress, TGV, RailJet",
     "menu.discard": "Annuler",
-    "about.calculation": "",
+    "about.calculation": "La distance est arrondie à la dizaine suivante ensuite divisée par 10 puis les points de base sont ajoutés.<br />Un voyage en TGV de 143 km te donne <code>10 + arrondi(143/10) = 10 + 15 = 25</code>&nbsp;points, pour un voyage en RER de 8 km tu vas recevoir <code>2 + arrondi(8/19) = 2 + 1 = 3</code>&nbsp;points.<br />Nous voudrions que tu publies ton enregistrement dans les meilleur délais, c’est pourquoi tu ne reçois tous les points que pour un enregistrement étant publié pendant ou 20 minutes avant le départ réel. Pour un enregistrement une heure après le voyage tu reçois encore un quart des points. Si tu publies l’enregistrement plus tard ou plus tôt tu reçois encore un point de la pitié.",
     "stationboard.check-tweet": "Twitter",
     "leaderboard.rank": "Rang",
     "settings.follower.following-since": "",
@@ -361,5 +361,12 @@
     "controller.user.follow-request-ok": "Demandé de suivre.",
     "menu.settings.myFollower": "Mes abonnés",
     "menu.settings.follower-requests": "Demandes de suivre",
-    "controller.user.follow-request-already-exists": "Tu as déjà demandé de suivre à cette personne."
+    "controller.user.follow-request-already-exists": "Tu as déjà demandé de suivre à cette personne.",
+    "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> aimerait te suivre.",
+    "notifications.userRequestedFollow.notice": "Clique ici pour accepter ou supprimer la demande.",
+    "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> a accepté ta demande.",
+    "profile.follow_req.pending": "en cours",
+    "settings.request.delete": "refuser la demande",
+    "settings.request.reject-success": "La demande de suivre à été refusée avec succès.",
+    "settings.request.accept-success": "La demande de suivre a été acceptée avec succès."
 }
