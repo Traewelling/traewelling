@@ -347,5 +347,8 @@
     "privacy.we-changed": "<b>We hebben ons privacybeleid gewijzigd.</b> Om deze dienst te blijven gebruiken, moet u akkoord gaan met de nieuwe voorwaarden. Indien u niet akkoord gaat, kunt u uw account op dit punt ook verwijderen.",
     "profile.follow_req.pending": "Achterstallig",
     "profile.last-journeys-of": "Laatste reizen van",
-    "profile.no-statuses": ":username  heeft nog niet ingecheckt voor een reis."
+    "profile.no-statuses": ":username heeft nog niet ingecheckt voor een reis.",
+    "profile.points-abbr": "pnt",
+    "profile.settings": "instellingen",
+    "profile.statistics-for": "Statistieken voor"
 }
