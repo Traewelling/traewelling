@@ -90,7 +90,7 @@
     "controller.user.follow-delete-not-permitted": "This action is not permitted.",
     "controller.user.follow-destroyed": "This follow has been destroyed.",
     "controller.user.follow-ok": "Followed user.",
-    "controller.user.follow-request-already-exists": "This follow request already exists.",
+    "controller.user.follow-request-already-exists": "You've already requested to follow this person.",
     "controller.user.follow-request-ok": "Requested follow.",
     "controller.user.password-changed-ok": "Password changed.",
     "controller.user.password-wrong": "Password wrong.",

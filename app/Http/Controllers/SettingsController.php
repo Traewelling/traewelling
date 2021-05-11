@@ -57,7 +57,7 @@ class SettingsController extends Controller
      * @param User $followerID
      * @return Follow|null
      */
-    public static function rejectFollower(User $userId, User $followerID): Follow|null {
+    public static function rejectFollower(User $userId, User $followerID): ?Follow {
         $request = FollowRequest::where('user_id', $followerID)->where('follow_id', $userId)->firstOrFail();
 
         $request->delete();

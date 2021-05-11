@@ -51,11 +51,11 @@ class FollowRequestIssued extends Notification
 
     /**Detail-Handler of notification
      *
-     * @param $notification
+     * @param mixed $notification
      * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification): stdClass {
+    public static function detail(mixed $notification): stdClass {
         $data                 = $notification->data;
         $notification->detail = new stdClass();
         try {
@@ -71,7 +71,7 @@ class FollowRequestIssued extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification): ?string {
+    public static function render(mixed $notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {
