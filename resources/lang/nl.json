@@ -365,5 +365,6 @@
     "settings.ics.name-placeholder": "Naam van het token - bijv. Google Agenda, Outlook, …",
     "settings.request.delete": "Volgverzoek afwijzen",
     "settings.request.accept-success": "Volg aanfraag succesvol geaccepteerd.",
-    "settings.request.reject-success": "Volg aanfraag succesvol afgewezen."
+    "settings.request.reject-success": "Volg aanfraag succesvol afgewezen.",
+    "stationboard.stop-cancelled": "Stop is geannuleerd"
 }
