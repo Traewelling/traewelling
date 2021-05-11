@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
@@ -137,7 +138,7 @@ class CheckinTest extends TestCase
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
             Carbon::createFromTimestamp($now->format('U')),
-            'express'
+            TravelType::EXPRESS
         );
 
         $countDepartures = count($trainStationboard['departures']);
