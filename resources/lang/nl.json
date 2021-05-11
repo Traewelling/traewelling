@@ -235,5 +235,20 @@
     "leaderboard.rank": "Rang",
     "leaderboard.no_data": "Sorry, er is deze maand geen toplijst beschikbaar.",
     "menu.active": "Onderweg",
-    "menu.developed": "Ontwikkeld met <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"></i> in de Europese Unie. <a href=\"https://github.com/traewelling/traewelling\">broncode</a> onder licentie van <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>."
+    "menu.developed": "Ontwikkeld met <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"></i> in de Europese Unie. <a href=\"https://github.com/traewelling/traewelling\">broncode</a> onder licentie van <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>.",
+    "messages.account.please-confirm": "Type alsjeblieft <i><b>:delete</b></i> in om de verwijdering te bevestigen.",
+    "modals.delete-confirm": "Verwijdering",
+    "modals.editStatus-label": "Status bericht bewerken",
+    "modals.deleteEvent-title": "Event verwijdern",
+    "notifications.empty": "Je hebt nog geen notificaties ontvangen.",
+    "notifications.title": "Notificaties",
+    "notifications.mark-all-read": "Alle als gelezen makeeren",
+    "notifications.mark-as-unread": "Als ongelezen makeeren",
+    "notifications.mark-as-read": "Als gelezen makeeren",
+    "messages.exception.general": "Het is een foud opgetreden. Probeer het opnieuw.",
+    "messages.exception.generalHafas": "Het is een probleem met de interface van de dienstregeling gegevens opgetreden. Probeer het alsjeblieft opniuew.",
+    "modals.deleteStatus-title": "Wil je deze status zeker verwijdern?",
+    "modals.edit-confirm": "Opslaan",
+    "modals.editStatus-title": "Status bewerken",
+    "modals.deleteEvent-body": "Weet je het zeker dat je dit Event <em>:name</em> wilt verwijdern? Check-ins onderweg ga dan naar <code>NULL</code>."
 }
