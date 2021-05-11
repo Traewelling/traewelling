@@ -356,5 +356,8 @@
     "settings.title-loginservices": "Bijbehorende diensten",
     "settings.service": "Dienst",
     "settings.title-sessions": "Sessies",
-    "settings.title-tokens": "API-Token"
+    "settings.title-tokens": "API-Token",
+    "settings.title-ics": "Kalender exporteren",
+    "settings.client-name": "Dienst",
+    "settings.deletetokenfor": "Token ongeldig maken voor:"
 }
