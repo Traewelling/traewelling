@@ -362,5 +362,8 @@
     "settings.deletetokenfor": "Token ongeldig maken voor:",
     "settings.expires": "Verloopt op",
     "settings.last-accessed": "Laatst bekeken",
-    "settings.ics.name-placeholder": "Naam van het token - bijv. Google Agenda, Outlook, …"
+    "settings.ics.name-placeholder": "Naam van het token - bijv. Google Agenda, Outlook, …",
+    "settings.request.delete": "Volgverzoek afwijzen",
+    "settings.request.accept-success": "Volg aanfraag succesvol geaccepteerd.",
+    "settings.request.reject-success": "Volg aanfraag succesvol afgewezen."
 }
