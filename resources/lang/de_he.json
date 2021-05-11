@@ -242,7 +242,7 @@
     "privacy.we-changed": "<b>Mer hawwe unser Datenschutzbedingunge geändert.</b> Um denn Service imma noch nutze zu kenne, muschde de naie Bedingunge zustimme. Falls Du nedd zustimme solltest, koannschde aa an deer Stell Dein Account lesche.",
     "privacy.sign": "Okay",
     "profile.follow": "Folgen",
-    "profile.follow_req": "Folgen anfragen",
+    "profile.follow_req": "Anfrage",
     "profile.last-journeys-of": "Leddschde Reise vunn",
     "profile.no-statuses": ":username hot bisher in koa Reise oigescheckt.",
     "profile.points-abbr": "Pkt",
@@ -356,5 +356,16 @@
     "transport_types.regional": "Regional",
     "transport_types.suburban": "S-Bahn",
     "transport_types.subway": "U-Bahn",
-    "transport_types.tram": "Tram"
+    "transport_types.tram": "Tram",
+    "menu.settings.follower-requests": "Folgen-Anfrage",
+    "notifications.userRequestedFollow.notice": "Um die Anfrage zu akzeptiere, bzw. zu lesche, klicke do orrer göj in die Oischdellungen.",
+    "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> hot dei Anfrage akzeptiert",
+    "profile.follow_req.pending": "Ausstehend",
+    "settings.request.accept-success": "Folgen-Anfrage erfolgreisch akzeptiert.",
+    "settings.request.reject-success": "Folgen-Anfrage erfolgreisch abgelehnt.",
+    "controller.user.follow-request-already-exists": "Du hoaschd dieser Person schunn angefragt zu folge.",
+    "controller.user.follow-request-ok": "Folge angefragt.",
+    "menu.settings.myFollower": "Moi Follower",
+    "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> will dir folge.",
+    "settings.request.delete": "Folgen-Anfrage ablehne"
 }
