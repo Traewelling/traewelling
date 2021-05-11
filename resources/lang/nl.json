@@ -197,7 +197,7 @@
     "export.title.train-number": "Treinnummer",
     "export.reason.commute": "Woon-werkverkeer",
     "export.title.status-id": "Status-ID",
-    "export.title.train-type": "Type trein",
+    "export.title.train-type": "Treintype",
     "export.title.origin.location": "Vertrekpunt",
     "export.title.origin.time": "Vertrektijd",
     "export.title.origin.coordinates": "Vertrekcoördinaten",
