@@ -354,5 +354,6 @@
     "settings.deleteallsessions": "Beëindig alle sessies",
     "settings.platform": "Platform",
     "settings.title-loginservices": "Bijbehorende diensten",
-    "settings.service": "Dienst"
+    "settings.service": "Dienst",
+    "settings.title-sessions": "Sessies"
 }
