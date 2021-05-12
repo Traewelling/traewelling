@@ -104,7 +104,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @return bool
      */
     public function getUserInvisibleToMeAttribute(): bool {
-        if ($this->id != auth()->user()->id && auth()->user()->mutedUsers->contains('id', $this->id)) {
+        if (auth()->check()
+            && $this->id != auth()->user()->id
+            && auth()->user()->mutedUsers->contains('id', $this->id)) {
             return true;
         }
         return $this->private_profile
