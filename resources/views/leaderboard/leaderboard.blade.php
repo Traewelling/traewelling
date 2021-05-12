@@ -9,7 +9,7 @@
                 <div class="card" id="leaderboard">
                     <div class="card-header">
                         <a href="{{route('leaderboard.month', ['date' => date('Y-m')])}}" class="float-end">
-                            Zur Monatsübersicht
+                            {{ __('leaderboard.month.title') }}
                         </a>
                         {{ __('menu.leaderboard') }}
                     </div>
