@@ -59,6 +59,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(User::class, 'follows', 'user_id', 'follow_id');
     }
 
+    public function mutedUsers(): BelongsToMany {
+        return $this->belongsToMany(User::class, 'user_mutes', 'user_id', 'muted_id');
+    }
+
     public function followRequests(): HasMany {
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
@@ -100,12 +104,15 @@ class User extends Authenticatable implements MustVerifyEmail
      * @return bool
      */
     public function getUserInvisibleToMeAttribute(): bool {
+        if ($this->id != auth()->user()->id && auth()->user()->mutedUsers->contains('id', $this->id)) {
+            return true;
+        }
         return $this->private_profile
-            && (!Auth::check()
-                || (Auth::check()
-                    && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
-                )
-            );
+               && (!Auth::check()
+                   || (Auth::check()
+                       && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
+                   )
+               );
     }
 
 }

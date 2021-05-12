@@ -366,5 +366,12 @@
     "transport_types.regional": "Regional",
     "transport_types.suburban": "S-Bahn",
     "transport_types.subway": "U-Bahn",
-    "transport_types.tram": "Tram"
+    "transport_types.tram": "Tram",
+    "user.mute-tooltip": "Benutzer stummschalten",
+    "user.muted": "Du hast den Benutzer :username stummgeschaltet.",
+    "user.muted.heading": "Benutzer stummgeschaltet",
+    "user.muted.heading2": "Stummgeschaltete Benutzer",
+    "user.muted.text": "Du kannst die Check-Ins von :username nicht sehen, da du diesen Benutzer stummgeschaltet hast.",
+    "user.unmuted": "Du hast die Stummschaltung des Benutzers :username aufgehoben.",
+    "user.unmute-tooltip": "Benutzer nicht mehr stummschalten"
 }
