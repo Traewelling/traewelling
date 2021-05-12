@@ -11,7 +11,7 @@ function setIconsForCheckIn(value) {
     let number  = parseInt(value, 10);
     let classes = dropDownButton.children()[0].classList;
     businessIcons.forEach((value) => {
-        classes.remove(value)
+        classes.remove(value);
     });
     classes.add(businessIcons[number]);
     businessCheckInput.val(number);
