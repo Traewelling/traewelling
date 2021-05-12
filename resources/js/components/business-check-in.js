@@ -2,69 +2,35 @@ let statusBusiness;
 let statusBody;
 let statusId = 0;
 
-let businessUserIcon = $("#business-user");
-let businessBriefcaseIcon = $("#business-briefcase");
-let businessBuildingIcon = $("#business-building");
-
 let businessCheckInput = $("#business_check");
-let businessCheckInputNewTravel = $("#business_check_new_travel");
-$(businessCheckInput).val("0");
-
-let businessUser = $("#business-li-user");
-let businessBriefcase = $("#business-li-briefcase");
-let businessBuilding = $("#business-li-building");
+let dropDownButton     = $('#businessDropdownButton');
+let dropDown           = $('#businessDropdown');
+const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
 
 function setIconsForCheckIn(number) {
-    switch (number) {
-        case 1:
-            $(businessUserIcon).addClass("d-none");
-            $(businessBriefcaseIcon).removeClass("d-none");
-            $(businessBuildingIcon).addClass("d-none");
-            $(businessCheckInput).val("1");
-            $(businessCheckInputNewTravel).val("1");
-            break;
-        case 2:
-            $(businessUserIcon).addClass("d-none");
-            $(businessBriefcaseIcon).addClass("d-none");
-            $(businessBuildingIcon).removeClass("d-none");
-            $(businessCheckInput).val("2");
-            $(businessCheckInputNewTravel).val("2");
-            break;
-        default:
-            $(businessUserIcon).removeClass("d-none");
-            $(businessBriefcaseIcon).addClass("d-none");
-            $(businessBuildingIcon).addClass("d-none");
-            $(businessCheckInput).val("0");
-            $(businessCheckInputNewTravel).val("0");
-            break;
-    }
+    let classes = dropDownButton.children()[0].classList;
+    businessIcons.forEach(value => classes.remove(value));
+    classes.add(businessIcons[number]);
+    businessCheckInput.val(number);
 }
 
-$(businessUser).on("click", function () {
-    setIconsForCheckIn(0);
-});
-
-$(businessBriefcase).on("click", function () {
-    setIconsForCheckIn(1);
-});
-
-$(businessBuilding).on("click", function () {
-    setIconsForCheckIn(2);
-});
+$('.trwl-business-item').on("click", function (event) {
+    setIconsForCheckIn(parseInt(event.currentTarget.dataset.trwlBusiness));
+})
 
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset["statusid"];
-    statusBody = document.getElementById("status-" + statusId).dataset["body"];
-    statusBusiness = document.getElementById("status-" + statusId).dataset["businessid"];
+    statusId       = event.currentTarget.dataset.trwlStatusId;
+    statusBody     = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
+    statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
     $("#status-body").val(statusBody);
     $("#business_check").val(statusBusiness);
     setIconsForCheckIn(parseInt(statusBusiness));
     $("#edit-modal").modal("show");
 });
 
-$(document).on("click", "#modal-save", function () {
+$(document).on("click", "#modal-trwl-edit-save", function () {
     $.ajax({
         method: "POST",
         url: urlEdit,

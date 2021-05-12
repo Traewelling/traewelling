@@ -1,7 +1,7 @@
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset["statusid"];
+    statusId = event.target.parentElement.dataset.trwlStatusId;
     $("#delete-modal").modal("show");
 });
 
@@ -16,7 +16,7 @@ $(document).on("click", "#modal-delete", function () {
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset["statusid"];
+    statusId = event.target.dataset.trwlStatusId;
 
     let $likeCount = document.getElementById("like-count-" + statusId);
     let $smallAvatar = document.getElementById("avatar-small-" + statusId);
