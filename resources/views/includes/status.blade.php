@@ -130,7 +130,7 @@
             @auth
                 <li class="
                 @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}" data-selflike="{{ auth()->user()->id == $status->user_id }}">
+                    id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
