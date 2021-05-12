@@ -80,7 +80,7 @@
 
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
-                            {{ __('stationboard.next-stop') }}:
+                            {{ __('stationboard.next-stop') }}
                             {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}
                         </p>
                     @endif
