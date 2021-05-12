@@ -1,5 +1,5 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}"
-     data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}"
+     data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
      data-businessid="{{ $status->business }}"
 >
     @if (Route::current()->uri == "status/{id}")
