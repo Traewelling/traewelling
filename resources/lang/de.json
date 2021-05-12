@@ -356,7 +356,7 @@
     "status.ogp-description": ":distancekm von :origin nach :destination in :linename.|:distancekm von :origin nach :destination in Linie :linename.",
     "time-format": "hh:mm",
     "time-format.with-day": "hh:mm (DD.MM.YYYY)",
-    "datetime.format": "DD.MM.YYYY hh:mm",
+    "datetime-format": "DD.MM.YYYY hh:mm",
     "transport_types.bus": "Bus",
     "transport_types.business": "Geschäftliche Reise",
     "transport_types.businessPlural": "Geschäftliche Reisen",
