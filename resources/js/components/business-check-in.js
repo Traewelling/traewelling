@@ -3,20 +3,23 @@ let statusBody;
 let statusId = 0;
 
 let businessCheckInput = $("#business_check");
-let dropDownButton     = $('#businessDropdownButton');
-let dropDown           = $('#businessDropdown');
+let dropDownButton     = $("#businessDropdownButton");
+let dropDown           = $("#businessDropdown");
 const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
 
-function setIconsForCheckIn(number) {
+function setIconsForCheckIn(value) {
+    let number  = parseInt(value, 10);
     let classes = dropDownButton.children()[0].classList;
-    businessIcons.forEach(value => classes.remove(value));
+    businessIcons.forEach((value) => {
+        classes.remove(value)
+    });
     classes.add(businessIcons[number]);
     businessCheckInput.val(number);
 }
 
-$('.trwl-business-item').on("click", function (event) {
-    setIconsForCheckIn(parseInt(event.currentTarget.dataset.trwlBusiness));
-})
+$(".trwl-business-item").on("click", function (event) {
+    setIconsForCheckIn(event.currentTarget.dataset.trwlBusiness);
+});
 
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
@@ -26,7 +29,7 @@ $(document).on("click", ".edit", function (event) {
     statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
     $("#status-body").val(statusBody);
     $("#business_check").val(statusBusiness);
-    setIconsForCheckIn(parseInt(statusBusiness));
+    setIconsForCheckIn(statusBusiness);
     $("#edit-modal").modal("show");
 });
 
