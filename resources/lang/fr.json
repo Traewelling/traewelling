@@ -369,7 +369,7 @@
     "settings.request.delete": "Refuser la demande",
     "settings.request.reject-success": "La demande de suivi a été refusée avec succès.",
     "settings.request.accept-success": "La demande de suivi a été acceptée avec succès.",
-    "dateformat.with-weekday": "dddd, [le] DD MMMM YYYY"
+    "dateformat.with-weekday": "dddd, [le] DD MMMM YYYY",
     "time-format": "hh[h]mm",
     "time-format.with-day": "hh[h]mm (DD/MM/YYYY)"
 }
