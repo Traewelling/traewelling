@@ -17,7 +17,7 @@
                     @foreach($tokens as $token)
                         <tr>
                             <td>{{ $token->client->name }}</td>
-                            <td>{{ \Carbon\Carbon::parse($token->created_at)->isoFormat(__('datetime-format') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($token->created_at)->isoFormat(__('datetime-format')) }}</td>
                             <td>{{ $token->expires_at->diffForHumans() }}</td>
                             <td>
                                 <form method="POST" action="{{ route('deltoken') }}">
