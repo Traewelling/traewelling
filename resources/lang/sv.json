@@ -293,7 +293,7 @@
     "stationboard.search-by-location": "Hämta min position",
     "settings.title-ics": "Kalenderexport",
     "dates.Saturday": "lördag",
-    "dates.-on-": "",
+    "dates.-on-": " kl. ",
     "admin.usage": "användning",
     "settings.platform": "plattform",
     "stationboard.dep": "från",
