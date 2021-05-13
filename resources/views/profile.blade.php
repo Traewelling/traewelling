@@ -76,7 +76,7 @@
         </div>
 
         <div class="row justify-content-center">
-            @if(auth()->user()->mutedUsers->contains('id', $user->id))
+            @if(auth()->check() && auth()->user()->mutedUsers->contains('id', $user->id))
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('user.muted.heading')}}</h3></header>
                     <h5>{{__('user.muted.text', ["username" => $user->username])}}</h5>
