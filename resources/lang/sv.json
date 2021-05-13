@@ -333,7 +333,7 @@
     "export.title.points": "Poänger",
     "export.title.stopovers": "Stopp",
     "export.reason.commute": "Pendling",
-    "export.title.status-id": "Händelse-ID",
+    "export.title.status-id": "Status-ID",
     "export.title.train-type": "Typ av tåg",
     "export.title.train-number": "Tågnummer",
     "export.title.destination.time": "Ankomsttid",
