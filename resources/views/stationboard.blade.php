@@ -26,7 +26,8 @@
                     <div class="input-group mb-3 mx-auto">
                         <input type="datetime-local" class="form-control" id="timepicker" name="when"
                                aria-describedby="button-addontime" value="{{  $when->format("Y-m-d\TH:i") }}"/>
-                        <button class="btn btn-outline-primary" type="submit" id="button-addontime" data-mdb-ripple-color="dark">
+                        <button class="btn btn-outline-primary" type="submit" id="button-addontime"
+                                data-mdb-ripple-color="dark">
                             {{__('stationboard.set-time')}}
                         </button>
                     </div>
@@ -41,8 +42,11 @@
                         <div class="float-end">
                             <a href="{{ route('user.setHome', ['ibnr' => $station->ibnr]) }}"><i class="fa fa-home"></i></a>
                         </div>
-                        {{ $station->name }} <small><i
-                                    class="far fa-clock fa-sm"></i>{{ $when->format('H:i (Y-m-d)') }}</small>
+                        {{ $station->name }}
+                        <small>
+                            <i class="far fa-clock fa-sm"></i>
+                            {{ $when->isoFormat(__('time-format.with-day')) }}
+                        </small>
                     </div>
 
                     <div class="card-body p-0 table-responsive">
@@ -88,7 +92,7 @@
                                             @if(isset($departure->cancelled))
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span>
                                             @else
-                                                {{\Carbon\Carbon::parse($departure->plannedWhen)->format('H:i')}}
+                                                {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
                                                 @if(isset($departure->delay))
                                                     <small>(<span
                                                                 class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
