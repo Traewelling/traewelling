@@ -368,5 +368,11 @@
     "transport_types.regional": "regional",
     "transport_types.suburban": "suburban",
     "transport_types.subway": "subway",
-    "transport_types.tram": "tram"
+    "transport_types.tram": "tram",
+    "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
+    "leaderboard.month.title": "Monthly overview",
+    "time-format": "hh:mm a",
+    "datetime-format": "DD.MM.YYYY hh:mm a",
+    "dateformat.month-and-year": "MMMM YYYY",
+    "time-format.with-day": "hh:mm a (DD.MM.YYYY)"
 }
