@@ -170,6 +170,7 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/deprecations" />
       <path value="$PROJECT_DIR$/vendor/codacy/coverage" />
       <path value="$PROJECT_DIR$/vendor/gitonomy/gitlib" />
+      <path value="$PROJECT_DIR$/vendor/fzaninotto/faker" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0" />

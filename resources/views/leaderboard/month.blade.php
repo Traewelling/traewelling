@@ -6,16 +6,16 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h4>{{__('leaderboard.month')}} <b>{{$date->isoFormat('MMMM YYYY')}}</b></h4>
+                <h4>{{__('leaderboard.month')}} <b>{{$date->isoFormat(__('dateformat.month-and-year'))}}</b></h4>
                 <hr/>
                 <a href="{{route('leaderboard.month', ['date' => $date->clone()->subMonth()->format('Y-m')])}}"
                    class="btn btn-sm btn-primary float-left">
-                    <i class="fas fa-arrow-left"></i> {{$date->clone()->subMonth()->isoFormat('MMMM YYYY')}}
+                    <i class="fas fa-arrow-left"></i> {{$date->clone()->subMonth()->isoFormat(__('dateformat.month-and-year'))}}
                 </a>
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
                        class="btn btn-sm btn-primary float-end">
-                        {{$date->clone()->addMonth()->isoFormat('MMMM YYYY')}} <i class="fas fa-arrow-right"></i>
+                        {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}} <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
                 <div class="clearfix"></div>

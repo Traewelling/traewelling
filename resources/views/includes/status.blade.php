@@ -1,6 +1,6 @@
-<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}"
-     data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}"
-     data-businessid="{{ $status->business }}"
+<div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
+     data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
+     data-trwl-business-id="{{ $status->business }}"
 >
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
@@ -25,11 +25,11 @@
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;"
-                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>
+                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}</small>
                             &nbsp;
-                            {{ $status->trainCheckin->origin_stopover->departure_real->format('H:i') }}
+                            {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
                         @else
-                            {{ $status->trainCheckin?->origin_stopover?->departure->format('H:i') ?? $status->trainCheckin->departure->format('H:i') }}
+                            {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
                         @endif
                     </span>
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
@@ -80,7 +80,7 @@
 
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
-                            {{ __('stationboard.next-stop') }}:
+                            {{ __('stationboard.next-stop') }}
                             {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}
                         </p>
                     @endif
@@ -90,12 +90,12 @@
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}
+                                {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->destination_stopover->arrival_real->format('H:i') }}
+                            {{ $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format')) }}
                         @else
-                            {{ $status->trainCheckin?->destination_stopover?->arrival?->format('H:i') ?? $status->trainCheckin->arrival->format('H:i') }}
+                            {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
@@ -123,14 +123,14 @@
                 @endif
             </a>{{__('dates.-on-')}}
             <a href="{{ url('/status/'.$status->id) }}">
-                {{ $status->created_at->format('H:i') }}
+                {{ $status->created_at->isoFormat(__('time-format')) }}
             </a>
         </span>
         <ul class="list-inline">
             @auth
                 <li class="
                 @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}" data-selflike="{{ auth()->user()->id == $status->user_id }}">
+                    id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
@@ -145,11 +145,11 @@
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>
                     </li>
 
                     <li class="list-inline-item like-text">
-                        <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
+                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>
                     </li>
                 @endif
             @else

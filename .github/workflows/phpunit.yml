@@ -2,9 +2,11 @@ name: PHPUnit
 
 on:
   push:
-    branches: [ develop ]
+    branches-ignore:
+      - 'i18n'
   pull_request:
-    branches: [ develop ]
+    branches-ignore:
+      - 'i18n'
 
 jobs:
   laravel-tests:
@@ -54,6 +56,7 @@ jobs:
         run: php artisan test
 
       - name: Run codacy-coverage-reporter
+        if: github.repository == 'Traewelling/traewelling'
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}

@@ -72,6 +72,7 @@
                                     aria-expanded="false"
                                     aria-label="{{ __('Show notifications') }}">
                                 <span class="notifications-bell far fa-bell"></span>
+                                <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                             </button>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
@@ -116,7 +117,8 @@
                                     <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
-                                               placeholder="Search" aria-label="User suchen">
+                                               placeholder="{{ __('stationboard.submit-search') }}"
+                                               aria-label="User suchen"/>
                                         <button class="input-group-text btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
@@ -128,6 +130,7 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -177,7 +180,7 @@
             <footer class="footer mt-auto py-3">
                 <div class="container">
                     <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
                         </button>
