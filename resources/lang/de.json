@@ -116,6 +116,8 @@
     "dates.Thursday": "Donnerstag",
     "dates.Tuesday": "Dienstag",
     "dates.Wednesday": "Mittwoch",
+    "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
+    "dateformat.month-and-year": "MMMM YYYY",
     "events.header": "Event: :name",
     "events.name": "Name",
     "events.hashtag": "Hashtag",
