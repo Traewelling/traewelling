@@ -366,5 +366,11 @@
     "settings.request.delete": "Volg aanvraag afwijzen",
     "settings.request.accept-success": "Volg aanfraag succesvol geaccepteerd.",
     "settings.request.reject-success": "Volg aanfraag succesvol afgewezen.",
-    "stationboard.stop-cancelled": "Stop is geannuleerd"
+    "stationboard.stop-cancelled": "Stop is geannuleerd",
+    "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
+    "dateformat.month-and-year": "MMMM YYYY",
+    "leaderboard.month.title": "Maandelijks overzicht",
+    "time-format": "HH:mm",
+    "time-format.with-day": "HH:mm (DD.MM.YYYY)",
+    "datetime-format": "DD.MM.YYYY HH:mm"
 }
