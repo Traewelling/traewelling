@@ -63,7 +63,7 @@
                                             <td>
                                                 @if($stop['plannedArrival'] != null)
                                                     {{ __('stationboard.arr') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format')}}
+                                                    {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['arrivalDelay']))
                                                         <small>(<span
                                                                     class="traindelay">+{{ $stop['arrivalDelay'] / 60 }}</span>)</small>
@@ -72,7 +72,7 @@
                                                 <br/>
                                                 @if($stop['plannedDeparture'] != null)
                                                     {{ __('stationboard.dep') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format')}}
+                                                    {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['departureDelay']))
                                                         <small>(<span
                                                                     class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>
