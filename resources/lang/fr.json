@@ -287,7 +287,7 @@
     "settings.connected": "Connecté(e)",
     "controller.transport.overlapping-checkin": "Tu as déjà enregistré dans le trajet :linename : <a href=\":url\">#:id</a>",
     "modals.delete-confirm": "Supprimer",
-    "stationboard.next-stop": "Prochain arrêt",
+    "stationboard.next-stop": "Prochain arrêt :",
     "settings.delete-profile-picture": "Supprimer l’image de profil",
     "transport_types.regional": "TER",
     "settings.delete-profile-picture-desc": "Est-ce que tu veux vraiment supprimer ton image de profil ? Cette action est <strong>irréversible</strong> !",
