@@ -126,7 +126,7 @@
     "stationboard.destination": "Bestemming",
     "stationboard.dt-picker": "Tijd kiezer",
     "stationboard.plus-15": "+15 minuten",
-    "stationboard.next-stop": "Volgende halt",
+    "stationboard.next-stop": "Volgende halt:",
     "user.liked-status": "houdt van deze status.",
     "user.invalid-mastodon": ":domein lijkt geen Mastodon instantie te zijn.",
     "user.no-user": "Geen gebruiker gevonden.",

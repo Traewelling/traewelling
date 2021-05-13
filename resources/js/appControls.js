@@ -1,7 +1,7 @@
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset["statusid"];
+    statusId = event.target.parentElement.dataset.trwlStatusId;
     $("#delete-modal").modal("show");
 });
 
@@ -16,11 +16,11 @@ $(document).on("click", "#modal-delete", function () {
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset["statusid"];
+    statusId = event.target.dataset.trwlStatusId;
 
-    let $likeCount = document.getElementById("like-count-" + statusId);
+    let $likeCount   = document.getElementById("like-count-" + statusId);
     let $smallAvatar = document.getElementById("avatar-small-" + statusId);
-    let count = parseInt($likeCount.innerText);
+    let count        = parseInt($likeCount.innerText);
 
     if (event.target.className === "like far fa-star") {
         $.ajax({
@@ -29,16 +29,16 @@ $(document).on("click", ".like", function (event) {
             data: {statusId: statusId, _token: token}
         }).done(function () {
             event.target.className = "like fas fa-star animated bounceIn";
-            $likeCount.innerText = ++count;
+            $likeCount.innerText   = ++count;
 
             if (count === 0) {
                 $likeCount.classList.add("d-none");
-                if ($smallAvatar.dataset["selflike"] === "1") {
+                if ($smallAvatar.dataset.trwlSelflike === "1") {
                     $smallAvatar.classList.remove("d-none");
                 }
             } else {
                 $likeCount.classList.remove("d-none");
-                if ($smallAvatar.dataset["selflike"] === "1") {
+                if ($smallAvatar.dataset.trwlSelflike === "1") {
                     $smallAvatar.classList.add("d-none");
                 }
             }
@@ -50,16 +50,16 @@ $(document).on("click", ".like", function (event) {
             data: {statusId: statusId, _token: token}
         }).done(function () {
             event.target.className = "like far fa-star";
-            $likeCount.innerText = --count;
+            $likeCount.innerText   = --count;
 
             if (count == 0) {
                 $likeCount.classList.add("d-none");
-                if ($smallAvatar.dataset["selflike"] === "1") {
+                if ($smallAvatar.dataset.trwlSelflike === "1") {
                     $smallAvatar.classList.remove("d-none");
                 }
             } else {
                 $likeCount.classList.remove("d-none");
-                if ($smallAvatar.dataset["selflike"] === "1") {
+                if ($smallAvatar.dataset.trwlSelflike === "1") {
                     $smallAvatar.classList.add("d-none");
                 }
             }
@@ -72,9 +72,9 @@ $(document).on("click", ".like", function (event) {
 
 $(document).on("click", ".follow", function (event) {
     event.preventDefault();
-    let userId = event.target.dataset["userid"];
+    let userId         = event.target.dataset["userid"];
     let privateProfile = event.target.dataset["private"];
-    let following = event.target.dataset["following"];
+    let following      = event.target.dataset["following"];
 
     if (privateProfile === "no") {
         if (following === "no") {

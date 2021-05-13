@@ -111,7 +111,8 @@
                                     <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
-                                               placeholder="Search" aria-label="User suchen">
+                                               placeholder="{{ __('stationboard.submit-search') }}"
+                                               aria-label="User suchen"/>
                                         <button class="input-group-text btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
