@@ -261,7 +261,7 @@
     "stationboard.set-time": "",
     "stationboard.where-are-you": "Var är du?",
     "stationboard.last-stations": "Sista stationer",
-    "stationboard.next-stop": "Nästa station",
+    "stationboard.next-stop": "Nästa station:",
     "stationboard.stopover": "Station",
     "stationboard.stop-cancelled": "",
     "transport_types.ferry": "Färja",
