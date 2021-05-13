@@ -27,8 +27,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
-     ->name('static.welcome');
+Route::get('/{view?}', [FrontendStaticController::class, 'landingVue'])->where('view', '(.*)')->name('landing');
+
+//Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
+//     ->name('static.welcome');
 
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');
