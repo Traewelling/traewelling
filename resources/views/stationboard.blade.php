@@ -11,12 +11,12 @@
                     <div class="text-center">
                         <div class="btn-group" role="group">
                             <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->subMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                               title="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i
+                               title="{{__('stationboard.minus-15')}}" class="btn btn-light"><i
                                         class="fas fa-arrow-circle-left"></i></a>
                             <a href="#" id="timepicker-reveal" title="{{__('stationboard.dt-picker')}}"
                                class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
                             <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->addMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                               title="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i
+                               title="{{__('stationboard.plus-15')}}" class="btn btn-light"><i
                                         class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
