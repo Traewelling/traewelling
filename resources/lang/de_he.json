@@ -367,5 +367,11 @@
     "controller.user.follow-request-ok": "Folge angefragt.",
     "menu.settings.myFollower": "Moi Follower",
     "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> will dir folge.",
-    "settings.request.delete": "Folgen-Anfrage ablehne"
+    "settings.request.delete": "Folgen-Anfrage ablehne",
+    "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
+    "dateformat.month-and-year": "MMMM YYYY",
+    "leaderboard.month.title": "Monatsübersicht",
+    "time-format": "HH:mm",
+    "time-format.with-day": "HH:mm (DD.MM.YYYY)",
+    "datetime-format": "DD.MM.YYYY HH:mm"
 }
