@@ -5,11 +5,11 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div class="col-md-9 col-lg-9">
                 <div class="card" id="leaderboard">
                     <div class="card-header">
                         <a href="{{route('leaderboard.month', ['date' => date('Y-m')])}}" class="float-end">
-                            Zur Monatsübersicht
+                            {{ __('leaderboard.month.title') }}
                         </a>
                         {{ __('menu.leaderboard') }}
                     </div>
