@@ -2,9 +2,11 @@ name: PHPUnit
 
 on:
   push:
-    branches: [ develop ]
+    branches-ignore:
+      - 'i18n'
   pull_request:
-    branches: [ develop ]
+    branches-ignore:
+      - 'i18n'
 
 jobs:
   laravel-tests:

@@ -1,6 +1,12 @@
 name: Resources build with `prod`
 
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - 'i18n'
+  pull_request:
+    branches-ignore:
+      - 'i18n'
 
 jobs:
   build:
