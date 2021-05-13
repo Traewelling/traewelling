@@ -180,6 +180,7 @@
     "leaderboard.top": "Top",
     "leaderboard.user": "Name",
     "leaderboard.month": "Träweller des Monats",
+    "leaderboard.month.title": "Monatsübersicht",
     "leaderboard.no_data": "In diesem Monat steht leider keine Topliste zur Verfügung.",
     "menu.abort": "Abbrechen",
     "menu.about": "Über Träwelling",
