@@ -11,10 +11,13 @@
 |
 */
 
-use App\Http\Controllers\API\StatusController;
+use App\Http\Controllers\API\v1\StatusController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('statuses', [StatusController::class, 'enRoute']);
+
+Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+    Route::get('statuses', [StatusController::class, 'enRoute']);
+});
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::group(['middleware' => ['guest:api']], function() {
