@@ -244,7 +244,7 @@
     "settings.updated": "Ändrad",
     "settings.no-ics-tokens": "Du har ännu inte skapat några tokens för dina resor.",
     "settings.token": "Token",
-    "settings.create-ics-token-success": "Token har skapats. Du kan tillägga följande länken till en kalender som stöder ICS-formatet: <a href=\":link\">:link</a>",
+    "settings.create-ics-token-success": "Kalenderdelningen har skapats. Du kan tillägga följande länken till en kalender som stöder ICS-formatet: <a href=\":link\">:link</a>",
     "settings.expires": "Rinner ut",
     "settings.upload-image": "Ladda upp profilbild",
     "settings.no-tokens": "Inga externa applikationer har för närvarande tillgång till ditt konto.",
