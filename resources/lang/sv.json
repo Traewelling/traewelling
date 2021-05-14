@@ -237,7 +237,7 @@
     "settings.device": "Enhet",
     "settings.deleteallsessions": "Avsluta alla sessioner",
     "settings.new-password": "Ny lösenord",
-    "settings.revoke-ics-token-success": "",
+    "settings.revoke-ics-token-success": "Token har återkallats.",
     "settings.client-name": "Tjänst",
     "settings.create-ics-token": "Skapa ny token",
     "settings.deletetokenfor": "Invalidera token för:",
