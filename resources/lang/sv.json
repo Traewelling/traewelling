@@ -369,7 +369,7 @@
     "datetime-format": "YYYY-MM-DD HH:mm",
     "settings.request.reject-success": "Du har lyckats avvisa begäran om följare.",
     "stationboard.business.business.detail": "Affärsresor",
-    "stationboard.business.commute.detail": "Vägen mellan hem och arbete",
+    "stationboard.business.commute.detail": "Vägen mellan hem och jobb",
     "dateformat.month-and-year": "MMMM YYYY",
     "time-format": "HH:mm",
     "time-format.with-day": "HH:mm (YYYY-MM-DD)"
