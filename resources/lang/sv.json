@@ -189,7 +189,7 @@
     "events.name": "Namn",
     "stationboard.filter-products": "Filter",
     "user.always-dbl": "Twittra med #dbl?",
-    "admin.select-range": "välj område",
+    "admin.select-range": "Välj urval",
     "dates.November": "november",
     "dates.June": "juni",
     "admin.statuses": "Statusar",
@@ -277,7 +277,7 @@
     "admin.greeting": "Hej",
     "settings.picture": "profilbild",
     "events.begin": "Början",
-    "stationboard.position-unavailable": "",
+    "stationboard.position-unavailable": "Kan inte bestämma positionen!",
     "dates.July": "juli",
     "notifications.statusLiked.notice": "Resa med :line på :createdDate|Resa med linje :line på :createdDate",
     "status.ogp-title": "",
@@ -319,7 +319,7 @@
     "settings.created": "Skapad",
     "settings.confirm-password": "Bekräfta lösenord",
     "settings.follower.following-since": "",
-    "transport_types.suburban": "",
+    "transport_types.suburban": "Pendeltåg",
     "dates.thousands_sep": " ",
     "notifications.socialNotShared.mastodon.504": "Din instans var inte tillgänglig när vi försökte posta din incheckning. (<code>504 Bad Gateway</code>)",
     "stationboard.submit-search": "Sök",
@@ -366,5 +366,9 @@
     "settings.ics.name-placeholder": "Tokens namn – t.ex. Google Kalender, Outlook, …",
     "leaderboard.month.title": "Månadsöversikt",
     "dateformat.with-weekday": "dddd D MMMM YYYY",
-    "datetime-format": ""
+    "datetime-format": "",
+    "settings.request.reject-success": "Du har lyckats avvisa begäran om följare.",
+    "stationboard.business.business.detail": "Affärsresor",
+    "stationboard.business.commute.detail": "Vägen mellan hem och arbete",
+    "dateformat.month-and-year": "MMMM YYYY"
 }
