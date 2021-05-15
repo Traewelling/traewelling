@@ -74,7 +74,7 @@
     "user.reset-pw-link": "Skicka en länk för att återställa lösenordet",
     "dates.Wednesday": "onsdag",
     "user.you": "Du",
-    "export.lead": "Här kan du exportera dina tågresor från databasen till CSV, JSON eller PDF. Datan är skiljat från varandra med en tabb.",
+    "export.lead": "Här kan du exportera dina tågresor från databasen som CSV, JSON eller PDF. Datan är skiljat från varandra med en tabb.",
     "export.type": "Typ av tåg",
     "export.btn": "Exportera",
     "export.title": "Exportera",
