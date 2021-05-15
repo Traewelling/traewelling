@@ -198,7 +198,7 @@
     "dates.Tuesday": "tisdag",
     "transport_types.business": "Affärsresa",
     "user.private-profile": "Privat profil",
-    "settings.title-sessions": "",
+    "settings.title-sessions": "websession",
     "user.liked-status": "gillar den här statusen.",
     "dates.Monday": "måndag",
     "events.new": "Skapa evenemang",
@@ -298,7 +298,7 @@
     "settings.platform": "plattform",
     "stationboard.dep": "från",
     "settings.revoke-token": "Återkalla token",
-    "stationboard.check-toot": "",
+    "stationboard.check-toot": "tuta",
     "settings.title-password": "Lösenord",
     "settings.follower.delete-success": "Du har lyckats ta bort följaren.",
     "events.closestStation": "Nästa Träwelling station",
@@ -372,5 +372,6 @@
     "stationboard.business.commute.detail": "Vägen mellan hem och jobb",
     "dateformat.month-and-year": "MMMM YYYY",
     "time-format": "HH:mm",
-    "time-format.with-day": "HH:mm (YYYY-MM-DD)"
+    "time-format.with-day": "HH:mm (YYYY-MM-DD)",
+    "stationboard.business.commute": "Vägen till jobbet"
 }
