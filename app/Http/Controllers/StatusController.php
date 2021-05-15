@@ -334,18 +334,22 @@ class StatusController extends Controller
         }
 
 
-        $statusesResponse = $event->statuses()
-                                  ->with('user')
-                                  ->join('users', 'statuses.user_id', '=', 'users.id')
-                                  ->where(function($query) {
-                                      $query->where('users.private_profile', 0)
-                                            ->orWhere('users.id', auth()->user()->id)
-                                            ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
-                                  })
-                                  ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
-                                  ->select('statuses.*')
-                                  ->simplePaginate(15);
+        $statuses = $event->statuses()
+                          ->with('user')
+                          ->select('statuses.*')
+                          ->join('users', 'statuses.user_id', '=', 'users.id')
+                          ->where(function($query) {
+                              $query->where('users.private_profile', 0);
+                              if (auth()->check()) {
+                                  $query->orWhere('users.id', auth()->user()->id)
+                                        ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                              }
+                          });
 
-        return ['event' => $event, 'statuses' => $statusesResponse];
+        if (auth()->check()) {
+            $statuses->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'));
+        }
+
+        return ['event' => $event, 'statuses' => $statuses->simplePaginate(15)];
     }
 }

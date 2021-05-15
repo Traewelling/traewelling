@@ -3,9 +3,6 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use App\Models\Follow;
-use App\Models\Status;
-use App\Models\User;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -202,28 +199,22 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $this->assertGuest();
         $guest->assertDontSee($this->users->bob->user->username);
 
-        // Can Bob see the statuses of bob on the event page? => no, because we were lazy
-        $bob = $this->actingAs($this->users->bob->user, 'api')
-                    ->json('GET',
-                           route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                    );
-        $bob->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        // Can Bob see the statuses of bob on the event page? => yes
+        $bob = $this->actingAs($this->users->bob->user, 'web')
+                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $bob->assertSee($this->users->bob->user->username);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
-        $alice = $this->actingAs($this->users->alice->user, 'api')
-                      ->json('GET',
-                             route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                      );
-        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice = $this->actingAs($this->users->alice->user, 'web')
+                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $alice->assertDontSee($this->users->bob->user->username);
         $alice->assertSuccessful();
 
-        // Can Gertrud see the statuses of bob on the dashboard? => no, because we were lazy
-        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
-                        ->json('GET',
-                               route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                        );
-        $gertrud->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        // Can Gertrud see the statuses of bob on the dashboard? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
+                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $gertrud->assertSee($this->users->bob->user->username);
         $gertrud->assertSuccessful();
     }
 
