@@ -15,7 +15,6 @@ use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
@@ -118,18 +117,19 @@ class StatusController extends Controller
 
 
     public static function getGlobalDashboard(): Paginator {
-        $follows = Auth::user()->follows()->select('follow_id');
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW'
                             ])
-                     ->whereHas('user', function($query) use ($follows) {
-                         return $query->where('private_profile', false)
-                                      ->orWhere('user_id', Auth::user()->id)
-                                      ->orWhereIn('user_id', $follows);
-                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->join('users', 'statuses.user_id', '=', 'users.id')
+                     ->where(function($query) {
+                         $query->where('users.private_profile', 0)
+                               ->orWhere('users.id', auth()->user()->id)
+                               ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                     })
+                     ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
