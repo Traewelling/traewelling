@@ -147,45 +147,4 @@ class FrontendUserController extends Controller
             'userSearchResponse' => $userSearchResponse
         ]);
     }
-
-    public function muteUser(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'user_id' => [
-                                                'required',
-                                                'exists:users,id',
-                                                Rule::notIn(auth()->user()->mutedUsers->pluck('id'))
-                                            ]
-                                        ]);
-
-        $mutedUser = User::find($validated['user_id']);
-
-        $userMute = UserMute::create([
-                                         'user_id'  => auth()->user()->id,
-                                         'muted_id' => $mutedUser->id
-                                     ]);
-
-        if ($userMute) {
-            return back()->with('success', __('user.muted', ['username' => $mutedUser->username]));
-        }
-        return back()->with('error', __('messages.exception.general'));
-    }
-
-    public function unmuteUser(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'user_id' => [
-                                                'required',
-                                                'exists:users,id',
-                                                Rule::in(auth()->user()->mutedUsers->pluck('id'))
-                                            ]
-                                        ]);
-
-        $mutedUser = User::find($validated['user_id']);
-
-        $queryCount = UserMute::where('user_id', auth()->user()->id)->where('muted_id', $mutedUser->id)->delete();
-
-        if ($queryCount) {
-            return back()->with('success', __('user.unmuted', ['username' => $mutedUser->username]));
-        }
-        return back()->with('error', __('messages.exception.general'));
-    }
 }

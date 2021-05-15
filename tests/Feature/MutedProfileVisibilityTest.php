@@ -3,9 +3,6 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use App\Models\Follow;
-use App\Models\Status;
-use App\Models\User;
 use App\Models\UserMute;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use stdClass;
 use Tests\ApiTestCase;
 
-class mutedProfileVisibilityTest extends ApiTestCase
+class MutedProfileVisibilityTest extends ApiTestCase
 {
     use RefreshDatabase;
 
@@ -258,7 +255,7 @@ class mutedProfileVisibilityTest extends ApiTestCase
         UserController::createFollow($data->gertrud->user, $data->bob->user);
         UserMute::create(['user_id' => $data->alice->user->id, 'muted_id' => $data->bob->user->id]);
         UserMute::create(['user_id' => $data->gertrud->user->id, 'muted_id' => $data->bob->user->id]);
-        
+
         return $data;
 
     }

@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
                          'username'        => 'bob',
                          'name'            => 'Bob from Alice & Bob',
                          'email'           => 'bob@example.com',
-                         'private_profile' => 'true',
+                         'private_profile' => true,
                          'password'        => Hash::make('thisisnotasecurepassword123')
                      ]);
 
