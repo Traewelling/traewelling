@@ -235,15 +235,9 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user                     = $this->createGDPRAckedUser();
-        $data->bob->user->privacy_ack_at     = now();
-        $data->gertrud->user                 = $this->createGDPRAckedUser();
-        $data->gertrud->user->privacy_ack_at = now();
-        $data->alice->user                   = $this->createGDPRAckedUser();
-        $data->alice->user->privacy_ack_at   = now();
-        $data->bob->user->save();
-        $data->gertrud->user->save();
-        $data->alice->user->save();
+        $data->bob->user     = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
+        $data->gertrud->user = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
+        $data->alice->user   = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
 
         // Create new CheckIn for Bob
         $now                = new DateTime("-30min");

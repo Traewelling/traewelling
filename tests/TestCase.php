@@ -21,10 +21,10 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function createGDPRAckedUser(): User {
+    public function createGDPRAckedUser(array $defaultValues = []): User {
 
         // Creates user
-        $user = User::factory()->create();
+        $user = User::factory($defaultValues)->create();
         $this->acceptGDPR($user);
 
         return $user;
