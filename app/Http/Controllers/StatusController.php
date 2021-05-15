@@ -340,10 +340,10 @@ class StatusController extends Controller
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0);
-                              if (auth()->check()) {
-                                  $query->orWhere('users.id', auth()->user()->id)
-                                        ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
-                              }
+                            if (auth()->check()) {
+                                $query->orWhere('users.id', auth()->user()->id)
+                                      ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                            }
                           });
 
         if (auth()->check()) {
