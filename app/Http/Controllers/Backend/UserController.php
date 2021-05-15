@@ -44,5 +44,4 @@ class UserController extends Controller
         $user->load('mutedUsers');
         return $queryCount == 1;
     }
-
 }

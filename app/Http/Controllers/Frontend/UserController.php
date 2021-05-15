@@ -57,5 +57,4 @@ class UserController extends Controller
             return back()->with('error', __('user.already-unmuted', ['username' => $userToBeUnmuted->username]));
         }
     }
-
 }
