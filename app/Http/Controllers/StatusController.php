@@ -336,12 +336,14 @@ class StatusController extends Controller
 
         $statusesResponse = $event->statuses()
                                   ->with('user')
-                                  ->whereHas('user', function($query) {
-                                      //ToDo Not a bug, but a feature
-                                      // This is a hacky implementation to just __not__ show private profiles in events
-                                      // b/c it's just... not worth it.
-                                      return $query->where('private_profile', false);
+                                  ->join('users', 'statuses.user_id', '=', 'users.id')
+                                  ->where(function($query) {
+                                      $query->where('users.private_profile', 0)
+                                            ->orWhere('users.id', auth()->user()->id)
+                                            ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
                                   })
+                                  ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
+                                  ->select('statuses.*')
                                   ->simplePaginate(15);
 
         return ['event' => $event, 'statuses' => $statusesResponse];

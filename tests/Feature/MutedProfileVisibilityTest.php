@@ -38,6 +38,13 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $guest->assertSuccessful();
         $this->assertGuest();
         $guest->assertDontSee(__('user.muted.heading'));
+
+
+        // Can alice see the profile of bob? => no
+        $alice = $this->actingAs($this->users->alice->user, 'web')
+                      ->get(route('account.show', ['username' => $this->users->bob->user->username]));
+        $alice->assertSuccessful();
+        $alice->assertSee(__('user.muted.heading'));
     }
 
     /**
@@ -136,11 +143,11 @@ class MutedProfileVisibilityTest extends ApiTestCase
      * @test
      */
     public function view_status_of_muted_user_on_en_route() {
-        // Can a guest see the statuses of bob on the dashboard? => no
+        // Can a guest see the statuses of bob on the dashboard? => yes
         Auth::logout();
         $guest = $this->get(route('statuses.active'));
         $this->assertGuest();
-        $guest->assertDontSee($this->users->bob->user->username);
+        $guest->assertSee($this->users->bob->user->username);
 
         // Can Bob see the statuses of bob on the dashboard? => yes
         $bob = $this->actingAs($this->users->bob->user, 'api')
@@ -169,34 +176,28 @@ class MutedProfileVisibilityTest extends ApiTestCase
      * @test
      */
     public function view_status_of_muted_user_on_event_pages() {
-        // Can a guest see the statuses of bob on the dashboard? => no
+        // Can a guest see the statuses of bob on the dashboard? => yes
         Auth::logout();
         $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
         $this->assertGuest();
-        $guest->assertDontSee($this->users->bob->user->username);
+        $guest->assertSee($this->users->bob->user->username);
 
-        // Can Bob see the statuses of bob on the event page? => no, because we were lazy
-        $bob = $this->actingAs($this->users->bob->user, 'api')
-                    ->json('GET',
-                           route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                    );
-        $bob->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        // Can Bob see the statuses of bob on the event page? => yes
+        $bob = $this->actingAs($this->users->bob->user, 'web')
+                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $bob->assertSee(["username" => $this->users->bob->user->username]);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
-        $alice = $this->actingAs($this->users->alice->user, 'api')
-                      ->json('GET',
-                             route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                      );
-        $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        $alice = $this->actingAs($this->users->alice->user, 'web')
+                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $alice->assertDontSee(["username" => $this->users->bob->user->username]);
         $alice->assertSuccessful();
 
-        // Can Gertrud see the statuses of bob on the dashboard? => no, because we were lazy
-        $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
-                        ->json('GET',
-                               route('api.v0.statuses.event', ['statusId' => $this->users->bob->checkin['event']['id']])
-                        );
-        $gertrud->assertJsonMissing(["username" => $this->users->bob->user->username]);
+        // Can Gertrud see the statuses of bob on the dashboard? => yes
+        $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
+                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $gertrud->assertDontSee(["username" => $this->users->bob->user->username]);
         $gertrud->assertSuccessful();
     }
 
@@ -214,9 +215,9 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user     = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
-        $data->gertrud->user = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
-        $data->alice->user   = $this->createGDPRAckedUser(['privacy_ack_at' => now()]);
+        $data->bob->user     = $this->createGDPRAckedUser(['name' => 'bob', 'privacy_ack_at' => now()]);
+        $data->gertrud->user = $this->createGDPRAckedUser(['name' => 'gertrud', 'privacy_ack_at' => now()]);
+        $data->alice->user   = $this->createGDPRAckedUser(['name' => 'alice', 'privacy_ack_at' => now()]);
 
         // Create new CheckIn for Bob
         $now                = new DateTime("-30min");

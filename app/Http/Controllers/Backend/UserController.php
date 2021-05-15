@@ -24,6 +24,7 @@ class UserController extends Controller
                                  'user_id'  => $user->id,
                                  'muted_id' => $userToBeMuted->id
                              ]);
+            $user->load('mutedUsers');
             return true;
         } catch (Exception $exception) {
             report($exception);
@@ -40,6 +41,7 @@ class UserController extends Controller
         }
 
         $queryCount = UserMute::where('user_id', $user->id)->where('muted_id', $userToBeUnmuted->id)->delete();
+        $user->load('mutedUsers');
         return $queryCount == 1;
     }
 
