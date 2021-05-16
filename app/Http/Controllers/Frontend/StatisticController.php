@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -19,15 +20,15 @@ class StatisticController extends Controller
         $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
-        $globalStats = \App\Http\Controllers\Backend\StatisticController::getGlobalCheckInStats();
+        $globalStats = StatisticBackend::getGlobalCheckInStats();
 
-        $topCategories = \App\Http\Controllers\Backend\StatisticController::getTopTravelCategoryByUser(
+        $topCategories = StatisticBackend::getTopTravelCategoryByUser(
             auth()->user(), $from, $to
         );
-        $topOperators  = \App\Http\Controllers\Backend\StatisticController::getTopTripOperatorByUser(
+        $topOperators  = StatisticBackend::getTopTripOperatorByUser(
             auth()->user(), $from, $to
         );
-        $travelTime    = \App\Http\Controllers\Backend\StatisticController::getWeeklyTravelTimeByUser(
+        $travelTime    = StatisticBackend::getWeeklyTravelTimeByUser(
             auth()->user(), $from, $to
         );
 
