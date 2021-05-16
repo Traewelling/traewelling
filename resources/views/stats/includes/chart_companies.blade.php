@@ -2,7 +2,7 @@
     <div class="card-body">
         <h5>{{__('stats.companies')}}</h5>
         @if($topOperators->count() > 0)
-            <canvas id="myChart" style="width: 100%; height: 300px;"></canvas>
+            <canvas id="chart_companies" style="width: 100%; height: 300px;"></canvas>
             <hr/>
             <table>
                 @foreach($topOperators as $operator)
@@ -22,7 +22,7 @@
     @parent
     @if($topOperators->count() > 0)
         <script>
-            new Chart(document.getElementById('myChart').getContext('2d'), {
+            new Chart(document.getElementById('chart_companies').getContext('2d'), {
                 type: 'pie',
                 data: {
                     labels: [
