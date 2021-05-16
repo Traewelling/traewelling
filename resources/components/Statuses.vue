@@ -14,17 +14,16 @@
       </p>
     </div>
 
-    <ul v-if="statuses">
-      <li v-for="status in statuses">
-        <strong>ID:</strong> {{ status.id }},
-        <strong>type:</strong> {{ type }}
-      </li>
-    </ul>
+    <div v-if="statuses">
+      <Status v-for="status in statuses" :status="status"></Status>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Status from '../components/Status'
+
 export default {
   data() {
     return {
@@ -33,22 +32,25 @@ export default {
       error: null,
     };
   },
+  components: {
+    Status
+  },
   created() {
     this.fetchData();
   },
   methods: {
     fetchData() {
-      this.error = this.statuses = null;
+      this.error   = this.statuses = null;
       this.loading = true;
       axios
-          .get('/api/statuses')
+          .get('/api/v1/statuses')
           .then(response => {
-            this.loading = false;
-            this.statuses = response.data.statuses;
+            this.loading  = false;
+            this.statuses = response.data.data;
           })
           .catch(error => {
             this.loading = false;
-            this.error = error.response.data.message || error.message;
+            this.error   = error.response.data.message || error.message;
           });
     }
   }
