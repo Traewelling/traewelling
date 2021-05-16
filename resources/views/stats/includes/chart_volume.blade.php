@@ -2,7 +2,7 @@
     <div class="card-body">
         <h5>{{__('stats.volume')}} <small>{{__('stats.per-week')}}</small></h5>
         @if($travelTime->count() > 0)
-            <canvas id="chart_triptime_calendar" style="width: 100%; height: 300px;"></canvas>
+            <canvas id="chart_triptime_calendar"></canvas>
         @else
             <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
