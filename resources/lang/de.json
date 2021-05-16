@@ -387,5 +387,5 @@
     "stats.global.distance": "Reisedistanz aller Träwelling Nutzer",
     "stats.global.duration": "Reisedauer aller Träwelling Nutzer",
     "stats.global.active": "Aktive Träwelling-Nutzer",
-    "stats.global.explain": "Die Globalen Statistiken beziehen sich auf die CheckIns aller Träwelling Nutzer im Zeitraum von :fromDate bis :toDate."
+    "stats.global.explain": "Die globalen Statistiken beziehen sich auf die CheckIns aller Träwelling Nutzer im Zeitraum von :fromDate bis :toDate."
 }
