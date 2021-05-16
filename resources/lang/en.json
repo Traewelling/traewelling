@@ -383,7 +383,7 @@
     "stats.global.distance": "Travel distance of all Träwelling users",
     "stats.global.duration": "Travel time of all Träwelling users",
     "stats.global.active": "Active Träwelling users",
-    "stats.global.explain": "The Global Statistics refer to the CheckIns of all Träwelling users in the period from :fromDate to :toDate.",
+    "stats.global.explain": "The global statistics refer to the check-ins of all Träwelling users in the period from :fromDate to :toDate.",
     "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
     "leaderboard.month.title": "Monthly overview",
     "time-format": "hh:mm a",
