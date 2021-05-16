@@ -371,7 +371,7 @@
     "transport_types.tram": "tram",
     "stats": "Statistics",
     "stats.personal" : "Personal statistics from :fromDate to :toDate",
-    "stats.global" : "Global Statistics",
+    "stats.global" : "Global statistics",
     "stats.companies": "Your favorite transport companies",
     "stats.categories": "Your favorite travel types",
     "stats.volume": "Your travel volume",
