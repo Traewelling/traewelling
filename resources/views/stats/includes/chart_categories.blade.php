@@ -3,7 +3,7 @@
         <h5>{{__('stats.categories')}}</h5>
 
         @if($topCategories->count() > 0)
-            <canvas id="chart_favourite_types" style="width: 100%; height: 300px;"></canvas>
+            <canvas id="chart_favourite_types"></canvas>
             <hr/>
             <table>
                 @foreach($topCategories as $category)
