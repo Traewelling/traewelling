@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Welcome from './components/Welcome';
 import Statuses from './components/Statuses';
 import Status from "./components/Status";
 
@@ -12,13 +11,8 @@ export const router = new VueRouter({
         [
             {
                 path: '/',
-                component: Welcome,
-                name: 'welcome',
-            },
-            {
-                path: '/statuses',
                 component: Statuses,
-                name: 'statuses.active'
+                name: 'statuses.active',
             },
             {
                 path: '/status/:id',

@@ -44,25 +44,25 @@
             <p class="train-status text-muted">
               <span>
                 <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
-                   :src="`/img/${status.train.category}.svg`">
+                     :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
                 <i v-else class="fa fa-train d-inline"></i>
                 {{ status.train.linename }}
               </span>
               <span class="ps-2">
                 <i class="fa fa-route d-inline"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
               </span>
-<!--              ToDo: This should be properly rendered in sth. like moment.js-->
+              <!--              ToDo: This should be properly rendered in sth. like moment.js-->
               <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}</span>
-<!--                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}-->
+              <!--                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}-->
               <span v-if="status.business === 1" class="pl-sm-2">
                                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
-                                   <!--title="{{ __('stationboard.business.business') }}"-->
+                <!--title="{{ __('stationboard.business.business') }}"-->
                             </span>
               <span v-else-if="status.business === 2" class="pl-sm-2">
                                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
-<!--                                   title="{{ __('stationboard.business.commute') }}">-->
+                <!--                                   title="{{ __('stationboard.business.commute') }}">-->
                             </span>
-              <div v-if="status.event != null">
+            <div v-if="status.event != null">
               <span class="pl-sm-2">
                                 <i class="fa fa-calendar-day"></i>
                                 <a :href="`/event/${status.event.slug}`">
@@ -70,39 +70,39 @@
                                 </a>
                             </span>
 
-              </div>
+            </div>
             </p>
 
 
             <p v-if="status.body !== ''" class="status-body"><i class="fas fa-quote-right"></i> {{ status.body }}</p>
 
 
-<!--            @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())-->
-<!--            <p class="text-muted font-italic">-->
-<!--              {{ __('stationboard.next-stop') }}-->
-<!--              {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}-->
-<!--            </p>-->
-<!--            @endif-->
+            <!--            @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())-->
+            <!--            <p class="text-muted font-italic">-->
+            <!--              {{ __('stationboard.next-stop') }}-->
+            <!--              {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}-->
+            <!--            </p>-->
+            <!--            @endif-->
           </li>
           <li>
             <i>&nbsp;</i>
             <span class="text-trwl float-end">
 <!--              ToDo: Fix this mess-->
-<!--                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)-->
-<!--                            <small style="text-decoration: line-through;" class="text-muted">-->
-<!--                                {{-->
-<!--                                $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format'))-->
-<!--                              }}-->
-<!--                            </small>-->
-<!--                            &nbsp;-->
-<!--                            {{-->
-<!--                $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format'))-->
-<!--              }}-->
-<!--                        @else-->
-<!--                            {{-->
-<!--                $status->trainCheckin ?->destination_stopover ?->arrival ?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format'))-->
-<!--              }}-->
-<!--                        @endif-->
+              <!--                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)-->
+              <!--                            <small style="text-decoration: line-through;" class="text-muted">-->
+              <!--                                {{-->
+              <!--                                $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format'))-->
+              <!--                              }}-->
+              <!--                            </small>-->
+              <!--                            &nbsp;-->
+              <!--                            {{-->
+              <!--                $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format'))-->
+              <!--              }}-->
+              <!--                        @else-->
+              <!--                            {{-->
+              <!--                $status->trainCheckin ?->destination_stopover ?->arrival ?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format'))-->
+              <!--              }}-->
+              <!--                        @endif-->
 
               {{ moment(status.train.arrival).format('LT') }}
                     </span>
@@ -119,80 +119,80 @@
           role="progressbar"
           v-bind:style="{width: percentage + '%'}"
       ></div>
-  </div>
+    </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
 <!--            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
             <a :href="`/profile/${status.username}`">
 <!--                @if(auth()?->user()?->id == $status->user_id)-->
-<!--                    {{ __('user.you') }}-->
-<!--                @else-->
+              <!--                    {{ __('user.you') }}-->
+              <!--                @else-->
                     {{ status.username }}
-<!--                @endif-->
+              <!--                @endif-->
             </a>
-<!--          {{ __('dates.-on-') }}-->
+          <!--          {{ __('dates.-on-') }}-->
             <router-link :to="{ name: 'status', params: {id: status.id}}">
                 {{ moment(status.created_at).fromNow() }}
             </router-link>
         </span>
       <ul class="list-inline">
-<!--        @auth-->
-<!--        <li class="-->
-<!--                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"-->
-<!--            id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">-->
-<!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-<!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
-<!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
-<!--          </a>-->
-<!--        </li>-->
+        <!--        @auth-->
+        <!--        <li class="-->
+        <!--                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"-->
+        <!--            id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">-->
+        <!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
+        <!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
+        <!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
+        <!--          </a>-->
+        <!--        </li>-->
 
-<!--        <li class="list-inline-item like-text">-->
-<!--                    <span-->
-<!--                        class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"-->
-<!--                        data-statusid="{{ $status->id }}"></span>-->
-<!--          <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"-->
-<!--                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>-->
-<!--        </li>-->
-<!--        @if(auth()->user()->id == $status->user_id)-->
-<!--        <li class="list-inline-item like-text">-->
-<!--          <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>-->
-<!--        </li>-->
+        <!--        <li class="list-inline-item like-text">-->
+        <!--                    <span-->
+        <!--                        class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"-->
+        <!--                        data-statusid="{{ $status->id }}"></span>-->
+        <!--          <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"-->
+        <!--                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>-->
+        <!--        </li>-->
+        <!--        @if(auth()->user()->id == $status->user_id)-->
+        <!--        <li class="list-inline-item like-text">-->
+        <!--          <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>-->
+        <!--        </li>-->
 
-<!--        <li class="list-inline-item like-text">-->
-<!--          <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>-->
-<!--        </li>-->
-<!--        @endif-->
-<!--        @else-->
-<!--        <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">-->
-<!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-<!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
-<!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
-<!--          </a>-->
-<!--        </li>-->
-<!--        @endauth-->
+        <!--        <li class="list-inline-item like-text">-->
+        <!--          <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>-->
+        <!--        </li>-->
+        <!--        @endif-->
+        <!--        @else-->
+        <!--        <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">-->
+        <!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
+        <!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
+        <!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
+        <!--          </a>-->
+        <!--        </li>-->
+        <!--        @endauth-->
       </ul>
     </div>
 
-<!--    <div v-if="isSingleStatus" v-for="[] as likes" class="card-footer text-muted clearfix">-->
-<!--      <div class="col-xs-2">-->
-<!--        <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
-<!--          <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"-->
-<!--               class="profile-image float-left" alt="{{__('settings.picture')}}">-->
-<!--        </a>-->
-<!--      </div>-->
-<!--      <div class="col-xs-10">-->
-<!--                <span class="like-text pl-2 d-table-cell">-->
-<!--                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
-<!--                        {{ $like->user->username }}-->
-<!--                    </a>-->
-<!--                    @if($like->user == $status->user)-->
-<!--                        {{ __('user.liked-own-status') }}-->
-<!--                    @else-->
-<!--                        {{ __('user.liked-status') }}-->
-<!--                    @endif-->
-<!--                </span>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div v-if="isSingleStatus" v-for="[] as likes" class="card-footer text-muted clearfix">-->
+    <!--      <div class="col-xs-2">-->
+    <!--        <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
+    <!--          <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"-->
+    <!--               class="profile-image float-left" alt="{{__('settings.picture')}}">-->
+    <!--        </a>-->
+    <!--      </div>-->
+    <!--      <div class="col-xs-10">-->
+    <!--                <span class="like-text pl-2 d-table-cell">-->
+    <!--                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
+    <!--                        {{ $like->user->username }}-->
+    <!--                    </a>-->
+    <!--                    @if($like->user == $status->user)-->
+    <!--                        {{ __('user.liked-own-status') }}-->
+    <!--                    @else-->
+    <!--                        {{ __('user.liked-status') }}-->
+    <!--                    @endif-->
+    <!--                </span>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 
 </template>
@@ -253,20 +253,20 @@ export default {
     }
   },
   computed: {
-    status: function() {
+    status: function () {
       if (this.isSingleStatus) {
         return this.status_api;
       }
       return this.$props.status_data;
     },
-    duration: function() {
+    duration: function () {
       const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
-      let minutes = duration % 60;
-      let hours   = Math.floor(duration / 60);
+      let minutes    = duration % 60;
+      let hours      = Math.floor(duration / 60);
 
       return hours + "h " + minutes + "m";
     },
-    percentage: function() {
+    percentage: function () {
       const start = moment(this.status.train.departure);
       const end   = moment(this.status.train.arrival);
       const now   = moment();
@@ -292,7 +292,7 @@ export default {
       axios
           .get('/api/v1/statuses/' + this.$route.params.id)
           .then(response => {
-            this.loading  = false;
+            this.loading    = false;
             this.status_api = response.data.data;
           })
           .catch(error => {
