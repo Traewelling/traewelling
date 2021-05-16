@@ -26,7 +26,7 @@ class StatusResource extends JsonResource
                 'trip' => (int) $this->trainCheckin->HafasTrip->id,
                 'category' => (string) $this->trainCheckin->HafasTrip->category,
                 'number' => (string) $this->trainCheckin->HafasTrip->number,
-                'linenumber' => (string) $this->trainCheckin->HafasTrip->linenumber,
+                'linename' => (string) $this->trainCheckin->HafasTrip->linename,
                 'distance' => (float) $this->trainCheckin->distance,
                 'points' => (int) $this->trainCheckin->points,
                 'departure' => (string) $this->trainCheckin->departure,
@@ -39,7 +39,7 @@ class StatusResource extends JsonResource
                 'destination' => (int) $this->trainCheckin->Destination->id,
                 'destination_name' => (string) $this->trainCheckin->Destination->name,
             ],
-            'event' => $this->event
+            'event' => empty($this->event) ? null : $this->event
         ];
     }
 }

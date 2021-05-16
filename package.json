@@ -35,6 +35,7 @@
         "font-awesome": "^4.7.0",
         "leaflet": "^1.7.1",
         "mdb-ui-kit": "^3.4.0",
+        "moment": "^2.29.1",
         "momentjs": "^2.0.0",
         "vue-router": "^3.5.1"
     }

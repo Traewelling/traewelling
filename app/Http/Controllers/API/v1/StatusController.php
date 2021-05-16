@@ -20,4 +20,16 @@ class StatusController
                                                            'event'
                                                        ])->paginate(10));
     }
+
+    public function show($id) {
+        return new StatusResource(Status::with([
+                                                           'likes',
+                                                           'user',
+                                                           'trainCheckin.Origin',
+                                                           'trainCheckin.Destination',
+                                                           'trainCheckin.HafasTrip.getPolyLine',
+                                                           'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                                           'event'
+                                                       ])->where('id', $id)->first());
+    }
 }

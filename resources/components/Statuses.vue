@@ -1,5 +1,6 @@
 <template>
-  <div class="statuses">
+  <div class="row justify-content-center">
+  <div class="col-md-8 col-lg-7">
     <div class="loading" v-if="loading">
       Loading...
     </div>
@@ -15,8 +16,9 @@
     </div>
 
     <div v-if="statuses">
-      <Status v-for="status in statuses" :status="status"></Status>
+      <Status v-for="status in statuses" :status_data="status"></Status>
     </div>
+  </div>
   </div>
 </template>
 

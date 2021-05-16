@@ -1,9 +1,10 @@
 <template>
-  <div class="card status mt-3" :id="`status-${status.id}`" :data-trwl-status-body="status.body"
+  <div class="card status mt-3"
+       v-if="status"
+       :id="`status-${status.id}`"
+       :data-trwl-status-body="status.body"
        :data-date="status.train.departure"
-       :data-trwl-business-id="status.business"
-  >
-
+       :data-trwl-business-id="status.business">
     <div class="card-img-top" v-if="isSingleStatus">
       <div :id="`map-${status.id}`" class="map statusMap embed-responsive embed-responsive-16by9"
            :data-polygon="status.train"></div>
@@ -20,7 +21,6 @@
       <div class="col ps-0">
         <ul class="timeline">
           <li>
-            <!-- ToDo: Is this i-tag necessary? -->
             <i>&nbsp;</i>
             <span class="text-trwl float-end">
 <!--              ToDo: fix this mess-->
@@ -36,7 +36,7 @@
               <!--                $status->trainCheckin ?->origin_stopover ?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format'))-->
               <!--              }}-->
               <!--                        @endif-->
-              {{ status.train.departure }}
+              {{ moment(status.train.departure).format('LT') }}
                     </span>
             <!--            ToDo: Add router-url, add better station-shit (like the helper method)-->
             <a :href="`/trains/stationboard?provider=train&station=${status.train.origin_name}`"
@@ -52,9 +52,8 @@
                 <i class="fa fa-route d-inline"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
               </span>
 <!--              ToDo: This should be properly rendered in sth. like moment.js-->
-              <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ status.train.duration*60 }}</span>
+              <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}</span>
 <!--                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}-->
-
               <span v-if="status.business === 1" class="pl-sm-2">
                                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
                                    <!--title="{{ __('stationboard.business.business') }}"-->
@@ -63,15 +62,12 @@
                                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
 <!--                                   title="{{ __('stationboard.business.commute') }}">-->
                             </span>
-
-
-              <div v-if="status.event !== null">
-              <br/>
+              <div v-if="status.event != null">
               <span class="pl-sm-2">
                                 <i class="fa fa-calendar-day"></i>
-<!--                                <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">-->
-<!--                                    {{ $status->event->name }}-->
-<!--                                </a>-->
+                                <a :href="`/event/${status.event.slug}`">
+                                    {{ status.event.name }}
+                                </a>
                             </span>
 
               </div>
@@ -89,7 +85,8 @@
 <!--            @endif-->
           </li>
           <li>
-<!--            <span class="text-trwl float-end">-->
+            <i>&nbsp;</i>
+            <span class="text-trwl float-end">
 <!--              ToDo: Fix this mess-->
 <!--                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)-->
 <!--                            <small style="text-decoration: line-through;" class="text-muted">-->
@@ -106,25 +103,22 @@
 <!--                $status->trainCheckin ?->destination_stopover ?->arrival ?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format'))-->
 <!--              }}-->
 <!--                        @endif-->
-<!--                    </span>-->
-<!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
 
-              {{ status.train.destination_name }}
+              {{ moment(status.train.arrival).format('LT') }}
+                    </span>
+            <!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
+            <a :href="`/trains/stationboard?provider=train&station=${status.train.destination_name}`"
+               class="text-trwl clearfix">{{ status.train.destination_name }}</a>
           </li>
         </ul>
       </div>
     </div>
     <div class="progress">
       <div
-          class="progress-bar progress-time"
+          class="progress-bar"
           role="progressbar"
-          style="width: 0"
-          :data-valuenow="new Date()"
-          :data-valuemin="status.train.departure"
-          :data-valuemax="status.train.arrival"
+          v-bind:style="{width: percentage + '%'}"
       ></div>
-      <!--          data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"-->
-      <!--          data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"-->
   </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
@@ -137,9 +131,9 @@
 <!--                @endif-->
             </a>
 <!--          {{ __('dates.-on-') }}-->
-            <a :href="`/status/${status.id}`">
-                {{ status.created_at }}
-            </a>
+            <router-link :to="{ name: 'status', params: {id: status.id}}">
+                {{ moment(status.created_at).fromNow() }}
+            </router-link>
         </span>
       <ul class="list-inline">
 <!--        @auth-->
@@ -204,40 +198,107 @@
 </template>
 
 <script>
+import axios from "axios";
+import moment from "moment";
+
 export default {
   name: "Status.vue",
-  props: ['status'],
   data() {
     return {
-      isSingleStatus: false,
+      moment: moment,
+      isSingleStatus: !!this.$route.params.id,
       categories: ["bus", "suburban", "subway", "tram"],
-      status: {
+      status_api: null,
+      loading: false,
+      error: false
+    }
+  },
+  props: {
+    status_data: {
+      id: 0,
+      body: '',
+      type: '',
+      created_at: '',
+      user: 0,
+      username: '',
+      business: 0,
+      train: {
+        trip: 0,
+        category: '',
+        number: '',
+        linename: null,
+        distance: 0,
+        points: 0,
+        departure: '',
+        arrival: '',
+        delay: null,
+        duration: 0,
+        speed: 0,
+        origin: 0,
+        origin_name: '',
+        destination: 0,
+        destination_name: ''
+      },
+      event: {
         id: 0,
-        body: '',
-        type: '',
-        created_at: '',
-        user: 0,
-        username: '',
-        business: 0,
-        train: {
-          trip: 0,
-          category: '',
-          number: '',
-          linenumber: null,
-          distance: 0,
-          points: 0,
-          departure: '',
-          arrival: '',
-          delay: null,
-          duration: 0,
-          speed: 0,
-          origin: 0,
-          origin_name: '',
-          destination: 0,
-          destination_name: ''
-        },
-        event: null
+        name: '',
+        slug: '',
+        hashtag: '',
+        host: '',
+        url: '',
+        begin: '',
+        end: '',
+        trainstation: 0
       }
+    }
+  },
+  computed: {
+    status: function() {
+      if (this.isSingleStatus) {
+        return this.status_api;
+      }
+      return this.$props.status_data;
+    },
+    duration: function() {
+      const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
+      let minutes = duration % 60;
+      let hours   = Math.floor(duration / 60);
+
+      return hours + "h " + minutes + "m";
+    },
+    percentage: function() {
+      const start = moment(this.status.train.departure);
+      const end   = moment(this.status.train.arrival);
+      const now   = moment();
+      //ToDo: Add delays
+      if (now < start) {
+        return 0;
+      } else if (now > end) {
+        return 100;
+      } else {
+        return 100 * ((now - start) / (end - start));
+      }
+    }
+  },
+  created() {
+    if (this.isSingleStatus) {
+      this.fetchData();
+    }
+  },
+  methods: {
+    fetchData() {
+      this.error   = null;
+      this.loading = true;
+      axios
+          .get('/api/v1/statuses/' + this.$route.params.id)
+          .then(response => {
+            this.loading  = false;
+            this.status_api = response.data.data;
+          })
+          .catch(error => {
+            this.loading = false;
+            this.error   = error.response.data.message || error.message;
+          });
     }
   }
 }

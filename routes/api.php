@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('statuses', [StatusController::class, 'enRoute']);
+    Route::get('statuses/{id}', [StatusController::class, 'show']);
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {

@@ -27,6 +27,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
+     ->name('account.showProfilePicture');
+
 Route::get('/{view?}', [FrontendStaticController::class, 'landingVue'])->where('view', '(.*)')->name('landing');
 
 //Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
@@ -40,9 +44,6 @@ Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
 
 Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('account.show');
-
-Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
-     ->name('account.showProfilePicture');
 
 Route::get('/leaderboard', [FrontendUserController::class, 'getLeaderboard'])
      ->name('leaderboard');
