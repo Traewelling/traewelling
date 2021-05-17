@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
+use App\Models\UserMute;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
@@ -76,10 +78,12 @@ class FrontendUserController extends Controller
 
         try {
             $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
-        } catch(AlreadyFollowingException) {
+        } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-already-exists')], 409);
         }
-        if ($createFollowResponse == false) { abort(409); }
+        if ($createFollowResponse == false) {
+            abort(409);
+        }
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
 
@@ -94,14 +98,17 @@ class FrontendUserController extends Controller
 
         $userToFollow = User::find($validated['follow_id']);
 
-        try{
+        try {
             $createFollowResponse = UserBackend::requestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-request-already-exists')], 409);
         }
-        if ($createFollowResponse === false) { abort(409); }
+        if ($createFollowResponse === false) {
+            abort(409);
+        }
         return response()->json(['message' => __('controller.user.follow-request-ok')], 201);
     }
+
     /**
      * @param Request $request
      * @return JsonResponse
@@ -129,7 +136,7 @@ class FrontendUserController extends Controller
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
 
-            if($userSearchResponse->count() == 1) {
+            if ($userSearchResponse->count() == 1) {
                 return redirect()->route('account.show', ['username' => $userSearchResponse->first()->username]);
             }
         } catch (HttpException) {

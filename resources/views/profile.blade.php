@@ -21,6 +21,26 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
+
+                        @if(auth()->user()->mutedUsers->contains('id', $user->id))
+                            <form style="display: inline;" method="POST" action="{{route('user.unmute')}}">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{$user->id}}"/>
+                                <button type="submit" class="btn btn-sm btn-primary" data-mdb-toggle="tooltip"
+                                        title="{{ __('user.unmute-tooltip') }}">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </form>
+                        @else
+                            <form style="display: inline;" method="POST" action="{{route('user.mute')}}">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{$user->id}}"/>
+                                <button type="submit" class="btn btn-sm btn-primary" data-mdb-toggle="tooltip"
+                                        title="{{ __('user.mute-tooltip') }}">
+                                    <i class="far fa-eye-slash"></i>
+                                </button>
+                            </form>
+                        @endif
                     @endauth
                 </h2>
                 <h2>
@@ -48,7 +68,6 @@
             </div>
         </div>
     </div>
-    @include('includes.message-block')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
@@ -57,7 +76,20 @@
         </div>
 
         <div class="row justify-content-center">
-            @if($user->userInvisibleToMe)
+            @if(auth()->check() && auth()->user()->mutedUsers->contains('id', $user->id))
+                <div class="col-md-8 col-lg-7 text-center mb-5">
+                    <header><h3>{{__('user.muted.heading')}}</h3></header>
+                    <h5>{{__('user.muted.text', ["username" => $user->username])}}</h5>
+
+                    <form method="POST" action="{{route('user.unmute')}}">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{$user->id}}"/>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="far fa-eye"></i> {{ __('user.unmute-tooltip') }}
+                        </button>
+                    </form>
+                </div>
+            @elseif($user->userInvisibleToMe)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5>{{__('profile.private-profile-information-text', ["username" => $user->username, "request" => __('profile.follow_req')])}}</h5>
