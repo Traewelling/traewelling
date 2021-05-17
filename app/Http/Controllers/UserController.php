@@ -159,17 +159,12 @@ class UserController extends Controller
                                                 'trainCheckin.HafasTrip',
                                                 'event')->orderBy('created_at', 'DESC')->paginate(15);
         }
-
-
-        $twitterUrl  = $user->twitterUrl;
-        $mastodonUrl = $user->mastodonUrl;
-
         $user->unsetRelation('socialProfile');
 
         return [
             'username'    => $username,
-            'twitterUrl'  => $twitterUrl,
-            'mastodonUrl' => $mastodonUrl,
+            'twitterUrl'  => $user->twitterUrl,
+            'mastodonUrl' => $user->mastodonUrl,
             'statuses'    => $statuses,
             'user'        => $user
         ];
