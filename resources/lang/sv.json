@@ -221,7 +221,7 @@
     "events.past": "Tidigare Evenemang",
     "dates.decimal_point": ",",
     "stationboard.check-business": "Affärsresa",
-    "transport_types.businessPlural": "",
+    "transport_types.businessPlural": "Affärsresor",
     "settings.delete-profile-picture-desc": "Du vill radera din profilbild. Denna åtgärd är <strong>irreversibel</strong>. Är du säker?",
     "settings.delete-account": "Radera konto",
     "settings.delete-profile-picture-no": "Tillbaka",
