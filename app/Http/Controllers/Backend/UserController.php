@@ -13,6 +13,9 @@ class UserController extends Controller
 {
 
     /**
+     * @param User $user
+     * @param User $userToBeMuted
+     * @return bool
      * @throws UserAlreadyMutedException
      */
     public static function muteUser(User $user, User $userToBeMuted): bool {
@@ -33,6 +36,9 @@ class UserController extends Controller
     }
 
     /**
+     * @param User $user
+     * @param User $userToBeUnmuted
+     * @return bool
      * @throws UserNotMutedException
      */
     public static function unmuteUser(User $user, User $userToBeUnmuted): bool {
