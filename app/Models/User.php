@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
+use Mastodon;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -32,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'prevent_index'     => 'boolean',
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl'
     ];
 
     public function getAverageSpeedAttribute(): float {
@@ -108,4 +112,47 @@ class User extends Authenticatable implements MustVerifyEmail
             );
     }
 
+    public function getTwitterUrlAttribute(): ?string {
+        $twitterUrl = null;
+        if ($this->socialProfile != null
+            && !empty($this->socialProfile->twitter_token)
+            && !empty($this->socialProfile->twitter_tokenSecret)) {
+            try {
+                $connection = new TwitterOAuth(
+                    config('trwl.twitter_id'),
+                    config('trwl.twitter_secret'),
+                    $this->socialProfile->twitter_token,
+                    $this->socialProfile->twitter_tokenSecret
+                );
+
+                $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
+                $twitterUrl = "https://twitter.com/" . $getInfo->screen_name;
+            } catch (Exception $exception) {
+                // The big whale time or $user has removed the api rights but has not told us yet.
+                Log::warning($exception);
+            }
+        }
+        return $twitterUrl;
+    }
+
+    public function getMastodonUrlAttribute(): ?string {
+        $mastodonUrl = null;
+        if ($this->socialProfile != null) {
+            try {
+                $mastodonServer = MastodonServer::where('id', $this->socialProfile->mastodon_server)->first();
+                if ($mastodonServer != null) {
+                    $mastodonDomain      = $mastodonServer->domain;
+                    $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
+                                                   ->token($this->socialProfile->mastodon_token)
+                                                   ->get("/accounts/" . $this->socialProfile->mastodon_id);
+                    $mastodonUrl         = $mastodonAccountInfo["url"];
+                }
+            } catch (Exception $exception) {
+                // The connection might be broken, or the instance is down, or $user has removed the api rights
+                // but has not told us yet.
+                Log::warning($exception);
+            }
+        }
+        return $mastodonUrl;
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Follow;
 use App\Models\IcsToken;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -31,7 +30,7 @@ class UsersTableSeeder extends Seeder
                          'username'        => 'bob',
                          'name'            => 'Bob from Alice & Bob',
                          'email'           => 'bob@example.com',
-                         'private_profile' => 'true',
+                         'private_profile' => true,
                          'password'        => Hash::make('thisisnotasecurepassword123')
                      ]);
 
