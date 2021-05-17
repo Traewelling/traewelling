@@ -372,5 +372,6 @@
     "dateformat.month-and-year": "MMMM YYYY",
     "datetime-format": "DD.MM.YYYY HH:mm",
     "time-format": "HH:mm",
-    "time-format.with-day": "HH:mm (DD.MM.YYYY)"
+    "time-format.with-day": "HH:mm (DD.MM.YYYY)",
+    "leaderboard.month.title": "Monatsiwwersichd"
 }
