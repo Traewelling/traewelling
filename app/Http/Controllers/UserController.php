@@ -159,53 +159,12 @@ class UserController extends Controller
                                                 'trainCheckin.HafasTrip',
                                                 'event')->orderBy('created_at', 'DESC')->paginate(15);
         }
-
-
-        $twitterUrl  = "";
-        $mastodonUrl = "";
-
-
-        if ($user->socialProfile != null) {
-            try {
-                $mastodonServer = MastodonServer::where('id', $user->socialProfile->mastodon_server)->first();
-                if ($mastodonServer != null) {
-                    $mastodonDomain      = $mastodonServer->domain;
-                    $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
-                                                   ->token($user->socialProfile->mastodon_token)
-                                                   ->get("/accounts/" . $user->socialProfile->mastodon_id);
-                    $mastodonUrl         = $mastodonAccountInfo["url"];
-                }
-            } catch (Exception) {
-                // The connection might be broken, or the instance is down, or $user has removed the api rights
-                // but has not told us yet.
-            }
-        }
-
-        if ($user->socialProfile != null) {
-            if (!empty($user->socialProfile->twitter_token) && !empty($user->socialProfile->twitter_tokenSecret)) {
-                try {
-                    $connection = new TwitterOAuth(
-                        config('trwl.twitter_id'),
-                        config('trwl.twitter_secret'),
-                        $user->socialProfile->twitter_token,
-                        $user->socialProfile->twitter_tokenSecret
-                    );
-
-                    $getInfo    = $connection->get('users/show', ['user_id' => $user->socialProfile->twitter_id]);
-                    $twitterUrl = "https://twitter.com/" . $getInfo->screen_name;
-                } catch (Exception $e) {
-                    // The big whale time or $user has removed the api rights but has not told us yet.
-                }
-            }
-        }
-
-
         $user->unsetRelation('socialProfile');
 
         return [
             'username'    => $username,
-            'twitterUrl'  => $twitterUrl,
-            'mastodonUrl' => $mastodonUrl,
+            'twitterUrl'  => $user->twitterUrl,
+            'mastodonUrl' => $user->mastodonUrl,
             'statuses'    => $statuses,
             'user'        => $user
         ];
