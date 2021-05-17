@@ -11,13 +11,19 @@
                     <div class="text-center">
                         <div class="btn-group" role="group">
                             <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->subMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                               title="{{__('stationboard.minus-15')}}" class="btn btn-light btn-rounded"><i
-                                        class="fas fa-arrow-circle-left"></i></a>
+                               title="{{__('stationboard.minus-15')}}"
+                               class="btn btn-light">
+                                <i class="fas fa-arrow-circle-left"></i>
+                            </a>
                             <a href="#" id="timepicker-reveal" title="{{__('stationboard.dt-picker')}}"
-                               class="btn btn-light btn-rounded c-datepicker-btn"><i class="fas fa-clock"></i></a>
+                               class="btn btn-light btn-rounded c-datepicker-btn">
+                                <i class="fas fa-clock"></i>
+                            </a>
                             <a href="{{ route('trains.stationboard', ['provider' => $request->provider, 'station' => $station->name, 'when' => $when->clone()->addMinutes(15)->toIso8601String(), 'travelType' => $request->travelType]) }}"
-                               title="{{__('stationboard.plus-15')}}" class="btn btn-light btn-rounded"><i
-                                        class="fas fa-arrow-circle-right"></i></a>
+                               title="{{__('stationboard.plus-15')}}"
+                               class="btn btn-light">
+                                <i class="fas fa-arrow-circle-right"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="text-center mt-4">
@@ -40,7 +46,9 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-end">
-                            <a href="{{ route('user.setHome', ['ibnr' => $station->ibnr]) }}"><i class="fa fa-home"></i></a>
+                            <a href="{{ route('user.setHome', ['ibnr' => $station->ibnr]) }}">
+                                <i class="fa fa-home"></i>
+                            </a>
                         </div>
                         {{ $station->name }}
                         <small>
@@ -66,6 +74,7 @@
                                         <th>{{__('stationboard.dep-time')}}</th>
                                     </tr>
                                 </thead>
+                                <tbody>
                                 @foreach($departures as $departure)
                                     <tr @if(!isset($departure->cancelled)) class="trainrow"
                                         @endif data-tripID="{{ $departure->tripId }}"
@@ -90,17 +99,21 @@
                                         <td>{{ $departure->direction }}</td>
                                         <td>
                                             @if(isset($departure->cancelled))
-                                                <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span>
+                                                <span class="text-danger">
+                                                    {{ __('stationboard.stop-cancelled') }}
+                                                </span>
                                             @else
                                                 {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
                                                 @if(isset($departure->delay))
-                                                    <small>(<span
-                                                                class="traindelay">+{{ $departure->delay / 60 }}</span>)</small>
+                                                    <small>(<span class="traindelay">
+                                                            +{{ $departure->delay / 60 }}
+                                                        </span>)</small>
                                                 @endif
                                             @endif
                                         </td>
                                     </tr>
                                 @endforeach
+                                </tbody>
                             </table>
                         @endif
                     </div>

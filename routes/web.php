@@ -237,4 +237,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
+
+    Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
+         ->name('user.mute');
+    Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
+         ->name('user.unmute');
 });

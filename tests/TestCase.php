@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\TransportController;
 use App\Models\Event;
@@ -11,7 +12,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use DateInterval;
 use DateTime;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use JetBrains\PhpStorm\ArrayShape;
@@ -21,10 +21,8 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function createGDPRAckedUser(): User {
-
-        // Creates user
-        $user = User::factory()->create();
+    public function createGDPRAckedUser(array $defaultValues = []): User {
+        $user = User::factory($defaultValues)->create();
         $this->acceptGDPR($user);
 
         return $user;
@@ -88,17 +86,19 @@ abstract class TestCase extends BaseTestCase
      * @param User|null $user
      * @param bool|null $forEvent
      * @return array|null
-     * @throws \App\Exceptions\HafasException
+     * @throws HafasException
      */
-    #[ArrayShape(['success' => "bool",
-                  'statusId' => "int",
-                  'points' => "int",
-                  'alsoOnThisConnection' => "\Illuminate\Support\Collection",
-                  'lineName' => "string",
-                  'distance' => "float",
-                  'duration' => "float",
-                  'event' => "mixed"])]
-    protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent=null): ?array {
+    #[ArrayShape([
+        'success'              => "bool",
+        'statusId'             => "int",
+        'points'               => "int",
+        'alsoOnThisConnection' => "\Illuminate\Support\Collection",
+        'lineName'             => "string",
+        'distance'             => "float",
+        'duration'             => "float",
+        'event'                => "mixed"
+    ])]
+    protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent = null): ?array {
         if ($user == null) {
             $user = $this->user;
         }
@@ -114,7 +114,7 @@ abstract class TestCase extends BaseTestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0) {
+               || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
@@ -134,22 +134,24 @@ abstract class TestCase extends BaseTestCase
         if ($forEvent != null) {
             try {
                 $eventId = Event::firstOrFail()->id;
-            } catch(ModelNotFoundException) {
+            } catch (ModelNotFoundException) {
                 $this->markTestSkipped("No event found even though required");
             }
         }
 
         // WHEN: User tries to check-in
         try {
-            return TransportController::TrainCheckin($trip['train']['trip_id'],
-                                                     $trip['stopovers'][0]['stop']['id'],
-                                                     end($trip['stopovers'])['stop']['id'],
-                                                     '',
-                                                     $user,
-                                                     0,
-                                                     0,
-                                                     0,
-                                                     $eventId);
+            return TransportController::TrainCheckin(
+                tripId: $trip['train']['trip_id'],
+                start: $trip['stopovers'][0]['stop']['id'],
+                destination: end($trip['stopovers'])['stop']['id'],
+                body: '',
+                user: $user,
+                businessCheck: 0,
+                tweetCheck: 0,
+                tootCheck: 0,
+                eventId: $eventId
+            );
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
         } catch (CheckInCollisionException) {

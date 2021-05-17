@@ -387,5 +387,14 @@
     "stats.global.distance": "Reisedistanz aller Träweller",
     "stats.global.duration": "Reisedauer aller Träweller",
     "stats.global.active": "Aktive Träweller",
-    "stats.global.explain": "Die globalen Statistiken beziehen sich auf die CheckIns aller Träweller im Zeitraum von :fromDate bis :toDate."
+    "stats.global.explain": "Die globalen Statistiken beziehen sich auf die CheckIns aller Träweller im Zeitraum von :fromDate bis :toDate.",
+    "user.mute-tooltip": "Benutzer stummschalten",
+    "user.muted": "Du hast den Benutzer :username stummgeschaltet.",
+    "user.already-muted": "Der Benutzer :username ist bereits stummgeschaltet.",
+    "user.muted.heading": "Benutzer stummgeschaltet",
+    "user.muted.heading2": "Stummgeschaltete Benutzer",
+    "user.muted.text": "Du kannst die Check-Ins von :username nicht sehen, da du diesen Benutzer stummgeschaltet hast.",
+    "user.unmuted": "Du hast die Stummschaltung des Benutzers :username aufgehoben.",
+    "user.already-unmuted": "Der Benutzer :username ist nicht stummgeschaltet.",
+    "user.unmute-tooltip": "Benutzer nicht mehr stummschalten"
 }

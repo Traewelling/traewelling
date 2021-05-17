@@ -155,7 +155,7 @@
     "notifications.socialNotShared.twitter.401": "Twitter nous a envoyé une erreur <code>401 Unauthorized</code> en twittant ton enregistrement. Peut-être qu’il faut connecter Twitter à nouveau avec Träwelling ?",
     "settings.create-ics-token": "Crée un nouveau partage",
     "admin.statuses": "enregistrements",
-    "stationboard.arr": "à",
+    "stationboard.arr": "arr",
     "dates.Wednesday": "mercredi",
     "stationboard.position-unavailable": "Ta position n’a pas pu être déterminée !",
     "messages.exception.generalHafas": "Il y a eu un problème avec l’interface des horaires. Essaye à nouveau STP.",
@@ -199,7 +199,7 @@
     "events.end": "Fin",
     "settings.disconnect": "Enlever la liaison",
     "settings.delete-profile-picture-no": "Annuler",
-    "stationboard.dep": "de",
+    "stationboard.dep": "dep",
     "passwords.token": "Ce lien pour réinitialiser un mot de passe n’est pas valide.",
     "user.always-dbl": "Twitter avec #dbl ?",
     "export.btn": "Exporter",
@@ -254,7 +254,7 @@
     "controller.status.status-not-found": "Enregistrement non trouvé",
     "pagination.next": "page suivante &raquo;",
     "dates.September": "septembre",
-    "stationboard.destination": "But",
+    "stationboard.destination": "Destination",
     "modals.editStatus-label": "Modifier le texte d’enregistrement",
     "messages.exception.general": "Une erreur s’est produite. Réessaye STP.",
     "dates.thousands_sep": "&nbsp;",
@@ -373,5 +373,6 @@
     "time-format": "HH[h]mm",
     "time-format.with-day": "HH[h]mm (DD/MM/YYYY)",
     "datetime-format": "DD/MM/YYYY HH[h]mm",
-    "dateformat.month-and-year": "MMMM YYYY"
+    "dateformat.month-and-year": "MMMM YYYY",
+    "leaderboard.month.title": "Vue mensuelle"
 }
