@@ -12,13 +12,7 @@ use stdClass;
 
 class StatisticController extends Controller
 {
-    public static function getGlobalCheckInStats(Carbon $since = null, Carbon $until = null): stdClass {
-        if ($since == null) {
-            $since = Carbon::now()->subWeek();
-        }
-        if ($until == null) {
-            $until = Carbon::now();
-        }
+    public static function getGlobalCheckInStats(Carbon $since, Carbon $until): stdClass {
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -39,17 +33,10 @@ class StatisticController extends Controller
 
     public static function getTopTravelCategoryByUser(
         User $user,
-        Carbon $since = null,
-        Carbon $until = null,
+        Carbon $since,
+        Carbon $until,
         int $limit = 10
     ): Collection {
-
-        if ($since == null) {
-            $since = Carbon::now()->subWeek();
-        }
-        if ($until == null) {
-            $until = Carbon::now();
-        }
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -73,17 +60,10 @@ class StatisticController extends Controller
 
     public static function getTopTripOperatorByUser(
         User $user,
-        Carbon $since = null,
-        Carbon $until = null,
+        Carbon $since,
+        Carbon $until,
         int $limit = 10
     ): Collection {
-
-        if ($since == null) {
-            $since = Carbon::now()->subWeek();
-        }
-        if ($until == null) {
-            $until = Carbon::now();
-        }
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -102,18 +82,7 @@ class StatisticController extends Controller
                  ->get();
     }
 
-    public static function getWeeklyTravelTimeByUser(
-        User $user,
-        Carbon $since = null,
-        Carbon $until = null
-    ): Collection {
-
-        if ($since == null) {
-            $since = Carbon::now()->subWeek();
-        }
-        if ($until == null) {
-            $until = Carbon::now();
-        }
+    public static function getWeeklyTravelTimeByUser(User $user, Carbon $since, Carbon $until): Collection {
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
