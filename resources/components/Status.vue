@@ -6,8 +6,9 @@
        :data-date="status.train.departure"
        :data-trwl-business-id="status.business">
     <div class="card-img-top" v-if="polyline">
-      <div :id="`map-${status.id}`" class="map statusMap embed-responsive embed-responsive-16by9"
-           :data-polygon="polyline"></div>
+<!--      <div :id="`map-${status.id}`" class="map statusMap embed-responsive embed-responsive-16by9"-->
+<!--           :data-polygon="polyline"></div>-->
+      <Map class="map embed-responsive embed-responsive-16by9" :poly-lines="polyline"></Map>
     </div>
 
     <div class="card-body row">
@@ -122,8 +123,9 @@
             {{ status.username }}
           </router-link>
           <!--          {{ __('dates.-on-') }}-->
+<!--          ToDo: Fix, to show correct time-->
           <router-link :to="{ name: 'status', params: {id: status.id}}">
-            {{ moment(status.createdAt).fromNow() }}
+            {{ moment(status.createdAt).toNow() }}
           </router-link>
         </span>
       <ul class="list-inline">
@@ -190,6 +192,7 @@
 
 <script>
 import moment from "moment";
+import Map from "../components/Map";
 
 export default {
   name: "Status.vue",
@@ -201,6 +204,9 @@ export default {
       loading: false,
       error: false
     };
+  },
+  components: {
+    Map
   },
   props: {
     status: {
@@ -241,7 +247,7 @@ export default {
         trainstation: 0
       }
     },
-    polyline: ""
+    polyline: null
   },
   computed: {
     duration () {

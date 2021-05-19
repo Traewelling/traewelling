@@ -48,12 +48,12 @@ export default {
     fetchData() {
       this.error   = null;
       this.loading = true;
+      this.fetchPolyline();
       axios
           .get("/api/v1/statuses/" + this.$route.params.id)
           .then((response) => {
             this.loading = false;
             this.status  = response.data.data;
-            this.fetchPolyline();
           })
           .catch((error) => {
             this.loading = false;
@@ -64,7 +64,7 @@ export default {
       axios
           .get("/api/v1/polyline/" + this.$route.params.id)
           .then((response) => {
-            this.polyline = response.data.data[0].coordinatesArray;
+            this.polyline = [response.data.data[0].coordinatesArray];
           })
           .catch((error) => {
             console.error(error);
