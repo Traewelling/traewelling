@@ -367,7 +367,8 @@ class StatusController extends Controller
                             'trainCheckin.Origin',
                             'trainCheckin.Destination',
                             'trainCheckin.HafasTrip',
-                            'event')->orderBy('created_at', 'DESC')
+                            'event')
+                     ->orderBy('created_at', 'DESC')
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
                      })->simplePaginate(15);
