@@ -6,10 +6,10 @@
             <canvas id="chart_favourite_types"></canvas>
             <hr/>
             <table>
-                @foreach($topCategories as $category)
+                @foreach($topCategories as $category => $count)
                     <tr>
-                        <td>{{$category->count}} {{__('stats.trips')}}</td>
-                        <td>{{$category->category}}</td>
+                        <td>{{$count}} {{__('stats.trips')}}</td>
+                        <td>{{$category}}</td>
                     </tr>
                 @endforeach
             </table>
@@ -27,14 +27,14 @@
                 type: 'pie',
                 data: {
                     labels: [
-                        @foreach($topCategories as $category)
-                            '{{$category->category}}',
+                        @foreach($topCategories as $category => $count)
+                            '{{$category}}',
                         @endforeach
                     ],
                     datasets: [{
                         data: [
-                            @foreach($topCategories as $category)
-                                '{{$category->count}}',
+                            @foreach($topCategories as $category => $count)
+                                '{{$count}}',
                             @endforeach
                         ],
                         backgroundColor: [
