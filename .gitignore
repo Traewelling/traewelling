@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log
 report/
 clover.xml
+mix-manifest.json
 
 # Profile pictures
 public/uploads/avatars/*
