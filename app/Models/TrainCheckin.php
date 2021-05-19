@@ -54,8 +54,8 @@ class TrainCheckin extends Model
 
             $destination = $this->Destination;
             $route       = [];
-            $route[0]    = [$origin->longitude, $origin->latitude];
-            $route[1]    = [$destination->longitude, $destination->latitude];
+            $route[0]    = [$origin->latitude, $origin->longitude];
+            $route[1]    = [$destination->latitude, $destination->longitude];
 
             return json_encode($route);
         }
@@ -78,7 +78,7 @@ class TrainCheckin extends Model
             // Check if this point is the trips origin => Include this point!
             if ($behindOrigin || (isset($f->properties->id) && $f->properties->id == $origin)) {
                 $behindOrigin = true;
-                $coords[]     = $f->geometry->coordinates;
+                $coords[]     = [$f->geometry->coordinates[1], $f->geometry->coordinates[0]];
             }
 
             // If this was the destination, don't loop any further.
