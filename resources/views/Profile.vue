@@ -127,7 +127,7 @@ export default {
           .then((response) => {
             this.loading = false;
             this.user    = response.data.data;
-            if (this.user.userInvisibleToMe) {
+            if (!this.user.userInvisibleToMe) {
               this.fetchStatuses();
             }
           })
