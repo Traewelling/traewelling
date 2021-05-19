@@ -16,7 +16,7 @@ $(document).on("click", "#modal-delete", function () {
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset.statusid;
+    statusId = event.target.dataset.trwlStatusId;
 
     let $likeCount   = document.getElementById("like-count-" + statusId);
     let $smallAvatar = document.getElementById("avatar-small-" + statusId);
