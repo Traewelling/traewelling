@@ -18,7 +18,7 @@ body {
 }
 
 .card {
-  box-shadow: 0 10px 20px 0 rgba(0,0,0,.1);
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 // Overall site layout
@@ -52,3 +52,6 @@ body {
   vertical-align: middle;
 }
 
+.color-main {
+  color: $trwlRot;
+}
