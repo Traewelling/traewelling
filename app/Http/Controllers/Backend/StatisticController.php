@@ -49,13 +49,17 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('hafas_trips.category')
                  ->select(['hafas_trips.category', DB::raw('COUNT(*) AS count')])
-                 ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
                  ->get()
                  ->map(function($data) {
                      $data->category = __('transport_types.' . $data->category);
                      return $data;
-                 });
+                 })
+                 ->groupBy('category')
+                 ->map(function($data) {
+                     return $data->sum('count');
+                 })
+                 ->sort();
     }
 
     public static function getTopTripOperatorByUser(
