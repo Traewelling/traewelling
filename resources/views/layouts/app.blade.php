@@ -32,6 +32,7 @@
 
         @include('layouts.includes.meta-pwa')
         @yield('metadata')
+        @yield('head')
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"

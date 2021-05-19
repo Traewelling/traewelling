@@ -117,12 +117,7 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/phpstorm
 
-
-public/js/admin.js
-public/js/admin.js.map
-public/js/app.js
-public/js/app.js.map
-public/css/admin.css
-public/css/app.css
+public/js/*.js
+public/js/*.js.map
+public/css/*.css
 .phpunit.result.cache
-public/css/welcome.css

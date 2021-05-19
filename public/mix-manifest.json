@@ -1,7 +1,11 @@
 {
     "/js/admin.js": "/js/admin.js",
+    "/js/admin.js.map": "/js/admin.js.map",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/css/admin.css": "/css/admin.css",
-    "/css/welcome.css": "/css/welcome.css"
+    "/css/welcome.css": "/css/welcome.css",
+    "/js/app.js.map": "/js/app.js.map",
+    "/js/stats.js": "/js/stats.js",
+    "/js/stats.js.map": "/js/stats.js.map"
 }

@@ -6,7 +6,6 @@ require("jquery");
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
-const Chart = require("chart.js");
 
 /**
  * Once the page is loaded, we can load our frontend components.
