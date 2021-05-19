@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Controllers\UserController as UserBackend;
 
 class UserController extends Controller
@@ -17,7 +16,7 @@ class UserController extends Controller
      * @param $username
      * @return UserResource
      */
-    public function show($username) {
+    public function show($username): UserResource {
         // ToDo: Maybe put this into another method?
         return new UserResource(User::where('username', 'like', $username)->firstOrFail());
     }
@@ -25,9 +24,9 @@ class UserController extends Controller
     /**
      * Returns paginated statuses for user
      * @param $username
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
-    public static function statuses($username) {
+    public static function statuses($username): AnonymousResourceCollection {
         $user         = User::where('username', 'like', $username)->firstOrFail();
         $userResponse = UserBackend::statusesForUser($user);
         if (!$userResponse) {

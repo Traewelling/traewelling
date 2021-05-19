@@ -1,31 +1,31 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Statuses from './views/Statuses';
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Statuses from "./views/Statuses";
 import SingleStatus from "./views/SingleStatus";
 import Profile from "./views/Profile";
 
 Vue.use(VueRouter);
 
 export const router = new VueRouter({
-    mode: 'history',
+    mode: "history",
     routes:
         [
             {
-                path: '/',
+                path: "/",
                 component: Statuses,
-                name: 'statuses.active',
+                name: "statuses.active",
             },
             {
-                path: '/status/:id',
+                path: "/status/:id",
                 component: SingleStatus,
-                name: 'status'
+                name: "status"
             },
             {
-                path: '/profile/:username',
+                path: "/profile/:username",
                 component: Profile,
-                name: 'profile'
+                name: "profile"
             }
 
         ],
-    base: '/',
+    base: "/",
 });

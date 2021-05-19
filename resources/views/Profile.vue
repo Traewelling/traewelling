@@ -78,7 +78,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import Status from '../components/Status'
+import Status from "../components/Status";
 
 export default {
   name: "Profile",
@@ -101,14 +101,14 @@ export default {
         "userInvisibleToMe": true,
       },
       statuses: null
-    }
+    };
   },
   components: {
     Status
   },
   computed: {
-    duration: function () {
-      const duration = moment.duration(this.user.train_duration, 'minutes').asMinutes();
+    duration () {
+      const duration = moment.duration(this.user.train_duration, "minutes").asMinutes();
       let minutes    = duration % 60;
       let hours      = Math.floor(duration / 60);
 
@@ -123,15 +123,15 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get('/api/v1/user/' + this.$route.params.username)
-          .then(response => {
+          .get("/api/v1/user/" + this.$route.params.username)
+          .then((response) => {
             this.loading = false;
             this.user    = response.data.data;
             if (this.user.userInvisibleToMe) {
               this.fetchStatuses();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.loading = false;
             this.error   = error.response.data.message || error.message;
           });
@@ -140,12 +140,12 @@ export default {
       this.error           = null;
       this.statusesLoading = true;
       axios
-          .get('/api/v1/user/' + this.$route.params.username + '/statuses')
-          .then(response => {
+          .get("/api/v1/user/" + this.$route.params.username + "/statuses")
+          .then((response) => {
             this.statusesLoading = false;
             this.statuses        = response.data.data;
           })
-          .catch(error => {
+          .catch((error) => {
             this.statusesLoading = false;
             this.error           = error.response.data.message || error.message;
           });

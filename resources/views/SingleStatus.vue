@@ -35,7 +35,7 @@ export default {
       error: false,
       loading: false,
       status: null
-    }
+    };
   },
   created() {
     this.fetchData();
@@ -48,13 +48,12 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get('/api/v1/statuses/' + this.$route.params.id)
-          .then(response => {
+          .get("/api/v1/statuses/" + this.$route.params.id)
+          .then((response) => {
             this.loading    = false;
             this.status = response.data.data;
-            console.log(this.status);
           })
-          .catch(error => {
+          .catch((error) => {
             this.loading = false;
             this.error   = error.response.data.message || error.message;
           });

@@ -15,7 +15,6 @@ use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('statuses', [StatusController::class, 'enRoute']);
     Route::get('statuses/{id}', [StatusController::class, 'show']);

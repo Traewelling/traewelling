@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import Status from '../components/Status'
+import axios from "axios";
+import Status from "../components/Status";
 
 export default {
   data() {
@@ -48,11 +48,11 @@ export default {
       this.loading = true;
       axios
           .get('/api/v1/statuses')
-          .then(response => {
+          .then((response) => {
             this.loading  = false;
             this.statuses = response.data.data;
           })
-          .catch(error => {
+          .catch((error) => {
             this.loading = false;
             this.error   = error.response.data.message || error.message;
           });

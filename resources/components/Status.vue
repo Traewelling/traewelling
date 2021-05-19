@@ -202,56 +202,56 @@ export default {
       status_api: null,
       loading: false,
       error: false
-    }
+    };
   },
   props: {
     status: {
       id: 0,
-      body: '',
-      type: '',
-      created_at: '',
+      body: "",
+      type: "",
+      created_at: "",
       user: 0,
-      username: '',
+      username: "",
       business: 0,
       train: {
         trip: 0,
-        category: '',
-        number: '',
+        category: "",
+        number: "",
         linename: null,
         distance: 0,
         points: 0,
-        departure: '',
-        arrival: '',
+        departure: "",
+        arrival: "",
         delay: null,
         duration: 0,
         speed: 0,
         origin: 0,
-        origin_name: '',
+        origin_name: "",
         destination: 0,
-        destination_name: ''
+        destination_name: ""
       },
       event: {
         id: 0,
-        name: '',
-        slug: '',
-        hashtag: '',
-        host: '',
-        url: '',
-        begin: '',
-        end: '',
+        name: "",
+        slug: "",
+        hashtag: "",
+        host: "",
+        url: "",
+        begin: "",
+        end: "",
         trainstation: 0
       }
     }
   },
   computed: {
-    duration: function () {
+    duration () {
       const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
       let minutes    = duration % 60;
       let hours      = Math.floor(duration / 60);
 
       return hours + "h " + minutes + "m";
     },
-    percentage: function () {
+    percentage () {
       const start = moment(this.status.train.departure);
       const end   = moment(this.status.train.arrival);
       const now   = moment();
