@@ -31,10 +31,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
      ->name('account.showProfilePicture');
 
-Route::get('/{view?}', [FrontendStaticController::class, 'landingVue'])->where('view', '(.*)')->name('landing');
+//This is responsible to make vue available as a subdomain at vue.example.com
+Route::domain('vue.' . substr(url('/'), 7))->group(function() {
+    Route::get('/{view?}', [FrontendStaticController::class, 'landingVue'])->where('view', '(.*)')->name('landing');
+});
 
-//Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
-//     ->name('static.welcome');
+Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
+     ->name('static.welcome');
 
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');

@@ -2,6 +2,8 @@
     "/js/admin.js": "/js/admin.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/css/vue.css": "/css/vue.css",
     "/css/admin.css": "/css/admin.css",
-    "/css/welcome.css": "/css/welcome.css"
+    "/css/welcome.css": "/css/welcome.css",
+    "/js/vue.js": "/js/vue.js"
 }

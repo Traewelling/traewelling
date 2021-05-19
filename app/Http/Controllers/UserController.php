@@ -18,6 +18,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -144,22 +145,30 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
+    /**
+     * @api v1
+     * @frontend
+     * @param User $user
+     * @return LengthAwarePaginator|null
+     */
+    public static function statusesForUser(User $user): ?LengthAwarePaginator {
+        if ($user->userInvisibleToMe) {
+            return null;
+        }
+
+        return $user->statuses()->with('user',
+                                       'trainCheckin',
+                                       'trainCheckin.Origin',
+                                       'trainCheckin.Destination',
+                                       'trainCheckin.HafasTrip',
+                                       'event')->orderBy('created_at', 'DESC')->paginate(15);
+    }
+
     public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
-        $statuses = null;
-
-        if (!$user->userInvisibleToMe) {
-            $statuses = $user->statuses()->with('user',
-                                                'trainCheckin',
-                                                'trainCheckin.Origin',
-                                                'trainCheckin.Destination',
-                                                'trainCheckin.HafasTrip',
-                                                'event')->orderBy('created_at', 'DESC')->paginate(15);
-        }
-
 
         $twitterUrl  = $user->twitterUrl;
         $mastodonUrl = $user->mastodonUrl;
@@ -170,16 +179,16 @@ class UserController extends Controller
             'username'    => $username,
             'twitterUrl'  => $twitterUrl,
             'mastodonUrl' => $mastodonUrl,
-            'statuses'    => $statuses,
+            'statuses'    => UserController::statusesForUser($user),
             'user'        => $user
         ];
     }
 
     /**
      * Add $userToFollow to $user's Followings
-     * @param User $user The user who initiated the follow
-     * @param User $userToFollow The user who is followed
-     * @param bool $isApprovedRequest Differentiates between who to be notified
+     * @param User $user
+     * @param User $userToFollow
+     * @param bool $isApprovedRequest
      * @return bool
      * @throws AlreadyFollowingException
      */
@@ -280,9 +289,9 @@ class UserController extends Controller
             $friendsTrainCheckIns = (clone $checkIns)
                 ->filter(function($trainCheckIn) {
                     return Auth::user()->follows
-                            ->pluck('id')
-                            ->contains($trainCheckIn->status->user_id)
-                        || $trainCheckIn->status->user_id == Auth::user()->id;
+                               ->pluck('id')
+                               ->contains($trainCheckIn->status->user_id)
+                           || $trainCheckIn->status->user_id == Auth::user()->id;
                 })
                 ->groupBy('status.user_id')
                 ->map(function($trainCheckIns) {

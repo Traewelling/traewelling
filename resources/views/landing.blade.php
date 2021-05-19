@@ -142,7 +142,7 @@
             <app></app>
         </div>
 
-        <script src="{{ mix('js/app.js') }}"></script>
+        <script src="{{ mix('js/vue.js') }}"></script>
 
     </body>
 </html>

@@ -12,10 +12,9 @@
 
     <div class="card-body row">
       <div class="col-2 image-box pe-0 d-none d-lg-flex">
-        <!-- ToDo: fix route -->
-        <a :href="`/profile/${status.username}`">
+        <router-link :to="{ name: 'profile', params: {username: status.username}}">
           <img :src="`/profile/${status.username}/profilepicture`">
-        </a>
+        </router-link>
       </div>
 
       <div class="col ps-0">
@@ -51,32 +50,24 @@
               <span class="ps-2">
                 <i class="fa fa-route d-inline"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
               </span>
-              <!--              ToDo: This should be properly rendered in sth. like moment.js-->
               <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}</span>
               <!--                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}-->
               <span v-if="status.business === 1" class="pl-sm-2">
-                                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
+                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
                 <!--title="{{ __('stationboard.business.business') }}"-->
-                            </span>
+              </span>
               <span v-else-if="status.business === 2" class="pl-sm-2">
-                                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
+                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
                 <!--                                   title="{{ __('stationboard.business.commute') }}">-->
-                            </span>
-            <div v-if="status.event != null">
-              <span class="pl-sm-2">
-                                <i class="fa fa-calendar-day"></i>
-                                <a :href="`/event/${status.event.slug}`">
-                                    {{ status.event.name }}
-                                </a>
-                            </span>
-
-            </div>
+              </span>
+              <br>
+              <span v-if="status.event != null" class="pl-sm-2">
+                <i class="fa fa-calendar-day"></i>
+                &nbsp;
+                <a :href="`/event/${status.event.slug}`">{{ status.event.name }}</a>
+              </span>
             </p>
-
-
-            <p v-if="status.body !== ''" class="status-body"><i class="fas fa-quote-right"></i> {{ status.body }}</p>
-
-
+            <p v-if="status.body" class="status-body"><i class="fas fa-quote-right"></i> {{ status.body }}</p>
             <!--            @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())-->
             <!--            <p class="text-muted font-italic">-->
             <!--              {{ __('stationboard.next-stop') }}-->
@@ -103,9 +94,8 @@
               <!--                $status->trainCheckin ?->destination_stopover ?->arrival ?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format'))-->
               <!--              }}-->
               <!--                        @endif-->
-
               {{ moment(status.train.arrival).format('LT') }}
-                    </span>
+            </span>
             <!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
             <a :href="`/trains/stationboard?provider=train&station=${status.train.destination_name}`"
                class="text-trwl clearfix">{{ status.train.destination_name }}</a>
@@ -114,26 +104,27 @@
       </div>
     </div>
     <div class="progress">
-      <div
-          class="progress-bar"
-          role="progressbar"
-          v-bind:style="{width: percentage + '%'}"
-      ></div>
+      <div class="progress-bar"
+           role="progressbar"
+           v-bind:style="{width: percentage + '%'}"></div>
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
 <!--            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-            <a :href="`/profile/${status.username}`">
+<!--            <a :href="`/profile/${status.username}`">-->
 <!--                @if(auth()?->user()?->id == $status->user_id)-->
               <!--                    {{ __('user.you') }}-->
               <!--                @else-->
-                    {{ status.username }}
+<!--                    {{ status.username }}-->
               <!--                @endif-->
-            </a>
+<!--            </a>-->
+          <router-link :to="{name: 'profile', params: {username: status.username}}">
+            {{ status.username }}
+          </router-link>
           <!--          {{ __('dates.-on-') }}-->
-            <router-link :to="{ name: 'status', params: {id: status.id}}">
-                {{ moment(status.created_at).fromNow() }}
-            </router-link>
+          <router-link :to="{ name: 'status', params: {id: status.id}}">
+            {{ moment(status.created_at).fromNow() }}
+          </router-link>
         </span>
       <ul class="list-inline">
         <!--        @auth-->
@@ -206,7 +197,7 @@ export default {
   data() {
     return {
       moment: moment,
-      isSingleStatus: !!this.$route.params.id,
+      isSingleStatus: false,
       categories: ["bus", "suburban", "subway", "tram"],
       status_api: null,
       loading: false,
@@ -214,7 +205,7 @@ export default {
     }
   },
   props: {
-    status_data: {
+    status: {
       id: 0,
       body: '',
       type: '',
@@ -253,12 +244,6 @@ export default {
     }
   },
   computed: {
-    status: function () {
-      if (this.isSingleStatus) {
-        return this.status_api;
-      }
-      return this.$props.status_data;
-    },
     duration: function () {
       const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
       let minutes    = duration % 60;
@@ -278,27 +263,6 @@ export default {
       } else {
         return 100 * ((now - start) / (end - start));
       }
-    }
-  },
-  created() {
-    if (this.isSingleStatus) {
-      this.fetchData();
-    }
-  },
-  methods: {
-    fetchData() {
-      this.error   = null;
-      this.loading = true;
-      axios
-          .get('/api/v1/statuses/' + this.$route.params.id)
-          .then(response => {
-            this.loading    = false;
-            this.status_api = response.data.data;
-          })
-          .catch(error => {
-            this.loading = false;
-            this.error   = error.response.data.message || error.message;
-          });
     }
   }
 }

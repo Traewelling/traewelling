@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="container">
+    <main class="py-4">
       <router-view></router-view>
-    </div>
+    </main>
   </div>
 </template>
 

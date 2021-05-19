@@ -8,21 +8,6 @@ require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
 
-
-import VueRouter from 'vue-router';
-import {router} from "../routes";
-import App from '../views/App';
-
-window.Vue = require('vue');
-
-Vue.use(VueRouter);
-
-const layoutOne = new Vue({
-    el: '#app',
-    components: { App },
-    router,
-});
-
 /**
  * Once the page is loaded, we can load our frontend components.
  */

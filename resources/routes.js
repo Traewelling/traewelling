@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Statuses from './components/Statuses';
-import Status from "./components/Status";
+import Statuses from './views/Statuses';
+import SingleStatus from "./views/SingleStatus";
+import Profile from "./views/Profile";
 
 Vue.use(VueRouter);
 
@@ -16,8 +17,13 @@ export const router = new VueRouter({
             },
             {
                 path: '/status/:id',
-                component: Status,
+                component: SingleStatus,
                 name: 'status'
+            },
+            {
+                path: '/profile/:username',
+                component: Profile,
+                name: 'profile'
             }
 
         ],
