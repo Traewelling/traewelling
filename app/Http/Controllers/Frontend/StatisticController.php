@@ -20,7 +20,7 @@ class StatisticController extends Controller
         $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
-        $globalStats = StatisticBackend::getGlobalCheckInStats();
+        $globalStats = StatisticBackend::getGlobalCheckInStats($from, $to);
 
         $topCategories = StatisticBackend::getTopTravelCategoryByUser(
             auth()->user(), $from, $to
