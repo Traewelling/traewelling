@@ -5,9 +5,9 @@
        :data-trwl-status-body="status.body"
        :data-date="status.train.departure"
        :data-trwl-business-id="status.business">
-    <div class="card-img-top" v-if="isSingleStatus">
+    <div class="card-img-top" v-if="polyline">
       <div :id="`map-${status.id}`" class="map statusMap embed-responsive embed-responsive-16by9"
-           :data-polygon="status.train"></div>
+           :data-polygon="polyline"></div>
     </div>
 
     <div class="card-body row">
@@ -38,14 +38,14 @@
               {{ moment(status.train.departure).format('LT') }}
                     </span>
             <!--            ToDo: Add router-url, add better station-shit (like the helper method)-->
-            <a :href="`/trains/stationboard?provider=train&station=${status.train.origin_name}`"
-               class="text-trwl clearfix">{{ status.train.origin_name }}</a>
+            <a :href="`/trains/stationboard?provider=train&station=${status.train.originName}`"
+               class="text-trwl clearfix">{{ status.train.originName }}</a>
             <p class="train-status text-muted">
               <span>
                 <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
                      :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
                 <i v-else class="fa fa-train d-inline"></i>
-                {{ status.train.linename }}
+                {{ status.train.lineName }}
               </span>
               <span class="ps-2">
                 <i class="fa fa-route d-inline"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
@@ -97,8 +97,8 @@
               {{ moment(status.train.arrival).format('LT') }}
             </span>
             <!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
-            <a :href="`/trains/stationboard?provider=train&station=${status.train.destination_name}`"
-               class="text-trwl clearfix">{{ status.train.destination_name }}</a>
+            <a :href="`/trains/stationboard?provider=train&station=${status.train.destinationName}`"
+               class="text-trwl clearfix">{{ status.train.destinationName }}</a>
           </li>
         </ul>
       </div>
@@ -123,7 +123,7 @@
           </router-link>
           <!--          {{ __('dates.-on-') }}-->
           <router-link :to="{ name: 'status', params: {id: status.id}}">
-            {{ moment(status.created_at).fromNow() }}
+            {{ moment(status.createdAt).fromNow() }}
           </router-link>
         </span>
       <ul class="list-inline">
@@ -189,7 +189,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import moment from "moment";
 
 export default {
@@ -199,7 +198,6 @@ export default {
       moment: moment,
       isSingleStatus: false,
       categories: ["bus", "suburban", "subway", "tram"],
-      status_api: null,
       loading: false,
       error: false
     };
@@ -209,7 +207,7 @@ export default {
       id: 0,
       body: "",
       type: "",
-      created_at: "",
+      createdAt: "",
       user: 0,
       username: "",
       business: 0,
@@ -217,7 +215,7 @@ export default {
         trip: 0,
         category: "",
         number: "",
-        linename: null,
+        lineName: null,
         distance: 0,
         points: 0,
         departure: "",
@@ -226,9 +224,10 @@ export default {
         duration: 0,
         speed: 0,
         origin: 0,
-        origin_name: "",
+        originName: "",
         destination: 0,
-        destination_name: ""
+        destinationName: "",
+        polyline: ""
       },
       event: {
         id: 0,
@@ -241,7 +240,8 @@ export default {
         end: "",
         trainstation: 0
       }
-    }
+    },
+    polyline: ""
   },
   computed: {
     duration () {

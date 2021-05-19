@@ -1,27 +1,27 @@
 <template>
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-7">
-      <div class="loading" v-if="loading">
-        Loading...
-      </div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-7">
+        <div class="loading" v-if="loading">
+          Loading...
+        </div>
 
-      <div v-if="error" class="error">
-        <p>{{ error }}</p>
+        <div v-if="error" class="error">
+          <p>{{ error }}</p>
 
-        <p>
-          <button @click.prevent="fetchData">
-            Try Again
-          </button>
-        </p>
-      </div>
+          <p>
+            <button @click.prevent="fetchData">
+              Try Again
+            </button>
+          </p>
+        </div>
 
-      <div v-if="status">
-        <Status :status="status"></Status>
+        <div v-if="status">
+          <Status :status="status" :polyline="polyline"></Status>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -34,7 +34,8 @@ export default {
     return {
       error: false,
       loading: false,
-      status: null
+      status: null,
+      polyline: null
     };
   },
   created() {
@@ -50,13 +51,24 @@ export default {
       axios
           .get("/api/v1/statuses/" + this.$route.params.id)
           .then((response) => {
-            this.loading    = false;
-            this.status = response.data.data;
+            this.loading = false;
+            this.status  = response.data.data;
+            this.fetchPolyline();
           })
           .catch((error) => {
             this.loading = false;
             this.error   = error.response.data.message || error.message;
           });
+    },
+    fetchPolyline() {
+      axios
+          .get("/api/v1/polyline/" + this.$route.params.id)
+          .then((response) => {
+            this.polyline = response.data.data[0].coordinatesArray;
+          })
+          .catch((error) => {
+            console.error(error);
+          })
     }
   }
 }
