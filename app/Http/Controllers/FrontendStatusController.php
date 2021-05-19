@@ -23,6 +23,8 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $user     = Auth::user();
         $statuses = StatusBackend::getDashboard($user);
+        $future   = StatusBackend::getFutureCheckins();
+
 
         if (!$user->hasVerifiedEmail() && $user->email != null) {
             \Session::flash('mail-prompt', __('controller.status.email-not-verified'));
@@ -41,16 +43,17 @@ class FrontendStatusController extends Controller
         return view('dashboard', [
             'statuses'    => $statuses,
             'currentUser' => $user,
-            'latest'      => TransportController::getLatestArrivals($user)
+            'latest'      => TransportController::getLatestArrivals($user),
+            'future'      => $future
         ]);
     }
 
     public function getGlobalDashboard(): Renderable {
-        $statuses = StatusBackend::getGlobalDashboard();
         return view('dashboard', [
-            'statuses'    => $statuses,
+            'statuses'    => StatusBackend::getGlobalDashboard(),
             'currentUser' => Auth::user(),
-            'latest'      => TransportController::getLatestArrivals(Auth::user())
+            'latest'      => TransportController::getLatestArrivals(Auth::user()),
+            'future'      => StatusBackend::getFutureCheckins()
         ]);
     }
 

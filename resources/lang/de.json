@@ -381,5 +381,6 @@
     "user.muted.text": "Du kannst die Check-Ins von :username nicht sehen, da du diesen Benutzer stummgeschaltet hast.",
     "user.unmuted": "Du hast die Stummschaltung des Benutzers :username aufgehoben.",
     "user.already-unmuted": "Der Benutzer :username ist nicht stummgeschaltet.",
-    "user.unmute-tooltip": "Benutzer nicht mehr stummschalten"
+    "user.unmute-tooltip": "Benutzer nicht mehr stummschalten",
+    "dashboard.future": "Deine Check-ins in der Zukunft"
 }
