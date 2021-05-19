@@ -389,5 +389,6 @@
     "time-format": "hh:mm a",
     "datetime-format": "DD.MM.YYYY hh:mm a",
     "dateformat.month-and-year": "MMMM YYYY",
-    "time-format.with-day": "hh:mm a (DD.MM.YYYY)"
+    "time-format.with-day": "hh:mm a (DD.MM.YYYY)",
+    "dashboard.future": "Your future check-ins"
 }
