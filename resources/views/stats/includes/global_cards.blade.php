@@ -7,10 +7,10 @@
                 <i class="fas fa-ruler fa-4x mt-1"></i>
             </div>
             <div class="col-8 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold color-main">
+                <span class="font-weight-bold color-main fs-2">
                     {{number($globalStats->distance, 0)}} km
                 </span>
-                <br/>
+                <br>
                 <small class="text-muted">{{__('stats.global.distance')}}</small>
             </div>
         </div>
@@ -23,10 +23,10 @@
                 <i class="fas fa-clock fa-4x mt-1"></i>
             </div>
             <div class="col-8 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold color-main">
+                <span class="font-weight-bold color-main fs-2">
                     {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
                 </span>
-                <br/>
+                <br>
                 <small class="text-muted">{{__('stats.global.duration')}}</small>
             </div>
         </div>
@@ -39,10 +39,10 @@
                 <i class="fas fa-users fa-4x mt-1"></i>
             </div>
             <div class="col-8 text-center">
-                <span style="font-size: 2em;" class="font-weight-bold color-main">
+                <span class="font-weight-bold color-main fs-2">
                     {{$globalStats->user_count}}x
                 </span>
-                <br/>
+                <br>
                 <small class="text-muted">{{__('stats.global.active')}}</small>
             </div>
         </div>
