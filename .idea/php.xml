@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <PhpCSConfiguration standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="$USER_HOME$/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs" />
+      <PhpCSConfiguration standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" />
     </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">

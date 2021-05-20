@@ -14,6 +14,7 @@ use DateInterval;
 use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
@@ -106,6 +107,9 @@ class StatusController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW'
                             ])
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
@@ -128,6 +132,9 @@ class StatusController extends Controller
                          $query->where('users.private_profile', 0)
                                ->orWhere('users.id', auth()->user()->id)
                                ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                     })
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
                      })
                      ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
@@ -351,5 +358,19 @@ class StatusController extends Controller
         }
 
         return ['event' => $event, 'statuses' => $statuses->simplePaginate(15)];
+    }
+
+    public static function getFutureCheckins(): Paginator {
+        return auth()->user()->statuses()
+                     ->with('user',
+                            'trainCheckin',
+                            'trainCheckin.Origin',
+                            'trainCheckin.Destination',
+                            'trainCheckin.HafasTrip',
+                            'event')
+                     ->orderBy('created_at', 'DESC')
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })->simplePaginate(15);
     }
 }
