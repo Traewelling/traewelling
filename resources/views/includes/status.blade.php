@@ -143,7 +143,7 @@
 
                 <li class="list-inline-item like-text">
                     <span class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                          data-statusid="{{ $status->id }}"></span>
+                          data-trwl-status-id="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
                           id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>

@@ -32,6 +32,7 @@
 
         @include('layouts.includes.meta-pwa')
         @yield('metadata')
+        @yield('head')
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
@@ -96,6 +97,12 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                   href="{{ route('stats') }}">
+                                    {{__('stats')}}
+                                </a>
                             </li>
                         </ul>
                         <ul class="navbar-nav w-auto">
@@ -238,5 +245,6 @@
             var urlUnfollow = '{{ route('follow.destroy') }}';
             var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
         </script>
+        @yield('javascript-end')
     </body>
 </html>

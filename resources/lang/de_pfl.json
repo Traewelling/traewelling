@@ -367,5 +367,11 @@
     "notifications.userRequestedFollow.notice": "Um die Anfrooch zu akzepdiere orre zu lösche, klick do orre geh in die Instellunge.",
     "settings.request.accept-success": "Gefolgschafts-Anfrooch erfolgreich akzepdierd.",
     "settings.request.reject-success": "Gefolgschafts-Anfrooch erfolgreich abgelehnd.",
-    "settings.language.set": "Sprooch ännere"
+    "settings.language.set": "Sprooch ännere",
+    "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
+    "dateformat.month-and-year": "MMMM YYYY",
+    "datetime-format": "DD.MM.YYYY HH:mm",
+    "time-format": "HH:mm",
+    "time-format.with-day": "HH:mm (DD.MM.YYYY)",
+    "leaderboard.month.title": "Monatsiwwersichd"
 }

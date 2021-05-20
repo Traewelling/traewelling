@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
@@ -135,6 +136,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
 
+    Route::get('/stats', [StatisticController::class, 'renderMainStats'])
+         ->name('stats');
+
     Route::prefix('settings')->group(function() {
         Route::get('/', [SettingsController::class, 'renderSettings'])
              ->name('settings');
@@ -238,4 +242,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
+
+    Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
+         ->name('user.mute');
+    Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
+         ->name('user.unmute');
 });

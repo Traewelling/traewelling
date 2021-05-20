@@ -14,6 +14,7 @@ use DateInterval;
 use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -120,6 +121,9 @@ class StatusController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW'
                             ])
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
@@ -131,18 +135,22 @@ class StatusController extends Controller
 
 
     public static function getGlobalDashboard(): Paginator {
-        $follows = Auth::user()->follows()->select('follow_id');
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW'
                             ])
-                     ->whereHas('user', function($query) use ($follows) {
-                         return $query->where('private_profile', false)
-                                      ->orWhere('user_id', Auth::user()->id)
-                                      ->orWhereIn('user_id', $follows);
-                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->join('users', 'statuses.user_id', '=', 'users.id')
+                     ->where(function($query) {
+                         $query->where('users.private_profile', 0)
+                               ->orWhere('users.id', auth()->user()->id)
+                               ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                     })
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })
+                     ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
@@ -347,16 +355,36 @@ class StatusController extends Controller
         }
 
 
-        $statusesResponse = $event->statuses()
-                                  ->with('user')
-                                  ->whereHas('user', function($query) {
-                                      //ToDo Not a bug, but a feature
-                                      // This is a hacky implementation to just __not__ show private profiles in events
-                                      // b/c it's just... not worth it.
-                                      return $query->where('private_profile', false);
-                                  })
-                                  ->simplePaginate(15);
+        $statuses = $event->statuses()
+                          ->with('user')
+                          ->select('statuses.*')
+                          ->join('users', 'statuses.user_id', '=', 'users.id')
+                          ->where(function($query) {
+                              $query->where('users.private_profile', 0);
+                            if (auth()->check()) {
+                                $query->orWhere('users.id', auth()->user()->id)
+                                      ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                            }
+                          });
 
-        return ['event' => $event, 'statuses' => $statusesResponse];
+        if (auth()->check()) {
+            $statuses->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'));
+        }
+
+        return ['event' => $event, 'statuses' => $statuses->simplePaginate(15)];
+    }
+
+    public static function getFutureCheckins(): Paginator {
+        return auth()->user()->statuses()
+                     ->with('user',
+                            'trainCheckin',
+                            'trainCheckin.Origin',
+                            'trainCheckin.Destination',
+                            'trainCheckin.HafasTrip',
+                            'event')
+                     ->orderBy('created_at', 'DESC')
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })->simplePaginate(15);
     }
 }

@@ -155,7 +155,6 @@ class UserController extends Controller
         if ($user->userInvisibleToMe) {
             return null;
         }
-
         return $user->statuses()->with('user',
                                        'trainCheckin',
                                        'trainCheckin.Origin',
@@ -170,16 +169,11 @@ class UserController extends Controller
             return null;
         }
 
-        $twitterUrl  = $user->twitterUrl;
-        $mastodonUrl = $user->mastodonUrl;
-
-        $user->unsetRelation('socialProfile');
-
         return [
             'username'    => $username,
-            'twitterUrl'  => $twitterUrl,
-            'mastodonUrl' => $mastodonUrl,
             'statuses'    => UserController::statusesForUser($user),
+            'twitterUrl'  => $user->twitterUrl,
+            'mastodonUrl' => $user->mastodonUrl,
             'user'        => $user
         ];
     }
