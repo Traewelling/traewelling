@@ -123,3 +123,5 @@ public/css/*.css
 !public/js/jQuery.js
 !public/js/test.js
 .phpunit.result.cache
+
+.idea/commandlinetools/*.xml
