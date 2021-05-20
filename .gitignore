@@ -45,6 +45,7 @@ Homestead.json
 
 # Generated files
 .idea/**/contentModel.xml
+.idea/commandlinetools/
 
 # Sensitive or high-churn files
 .idea/dataSources.xml
@@ -123,5 +124,3 @@ public/css/*.css
 !public/js/jQuery.js
 !public/js/test.js
 .phpunit.result.cache
-
-.idea/commandlinetools/*.xml
