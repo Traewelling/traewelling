@@ -204,7 +204,7 @@
     "events.new": "Skapa evenemang",
     "events.end": "Slut",
     "settings.connect": "Ansluta",
-    "transport_types.regional": "",
+    "transport_types.regional": "Regional",
     "events.no-event-dropdown": "(inget evenemang)",
     "settings.connected": "Ansluten",
     "events.upcoming": "Evenemang i framtiden",
@@ -221,7 +221,7 @@
     "events.past": "Tidigare Evenemang",
     "dates.decimal_point": ",",
     "stationboard.check-business": "Affärsresa",
-    "transport_types.businessPlural": "",
+    "transport_types.businessPlural": "Affärsresor",
     "settings.delete-profile-picture-desc": "Du vill radera din profilbild. Denna åtgärd är <strong>irreversibel</strong>. Är du säker?",
     "settings.delete-account": "Radera konto",
     "settings.delete-profile-picture-no": "Tillbaka",
@@ -373,5 +373,6 @@
     "dateformat.month-and-year": "MMMM YYYY",
     "time-format": "HH:mm",
     "time-format.with-day": "HH:mm (YYYY-MM-DD)",
-    "stationboard.business.commute": "Vägen till jobbet"
+    "stationboard.business.commute": "Vägen till jobbet",
+    "stationboard.business.business": "affärsresa"
 }
