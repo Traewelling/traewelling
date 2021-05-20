@@ -25,7 +25,7 @@
                      style="text-decoration: line-through;"
                      class="text-muted">{{ moment(status.train.origin.departurePlanned).format('LT') }}
               </small>
-              &nbsp; {{ moment(status.train.origin.departure).format('LT') }}
+              &nbsp; {{ departure.format('LT') }}
             </span>
             <!--            ToDo: Add router-url, add better station-shit (like the helper method)-->
             <a :href="`/trains/stationboard?provider=train&station=${status.train.origin.name}`"
@@ -38,31 +38,34 @@
                 {{ status.train.lineName }}
               </span>
               <span class="ps-2">
-                <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
+                <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;{{
+                  status.train.distance.toFixed(0)
+                }}<small>km</small>
               </span>
               <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{ duration }}</span>
               <span v-if="status.business === 1" class="pl-sm-2">
-                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top" aria-hidden="true"></i>
-                <!--title="{{ __('stationboard.business.business') }}"-->
+                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                   title="__('stationboard.business.business')" aria-hidden="true"></i>
               </span>
               <span v-else-if="status.business === 2" class="pl-sm-2">
-                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top" aria-hidden="true"></i>
-                                                   title="__('stationboard.business.commute')">
+                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                   title="__('stationboard.business.commute')" aria-hidden="true"></i>
               </span>
               <br>
               <span v-if="status.event != null" class="pl-sm-2">
                 <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                &nbsp;
                 <a :href="`/event/${status.event.slug}`">{{ status.event.name }}</a>
               </span>
             </p>
-            <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ status.body }}</p>
-            <!--            @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())-->
-            <!--            <p class="text-muted font-italic">-->
-            <!--              {{ __('stationboard.next-stop') }}-->
-            <!--              {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}-->
-            <!--            </p>-->
-            <!--            @endif-->
+            <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+              {{ status.body }}</p>
+            <div v-if="departure.isBefore() && arrival.isAfter()">
+              __('stationboard.next-stop')
+              <p class="text-muted font-italic">
+<!--                ToDo: This __should__ show the next station. Not yet implemented.-->
+                stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status))
+              </p>
+            </div>
           </li>
           <li>
             <i class="trwl-bulletpoint" aria-hidden="true"></i>
@@ -71,7 +74,7 @@
                      style="text-decoration: line-through;"
                      class="text-muted">{{ moment(status.train.destination.arrivalPlanned).format('LT') }}
               </small>
-              &nbsp; {{ moment(status.train.destination.arrival).format('LT') }}
+              &nbsp; {{ arrival.format('LT') }}
             </span>
             <!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
             <a :href="`/trains/stationboard?provider=train&station=${status.train.destination.name}`"
@@ -250,6 +253,12 @@ export default {
     polyline: null
   },
   computed: {
+    departure() {
+      return moment(this.status.train.origin.departure);
+    },
+    arrival() {
+      return moment(this.status.train.destination.arrival);
+    },
     duration() {
       // ToDo: This needs localization, currently handled in `durationToSpan`
       const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();

@@ -33,6 +33,7 @@ function number($number, $decimals = 2) {
  *
  * @param int $seconds How long in seconds?
  * @return array with `hours`, `minutes` and `showHours`.
+ * @deprecated as soon as vue is implemented
  */
 function secondsToDuration($seconds): array {
     $secondsInAnHour = 60 * 60;
@@ -47,6 +48,7 @@ function secondsToDuration($seconds): array {
 /**
  * @param array $duration from the secondsToDuration
  * @return string
+ * @deprecated as soon as vue is implemented
  */
 function durationToSpan($duration): string {
     $return = $duration["minutes"] . "<small>min</small>";
@@ -58,6 +60,12 @@ function durationToSpan($duration): string {
     return $return;
 }
 
+/**
+ * @param $name
+ * @param string $classes
+ * @return string
+ * @deprecated as soon as vue is implemented
+ */
 function stationLink($name, $classes = "text-trwl clearfix"): string {
     $urlname = $name;
 
