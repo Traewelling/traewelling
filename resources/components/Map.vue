@@ -27,7 +27,6 @@ export default {
             maxZoom: 19
           }
       ).addTo(map);
-console.log(this.$props.polyLines);
       this.$props.polyLines.forEach((coordinates) => {
         let polyline = L.polyline(coordinates).setStyle({color: "rgb(192, 57, 43)", weight: 5}).addTo(map);
 

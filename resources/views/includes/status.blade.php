@@ -6,7 +6,7 @@
         @if($status->trainCheckin->HafasTrip->polyline)
             <div class="card-img-top">
                 <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                     data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
+                     data-polygon="{{ json_encode($status->trainCheckin->getMapLines()) }}"></div>
             </div>
         @endif
     @endif

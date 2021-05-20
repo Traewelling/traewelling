@@ -17,6 +17,7 @@
         </div>
 
         <div v-if="status">
+          <h5>{{ moment(status.train.origin.departure).format("dddd[,] LL") }}</h5>
           <Status :status="status" :polyline="polyline"></Status>
         </div>
       </div>
@@ -27,6 +28,7 @@
 <script>
 import axios from "axios";
 import Status from "../components/Status";
+import moment from "moment";
 
 export default {
   name: "SingleStatus",
@@ -35,7 +37,8 @@ export default {
       error: false,
       loading: false,
       status: null,
-      polyline: null
+      polyline: null,
+      moment: moment
     };
   },
   created() {
