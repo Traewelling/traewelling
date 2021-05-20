@@ -51,7 +51,7 @@
     "controller.user.follow-404": "Denna follow existerar inte.",
     "controller.user.follow-delete-not-permitted": "Denna aktion är inte tillåten.",
     "controller.user.follow-destroyed": "Du följer inte längre den här personen.",
-	"controller.user.follow-error": "Du kan inte följa den här personen.",
+    "controller.user.follow-error": "Du kan inte följa den här personen.",
     "controller.user.follow-ok": "Användaren följdes.",
     "controller.user.password-changed-ok": "Lösenordet har ändrats.",
     "controller.user.password-wrong": "Det gamla lösenordet är fel.",
@@ -374,5 +374,14 @@
     "time-format": "HH:mm",
     "time-format.with-day": "HH:mm (YYYY-MM-DD)",
     "stationboard.business.commute": "Vägen till jobbet",
-    "stationboard.business.business": "affärsresa"
+    "stationboard.business.business": "affärsresa",
+    "user.already-muted": "Användaren :username är redan mjutat.",
+    "user.muted.heading": "Användaren är mjutat",
+    "user.muted.heading2": "Mjutade användare",
+    "user.muted": "Du har mjutat användaren :username.",
+    "user.muted.text": "Du kan inte se Check-Ins från :username eftersom du har mjutat den här användaren.",
+    "user.already-unmuted": "Användaren: :username är inte mjutat.",
+    "user.mute-tooltip": "Mjuta användaren",
+    "user.unmuted": "Du har upphävat att användaren: :username är mjutat.",
+    "user.unmute-tooltip": "Mjuta användaren inte längre"
 }
