@@ -12,14 +12,14 @@
     <div class="card-body row">
       <div class="col-2 image-box pe-0 d-none d-lg-flex">
         <router-link :to="{ name: 'profile', params: {username: status.username}}">
-          <img :src="`/profile/${status.username}/profilepicture`">
+          <img :src="`/profile/${status.username}/profilepicture`" :alt="status.username">
         </router-link>
       </div>
 
       <div class="col ps-0">
         <ul class="timeline">
           <li>
-            <i>&nbsp;</i>
+            <i class="trwl-bulletpoint" aria-hidden="true"></i>
             <span class="text-trwl float-end">
               <small v-if="status.train.origin.isDepartureDelayed"
                      style="text-decoration: line-through;"
@@ -34,30 +34,29 @@
               <span>
                 <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
                      :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
-                <i v-else class="fa fa-train d-inline"></i>
+                <i v-else class="fa fa-train d-inline" aria-hidden="true"></i>
                 {{ status.train.lineName }}
               </span>
               <span class="ps-2">
-                <i class="fa fa-route d-inline"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
+                <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
               </span>
-              <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}</span>
-              <!--                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}-->
+              <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{ duration }}</span>
               <span v-if="status.business === 1" class="pl-sm-2">
-                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
+                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top" aria-hidden="true"></i>
                 <!--title="{{ __('stationboard.business.business') }}"-->
               </span>
               <span v-else-if="status.business === 2" class="pl-sm-2">
-                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"></i>
+                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top" aria-hidden="true"></i>
                                                    title="__('stationboard.business.commute')">
               </span>
               <br>
               <span v-if="status.event != null" class="pl-sm-2">
-                <i class="fa fa-calendar-day"></i>
+                <i class="fa fa-calendar-day" aria-hidden="true"></i>
                 &nbsp;
                 <a :href="`/event/${status.event.slug}`">{{ status.event.name }}</a>
               </span>
             </p>
-            <p v-if="status.body" class="status-body"><i class="fas fa-quote-right"></i> {{ status.body }}</p>
+            <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ status.body }}</p>
             <!--            @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())-->
             <!--            <p class="text-muted font-italic">-->
             <!--              {{ __('stationboard.next-stop') }}-->
@@ -66,7 +65,7 @@
             <!--            @endif-->
           </li>
           <li>
-            <i>&nbsp;</i>
+            <i class="trwl-bulletpoint" aria-hidden="true"></i>
             <span class="text-trwl float-end">
               <small v-if="status.train.destination.isArrivalDelayed"
                      style="text-decoration: line-through;"
@@ -96,11 +95,7 @@
           <!--                    {{ status.username }}-->
           <!--                @endif-->
           <!--            </a>-->
-          <router-link :to="{name: 'profile', params: {username: status.username}}">
-            {{ status.username }}
-          </router-link>
-          <!--          {{ __('dates.-on-') }}-->
-          <!--          ToDo: Fix, to show correct time-->
+          <router-link :to="{name: 'profile', params: {username: status.username}}">{{ status.username }}</router-link>,
           <router-link :to="{ name: 'status', params: {id: status.id}}">
             {{ moment(status.createdAt).fromNow() }}
           </router-link>
@@ -256,6 +251,7 @@ export default {
   },
   computed: {
     duration() {
+      // ToDo: This needs localization, currently handled in `durationToSpan`
       const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
       let minutes    = duration % 60;
       let hours      = Math.floor(duration / 60);

@@ -7235,7 +7235,7 @@ ul.timeline > li {
   padding-left: 20px;
 }
 
-ul.timeline > li > i {
+ul.timeline > li > i.trwl-bulletpoint {
   content: " ";
   background: #fff;
   display: inline-block;
