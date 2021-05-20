@@ -7,6 +7,8 @@ use App\Http\Controllers\API\ResponseController;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Http\Resources\StopoverResource;
+use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
 use Illuminate\Http\JsonResponse;
@@ -48,5 +50,17 @@ class StatusController extends ResponseController
                               ];
                           });
         return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
+    }
+
+    /**
+     * @param $parameters
+     * @return JsonResponse
+     */
+    public function getStopovers($parameters) {
+        $tripIds = explode(',', $parameters, 50);
+        $trips   = HafasTrip::wherein('id', $tripIds)->get()->mapWithKeys(function($trip) {
+            return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
+        });
+        return $this->sendv1Response($trips);
     }
 }

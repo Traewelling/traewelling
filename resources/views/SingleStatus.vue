@@ -18,7 +18,7 @@
 
         <div v-if="status">
           <h5>{{ moment(status.train.origin.departure).format("dddd[,] LL") }}</h5>
-          <Status :status="status" :polyline="polyline"></Status>
+          <Status :status="status" :polyline="polyline" :stopovers="stopovers"></Status>
         </div>
       </div>
     </div>
@@ -38,6 +38,7 @@ export default {
       loading: false,
       status: null,
       polyline: null,
+      stopovers: null,
       moment: moment
     };
   },
@@ -57,6 +58,7 @@ export default {
           .then((response) => {
             this.loading = false;
             this.status  = response.data.data;
+            this.fetchStopovers();
           })
           .catch((error) => {
             this.loading = false;
@@ -68,6 +70,16 @@ export default {
           .get("/api/v1/polyline/" + this.$route.params.id)
           .then((response) => {
             this.polyline = [response.data.data[0].coordinatesArray];
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+    },
+    fetchStopovers() {
+      axios
+          .get("/api/v1/stopovers/" + this.status.train.trip)
+          .then((response) => {
+            this.stopovers = response.data.data;
           })
           .catch((error) => {
             console.error(error);

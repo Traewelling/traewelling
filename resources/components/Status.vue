@@ -59,11 +59,13 @@
             </p>
             <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
               {{ status.body }}</p>
-            <div v-if="departure.isBefore() && arrival.isAfter()">
-              __('stationboard.next-stop')
+            <div v-if="nextStop() != null">
               <p class="text-muted font-italic">
-<!--                ToDo: This __should__ show the next station. Not yet implemented.-->
-                stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status))
+                <!--                ToDo: fix with router link.-->
+                __('stationboard.next-stop')
+                <a :href="`/trains/stationboard?provider=train&station=${nextStop().name}`" class="text-trwl clearfix">{{
+                    nextStop().name
+                  }}</a>
               </p>
             </div>
           </li>
@@ -250,7 +252,8 @@ export default {
         trainstation: 0
       }
     },
-    polyline: null
+    polyline: null,
+    stopovers: null
   },
   computed: {
     departure() {
@@ -279,6 +282,23 @@ export default {
         percent = 100;
       }
       return percent;
+    },
+    showStopOvers() {
+      return this.departure.isBefore() && this.arrival.isAfter() && this.nextStop() !== null;
+    }
+  },
+  methods: {
+    nextStop() {
+      if (this.stopovers != null) {
+        let stopOvers = this.stopovers[this.status.train.trip];
+        if (stopOvers && stopOvers.length > 0) {
+          let future = stopOvers.filter((stopover) => {
+            return moment(stopover.arrival).isAfter();
+          });
+          return future[0];
+        }
+      }
+      return null;
     }
   }
 }

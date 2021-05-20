@@ -17,7 +17,7 @@
         </div>
 
         <div v-if="statuses">
-          <Status v-for="status in statuses" :status="status"></Status>
+          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"></Status>
         </div>
       </div>
     </div>
@@ -34,6 +34,7 @@ export default {
       loading: false,
       statuses: null,
       error: null,
+      stopovers: null
     };
   },
   components: {
@@ -51,13 +52,28 @@ export default {
           .then((response) => {
             this.loading  = false;
             this.statuses = response.data.data;
+            this.fetchStopovers();
           })
           .catch((error) => {
             this.loading = false;
             this.error   = error.response.data.message || error.message;
           });
+    },
+    fetchStopovers() {
+      let tripIds = "";
+      this.statuses.forEach((status) => {
+        tripIds += (status.train.trip + ",");
+      });
+      axios
+          .get("/api/v1/stopovers/" + tripIds)
+          .then((response) => {
+            this.stopovers = response.data.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          })
     }
-  }
+  },
 }
 </script>
 
