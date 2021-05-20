@@ -57,7 +57,7 @@ class TrainCheckin extends Model
             $route[0]    = [$origin->latitude, $origin->longitude];
             $route[1]    = [$destination->latitude, $destination->longitude];
 
-            return json_encode($route);
+            return $route;
         }
 
 
@@ -65,7 +65,7 @@ class TrainCheckin extends Model
 
         // Bei manchen Posts ist das Feld leer.
         if (!isset($polyline->features)) {
-            return json_encode([]);
+            return [];
         }
 
         $features     = $polyline->features;
@@ -87,7 +87,7 @@ class TrainCheckin extends Model
             }
 
         }
-        return json_encode($coords);
+        return $coords;
     }
 
     /**

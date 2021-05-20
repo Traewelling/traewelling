@@ -101,7 +101,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return $status->trainCheckin->getMapLines();
+            return json_encode($status->trainCheckin->getMapLines());
         });
         if ($array == true) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];

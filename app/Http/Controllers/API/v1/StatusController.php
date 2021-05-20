@@ -44,7 +44,7 @@ class StatusController extends ResponseController
                           })
                           ->map(function($status) {
                               return ["id"               => (int) $status->id,
-                                      "coordinatesArray" => json_decode($status->trainCheckin->getMapLines())
+                                      "coordinatesArray" => $status->trainCheckin->getMapLines()
                               ];
                           });
         return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
