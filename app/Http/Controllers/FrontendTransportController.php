@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\EventController as EventBackend;
@@ -32,12 +33,7 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'station'    => ['required', 'string'],
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in([
-                                                                                      'nationalExpress', 'express',
-                                                                                      'regionalExp', 'regional',
-                                                                                      'suburban', 'bus', 'ferry',
-                                                                                      'subway', 'tram', 'taxi'
-                                                                                  ])]
+                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
                                         ]);
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
@@ -129,7 +125,7 @@ class FrontendTransportController extends Controller
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
             'body'           => 'max:280',
-            'business_check_new_travel' => 'digits_between:0,2',
+            'business_check' => 'digits_between:0,2',
             'tweet_check'    => 'max:2',
             'toot_check'     => 'max:2',
             'event'          => 'integer',
@@ -143,7 +139,7 @@ class FrontendTransportController extends Controller
                 $request->destination,
                 $request->body,
                 Auth::user(),
-                $request->business_check_new_travel,
+                $request->business_check,
                 $request->tweet_check,
                 $request->toot_check,
                 $request->event,

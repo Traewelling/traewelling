@@ -2,19 +2,28 @@
 
 namespace Tests;
 
+use App\Enum\TravelType;
+use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
+use App\Http\Controllers\TransportController;
+use App\Models\Event;
 use App\Models\User;
+use Carbon\Carbon;
+use DateInterval;
+use DateTime;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use JetBrains\PhpStorm\ArrayShape;
+use Tests\Feature\CheckinTest;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function createGDPRAckedUser(): User {
-
-        // Creates user
-        $user = User::factory()->create();
-        $this->actingAs($user)
-             ->post('/gdpr-ack');
+    public function createGDPRAckedUser(array $defaultValues = []): User {
+        $user = User::factory($defaultValues)->create();
+        $this->acceptGDPR($user);
 
         return $user;
     }
@@ -40,9 +49,9 @@ abstract class TestCase extends BaseTestCase
      * @throws \Exception
      */
     public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
-        $requestDateMinusMinusOneDay = (clone $requestDate)->sub(new \DateInterval('P2D'));
-        $requestDateMinusOneDay      = (clone $requestDate)->sub(new \DateInterval('P1D'));
-        $requestDatePlusOneDay       = (clone $requestDate)->add(new \DateInterval('P1D'));
+        $requestDateMinusMinusOneDay = (clone $requestDate)->sub(new DateInterval('P2D'));
+        $requestDateMinusOneDay      = (clone $requestDate)->sub(new DateInterval('P1D'));
+        $requestDatePlusOneDay       = (clone $requestDate)->add(new DateInterval('P1D'));
 
         // All Hafas Trips should have four pipe characters
         $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
@@ -69,4 +78,84 @@ abstract class TestCase extends BaseTestCase
         $response->assertRedirect('/dashboard');
     }
 
+
+    /**
+     * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
+     * @param $stationName
+     * @param DateTime $now
+     * @param User|null $user
+     * @param bool|null $forEvent
+     * @return array|null
+     * @throws HafasException
+     */
+    #[ArrayShape([
+        'success'              => "bool",
+        'statusId'             => "int",
+        'points'               => "int",
+        'alsoOnThisConnection' => "\Illuminate\Support\Collection",
+        'lineName'             => "string",
+        'distance'             => "float",
+        'duration'             => "float",
+        'event'                => "mixed"
+    ])]
+    protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent = null): ?array {
+        if ($user == null) {
+            $user = $this->user;
+        }
+        $trainStationboard = TransportController::TrainStationboard($stationName,
+                                                                    Carbon::createFromTimestamp($now->format('U')),
+                                                                    TravelType::EXPRESS);
+        $countDepartures   = count($trainStationboard['departures']);
+        if ($countDepartures == 0) {
+            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
+        }
+
+        // Second: We don't like broken or cancelled trains.
+        $i = 0;
+        while ((isset($trainStationboard['departures'][$i]->cancelled)
+                && $trainStationboard['departures'][$i]->cancelled)
+               || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            $i++;
+            if ($i == $countDepartures) {
+                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
+            }
+        }
+        $departure = $trainStationboard['departures'][$i];
+        CheckinTest::isCorrectHafasTrip($departure, $now);
+
+        // Third: Get the trip information
+        $trip = TransportController::TrainTrip(
+            $departure->tripId,
+            $departure->line->name,
+            $departure->stop->location->id
+        );
+
+        $eventId = 0;
+        if ($forEvent != null) {
+            try {
+                $eventId = Event::firstOrFail()->id;
+            } catch (ModelNotFoundException) {
+                $this->markTestSkipped("No event found even though required");
+            }
+        }
+
+        // WHEN: User tries to check-in
+        try {
+            return TransportController::TrainCheckin(
+                tripId: $trip['train']['trip_id'],
+                start: $trip['stopovers'][0]['stop']['id'],
+                destination: end($trip['stopovers'])['stop']['id'],
+                body: '',
+                user: $user,
+                businessCheck: 0,
+                tweetCheck: 0,
+                tootCheck: 0,
+                eventId: $eventId
+            );
+        } catch (StationNotOnTripException) {
+            $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
+        } catch (CheckInCollisionException) {
+            $this->markTestSkipped("failure for " . $now->format('Y-m-d H:i:s') . ": Collision");
+        }
+    }
 }

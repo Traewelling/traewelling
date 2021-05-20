@@ -13,6 +13,8 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -21,7 +23,6 @@ use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -32,9 +33,6 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
 
 Route::view('/about', 'about')->name('static.about');
 Route::view('/imprint', 'imprint')->name('static.imprint');
-
-Route::get('/lang/{lang?}', [FrontendStaticController::class, 'changeLanguage'])
-     ->name('static.lang');
 
 Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
      ->name('static.privacy');
@@ -133,18 +131,27 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
 
-    Route::prefix('settings')->group(function() {
-        Route::get('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'renderSettings'])
-             ->name('settings');
-        Route::post('/', [\App\Http\Controllers\Frontend\SettingsController::class, 'updateMainSettings']);
+    Route::get('/stats', [StatisticController::class, 'renderMainStats'])
+         ->name('stats');
 
-        Route::post('/password', [\App\Http\Controllers\Frontend\SettingsController::class, 'updatePassword'])
+    Route::prefix('settings')->group(function() {
+        Route::get('/', [SettingsController::class, 'renderSettings'])
+             ->name('settings');
+        Route::post('/', [SettingsController::class, 'updateMainSettings']);
+        Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
+             ->name('settings.privacy');
+
+        Route::post('/password', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
 
-        Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
+        Route::get('/follower', [\App\Http\Controllers\SettingsController::class, 'renderFollowerSettings'])
              ->name('settings.follower');
-        Route::post('/follower/remove', [SettingsController::class, 'removeFollower'])
+        Route::post('/follower/remove', [\App\Http\Controllers\SettingsController::class, 'removeFollower'])
              ->name('settings.follower.remove');
+        Route::post('/follower/approve', [\App\Http\Controllers\Frontend\SettingsController::class, 'approveFollower'])
+             ->name('settings.follower.approve');
+        Route::post('/follower/reject', [\App\Http\Controllers\Frontend\SettingsController::class, 'rejectFollower'])
+             ->name('settings.follower.reject');
 
         Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
              ->name('settings.upload-image');
@@ -184,7 +191,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create');
 
-    Route::post('/destroyfollow', [FrontendUserController::class, 'DestroyFollow'])
+    Route::post('/requestfollow', [FrontendUserController::class, 'requestFollow'])
+         ->name('follow.request');
+
+    Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
          ->name('follow.destroy');
 
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
@@ -227,4 +237,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
+
+    Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
+         ->name('user.mute');
+    Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
+         ->name('user.unmute');
 });

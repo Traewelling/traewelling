@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
@@ -27,10 +28,7 @@ class TransportController extends ResponseController
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
-            'travelType' => ['nullable', Rule::in([
-                                                      'nationalExpress', 'express', 'regionalExp', 'regional',
-                                                      'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi'
-                                                  ])]
+            'travelType' => ['nullable', Rule::in(TravelType::getList())]
         ]);
 
         if ($validator->fails()) {

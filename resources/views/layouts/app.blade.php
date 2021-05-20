@@ -26,13 +26,13 @@
         <meta name="description" content="{{__('about.block1')}}">
         <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
         <meta name="audience" content="Travellers">
-        <meta name="robots" content="index, nofollow">
         <meta name="DC.Rights" content="Träwelling Team">
         <meta name="DC.Description" content="{{__('about.block1')}}">
         <meta name="DC.Language" content="de">
 
         @include('layouts.includes.meta-pwa')
         @yield('metadata')
+        @yield('head')
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
@@ -73,6 +73,7 @@
                                     aria-expanded="false"
                                     aria-label="{{ __('Show notifications') }}">
                                 <span class="notifications-bell far fa-bell"></span>
+                                <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                             </button>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
@@ -97,6 +98,12 @@
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                   href="{{ route('stats') }}">
+                                    {{__('stats')}}
+                                </a>
+                            </li>
                         </ul>
                         <ul class="navbar-nav w-auto">
                             @guest
@@ -111,7 +118,8 @@
                                     <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
                                                class="border border-white rounded-left form-control my-0 py-1"
-                                               placeholder="Search" aria-label="User suchen">
+                                               placeholder="{{ __('stationboard.submit-search') }}"
+                                               aria-label="User suchen"/>
                                         <button class="input-group-text btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
@@ -123,6 +131,7 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -171,11 +180,18 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="text-muted mb-0 float-end">
-                        |
-                        @foreach(config('app.locales') as $key=>$lang)
-                            <a href="{{ route('static.lang', ['lang' => $key]) }}">{{ $lang }}</a> |
-                        @endforeach
+                    <div class="btn-group dropup float-end">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                        </button>
+                        <div class="dropdown-menu">
+                            @foreach(config('app.locales') as $key => $lang)
+                                <a class="dropdown-item" href="?language={{ $key }}">
+                                    {{ $lang }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                     <p class="text-muted mb-0">
                 <span class="footer-nav-link">
@@ -223,10 +239,12 @@
             var urlDislike = '{{ route('like.destroy') }}';
             var urlEdit = '{{ route('edit') }}';
             var urlFollow = '{{ route('follow.create') }}';
+            var urlFollowRequest = '{{ route('follow.request') }}';
             var urlLike = '{{ route('like.create') }}';
             var urlTrainTrip = '{{ route('trains.trip') }}';
             var urlUnfollow = '{{ route('follow.destroy') }}';
             var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
         </script>
+        @yield('javascript-end')
     </body>
 </html>

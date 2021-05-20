@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
-use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Collection;
@@ -60,8 +60,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationPositiveTest() {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $this->acceptGDPR($user);
+        $user = $this->createGDPRAckedUser();
 
         // GIVEN: A bunch of locations around Europe that should return true
         $locations = [
@@ -92,8 +91,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationNegativeTest() {
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $this->acceptGDPR($user);
+        $user = $this->createGDPRAckedUser();
 
         // GIVEN: A bunch of Locations
         $locations = [
@@ -140,7 +138,7 @@ class CheckinTest extends TestCase
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
             Carbon::createFromTimestamp($now->format('U')),
-            'express'
+            TravelType::EXPRESS
         );
 
         $countDepartures = count($trainStationboard['departures']);
@@ -171,11 +169,7 @@ class CheckinTest extends TestCase
         );
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/');
+        $user = $this->createGDPRAckedUser();
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
@@ -184,6 +178,8 @@ class CheckinTest extends TestCase
                              'tripID'      => $departure->tripId,
                              'start'       => $ibnr,
                              'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+                             'departure'   => Carbon::parse($departure->plannedWhen),
+                             'arrival'     => Carbon::parse($trip['stopovers'][0]['plannedArrival'])
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -356,8 +352,7 @@ class CheckinTest extends TestCase
      */
     public function testCheckinSuccessFlash() {
         // GIVEN: A gdpr-acked user
-        $user     = User::factory()->create();
-        $this->acceptGDPR($user);
+        $user = $this->createGDPRAckedUser();
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [
@@ -424,11 +419,7 @@ class CheckinTest extends TestCase
         );
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        $user = $this->createGDPRAckedUser();
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
@@ -505,11 +496,7 @@ class CheckinTest extends TestCase
         );
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user     = User::factory()->create();
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        $user = $this->createGDPRAckedUser();
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)

@@ -14,17 +14,21 @@
     <meta name="twitter:title" content="{{ $title }}"/>
     <meta name="twitter:description" content="{{ $description }}"/>
     <meta name="twitter:image" content="{{ $image }}"/>
+
+    @if($status->user->prevent_index)
+        <meta name="robots" content="noindex"/>
+    @endif
 @endsection
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <h5>{{ $status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY') }}</h5>
+                <h5>{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h5>
                 @include('includes.status')
             </div>
         </div>
         @include('includes.edit-modal')
         @include('includes.delete-modal')
-    </div><!--- /container -->
+    </div>
 @endsection

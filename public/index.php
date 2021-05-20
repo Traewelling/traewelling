@@ -13,6 +13,10 @@ if (file_exists(__DIR__ . '/../storage/framework/maintenance.php')) {
     require __DIR__ . '/../storage/framework/maintenance.php';
 }
 
+//The Language Helper needs to be required BEFORE autoload
+//to intercept the internal laravel __() helper method
+require_once __DIR__ . '/../app/Helpers/Language.php';
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader

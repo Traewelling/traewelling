@@ -15,6 +15,7 @@ class UsersTableSeeder extends Seeder
      * @return void
      */
     public function run(): void {
+        // For better Testing, we'll create private and public users.
         User::factory()
             ->has(IcsToken::factory(rand(0, 2)))
             ->create([
@@ -22,6 +23,15 @@ class UsersTableSeeder extends Seeder
                          'name'     => 'Gertrud',
                          'email'    => 'gertrud@traewelling.de',
                          'password' => Hash::make('thisisnotasecurepassword123')
+                     ]);
+
+        User::factory()
+            ->create([
+                         'username'        => 'bob',
+                         'name'            => 'Bob from Alice & Bob',
+                         'email'           => 'bob@example.com',
+                         'private_profile' => true,
+                         'password'        => Hash::make('thisisnotasecurepassword123')
                      ]);
 
         User::factory()

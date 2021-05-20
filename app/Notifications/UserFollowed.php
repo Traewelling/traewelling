@@ -48,6 +48,11 @@ class UserFollowed extends Notification
         ];
     }
 
+    /**
+     * Detail-Handler of notification
+     *
+     * @throws ShouldDeleteNotificationException
+     */
     public static function detail($notification) {
         $data                 = $notification->data;
         $notification->detail = new \stdClass();
@@ -67,8 +72,8 @@ class UserFollowed extends Notification
 
     public static function render($notification) {
         try {
-            $detail = Self::detail($notification);
-        } catch (ShouldDeleteNotificationException $e) {
+            $detail = self::detail($notification);
+        } catch (ShouldDeleteNotificationException) {
             $notification->delete();
             return null;
         }

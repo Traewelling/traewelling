@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\User;
 use Faker\Factory;
 
 abstract class ApiTestCase extends TestCase

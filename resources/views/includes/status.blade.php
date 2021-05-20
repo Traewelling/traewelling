@@ -1,7 +1,7 @@
-<div class="card status mt-3" id="status-{{ $status->id }}" data-body="{{ $status->body }}"
-     data-date="{{$status->trainCheckin->departure->isoFormat('dddd, DD. MMMM YYYY')}}"
-     data-businessid="{{ $status->business }}"
-    >
+<div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
+     data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
+     data-trwl-business-id="{{ $status->business }}"
+>
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
             <div class="card-img-top">
@@ -25,11 +25,11 @@
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;"
-                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->format('H:i') }}</small>
+                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}</small>
                             &nbsp;
-                            {{ $status->trainCheckin->origin_stopover->departure_real->format('H:i') }}
+                            {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
                         @else
-                            {{ $status->trainCheckin?->origin_stopover?->departure->format('H:i') ?? $status->trainCheckin->departure->format('H:i') }}
+                            {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
                         @endif
                     </span>
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
@@ -42,19 +42,35 @@
                                 <i class="fa fa-train d-inline"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
-                        <span class="ps-2"><i class="fa fa-route d-inline"></i>&nbsp;{{number($status->trainCheckin->distance, 0)}}<small>km</small></span>
-                        <span class="ps-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}</span>
+                        <span class="ps-2">
+                            <i class="fa fa-route d-inline"></i>&nbsp;
+                            {{number($status->trainCheckin->distance, 0)}}<small>km</small>
+                        </span>
+                        <span class="ps-2">
+                            <i class="fa fa-stopwatch d-inline"></i>&nbsp;
+                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
+                        </span>
 
                         @if($status->business == 1)
-                            <span class="pl-sm-2"><i class="fa fa-briefcase"></i></span>
+                            <span class="pl-sm-2">
+                                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                                   title="{{ __('stationboard.business.business') }}"></i>
+                            </span>
                         @endif
                         @if($status->business == 2)
-                            <span class="pl-sm-2"><i class="fa fa-building"></i></span>
+                            <span class="pl-sm-2">
+                                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                                   title="{{ __('stationboard.business.commute') }}"></i>
+                            </span>
                         @endif
                         @if($status->event != null)
-                            <br class="d-sm-none">
-                            <span class="pl-sm-2"><i class="fa fa-calendar-day"></i> <a
-                                        href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a></span>
+                            <br/>
+                            <span class="pl-sm-2">
+                                <i class="fa fa-calendar-day"></i>
+                                <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">
+                                    {{ $status->event->name }}
+                                </a>
+                            </span>
                         @endif
                     </p>
 
@@ -63,30 +79,27 @@
                     @endif
 
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
-                        <p class="text-muted font-italic">{{ __('stationboard.next-stop') }}
-                            : {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}</p>
+                        <p class="text-muted font-italic">
+                            {{ __('stationboard.next-stop') }}
+                            {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}
+                        </p>
                     @endif
                 </li>
                 <li>
                     <i>&nbsp;</i>
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
-                            <small style="text-decoration: line-through;"
-                                   class="text-muted">{{ $status->trainCheckin->destination_stopover->arrival_planned->format('H:i') }}</small>
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
+                            </small>
                             &nbsp;
-                            {{ $status->trainCheckin->destination_stopover->arrival_real->format('H:i') }}
+                            {{ $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format')) }}
                         @else
-                            {{ $status->trainCheckin?->destination_stopover?->arrival?->format('H:i') ?? $status->trainCheckin->arrival->format('H:i') }}
+                            {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
                     {!! stationLink($status->trainCheckin->Destination->name) !!}
                 </li>
-            @if($status->event != null)
-                <!-- <li class="calendar-button">
-                    <i class="fa fa-calendar-day"></i>
-                    <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">{{ $status->event->name }}</a>
-                </li> -->
-                @endif
             </ul>
         </div>
     </div>
@@ -103,27 +116,21 @@
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                @if(Auth::check())
-                    @if(auth()->user()->id == $status->user_id)
-                        {{__('user.you')}}
-                    @else
-                        {{ $status->user->username }}
-                    @endif
+                @if(auth()?->user()?->id == $status->user_id)
+                    {{__('user.you')}}
                 @else
                     {{ $status->user->username }}
                 @endif
             </a>{{__('dates.-on-')}}
             <a href="{{ url('/status/'.$status->id) }}">
-                {{ $status->created_at->format('H:i') }}
+                {{ $status->created_at->isoFormat(__('time-format')) }}
             </a>
         </span>
         <ul class="list-inline">
-
-
-            @if(Auth::check())
+            @auth
                 <li class="
                 @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}" data-selflike="{{ auth()->user()->id == $status->user_id }}">
+                    id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
@@ -132,20 +139,19 @@
 
                 <li class="list-inline-item like-text">
                     <span class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                          data-statusid="{{ $status->id }}"></span>
+                          data-trwl-status-id="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
                           id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-statusid="{{ $status->id }}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>
                     </li>
 
                     <li class="list-inline-item like-text">
-                        <a href="#" class="delete" data-statusid="{{ $status->id }}"><i class="fas fa-trash"></i></a>
+                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>
                     </li>
                 @endif
-
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
@@ -153,7 +159,7 @@
                              class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
-            @endif
+            @endauth
         </ul>
     </div>
 

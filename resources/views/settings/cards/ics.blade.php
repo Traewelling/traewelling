@@ -19,8 +19,8 @@
                         <tr>
                             <td>{{$icsToken->name}}</td>
                             <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
-                            <td>{{ $icsToken->created_at->format('d.m.Y H:i') }}</td>
-                            <td>{{ $icsToken?->last_accessed?->format('d.m.Y H:i') ?? __('settings.never') }}</td>
+                            <td>{{ $icsToken->created_at->isoFormat(__('datetime-format')) }}</td>
+                            <td>{{ $icsToken?->last_accessed?->isoFormat(__('datetime-format')) ?? __('settings.never') }}</td>
                             <td>
                                 <form method="POST" action="{{route('ics.revokeToken')}}">
                                     @csrf
