@@ -179,6 +179,10 @@ class UserController extends Controller
      * @throws AlreadyFollowingException
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
+        if ($user->is($userToFollow)) {
+            return false;
+        }
+
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
         if (self::isFollowing($user, $userToFollow)) {
