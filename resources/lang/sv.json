@@ -383,5 +383,17 @@
     "user.already-unmuted": "Användaren: :username är inte mjutat.",
     "user.mute-tooltip": "Mjuta användaren",
     "user.unmuted": "Du har upphävat att användaren: :username är mjutat.",
-    "user.unmute-tooltip": "Mjuta användaren inte längre"
+    "user.unmute-tooltip": "Mjuta användaren inte längre",
+    "stats.global.active": "Aktiva Träweller",
+    "stats.volume": "Din resevolym",
+    "stats.global.duration": "Restid för alla Träweller",
+    "stats": "Statistiker",
+    "stats.no-data": "Det finns inga uppgifter under perioden.",
+    "stats.personal": "Personlig statistiker från :fromDate till :toDate",
+    "stats.per-week": "per kalendervecka",
+    "stats.categories": "Dina favoritresetyper",
+    "stats.global.distance": "Körsträcka för alla Träweller",
+    "stats.global": "globala statistiker",
+    "stats.time-in-minutes": "Restid i minuter",
+    "stats.companies": "Ditt favorit transportföretag"
 }
