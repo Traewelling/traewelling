@@ -31,6 +31,9 @@ class LeaderboardController extends Controller
             throw new InvalidArgumentException('orderBy must be one of the following strings: points, distance, duration, speed');
         }
 
+        $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
+        $sumDistance = 'SUM(train_checkins.distance)';
+
         $query = DB::table('statuses')
                    ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                    ->where('train_checkins.departure', '>=', $since->toIso8601String())
@@ -39,9 +42,9 @@ class LeaderboardController extends Controller
                    ->select([
                                 'statuses.user_id',
                                 DB::raw('SUM(train_checkins.points) AS points'),
-                                DB::raw('SUM(train_checkins.distance) AS distance'),
-                                DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival)) AS duration'),
-                                DB::raw('SUM(train_checkins.distance) / SUM(TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival)) AS speed'),
+                                DB::raw($sumDistance . ' AS distance'),
+                                DB::raw($sumDuration . ' AS duration'),
+                                DB::raw($sumDistance . ' / ' . $sumDuration . ' AS speed'),
                             ])
                    ->orderByDesc($orderBy)
                    ->limit($limit);
