@@ -617,14 +617,16 @@ class TransportController extends Controller
         ];
 
         $seenCheckins = 0;
-        for ($i = 0; $seenCheckins < $hafas && $i < count($transportTypes); $i++) {
+        $transportTypeCount = count($transportTypes);
+        for ($i = 0; $seenCheckins < $hafas && $i < $transportTypeCount; $i++) {
             $transport = $transportTypes[$i];
 
             $returnArray[$transport] = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
                                                 ->where("created_at", "<=", $date->copy()->endOfDay())
                                                 ->where('category', '=', $transport)
                                                 ->count();
-            $seenCheckins            += $returnArray[$transport];
+
+            $seenCheckins += $returnArray[$transport];
         }
 
         return $returnArray;

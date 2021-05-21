@@ -13,8 +13,9 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
-use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
+use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -48,7 +49,7 @@ Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
 Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('account.show');
 
-Route::get('/leaderboard', [FrontendUserController::class, 'getLeaderboard'])
+Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
 
 Route::get('/leaderboard/{date}', [FrontendUserController::class, 'renderMonthlyLeaderboard'])

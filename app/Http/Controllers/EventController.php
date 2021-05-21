@@ -54,7 +54,9 @@ class EventController extends Controller
         $event->fill($validated);
 
         $client      = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response    = $client->request('GET', "locations?query=" . $validated['nearest_station_name'])->getBody()->getContents();
+        $response    = $client->request('GET', "locations?query=" . $validated['nearest_station_name'])
+                              ->getBody()
+                              ->getContents();
         $ibnrObjekte = json_decode($response, true);
 
         $event->trainstation = TransportController::getTrainStation(

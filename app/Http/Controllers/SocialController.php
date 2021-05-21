@@ -128,7 +128,12 @@ class SocialController extends Controller
      */
     function createUser($getInfo, $provider, $domain): User|RedirectResponse|null {
         if ($provider === 'mastodon') {
-            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)->where('mastodon_server', MastodonServer::where('domain', $domain)->first()->id)->first();
+            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)
+                                            ->where(
+                                                'mastodon_server',
+                                                MastodonServer::where('domain', $domain)->first()->id
+                                            )
+                                            ->first();
         } else {
             $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)->first();
         }
