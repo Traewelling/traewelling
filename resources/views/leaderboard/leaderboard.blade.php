@@ -36,7 +36,7 @@
                                 </li>
                             @endif
                         </ul>
-                        <div class="tab-content" id="myTabContent">
+                        <div class="tab-content">
                             <div class="tab-pane fade show active table-responsive" id="leaderboard-main"
                                  role="tabpanel">
                                 @include('leaderboard.includes.main-table', [
