@@ -11,7 +11,7 @@
     "export.export": "Export",
     "menu.about": "À propos de Träwelling",
     "leaderboard.no_data": "Pas de tableau d’honneur pour ce mois-ci.",
-    "leaderboard.month": "Träwelleur du mois",
+    "leaderboard.month": "Träwelleurs du mois",
     "leaderboard.points": "Points",
     "menu.active": "En route",
     "menu.globaldashboard": "À la une globale",
@@ -374,5 +374,16 @@
     "time-format.with-day": "HH[h]mm (DD/MM/YYYY)",
     "datetime-format": "DD/MM/YYYY HH[h]mm",
     "dateformat.month-and-year": "MMMM YYYY",
-    "leaderboard.month.title": "Vue mensuelle"
+    "leaderboard.month.title": "Vue mensuelle",
+    "stats.companies": "Ton entreprise de transport favorisée",
+    "stats.global": "Statistiques globales",
+    "stats.no-data": "Il n’y a aucune donnée pendants ce temps-ci.",
+    "stats": "Statistiques",
+    "dashboard.future": "Tes enregistrements à venir",
+    "stats.trips": "Trajets",
+    "stats.per-week": "par semaine",
+    "stats.time-in-minutes": "Temps de parcours en minutes",
+    "stats.week-short": "S",
+    "stats.personal": "Statistiques personelles du :fromDate au :toDate",
+    "stats.global.active": "Träwelleurs actifs"
 }

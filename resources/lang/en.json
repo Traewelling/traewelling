@@ -370,8 +370,8 @@
     "transport_types.subway": "subway",
     "transport_types.tram": "tram",
     "stats": "Statistics",
-    "stats.personal" : "Personal statistics from :fromDate to :toDate",
-    "stats.global" : "Global statistics",
+    "stats.personal": "Personal statistics from :fromDate to :toDate",
+    "stats.global": "Global statistics",
     "stats.companies": "Your favorite transport companies",
     "stats.categories": "Your favorite travel types",
     "stats.volume": "Your travel volume",
@@ -390,5 +390,14 @@
     "datetime-format": "DD.MM.YYYY hh:mm a",
     "dateformat.month-and-year": "MMMM YYYY",
     "time-format.with-day": "hh:mm a (DD.MM.YYYY)",
-    "dashboard.future": "Your future check-ins"
+    "dashboard.future": "Your future check-ins",
+    "user.mute-tooltip": "Mute user",
+    "user.muted": "You have muted the user :username.",
+    "user.already-muted": "The user :username is already muted.",
+    "user.muted.text": "You can't see the check-ins from :username because you have muted this user.",
+    "user.unmuted": "You have unmuted the user :username.",
+    "user.muted.heading": "User muted",
+    "user.muted.heading2": "Muted users",
+    "user.already-unmuted": "The user :username is not muted.",
+    "user.unmute-tooltip": "Unmute user"
 }
