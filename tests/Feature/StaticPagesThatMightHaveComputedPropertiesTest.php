@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * Load the publicly accessable files that any visitor can load without logging in.
+ * Load the publicly accessible files that any visitor can load without logging in.
  * For all of these tests:
  *
  * GIVEN: Our codebase

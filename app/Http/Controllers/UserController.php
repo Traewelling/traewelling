@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Exceptions\AlreadyFollowingException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\MastodonServer;
 use App\Models\Status;
-use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -17,7 +14,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -250,56 +246,6 @@ class UserController extends Controller
      */
     private static function isFollowing(User $user, User $userFollow): bool {
         return $user->follows->contains('id', $userFollow->id);
-    }
-
-    #[ArrayShape([
-        'users'      => "Illuminate\\Support\\Collection",
-        'friends'    => "Illuminate\\Support\\Collection",
-        'kilometers' => "Illuminate\\Support\\Collection"
-    ])]
-    public static function getLeaderboard(): array {
-        $checkIns = TrainCheckin::with(['status.user', 'HafasTrip.stopoversNEW.trainStation', 'Origin', 'Destination'])
-                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                ->get();
-
-        $trainCheckIns = (clone $checkIns)
-            ->groupBy('status.user_id')
-            ->map(function($trainCheckIns) {
-                return [
-                    'user'     => $trainCheckIns->first()->status->user,
-                    'points'   => $trainCheckIns->sum('points'),
-                    'distance' => $trainCheckIns->sum('distance'),
-                    'duration' => $trainCheckIns->sum('duration'),
-                    'speed'    => $trainCheckIns->avg('speed')
-                ];
-            });
-
-        $friendsTrainCheckIns = null;
-        if (Auth::check()) {
-            $friendsTrainCheckIns = (clone $checkIns)
-                ->filter(function($trainCheckIn) {
-                    return Auth::user()->follows
-                            ->pluck('id')
-                            ->contains($trainCheckIn->status->user_id)
-                        || $trainCheckIn->status->user_id == Auth::user()->id;
-                })
-                ->groupBy('status.user_id')
-                ->map(function($trainCheckIns) {
-                    return [
-                        'user'     => $trainCheckIns->first()->status->user,
-                        'points'   => $trainCheckIns->sum('points'),
-                        'distance' => $trainCheckIns->sum('distance'),
-                        'duration' => $trainCheckIns->sum('duration'),
-                        'speed'    => $trainCheckIns->avg('speed')
-                    ];
-                });
-        }
-
-        return [
-            'users'      => (clone $trainCheckIns)->sortByDesc('points'),
-            'friends'    => $friendsTrainCheckIns?->sortByDesc('points') ?? null,
-            'kilometers' => (clone $trainCheckIns)->sortByDesc('distance')
-        ];
     }
 
     public static function registerByDay(Carbon $date): int {

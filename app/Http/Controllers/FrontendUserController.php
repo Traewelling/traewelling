@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
-use App\Models\UserMute;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FrontendUserController extends Controller
@@ -45,16 +43,6 @@ class FrontendUserController extends Controller
         return response($profilePicture['picture'])
             ->header('Content-Type', 'image/' . $profilePicture['extension'])
             ->header('Cache-Control', 'public, no-transform, max-age:900');
-    }
-
-    public function getLeaderboard(): Renderable {
-        $leaderboard = UserBackend::getLeaderboard();
-
-        return view('leaderboard.leaderboard', [
-            'users'      => $leaderboard['users']->take(15),
-            'friends'    => $leaderboard['friends']?->take(15),
-            'kilometers' => $leaderboard['kilometers']->take(15)
-        ]);
     }
 
     public function renderMonthlyLeaderboard(string $date): Renderable {
