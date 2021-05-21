@@ -83,5 +83,4 @@ class Status extends Model
 
         return $postText;
     }
-
 }

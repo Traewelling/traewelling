@@ -4,12 +4,9 @@ namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Status;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class UserJoinedConnection extends Notification
 {
@@ -25,8 +22,7 @@ class UserJoinedConnection extends Notification
      *
      * @return void
      */
-    public function __construct($statusId = null, $linename = null, $origin = null, $destination = null)
-    {
+    public function __construct($statusId = null, $linename = null, $origin = null, $destination = null) {
         $this->statusId    = $statusId;
         $this->linename    = $linename;
         $this->origin      = $origin;

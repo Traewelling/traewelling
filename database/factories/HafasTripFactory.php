@@ -24,8 +24,7 @@ class HafasTripFactory extends Factory
      *
      * @return array
      */
-    public function definition() {
-
+    public function definition(): array {
         $stops     = TrainStation::inRandomOrder()->limit(4)->get();
         $features  = [];
         $stopOvers = [];
@@ -117,7 +116,8 @@ class HafasTripFactory extends Factory
                 $stopOvers[$i]->arrival          = $startTime->clone()->addSeconds($add)->format('c');
                 $stopOvers[$i]->plannedDeparture = $stopOvers[$i]->arrival;
                 $stopOvers[$i]->departure        = $stopOvers[$i]->arrival;
-                $add                             += $interval;
+
+                $add += $interval;
             }
             $stopOvers[0]->arrival                 = $startTime->format('c');
             $stopOvers[0]->plannedArrival          = $startTime->format('c');

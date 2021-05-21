@@ -70,7 +70,9 @@ class FrontendTransportController extends Controller
                                                  'longitude' => 'required|numeric|min:-180|max:180'
                                              ]);
 
-        $nearestStation = HafasController::getNearbyStations($validatedInput['latitude'], $validatedInput['longitude'], 1)->first();
+        $nearestStation = HafasController::getNearbyStations(
+            $validatedInput['latitude'], $validatedInput['longitude'], 1
+        )->first();
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
@@ -207,5 +209,4 @@ class FrontendTransportController extends Controller
             'start'    => $request->start
         ]);
     }
-
 }
