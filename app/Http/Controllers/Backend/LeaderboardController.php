@@ -15,7 +15,7 @@ class LeaderboardController extends Controller
         string $orderBy = 'points',
         Carbon $since = null,
         Carbon $until = null,
-        int $limit = 15,
+        int $limit = 20,
         bool $onlyFollowings = false
     ): Collection {
         if ($since == null) {
