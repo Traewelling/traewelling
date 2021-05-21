@@ -33,7 +33,7 @@ class LeaderboardController extends Controller
             );
         }
 
-        $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
+        $sumDuration = 'SUM((train_checkins.arrival - train_checkins.departure) / 60)';
         $sumDistance = 'SUM(train_checkins.distance)';
 
         $query = DB::table('statuses')
@@ -53,7 +53,7 @@ class LeaderboardController extends Controller
 
         if ($onlyFollowings && auth()->check()) {
             $query->where(function($query) {
-                $query->whereIn('statuses.user_id', auth()->user()->follows()->select('id'))
+                $query->whereIn('statuses.user_id', auth()->user()->follows->pluck('id'))
                       ->orWhere('statuses.user_id', auth()->user()->id);
             });
         }
