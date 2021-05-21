@@ -48,7 +48,7 @@ class LeaderboardController extends Controller
 
         if ($onlyFollowings && auth()->check()) {
             $query->where(function($query) {
-                $query->whereIn('statuses.user_id', auth()->user()->follows->pluck('id'))
+                $query->whereIn('statuses.user_id', auth()->user()->follows()->select('id'))
                       ->orWhere('statuses.user_id', auth()->user()->id);
             });
         }
