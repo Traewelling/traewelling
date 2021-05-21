@@ -39,7 +39,6 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $this->assertGuest();
         $guest->assertDontSee(__('user.muted.heading'));
 
-
         // Can alice see the profile of bob? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
                       ->get(route('account.show', ['username' => $this->users->bob->user->username]));
@@ -94,14 +93,13 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $bob->assertJsonFragment(["id" => $this->users->bob->checkin['statusId']]);
         $bob->assertSuccessful();
 
-
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'api')
                       ->json('GET', route('api.v0.statuses.index'));
         $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
         $alice->assertSuccessful();
 
-        // Can Gertrud see the statuses of bob on the dashboard? => yno
+        // Can Gertrud see the statuses of bob on the dashboard? => no
         $gertrud = $this->actingAs($this->users->gertrud->user, 'api')
                         ->json('GET', route('api.v0.statuses.index'));
         $alice->assertJsonMissing(["username" => $this->users->bob->user->username]);
@@ -230,6 +228,5 @@ class MutedProfileVisibilityTest extends ApiTestCase
         \App\Http\Controllers\Backend\UserController::muteUser($data->gertrud->user, $data->bob->user);
 
         return $data;
-
     }
 }
