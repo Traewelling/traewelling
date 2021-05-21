@@ -2,14 +2,13 @@
 
 namespace Tests;
 
-use App\Models\User;
 use Faker\Factory;
 
 abstract class ApiTestCase extends TestCase
 {
     protected $faker;
-    public $mockConsoleOutput = false;
-    public $token;
+    public    $mockConsoleOutput = false;
+    public    $token;
 
     public function setUp(): void {
         parent::setUp();
@@ -31,6 +30,6 @@ abstract class ApiTestCase extends TestCase
 
         //Accept the privacy policy
         $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('PUT', route('api.v0.user.accept_privacy'));
+             ->json('PUT', route('api.v0.user.accept_privacy'));
     }
 }
