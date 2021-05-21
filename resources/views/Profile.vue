@@ -44,7 +44,7 @@
         Loading...
       </div>
 
-      <div v-if="!statusesLoading" class="row justify-content-center mt-5">
+      <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
         <div v-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
           <header><h3>__('profile.private-profile-text')</h3></header>
           <h5>
@@ -69,8 +69,8 @@
         </div>
       </div>
 
-      @include('includes.edit-modal')
-      @include('includes.delete-modal')
+<!--      @include('includes.edit-modal')-->
+<!--      @include('includes.delete-modal')-->
     </div>
   </div>
 </template>

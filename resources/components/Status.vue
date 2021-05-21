@@ -59,12 +59,12 @@
             </p>
             <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
               {{ status.body }}</p>
-            <div v-if="nextStop() != null">
+            <div v-if="nextStop != null">
               <p class="text-muted font-italic">
                 <!--                ToDo: fix with router link.-->
                 __('stationboard.next-stop')
-                <a :href="`/trains/stationboard?provider=train&station=${nextStop().name}`" class="text-trwl clearfix">{{
-                    nextStop().name
+                <a :href="`/trains/stationboard?provider=train&station=${nextStop.name}`" class="text-trwl clearfix">{{
+                    nextStop.name
                   }}</a>
               </p>
             </div>
@@ -179,7 +179,8 @@ export default {
       isSingleStatus: false,
       categories: ["bus", "suburban", "subway", "tram"],
       loading: false,
-      error: false
+      error: false,
+      now: moment()
     };
   },
   components: {
@@ -273,33 +274,38 @@ export default {
     percentage() {
       const start = moment(this.status.train.origin.departure);
       const end   = moment(this.status.train.destination.arrival);
-      const now   = moment();
       let percent;
       //ToDo: Add delays
-      if (now > start && now < end) {
-        percent = 100 * ((now - start) / (end - start));
-      } else if (now >= end) {
+      if (this.now > start && this.now < end) {
+        percent = 100 * ((this.now - start) / (end - start));
+      } else if (this.now >= end) {
         percent = 100;
       }
       return percent;
     },
     showStopOvers() {
       return this.departure.isBefore() && this.arrival.isAfter() && this.nextStop() !== null;
-    }
-  },
-  methods: {
+    },
     nextStop() {
       if (this.stopovers != null) {
         let stopOvers = this.stopovers[this.status.train.trip];
         if (stopOvers && stopOvers.length > 0) {
           let future = stopOvers.filter((stopover) => {
-            return moment(stopover.arrival).isAfter();
+            return moment(stopover.arrival).isAfter(this.now);
           });
           return future[0];
         }
       }
       return null;
     }
+  },
+  methods: {
+    startRefresh() {
+      setInterval(() => (this.now = moment()), 1000);
+    }
+  },
+  created() {
+    this.startRefresh();
   }
 }
 </script>
