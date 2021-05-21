@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\TransportController;
+use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
-use App\Models\User;
-use Carbon\Carbon;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
@@ -146,17 +144,18 @@ class NotificationsTest extends TestCase
 
     /** @test */
     public function mark_notification_as_read() {
-        // GIVEN: Alice has a notification (spawned via follow.create)
-        $follow = $this->actingAs($this->user)->post(route('follow.create'), ['follow_id' => $this->user->id]);
-        $follow->assertStatus(201);
+        // GIVEN: Alice has a notification
+        $userToFollow = $this->createGDPRAckedUser();
+        UserBackend::createFollow($this->user, $userToFollow);
 
         // GIVEN: Alice receives the notification and it's unread
-        $notificationPart1 = DatabaseNotification::all()->where('notifiable_id', $this->user->id)->first();
+        $notificationPart1 = DatabaseNotification::all()->where('notifiable_id', $userToFollow->id)->first();
         $notifyID          = $notificationPart1->id;
         $this->assertTrue($notificationPart1->read_at == null);
 
         // WHEN: toggleReadState is called
-        $readReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notifyID]));
+        $readReq = $this->actingAs($userToFollow)
+                        ->post(route('notifications.toggleReadState', ['id' => $notifyID]));
         $readReq->assertStatus(201); // Created
 
         // THEN: the notification is read
@@ -164,12 +163,12 @@ class NotificationsTest extends TestCase
         $this->assertFalse($notificationPart2->read_at == null);
 
         // WHEN: toggleReadState is called again
-        $unreadReq = $this->actingAs($this->user)->post(route('notifications.toggleReadState', ['id' => $notifyID]));
+        $unreadReq = $this->actingAs($userToFollow)
+                          ->post(route('notifications.toggleReadState', ['id' => $notifyID]));
         $unreadReq->assertStatus(202); // Created
 
         // THEN: the notification is marked as unread again
         $notificationPart3 = json_decode($unreadReq->content());
-        // dd($notificationPart3);
         $this->assertTrue($notificationPart3->read_at == null);
     }
 
