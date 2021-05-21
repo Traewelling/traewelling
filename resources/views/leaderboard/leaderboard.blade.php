@@ -36,62 +36,6 @@
                                  aria-labelledby="home-tab">
                                 <table class="table table-striped table-hover">
                                     <thead>
-                                    <tr>
-                                        <td>{{ __('leaderboard.rank') }}</td>
-                                        <td>{{ __('leaderboard.user') }}</td>
-                                        <td>{{ __('leaderboard.duration') }}</td>
-                                        <td>{{ __('leaderboard.distance') }}</td>
-                                        <td>{{ __('leaderboard.averagespeed') }}</td>
-                                        <td>{{ __('leaderboard.points') }}</td>
-                                    </tr>
-                                    </thead>
-                                    @foreach($users as $user)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>
-                                                <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
-                                            </td>
-                                            <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
-                                            <td>{{ number($user['distance']) }}<small>km</small></td>
-                                            <td>{{ number($user['speed']) }}<small>km/h</small></td>
-                                            <td>{{ $user['points'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </div>
-                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel"
-                                 aria-labelledby="profile-tab">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                    <tr>
-                                        <td>{{ __('leaderboard.rank') }}</td>
-                                        <td>{{ __('leaderboard.user') }}</td>
-                                        <td>{{ __('leaderboard.duration') }}</td>
-                                        <td>{{ __('leaderboard.distance') }}</td>
-                                        <td>{{ __('leaderboard.averagespeed') }}</td>
-                                        <td>{{ __('leaderboard.points') }}</td>
-                                    </tr>
-                                    </thead>
-                                    @foreach($kilometers as $user)
-                                        <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
-                                            <td>
-                                                <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
-                                            </td>
-                                            <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
-                                            <td>{{ number($user['distance']) }}<small>km</small></td>
-                                            <td>{{ number($user['speed']) }}<small>km/h</small></td>
-                                            <td>{{ $user['points'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </div>
-                            @isset($friends)
-                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
-                                     aria-labelledby="contact-tab">
-                                    <table class="table table-striped table-hover">
-
-                                        <thead>
                                         <tr>
                                             <td>{{ __('leaderboard.rank') }}</td>
                                             <td>{{ __('leaderboard.user') }}</td>
@@ -100,17 +44,72 @@
                                             <td>{{ __('leaderboard.averagespeed') }}</td>
                                             <td>{{ __('leaderboard.points') }}</td>
                                         </tr>
+                                    </thead>
+                                    @foreach($users as $user)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>
+                                                <a href="{{ route('account.show', ['username' => $user->user->username]) }}">{{ $user->user->username }}</a>
+                                            </td>
+                                            <td>{!! durationToSpan(secondsToDuration(60 * $user->duration)) !!}</td>
+                                            <td>{{ number($user->distance) }}<small>km</small></td>
+                                            <td>{{ number($user->speed) }}<small>km/h</small></td>
+                                            <td>{{ $user->points }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+                            <div class="tab-pane fade table-responsive" id="top20k" role="tabpanel"
+                                 aria-labelledby="profile-tab">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <td>{{ __('leaderboard.rank') }}</td>
+                                            <td>{{ __('leaderboard.user') }}</td>
+                                            <td>{{ __('leaderboard.duration') }}</td>
+                                            <td>{{ __('leaderboard.distance') }}</td>
+                                            <td>{{ __('leaderboard.averagespeed') }}</td>
+                                            <td>{{ __('leaderboard.points') }}</td>
+                                        </tr>
+                                    </thead>
+                                    @foreach($distance as $user)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>
+                                                <a href="{{ route('account.show', ['username' => $user->user->username]) }}">{{ $user->user->username }}</a>
+                                            </td>
+                                            <td>{!! durationToSpan(secondsToDuration(60 * $user->duration)) !!}</td>
+                                            <td>{{ number($user->distance) }}<small>km</small></td>
+                                            <td>{{ number($user->speed) }}<small>km/h</small></td>
+                                            <td>{{ $user->points }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+                            @isset($friends)
+                                <div class="tab-pane fade table-responsive" id="top20f" role="tabpanel"
+                                     aria-labelledby="contact-tab">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td>{{ __('leaderboard.rank') }}</td>
+                                                <td>{{ __('leaderboard.user') }}</td>
+                                                <td>{{ __('leaderboard.duration') }}</td>
+                                                <td>{{ __('leaderboard.distance') }}</td>
+                                                <td>{{ __('leaderboard.averagespeed') }}</td>
+                                                <td>{{ __('leaderboard.points') }}</td>
+                                            </tr>
                                         </thead>
                                         @foreach($friends as $user)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
                                                 <td>
-                                                    <a href="{{ route('account.show', ['username' => $user['user']->username]) }}">{{ $user['user']->username }}</a>
+                                                    <a href="{{ route('account.show', ['username' => $user->user->username]) }}">{{ $user->user->username }}</a>
                                                 </td>
-                                                <td>{!! durationToSpan(secondsToDuration(60 * $user['duration'])) !!}</td>
-                                                <td>{{ number($user['distance']) }}<small>km</small></td>
-                                                <td>{{ number($user['speed']) }}<small>km/h</small></td>
-                                                <td>{{ $user['points'] }}</td>
+                                                <td>{!! durationToSpan(secondsToDuration(60 * $user->duration)) !!}</td>
+                                                <td>{{ number($user->distance) }}<small>km</small></td>
+                                                <td>{{ number($user->speed) }}<small>km/h</small></td>
+                                                <td>{{ $user->points }}</td>
                                             </tr>
                                         @endforeach
                                     </table>
@@ -121,5 +120,5 @@
                 </div>
             </div>
         </div>
-    </div><!--- /container -->
+    </div>
 @endsection
