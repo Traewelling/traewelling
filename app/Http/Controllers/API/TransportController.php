@@ -109,7 +109,7 @@ class TransportController extends ResponseController
 
         if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
-        } else if ($hafasTrip == null) {
+        } elseif ($hafasTrip == null) {
             try {
                 $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
             } catch (HafasException $exception) {

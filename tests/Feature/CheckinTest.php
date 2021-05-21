@@ -64,9 +64,24 @@ class CheckinTest extends TestCase
 
         // GIVEN: A bunch of locations around Europe that should return true
         $locations = [
-            //["name" => "Dortmund Hbf", "station" => "Hauptbahnhof, Dortmund", "latitude" => 51.517, "longitude" => 7.4592],
-            ["name" => "FRA", "station" => "Frankfurt(M) Flughafen Fernbf", "latitude" => 50.052926, "longitude" => 8.569776],
-            //["name" => "Moskau", "station" => "Moskva Oktiabrskaia", "latitude" => 55.776111, "longitude" => 37.655278]
+            /*[
+                "name"      => "Dortmund Hbf",
+                "station"   => "Hauptbahnhof, Dortmund",
+                "latitude"  => 51.517,
+                "longitude" => 7.4592
+            ], */
+            [
+                "name"      => "FRA",
+                "station"   => "Frankfurt(M) Flughafen Fernbf",
+                "latitude"  => 50.052926,
+                "longitude" => 8.569776
+            ]
+            /*, [
+                "name"      => "Moskau",
+                "station"   => "Moskva Oktiabrskaia",
+                "latitude"  => 55.776111,
+                "longitude" => 37.655278
+            ]*/
         ];
 
         foreach ($locations as $testcase) {
@@ -151,7 +166,7 @@ class CheckinTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0) {
+               || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
