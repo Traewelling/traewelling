@@ -28,7 +28,9 @@ class LeaderboardController extends Controller
             throw new InvalidArgumentException('since cannot be after until');
         }
         if (!in_array($orderBy, ['points', 'distance', 'duration', 'speed'])) {
-            throw new InvalidArgumentException('orderBy must be one of the following strings: points, distance, duration, speed');
+            throw new InvalidArgumentException(
+                'orderBy must be one of the following strings: points, distance, duration, speed'
+            );
         }
 
         $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
