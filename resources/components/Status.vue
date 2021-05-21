@@ -275,7 +275,6 @@ export default {
       const start = moment(this.status.train.origin.departure);
       const end   = moment(this.status.train.destination.arrival);
       let percent;
-      //ToDo: Add delays
       if (this.now > start && this.now < end) {
         percent = 100 * ((this.now - start) / (end - start));
       } else if (this.now >= end) {
@@ -287,7 +286,7 @@ export default {
       return this.departure.isBefore() && this.arrival.isAfter() && this.nextStop() !== null;
     },
     nextStop() {
-      if (this.stopovers != null) {
+      if (this.stopovers != null && this.percentage < 100 && this.percentage > 0) {
         let stopOvers = this.stopovers[this.status.train.trip];
         if (stopOvers && stopOvers.length > 0) {
           let future = stopOvers.filter((stopover) => {
