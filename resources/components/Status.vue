@@ -101,7 +101,7 @@
           <!--                @endif-->
           <!--            </a>-->
           <router-link :to="{name: 'profile', params: {username: status.username}}">{{ status.username }}</router-link>,
-          <router-link :to="{ name: 'status', params: {id: status.id}}">
+          <router-link :to="{ name: 'singleStatus', params: {id: status.id, statusData: this.status } }">
             {{ moment(status.createdAt).fromNow() }}
           </router-link>
         </span>

@@ -18,7 +18,8 @@ export const router = new VueRouter({
             {
                 path: "/status/:id",
                 component: SingleStatus,
-                name: "status"
+                props: true,
+                name: "singleStatus"
             },
             {
                 path: "/profile/:username",

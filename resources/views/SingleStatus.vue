@@ -43,10 +43,18 @@ export default {
     };
   },
   created() {
-    this.fetchData();
+    if (this.statusData == null) {
+      this.fetchData();
+    } else {
+      this.status = this.statusData;
+      this.fetchPolyline();
+    }
   },
   components: {
     Status
+  },
+  props: {
+    statusData: null
   },
   methods: {
     fetchData() {
