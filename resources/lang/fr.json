@@ -257,7 +257,7 @@
     "stationboard.destination": "Destination",
     "modals.editStatus-label": "Modifier le texte d’enregistrement",
     "messages.exception.general": "Une erreur s’est produite. Réessaye STP.",
-    "dates.thousands_sep": "&nbsp;",
+    "dates.thousands_sep": " ",
     "about.international": "TGV, InterCityExpress, RailJet",
     "menu.discard": "Annuler",
     "about.calculation": "La distance est arrondie à la dizaine suivante ensuite divisée par 10 puis les points de base sont ajoutés.<br />Un trajet en TGV de 143 km te donne <code>10 + arrondi(143/10) = 10 + 15 = 25</code>&nbsp;points, pour un trajet en RER de 8 km tu vas recevoir <code>2 + arrondi(8/19) = 2 + 1 = 3</code>&nbsp;points.<br />Nous voudrions que tu publies ton enregistrement dans les meilleur délais, c’est pourquoi tu ne reçois tous les points que pour un enregistrement étant publié pendant ou 20 minutes avant le départ réel. Pour un enregistrement une heure après le voyage, tu reçois encore un quart des points. Si tu publies l’enregistrement plus tard ou plus tôt, tu reçois encore un point de consolation.",

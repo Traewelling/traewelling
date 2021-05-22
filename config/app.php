@@ -89,6 +89,8 @@ return [
         'de_pfl' => 'Deutsch (Pfälzisch)',
         'en'     => 'English',
         'fr'     => 'Français',
+        'nl'     => 'Dutch',
+        'sv'     => 'Svenska',
     ],
 
     /*

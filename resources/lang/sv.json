@@ -395,5 +395,9 @@
     "stats.global.distance": "Körsträcka för alla Träweller",
     "stats.global": "globala statistiker",
     "stats.time-in-minutes": "Restid i minuter",
-    "stats.companies": "Ditt favorit transportföretag"
+    "stats.companies": "Ditt favorit transportföretag",
+    "stats.week-short": "v.",
+    "stats.trips": "Resor",
+    "stats.global.explain": "De globala statistiker avser till incheckningar av alla Träweller under perioden från :fromDate till :toDate.",
+    "dashboard.future": "Dina Check-Ins i framtiden"
 }
