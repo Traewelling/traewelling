@@ -325,7 +325,7 @@
     "notifications.statusLiked.notice": "Podróż :line dnia :createdDate|Podróż linią :line dnia :createdDate",
     "notifications.userFollowed.lead": "<b>@:followerUsername</b> obserwuje cię.",
     "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> chce cię obserwować.",
-    "notifications.userApprovedFollow.lead": "<b>@:followerRequestusername</b> zaakceptował twoją prośbę o obserwowanie",
+    "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> zaakceptował twoją prośbę o obserwowanie",
     "notifications.socialNotShared.lead": "Twój meldunek nie został udostępniony na :Platform.",
     "notifications.socialNotShared.mastodon.401": "Twoja instancja odesłała błąd <code>401 Unauthorized</code> kiedy próbowaliśmy wysłać toota. Może spróbuj ponownie połączyć Mastodon z Träwelling?",
     "user.invalid-mastodon": ":domain nie wygląda na link do instancji Mastodona.",
