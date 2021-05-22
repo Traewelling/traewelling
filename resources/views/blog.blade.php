@@ -33,7 +33,7 @@
                         <div>
                             @if($page == "home")
                                 <div class="row">
-                                    <div class="col-md-10"{!! Markdown::parse($blogpost->preview) !!}</div>
+                                    <div class="col-md-10">{!! Markdown::parse($blogpost->preview) !!}</div>
                                 <div class="col-md-2">
                                     <a class="mt-0 mb-5" href="{{ route('blog.show', ['slug' => $blogpost->slug]) }}">
                                         {{ __('menu.readmore') }} &raquo;
