@@ -1,4 +1,4 @@
-<div itemscope itemtype="https://schema.org/Article">
+<div itemscope itemtype="https://schema.org/BlogPosting">
     <a href="{{ route('blog.show', ['slug' => $blogpost->slug]) }}" itemprop="url">
         <h2 class="font-weight-bold" style="font-size: 1.5em;" itemprop="name">
             {{$blogpost->title}}
