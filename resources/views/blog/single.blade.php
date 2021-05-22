@@ -2,6 +2,9 @@
 
 @section('title', $blogpost->title)
 
+@section('meta-robots', 'index')
+@section('meta-description', Markdown::parse($blogpost->preview))
+
 @section('content')
     <div class="container blog">
         <div class="row justify-content-center">
