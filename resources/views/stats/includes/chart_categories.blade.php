@@ -19,7 +19,7 @@
     </div>
 </div>
 
-@section('javascript-end')
+@section('footer')
     @parent
     @if($topCategories->count() > 0)
         <script>

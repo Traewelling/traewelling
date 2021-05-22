@@ -2,11 +2,15 @@
 
 @section('title'){{ $user->name }}@endsection
 
-@section('metadata')
-    @if($user->prevent_index)
-        <meta name="robots" content="noindex"/>
-    @endif
-@endsection
+@if($user->prevent_index)
+    @section('meta-robots', 'noindex')
+@else
+    @section('meta-description', __('description.profile', [
+        'username' => $user->name,
+        'kmAmount' => number($user->train_distance, 0),
+        'hourAmount' => number($user->train_duration / 60, 0)
+    ]))
+@endif
 
 @section('content')
     <div class="px-4 py-5 mt-n4"
