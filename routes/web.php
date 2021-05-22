@@ -65,13 +65,13 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->name('statuses.get');
 
 Route::prefix('blog')->group(function() {
-    Route::get('/', [BlogController::class, 'all'])
+    Route::get('/', [BlogController::class, 'renderMain'])
          ->name('blog.all');
 
-    Route::get('/{slug}', [BlogController::class, 'show'])
+    Route::get('/{slug}', [BlogController::class, 'renderSingle'])
          ->name('blog.show');
 
-    Route::get('/cat/{category}', [BlogController::class, 'category'])
+    Route::get('/cat/{category}', [BlogController::class, 'renderCategory'])
          ->name('blog.category');
 });
 
