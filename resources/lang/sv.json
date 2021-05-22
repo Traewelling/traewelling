@@ -56,7 +56,7 @@
     "controller.user.password-changed-ok": "Lösenordet har ändrats.",
     "controller.user.password-wrong": "Det gamla lösenordet är fel.",
     "admin.usage-board": "Bedömning av användningen",
-    "user.forgot-password": "Glömt lösenordet?",
+    "user.forgot-password": "Glömt lösenord?",
     "user.displayname": "Visningsnamn",
     "user.email-verify": "Verifiera e-postadressen",
     "user.complete-registration": "Slutför registreringen",
