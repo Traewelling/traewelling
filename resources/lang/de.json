@@ -397,5 +397,7 @@
     "user.unmuted": "Du hast die Stummschaltung des Benutzers :username aufgehoben.",
     "user.already-unmuted": "Der Benutzer :username ist nicht stummgeschaltet.",
     "user.unmute-tooltip": "Benutzer nicht mehr stummschalten",
-    "dashboard.future": "Deine Check-ins in der Zukunft"
+    "dashboard.future": "Deine Check-ins in der Zukunft",
+    "description.blog": "Die neuesten Blogeinträge",
+    "description.blog.category": "Die neuesten Blogeinträge in der Kategorie :category"
 }

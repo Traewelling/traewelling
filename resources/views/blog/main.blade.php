@@ -2,6 +2,9 @@
 
 @section('title', __('menu.blog'))
 
+@section('meta-robots', 'index')
+@section('meta-description', __('description.blog'))
+
 @section('content')
     <div class="container blog">
         <div class="row justify-content-center">
