@@ -39,7 +39,7 @@
     "controller.transport.checkin-heading": "Zameldowano",
     "controller.transport.no-name-given": "Musisz podać nazwę stacji!",
     "controller.transport.not-in-stopovers": "Start-ID nie jest w przystankach pośrednich.",
-    "controller.transport.overlapping-checkin": "Meldunek nakłada się na połączenie: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "Meldunek nakłada się na połączenie :linename: <a href=\":url\">#:id</a>",
     "controller.social.deleted": "Usunięto powiązanie konta.",
     "controller.status.export-neither-business": "Nie możesz odznaczyć prywatnych, ani biznesowych podróży.",
     "controller.transport.social-post-for": " dla #:hashtag",
