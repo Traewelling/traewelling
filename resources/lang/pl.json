@@ -393,5 +393,6 @@
     "user.muted.heading": "Użytkownik wyciszony",
     "user.muted.heading2": "Wyciszeni użytkownicy",
     "user.already-unmuted": "Użytkownik :username nie jest wyciszony.",
-    "about.no-train": "Korzystamy z danych Deutsche Bahn, które mogą nie pokazywać połączeń poprawnie, bądź wcale. Nie możemy zatem nic zrobić, kiedy brakuje twojego połączenia. W Polsce są pokazywane przede wszystkim połączenia kolejowe, wyjątkowo też przygraniczne autobusy wjeżdżające do Niemiec."
+    "about.no-train": "Korzystamy z danych Deutsche Bahn, które mogą nie pokazywać połączeń poprawnie, bądź wcale. Nie możemy zatem nic zrobić, kiedy brakuje twojego połączenia. W Polsce są pokazywane przede wszystkim połączenia kolejowe, wyjątkowo też przygraniczne autobusy wjeżdżające do Niemiec.",
+    "admin.hafas-entries-by-polylines": "Wpisy HAFAS i ilość przynależnych Polylines"
 }
