@@ -394,5 +394,8 @@
     "user.muted.heading2": "Wyciszeni użytkownicy",
     "user.already-unmuted": "Użytkownik :username nie jest wyciszony.",
     "about.no-train": "Korzystamy z danych Deutsche Bahn, które mogą nie pokazywać połączeń poprawnie, bądź wcale. Nie możemy zatem nic zrobić, kiedy brakuje twojego połączenia. W Polsce są pokazywane przede wszystkim połączenia kolejowe, wyjątkowo też przygraniczne autobusy wjeżdżające do Niemiec.",
-    "admin.hafas-entries-by-polylines": "Wpisy HAFAS i ilość przynależnych Polylines"
+    "admin.hafas-entries-by-polylines": "Wpisy HAFAS i ilość przynależnych Polylines",
+    "controller.social.delete-set-password": "Musisz ustawić hasło przed usunięciem powiązania konta, aby zapobiec zablokowaniu.",
+    "controller.social.delete-set-email": "Musisz ustawić adres e-mail przed usunięciem powiązania konta, aby zapobiec zablokowaniu.",
+    "controller.social.delete-never-connected": "Nie masz powiązanych kont innych serwisów."
 }
