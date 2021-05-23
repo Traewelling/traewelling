@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Blogpost;
 use App\Models\Event;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Spatie\Sitemap\Sitemap;
@@ -13,13 +14,19 @@ use Spatie\Sitemap\Tags\Url;
 
 class SitemapController extends Controller
 {
-    public function renderSitemap(): Response {
+    public function renderSitemap(Request $request): Response {
         $sitemap = SitemapGenerator::create(config('app.url'))->getSitemap();
 
-        $this->addStatic($sitemap);
-        $this->addBlogposts($sitemap);
-        $this->addProfiles($sitemap);
-
+        if($request->has('static')) {
+            $this->addStatic($sitemap);
+        }
+        if($request->has('blog')) {
+            $this->addBlogposts($sitemap);
+        }
+        if($request->has('profiles')) {
+            $this->addProfiles($sitemap);
+        }
+        
         return response($sitemap->render(), 200, [
             'Content-type' => 'application/xml'
         ]);
