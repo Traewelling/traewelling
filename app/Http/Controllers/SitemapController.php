@@ -30,7 +30,7 @@ class SitemapController extends Controller
         if($request->has('profiles')) {
             $this->addProfiles($sitemap);
         }
-
+		
         return response($sitemap->render(), 200, [
             'Content-type' => 'application/xml'
         ]);
