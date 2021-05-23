@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
-@section('title'){{ __('menu.active') }}@endsection
+@section('title', __('menu.active'))
+
+@section('meta-robots', 'index')
+@section('meta-description', __('description.en-route'))
 
 @section('content')
     <div class="container">
@@ -47,17 +50,17 @@
                          * This one is stolen from https://snipplr.com/view/25479/calculate-distance-between-two-points-with-latitude-and-longitude-coordinates/
                          */
                         function distance(lat1, lon1, lat2, lon2) {
-                            var R = 6371; // km (change this constant to get miles)
+                            var R    = 6371; // km (change this constant to get miles)
                             var dLat = ((lat2 - lat1) * Math.PI) / 180;
                             var dLon = ((lon2 - lon1) * Math.PI) / 180;
-                            var a =
-                                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                                Math.cos((lat1 * Math.PI) / 180) *
-                                Math.cos((lat2 * Math.PI) / 180) *
-                                Math.sin(dLon / 2) *
-                                Math.sin(dLon / 2);
-                            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                            var d = R * c;
+                            var a    =
+                                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                    Math.cos((lat1 * Math.PI) / 180) *
+                                    Math.cos((lat2 * Math.PI) / 180) *
+                                    Math.sin(dLon / 2) *
+                                    Math.sin(dLon / 2);
+                            var c    = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                            var d    = R * c;
                             return d;
                         }
 
@@ -77,11 +80,11 @@
                             }
 
                             const tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
-                            const now = new Date(Date.now() - tzoffset).toISOString();
+                            const now      = new Date(Date.now() - tzoffset).toISOString();
 
                             statuses.forEach(s => {
-                                let i = 0;
-                                let j = 0;
+                                let i   = 0;
+                                let j   = 0;
                                 s.stops = s.stops.filter(s => !s.cancelled)
                                     .map(s => {
                                         s.stop.id = i++ + "_" + s.stop.id;
@@ -100,14 +103,14 @@
                                     f.properties.id = j++ + "_" + f.properties.id;
                                     return f;
                                 });
-                                const behindUs = s.stops
+                                const behindUs      = s.stops
                                     .filter(
                                         b =>
                                             (b.departure != null && b.departure < now) ||
                                             (b.arrival != null && b.arrival < now)
                                     )
                                     .map(b => b.stop.id);
-                                const infrontofUs = s.stops
+                                const infrontofUs   = s.stops
                                     .filter(
                                         (b => b.arrival != null && b.arrival > now) ||
                                         (b => b.departure != null && b.departure > now)
@@ -116,13 +119,13 @@
 
                                 const justInfrontofUs = s.stops[behindUs.length].stop.id;
                                 // The last station is relevant for us, but we can't act with it like any other station before.
-                                const justBehindUs = behindUs.pop();
+                                const justBehindUs    = behindUs.pop();
 
                                 /**
                                  * This piece calculates the distance between the last and the
                                  *  upcoming train station, so we can interpolate between them.
                                  */
-                                let isInterestingBit = false;
+                                let isInterestingBit   = false;
                                 let stopDistLastToNext = 0;
                                 for (let i = 0; i < s.polyline.features.length - 1; i++) {
                                     if (s.polyline.features[i].properties.id == justBehindUs) {
@@ -145,11 +148,11 @@
                                  * Here, we describe how far we are between the last and the upcoming stop.
                                  */
                                 const stationWeJustLeft = s.stops.find(b => b.stop.id == justBehindUs);
-                                const leaveTime = new Date(stationWeJustLeft.departure).getTime();
-                                const stationNextUp = s.stops.find(b => b.stop.id == justInfrontofUs);
-                                const arriveTime = new Date(stationNextUp.departure).getTime();
-                                const nowTime = new Date().getTime();
-                                s.percentage = (nowTime - leaveTime) / (arriveTime - leaveTime);
+                                const leaveTime         = new Date(stationWeJustLeft.departure).getTime();
+                                const stationNextUp     = s.stops.find(b => b.stop.id == justInfrontofUs);
+                                const arriveTime        = new Date(stationNextUp.departure).getTime();
+                                const nowTime           = new Date().getTime();
+                                s.percentage            = (nowTime - leaveTime) / (arriveTime - leaveTime);
 
                                 /**
                                  * Now, let's get through all polylines.

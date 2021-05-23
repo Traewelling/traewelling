@@ -19,6 +19,7 @@
         "ext-json": "*",
         "abraham/twitteroauth": "^2.0",
         "barryvdh/laravel-dompdf": "^0.9",
+        "brianium/paratest": "^6.3",
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.4",
         "guzzlehttp/guzzle": "^7.1",
@@ -31,6 +32,7 @@
         "laravel/ui": "^3.0",
         "revolution/laravel-mastodon-api": "^2.0",
         "spatie/icalendar-generator": "^2.0",
+        "spatie/laravel-sitemap": "^6.0",
         "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
