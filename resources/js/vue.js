@@ -2,11 +2,30 @@
  * Here, we include all of our external dependencies
  */
 
+import Vue from "vue";
+
 require("jquery");
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
+
+
+import VueRouter from "vue-router";
+import {router} from "../routes";
+import App from "../views/App";
+import VueI18n from "vue-i18n";
+
+window.Vue = require("vue");
+
+Vue.use(VueI18n);
+Vue.use(VueRouter);
+
+const layoutOne = new Vue({
+    el: "#app",
+    components: { App },
+    router,
+});
 
 /**
  * Once the page is loaded, we can load our frontend components.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\Status;
@@ -14,6 +15,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -140,37 +143,50 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
+    /**
+     * @param User $user
+     * @return LengthAwarePaginator|null
+     * @throws PermissionException
+     * @api v1
+     * @frontend
+     */
+    public static function statusesForUser(User $user): ?LengthAwarePaginator {
+        if ($user->userInvisibleToMe) {
+            throw new PermissionException();
+        }
+        return $user->statuses()->with(['user',
+                                       'trainCheckin',
+                                       'trainCheckin.Origin',
+                                       'trainCheckin.Destination',
+                                       'trainCheckin.HafasTrip',
+                                       'event'])->orderByDesc('created_at')->paginate(15);
+    }
+
     public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
-        $statuses = null;
-
-        if (!$user->userInvisibleToMe) {
-            $statuses = $user->statuses()->with('user',
-                                                'trainCheckin',
-                                                'trainCheckin.Origin',
-                                                'trainCheckin.Destination',
-                                                'trainCheckin.HafasTrip',
-                                                'event')->orderBy('created_at', 'DESC')->paginate(15);
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (PermissionException) {
+            $statuses = null;
         }
-        $user->unsetRelation('socialProfile');
 
         return [
             'username'    => $username,
+            'statuses'    => $statuses,
             'twitterUrl'  => $user->twitterUrl,
             'mastodonUrl' => $user->mastodonUrl,
-            'statuses'    => $statuses,
             'user'        => $user
         ];
     }
 
     /**
      * Add $userToFollow to $user's Followings
-     * @param User $user The user who initiated the follow
-     * @param User $userToFollow The user who is followed
-     * @param bool $isApprovedRequest Differentiates between who to be notified
+     * @param User $user
+     * @param User $userToFollow
+     * @param bool $isApprovedRequest
      * @return bool
      * @throws AlreadyFollowingException
      */

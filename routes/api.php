@@ -11,7 +11,18 @@
 |
 */
 
+use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+    Route::get('statuses', [StatusController::class, 'enRoute']);
+    Route::get('statuses/{id}', [StatusController::class, 'show']);
+    Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+    Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+    Route::get('user/{username}', [UserController::class, 'show']);
+    Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+});
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::group(['middleware' => ['guest:api']], function() {

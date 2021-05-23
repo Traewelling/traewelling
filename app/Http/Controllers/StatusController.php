@@ -16,12 +16,24 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class StatusController extends Controller
 {
-    public static function getStatus(int $statusId) {
+    /**
+     * @api v1
+     * @frontend
+     * @param int $statusId
+     * @return Status
+     * @throws HttpException
+     * @throws ModelNotFoundException
+     */
+    public static function getStatus(int $statusId): Status {
         $status = Status::where('id', $statusId)->with('user',
                                                        'trainCheckin',
                                                        'trainCheckin.Origin',
@@ -32,12 +44,14 @@ class StatusController extends Controller
             return $status;
         }
 
-        abort(403);
+        abort(403, "Status invisible to you.");
     }
 
     /**
      * This Method returns the current active status(es) for all users or a specific user.
      *
+     * @api v1
+     * @frontend
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
      * @return Status|array|Builder|Model|object|null
@@ -88,7 +102,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return $status->trainCheckin->getMapLines();
+            return json_encode($status->trainCheckin->getMapLines());
         });
         if ($array == true) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];

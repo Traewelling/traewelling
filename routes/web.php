@@ -30,6 +30,14 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
+     ->name('account.showProfilePicture');
+
+//This is responsible to make vue available as a subdomain at vue.traewelling.de
+Route::domain('vue.' . substr(url('/'), 7))->group(function() {
+    Route::view('/{view?}', 'landing')->where('view', '(.*)')->name('landing');
+});
+
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
@@ -41,9 +49,6 @@ Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
 
 Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('account.show');
-
-Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
-     ->name('account.showProfilePicture');
 
 Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
