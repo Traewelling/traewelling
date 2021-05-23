@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
      ->name('account.showProfilePicture');
 
-//This is responsible to make vue available as a subdomain at vue.example.com
+//This is responsible to make vue available as a subdomain at vue.traewelling.de
 Route::domain('vue.' . substr(url('/'), 7))->group(function() {
     Route::get('/{view?}', [FrontendStaticController::class, 'landingVue'])->where('view', '(.*)')->name('landing');
 });
