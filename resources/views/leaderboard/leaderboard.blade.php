@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
-@section('title'){{ __('menu.leaderboard') }}@endsection
+@section('title', __('menu.leaderboard'))
+
+@section('meta-robots', 'index')
+@section('meta-description', __('description.leaderboard.main'))
 
 @section('content')
     <div class="container">

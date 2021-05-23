@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
-
-@section('title')
-    {{ __('menu.register') }}
-@endsection
+@section('title', __('menu.register'))
+@section('meta-robots', 'noindex')
 
 @section('content')
 <div class="container">

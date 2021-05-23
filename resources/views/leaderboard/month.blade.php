@@ -2,6 +2,12 @@
 
 @section('title'){{ __('menu.leaderboard') }}@endsection
 
+@section('meta-robots', 'index')
+@section('meta-description', __('description.leaderboard.monthly', [
+    'month' => $date->isoFormat('MMMM'),
+    'year' => $date->isoFormat('YYYY')
+]))
+
 @section('content')
     <div class="container">
         <div class="row">

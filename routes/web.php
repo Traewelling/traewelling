@@ -24,6 +24,7 @@ use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -244,3 +245,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
          ->name('user.unmute');
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
         <!-- Scripts -->
@@ -22,16 +16,9 @@
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
-        <meta name="copyright" content="Träwelling Team">
-        <meta name="description" content="{{__('about.block1')}}">
-        <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
-        <meta name="audience" content="Travellers">
-        <meta name="DC.Rights" content="Träwelling Team">
-        <meta name="DC.Description" content="{{__('about.block1')}}">
-        <meta name="DC.Language" content="de">
 
-        @include('layouts.includes.meta-pwa')
-        @yield('metadata')
+        @include('layouts.includes.meta')
+
         @yield('head')
     </head>
     <body>
@@ -245,6 +232,6 @@
             var urlUnfollow = '{{ route('follow.destroy') }}';
             var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
         </script>
-        @yield('javascript-end')
     </body>
+    @yield('footer')
 </html>

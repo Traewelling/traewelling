@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title'){{__('menu.imprint')}}@endsection
+@section('title', __('menu.imprint'))
+@section('meta-robots', 'noindex')
 
 @section('content')
     <div class="container">
