@@ -14,26 +14,10 @@ class StatusResource extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request) {
+    public function toArray($request) : array {
         // Create temporary stopover models for old or broken trains
         $originStopover      = $this->trainCheckin->origin_stopover;
         $destinationStopover = $this->trainCheckin->destination_stopover;
-        if (!$this->trainCheckin->origin_stopover) {
-            $originStopover = new TrainStopover([
-                                                    "train_station_id"  => $this->trainCheckin->Origin->id,
-                                                    "departure_planned" => $this->trainCheckin->departure,
-                                                    "arrival_planned"   => $this->trainCheckin->departure,
-                                                ]);
-
-        }
-        if (!$this->trainCheckin->destination_stopover) {
-            $destinationStopover = new TrainStopover([
-                                                         "train_station_id"  => $this->trainCheckin->Destination->id,
-                                                         "departure_planned" => $this->trainCheckin->arrival,
-                                                         "arrival_planned"   => $this->trainCheckin->arrival,
-                                                     ]);
-
-        }
         return [
             "id"         => (int) $this->id,
             "body"       => (string) $this->body,

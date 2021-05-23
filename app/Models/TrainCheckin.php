@@ -35,16 +35,36 @@ class TrainCheckin extends Model
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getOriginStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
-                                             ->where('departure_planned', $this->departure)
-                                             ->first();
+    public function getOriginStopoverAttribute(): TrainStopover {
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+                                                  ->where('departure_planned', $this->departure)
+                                                  ->first();
+        if ($stopOver === null) {
+            $stopOver = TrainStopover::create([
+                                                  "trip_id"           => $this->trip_id,
+                                                  "train_station_id"  => $this->Origin->id,
+                                                  "departure_planned" => $this->departure,
+                                                  "arrival_planned"   => $this->departure,
+                                              ]);
+            $this->HafasTrip->load('stopoversNEW');
+        }
+        return $stopOver;
     }
 
-    public function getDestinationStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
-                                             ->where('arrival_planned', $this->arrival)
-                                             ->first();
+    public function getDestinationStopoverAttribute(): TrainStopover {
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+                                                  ->where('arrival_planned', $this->arrival)
+                                                  ->first();
+        if ($stopOver === null) {
+            $stopOver = TrainStopover::create([
+                                                  "trip_id"           => $this->trip_id,
+                                                  "train_station_id"  => $this->Destination->id,
+                                                  "departure_planned" => $this->arrival,
+                                                  "arrival_planned"   => $this->arrival,
+                                              ]);
+            $this->HafasTrip->load('stopoversNEW');
+        }
+        return $stopOver;
     }
 
     public function getMapLines() {
