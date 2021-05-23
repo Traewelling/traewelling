@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 
+use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
@@ -28,9 +29,10 @@ class UserController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $username): AnonymousResourceCollection {
-        $user         = User::where('username', 'like', $username)->firstOrFail();
-        $userResponse = UserBackend::statusesForUser($user);
-        if (!$userResponse) {
+        $user = User::where('username', 'like', $username)->firstOrFail();
+        try {
+            $userResponse = UserBackend::statusesForUser($user);
+        } catch (PermissionException) {
             abort(404, "No statuses found, or statuses are not visible to you.");
         }
         return StatusResource::collection($userResponse);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\Status;
@@ -143,21 +144,22 @@ class UserController extends Controller
     }
 
     /**
-     * @api v1
-     * @frontend
      * @param User $user
      * @return LengthAwarePaginator|null
+     * @throws PermissionException
+     * @api v1
+     * @frontend
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
         if ($user->userInvisibleToMe) {
-            return null;
+            throw new PermissionException();
         }
-        return $user->statuses()->with('user',
+        return $user->statuses()->with(['user',
                                        'trainCheckin',
                                        'trainCheckin.Origin',
                                        'trainCheckin.Destination',
                                        'trainCheckin.HafasTrip',
-                                       'event')->orderBy('created_at', 'DESC')->paginate(15);
+                                       'event'])->orderByDesc('created_at')->paginate(15);
     }
 
     public static function getProfilePage($username): ?array {
@@ -165,10 +167,15 @@ class UserController extends Controller
         if ($user === null) {
             return null;
         }
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (PermissionException) {
+            $statuses = null;
+        }
 
         return [
             'username'    => $username,
-            'statuses'    => UserController::statusesForUser($user),
+            'statuses'    => $statuses,
             'twitterUrl'  => $user->twitterUrl,
             'mastodonUrl' => $user->mastodonUrl,
             'user'        => $user
