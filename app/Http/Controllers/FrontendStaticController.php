@@ -14,8 +14,4 @@ class FrontendStaticController extends Controller
         }
         return view('welcome');
     }
-
-    public function landingVue(): Renderable {
-        return view('landing');
-    }
 }

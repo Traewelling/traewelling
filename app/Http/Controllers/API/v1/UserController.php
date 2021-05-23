@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
@@ -13,20 +14,20 @@ class UserController extends Controller
 {
     /**
      * Returns Model of user
-     * @param $username
+     * @param string $username
      * @return UserResource
+     * @todo Maybe put this into another method?
      */
-    public function show($username): UserResource {
-        // ToDo: Maybe put this into another method?
+    public function show(string $username): UserResource {
         return new UserResource(User::where('username', 'like', $username)->firstOrFail());
     }
 
     /**
      * Returns paginated statuses for user
-     * @param $username
+     * @param string $username
      * @return AnonymousResourceCollection
      */
-    public static function statuses($username): AnonymousResourceCollection {
+    public static function statuses(string $username): AnonymousResourceCollection {
         $user         = User::where('username', 'like', $username)->firstOrFail();
         $userResponse = UserBackend::statusesForUser($user);
         if (!$userResponse) {
