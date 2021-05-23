@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Blogpost extends Model
 {
     protected $fillable = ['id', 'title', 'slug', 'author_name', 'twitter_handle', 'body', 'category'];
-    protected $dates    = ['published_at', 'created_at', 'updated_at'];
+    protected $dates    = ['published_at'];
     protected $appends  = ['preview'];
 
     public function getPreviewAttribute(): string {
