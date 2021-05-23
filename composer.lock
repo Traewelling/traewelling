@@ -6994,16 +6994,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "1150930205dbe32f4e594ba2805cd56563120145"
+                "reference": "cf4c4cec220575e2864c6082842d76822421f1b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/1150930205dbe32f4e594ba2805cd56563120145",
-                "reference": "1150930205dbe32f4e594ba2805cd56563120145",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/cf4c4cec220575e2864c6082842d76822421f1b1",
+                "reference": "cf4c4cec220575e2864c6082842d76822421f1b1",
                 "shasum": ""
             },
             "require": {
@@ -7042,7 +7042,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.8.0"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.9.0"
             },
             "funding": [
                 {
@@ -7050,7 +7050,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-05-22T09:13:53+00:00"
+            "time": "2021-05-23T15:12:33+00:00"
         },
         {
             "name": "spatie/laravel-sitemap",
