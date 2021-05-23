@@ -7,7 +7,7 @@
              width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
         <div class="text-white px-4">
           <h2 class="card-title h1-responsive font-bold">
-            <strong>{{ user.username }} <i v-if="user.private_profile" class="fas fa-user-lock"></i>
+            <strong>{{ user.username }} <i v-if="user.privateProfile" class="fas fa-user-lock"></i>
             </strong> <br/>
             <small class="font-weight-light">@{{ user.username }}</small>
             <!--          ToDo: Implement Follow-Button to vue-->
@@ -15,23 +15,23 @@
           </h2>
           <h2>
           <span class="font-weight-bold">
-            <i class="fa fa-route d-inline"></i>&nbsp;{{ user.train_distance.toFixed(2) }}
+            <i class="fa fa-route d-inline"></i>&nbsp;{{ user.trainDistance.toFixed(2) }}
           </span>
             <span class="small font-weight-lighter">km</span>
             <span class="font-weight-bold ps-sm-2">
             <i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}
           </span>
             <span class="font-weight-bold ps-sm-2">
-            <i class="fa fa-dice-d20 d-inline"></i> &nbsp{{ user.points }}
+            <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ user.points }}
           </span>
             <span class="small font-weight-lighter">__('profile.points-abbr')</span>
-            <span v-if="user.twitter_url" class="font-weight-bold ps-sm-2">
-            <a :href="user.twitter_url" rel="me" class="text-white" target="_blank">
+            <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
+            <a :href="user.twitterUrl" rel="me" class="text-white" target="_blank">
               <i class="fab fa-twitter d-inline"></i>
             </a>
           </span>
-            <span v-if="user.mastodon_url" class="font-weight-bold ps-sm-2">
-            <a :href="user.mastodon_url" rel="me" class="text-white" target="_blank">
+            <span v-if="user.mastodonUrl" class="font-weight-bold ps-sm-2">
+            <a :href="user.mastodonUrl" rel="me" class="text-white" target="_blank">
               <i class="fab fa-mastodon d-inline"></i>
             </a>
           </span>
@@ -41,7 +41,7 @@
     </div>
     <div class="container">
       <div v-if="loading || statusesLoading">
-        Loading...
+        __('vue.loading')
       </div>
 
       <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
@@ -53,7 +53,7 @@
           </h5>
         </div>
         <div v-else-if="statuses.length > 0" class="col-md-8 col-lg-7">
-          <header><h3>__('profile.last-journeys-of') {{ user.displayname }}:</h3></header>
+          <header><h3>__('profile.last-journeys-of') {{ user.displayName }}:</h3></header>
 
           <div v-if="statuses">
             <Status v-for="status in statuses" :status="status"></Status>
@@ -69,8 +69,8 @@
         </div>
       </div>
 
-<!--      @include('includes.edit-modal')-->
-<!--      @include('includes.delete-modal')-->
+      <!--      @include('includes.edit-modal')-->
+      <!--      @include('includes.delete-modal')-->
     </div>
   </div>
 </template>
@@ -89,15 +89,15 @@ export default {
       statusesLoading: false,
       user: {
         "id": 0,
-        "displayname": "",
+        "displayName": "",
         "username": "",
-        "train_distance": 0,
-        "train_duration": 0,
-        "train_speed": 0,
+        "trainDistance": 0,
+        "trainDuration": 0,
+        "trainSpeed": 0,
         "points": 0,
-        "twitter_url": null,
-        "mastodon_url": null,
-        "private_profile": false,
+        "twitterUrl": null,
+        "mastodonUrl": null,
+        "privateProfile": false,
         "userInvisibleToMe": true,
       },
       statuses: null
@@ -107,8 +107,8 @@ export default {
     Status
   },
   computed: {
-    duration () {
-      const duration = moment.duration(this.user.train_duration, "minutes").asMinutes();
+    duration() {
+      const duration = moment.duration(this.user.trainDuration, "minutes").asMinutes();
       let minutes    = duration % 60;
       let hours      = Math.floor(duration / 60);
 

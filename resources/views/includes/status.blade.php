@@ -149,13 +149,15 @@
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"
-                                                                                            aria-hidden="true"></i></a>
+                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </a>
                     </li>
 
                     <li class="list-inline-item like-text">
-                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"
-                                                                                              aria-hidden="true"></i></a>
+                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </a>
                     </li>
                 @endif
             @else

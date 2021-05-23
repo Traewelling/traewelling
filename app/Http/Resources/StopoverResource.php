@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StopoverResource extends JsonResource
@@ -9,12 +10,12 @@ class StopoverResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         return [
-            "id"           => (int) $this->train_station_id,
+            "id"                       => (int) $this->train_station_id,
             "name"                     => $this->trainStation->name,
             "arrival"                  => $this->arrival,
             "arrivalPlanned"           => $this->arrival_planned,
@@ -26,7 +27,7 @@ class StopoverResource extends JsonResource
             "departureReal"            => $this->departure_real,
             "departurePlatformPlanned" => $this->departure_platform_planned,
             "departurePlatformReal"    => $this->departure_platform_real,
-            "plattform"                => $this->plattform,
+            "platform"                 => $this->platform,
             "isArrivalDelayed"         => (bool) $this->isArrivalDelayed,
             "isDepartureDelayed"       => (bool) $this->isDepartureDelayed
         ];

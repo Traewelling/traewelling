@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-7">
         <div class="loading" v-if="loading">
-          Loading...
+          __('vue.loading')
         </div>
 
         <div v-if="error" class="error">
@@ -11,7 +11,7 @@
 
           <p>
             <button @click.prevent="fetchData">
-              Try Again
+              __('vue.tryAgain')
             </button>
           </p>
         </div>
