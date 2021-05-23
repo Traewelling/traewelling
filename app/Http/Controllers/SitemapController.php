@@ -15,7 +15,11 @@ use Spatie\Sitemap\Tags\Url;
 class SitemapController extends Controller
 {
     public function renderSitemap(Request $request): Response {
-        $sitemap = SitemapGenerator::create(config('app.url'))->getSitemap();
+        $sitemap = SitemapGenerator::create(config('app.url'))
+                                   ->shouldCrawl(function() {
+                                        return false;
+                                    })
+                                   ->getSitemap();
 
         if($request->has('static')) {
             $this->addStatic($sitemap);
@@ -26,7 +30,7 @@ class SitemapController extends Controller
         if($request->has('profiles')) {
             $this->addProfiles($sitemap);
         }
-        
+
         return response($sitemap->render(), 200, [
             'Content-type' => 'application/xml'
         ]);
@@ -78,7 +82,7 @@ class SitemapController extends Controller
         $profiles = DB::table('users')
                       ->join('statuses', 'users.id', '=', 'statuses.user_id')
                       ->where('prevent_index', 0)
-                      ->groupBy('users.id')
+                      ->groupBy(['users.id', 'users.username'])
                       ->select([
                                    'users.username',
                                    DB::raw('MAX(statuses.created_at) AS last_mod')
