@@ -14,7 +14,7 @@
       <tr v-for="(row, index) in users">
         <td> {{ index + 1 }}</td>
         <td>
-          <router-link to="{ name: 'profile', params: {username: row.username}}">
+          <router-link :to="{ name: 'profile', params: {username: row.username}}">
             {{ row.username }}
           </router-link>
         </td>
