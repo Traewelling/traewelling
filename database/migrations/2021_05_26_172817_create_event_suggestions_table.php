@@ -14,7 +14,7 @@ class CreateEventSuggestionsTable extends Migration
 
             $table->string('name');
             $table->string('host')->nullable();
-            $table->string('url');
+            $table->string('url')->nullable()->default(null);
             $table->unsignedBigInteger('train_station_id')->nullable();
             $table->timestamp('begin');
             $table->timestamp('end');
