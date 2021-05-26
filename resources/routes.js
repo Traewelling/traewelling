@@ -4,6 +4,7 @@ import ActiveStatuses from "./views/ActiveStatuses";
 import SingleStatus from "./views/SingleStatus";
 import Profile from "./views/Profile";
 import Event from "./views/Event"
+import Leaderboard from "./views/Leaderboard";
 
 Vue.use(VueRouter);
 
@@ -32,6 +33,16 @@ export const router = new VueRouter({
                 path: "/event/:slug",
                 component: Event,
                 name: "event"
+            },
+            {
+                path: "/leaderboard/",
+                component: Leaderboard,
+                name: "leaderboard"
+            },
+            {
+                path: "/leaderboard/:month",
+                component: Leaderboard,
+                name: "leaderboard.month"
             }
 
         ],

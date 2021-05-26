@@ -64,8 +64,9 @@
                                 </li>
                             @endauth
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
-                                   href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                                <router-link :to="{ name: 'leaderboard' }" class="nav-link">
+                                    __('menu.leaderboard')
+                                </router-link>
                             </li>
                             <li class="nav-item">
                                 <router-link :to="{ name: 'statuses.active'}" class="nav-link">

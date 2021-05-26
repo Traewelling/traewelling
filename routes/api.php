@@ -25,6 +25,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('event/{slug}/statuses', [Eventcontroller::class, 'statuses']);
     Route::get('user/{username}', [UserController::class, 'show']);
     Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+    Route::get('leaderboard', [\App\Http\Controllers\API\v1\StatisticsController::class, 'leaderboard']);
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {

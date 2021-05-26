@@ -63,9 +63,14 @@ class LeaderboardController extends Controller
         //Fetch user models in ONE query and map it to the collection
         $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
 
+        // ToDo: Probably re-sort for new distance-calculation, etc.
         return $data->map(function($row) use ($userCache) {
-            $row->user = $userCache->where('id', $row->user_id)->first();
-            return $row;
+            $user                 = $userCache->where('id', $row->user_id)->first();
+            $user->train_distance = $row->distance;
+            $user->train_duration = $row->duration;
+            $user->train_speed    = $row->speed;
+            $user->points         = $row->points;
+            return $user;
         });
     }
 }

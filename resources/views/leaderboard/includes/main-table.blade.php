@@ -14,13 +14,13 @@
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
-                    <a href="{{ route('account.show', ['username' => $row->user->username]) }}">
-                        {{ $row->user->username }}
+                    <a href="{{ route('account.show', ['username' => $row->username]) }}">
+                        {{ $row->username }}
                     </a>
                 </td>
-                <td>{!! durationToSpan(secondsToDuration(60 * $row->duration)) !!}</td>
-                <td>{{ number($row->distance) }}<small>km</small></td>
-                <td>{{ number($row->speed) }}<small>km/h</small></td>
+                <td>{!! durationToSpan(secondsToDuration(60 * $row->train_duration)) !!}</td>
+                <td>{{ number($row->train_distance) }}<small>km</small></td>
+                <td>{{ number($row->train_speed) }}<small>km/h</small></td>
                 <td>{{ number($row->points, 0) }}</td>
             </tr>
         @endforeach
