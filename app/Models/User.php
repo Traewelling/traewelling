@@ -36,9 +36,38 @@ class User extends Authenticatable implements MustVerifyEmail
         'prevent_index'     => 'boolean',
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl',
+        // legacy:
+        'train_distance', 'train_duration'
     ];
 
+    /**
+     * For legacy only
+     * @return float
+     * @deprecated Use distance variable at train_checkins instead
+     */
+    public function getTrainDistanceAttribute(): float {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select('distance')
+                           ->sum('distance');
+    }
+
+    /**
+     * For legacy only
+     * @return float
+     * @deprecated Use duration variable at train_checkins instead
+     */
+    public function getTrainDurationAttribute(): float {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select(['arrival', 'departure'])
+                           ->get()
+                           ->sum('duration');
+    }
+
+    /**
+     * @return float
+     * @deprecated Use speed variable at train_checkins instead
+     */
     public function getAverageSpeedAttribute(): float {
         return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }

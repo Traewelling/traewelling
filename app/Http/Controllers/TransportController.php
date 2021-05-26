@@ -408,11 +408,6 @@ class TransportController extends Controller
             }
         }
 
-        $user->train_distance += $trainCheckin->distance;
-        $user->train_duration += $trainCheckin->duration;
-
-        $user->update();
-
         if (isset($tootCheck) && $tootCheck == true) {
             self::postMastodon($status);
         }

@@ -163,15 +163,9 @@ class StatusController extends Controller
         if ($status === null) {
             return null;
         }
-        $trainCheckin = $status->trainCheckin()->first();
-
         if ($user != $status->user) {
             return false;
         }
-        $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= $trainCheckin->duration;
-
-        $user->update();
         $status->delete();
         return true;
     }
