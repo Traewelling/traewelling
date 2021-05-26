@@ -1,7 +1,4 @@
 <?php
-/**
- * Routes for the admins.
- */
 
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\FrontendEventController;
