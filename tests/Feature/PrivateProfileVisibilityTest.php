@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -243,8 +243,8 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $data->alice->user->save();
 
         // Create new CheckIn for Bob
-        $now                = new DateTime("-40min");
-        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $now, $data->bob->user, 1);
+        $timestamp          = Carbon::parse("-40min");
+        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $timestamp, $data->bob->user, 1);
 
         // Make Gertrud follow bob and make bob's profile private
         UserController::destroyFollow($data->alice->user, $data->bob->user);

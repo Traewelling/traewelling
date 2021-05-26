@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class LeaderboardController extends Controller
 {
@@ -33,7 +35,15 @@ class LeaderboardController extends Controller
             );
         }
 
-        $sumDuration = 'SUM((train_checkins.arrival - train_checkins.departure) / 60)';
+        if (config('database.default') == 'mysql') {
+            $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
+        } elseif (config('database.default') == 'sqlite') {
+            // Sorry for this disgusting code. But we test with SQLite.
+            // There are different functions than with MySQL/MariaDB.
+            $sumDuration = 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';
+        } else {
+            throw new UnexpectedValueException('Driver not supported');
+        }
         $sumDistance = 'SUM(train_checkins.distance)';
 
         $query = DB::table('statuses')
@@ -46,7 +56,7 @@ class LeaderboardController extends Controller
                                 DB::raw('SUM(train_checkins.points) AS points'),
                                 DB::raw($sumDistance . ' AS distance'),
                                 DB::raw($sumDuration . ' AS duration'),
-                                DB::raw($sumDistance . ' / ' . $sumDuration . ' AS speed'),
+                                DB::raw($sumDistance . ' / (' . $sumDuration . ' / 60) AS speed'),
                             ])
                    ->orderByDesc($orderBy)
                    ->limit($limit);
@@ -63,9 +73,40 @@ class LeaderboardController extends Controller
         //Fetch user models in ONE query and map it to the collection
         $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
 
+        // ToDo: Probably re-sort for new distance-calculation, etc.
         return $data->map(function($row) use ($userCache) {
-            $row->user = $userCache->where('id', $row->user_id)->first();
-            return $row;
+            $user                 = $userCache->where('id', $row->user_id)->first();
+            $user->train_distance = $row->distance;
+            $user->train_duration = $row->duration;
+            $user->train_speed    = $row->speed;
+            $user->points         = $row->points;
+            return $user;
         });
+    }
+
+    public static function getMonthlyLeaderboard(Carbon $date): Collection {
+        return Status::with(['trainCheckin', 'user'])
+                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->where(
+                         'train_checkins.departure',
+                         '>=',
+                         $date->clone()->firstOfMonth()->toDateString()
+                     )
+                     ->where(
+                         'train_checkins.departure',
+                         '<=',
+                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                     )
+                     ->get()
+                     ->groupBy('user_id')
+                     ->map(function($statuses) {
+                         $user                 = $statuses->first()->user;
+                         $user->train_distance = $statuses->sum('distance');
+                         $user->train_duration = $statuses->sum('trainCheckin.duration');
+                         $user->train_speed    = null;
+                         $user->points         = $statuses->sum('trainCheckin.points');
+                         return $user;
+                     })
+                     ->sortByDesc('points');
     }
 }

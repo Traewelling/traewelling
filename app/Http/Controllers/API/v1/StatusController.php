@@ -4,10 +4,12 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\StopoverResource;
+use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
@@ -44,11 +46,8 @@ class StatusController extends ResponseController
                           ->reject(function($status) {
                               return $status->user->userInvisibleToMe;
                           })
-                          ->map(function($status) {
-                              return [
-                                  "id"               => (int) $status->id,
-                                  "coordinatesArray" => $status->trainCheckin->getMapLines()
-                              ];
+                          ->mapWithKeys(function($status) {
+                              return [ $status->id => $status->trainCheckin->getMapLines() ];
                           });
         return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
     }

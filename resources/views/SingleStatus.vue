@@ -77,7 +77,7 @@ export default {
       axios
           .get("/api/v1/polyline/" + this.$route.params.id)
           .then((response) => {
-            this.polyline = [response.data.data[0].coordinatesArray];
+            this.polyline = [response.data.data];
           })
           .catch((error) => {
             console.error(error);
