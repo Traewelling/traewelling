@@ -50,6 +50,7 @@
 <!--              @endisset-->
             </div>
           </div>
+          <div class="card-body" v-else>__('vue.loading')</div>
         </div>
       </div>
     </div>
