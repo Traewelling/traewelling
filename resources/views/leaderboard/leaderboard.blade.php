@@ -63,6 +63,10 @@
                             @endisset
                         </div>
                     </div>
+                    <div class="card-footer text-muted">
+                        <i class="far fa-question-circle"></i>
+                        {{__('leaderboard.notice')}}
+                    </div>
                 </div>
             </div>
         </div>
