@@ -44,11 +44,8 @@ class StatusController extends ResponseController
                           ->reject(function($status) {
                               return $status->user->userInvisibleToMe;
                           })
-                          ->map(function($status) {
-                              return [
-                                  "id"               => (int) $status->id,
-                                  "coordinatesArray" => $status->trainCheckin->getMapLines()
-                              ];
+                          ->mapWithKeys(function($status) {
+                              return [ $status->id => $status->trainCheckin->getMapLines() ];
                           });
         return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
     }
