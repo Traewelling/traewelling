@@ -26,14 +26,12 @@ class CheckinTest extends TestCase
      * @test
      */
     public function stationboardTest() {
-        $requestDate       = new DateTime($this->plus_one_day_then_8pm);
+        $requestDate       = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::createFromTimestamp(
-                $requestDate->format('U')
-            )
+            $requestDate
         );
         $station           = $trainStationboard['station'];
         $departures        = $trainStationboard['departures'];
@@ -49,9 +47,7 @@ class CheckinTest extends TestCase
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
         }, true));
-
     }
-
 
     /**
      * The nearby endpoint should redirect the user to the
@@ -147,12 +143,12 @@ class CheckinTest extends TestCase
      */
     public function testCheckin() {
         // First: Get a train that's fine for our stuff
-        $now               = new DateTime($this->plus_one_day_then_8pm);
+        $timestamp         = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::createFromTimestamp($now->format('U')),
+            $timestamp,
             TravelType::EXPRESS
         );
 
@@ -174,7 +170,7 @@ class CheckinTest extends TestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -408,11 +404,11 @@ class CheckinTest extends TestCase
      */
     public function testCheckinAtBus603Potsdam() {
         // First: Get a train that's fine for our stuff
-        $now               = new \DateTime("+1 days 10:00");
+        $timestamp         = Carbon::parse("+1 days 10:00");
         $stationname       = "Schloss Cecilienhof, Potsdam";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::parse('+1 days 10:00'),
+            $timestamp,
             'bus'
         );
 
@@ -424,7 +420,7 @@ class CheckinTest extends TestCase
 
         // The bus runs in a 20min interval
         $departure = $trainStationboard['departures'][0];
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -473,7 +469,7 @@ class CheckinTest extends TestCase
     public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
-        $now               = new \DateTime("+1 days 10:03");
+        $timestamp         = Carbon::parse("+1 days 10:03");
         $stationname       = "Messe Nord / ICC, Berlin";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
@@ -501,7 +497,7 @@ class CheckinTest extends TestCase
             }
         }
 
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(

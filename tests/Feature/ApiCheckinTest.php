@@ -34,7 +34,7 @@ class ApiCheckinTest extends ApiTestCase
      * @test
      */
     public function stationboardTest() {
-        $requestDate = new DateTime($this->plus_one_day_then_8pm);
+        $requestDate = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
         $ibnr        = 8000105;
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
@@ -42,14 +42,12 @@ class ApiCheckinTest extends ApiTestCase
                                    route('api.v0.checkin.train.stationboard'),
                                    [
                                        'station' => $stationname,
-                                       'when'    => Carbon::parse($this->plus_one_day_then_8pm)->toIso8601String()
+                                       'when'    => $requestDate->toIso8601String()
                                    ]);
         $response->assertOk();
         $jsonResponse = json_decode($response->getContent(), true);
         $station      = $jsonResponse['station'];
         $departures   = $jsonResponse['departures'];
-
-
 
         // Ensure its the same station
         $this->assertEquals($stationname, $station['name']);
@@ -67,11 +65,11 @@ class ApiCheckinTest extends ApiTestCase
      */
     public function testCheckin() {
         // First: Get a train
-        $now         = new DateTime($this->plus_one_day_then_8pm);
+        $timestamp   = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
-                'when' => Carbon::parse($this->plus_one_day_then_8pm)->toIso8601String()]);
+                'when' => $timestamp->toIso8601String()]);
 
         $trainStationboard = json_decode($response->getContent(), true);
         $countDepartures   = count($trainStationboard['departures']);
@@ -93,7 +91,7 @@ class ApiCheckinTest extends ApiTestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip((object) $departure, $now);
+        $this->isCorrectHafasTrip((object) $departure, $timestamp);
 
         // Third: Get the trip information for train
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])

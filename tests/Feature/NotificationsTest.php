@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
@@ -24,8 +25,8 @@ class NotificationsTest extends TestCase
     /** @test */
     public function likes_appear_in_notifications() {
         // Given: There is a likable status
-        $now = new DateTime("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $now);
+        $timestamp = Carbon::parse("+2 day 7:45");
+        $this->checkin("Hamburg Hbf", $timestamp);
 
         $status = $this->user->statuses->first();
 
@@ -49,8 +50,8 @@ class NotificationsTest extends TestCase
     /** @test */
     public function removed_likes_dont_appear_in_notifications() {
         // Given: There is a likable status
-        $now = new DateTime("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $now);
+        $timestamp = Carbon::parse("+2 day 7:45");
+        $this->checkin("Hamburg Hbf", $timestamp);
 
         $status = $this->user->statuses->first();
         $like   = $this->actingAs($this->user)
@@ -112,12 +113,12 @@ class NotificationsTest extends TestCase
     public function bob_joining_on_alices_connection_should_spawn_a_notification() {
         // GIVEN: Alice checked-into a train.
         $alice = $this->createGDPRAckedUser();
-        $now   = new DateTime("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $now, $alice);
+        $timestamp   = Carbon::parse("+2 day 7:45");
+        $this->checkin("Hamburg Hbf", $timestamp, $alice);
 
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
-        $this->checkin("Hamburg Hbf", $now, $bob);
+        $this->checkin("Hamburg Hbf", $timestamp, $bob);
 
         // THEN: Alice should see that in their notification
         $notifications = $this->actingAs($alice)
