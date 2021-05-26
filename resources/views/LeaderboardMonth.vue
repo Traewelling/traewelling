@@ -18,7 +18,7 @@
       </div>
 
 
-      <div v-if="users.length == 0" class="col-md-12">
+      <div v-if="users.length === 0" class="col-md-12">
         <div class="card">
           <div class="card-body text-center text-danger text-bold">
             __('leaderboard.no_data')
@@ -77,31 +77,34 @@
                     <th scope="col"> __('leaderboard.points')</th>
                   </tr>
                 </thead>
-                <tr v-for="(place, index) in users.slice(3, 100)">
-                  <td>{{ index + 4 }}</td>
-                  <td>
-                    <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                      <router-link to="{ name: 'profile', params: {username: place.username}}">
-                        <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
-                             style="width: 50%;">
+                <tbody>
+                  <tr v-for="(place, index) in users.slice(3, 100)">
+                    <td>{{ index + 4 }}</td>
+                    <td>
+                      <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
+                        <router-link to="{ name: 'profile', params: {username: place.username}}">
+                          <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
+                               style="width: 50%;">
+                        </router-link>
+                      </div>
+                    </td>
+                    <td>
+                      <router-link to="{ name: 'profile', params: {username: place.username}}"
+                                   style="font-size: 1.3em;">
+                        {{ place.username }}
                       </router-link>
-                    </div>
-                  </td>
-                  <td>
-                    <router-link to="{ name: 'profile', params: {username: place.username}}" style="font-size: 1.3em;">
-                      {{ place.username }}
-                    </router-link>
-                  </td>
-                  <td>
-                    {{ place.points.toFixed(0) }}
-                  </td>
-                  <td>
-                    {{ place.trainDuration }}min
-                  </td>
-                  <td>
-                    {{ place.trainDistance.toFixed(0) }}km
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      {{ place.points.toFixed(0) }}
+                    </td>
+                    <td>
+                      {{ place.trainDuration }}min
+                    </td>
+                    <td>
+                      {{ place.trainDistance.toFixed(0) }}km
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
