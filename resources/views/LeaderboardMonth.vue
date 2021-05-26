@@ -78,11 +78,12 @@
                   </tr>
                 </thead>
                 <tr v-for="(place, index) in users.slice(3, 100)">
-                  <td>{{ index + 4}}</td>
+                  <td>{{ index + 4 }}</td>
                   <td>
                     <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                       <router-link to="{ name: 'profile', params: {username: place.username}}">
-                        <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username" style="width: 50%;">
+                        <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
+                             style="width: 50%;">
                       </router-link>
                     </div>
                   </td>
@@ -124,17 +125,17 @@ export default {
       moment: moment,
       users: null,
       loading: false
-    }
+    };
   },
   computed: {
     lastMonth() {
-      return moment(this.$route.params.month).subtract(1, 'months').format("YYYY-MM");
+      return moment(this.$route.params.month).subtract(1, "months").format("YYYY-MM");
     },
     month() {
       return moment(this.$route.params.month);
     },
     nextMonth() {
-      return moment(this.$route.params.month).add(1, 'months').format("YYYY-MM");
+      return moment(this.$route.params.month).add(1, "months").format("YYYY-MM");
     }
   },
   components: {
@@ -157,7 +158,7 @@ export default {
     },
   },
   watch: {
-    month () {
+    month() {
       this.fetchData();
     }
   },

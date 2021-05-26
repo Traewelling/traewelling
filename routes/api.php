@@ -29,7 +29,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
     Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
     Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
-//    Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']); ToDo: Friends route
+    //Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']); ToDo: Friends route
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {

@@ -18,9 +18,11 @@ export default {
   },
   methods: {
     setupLeafletMap() {
-      const map = L.map("mapContainer", {center: [50.3, 10.47],
-        zoom: 5, zoomControl: 1, dragging: 1, tap: 1});
-      this.map = map;
+      const map = L.map("mapContainer", {
+        center: [50.3, 10.47],
+        zoom: 5, zoomControl: 1, dragging: 1, tap: 1
+      });
+      this.map  = map;
       L.tileLayer(
           "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
           {
@@ -55,7 +57,7 @@ export default {
         });
       });
 
-      lines.addTo(this.map)
+      lines.addTo(this.map);
       this.map.fitBounds(lines.getBounds());
     }
   },
@@ -63,7 +65,7 @@ export default {
     this.setupLeafletMap();
   },
   watch: {
-    polyLines () {
+    polyLines() {
       this.updatePolylines();
     }
   }

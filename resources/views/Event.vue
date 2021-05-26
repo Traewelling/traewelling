@@ -12,23 +12,24 @@
             </h1>
             <h2>
               <span class="font-weight-bold">
-                <i class="fa fa-route d-inline" aria-hidden="true" />&nbsp;{{event.trainDistance.toFixed(0)}}
+                <i class="fa fa-route d-inline" aria-hidden="true"/>&nbsp;{{ event.trainDistance.toFixed(0) }}
               </span>
               <span class="small font-weight-lighter">km</span>
               <span class="font-weight-bold ps-sm-2">
-                <i class="fa fa-stopwatch d-inline" aria-hidden="true" />&nbsp;{{ duration }}
+                <i class="fa fa-stopwatch d-inline" aria-hidden="true"/>&nbsp;{{ duration }}
               </span>
               <br class="d-block d-sm-none">
               <span class="font-weight-bold ps-sm-2">
-                <i class="fa fa-user" aria-hidden="true" />&nbsp;{{ event.host }}
+                <i class="fa fa-user" aria-hidden="true"/>&nbsp;{{ event.host }}
               </span>
               <span class="font-weight-bold ps-sm-2">
-                <i class="fa fa-link" aria-hidden="true" />&nbsp;<a :href="event.url" class="text-white">{{event.url}}</a>
+                <i class="fa fa-link" aria-hidden="true"/>&nbsp;<a :href="event.url"
+                                                                   class="text-white">{{ event.url }}</a>
               </span>
             </h2>
             <h2>
-              <span class="font-weight-bold"><i class="fa fa-train" aria-hidden="true" /></span>
-              <span class="font-weight-bold"><a class="text-white" href="asdf">{{event.station.name}}</a></span>
+              <span class="font-weight-bold"><i class="fa fa-train" aria-hidden="true"/></span>
+              <span class="font-weight-bold"><a class="text-white" href="asdf">{{ event.station.name }}</a></span>
             </h2>
           </div>
         </div>
@@ -112,7 +113,7 @@ export default {
           .get("/api/v1/event/" + this.$route.params.slug)
           .then((response) => {
             this.loading = false;
-            this.event    = response.data.data;
+            this.event   = response.data.data;
             this.fetchStatuses();
           })
           .catch((error) => {
@@ -135,7 +136,7 @@ export default {
           });
     }
   }
-}
+};
 </script>
 
 <style scoped>

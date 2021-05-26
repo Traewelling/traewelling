@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import ActiveStatuses from "./views/ActiveStatuses";
 import SingleStatus from "./views/SingleStatus";
 import Profile from "./views/Profile";
-import Event from "./views/Event"
+import Event from "./views/Event";
 import Leaderboard from "./views/Leaderboard";
 import LeaderboardMonth from "./views/LeaderboardMonth";
 
