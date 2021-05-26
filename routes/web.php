@@ -36,7 +36,7 @@ Route::get('/profile/{username}/profilepicture', [FrontendUserController::class,
      ->name('account.showProfilePicture');
 
 //This is responsible to make vue available as a subdomain at vue.traewelling.de
-Route::domain('vue.' . substr(url('/'), 7))->group(function() {
+Route::domain('vue.' . parse_url(url('/'), PHP_URL_HOST))->group(function() {
     Route::view('/{view?/}', 'landing')->where('view', '(.*)')->name('landing');
 });
 
