@@ -24,18 +24,12 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
          ->name('admin.events.suggestions.accept.do');
 
 
-    Route::get('/events/new', [FrontendEventController::class, 'newForm'])
-         ->name('events.newform');
+    Route::get('/events/create', [AdminEventController::class, 'renderCreate'])
+         ->name('admin.events.create');
+    Route::post('/events/create', [AdminEventController::class, 'create']);
 
-    Route::post('/events/new', [FrontendEventController::class, 'store'])
-         ->name('events.store');
+    Route::get('/events/edit/{id}', [AdminEventController::class, 'renderEdit'])
+         ->name('admin.events.edit');
+    Route::post('/events/edit/{id}', [AdminEventController::class, 'edit']);
 
-    Route::get('/events/{slug}/delete', [FrontendEventController::class, 'destroy'])
-         ->name('events.delete');
-
-    Route::get('/events/{slug}', [FrontendEventController::class, 'show'])
-         ->name('events.show');
-
-    Route::put('/events/{slug}', [FrontendEventController::class, 'update'])
-         ->name('events.update');
 });

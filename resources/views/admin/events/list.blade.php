@@ -19,6 +19,7 @@
                             <th>Beginn</th>
                             <th>Ende</th>
                             <th>Externe URL</th>
+                            <th>Station</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -32,8 +33,9 @@
                                 <td>{{$event->begin->format('d.m.Y')}}</td>
                                 <td>{{$event->end->format('d.m.Y')}}</td>
                                 <td>{{$event->url}}</td>
+                                <td>{{$event->getTrainstation()?->name}}</td>
                                 <td>
-                                    <a href="{{route('events.show', ['slug' => $event->slug])}}"
+                                    <a href="{{route('admin.events.edit', ['id' => $event->id])}}"
                                        class="btn btn-sm btn-primary">
                                         Bearbeiten
                                     </a>

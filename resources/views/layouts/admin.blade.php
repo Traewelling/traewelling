@@ -75,7 +75,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('events.newform') }}"
+                                        <a href="{{ route('admin.events.create') }}"
                                            class="nav-link {{ request()->is('admin/events/new') ? 'active' : '' }}">
                                             <em class="fas fa-plus nav-icon"></em>
                                             <p>{{ __('events.new') }}</p>
