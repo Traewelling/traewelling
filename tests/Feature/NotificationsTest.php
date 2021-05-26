@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
 use Tests\TestCase;

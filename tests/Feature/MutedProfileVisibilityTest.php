@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
