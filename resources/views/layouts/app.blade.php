@@ -85,12 +85,14 @@
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
-                                   href="{{ route('stats') }}">
-                                    {{__('stats')}}
-                                </a>
-                            </li>
+                            @auth
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                       href="{{ route('stats') }}">
+                                        {{__('stats')}}
+                                    </a>
+                                </li>
+                            @endauth
                         </ul>
                         <ul class="navbar-nav w-auto">
                             @guest
@@ -118,7 +120,8 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification"
+                                              hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -219,18 +222,18 @@
              * in the compontents folder. I moved the touch controls that were here and are needed for
              * checkin into components/stationboard.js.
              */
-            var token = '{{ csrf_token() }}';
-            var urlAvatarUpload = '{{route('settings.upload-image')}}';
-            var urlDelete = '{{ route('status.delete') }}';
-            var urlDisconnect = '{{ route('provider.destroy') }}';
-            var urlDislike = '{{ route('like.destroy') }}';
-            var urlEdit = '{{ route('edit') }}';
-            var urlFollow = '{{ route('follow.create') }}';
+            var token            = '{{ csrf_token() }}';
+            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
+            var urlDelete        = '{{ route('status.delete') }}';
+            var urlDisconnect    = '{{ route('provider.destroy') }}';
+            var urlDislike       = '{{ route('like.destroy') }}';
+            var urlEdit          = '{{ route('edit') }}';
+            var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike = '{{ route('like.create') }}';
-            var urlTrainTrip = '{{ route('trains.trip') }}';
-            var urlUnfollow = '{{ route('follow.destroy') }}';
-            var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
+            var urlLike          = '{{ route('like.create') }}';
+            var urlTrainTrip     = '{{ route('trains.trip') }}';
+            var urlUnfollow      = '{{ route('follow.destroy') }}';
+            var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
         </script>
     </body>
     @yield('footer')
