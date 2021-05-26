@@ -416,5 +416,7 @@
     "description.status": "Die Reise von :username von :origin nach :destination am :date in :lineName.",
     "description.leaderboard.main": "Die Top Träweller der letzten 7 Tage.",
     "description.leaderboard.monthly": "Die Top Träweller im :month :year der letzten 7 Tage.",
-    "description.en-route": "Übersichtskarte über alle Träweller, welche gerade auf der Welt unterwegs sind."
+    "description.en-route": "Übersichtskarte über alle Träweller, welche gerade auf der Welt unterwegs sind.",
+    "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage.",
+    "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung."
 }

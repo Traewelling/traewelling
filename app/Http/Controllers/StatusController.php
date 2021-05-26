@@ -14,14 +14,11 @@ use DateInterval;
 use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class StatusController extends Controller
 {
@@ -163,15 +160,9 @@ class StatusController extends Controller
         if ($status === null) {
             return null;
         }
-        $trainCheckin = $status->trainCheckin()->first();
-
         if ($user != $status->user) {
             return false;
         }
-        $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= $trainCheckin->duration;
-
-        $user->update();
         $status->delete();
         return true;
     }
@@ -225,15 +216,17 @@ class StatusController extends Controller
         return Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
     }
 
-    public static function ExportStatuses($startDate,
-                                          $endDate,
-                                          $fileType,
-                                          $privateTrips = true,
-                                          $businessTrips = true) {
+    public static function ExportStatuses(
+        Carbon $startDate,
+        Carbon $endDate,
+        string $fileType,
+        bool $privateTrips = true,
+        bool $businessTrips = true
+    ) {
         if (!$privateTrips && !$businessTrips) {
             abort(400, __('controller.status.export-neither-business'));
         }
-        $endInclLastOfMonth = (new DateTime($endDate))->add(new DateInterval("P1D"))->format("Y-m-d");
+        $endInclLastOfMonth = $endDate->clone()->addDay();
 
         $user          = Auth::user();
         $trainCheckins = Status::with('user',
@@ -243,8 +236,12 @@ class StatusController extends Controller
                                       'trainCheckin.hafastrip')
                                ->where('user_id', $user->id)
                                ->whereHas('trainCheckin', function($query) use ($startDate, $endInclLastOfMonth) {
-                                   $query->whereBetween('arrival', [$startDate, $endInclLastOfMonth]);
-                                   $query->orwhereBetween('departure', [$startDate, $endInclLastOfMonth]);
+                                   $query->whereBetween('arrival', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
+                                   $query->orwhereBetween('departure', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
                                })
                                ->get()->sortBy('trainCheckin.departure');
         $export        = [];
@@ -273,8 +270,8 @@ class StatusController extends Controller
             $pdf = PDF::loadView('pdf.export-template',
                                  ['export'     => $export,
                                   'name'       => $user->name,
-                                  'start_date' => $startDate,
-                                  'end_date'   => $endDate])
+                                  'start_date' => $startDate->format('Y-m-d'),
+                                  'end_date'   => $endDate->format('Y-m-d')])
                       ->setPaper('a4', 'landscape');
             return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf',
                                           $startDate,
@@ -288,8 +285,8 @@ class StatusController extends Controller
                 'Content-Disposition' => sprintf('attachment; filename="' .
                                                  config('app.name', 'Träwelling') .
                                                  '_export_%s_to_%s.csv"',
-                                                 $startDate,
-                                                 $endDate),
+                                                 $startDate->format('Y-m-d'),
+                                                 $endDate->format('Y-m-d')),
                 'Expires'             => '0',
                 'Pragma'              => 'public'
             ];
@@ -327,8 +324,8 @@ class StatusController extends Controller
             'Content-Disposition' => sprintf('attachment; filename="' .
                                              config('app.name', 'Träwelling') .
                                              '_export_%s_to_%s.json"',
-                                             $startDate,
-                                             $endDate),
+                                             $startDate->format('Y-m-d'),
+                                             $endDate->format('Y-m-d')),
             'Expires'             => '0',
             'Pragma'              => 'public'
         ];

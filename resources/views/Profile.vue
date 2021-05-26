@@ -6,8 +6,8 @@
         <img alt="__('settings.picture')" :src="`/profile/${user.username}/profilepicture`" height="20%"
              width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
         <div class="text-white px-4">
-          <h2 class="card-title h1-responsive font-bold">
-            <strong>{{ user.username }} <i v-if="user.privateProfile" class="fas fa-user-lock"></i>
+          <h2 class="card-title font-bold">
+            <strong>{{ user.username }} <i v-if="user.privateProfile" class="fas fa-user-lock" aria-hidden="true"/>
             </strong> <br/>
             <small class="font-weight-light">@{{ user.username }}</small>
             <!--          ToDo: Implement Follow-Button to vue-->
@@ -15,24 +15,24 @@
           </h2>
           <h2>
           <span class="font-weight-bold">
-            <i class="fa fa-route d-inline"></i>&nbsp;{{ user.trainDistance.toFixed(2) }}
+            <i class="fa fa-route d-inline" aria-hidden="true"/>&nbsp;{{ user.trainDistance.toFixed(2) }}
           </span>
             <span class="small font-weight-lighter">km</span>
             <span class="font-weight-bold ps-sm-2">
-            <i class="fa fa-stopwatch d-inline"></i>&nbsp;{{ duration }}
+            <i class="fa fa-stopwatch d-inline" aria-hidden="true"/>&nbsp;{{ duration }}
           </span>
             <span class="font-weight-bold ps-sm-2">
-            <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ user.points }}
+            <i class="fa fa-dice-d20 d-inline" aria-hidden="true"/>&nbsp;{{ user.points }}
           </span>
             <span class="small font-weight-lighter">__('profile.points-abbr')</span>
             <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
             <a :href="user.twitterUrl" rel="me" class="text-white" target="_blank">
-              <i class="fab fa-twitter d-inline"></i>
+              <i class="fab fa-twitter d-inline" aria-hidden="true"/>
             </a>
           </span>
             <span v-if="user.mastodonUrl" class="font-weight-bold ps-sm-2">
             <a :href="user.mastodonUrl" rel="me" class="text-white" target="_blank">
-              <i class="fab fa-mastodon d-inline"></i>
+              <i class="fab fa-mastodon d-inline" aria-hidden="true"/>
             </a>
           </span>
           </h2>

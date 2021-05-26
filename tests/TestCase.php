@@ -10,8 +10,7 @@ use App\Http\Controllers\TransportController;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use JetBrains\PhpStorm\ArrayShape;
@@ -46,21 +45,22 @@ abstract class TestCase extends BaseTestCase
      *
      * @return Boolean If all checks were resolved positively. Assertions to be made on the caller
      * side to provide a coherent amount of assertions.
-     * @throws \Exception
+     * @throws Exception
      */
-    public static function isCorrectHafasTrip($hafastrip, $requestDate): bool {
-        $requestDateMinusMinusOneDay = (clone $requestDate)->sub(new DateInterval('P2D'));
-        $requestDateMinusOneDay      = (clone $requestDate)->sub(new DateInterval('P1D'));
-        $requestDatePlusOneDay       = (clone $requestDate)->add(new DateInterval('P1D'));
+    public static function isCorrectHafasTrip($hafastrip, Carbon $requestDate): bool {
+        $requestDateMinusMinusOneDay = $requestDate->clone()->subDays(2)->format(self::$HAFAS_ID_DATE);
+        $requestDateMinusOneDay      = $requestDate->clone()->subDay()->format(self::$HAFAS_ID_DATE);
+        $requestDatePlusOneDay       = $requestDate->clone()->addDay()->format(self::$HAFAS_ID_DATE);
+        $requestDate                 = $requestDate->format(self::$HAFAS_ID_DATE);
 
         // All Hafas Trips should have four pipe characters
         $fourPipes = 4 == substr_count($hafastrip->tripId, '|');
 
         $rightDate = in_array(1, [
-            substr_count($hafastrip->tripId, $requestDateMinusMinusOneDay->format(self::$HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDateMinusOneDay->format(self::$HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDate->format(self::$HAFAS_ID_DATE)),
-            substr_count($hafastrip->tripId, $requestDatePlusOneDay->format(self::$HAFAS_ID_DATE))
+            substr_count($hafastrip->tripId, $requestDateMinusMinusOneDay),
+            substr_count($hafastrip->tripId, $requestDateMinusOneDay),
+            substr_count($hafastrip->tripId, $requestDate),
+            substr_count($hafastrip->tripId, $requestDatePlusOneDay)
         ]);
 
         $ret = $fourPipes && $rightDate;
@@ -82,7 +82,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      * @param $stationName
-     * @param DateTime $now
+     * @param Carbon $timestamp
      * @param User|null $user
      * @param bool|null $forEvent
      * @return array|null
@@ -98,12 +98,12 @@ abstract class TestCase extends BaseTestCase
         'duration'             => "float",
         'event'                => "mixed"
     ])]
-    protected function checkin($stationName, DateTime $now, User $user = null, bool $forEvent = null): ?array {
+    protected function checkin($stationName, Carbon $timestamp, User $user = null, bool $forEvent = null): ?array {
         if ($user == null) {
             $user = $this->user;
         }
         $trainStationboard = TransportController::TrainStationboard($stationName,
-                                                                    Carbon::createFromTimestamp($now->format('U')),
+                                                                    $timestamp,
                                                                     TravelType::EXPRESS);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -121,7 +121,7 @@ abstract class TestCase extends BaseTestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        CheckinTest::isCorrectHafasTrip($departure, $now);
+        CheckinTest::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -155,7 +155,7 @@ abstract class TestCase extends BaseTestCase
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
         } catch (CheckInCollisionException) {
-            $this->markTestSkipped("failure for " . $now->format('Y-m-d H:i:s') . ": Collision");
+            $this->markTestSkipped("failure for " . $timestamp->format('Y-m-d H:i:s') . ": Collision");
         }
     }
 }

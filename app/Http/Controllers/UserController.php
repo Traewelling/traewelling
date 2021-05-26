@@ -6,7 +6,6 @@ use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -15,10 +14,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -299,32 +296,5 @@ class UserController extends Controller
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
         )->simplePaginate(10);
-    }
-
-    public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        return Status::with(['trainCheckin', 'user'])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->where(
-                         'train_checkins.departure',
-                         '>=',
-                         $date->clone()->firstOfMonth()->toDateString()
-                     )
-                     ->where(
-                         'train_checkins.departure',
-                         '<=',
-                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                     )
-                     ->get()
-                     ->groupBy('user_id')
-                     ->map(function($statuses) {
-                         return [
-                             'user'        => $statuses->first()->user,
-                             'points'      => $statuses->sum('trainCheckin.points'),
-                             'distance'    => $statuses->sum('distance'),
-                             'duration'    => $statuses->sum('trainCheckin.duration'),
-                             'statusCount' => $statuses->count()
-                         ];
-                     })
-                     ->sortByDesc('points');
     }
 }

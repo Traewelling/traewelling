@@ -85,12 +85,14 @@
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
-                                   href="{{ route('stats') }}">
-                                    {{__('stats')}}
-                                </a>
-                            </li>
+                            @auth
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                       href="{{ route('stats') }}">
+                                        {{__('stats')}}
+                                    </a>
+                                </li>
+                            @endauth
                         </ul>
                         <ul class="navbar-nav w-auto">
                             @guest
