@@ -242,8 +242,12 @@ class StatusController extends Controller
                                       'trainCheckin.hafastrip')
                                ->where('user_id', $user->id)
                                ->whereHas('trainCheckin', function($query) use ($startDate, $endInclLastOfMonth) {
-                                   $query->whereBetween('arrival', [$startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()]);
-                                   $query->orwhereBetween('departure', [$startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()]);
+                                   $query->whereBetween('arrival', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
+                                   $query->orwhereBetween('departure', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
                                })
                                ->get()->sortBy('trainCheckin.departure');
         $export        = [];
