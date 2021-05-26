@@ -400,5 +400,5 @@
     "user.muted.heading2": "Muted users",
     "user.already-unmuted": "The user :username is not muted.",
     "user.unmute-tooltip": "Unmute user",
-    "localisation.not-available": "Sorry, this content is not currently available in your language."
+    "localisation.not-available": "Sorry, this content is currently not available in your language."
 }
