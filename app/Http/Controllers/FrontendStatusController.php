@@ -7,6 +7,8 @@ use App\Http\Controllers\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;
+use DateInterval;
+use DateTime;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FrontendStatusController extends Controller
@@ -108,15 +111,18 @@ class FrontendStatusController extends Controller
     }
 
     public function export(Request $request): JsonResponse|StreamedResponse|Response {
-        $this->validate($request, [
-            'begin'    => 'required|date|before_or_equal:end',
-            'end'      => 'required|date|after_or_equal:begin',
-            'filetype' => 'required|in:json,csv,pdf'
-        ]);
+        $validated = $request->validate([
+                                            'begin'    => ['required', 'date', 'before_or_equal:end'],
+                                            'end'      => ['required', 'date', 'after_or_equal:begin'],
+                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
+                                        ]);
 
-        return StatusBackend::ExportStatuses($request->input('begin'),
-                                             $request->input('end'),
-                                             $request->input('filetype'));
+
+        return StatusBackend::ExportStatuses(
+            startDate: Carbon::parse($validated['begin']),
+            endDate: Carbon::parse($validated['end']),
+            fileType: $request->input('filetype')
+        );
     }
 
     public function getActiveStatuses(): Renderable {
