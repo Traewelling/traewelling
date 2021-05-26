@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 abstract class EventController extends Controller
 {
@@ -46,4 +48,18 @@ abstract class EventController extends Controller
 
         return $eventSuggestion;
     }
+
+    public static function activeEvents(): ?Collection {
+        $now = Carbon::now();
+
+        return Event::where([
+                                ['begin', '<=', $now],
+                                ['end', '>=', $now]
+                            ])->get();
+    }
+
+    public static function getBySlug(string $slug): ?Event {
+        return Event::where('slug', '=', $slug)->firstOrFail();
+    }
+
 }
