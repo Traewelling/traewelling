@@ -111,8 +111,8 @@ class NotificationsTest extends TestCase
     /** @test */
     public function bob_joining_on_alices_connection_should_spawn_a_notification() {
         // GIVEN: Alice checked-into a train.
-        $alice = $this->createGDPRAckedUser();
-        $timestamp   = Carbon::parse("+2 day 7:45");
+        $alice     = $this->createGDPRAckedUser();
+        $timestamp = Carbon::parse("+2 day 7:45");
         $this->checkin("Hamburg Hbf", $timestamp, $alice);
 
         // WHEN: Bob also checks into the train

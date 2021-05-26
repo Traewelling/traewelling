@@ -218,8 +218,8 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->alice->user   = $this->createGDPRAckedUser(['name' => 'alice', 'privacy_ack_at' => now()]);
 
         // Create new CheckIn for Bob
-        $timestamp                = Carbon::parse('+1 day 8:00');
-        $data->bob->checkin       = $this->checkin("Frankfurt Hbf", $timestamp, $data->bob->user, 1);
+        $timestamp          = Carbon::parse('+1 day 8:00');
+        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $timestamp, $data->bob->user, 1);
 
         // Make Gertrud follow bob and make bob's profile muted
         UserController::destroyFollow($data->alice->user, $data->bob->user);
