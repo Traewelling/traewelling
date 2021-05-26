@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class LeaderboardController extends Controller
 {
@@ -34,7 +35,15 @@ class LeaderboardController extends Controller
             );
         }
 
-        $sumDuration = 'SUM((train_checkins.arrival - train_checkins.departure) / 60)';
+        if (config('database.default') == 'mysql') {
+            $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
+        } elseif (config('database.default') == 'sqlite') {
+            // Sorry for this disgusting code. But we test with SQLite.
+            // There are different functions than with MySQL/MariaDB.
+            $sumDuration = 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';
+        } else {
+            throw new UnexpectedValueException('Driver not supported');
+        }
         $sumDistance = 'SUM(train_checkins.distance)';
 
         $query = DB::table('statuses')
@@ -47,7 +56,7 @@ class LeaderboardController extends Controller
                                 DB::raw('SUM(train_checkins.points) AS points'),
                                 DB::raw($sumDistance . ' AS distance'),
                                 DB::raw($sumDuration . ' AS duration'),
-                                DB::raw($sumDistance . ' / ' . $sumDuration . ' AS speed'),
+                                DB::raw($sumDistance . ' / (' . $sumDuration . ' / 60) AS speed'),
                             ])
                    ->orderByDesc($orderBy)
                    ->limit($limit);
