@@ -58,7 +58,7 @@ export default {
       const oldStatuses = this.statuses;
       this.error   = this.statuses = null;
       axios
-          .get('/api/v1/statuses')
+          .get("/api/v1/statuses")
           .then((response) => {
             this.loading  = false;
             // FixMe: Why is this comparison not working correctly?
@@ -85,7 +85,7 @@ export default {
           })
           .catch((error) => {
             console.error(error);
-          })
+          });
     },
     fetchPolyline() {
       let tripIds = "";
@@ -105,7 +105,7 @@ export default {
       setInterval(() => (this.fetchData()), 70000);
     }
   },
-}
+};
 </script>
 
 <style scoped>

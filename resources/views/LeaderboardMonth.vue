@@ -66,52 +66,50 @@
       <div class="col-md-8 col-lg-7">
         <div class="card">
           <div class="card-body table-responsive">
-            <div class="card-body table-responsive">
-              <table class="table table-vertical-center">
-                <thead>
-                  <tr>
-                    <th scope="col"> __('leaderboard.rank')</th>
-                    <th scope="col" colspan="2"> __('leaderboard.user')</th>
-                    <th scope="col"> __('leaderboard.duration')</th>
-                    <th scope="col"> __('leaderboard.distance')</th>
-                    <th scope="col"> __('leaderboard.points')</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(place, index) in users.slice(3, 100)">
-                    <td>{{ index + 4 }}</td>
-                    <td>
-                      <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                        <router-link to="{ name: 'profile', params: {username: place.username}}">
-                          <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
-                               style="width: 50%;">
-                        </router-link>
-                      </div>
-                    </td>
-                    <td>
-                      <router-link to="{ name: 'profile', params: {username: place.username}}"
-                                   style="font-size: 1.3em;">
-                        {{ place.username }}
+            <table class="table table-vertical-center">
+              <thead>
+                <tr>
+                  <th scope="col"> __('leaderboard.rank')</th>
+                  <th scope="col" colspan="2"> __('leaderboard.user')</th>
+                  <th scope="col"> __('leaderboard.duration')</th>
+                  <th scope="col"> __('leaderboard.distance')</th>
+                  <th scope="col"> __('leaderboard.points')</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(place, index) in users.slice(3, 100)">
+                  <td>{{ index + 4 }}</td>
+                  <td>
+                    <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
+                      <router-link to="{ name: 'profile', params: {username: place.username}}">
+                        <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
+                             style="width: 50%;">
                       </router-link>
-                    </td>
-                    <td>
-                      {{ place.points.toFixed(0) }}
-                    </td>
-                    <td>
-                      {{ place.trainDuration }}min
-                    </td>
-                    <td>
-                      {{ place.trainDistance.toFixed(0) }}km
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    </div>
+                  </td>
+                  <td>
+                    <router-link to="{ name: 'profile', params: {username: place.username}}"
+                                 style="font-size: 1.3em;">
+                      {{ place.username }}
+                    </router-link>
+                  </td>
+                  <td>
+                    {{ place.points.toFixed(0) }}
+                  </td>
+                  <td>
+                    {{ place.trainDuration }}min
+                  </td>
+                  <td>
+                    {{ place.trainDistance.toFixed(0) }}km
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-      <hr/>
     </div>
+    <hr/>
   </div>
   <div v-else>__('vue.loading')</div>
 </template>
@@ -168,7 +166,7 @@ export default {
   created() {
     this.fetchData();
   }
-}
+};
 </script>
 
 <style scoped>
