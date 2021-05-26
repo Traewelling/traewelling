@@ -68,8 +68,9 @@
                                    href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
-                                   href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                                <router-link :to="{ name: 'statuses.active'}" class="nav-link">
+                                    __('menu.active')
+                                </router-link>
                             </li>
                         </ul>
                         <ul class="navbar-nav w-auto">
@@ -98,7 +99,8 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification"
+                                              hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">

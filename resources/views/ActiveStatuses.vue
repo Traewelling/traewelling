@@ -1,8 +1,12 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-7">
-        <h4> __('menu.active') </h4>
+      <div class="col-md-8 col-lg-6">
+      <div class="card sticky-top">
+        <Map class="map embed-responsive embed-responsive-1by1" :poly-lines="polylines"></Map>
+      </div>
+    </div>
+      <div class="col-md-8 col-lg-6">
         <div class="loading" v-if="loading">
           __('vue.loading')
         </div>
@@ -16,12 +20,8 @@
             </button>
           </p>
         </div>
-
-        <div class="card-img-top" v-if="polylines">
-          <Map class="map embed-responsive embed-responsive-1by1" :poly-lines="polylines"></Map>
-        </div>
-
         <div v-if="statuses">
+          <h4 class="mt-4"> __('menu.active') </h4>
           <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"></Status>
         </div>
       </div>
@@ -61,6 +61,7 @@ export default {
           .get('/api/v1/statuses')
           .then((response) => {
             this.loading  = false;
+            // FixMe: Why is this comparison not working correctly?
             if(oldStatuses != response.data.data) {
               this.statuses = response.data.data;
               this.fetchPolyline();

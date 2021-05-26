@@ -4,10 +4,12 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\StopoverResource;
+use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
@@ -60,5 +62,10 @@ class StatusController extends ResponseController
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
         return $this->sendv1Response($trips);
+    }
+
+    public function getEvent(string $slug) {
+        $event = Event::where('slug', 'like', $slug)->firstOrFail();
+        return new EventResource($event);
     }
 }

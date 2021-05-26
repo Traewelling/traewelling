@@ -12,21 +12,27 @@ class Event extends Model
     protected $fillable = ['name', 'hashtag', 'slug', 'host', 'url', 'begin', 'end'];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['begin', 'end'];
+    protected $appends  = ['trainDistance', 'trainDuration'];
 
-    public function trainstation(): HasOne {
-        return $this->hasOne(TrainStation::class, 'trainstation', 'id');
+    public function station(): HasOne {
+        return $this->hasOne(TrainStation::class, 'id', 'trainstation');
+    }
+
+    public function getTrainDistanceAttribute(): float {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select('distance')
+                           ->sum('distance');
+    }
+
+    public function getTrainDurationAttribute(): int {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select(['arrival', 'departure'])
+                           ->get()
+                           ->sum('duration');
     }
 
     public function statuses(): HasMany {
-        return $this->hasMany(Status::class, 'event_id', 'id')
-                    ->with(['user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event'])
-                    ->withCount('likes')
-                    ->orderBy('created_at', 'desc');
+        return $this->hasMany(Status::class);
     }
 
     /**
