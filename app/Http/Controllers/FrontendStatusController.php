@@ -117,7 +117,6 @@ class FrontendStatusController extends Controller
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
-
         return StatusBackend::ExportStatuses(
             startDate: Carbon::parse($validated['begin']),
             endDate: Carbon::parse($validated['end']),
