@@ -13,10 +13,10 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\StatisticController;
-use App\Http\Controllers\FrontendEventController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -29,6 +29,8 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+require_once realpath(dirname(__FILE__)) . '/web/admin.php';
 
 Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
      ->name('account.showProfilePicture');
@@ -61,6 +63,9 @@ Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatu
 
 Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'statusesByEvent'])
      ->name('statuses.byEvent');
+
+Route::get('/events', [EventController::class, 'renderEventOverview'])
+     ->name('events');
 
 Auth::routes(['verify' => true]);
 
@@ -96,32 +101,6 @@ Route::middleware(['auth'])->group(function() {
          ->name('account.destroy');
 });
 
-/**
- * Routes for the admins.
- */
-Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
-
-    Route::get('/', [FrontendStatusController::class, 'usageboard'])
-         ->name('admin.dashboard');
-
-    Route::get('/events', [FrontendEventController::class, 'index'])
-         ->name('events.all');
-
-    Route::get('/events/new', [FrontendEventController::class, 'newForm'])
-         ->name('events.newform');
-
-    Route::post('/events/new', [FrontendEventController::class, 'store'])
-         ->name('events.store');
-
-    Route::get('/events/{slug}/delete', [FrontendEventController::class, 'destroy'])
-         ->name('events.delete');
-
-    Route::get('/events/{slug}', [FrontendEventController::class, 'show'])
-         ->name('events.show');
-
-    Route::put('/events/{slug}', [FrontendEventController::class, 'update'])
-         ->name('events.update');
-});
 
 Route::get('/ics', [IcsController::class, 'renderIcs'])
      ->name('ics');
@@ -140,6 +119,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/stats', [StatisticController::class, 'renderMainStats'])
          ->name('stats');
+
+    Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
+         ->name('events.suggest');
 
     Route::prefix('settings')->group(function() {
         Route::get('/', [SettingsController::class, 'renderSettings'])

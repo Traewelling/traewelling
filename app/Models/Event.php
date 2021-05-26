@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Event extends Model
 {
 
-    protected $fillable = ['name', 'hashtag', 'slug', 'host', 'url', 'begin', 'end'];
+    protected $fillable = ['name', 'hashtag', 'trainstation', 'slug', 'host', 'url', 'begin', 'end'];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['begin', 'end'];
 

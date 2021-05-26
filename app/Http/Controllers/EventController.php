@@ -11,12 +11,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * Class EventController
+ * @package App\Http\Controllers
+ * @deprecated Please move all functions to Frontend and Backend folder
+ */
 class EventController extends Controller
 {
-
-    public static function all(): Collection {
-        return Event::orderBy('end', 'desc')->get();
-    }
 
     public static function save(Request $request, Event $event): RedirectResponse {
         $validated         = $request->validate([
@@ -69,7 +70,7 @@ class EventController extends Controller
         $event->save();
 
         return redirect()->route('events.show', ['slug' => $event->slug])
-                         ->with('message', $event->slug . " saved.");
+                         ->with('alert-success', $event->slug . " saved.");
     }
 
 

@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Controllers\Backend;
+
+use App\Http\Controllers\Backend\Admin\TelegramController;
+use App\Http\Controllers\Controller;
+use App\Models\EventSuggestion;
+use App\Models\User;
+use Carbon\Carbon;
+
+abstract class EventController extends Controller
+{
+    public static function suggestEvent(
+        User $user,
+        string $name,
+        Carbon $begin,
+        Carbon $end,
+        string $url = null,
+        string $host = null
+    ): EventSuggestion {
+        $eventSuggestion = EventSuggestion::create([
+                                                       'user_id' => $user->id,
+                                                       'name'    => $name,
+                                                       'begin'   => $begin->toIso8601String(),
+                                                       'end'     => $end->toIso8601String(),
+                                                       'url'     => $url,
+                                                       'host'    => $host
+                                                   ]);
+
+
+        TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>\n" .
+                                                   "Title: :name\n" .
+                                                   "Veranstalter: :host\n" .
+                                                   "Beginn: :begin\n" .
+                                                   "Ende: :end\n" .
+                                                   "Benutzer: :username\n\n" .
+                                                   "Der Vorschlag kann im " .
+                                                   "<a href=\"" . route('admin.dashboard') . "\">Adminpanel</a>" .
+                                                   " bearbeitet werden.", [
+                                                       ':name'     => $eventSuggestion->name,
+                                                       ':host'     => $eventSuggestion->host,
+                                                       ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
+                                                       ':end'      => $eventSuggestion->end->format('d.m.Y'),
+                                                       ':username' => $eventSuggestion->user->username,
+                                                   ]));
+
+        return $eventSuggestion;
+    }
+}

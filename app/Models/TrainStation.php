@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainStation extends Model
 {
@@ -16,4 +17,8 @@ class TrainStation extends Model
         'latitude'  => 'double',
         'longitude' => 'double'
     ];
+
+    public function events(): HasMany {
+        return $this->hasMany(Event::class, 'trainstation', 'id');
+    }
 }

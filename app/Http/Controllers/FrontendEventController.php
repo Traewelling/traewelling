@@ -11,22 +11,6 @@ use Illuminate\Http\Request;
 class FrontendEventController extends Controller
 {
 
-    public function index(): Renderable {
-        $events = EventBackend::all();
-
-        return view('admin.event', [
-            'upcoming' => $events->filter(function($event) {
-                return $event->begin->isFuture();
-            }),
-            'live'     => $events->filter(function($event) {
-                return $event->begin->isPast() && $event->end->isFuture();
-            }),
-            'past'     => $events->filter(function($event) {
-                return $event->end->isPast();
-            }),
-        ]);
-    }
-
     public function newForm(): Renderable {
         return view('admin.eventsForm', ['event' => new Event(), 'isNew' => true]);
     }
