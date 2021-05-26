@@ -17,20 +17,23 @@ class SitemapController extends Controller
     public function renderSitemap(Request $request): Response {
         $sitemap = SitemapGenerator::create(config('app.url'))
                                    ->shouldCrawl(function() {
-                                        return false;
-                                    })
+                                       return false;
+                                   })
                                    ->getSitemap();
 
-        if($request->has('static')) {
+        if ($request->has('static')) {
             $this->addStatic($sitemap);
         }
-        if($request->has('blog')) {
+        if ($request->has('blog')) {
             $this->addBlogposts($sitemap);
         }
-        if($request->has('profiles')) {
+        if ($request->has('profiles')) {
             $this->addProfiles($sitemap);
         }
-		
+        if ($request->has('events')) {
+            $this->addEvents($sitemap);
+        }
+
         return response($sitemap->render(), 200, [
             'Content-type' => 'application/xml'
         ]);
@@ -57,13 +60,6 @@ class SitemapController extends Controller
             $sitemap->add(Url::create(route('leaderboard.month', ['date' => $date->year . '-' . $date->month]))
                              ->setPriority(0.6));
         }
-
-        $events = Event::all();
-        foreach ($events as $event) {
-            $sitemap->add(Url::create(route('statuses.byEvent', ['eventSlug' => $event->slug]))
-                             ->setPriority(0.6));
-        }
-
     }
 
     private function addBlogposts(Sitemap $sitemap): void {
@@ -75,6 +71,16 @@ class SitemapController extends Controller
                       ->setLastModificationDate($blogpost->updated_at)
                       ->setChangeFrequency('monthly');
             $sitemap->add($url);
+        }
+    }
+
+    private function addEvents(Sitemap $sitemap): void {
+        $sitemap->add(Url::create(route('events'))->setPriority(0.7));
+
+        $events = Event::all();
+        foreach ($events as $event) {
+            $sitemap->add(Url::create(route('statuses.byEvent', ['eventSlug' => $event->slug]))
+                             ->setPriority(0.6));
         }
     }
 

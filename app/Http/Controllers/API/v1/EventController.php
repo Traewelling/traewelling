@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\EventController as EventBackend;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Eventcontroller extends Controller
+class EventController extends Controller
 {
     /**
      * Returns model of Event
@@ -21,7 +21,7 @@ class Eventcontroller extends Controller
      * @return EventResource
      */
     public function show(string $slug): EventResource {
-        $event = EventBAckend::getBySlug($slug);
+        $event = EventBackend::getBySlug($slug);
         return new EventResource($event);
     }
 

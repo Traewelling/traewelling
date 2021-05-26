@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\EventController as EventBackend;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;

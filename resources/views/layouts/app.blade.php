@@ -191,6 +191,9 @@
                     / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
                 </span>
                         <span class="footer-nav-link">
+                    / <a href="{{ route('events') }}">{{ __('events') }}</a>
+                </span>
+                        <span class="footer-nav-link">
                     / <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
                 </span>
                         <span class="footer-nav-link">

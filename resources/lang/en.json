@@ -120,7 +120,7 @@
     "events.name": "Name",
     "events.hashtag": "Hashtag",
     "events.website": "Website",
-    "events.host": "Host",
+    "events.host": "Organizer",
     "events.url": "External Website",
     "events.begin": "Begins at",
     "events.end": "Ends at",

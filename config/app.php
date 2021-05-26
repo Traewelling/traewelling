@@ -258,4 +258,9 @@ return [
         'email'    => env('IMPRINT_EMAIL')
     ],
 
+    'telegram' => [
+        'admin_id' => env('TELEGRAM_ADMIN_ID'),
+        'token'    => env('TELEGRAM_TOKEN')
+    ]
+
 ];
