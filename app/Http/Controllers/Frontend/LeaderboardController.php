@@ -10,10 +10,9 @@ use Illuminate\Contracts\Support\Renderable;
 class LeaderboardController extends Controller
 {
     public static function renderMonthlyLeaderboard(string $date): Renderable {
-        $date = Carbon::parse($date);
         return view('leaderboard.month', [
             'leaderboard' => LeaderboardBackend::getMonthlyLeaderboard($date),
-            'date'        => $date
+            'date'        => Carbon::parse($date)
         ]);
     }
 
