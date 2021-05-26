@@ -21,7 +21,8 @@
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
                        class="btn btn-sm btn-primary float-end">
-                        {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}} <i class="fas fa-arrow-right"></i>
+                        {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}} <i
+                                class="fas fa-arrow-right"></i>
                     </a>
                 @endif
                 <div class="clearfix"></div>
@@ -44,14 +45,14 @@
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
                             <div class="image-box pe-0 d-lg-flex">
-                                <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
-                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                         alt="{{$place['user']->username}}" style="width: 50%;">
+                                <a href="{{ route('account.show', ['username' => $place->username]) }}">
+                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->username]) }}"
+                                         alt="{{$place->username}}" style="width: 50%;">
                                 </a>
                             </div>
-                            <a href="{{ route('account.show', ['username' => $place['user']->username]) }}"
+                            <a href="{{ route('account.show', ['username' => $place->username]) }}"
                                style="font-size: 1.3em;">
-                                {{$place['user']->username}}
+                                {{$place->username}}
                             </a>
 
 
@@ -59,15 +60,15 @@
                                 <tr>
                                     <td>
                                         <i class="fas fa-dice-d20"></i>
-                                        {{number($place['points'], 0)}}
+                                        {{number($place->points, 0)}}
                                     </td>
                                     <td>
                                         <i class="fas fa-clock"></i>
-                                        {{number($place['duration'], 0)}}min
+                                        {{number($place->train_duration, 0)}}min
                                     </td>
                                     <td>
                                         <i class="fas fa-route"></i>
-                                        {{number($place['distance'], 0)}}km
+                                        {{number($place->train_distance, 0)}}km
                                     </td>
                                 </tr>
                             </table>
@@ -82,46 +83,46 @@
                 <div class="col-md-8 col-lg-7">
                     <div class="card">
                         <div class="card-body table-responsive">
-                        <div class="card-body table-responsive">
-                            <table class="table table-vertical-center">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">{{ __('leaderboard.rank') }}</th>
-                                        <th scope="col" colspan="2">{{ __('leaderboard.user') }}</th>
-                                        <th scope="col">{{ __('leaderboard.duration') }}</th>
-                                        <th scope="col">{{ __('leaderboard.distance') }}</th>
-                                        <th scope="col">{{ __('leaderboard.points') }}</th>
-                                    </tr>
-                                </thead>
-                                @foreach($leaderboard->take(100) as $place)
-                                    @if($loop->index < 3) @continue @endif
-                                    <tr>
-                                        <td>{{ $loop->index + 1 }}</td>
-                                        <td>
-                                            <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
-                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place['user']->username]) }}"
-                                                         alt="{{$place['user']->username}}">
+                            <div class="card-body table-responsive">
+                                <table class="table table-vertical-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">{{ __('leaderboard.rank') }}</th>
+                                            <th scope="col" colspan="2">{{ __('leaderboard.user') }}</th>
+                                            <th scope="col">{{ __('leaderboard.duration') }}</th>
+                                            <th scope="col">{{ __('leaderboard.distance') }}</th>
+                                            <th scope="col">{{ __('leaderboard.points') }}</th>
+                                        </tr>
+                                    </thead>
+                                    @foreach($leaderboard->take(100) as $place)
+                                        @if($loop->index < 3) @continue @endif
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>
+                                                <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                                    <a href="{{ route('account.show', ['username' => $place->username]) }}">
+                                                        <img src="{{ route('account.showProfilePicture', ['username' => $place->username]) }}"
+                                                             alt="{{$place->username}}">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('account.show', ['username' => $place->username]) }}">
+                                                    {{ $place->username }}
                                                 </a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('account.show', ['username' => $place['user']->username]) }}">
-                                                {{ $place['user']->username }}
-                                            </a>
-                                        </td>
-                                        <td>{{ number( $place['duration'], 0) }}<small>min</small></td>
-                                        <td>{{ number( $place['distance'], 0) }}<small>km</small></td>
-                                        <td>{{ number( $place['points'], 0) }}</td>
-                                    </tr>
-                                @endforeach
-                            </table>
+                                            </td>
+                                            <td>{{ number( $place->train_duration, 0) }}<small>min</small></td>
+                                            <td>{{ number( $place->train_distance, 0) }}<small>km</small></td>
+                                            <td>{{ number( $place->points, 0) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <hr/>
+                @endif
             </div>
-            <hr/>
-        @endif
-    </div>
 @endsection
 
