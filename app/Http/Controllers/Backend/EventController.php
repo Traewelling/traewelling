@@ -28,15 +28,15 @@ abstract class EventController extends Controller
                                                    ]);
 
 
-        TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>\n" .
-                                                   "Title: :name\n" .
-                                                   "Veranstalter: :host\n" .
-                                                   "Beginn: :begin\n" .
-                                                   "Ende: :end\n" .
-                                                   "Benutzer: :username\n\n" .
-                                                   "Der Vorschlag kann im " .
-                                                   "<a href=\"" . route('admin.dashboard') . "\">Adminpanel</a>" .
-                                                   " bearbeitet werden.", [
+        TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
+                                                   "Title: :name" . PHP_EOL .
+                                                   "Veranstalter: :host" . PHP_EOL .
+                                                   "Beginn: :begin" . PHP_EOL .
+                                                   "Ende: :end" . PHP_EOL .
+                                                   "Benutzer: :username\n" . PHP_EOL .
+                                                   "Der Vorschlag kann im <a href=\"" .
+                                                   route('admin.dashboard') .
+                                                   "\">Adminpanel</a> bearbeitet werden.", [
                                                        ':name'     => $eventSuggestion->name,
                                                        ':host'     => $eventSuggestion->host,
                                                        ':begin'    => $eventSuggestion->begin->format('d.m.Y'),

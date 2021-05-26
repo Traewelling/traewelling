@@ -8,7 +8,7 @@ use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class EventController extends Controller
+abstract class EventController extends Controller
 {
 
     public static function createEvent(
