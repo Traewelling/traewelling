@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -63,9 +64,40 @@ class LeaderboardController extends Controller
         //Fetch user models in ONE query and map it to the collection
         $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
 
+        // ToDo: Probably re-sort for new distance-calculation, etc.
         return $data->map(function($row) use ($userCache) {
-            $row->user = $userCache->where('id', $row->user_id)->first();
-            return $row;
+            $user                 = $userCache->where('id', $row->user_id)->first();
+            $user->train_distance = $row->distance;
+            $user->train_duration = $row->duration;
+            $user->train_speed    = $row->speed;
+            $user->points         = $row->points;
+            return $user;
         });
+    }
+
+    public static function getMonthlyLeaderboard(Carbon $date): Collection {
+        return Status::with(['trainCheckin', 'user'])
+                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->where(
+                         'train_checkins.departure',
+                         '>=',
+                         $date->clone()->firstOfMonth()->toDateString()
+                     )
+                     ->where(
+                         'train_checkins.departure',
+                         '<=',
+                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
+                     )
+                     ->get()
+                     ->groupBy('user_id')
+                     ->map(function($statuses) {
+                         $user                 = $statuses->first()->user;
+                         $user->train_distance = $statuses->sum('distance');
+                         $user->train_duration = $statuses->sum('trainCheckin.duration');
+                         $user->train_speed    = null;
+                         $user->points         = $statuses->sum('trainCheckin.points');
+                         return $user;
+                     })
+                     ->sortByDesc('points');
     }
 }

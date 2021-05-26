@@ -35,7 +35,7 @@ Route::get('/profile/{username}/profilepicture', [FrontendUserController::class,
 
 //This is responsible to make vue available as a subdomain at vue.traewelling.de
 Route::domain('vue.' . substr(url('/'), 7))->group(function() {
-    Route::view('/{view?}', 'landing')->where('view', '(.*)')->name('landing');
+    Route::view('/{view?/}', 'landing')->where('view', '(.*)')->name('landing');
 });
 
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
@@ -53,7 +53,7 @@ Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePag
 Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
 
-Route::get('/leaderboard/{date}', [FrontendUserController::class, 'renderMonthlyLeaderboard'])
+Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])
      ->name('leaderboard.month');
 
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])

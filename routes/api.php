@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\API\v1\Eventcontroller;
+use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,8 +22,14 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('statuses/{id}', [StatusController::class, 'show']);
     Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
     Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+    Route::get('event/{slug}', [Eventcontroller::class, 'show']);
+    Route::get('event/{slug}/statuses', [Eventcontroller::class, 'statuses']);
     Route::get('user/{username}', [UserController::class, 'show']);
     Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+    Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
+    Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
+    Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
+    //Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']); ToDo: Friends route
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -43,14 +42,6 @@ class FrontendUserController extends Controller
         return response($profilePicture['picture'])
             ->header('Content-Type', 'image/' . $profilePicture['extension'])
             ->header('Cache-Control', 'public, no-transform, max-age:900');
-    }
-
-    public function renderMonthlyLeaderboard(string $date): Renderable {
-        $date = Carbon::parse($date);
-        return view('leaderboard.month', [
-            'leaderboard' => UserBackend::getMonthlyLeaderboard($date),
-            'date'        => $date
-        ]);
     }
 
     /**
