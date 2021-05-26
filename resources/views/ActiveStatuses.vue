@@ -8,7 +8,7 @@
     </div>
       <div class="col-md-8 col-lg-6">
         <div class="loading" v-if="loading">
-          __('vue.loading')
+           {{ i18n.get("_.vue.loading") }}
         </div>
 
         <div v-if="error" class="error">
@@ -16,12 +16,12 @@
 
           <p>
             <button @click.prevent="fetchData">
-              __('vue.tryAgain')
+              {{ i18n.get("_.vue.tryAgain") }}
             </button>
           </p>
         </div>
         <div v-if="statuses">
-          <h4 class="mt-4"> __('menu.active') </h4>
+          <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
           <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"></Status>
         </div>
       </div>

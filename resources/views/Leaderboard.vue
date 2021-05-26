@@ -5,29 +5,29 @@
         <div class="card" id="leaderboard">
           <div class="card-header">
             <router-link :to="{ name: 'leaderboard.month', params:{month: month} }" class="float-end">
-              __('leaderboard.month.title')
+               {{ i18n.get("_.leaderboard.month.title") }}
             </router-link>
-            __('menu.leaderboard')
+             {{ i18n.get("_.menu.leaderboard") }}
           </div>
           <div class="card-body" v-if="!loading">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="main-tab" data-toggle="tab" href="#leaderboard-main"
                    role="tab" aria-controls="home" aria-selected="true">
-                  __('leaderboard.top') {{ users.length }}
+                   {{ i18n.get("_.leaderboard.top") }} {{ users.length }}
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" id="distance-tab" data-toggle="tab" href="#leaderboard-distance"
                    role="tab" aria-controls="profile" aria-selected="false">
-                  __('leaderboard.distance')
+                   {{ i18n.get("_.leaderboard.distance") }}
                 </a>
               </li>
               <!--              ToDo: Friends-->
               <!--              <li class="nav-item">-->
               <!--                <a class="nav-link" id="friends-tab" data-toggle="tab" href="#leaderboard-friends"-->
               <!--                   role="tab" aria-controls="contact" aria-selected="false">-->
-              <!--                   __('leaderboard.friends') -->
+              <!--                    {{ i18n.get("_.leaderboard.friends") }} -->
               <!--                </a>-->
               <!--              </li>-->
               <!--              @endif-->
@@ -50,7 +50,7 @@
               <!--              @endisset-->
             </div>
           </div>
-          <div class="card-body" v-else>__('vue.loading')</div>
+          <div class="card-body" v-else> {{ i18n.get("_.vue.loading") }}</div>
         </div>
       </div>
     </div>
