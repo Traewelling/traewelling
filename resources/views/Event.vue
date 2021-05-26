@@ -34,23 +34,23 @@
         </div>
       </div>
     </div>
-<!--    <div class="container">-->
-<!--      <div v-if="loading || statusesLoading">-->
-<!--        __('vue.loading')-->
-<!--      </div>-->
+    <div class="container">
+      <div v-if="loading || statusesLoading">
+        __('vue.loading')
+      </div>
 
-<!--      <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">-->
-<!--        <div v-else-if="statuses.length > 0" class="col-md-8 col-lg-7">-->
+      <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
+        <div v-if="statuses.length > 0" class="col-md-8 col-lg-7">
 
-<!--          <div v-if="statuses">-->
-<!--            <Status v-for="status in statuses" :status="status"></Status>-->
-<!--          </div>-->
-<!--          <div class="mt-5">-->
-<!--            $statuses->links()-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+          <div v-if="statuses">
+            <Status v-for="status in statuses" :status="status"></Status>
+          </div>
+          <div class="mt-5">
+            $statuses->links()
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -113,6 +113,7 @@ export default {
           .then((response) => {
             this.loading = false;
             this.event    = response.data.data;
+            this.fetchStatuses();
           })
           .catch((error) => {
             this.loading = false;
@@ -123,7 +124,7 @@ export default {
       this.error           = null;
       this.statusesLoading = true;
       axios
-          .get("/api/v1/user/" + this.$route.params.username + "/statuses")
+          .get("/api/v1/event/" + this.$route.params.slug + "/statuses")
           .then((response) => {
             this.statusesLoading = false;
             this.statuses        = response.data.data;

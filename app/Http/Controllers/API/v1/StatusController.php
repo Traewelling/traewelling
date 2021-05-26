@@ -63,9 +63,4 @@ class StatusController extends ResponseController
         });
         return $this->sendv1Response($trips);
     }
-
-    public function getEvent(string $slug) {
-        $event = Event::where('slug', 'like', $slug)->firstOrFail();
-        return new EventResource($event);
-    }
 }
