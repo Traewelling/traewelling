@@ -35,7 +35,7 @@ abstract class EventController extends Controller
                                                    "Ende: :end" . PHP_EOL .
                                                    "Benutzer: :username\n" . PHP_EOL .
                                                    "Der Vorschlag kann im <a href=\"" .
-                                                   route('admin.dashboard') .
+                                                   route('admin.events.suggestions') .
                                                    "\">Adminpanel</a> bearbeitet werden.", [
                                                        ':name'     => $eventSuggestion->name,
                                                        ':host'     => $eventSuggestion->host,
