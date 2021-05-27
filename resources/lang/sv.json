@@ -410,5 +410,11 @@
     "events.request-question": "Du kan informera oss om kommande evenemang.",
     "events.request": "Informera om evenemang",
     "events.request-button": "Informera",
-    "events.notice": "Ditt meddelande kommer att publicera när Träwelling-teamet släpper det."
+    "events.notice": "Ditt meddelande kommer att publicera när Träwelling-teamet släpper det.",
+    "events.request.success": "Förslaget har mottagits. Tack så mycket!",
+    "event": "Evenemang",
+    "events": "Evenemang",
+    "auth.required": "Du måste vara inloggad för att använda den här funktionen.",
+    "menu.show-more": "Visa mer",
+    "leaderboard.notice": "Uppgifterna är baserade på incheckningar under de senaste 7 dagarna."
 }
