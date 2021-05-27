@@ -367,6 +367,7 @@
     "leaderboard.month.title": "Månadsöversikt",
     "dateformat.with-weekday": "dddd D MMMM YYYY",
     "datetime-format": "YYYY-MM-DD HH:mm",
+    "date-format": "YYYY-MM-DD",
     "settings.request.reject-success": "Du har lyckats avvisa begäran om följare.",
     "stationboard.business.business.detail": "Affärsresor",
     "stationboard.business.commute.detail": "Vägen mellan hem och jobb",
