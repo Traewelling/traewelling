@@ -406,5 +406,9 @@
     "description.leaderboard.monthly": "Top Träwelller i :month :year de senaste 7 dagar.",
     "description.en-route": "Översiktskarta över alla Träweller som för närvarande reser runt om i världen.",
     "description.blog": "De senaste blogginlägg",
-    "description.profile": ":username har redan varit :kmAmount Kilometer på :hourAmount timmar på kollektivtrafik."
+    "description.profile": ":username har redan varit :kmAmount Kilometer på :hourAmount timmar på kollektivtrafik.",
+    "events.request-question": "Du kan informera oss om kommande evenemang.",
+    "events.request": "Informera om evenemang",
+    "events.request-button": "Informera",
+    "events.notice": "Ditt meddelande kommer att publicera när Träwelling-teamet släpper det."
 }
