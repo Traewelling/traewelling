@@ -416,5 +416,9 @@
     "events": "Evenemang",
     "auth.required": "Du måste vara inloggad för att använda den här funktionen.",
     "menu.show-more": "Visa mer",
-    "leaderboard.notice": "Uppgifterna är baserade på incheckningar under de senaste 7 dagarna."
+    "leaderboard.notice": "Uppgifterna är baserade på incheckningar under de senaste 7 dagarna.",
+    "events.period": "Period",
+    "events.live-and-upcoming": "Aktuella och kommande evenemang",
+    "events.no-upcoming": "Inga kommande evenemang",
+    "localisation.not-available": "Tyvärr är det här innehållet inte tillgänlig på ditt språk."
 }
