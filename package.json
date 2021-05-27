@@ -33,6 +33,7 @@
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
         "font-awesome": "^4.7.0",
+        "lang.js": "^1.1.14",
         "leaflet": "^1.7.1",
         "mdb-ui-kit": "^3.4.0",
         "moment": "^2.29.1",

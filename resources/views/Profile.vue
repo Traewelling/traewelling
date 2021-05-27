@@ -3,7 +3,7 @@
     <div v-if="!loading" class="px-4 py-5 mt-n4"
          style="background-image: url('/images/covers/profile-background.png');background-position: center;background-color: #c5232c">
       <div class="container">
-        <img alt="__('settings.picture')" :src="`/profile/${user.username}/profilepicture`" height="20%"
+        <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${user.username}/profilepicture`" height="20%"
              width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
         <div class="text-white px-4">
           <h2 class="card-title font-bold">
@@ -24,7 +24,7 @@
             <span class="font-weight-bold ps-sm-2">
             <i class="fa fa-dice-d20 d-inline" aria-hidden="true"/>&nbsp;{{ user.points }}
           </span>
-            <span class="small font-weight-lighter">__('profile.points-abbr')</span>
+            <span class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
             <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
             <a :href="user.twitterUrl" rel="me" class="text-white" target="_blank">
               <i class="fab fa-twitter d-inline" aria-hidden="true"/>
@@ -41,19 +41,18 @@
     </div>
     <div class="container">
       <div v-if="loading || statusesLoading">
-        __('vue.loading')
+         {{ i18n.get("_.vue.loading") }}
       </div>
 
       <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
         <div v-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
-          <header><h3>__('profile.private-profile-text')</h3></header>
+          <header><h3>{{ i18n.get("_.profile.private-profile-text") }}</h3></header>
           <h5>
-            __('profile.private-profile-information-text', ["username" => $user->username, "request" =>
-            __('profile.follow_req')])
+             {{ i18n.choice("_.profile.private-profile-information-text", 1, {"username": user.username, "request": i18n.get("_.profile.follow_req")}) }}
           </h5>
         </div>
         <div v-else-if="statuses.length > 0" class="col-md-8 col-lg-7">
-          <header><h3>__('profile.last-journeys-of') {{ user.displayName }}:</h3></header>
+          <header><h3>{{ i18n.get("_.profile.last-journeys-of") }} {{ user.displayName }}:</h3></header>
 
           <div v-if="statuses">
             <Status v-for="status in statuses" :status="status"></Status>
@@ -64,7 +63,7 @@
         </div>
         <div v-else class="col-md-8 col-lg-7">
           <h3 class="text-danger">
-            strtr(__('profile.no-statuses'), [':username' => $user->name])
+            strtr({{ i18n.get("_.profile.no-statuses") }}, [':username' => $user->name])
           </h3>
         </div>
       </div>

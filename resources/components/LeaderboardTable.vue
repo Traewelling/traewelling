@@ -2,19 +2,19 @@
   <table class="table table-striped table-hover" aria-describedby="describedBy">
     <thead>
       <tr>
-        <th scope="col"> __('leaderboard.rank')</th>
-        <th scope="col"> __('leaderboard.user')</th>
-        <th scope="col"> __('leaderboard.duration')</th>
-        <th scope="col"> __('leaderboard.distance')</th>
-        <th scope="col"> __('leaderboard.averagespeed')</th>
-        <th scope="col"> __('leaderboard.points')</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.rank") }}</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.user") }}</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.duration") }}</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.distance") }}</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.averagespeed") }}</th>
+        <th scope="col"> {{ i18n.get("_.leaderboard.points") }}</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(row, index) in users">
         <td> {{ index + 1 }}</td>
         <td>
-          <router-link to="{ name: 'profile', params: {username: row.username}}">
+          <router-link :to="{ name: 'profile', params: {username: row.username}}">
             {{ row.username }}
           </router-link>
         </td>

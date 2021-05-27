@@ -37,7 +37,7 @@
     </div>
     <div class="container">
       <div v-if="loading || statusesLoading">
-        __('vue.loading')
+         {{ i18n.get("_.vue.loading") }}
       </div>
 
       <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
