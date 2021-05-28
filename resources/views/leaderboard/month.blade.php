@@ -16,13 +16,13 @@
                 <hr/>
                 <a href="{{route('leaderboard.month', ['date' => $date->clone()->subMonth()->format('Y-m')])}}"
                    class="btn btn-sm btn-primary float-left">
-                    <i class="fas fa-arrow-left"></i> {{$date->clone()->subMonth()->isoFormat(__('dateformat.month-and-year'))}}
+                    <em class="fas fa-arrow-left"></em> {{$date->clone()->subMonth()->isoFormat(__('dateformat.month-and-year'))}}
                 </a>
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
                        class="btn btn-sm btn-primary float-end">
-                        {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}} <i
-                                class="fas fa-arrow-right"></i>
+                        {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}}
+                        <em class="fas fa-arrow-right"></em>
                     </a>
                 @endif
                 <div class="clearfix"></div>
@@ -45,30 +45,30 @@
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
                             <div class="image-box pe-0 d-lg-flex">
-                                <a href="{{ route('account.show', ['username' => $place->username]) }}">
-                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->username]) }}"
-                                         alt="{{$place->username}}" style="width: 50%;">
+                                <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
+                                         alt="{{$place->user->username}}" style="width: 50%;">
                                 </a>
                             </div>
-                            <a href="{{ route('account.show', ['username' => $place->username]) }}"
+                            <a href="{{ route('account.show', ['username' => $place->user->username]) }}"
                                style="font-size: 1.3em;">
-                                {{$place->username}}
+                                {{$place->user->username}}
                             </a>
 
 
                             <table class="table text-muted">
                                 <tr>
                                     <td>
-                                        <i class="fas fa-dice-d20"></i>
+                                        <em class="fas fa-dice-d20"></em>
                                         {{number($place->points, 0)}}
                                     </td>
                                     <td>
-                                        <i class="fas fa-clock"></i>
-                                        {{number($place->train_duration, 0)}}min
+                                        <em class="fas fa-clock"></em>
+                                        {{number($place->duration, 0)}}min
                                     </td>
                                     <td>
-                                        <i class="fas fa-route"></i>
-                                        {{number($place->train_distance, 0)}}km
+                                        <em class="fas fa-route"></em>
+                                        {{number($place->distance, 0)}}km
                                     </td>
                                 </tr>
                             </table>
@@ -99,19 +99,19 @@
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
                                             <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                <a href="{{ route('account.show', ['username' => $place->username]) }}">
-                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->username]) }}"
-                                                         alt="{{$place->username}}">
+                                                <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
+                                                         alt="{{$place->user->username}}">
                                                 </a>
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('account.show', ['username' => $place->username]) }}">
-                                                {{ $place->username }}
+                                            <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                                {{ $place->user->username }}
                                             </a>
                                         </td>
-                                        <td>{{ number( $place->train_duration, 0) }}<small>min</small></td>
-                                        <td>{{ number( $place->train_distance, 0) }}<small>km</small></td>
+                                        <td>{{ number( $place->duration, 0) }}<small>min</small></td>
+                                        <td>{{ number( $place->distance, 0) }}<small>km</small></td>
                                         <td>{{ number( $place->points, 0) }}</td>
                                     </tr>
                                 @endforeach
