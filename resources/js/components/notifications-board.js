@@ -21,7 +21,7 @@ if (notificationsToggle !== undefined && notificationsToggle !== null) {
         .then(res => res.json())
         .then(notifications => {
             // If there are no notifications, we can just quit here. Else, show the items.
-            if (notifications.length == 0) return;
+            if (notifications.length === 0) return;
 
             empty.classList.add("d-none");
 
@@ -56,7 +56,7 @@ if (notificationsToggle !== undefined && notificationsToggle !== null) {
                         }
                     })
                         .then(res => {
-                            toggleRead(btn.dataset.id, res.status == 201);
+                            toggleRead(btn.dataset.id, res.status === 201);
                         });
                 })
             );
