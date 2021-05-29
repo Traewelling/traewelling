@@ -16,13 +16,13 @@
                 <hr/>
                 <a href="{{route('leaderboard.month', ['date' => $date->clone()->subMonth()->format('Y-m')])}}"
                    class="btn btn-sm btn-primary float-left">
-                    <em class="fas fa-arrow-left"></em> {{$date->clone()->subMonth()->isoFormat(__('dateformat.month-and-year'))}}
+                    <i class="fas fa-arrow-left"></i> {{$date->clone()->subMonth()->isoFormat(__('dateformat.month-and-year'))}}
                 </a>
                 @if($date->clone()->addMonth()->isBefore(\Carbon\Carbon::now()->endOfMonth()))
                     <a href="{{route('leaderboard.month', ['date' => $date->clone()->addMonth()->format('Y-m')])}}"
                        class="btn btn-sm btn-primary float-end">
                         {{$date->clone()->addMonth()->isoFormat(__('dateformat.month-and-year'))}}
-                        <em class="fas fa-arrow-right"></em>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
                 <div class="clearfix"></div>
@@ -59,15 +59,15 @@
                             <table class="table text-muted">
                                 <tr>
                                     <td>
-                                        <em class="fas fa-dice-d20"></em>
+                                        <i class="fas fa-dice-d20"></i>
                                         {{number($place->points, 0)}}
                                     </td>
                                     <td>
-                                        <em class="fas fa-clock"></em>
+                                        <i class="fas fa-clock"></i>
                                         {{number($place->duration, 0)}}min
                                     </td>
                                     <td>
-                                        <em class="fas fa-route"></em>
+                                        <i class="fas fa-route"></i>
                                         {{number($place->distance, 0)}}km
                                     </td>
                                 </tr>
