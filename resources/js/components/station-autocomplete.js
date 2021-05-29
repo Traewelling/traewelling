@@ -41,6 +41,6 @@ const popularStations = [
                     };
                 });
             })
-            .catch(error => console.error(error));
+            .catch((error) => throw new Error(error));
     });
 })();
