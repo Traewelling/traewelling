@@ -40,7 +40,6 @@ const popularStations = [
                         label: d.name + "",
                     };
                 });
-            })
-            .catch(error => console.error(error));
+            });
     });
 })();
