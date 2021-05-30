@@ -3,6 +3,8 @@
     <head>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
+        @include('layouts.includes.meta')
+
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}?1611964800"></script>
 
@@ -17,7 +19,6 @@
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
 
-        @include('layouts.includes.meta')
 
         @yield('head')
     </head>
