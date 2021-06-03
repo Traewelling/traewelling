@@ -14,11 +14,21 @@ require("leaflet/dist/leaflet.js");
 import VueRouter from "vue-router";
 import {router} from "../routes";
 import App from "../views/App";
-import VueI18n from "vue-i18n";
+import moment from "moment";
+import Lang from "lang.js";
+import { i18nStrings } from "./languages";
 
 window.Vue = require("vue");
 
-Vue.use(VueI18n);
+Vue.prototype.i18n = new Lang({
+    messages: i18nStrings,
+    locale: 'de',
+    fallback: 'en'
+});
+
+Vue.prototype.moment = moment;
+Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale());
+
 Vue.use(VueRouter);
 
 const layoutOne = new Vue({

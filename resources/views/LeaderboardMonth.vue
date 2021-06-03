@@ -2,7 +2,7 @@
   <div class="container" v-if="!loading">
     <div class="row">
       <div class="col-md-12">
-        <h4>__('leaderboard.month') <strong>{{ month.format("MMMM YYYY") }}</strong></h4>
+        <h4>{{ i18n.get("_.leaderboard.month") }} <strong>{{ month.format("MMMM YYYY") }}</strong></h4>
         <hr/>
         <router-link :to="{ name: 'leaderboard.month', params:{month: lastMonth} }"
                      class="btn btn-sm btn-primary float-left">
@@ -21,7 +21,7 @@
       <div v-if="users.length === 0" class="col-md-12">
         <div class="card">
           <div class="card-body text-center text-danger text-bold">
-            __('leaderboard.no_data')
+            {{ i18n.get("_.leaderboard.no_data") }}
           </div>
         </div>
       </div>
@@ -29,14 +29,14 @@
 
       <div v-for="(place, index) in users.slice(0, 3)" class="col-md-4">
         <div class="card mb-2">
-          <div class="card-header"> __('leaderboard.rank') {{ index + 1 }}</div>
+          <div class="card-header"> {{ i18n.get("_.leaderboard.rank") }} {{ index + 1 }}</div>
           <div class="card-body text-center">
             <div class="image-box pe-0 d-lg-flex">
-              <router-link to="{ name: 'profile', params: {username: place.username}}">
+              <router-link :to="{ name: 'profile', params: {username: place.username}}">
                 <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username" style="width: 50%;">
               </router-link>
             </div>
-            <router-link to="{ name: 'profile', params: {username: place.username}}" style="font-size: 1.3em;">
+            <router-link :to="{ name: 'profile', params: {username: place.username}}" style="font-size: 1.3em;">
               {{ place.username }}
             </router-link>
             <table class="table text-muted">
@@ -69,11 +69,11 @@
             <table class="table table-vertical-center">
               <thead>
                 <tr>
-                  <th scope="col"> __('leaderboard.rank')</th>
-                  <th scope="col" colspan="2"> __('leaderboard.user')</th>
-                  <th scope="col"> __('leaderboard.duration')</th>
-                  <th scope="col"> __('leaderboard.distance')</th>
-                  <th scope="col"> __('leaderboard.points')</th>
+                  <th scope="col"> {{ i18n.get("_.leaderboard.rank") }}</th>
+                  <th scope="col" colspan="2"> {{ i18n.get("_.leaderboard.user") }}</th>
+                  <th scope="col"> {{ i18n.get("_.leaderboard.duration") }}</th>
+                  <th scope="col"> {{ i18n.get("_.leaderboard.distance") }}</th>
+                  <th scope="col"> {{ i18n.get("_.leaderboard.points") }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,14 +81,14 @@
                   <td>{{ index + 4 }}</td>
                   <td>
                     <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                      <router-link to="{ name: 'profile', params: {username: place.username}}">
+                      <router-link :to="{ name: 'profile', params: {username: place.username}}">
                         <img :src="`/profile/${place.username}/profilepicture`" :alt="place.username"
                              style="width: 50%;">
                       </router-link>
                     </div>
                   </td>
                   <td>
-                    <router-link to="{ name: 'profile', params: {username: place.username}}"
+                    <router-link :to="{ name: 'profile', params: {username: place.username}}"
                                  style="font-size: 1.3em;">
                       {{ place.username }}
                     </router-link>
@@ -111,7 +111,7 @@
     </div>
     <hr/>
   </div>
-  <div v-else>__('vue.loading')</div>
+  <div v-else> {{ i18n.get("_.vue.loading") }}</div>
 </template>
 
 <script>

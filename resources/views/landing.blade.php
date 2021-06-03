@@ -65,12 +65,12 @@
                             @endauth
                             <li class="nav-item">
                                 <router-link :to="{ name: 'leaderboard' }" class="nav-link">
-                                    __('menu.leaderboard')
+                                    {{__('menu.leaderboard')}}
                                 </router-link>
                             </li>
                             <li class="nav-item">
                                 <router-link :to="{ name: 'statuses.active'}" class="nav-link">
-                                    __('menu.active')
+                                    {{__('menu.active')}}
                                 </router-link>
                             </li>
                         </ul>

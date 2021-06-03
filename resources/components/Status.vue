@@ -45,11 +45,11 @@
               <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{ duration }}</span>
               <span v-if="status.business === 1" class="pl-sm-2">
                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                   title="__('stationboard.business.business')" aria-hidden="true"></i>
+                   :title="i18n.get('_.stationboard.business.business')" aria-hidden="true"></i>
               </span>
               <span v-else-if="status.business === 2" class="pl-sm-2">
                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                   title="__('stationboard.business.commute')" aria-hidden="true"></i>
+                   :title="i18n.get('_.stationboard.business.commute')" aria-hidden="true"></i>
               </span>
               <br>
               <span v-if="status.event != null" class="pl-sm-2">
@@ -62,7 +62,7 @@
             <div v-if="nextStop != null">
               <p class="text-muted font-italic">
                 <!--                ToDo: fix with router link.-->
-                __('stationboard.next-stop')
+                {{ i18n.get('_.stationboard.next-stop') }}
                 <a :href="`/trains/stationboard?provider=train&station=${nextStop.name}`" class="text-trwl clearfix">{{
                     nextStop.name
                   }}</a>

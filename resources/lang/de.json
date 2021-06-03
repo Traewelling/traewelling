@@ -372,6 +372,7 @@
     "time-format": "HH:mm",
     "time-format.with-day": "HH:mm (DD.MM.YYYY)",
     "datetime-format": "DD.MM.YYYY HH:mm",
+    "date-format": "DD.MM.YYYY",
     "transport_types.bus": "Bus",
     "transport_types.business": "Geschäftliche Reise",
     "transport_types.businessPlural": "Geschäftliche Reisen",

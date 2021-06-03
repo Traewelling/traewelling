@@ -15,6 +15,10 @@ export const router = new VueRouter({
     routes:
         [
             {
+                path: "/",
+                redirect: { name: "statuses.active" }
+            },
+            {
                 path: "/statuses/active",
                 component: ActiveStatuses,
                 name: "statuses.active"
