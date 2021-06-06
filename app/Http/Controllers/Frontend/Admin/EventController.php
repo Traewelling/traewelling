@@ -17,7 +17,7 @@ class EventController extends Controller
 {
     public function renderList(): Renderable {
         return view('admin.events.list', [
-            'events' => Event::orderByDesc('end')->paginate(3)
+            'events' => Event::orderByDesc('end')->paginate(10)
         ]);
     }
 
