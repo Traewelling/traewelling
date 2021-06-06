@@ -170,6 +170,7 @@
 <script>
 import moment from "moment";
 import Map from "../components/Map";
+import {StatusModel} from "../js/APImodels";
 
 export default {
   name: "Status.vue",
@@ -187,74 +188,9 @@ export default {
     Map
   },
   props: {
-    status: {
-      id: 0,
-      body: "",
-      type: "",
-      createdAt: "",
-      user: 0,
-      username: "",
-      business: 0,
-      train: {
-        trip: 0,
-        category: "",
-        number: "",
-        lineName: null,
-        distance: 0,
-        points: 0,
-        delay: null,
-        duration: 0,
-        speed: 0,
-        origin: {
-          name: "",
-          trainStationId: 0,
-          arrival: "",
-          arrivalPlanned: "",
-          arrivalReal: null,
-          arrivalPlatformPlanned: null,
-          arrivalPlatformReal: null,
-          departure: "",
-          departurePlanned: "",
-          departureReal: null,
-          departurePlatformPlanned: null,
-          departurePlatformReal: null,
-          plattform: null,
-          isArrivalDelayed: false,
-          isDepartureDelayed: false
-        },
-        destination: {
-          name: "",
-          trainStationId: 0,
-          arrival: "",
-          arrivalPlanned: "",
-          arrivalReal: null,
-          arrivalPlatformPlanned: null,
-          arrivalPlatformReal: null,
-          departure: "",
-          departurePlanned: "",
-          departureReal: null,
-          departurePlatformPlanned: null,
-          departurePlatformReal: null,
-          plattform: null,
-          isArrivalDelayed: false,
-          isDepartureDelayed: false
-        },
-        polyline: ""
-      },
-      event: {
-        id: 0,
-        name: "",
-        slug: "",
-        hashtag: "",
-        host: "",
-        url: "",
-        begin: "",
-        end: "",
-        trainstation: 0
-      }
-    },
-    polyline: null,
-    stopovers: null
+    status: StatusModel,
+    polyline: null, //ToDo Typedef
+    stopovers: null //ToDo Typedef
   },
   computed: {
     departure() {

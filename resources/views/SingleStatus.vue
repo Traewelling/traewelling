@@ -29,6 +29,7 @@
 import axios from "axios";
 import Status from "../components/Status";
 import moment from "moment";
+import {StatusModel} from "../js/APImodels";
 
 export default {
   name: "SingleStatus",
@@ -36,9 +37,9 @@ export default {
     return {
       error: false,
       loading: false,
-      status: null,
-      polyline: null,
-      stopovers: null,
+      status: StatusModel,
+      polyline: null, //ToDo Typedef
+      stopovers: null, //ToDo Typedef
       moment: moment
     };
   },

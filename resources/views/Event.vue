@@ -44,7 +44,7 @@
         <div v-if="statuses.length > 0" class="col-md-8 col-lg-7">
 
           <div v-if="statuses">
-            <Status v-for="status in statuses" :status="status"></Status>
+            <Status v-for="status in statuses" :status="status" v-bind:key="status.id"></Status>
           </div>
           <div class="mt-5">
             $statuses->links()
@@ -59,6 +59,7 @@
 import Status from "../components/Status";
 import moment from "moment";
 import axios from "axios";
+import {EventModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "Event",
@@ -67,27 +68,8 @@ export default {
       username: this.$route.params.username,
       loading: false,
       statusesLoading: false,
-      event: {
-        "id": 0,
-        "name": "",
-        "slug": "",
-        "hashtag": "",
-        "host": "",
-        "url": "",
-        "begin": "",
-        "end": "",
-        "trainDistance": 0,
-        "trainDuration": 0,
-        "station": {
-          "id": 0,
-          "name": "",
-          "latitude": 0,
-          "longitude": 0,
-          "ibnr": 0,
-          "rilIdentifier": null
-        }
-      },
-      statuses: null
+      event: EventModel,
+      statuses: [StatusModel]
     };
   },
   components: {

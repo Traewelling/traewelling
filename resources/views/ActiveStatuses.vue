@@ -22,7 +22,7 @@
         </div>
         <div v-if="statuses">
           <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
-          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"></Status>
+          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers" v-bind:key="status.id"></Status>
         </div>
       </div>
     </div>
@@ -34,15 +34,16 @@ import axios from "axios";
 import Status from "../components/Status";
 import Map from "../components/Map";
 import moment from "moment";
+import {StatusModel} from "../js/APImodels";
 
 export default {
   data() {
     return {
       loading: true,
-      statuses: null,
       error: null,
-      stopovers: null,
-      polylines: null
+      statuses: [StatusModel],
+      stopovers: null, //ToDo Typedef
+      polylines: null //ToDo Typedef
     };
   },
   components: {

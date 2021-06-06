@@ -55,7 +55,7 @@
           <header><h3>{{ i18n.get("_.profile.last-journeys-of") }} {{ user.displayName }}:</h3></header>
 
           <div v-if="statuses">
-            <Status v-for="status in statuses" :status="status"></Status>
+            <Status v-for="status in statuses" :status="status" v-bind:key="status.id"></Status>
           </div>
           <div class="mt-5">
             $statuses->links()
@@ -78,6 +78,7 @@
 import axios from "axios";
 import moment from "moment";
 import Status from "../components/Status";
+import {ProfileModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "Profile",
@@ -86,20 +87,8 @@ export default {
       username: this.$route.params.username,
       loading: false,
       statusesLoading: false,
-      user: {
-        "id": 0,
-        "displayName": "",
-        "username": "",
-        "trainDistance": 0,
-        "trainDuration": 0,
-        "trainSpeed": 0,
-        "points": 0,
-        "twitterUrl": null,
-        "mastodonUrl": null,
-        "privateProfile": false,
-        "userInvisibleToMe": true,
-      },
-      statuses: null
+      user: ProfileModel,
+      statuses: [StatusModel]
     };
   },
   components: {
