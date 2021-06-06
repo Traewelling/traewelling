@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -605,15 +604,15 @@ class TransportController extends Controller
             $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
 
             return (
-                    $arrival->isAfter($start) &&
-                    $departure->isBefore($end)
-                ) || (
-                    $arrival->isAfter($end) &&
-                    $departure->isBefore($start)
-                ) || (
-                    $departure->isAfter($start) &&
-                    $arrival->isBefore($start)
-                );
+                       $arrival->isAfter($start) &&
+                       $departure->isBefore($end)
+                   ) || (
+                       $arrival->isAfter($end) &&
+                       $departure->isBefore($start)
+                   ) || (
+                       $departure->isAfter($start) &&
+                       $arrival->isBefore($start)
+                   );
         });
     }
 }

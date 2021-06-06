@@ -120,11 +120,11 @@ abstract class DashboardController extends Controller
         })->sortBy('date');
     }
 
-    private static function fillDates(Carbon $since, Carbon $until, $data, array $exampleData = [], string $dateKey = 'date') {
+    private static function fillDates(Carbon $since, Carbon $until, $data, array $exampleData = []) {
         for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
-            if (!$data->contains($dateKey, $date->toDateString())) {
-                $row             = new stdClass();
-                $row->{$dateKey} = $date->toDateString();
+            if (!$data->contains('date', $date->toDateString())) {
+                $row       = new stdClass();
+                $row->date = $date->toDateString();
                 foreach ($exampleData as $key => $value) {
                     $row->{$key} = $value;
                 }
