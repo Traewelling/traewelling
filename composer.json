@@ -22,6 +22,7 @@
         "brianium/paratest": "^6.3",
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.4",
+        "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",

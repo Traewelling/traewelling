@@ -160,6 +160,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/temporary-directory" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/image" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brianium/paratest" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/fruitcake/laravel-cors" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/asm89/stack-cors" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

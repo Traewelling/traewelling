@@ -63,7 +63,7 @@ export default {
       this.loading = true;
       this.fetchPolyline();
       axios
-          .get("/api/v1/statuses/" + this.$route.params.id)
+          .get("/statuses/" + this.$route.params.id)
           .then((response) => {
             this.loading = false;
             this.status  = response.data.data;
@@ -76,7 +76,7 @@ export default {
     },
     fetchPolyline() {
       axios
-          .get("/api/v1/polyline/" + this.$route.params.id)
+          .get("/polyline/" + this.$route.params.id)
           .then((response) => {
             this.polyline = [response.data.data];
           })
@@ -86,7 +86,7 @@ export default {
     },
     fetchStopovers() {
       axios
-          .get("/api/v1/stopovers/" + this.status.train.trip)
+          .get("/stopovers/" + this.status.train.trip)
           .then((response) => {
             this.stopovers = response.data.data;
           })

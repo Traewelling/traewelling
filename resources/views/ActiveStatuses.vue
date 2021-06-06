@@ -59,7 +59,7 @@ export default {
       const oldStatuses = this.statuses;
       this.error   = this.statuses = null;
       axios
-          .get("/api/v1/statuses")
+          .get("/statuses")
           .then((response) => {
             this.loading  = false;
             // FixMe: Why is this comparison not working correctly?
@@ -80,7 +80,7 @@ export default {
         tripIds += (status.train.trip + ",");
       });
       axios
-          .get("/api/v1/stopovers/" + tripIds)
+          .get("/stopovers/" + tripIds)
           .then((response) => {
             this.stopovers = response.data.data;
           })
@@ -94,7 +94,7 @@ export default {
         tripIds += (status.id + ",");
       });
       axios
-          .get("/api/v1/polyline/" + tripIds)
+          .get("/polyline/" + tripIds)
           .then((response) => {
             this.polylines = [response.data.data];
           })

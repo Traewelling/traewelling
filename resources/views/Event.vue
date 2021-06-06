@@ -92,7 +92,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/event/" + this.$route.params.slug)
+          .get("/event/" + this.$route.params.slug)
           .then((response) => {
             this.loading = false;
             this.event   = response.data.data;
@@ -107,7 +107,7 @@ export default {
       this.error           = null;
       this.statusesLoading = true;
       axios
-          .get("/api/v1/event/" + this.$route.params.slug + "/statuses")
+          .get("/event/" + this.$route.params.slug + "/statuses")
           .then((response) => {
             this.statusesLoading = false;
             this.statuses        = response.data.data;

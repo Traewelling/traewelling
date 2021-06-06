@@ -111,7 +111,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/user/" + this.$route.params.username)
+          .get("/user/" + this.$route.params.username)
           .then((response) => {
             this.loading = false;
             this.user    = response.data.data;
@@ -128,7 +128,7 @@ export default {
       this.error           = null;
       this.statusesLoading = true;
       axios
-          .get("/api/v1/user/" + this.$route.params.username + "/statuses")
+          .get("/user/" + this.$route.params.username + "/statuses")
           .then((response) => {
             this.statusesLoading = false;
             this.statuses        = response.data.data;

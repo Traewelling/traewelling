@@ -10,9 +10,15 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Http\Controllers\UserController as UserBackend;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function authenticated(): UserResource {
+        return new UserResource(Auth::user());
+    }
+
     /**
      * Returns Model of user
      * @param string $username

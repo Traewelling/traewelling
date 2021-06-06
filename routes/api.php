@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
@@ -18,6 +19,11 @@ use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+    Route::group(['prefix' => 'auth'], function() {
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('signup', [AuthController::class, 'signup']);
+        Route::get('user', [UserController::class, 'authenticated'])->middleware('auth:api');
+    });
     Route::get('statuses', [StatusController::class, 'enRoute']);
     Route::get('statuses/{id}', [StatusController::class, 'show']);
     Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);

@@ -148,7 +148,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/leaderboard/" + this.$route.params.month)
+          .get("/leaderboard/" + this.$route.params.month)
           .then((response) => {
             this.loading = false;
             this.users   = response.data.data;

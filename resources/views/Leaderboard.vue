@@ -82,7 +82,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/leaderboard/normal")
+          .get("/leaderboard/normal")
           .then((response) => {
             this.loading = false;
             this.users   = response.data.data;
@@ -92,7 +92,7 @@ export default {
             this.error   = error.response.data.message || error.message;
           });
       axios
-          .get("/api/v1/leaderboard/distance")
+          .get("/leaderboard/distance")
           .then((response) => {
             this.loading  = false;
             this.distance = response.data.data;
