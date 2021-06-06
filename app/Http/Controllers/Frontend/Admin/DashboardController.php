@@ -11,10 +11,13 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function renderDashboard(Request $request): Renderable {
-        $since = Carbon::today()->subDays(14);
-        $until = Carbon::today()->endOfDay();
+        $validated = $request->validate([
+                                            'since' => ['nullable', 'date'],
+                                            'until' => ['nullable', 'date'],
+                                        ]);
 
-        //ToDo: Request...
+        $since = isset($validated['since']) ? Carbon::parse($validated['since']) : Carbon::today()->subDays(14);
+        $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::today()->endOfDay();
 
         return view('admin.dashboard', [
             'since'                   => $since,
