@@ -21,14 +21,7 @@ abstract class DashboardController extends Controller
                            ])
                   ->get();
 
-        for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
-            if (!$data->contains('date', $date->toDateString())) {
-                $row        = new stdClass();
-                $row->date  = $date->toDateString();
-                $row->count = 0;
-                $data->push($row);
-            }
-        }
+        self::fillDates($since, $until, $data, ['count' => 0]);
 
         return $data->map(function($row) {
             $row->date = Carbon::parse($row->date);
@@ -48,14 +41,7 @@ abstract class DashboardController extends Controller
                            ])
                   ->get();
 
-        for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
-            if (!$data->contains('date', $date->toDateString())) {
-                $row        = new stdClass();
-                $row->date  = $date->toDateString();
-                $row->count = 0;
-                $data->push($row);
-            }
-        }
+        self::fillDates($since, $until, $data, ['count' => 0]);
 
         return $data->map(function($row) {
             $row->date = Carbon::parse($row->date);
@@ -126,19 +112,24 @@ abstract class DashboardController extends Controller
                               return $row;
                           });
 
-        for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
-            if (!$data->contains('date', $date->toDateString())) {
-                $row                  = new stdClass();
-                $row->date            = $date->toDateString();
-                $row->hafasTripsCount = 0;
-                $row->polyLineCount   = 0;
-                $data->push($row);
-            }
-        }
+        self::fillDates($since, $until, $data, ['hafasTripsCount' => 0, 'polyLineCount' => 0]);
 
         return $data->map(function($row) {
             $row->date = Carbon::parse($row->date);
             return $row;
         })->sortBy('date');
+    }
+
+    private static function fillDates(Carbon $since, Carbon $until, $data, array $exampleData = [], string $dateKey = 'date') {
+        for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
+            if (!$data->contains($dateKey, $date->toDateString())) {
+                $row             = new stdClass();
+                $row->{$dateKey} = $date->toDateString();
+                foreach ($exampleData as $key => $value) {
+                    $row->{$key} = $value;
+                }
+                $data->push($row);
+            }
+        }
     }
 }
