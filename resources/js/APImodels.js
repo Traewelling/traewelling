@@ -96,8 +96,8 @@ export let ProfileModel = {
 
 export let LeaderboardUserModel = {
     username: "",
-    trainDistance: 0.0,
     trainDuration: 0.0,
+    trainDistance: 0.0,
     trainSpeed: 0.0,
     points: 0
 }

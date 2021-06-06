@@ -48,7 +48,7 @@
                   </td>
                   <td>
                     <i class="fas fa-clock" aria-hidden="true"/>
-                    {{ place.trainDuration }}min
+                    {{ place.trainDuration.toFixed(0) }}min
                   </td>
                   <td>
                     <i class="fas fa-route" aria-hidden="true"/>
@@ -94,13 +94,13 @@
                     </router-link>
                   </td>
                   <td>
-                    {{ place.points.toFixed(0) }}
-                  </td>
-                  <td>
                     {{ place.trainDuration }}min
                   </td>
                   <td>
                     {{ place.trainDistance.toFixed(0) }}km
+                  </td>
+                  <td>
+                    {{ place.points.toFixed(0) }}
                   </td>
                 </tr>
               </tbody>
@@ -118,13 +118,14 @@
 import moment from "moment";
 import LeaderboardTable from "../components/LeaderboardTable";
 import axios from "axios";
+import {LeaderboardUserModel} from "../js/APImodels";
 
 export default {
   name: "LeaderboardMonth",
   data() {
     return {
       moment: moment,
-      users: null,
+      users: [LeaderboardUserModel],
       loading: false
     };
   },

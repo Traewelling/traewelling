@@ -38,7 +38,7 @@
                 <LeaderboardTable described-by="main-tab" :users="users"></LeaderboardTable>
               </div>
               <div class="tab-pane fade table-responsive" id="leaderboard-distance" role="tabpanel">
-                <LeaderboardTable described-by="distance-tab" :users="users"></LeaderboardTable>
+                <LeaderboardTable described-by="distance-tab" :users="distance"></LeaderboardTable>
               </div>
               <!--              ToDo: Friends-->
               <!--              <div class="tab-pane fade table-responsive" id="leaderboard-friends" role="tabpanel">-->
@@ -61,6 +61,7 @@
 import moment from "moment";
 import LeaderboardTable from "../components/LeaderboardTable";
 import axios from "axios";
+import {LeaderboardUserModel} from "../js/APImodels";
 
 export default {
   name: "Leaderboard",
@@ -81,7 +82,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/leaderboard/")
+          .get("/api/v1/leaderboard/normal")
           .then((response) => {
             this.loading = false;
             this.users   = response.data.data;
@@ -105,7 +106,7 @@ export default {
   created() {
     this.fetchData();
   }
-}
+};
 </script>
 
 <style scoped>

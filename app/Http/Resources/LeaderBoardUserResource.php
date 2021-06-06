@@ -15,7 +15,7 @@ class LeaderBoardUserResource extends JsonResource
     public function toArray($request) {
         return [
             'username'      => $this->user->username,
-            'trainDuration' => (float) $this->duration,
+            'trainDuration' => (int) $this->duration,
             'trainDistance' => (float) $this->distance,
             'trainSpeed'    => (float) $this->speed,
             'points'        => (int) $this->points

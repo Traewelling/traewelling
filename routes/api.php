@@ -26,7 +26,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
     Route::get('user/{username}', [UserController::class, 'show']);
     Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
-    Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
+    Route::get('leaderboard/normal', [StatisticsController::class, 'leaderboard']);
     Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
     //Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']); ToDo: Friends route
     Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
