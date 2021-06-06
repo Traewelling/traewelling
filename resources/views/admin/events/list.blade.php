@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Aktuelle und zukünftige Veranstaltungen')
+@section('title', 'Veranstaltungen')
 
 @section('content')
     <div class="card">
         <div class="card-body">
             @if($events->count() == 0)
                 <p class="font-weight-bold text-danger">
-                    Es sind aktuell keine aktuellen Veranstaltungen vorhanden. :(
+                    Es sind aktuell keine Veranstaltungen vorhanden. :(
                 </p>
             @else
                 <table class="table">
@@ -51,6 +51,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                {{$events->links()}}
             @endif
         </div>
     </div>
