@@ -407,5 +407,19 @@
     "description.leaderboard.monthly": "Les meilleurs Träwelleurs en :month :year des derniers 7 jours.",
     "description.blog.category": "Les plus nouveaux articles du blogue dans la catégorie :category",
     "description.profile": ":username a déjà passé :kmAmount kilomètres et :hourAmount heures dans les transports en commun.",
-    "description.en-route": "Plan à tou(te)s les Träwelleurs étant en route."
+    "description.en-route": "Plan à tou(te)s les Träwelleurs étant en route.",
+    "events.period": "Période",
+    "events.no-upcoming": "Actuellement il n’y a aucun événement.",
+    "events.request": "Signaler évènement",
+    "events.request.success": "Nous avons reçu ton évènement suggéré. Merci beaucoup !",
+    "event": "Événement",
+    "events": "Événements",
+    "auth.required": "Tu dois être connecté(e) pour utiliser cette fonctionnalité.",
+    "menu.show-more": "En afficher plus",
+    "events.live-and-upcoming": "Événements actuels et à venir",
+    "events.request-question": "Tu peux nous signaler des événements à venir.",
+    "events.request-button": "Signaler",
+    "events.notice": "Le évènement va être publié dès que l’équipe Träwelling l’aurait approuvé.",
+    "leaderboard.notice": "Les données indiquées se réfèrent à tes enregistrements pendant les derniers 7 jours.",
+    "localisation.not-available": "Désolé, ce contenu n’est pas encore disponible en français."
 }
