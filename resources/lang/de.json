@@ -383,6 +383,7 @@
     "transport_types.private": "Private Reise",
     "transport_types.privatePlural": "Private Reisen",
     "transport_types.regional": "Regional",
+    "transport_types.regionalExp": "Regionalexpress",
     "transport_types.suburban": "S-Bahn",
     "transport_types.subway": "U-Bahn",
     "transport_types.tram": "Tram",
