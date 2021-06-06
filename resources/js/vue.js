@@ -33,7 +33,8 @@ Vue.prototype.i18n = new Lang({
 
 Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale());
-
+// Set Vue router
+Vue.router = router
 Vue.use(VueRouter);
 
 axios.defaults.baseURL = '/api/v1';
@@ -43,7 +44,7 @@ Vue.use(auth, {
     plugins: {
         http: Vue.axios, // Axios
         // http: Vue.http, // Vue Resource
-        router: router,
+        router: Vue.router,
     },
     drivers: {
         auth: driverAuthBearer,
@@ -52,7 +53,7 @@ Vue.use(auth, {
     },
     options: {
         rolesKey: 'type',
-        notFoundRedirect: {name: 'user-account'},
+        notFoundRedirect: {name: 'statuses.active'},
     },
     tokenDefaultName: 'laravel-vue-spa',
     tokenStore: ['localStorage'],

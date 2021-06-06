@@ -91,4 +91,13 @@ class AuthController extends ResponseController
             return $this->sendResponse($error);
         }
     }
+
+    public function refresh()
+    {
+        if ($token = $this->guard()->refresh()) {
+            return response()
+                ->json(['status' => 'successs'], 200)
+                ->header('Authorization', $token);
+        }        return response()->json(['error' => 'refresh_token_error'], 401);
+    }
 }

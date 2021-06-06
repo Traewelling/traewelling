@@ -22,6 +22,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('signup', [AuthController::class, 'signup']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
         Route::get('user', [UserController::class, 'authenticated'])->middleware('auth:api');
     });
     Route::get('statuses', [StatusController::class, 'enRoute']);
