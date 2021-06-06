@@ -35,15 +35,6 @@ class LeaderboardController extends Controller
             );
         }
 
-        if (config('database.default') == 'mysql') {
-            $sumDuration = 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
-        } elseif (config('database.default') == 'sqlite') {
-            // Sorry for this disgusting code. But we test with SQLite.
-            // There are different functions than with MySQL/MariaDB.
-            $sumDuration = 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';
-        } else {
-            throw new UnexpectedValueException('Driver not supported');
-        }
         $sumDistance = 'SUM(train_checkins.distance)';
 
         $query = DB::table('statuses')
@@ -55,8 +46,8 @@ class LeaderboardController extends Controller
                                 'statuses.user_id',
                                 DB::raw('SUM(train_checkins.points) AS points'),
                                 DB::raw($sumDistance . ' AS distance'),
-                                DB::raw($sumDuration . ' AS duration'),
-                                DB::raw($sumDistance . ' / (' . $sumDuration . ' / 60) AS speed'),
+                                DB::raw(self::getDurationSelector() . ' AS duration'),
+                                DB::raw($sumDistance . ' / (' . self::getDurationSelector() . ' / 60) AS speed'),
                             ])
                    ->orderByDesc($orderBy)
                    ->limit($limit);
@@ -75,38 +66,53 @@ class LeaderboardController extends Controller
 
         // ToDo: Probably re-sort for new distance-calculation, etc.
         return $data->map(function($row) use ($userCache) {
-            $user                 = $userCache->where('id', $row->user_id)->first();
-            $user->train_distance = $row->distance;
-            $user->train_duration = $row->duration;
-            $user->train_speed    = $row->speed;
-            $user->points         = $row->points;
-            return $user;
+            $row->user = $userCache->where('id', $row->user_id)->first();
+            return $row;
         });
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        return Status::with(['trainCheckin', 'user'])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->where(
-                         'train_checkins.departure',
-                         '>=',
-                         $date->clone()->firstOfMonth()->toDateString()
-                     )
-                     ->where(
-                         'train_checkins.departure',
-                         '<=',
-                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                     )
-                     ->get()
-                     ->groupBy('user_id')
-                     ->map(function($statuses) {
-                         $user                 = $statuses->first()->user;
-                         $user->train_distance = $statuses->sum('distance');
-                         $user->train_duration = $statuses->sum('trainCheckin.duration');
-                         $user->train_speed    = null;
-                         $user->points         = $statuses->sum('trainCheckin.points');
-                         return $user;
-                     })
-                     ->sortByDesc('points');
+        $data = Status::with(['trainCheckin', 'user'])
+                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                      ->where(
+                          'train_checkins.departure',
+                          '>=',
+                          $date->clone()->firstOfMonth()->toIso8601String()
+                      )
+                      ->where(
+                          'train_checkins.departure',
+                          '<=',
+                          $date->clone()->lastOfMonth()->endOfDay()->toIso8601String()
+                      )
+                      ->select([
+                                   'statuses.user_id',
+                                   DB::raw('SUM(train_checkins.points) AS points'),
+                                   DB::raw('SUM(train_checkins.distance) AS distance'),
+                                   DB::raw(self::getDurationSelector() . ' AS duration'),
+                                   DB::raw('SUM(train_checkins.distance) / (' . self::getDurationSelector() . ' / 60) AS speed'),
+                               ])
+                      ->groupBy('user_id')
+                      ->orderByDesc('points')
+                      ->get();
+
+        //Fetch user models in ONE query and map it to the collection
+        $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
+
+        return $data->map(function($row) use ($userCache) {
+            $row->user = $userCache->where('id', $row->user_id)->first();
+            return $row;
+        });
+    }
+
+    private static function getDurationSelector(): string {
+        if (config('database.default') == 'mysql') {
+            return 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
+        } elseif (config('database.default') == 'sqlite') {
+            // Sorry for this disgusting code. But we test with SQLite.
+            // There are different functions than with MySQL/MariaDB.
+            return 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';
+        } else {
+            throw new UnexpectedValueException('Driver not supported');
+        }
     }
 }
