@@ -581,52 +581,6 @@ class TransportController extends Controller
         return $trainStation;
     }
 
-    public static function usageByDay(Carbon $date): array {
-        $hafas = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
-                          ->where("created_at", "<=", $date->copy()->endOfDay())
-                          ->count();
-
-        $returnArray = ["hafas" => $hafas];
-
-        /** Shortcut, wenn eh nichts passiert ist. */
-        if ($hafas == 0) {
-            return $returnArray;
-        }
-
-        $polylines                = PolyLine::where("created_at", ">=", $date->copy()->startOfDay())
-                                            ->where("created_at", "<=", $date->copy()->endOfDay())
-                                            ->count();
-        $returnArray['polylines'] = $polylines;
-
-        $transportTypes = [
-            HafasTravelType::NATIONAL_EXPRESS,
-            HafasTravelType::NATIONAL,
-            TravelType::EXPRESS,
-            HafasTravelType::REGIONAL_EXP,
-            HafasTravelType::REGIONAL,
-            HafasTravelType::SUBURBAN,
-            HafasTravelType::BUS,
-            HafasTravelType::TRAM,
-            HafasTravelType::SUBWAY,
-            HafasTravelType::FERRY,
-        ];
-
-        $seenCheckins = 0;
-        $transportTypeCount = count($transportTypes);
-        for ($i = 0; $seenCheckins < $hafas && $i < $transportTypeCount; $i++) {
-            $transport = $transportTypes[$i];
-
-            $returnArray[$transport] = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
-                                                ->where("created_at", "<=", $date->copy()->endOfDay())
-                                                ->where('category', '=', $transport)
-                                                ->count();
-
-            $seenCheckins += $returnArray[$transport];
-        }
-
-        return $returnArray;
-    }
-
     /**
      * Check if there are colliding CheckIns
      * @param User $user
