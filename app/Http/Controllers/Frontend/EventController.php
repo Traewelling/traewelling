@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -21,7 +22,7 @@ class EventController extends Controller
         ]);
     }
 
-    public function suggestEvent(Request $request) {
+    public function suggestEvent(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'name'  => ['required', 'max:255'],
                                             'host'  => ['nullable', 'max:255'],
