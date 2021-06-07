@@ -28,7 +28,12 @@
                         @foreach($events as $event)
                             <tr>
                                 <td>{{$event->id}}</td>
-                                <td>{{$event->name}}</td>
+                                <td>
+                                    <a href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}"
+                                       target="{{$event->slug}}">
+                                        {{$event->name}}
+                                    </a>
+                                </td>
                                 <td>{{$event->host}}</td>
                                 <td>{{$event->begin->format('d.m.Y')}}</td>
                                 <td>{{$event->end->format('d.m.Y')}}</td>
