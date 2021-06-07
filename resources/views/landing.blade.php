@@ -77,7 +77,7 @@
                         <ul class="navbar-nav w-auto">
                             @guest
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('menu.login') }}</a>
+                                    <router-link :to="{ name: 'statuses.active'}" class="nav-link">{{ __('menu.login') }}</router-link>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('menu.register') }}</a>
