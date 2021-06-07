@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -92,6 +93,8 @@ class FrontendStatusController extends Controller
             return response(__('controller.status.like-ok'), 201);
         } catch (StatusAlreadyLikedException $e) {
             return response(__('controller.status.like-already'), 409);
+        } catch (PermissionException) {
+            abort(403);
         }
     }
 
