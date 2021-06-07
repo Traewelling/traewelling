@@ -14,6 +14,7 @@
                     </div>
                     <div class="mt-2">
                         @include('includes.business-dropdown')
+                        @include('includes.visibility-dropdown')
                     </div>
                 </form>
             </div>

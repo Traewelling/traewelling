@@ -3,22 +3,28 @@ let statusBody;
 let statusId = 0;
 
 let businessCheckInput = $("#business_check");
-let dropDownButton     = $("#businessDropdownButton");
-let dropDown           = $("#businessDropdown");
+let businessButton     = $("#businessDropdownButton");
 const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
+let visibilityFormInput= $("#visibility_input");
+let visibilityButton   = $("#visibilityDropdownButton");
+const visibilityIcons  = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
 
-function setIconsForCheckIn(value) {
+function setIconForDropdown(value, button, inputFieldValue, icons) {
     let number  = parseInt(value, 10);
-    let classes = dropDownButton.children()[0].classList;
-    businessIcons.forEach((value) => {
+    let classes = button.children()[0].classList;
+    icons.forEach((value) => {
         classes.remove(value);
     });
-    classes.add(businessIcons[number]);
-    businessCheckInput.val(number);
+    classes.add(icons[number]);
+    inputFieldValue.val(number);
 }
 
 $(".trwl-business-item").on("click", function (event) {
-    setIconsForCheckIn(event.currentTarget.dataset.trwlBusiness);
+    setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessCheckInput, businessIcons);
+});
+
+$(".trwl-visibility-item").on("click", function (event) {
+    setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 });
 
 $(document).on("click", ".edit", function (event) {
@@ -29,7 +35,7 @@ $(document).on("click", ".edit", function (event) {
     statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
     $("#status-body").val(statusBody);
     $("#business_check").val(statusBusiness);
-    setIconsForCheckIn(statusBusiness);
+    setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
     $("#edit-modal").modal("show");
 });
 

@@ -131,6 +131,7 @@
                                 @endif
                             @endif
                             @include('includes.business-dropdown')
+                            @include('includes.visibility-dropdown')
                         </div>
 
                         @if($events->count() == 1)
