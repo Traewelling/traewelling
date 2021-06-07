@@ -16,14 +16,15 @@ use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\UserController;
+use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::group(['prefix' => 'auth'], function() {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('signup', [AuthController::class, 'signup']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
-        Route::get('user', [UserController::class, 'authenticated'])->middleware('auth:api');
+        Route::post('login', [v1Auth::class, 'login']);
+        Route::post('signup', [v1Auth::class, 'signup']);
+        Route::post('refresh', [v1Auth::class, 'refresh']);
+        Route::get('user', [v1Auth::class, 'user'])->middleware('auth:api');
     });
     Route::get('statuses', [StatusController::class, 'enRoute']);
     Route::get('statuses/{id}', [StatusController::class, 'show']);

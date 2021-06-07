@@ -42,7 +42,11 @@ class AuthController extends ResponseController
         return $this->sendError($error, 401);
     }
 
-    //login
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @deprecated with apiv1
+     */
     public function login(Request $request) {
         $validator = Validator::make($request->all(), [
             'email'    => 'required|string|email',
@@ -66,7 +70,11 @@ class AuthController extends ResponseController
                                    ]);
     }
 
-    //logout
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @deprecated with apiv1
+     */
     public function logout(Request $request) {
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
@@ -90,14 +98,5 @@ class AuthController extends ResponseController
             $error = "user not found";
             return $this->sendResponse($error);
         }
-    }
-
-    public function refresh()
-    {
-        if ($token = $this->guard()->refresh()) {
-            return response()
-                ->json(['status' => 'successs'], 200)
-                ->header('Authorization', $token);
-        }        return response()->json(['error' => 'refresh_token_error'], 401);
     }
 }

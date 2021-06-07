@@ -19,63 +19,45 @@ export const router = new VueRouter({
             {
                 path: "/",
                 redirect: { name: "statuses.active" },
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/statuses/active",
                 component: ActiveStatuses,
                 name: "statuses.active",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/status/:id",
                 component: SingleStatus,
                 props: true,
                 name: "singleStatus",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/profile/:username",
                 component: Profile,
                 name: "profile",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/event/:slug",
                 component: Event,
                 name: "event",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/leaderboard/",
                 component: Leaderboard,
                 name: "leaderboard",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/leaderboard/:month",
                 component: LeaderboardMonth,
                 name: "leaderboard.month",
-                meta: {
-                    auth: false
-                }
             },
             {
                 path: "/login",
                 component: Login,
-                name: "auth.login"
+                name: "auth.login",
+                meta: {
+                    auth: false
+                }
             },
             {
                 path: "/dashboard",
