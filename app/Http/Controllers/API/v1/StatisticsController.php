@@ -30,7 +30,6 @@ class StatisticsController extends Controller
      * @todo Cannot be implemented unless login is working
      */
     public function leaderboardFriends(): AnonymousResourceCollection {
-        die();
         return LeaderBoardUserResource::collection(LeaderboardBackend::getLeaderboard(onlyFollowings: true));
     }
 
