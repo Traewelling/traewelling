@@ -19,7 +19,8 @@ class UserController extends Controller
                                             'user_id' => [
                                                 'required',
                                                 'exists:users,id',
-                                                Rule::notIn(auth()->user()->mutedUsers->pluck('id'))
+                                                Rule::notIn(auth()->user()->mutedUsers->pluck('id')),
+                                                Rule::notIn([auth()->user()->id]),
                                             ]
                                         ]);
 
