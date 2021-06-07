@@ -9,14 +9,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property int user_id
+ * @property string body
+ * @property int business
+ * @property int visibility
+ */
 class Status extends Model
 {
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'event_id'];
+    protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
@@ -82,5 +88,21 @@ class Status extends Model
         }
 
         return $postText;
+    }
+
+    /**
+     * When is a status invisible?
+     * 0=public, 1=unlisted, 2=Followers, 3=Private
+     * @return bool
+     */
+    public function getStatusInvisibleToMeAttribute(): bool {
+        if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == 0) {
+            return false;
+        }
+        $visible = false;
+        if ($this->visibility == 2) {
+            $visible = (Auth::check() && Auth::user()->follows->contains('id', $this->user_id));
+        }
+        return !$visible;
     }
 }

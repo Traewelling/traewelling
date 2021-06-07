@@ -23,12 +23,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class StatusController extends Controller
 {
     /**
-     * @api v1
-     * @frontend
      * @param int $statusId
      * @return Status
      * @throws HttpException
      * @throws ModelNotFoundException
+     * @api v1
+     * @frontend
      */
     public static function getStatus(int $statusId): Status {
         $status = Status::where('id', $statusId)->with('user',
@@ -37,7 +37,7 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe) {
+        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == 1)) {
             return $status;
         }
 
@@ -47,11 +47,11 @@ class StatusController extends Controller
     /**
      * This Method returns the current active status(es) for all users or a specific user.
      *
-     * @api v1
-     * @frontend
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
      * @return Status|array|Builder|Model|object|null
+     * @api v1
+     * @frontend
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
         if ($userId === null) {
@@ -70,7 +70,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function($status) {
-                                  return !$status->user->userInvisibleToMe;
+                                  return (!$status->user->userInvisibleToMe && !$status->statusInvisibleToMe);
                               })
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -89,7 +89,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if ($status?->user?->userInvisibleToMe) {
+            if ($status?->user?->userInvisibleToMe || $status?->statusInvisibleToMe) {
                 return null;
             }
             return $status;
@@ -125,6 +125,9 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
+                     ->where('visibility', 0)
+                     ->orWhere('visibility', 2)
+                     ->orWhere('user_id', auth()->user()->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -141,8 +144,13 @@ class StatusController extends Controller
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
                          $query->where('users.private_profile', 0)
+                               ->where('visibility', 0)
                                ->orWhere('users.id', auth()->user()->id)
-                               ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                               ->orWhere(function($query) {
+                                   $query->where('visibility', 2)
+                                         ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
+                                         ->orWhere('visibility', 0);
+                               });
                      })
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
@@ -358,10 +366,10 @@ class StatusController extends Controller
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0);
-                            if (auth()->check()) {
-                                $query->orWhere('users.id', auth()->user()->id)
-                                      ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
-                            }
+                              if (auth()->check()) {
+                                  $query->orWhere('users.id', auth()->user()->id)
+                                        ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                              }
                           });
 
         if (auth()->check()) {

@@ -152,11 +152,20 @@ class UserController extends Controller
             throw new PermissionException();
         }
         return $user->statuses()->with(['user',
-                                       'trainCheckin',
-                                       'trainCheckin.Origin',
-                                       'trainCheckin.Destination',
-                                       'trainCheckin.HafasTrip',
-                                       'event'])->orderByDesc('created_at')->paginate(15);
+                                        'trainCheckin',
+                                        'trainCheckin.Origin',
+                                        'trainCheckin.Destination',
+                                        'trainCheckin.HafasTrip',
+                                        'event'])
+                    ->where(function($query) {
+                        $query->where('visibility', 0)
+                              ->orWhere('visibility', 1)
+                              ->orWhere('user_id', auth()->user()->id)
+                              ->orWhere(function($query) {
+                                  $query->where('visibility', 2)
+                                        ->whereIn('user_id', auth()->user()->follows()->select('follow_id'));
+                              });
+                    })->orderByDesc('created_at')->paginate(15);
     }
 
     public static function getProfilePage($username): ?array {
