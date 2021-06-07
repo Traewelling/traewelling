@@ -118,6 +118,7 @@
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
+            <i class="fas {{['fa-globe-americas', 'fa-lock-open', 'fa-user-friends', 'fa-lock'][$status->visibility]}} visibility-icon text-small" aria-hidden="true"></i> <!-- ToDo: ALT-Text! -->
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 @if(auth()?->user()?->id == $status->user_id)
                     {{__('user.you')}}
