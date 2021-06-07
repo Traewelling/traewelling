@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title'){{ html_entity_decode(__('privacy.title')) }}@endsection
+@section('title', html_entity_decode(__('privacy.title')))
+@section('meta-robots', 'noindex')
 
 @section('content')
     <style>
@@ -13,8 +14,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
 
-                @if($user != null)
-
+                @auth
                     @if($user->privacy_ack_at == null)
                         <div class="card mb-3">
                             <p class="card-body mb-0">
@@ -36,9 +36,11 @@
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-md-8 col-lg-7 my-2">
-                                        <a class="btn btn-link pr-0" href="javascript:void(0)" role="button" data-mdb-toggle="modal"
-                                           data-mdb-target="#deleteUserModal">{{ __('settings.delete-account') }}</a>
-                                        <input type="submit" value="{{__('privacy.sign')}}" class="btn btn-success">
+                                        <a class="btn btn-link pr-0" href="javascript:void(0)" role="button"
+                                           data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
+                                            {{ __('settings.delete-account') }}
+                                        </a>
+                                        <input type="submit" value="{{__('privacy.sign')}}" class="btn btn-success"/>
                                     </div>
                                 </div>
                             </div>
@@ -46,22 +48,16 @@
 
                         @include('settings.modals.deleteUserModal')
                     @endif
-                @endif
+                @endauth
 
                 <div class="privacy">
-                    @php($body = "")
-                    @switch(Lang::locale())
-                        @case("de")
-                        @php($body = $agreement->body_md_de)
-                        @break
-                        @case("en")
-                        @php($body = $agreement->body_md_en)
-                        @break
-                    @endswitch
-                    {!! Markdown::parse($body) !!}
+                    @if(app()->getLocale() == 'de')
+                        {!! Markdown::parse($agreement->body_md_de) !!}
+                    @else
+                        {!! Markdown::parse($agreement->body_md_en) !!}
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-
 @endsection

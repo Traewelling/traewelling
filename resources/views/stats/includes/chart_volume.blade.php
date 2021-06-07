@@ -9,7 +9,7 @@
     </div>
 </div>
 
-@section('javascript-end')
+@section('footer')
     @parent
     @if($travelTime->count() > 0)
         <script>

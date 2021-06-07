@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Blogpost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 use function substr_count;
 
@@ -42,23 +43,22 @@ class BlogTest extends TestCase
         $this->assertNotEquals($this->getBlogpostsCount($response), 0);
 
         // We expect to see a page title with the expected category name
-        $response->assertSee('<h1><i class="fa fa-tag pe-2"></i>Fehlerbehebung</h1>', false);
+        $response->assertSee('Fehlerbehebung');
 
         // This is likely to fail when we start to use the TAG icon with Category names in our blog posts.
         // In this case, please get add a space or a zero-width space (&#x200b;) between those words.
         // We assert that there will be a case of a TAG icon with the category name
         $this->assertNotEquals(substr_count($this->trimHtml($response),
-                        "<i class=\"fa fa-tag\"></i>Fehlerbehebung</a></li>"), 0);
+                                            "<i class=\"fa fa-tag\"></i>Fehlerbehebung</a></li>"), 0);
         // We assert that there won't be a TAG icon next to another category name.
         $this->assertEquals(substr_count($this->trimHtml($response),
-                     "<i class=\"fa fa-tag\"></i>Bekanntmachungen</a></li>"), 0);
+                                         "<i class=\"fa fa-tag\"></i>Bekanntmachungen</a></li>"), 0);
     }
 
-    function trimHtml($response) {
+    function trimHtml(TestResponse $response): string {
         $t = implode("\n", array_map('trim', explode("\n", $response->content())));
         return str_replace(["\r", "\n"], "", $t);
     }
-
 
     /**
      * If the requested category does not have any posts, we expect a 404 Not Found error.
@@ -74,11 +74,12 @@ class BlogTest extends TestCase
      * every post, so why not test every post?
      */
     function testSingleView() {
-        BlogPost::all()->map(function($blogpost) {
+        $blogposts = Blogpost::all();
+        foreach($blogposts as $blogpost) {
             $response = $this->get(route('blog.show', ['slug' => $blogpost->slug]));
             $response->assertOk();
-            $response->assertSee("<h3 class=\"font-weight-bold\">" . e($blogpost->title) . "</h3>", false);
-        });
+            $response->assertSee(e($blogpost->title), false);
+        }
     }
 
     /**

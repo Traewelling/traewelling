@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
@@ -44,24 +45,23 @@ class UserController extends ResponseController
     }
 
     public function getLeaderboard(): JsonResponse {
-        $leaderboardResponse = UserBackend::getLeaderboard();
-        $mapping             = function($user) {
+        $mapping = function($row) {
             return [
-                'username'       => $user['user']->username,
-                'train_duration' => $user['duration'],
-                'train_distance' => $user['distance'],
-                'points'         => $user['points']
+                'username'       => $row->user->username,
+                'train_duration' => $row->duration,
+                'train_distance' => $row->distance,
+                'points'         => $row->points
             ];
         };
 
-        $users      = $leaderboardResponse['users']->take(15)->map($mapping);
-        $friends    = $leaderboardResponse['friends']?->take(15)->map($mapping);
-        $kilometers = $leaderboardResponse['kilometers']->take(15)->map($mapping);
+        $users    = LeaderboardBackend::getLeaderboard()->map($mapping);
+        $friends  = auth()->check() ? LeaderboardBackend::getLeaderboard(onlyFollowings: true)->map($mapping) : null;
+        $distance = LeaderboardBackend::getLeaderboard(orderBy: 'distance')->map($mapping);
 
         return $this->sendResponse([
                                        'users'      => $users,
                                        'friends'    => $friends,
-                                       'kilometers' => $kilometers
+                                       'kilometers' => $distance
                                    ]);
     }
 

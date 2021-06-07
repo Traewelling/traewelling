@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title')FAQ - {{ __('about.faq-heading') }}@endsection
+@section('title', 'FAQ - ' . __('about.faq-heading'))
+@section('meta-robots', 'index')
+@section('meta-description', __('about.block1'))
 
 @section('content')
     <div class="container">

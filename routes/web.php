@@ -13,9 +13,10 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
-use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\EventController;
+use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
-use App\Http\Controllers\FrontendEventController;
+use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -23,10 +24,21 @@ use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+require_once realpath(dirname(__FILE__)) . '/web/admin.php';
+
+Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
+     ->name('account.showProfilePicture');
+
+//This is responsible to make vue available as a subdomain at vue.traewelling.de
+Route::domain('vue.' . parse_url(url('/'), PHP_URL_HOST))->group(function() {
+    Route::view('/{view?/}', 'landing')->where('view', '(.*)')->name('landing');
+});
 
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
@@ -40,13 +52,10 @@ Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
 Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('account.show');
 
-Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
-     ->name('account.showProfilePicture');
-
-Route::get('/leaderboard', [FrontendUserController::class, 'getLeaderboard'])
+Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
 
-Route::get('/leaderboard/{date}', [FrontendUserController::class, 'renderMonthlyLeaderboard'])
+Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])
      ->name('leaderboard.month');
 
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
@@ -54,6 +63,9 @@ Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatu
 
 Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'statusesByEvent'])
      ->name('statuses.byEvent');
+
+Route::get('/events', [EventController::class, 'renderEventOverview'])
+     ->name('events');
 
 Auth::routes(['verify' => true]);
 
@@ -64,13 +76,13 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->name('statuses.get');
 
 Route::prefix('blog')->group(function() {
-    Route::get('/', [BlogController::class, 'all'])
+    Route::get('/', [BlogController::class, 'renderMain'])
          ->name('blog.all');
 
-    Route::get('/{slug}', [BlogController::class, 'show'])
+    Route::get('/{slug}', [BlogController::class, 'renderSingle'])
          ->name('blog.show');
 
-    Route::get('/cat/{category}', [BlogController::class, 'category'])
+    Route::get('/cat/{category}', [BlogController::class, 'renderCategory'])
          ->name('blog.category');
 });
 
@@ -89,32 +101,6 @@ Route::middleware(['auth'])->group(function() {
          ->name('account.destroy');
 });
 
-/**
- * Routes for the admins.
- */
-Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
-
-    Route::get('/', [FrontendStatusController::class, 'usageboard'])
-         ->name('admin.dashboard');
-
-    Route::get('/events', [FrontendEventController::class, 'index'])
-         ->name('events.all');
-
-    Route::get('/events/new', [FrontendEventController::class, 'newForm'])
-         ->name('events.newform');
-
-    Route::post('/events/new', [FrontendEventController::class, 'store'])
-         ->name('events.store');
-
-    Route::get('/events/{slug}/delete', [FrontendEventController::class, 'destroy'])
-         ->name('events.delete');
-
-    Route::get('/events/{slug}', [FrontendEventController::class, 'show'])
-         ->name('events.show');
-
-    Route::put('/events/{slug}', [FrontendEventController::class, 'update'])
-         ->name('events.update');
-});
 
 Route::get('/ics', [IcsController::class, 'renderIcs'])
      ->name('ics');
@@ -133,6 +119,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/stats', [StatisticController::class, 'renderMainStats'])
          ->name('stats');
+
+    Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
+         ->name('events.suggest');
 
     Route::prefix('settings')->group(function() {
         Route::get('/', [SettingsController::class, 'renderSettings'])
@@ -243,3 +232,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
          ->name('user.unmute');
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

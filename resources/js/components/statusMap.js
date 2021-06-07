@@ -23,7 +23,7 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
         }
     ).addTo(map);
 
-    const latlngs = JSON.parse(elem.dataset.polygon).map(([a, b]) => [b, a]);
+    const latlngs = JSON.parse(elem.dataset.polygon);
     var polyline = L.polyline(latlngs)
         .setStyle({color: "rgb(192, 57, 43)", weight: 5})
         .addTo(map);

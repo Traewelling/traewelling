@@ -1,21 +1,11 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>{{ config('app.name', 'Träwelling') }}</title>
 
-        <link rel="author" href="/humans.txt">
-        <meta name="copyright" content="Träwelling Team">
-        <meta name="description" content="{{__('about.block1')}}">
-        <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
-        <meta name="audience" content="Travellers">
-        <meta name="robots" content="index, nofollow">
-        <meta name="DC.Rights" content="Träwelling Team">
-        <meta name="DC.Description" content="{{__('about.block1')}}">
-        <meta name="DC.Language" content="de">
-        @include('layouts.includes.meta-pwa')
+        @section('meta-description', __('about.block1'))
+        @section('meta-robots', 'index')
+        @include('layouts.includes.meta')
 
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -23,7 +13,6 @@
 
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
         <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
-
     </head>
     <body>
         <div class="flex-center position-ref full-height">

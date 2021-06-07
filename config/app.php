@@ -89,6 +89,9 @@ return [
         'de_pfl' => 'Deutsch (Pfälzisch)',
         'en'     => 'English',
         'fr'     => 'Français',
+        'nl'     => 'Dutch',
+        'sv'     => 'Svenska',
+        'pl'     => 'Polski',
     ],
 
     /*
@@ -254,5 +257,10 @@ return [
         'tel'      => env('IMPRINT_TEL'),
         'email'    => env('IMPRINT_EMAIL')
     ],
+
+    'telegram' => [
+        'admin_id' => env('TELEGRAM_ADMIN_ID'),
+        'token'    => env('TELEGRAM_TOKEN')
+    ]
 
 ];

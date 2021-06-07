@@ -18,7 +18,7 @@
     </div>
 </div>
 
-@section('javascript-end')
+@section('footer')
     @parent
     @if($topOperators->count() > 0)
         <script>

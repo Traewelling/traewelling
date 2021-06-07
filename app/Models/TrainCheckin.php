@@ -35,16 +35,38 @@ class TrainCheckin extends Model
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getOriginStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
-                                             ->where('departure_planned', $this->departure)
-                                             ->first();
+    public function getOriginStopoverAttribute(): TrainStopover {
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+                                                  ->where('departure_planned', $this->departure)
+                                                  ->first();
+        if ($stopOver == null) {
+            $stopOver = TrainStopover::updateOrCreate([
+                                                  "trip_id"          => $this->trip_id,
+                                                  "train_station_id" => $this->Origin->id
+                                              ], [
+                                                  "departure_planned" => $this->departure,
+                                                  "arrival_planned"   => $this->departure,
+                                              ]);
+            $this->HafasTrip->load('stopoversNEW');
+        }
+        return $stopOver;
     }
 
-    public function getDestinationStopoverAttribute(): ?TrainStopover {
-        return $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
-                                             ->where('arrival_planned', $this->arrival)
-                                             ->first();
+    public function getDestinationStopoverAttribute(): TrainStopover {
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+                                                  ->where('arrival_planned', $this->arrival)
+                                                  ->first();
+        if ($stopOver == null) {
+            $stopOver = TrainStopover::updateOrCreate([
+                                                          "trip_id"          => $this->trip_id,
+                                                          "train_station_id" => $this->Destination->id
+                                                      ], [
+                                                          "departure_planned" => $this->arrival,
+                                                          "arrival_planned"   => $this->arrival,
+                                                      ]);
+            $this->HafasTrip->load('stopoversNEW');
+        }
+        return $stopOver;
     }
 
     public function getMapLines() {
@@ -54,10 +76,10 @@ class TrainCheckin extends Model
 
             $destination = $this->Destination;
             $route       = [];
-            $route[0]    = [$origin->longitude, $origin->latitude];
-            $route[1]    = [$destination->longitude, $destination->latitude];
+            $route[0]    = [$origin->latitude, $origin->longitude];
+            $route[1]    = [$destination->latitude, $destination->longitude];
 
-            return json_encode($route);
+            return $route;
         }
 
 
@@ -65,7 +87,7 @@ class TrainCheckin extends Model
 
         // Bei manchen Posts ist das Feld leer.
         if (!isset($polyline->features)) {
-            return json_encode([]);
+            return [];
         }
 
         $features     = $polyline->features;
@@ -78,7 +100,7 @@ class TrainCheckin extends Model
             // Check if this point is the trips origin => Include this point!
             if ($behindOrigin || (isset($f->properties->id) && $f->properties->id == $origin)) {
                 $behindOrigin = true;
-                $coords[]     = $f->geometry->coordinates;
+                $coords[]     = [$f->geometry->coordinates[1], $f->geometry->coordinates[0]];
             }
 
             // If this was the destination, don't loop any further.
@@ -87,7 +109,7 @@ class TrainCheckin extends Model
             }
 
         }
-        return json_encode($coords);
+        return $coords;
     }
 
     /**

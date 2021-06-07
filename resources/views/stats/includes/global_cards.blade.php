@@ -50,7 +50,7 @@
 </div>
 <hr/>
 <small class="text-muted">*{{strtr(__('stats.global.explain'), [
-                                ':fromDate' => $from->format('d.m.Y'),
-                                ':toDate' => $to->format('d.m.Y')
+                                ':fromDate' => $from->isoFormat(__('date-format')),
+                                ':toDate' => $to->isoFormat(__('date-format'))
                             ])}}</small>
 <hr/>

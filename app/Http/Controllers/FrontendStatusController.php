@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\EventController as EventBackend;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Models\Event;
 use App\Models\Status;
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FrontendStatusController extends Controller
@@ -91,6 +93,8 @@ class FrontendStatusController extends Controller
             return response(__('controller.status.like-ok'), 201);
         } catch (StatusAlreadyLikedException $e) {
             return response(__('controller.status.like-already'), 409);
+        } catch (PermissionException $e) {
+            abort(403);
         }
     }
 
@@ -104,23 +108,23 @@ class FrontendStatusController extends Controller
 
     public function exportLanding(): Renderable {
         return view('export')->with([
-                                        'begin_of_month' => (new DateTime("first day of this month"))
-                                            ->format("Y-m-d"),
-                                        'end_of_month'   => (new DateTime("last day of this month"))
-                                            ->format("Y-m-d")
+                                        'begin_of_month' => Carbon::now()->firstOfMonth()->format('Y-m-d'),
+                                        'end_of_month'   => Carbon::now()->lastOfMonth()->format('Y-m-d')
                                     ]);
     }
 
     public function export(Request $request): JsonResponse|StreamedResponse|Response {
-        $this->validate($request, [
-            'begin'    => 'required|date|before_or_equal:end',
-            'end'      => 'required|date|after_or_equal:begin',
-            'filetype' => 'required|in:json,csv,pdf'
-        ]);
+        $validated = $request->validate([
+                                            'begin'    => ['required', 'date', 'before_or_equal:end'],
+                                            'end'      => ['required', 'date', 'after_or_equal:begin'],
+                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
+                                        ]);
 
-        return StatusBackend::ExportStatuses($request->input('begin'),
-                                             $request->input('end'),
-                                             $request->input('filetype'));
+        return StatusBackend::ExportStatuses(
+            startDate: Carbon::parse($validated['begin']),
+            endDate: Carbon::parse($validated['end']),
+            fileType: $request->input('filetype')
+        );
     }
 
     public function getActiveStatuses(): Renderable {
@@ -161,72 +165,11 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function usageboard(Request $request): Renderable|RedirectResponse {
-        $begin = Carbon::now()->copy()->addDays(-14);
-        $end   = Carbon::now();
-
-        if ($request->input('begin') != "") {
-            $begin = Carbon::createFromFormat("Y-m-d", $request->input('begin'));
-        }
-        if ($request->input('end') != "") {
-            $end = Carbon::createFromFormat("Y-m-d", $request->input('end'));
-        }
-
-        if ($begin->isAfter($end)) {
-            return redirect()
-                ->back()
-                ->with('error',
-                       $begin->format('Y-m-d') .
-                       ' ist vor ' .
-                       $end->format('Y-m-d') .
-                       '. Das darf nicht.');
-        }
-        if ($end->isFuture()) {
-            $end = Carbon::now();
-        }
-
-        $dates                  = [];
-        $statusesByDay          = [];
-        $userRegistrationsByDay = [];
-        $hafasTripsByDay        = [];
-
-        // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
-        $dateIterator = $end->copy()->addDays(1);
-        $cnt          = 0;
-        $datediff     = $end->diffInDays($begin);
-        while ($cnt < $datediff) {
-            $cnt++;
-            $dateIterator->addDays(-1);
-            $dates[]                  = $dateIterator->format("Y-m-d");
-            $statusesByDay[]          = StatusController::usageByDay($dateIterator);
-            $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
-
-            // Wenn keine Status passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
-            if ($statusesByDay[count($statusesByDay) - 1] == 0) { // Heute keine Stati
-                $hafasTripsByDay[] = (object) [];
-            } else {
-                $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
-            }
-        }
-
-        if (empty($dates)) {
-            $dates = [$begin->format("Y-m-d")];
-        }
-
-        return view('admin.usageboard', [
-            'begin'                  => $begin->format("Y-m-d"),
-            'end'                    => $end->format("Y-m-d"),
-            'dates'                  => $dates,
-            'statusesByDay'          => $statusesByDay,
-            'userRegistrationsByDay' => $userRegistrationsByDay,
-            'hafasTripsByDay'        => $hafasTripsByDay
-        ]);
-    }
-
     /**
      * @param $status
      * @return mixed
      * @todo move to Status Model and return StopOver instead of String
+     * @deprecated when vue is implemented
      */
     public static function nextStation(&$status) {
         if ($status->trainCheckin->HafasTrip->stopoversNEW->count() > 0) {

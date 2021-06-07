@@ -400,7 +400,7 @@
                                 </translations>
                             </concept_node>
                             <concept_node>
-                                <name>follow-already-exists</name>
+                                <name>follow-error</name>
                                 <definition_loaded>false</definition_loaded>
                                 <description></description>
                                 <comment></comment>

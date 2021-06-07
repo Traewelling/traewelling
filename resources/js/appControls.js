@@ -52,7 +52,7 @@ $(document).on("click", ".like", function (event) {
             event.target.className = "like far fa-star";
             $likeCount.innerText   = --count;
 
-            if (count == 0) {
+            if (count === 0) {
                 $likeCount.classList.add("d-none");
                 if ($smallAvatar.dataset.trwlSelflike === "1") {
                     $smallAvatar.classList.remove("d-none");

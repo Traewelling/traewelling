@@ -1,28 +1,26 @@
-import { longStackSupport } from "q";
-
 let delays = document.getElementsByClassName("traindelay");
-for (let i = 0; i < delays.length; i++) {
-    let delay = delays[i].innerText;
-    delay.slice(1);
-    if (delay <= 3) {
-        delays[i].classList.add("text-success");
+for (let delay of delays) {
+    let delayValue = delay.innerText;
+    delayValue.slice(1);
+    if (delayValue <= 3) {
+        delay.classList.add("text-success");
     }
-    if (delay > 3 && delay < 10) {
-        delays[i].classList.add("text-warning");
+    if (delayValue > 3 && delayValue < 10) {
+        delay.classList.add("text-warning");
     }
-    if (delay >= 10) {
-        delays[i].classList.add("text-danger");
+    if (delayValue >= 10) {
+        delay.classList.add("text-danger");
     }
 }
 
 var touchmoved;
 $(document)
     .on("click touchstart", ".trainrow", function () {
-        var lineName = $(this).data("linename");
-        var tripID = $(this).data("tripid");
-        var start = $(this).data("start");
+        var lineName  = $(this).data("linename");
+        var tripID    = $(this).data("tripid");
+        var start     = $(this).data("start");
         let departure = $(this).data("departure");
-        if (touchmoved != true) {
+        if (!touchmoved) {
             window.location =
                 urlTrainTrip +
                 "?tripID=" +
@@ -44,18 +42,18 @@ $(document)
 
 $(document)
     .on("click touchend", ".train-destinationrow", function () {
-        var tripID = $(this)
+        var tripID      = $(this)
             .parent()
             .parent()
             .data("tripid");
         var destination = $(this).data("ibnr");
-        var stopname = $(this).data("stopname");
-        var arrival = $(this).data("arrival");
-        var linename = $(this)
+        var stopname    = $(this).data("stopname");
+        var arrival     = $(this).data("arrival");
+        var linename    = $(this)
             .parent()
             .parent()
             .data("linename");
-        if (touchmoved != true) {
+        if (!touchmoved) {
             $("#checkinModal").modal("show", function (event) {
                 var modal = $(this);
                 modal
@@ -108,7 +106,7 @@ if (document.getElementById("gps-button")) {
 }
 
 function searchStationByPosition(position) {
-    let newLocation = `${window.location.protocol}//${window.location.host}/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+    let newLocation      = `${window.location.protocol}//${window.location.host}/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
     window.location.href = newLocation;
 }
 

@@ -11,7 +11,26 @@
 |
 */
 
+use App\Http\Controllers\API\v1\EventController;
+use App\Http\Controllers\API\v1\StatisticsController;
+use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+    Route::get('statuses', [StatusController::class, 'enRoute']);
+    Route::get('statuses/{id}', [StatusController::class, 'show']);
+    Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+    Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+    Route::get('event/{slug}', [EventController::class, 'show']);
+    Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+    Route::get('user/{username}', [UserController::class, 'show']);
+    Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+    Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
+    Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
+    Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
+    //Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']); ToDo: Friends route
+});
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::group(['middleware' => ['guest:api']], function() {
@@ -50,14 +69,21 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], function() {
-            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')->name('api.v0.checkin.train.autocomplete');
-            Route::get('stationboard', 'API\TransportController@TrainStationboard')->name('api.v0.checkin.train.stationboard');
-            Route::get('trip', 'API\TransportController@TrainTrip')->name('api.v0.checkin.train.trip');
-            Route::post('checkin', 'API\TransportController@TrainCheckin')->name('api.v0.checkin.train.checkin');
-            Route::get('latest', 'API\TransportController@TrainLatestArrivals')->name('api.v0.checkin.train.latest');
-            Route::get('home', 'API\TransportController@getHome')->name('api.v0.checkin.train.home');
+            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
+                 ->name('api.v0.checkin.train.autocomplete');
+            Route::get('stationboard', 'API\TransportController@TrainStationboard')
+                 ->name('api.v0.checkin.train.stationboard');
+            Route::get('trip', 'API\TransportController@TrainTrip')
+                 ->name('api.v0.checkin.train.trip');
+            Route::post('checkin', 'API\TransportController@TrainCheckin')
+                 ->name('api.v0.checkin.train.checkin');
+            Route::get('latest', 'API\TransportController@TrainLatestArrivals')
+                 ->name('api.v0.checkin.train.latest');
+            Route::get('home', 'API\TransportController@getHome')
+                 ->name('api.v0.checkin.train.home');
             Route::put('home', 'API\TransportController@setHome');
-            Route::get('nearby', 'API\TransportController@StationByCoordinates')->name('api.v0.trains.nearby');
+            Route::get('nearby', 'API\TransportController@StationByCoordinates')
+                 ->name('api.v0.trains.nearby');
         });
     });
 });

@@ -6,10 +6,8 @@ use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class UserFollowed extends Notification
 {
@@ -81,7 +79,9 @@ class UserFollowed extends Notification
         return view("includes.notification", [
             'color'           => "neutral",
             'icon'            => "fas fa-user-friends",
-            'lead'            => __('notifications.userFollowed.lead', ['followerUsername' => $detail->sender->username]),
+            'lead'            => __('notifications.userFollowed.lead', [
+                'followerUsername' => $detail->sender->username
+            ]),
             "link"            => route('account.show', ['username' => $detail->sender->username]),
             'notice'          => "",
             'date_for_humans' => $notification->created_at->diffForHumans(),
