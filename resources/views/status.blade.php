@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title'){{ $title }}@endsection
+@section('title', $title)
+@section('canonical', route('statuses.get', ['id' => $status->id]))
 
 @if($status->user->prevent_index)
     @section('meta-robots', 'noindex')

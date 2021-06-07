@@ -3,6 +3,7 @@
 @section('title', 'FAQ - ' . __('about.faq-heading'))
 @section('meta-robots', 'index')
 @section('meta-description', __('about.block1'))
+@section('canonical', route('static.about'))
 
 @section('content')
     <div class="container">
