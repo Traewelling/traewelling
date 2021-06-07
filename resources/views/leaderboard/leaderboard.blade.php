@@ -4,6 +4,7 @@
 
 @section('meta-robots', 'index')
 @section('meta-description', __('description.leaderboard.main'))
+@section('canonical', route('leaderboard'))
 
 @section('content')
     <div class="container">
