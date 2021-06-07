@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
-use App\Http\Controllers\FrontendEventController;
-use App\Http\Controllers\FrontendStatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
-    Route::get('/', [FrontendStatusController::class, 'usageboard'])
+    Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
     Route::get('/events', [AdminEventController::class, 'renderList'])
