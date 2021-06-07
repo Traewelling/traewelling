@@ -20,12 +20,12 @@ class AuthController extends ResponseController
      * @api v1
      * @todo refactor this
      */
-    public function register(Request $request):JsonResponse {
+    public function register(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|unique:users',
-            'name'     => 'required|string|',
-            'email'    => 'required|string|email|unique:users',
-            'password' => 'required|min:3|confirmed',
+            'username' => ['required', 'unique:users'],
+            'name'     => ['required'],
+            'email'    => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'confirmed'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -33,7 +33,7 @@ class AuthController extends ResponseController
                                         'errors' => $validator->errors()
                                     ], 422);
         }
-        $input             = $request->all();
+        $input             = $request->only('username', 'name', 'email', 'password');
         $input['password'] = Hash::make($input['password']);
         $user              = User::create($input);
 
@@ -57,8 +57,8 @@ class AuthController extends ResponseController
      */
     public function login(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'email'    => 'required|string|email',
-            'password' => 'required'
+            'email'    => ['required', 'email'],
+            'password' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +82,7 @@ class AuthController extends ResponseController
      * @return JsonResponse
      * @api v1
      */
-    public function logout(Request $request):JsonResponse {
+    public function logout(Request $request): JsonResponse {
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
             $success['message'] = "Successfully logged out.";
@@ -99,7 +99,7 @@ class AuthController extends ResponseController
      * @return JsonResponse
      * @api v1
      */
-    public function user(Request $request):JsonResponse {
+    public function user(Request $request): JsonResponse {
         $user = $request->user();
         return response()->json([
                                     'status' => 'success',

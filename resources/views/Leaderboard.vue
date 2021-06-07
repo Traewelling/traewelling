@@ -77,7 +77,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/leaderboard/normal")
+          .get("/leaderboard/")
           .then((response) => {
             this.loading = false;
             this.users   = response.data.data;
