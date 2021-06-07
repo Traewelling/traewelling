@@ -5,7 +5,7 @@ let statusId = 0;
 let businessCheckInput = $("#business_check");
 let businessButton     = $("#businessDropdownButton");
 const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
-let visibilityFormInput= $("#visibility_input");
+let visibilityFormInput= $("#checkinVisibility");
 let visibilityButton   = $("#visibilityDropdownButton");
 const visibilityIcons  = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
 

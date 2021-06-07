@@ -128,6 +128,7 @@ class TransportController extends ResponseController
                 $request->input('tweet'),
                 $request->input('toot'),
                 0,
+                0,
                 isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
                 isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
             );

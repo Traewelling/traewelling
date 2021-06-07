@@ -301,6 +301,7 @@ class CheckinTest extends TestCase
             0,
             0,
             0,
+            0,
             Carbon::parse($baseTrip->departure),
             Carbon::parse($baseTrip->arrival)
         );
@@ -314,6 +315,7 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    0,
                     0,
                     0,
                     0,
@@ -337,6 +339,7 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    0,
                     0,
                     0,
                     0,

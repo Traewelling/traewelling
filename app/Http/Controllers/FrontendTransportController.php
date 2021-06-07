@@ -128,6 +128,7 @@ class FrontendTransportController extends Controller
         $this->validate($request, [
             'body'           => 'max:280',
             'business_check' => 'digits_between:0,2',
+            'checkinVisibility' => 'digits_between:0,3',
             'tweet_check'    => 'max:2',
             'toot_check'     => 'max:2',
             'event'          => 'integer',
@@ -144,6 +145,7 @@ class FrontendTransportController extends Controller
                 $request->business_check,
                 $request->tweet_check,
                 $request->toot_check,
+                $request->checkinVisibility,
                 $request->event,
                 Carbon::parse($request->departure),
                 Carbon::parse($request->arrival),

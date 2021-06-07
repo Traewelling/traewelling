@@ -150,6 +150,7 @@ abstract class TestCase extends BaseTestCase
                 businessCheck: 0,
                 tweetCheck: 0,
                 tootCheck: 0,
+                visibility: 0,
                 eventId: $eventId
             );
         } catch (StationNotOnTripException) {

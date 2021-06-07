@@ -28,6 +28,7 @@ class TrainCheckinSeeder extends Seeder
                     0,
                     0,
                     0,
+                    0,
                     rand(0, 1)
                 );
             } catch (CheckInCollisionException $e) {

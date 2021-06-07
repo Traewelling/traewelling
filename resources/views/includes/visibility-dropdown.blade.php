@@ -28,4 +28,4 @@
         <span class="text-muted"> {{ __('status.visibility.3.detail') }}</span>
     </li>
 </ul>
-<input type="hidden" id="visibility_input" name="visibility_input" value="0"/>
+<input type="hidden" id="checkinVisibility" name="checkinVisibility" value="0"/>
