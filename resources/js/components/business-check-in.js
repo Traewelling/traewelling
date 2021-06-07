@@ -1,6 +1,8 @@
 let statusBusiness;
+let statusVisibility;
 let statusBody;
 let statusId = 0;
+let statusBodyElement = $("#status-body");
 
 let businessCheckInput = $("#business_check");
 let businessButton     = $("#businessDropdownButton");
@@ -33,9 +35,12 @@ $(document).on("click", ".edit", function (event) {
     statusId       = event.currentTarget.dataset.trwlStatusId;
     statusBody     = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
     statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
-    $("#status-body").val(statusBody);
-    $("#business_check").val(statusBusiness);
+    statusVisibility = document.getElementById("status-" + statusId).dataset.trwlVisibility;
+    statusBodyElement.val(statusBody);
+    businessCheckInput.val(statusBusiness);
+    visibilityFormInput.val(statusVisibility);
     setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
+    setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
     $("#edit-modal").modal("show");
 });
 
@@ -44,9 +49,10 @@ $(document).on("click", "#modal-trwl-edit-save", function () {
         method: "POST",
         url: urlEdit,
         data: {
-            body: $("#status-body").val(),
+            body: statusBodyElement.val(),
             statusId: statusId,
-            business_check: $("#business_check").val(),
+            business_check: businessCheckInput.val(),
+            checkinVisibility: visibilityFormInput.val(),
             _token: token
         }
     }).done(function (msg) {

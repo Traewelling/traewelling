@@ -176,7 +176,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck): bool|string|null {
+    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -185,8 +185,9 @@ class StatusController extends Controller
             return false;
         }
 
-        $status->body     = $body;
-        $status->business = $businessCheck;
+        $status->body       = $body;
+        $status->business   = $businessCheck;
+        $status->visibility = $visibility;
         $status->update();
         return $status->body;
     }
