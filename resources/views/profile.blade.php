@@ -25,9 +25,7 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
-                        @if(auth()->user()->id != $user->id)
-                            @include('includes.mute-button')
-                        @endif
+                        @include('includes.mute-button')
                     @endauth
                 </h2>
                 <h2>
