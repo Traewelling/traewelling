@@ -184,12 +184,13 @@ class CheckinTest extends TestCase
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'        => 'Example Body',
-                             'tripID'      => $departure->tripId,
-                             'start'       => $ibnr,
-                             'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-                             'departure'   => Carbon::parse($departure->plannedWhen),
-                             'arrival'     => Carbon::parse($trip['stopovers'][0]['plannedArrival'])
+                             'body'              => 'Example Body',
+                             'tripID'            => $departure->tripId,
+                             'start'             => $ibnr,
+                             'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
+                             'departure'         => Carbon::parse($departure->plannedWhen),
+                             'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
+                             'checkinVisibility' => "0"
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -444,7 +445,8 @@ class CheckinTest extends TestCase
                              'departure'   => $trip['stopovers'][0]['departure'],
                              // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
                              'destination' => $trip['stopovers'][5]['stop']['id'], // Reiterweg
-                             'arrival'     => $trip['stopovers'][5]['arrival']
+                             'arrival'     => $trip['stopovers'][5]['arrival'],
+                             'checkinVisibility' => "0"
                          ]);
 
         $response->assertStatus(302);
@@ -521,7 +523,8 @@ class CheckinTest extends TestCase
                              'departure'   => $trip['stopovers'][0]['departure'],
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination' => $trip['stopovers'][8]['stop']['id'], // Tempelhof
-                             'arrival'     => $trip['stopovers'][8]['arrival']
+                             'arrival'     => $trip['stopovers'][8]['arrival'],
+                             'checkinVisibility' => "0"
                          ]);
 
         $response->assertStatus(302);
