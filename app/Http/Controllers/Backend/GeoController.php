@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\TrainStopover;
 
-class GeoController extends Controller
+abstract class GeoController extends Controller
 {
     public static function calculateDistance(
         HafasTrip $hafasTrip,
@@ -31,6 +31,13 @@ class GeoController extends Controller
             if ($destination->trainStation->ibnr == $data->properties->id) {
                 $destinationIndex = $key;
             }
+        }
+
+        if ($destinationIndex < $originIndex) {
+            //Some polyline are inverted, so switch the keys...
+            $temp             = $destinationIndex;
+            $destinationIndex = $originIndex;
+            $originIndex      = $temp;
         }
 
         $slicedFeatures = array_slice($allFeatures->features, $originIndex, $destinationIndex - $originIndex + 1);
