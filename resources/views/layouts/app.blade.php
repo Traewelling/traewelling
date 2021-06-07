@@ -6,13 +6,13 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}?1611964800"></script>
+        <script src="{{ asset('js/app.js') }}?{{ get_current_git_commit() }}"></script>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/app.css') }}?{{ get_current_git_commit() }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
