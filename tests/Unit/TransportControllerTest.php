@@ -1,4 +1,4 @@
-<?php
+<?phpphp
 
 namespace Tests\Unit;
 

@@ -1,15 +1,15 @@
 let statusBusiness;
 let statusVisibility;
 let statusBody;
-let statusId = 0;
+let statusId          = 0;
 let statusBodyElement = $("#status-body");
 
-let businessCheckInput = $("#business_check");
-let businessButton     = $("#businessDropdownButton");
-const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
-let visibilityFormInput= $("#checkinVisibility");
-let visibilityButton   = $("#visibilityDropdownButton");
-const visibilityIcons  = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
+let businessCheckInput  = $("#business_check");
+let businessButton      = $("#businessDropdownButton");
+const businessIcons     = ["fa-user", "fa-briefcase", "fa-building"];
+let visibilityFormInput = $("#checkinVisibility");
+let visibilityButton    = $("#visibilityDropdownButton");
+const visibilityIcons   = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
 
 function setIconForDropdown(value, button, inputFieldValue, icons) {
     let number  = parseInt(value, 10);
@@ -32,9 +32,9 @@ $(".trwl-visibility-item").on("click", function (event) {
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
 
-    statusId       = event.currentTarget.dataset.trwlStatusId;
-    statusBody     = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
-    statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
+    statusId         = event.currentTarget.dataset.trwlStatusId;
+    statusBody       = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
+    statusBusiness   = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
     statusVisibility = document.getElementById("status-" + statusId).dataset.trwlVisibility;
     statusBodyElement.val(statusBody);
     businessCheckInput.val(statusBusiness);

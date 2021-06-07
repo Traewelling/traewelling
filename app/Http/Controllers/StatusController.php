@@ -185,9 +185,11 @@ class StatusController extends Controller
             return false;
         }
 
-        $status->body       = $body;
-        $status->business   = $businessCheck;
-        $status->visibility = $visibility;
+        $status->body     = $body;
+        $status->business = $businessCheck;
+        if ($visibility != null) {
+            $status->visibility = $visibility;
+        }
         $status->update();
         return $status->body;
     }
