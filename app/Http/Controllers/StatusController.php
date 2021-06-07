@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
 use App\Models\Like;
@@ -187,9 +188,13 @@ class StatusController extends Controller
      * @param User $user
      * @param Status $status
      * @return Like
-     * @throws StatusAlreadyLikedException
+     * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
+
+        if ($status->user->UserInvisibleToMe) {
+            throw new PermissionException();
+        }
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
