@@ -17,8 +17,7 @@
         </div>
 
         <div v-if="status">
-          <h5>{{ moment(status.train.origin.departure).format("dddd[,] LL") }}</h5>
-          <Status :status="status" :polyline="polyline" :stopovers="stopovers"></Status>
+          <Status :status="status" :polyline="polyline" :stopovers="stopovers" show-date="true"></Status>
         </div>
       </div>
     </div>

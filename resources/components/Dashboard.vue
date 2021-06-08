@@ -17,8 +17,8 @@
         </div>
         <div v-if="statuses">
           <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
-          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"
-                  v-bind:key="status.id"></Status>
+          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers" v-bind:key="status.id"
+                  :show-date="showDate(status, statuses)"/>
         </div>
       </div>
     </div>
@@ -28,6 +28,7 @@
 <script>
 import axios from "axios";
 import Status from "../components/Status";
+import moment from "moment";
 import {StatusModel} from "../js/APImodels";
 
 export default {
@@ -37,6 +38,7 @@ export default {
       error: null,
       statuses: [StatusModel],
       stopovers: null, //ToDo Typedef
+      moment: moment
     };
   },
   components: {
@@ -46,6 +48,13 @@ export default {
     this.fetchData();
   },
   methods: {
+    showDate(item, statuses) {
+      let index = statuses.indexOf(item);
+      if (index === -1 || index === 0) {
+        return true;
+      }
+      return moment(item.train.origin.departure).date() !== moment(statuses[index-1].train.origin.departure).date();
+    },
     fetchData() {
       this.error = this.statuses = null;
       axios

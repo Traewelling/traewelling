@@ -112,22 +112,22 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user"></i> {{ __('menu.profile') }}
+                                        <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
                                     </a>
                                     <a class="dropdown-item" href="#">
-                                        <i class="fas fa-save"></i> {{ __('menu.export') }}
+                                        <i class="fas fa-save" aria-hidden="true"></i> {{ __('menu.export') }}
                                     </a>
                                     <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cog"></i> {{ __('menu.settings') }}
+                                        <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
                                     </a>
 {{--                                    @if(Auth::user()->role >= 5)--}}
                                         <a class="dropdown-item" href="#">
-                                            <i class="fas fa-tools"></i> {{__('menu.admin')}}
+                                            <i class="fas fa-tools" aria-hidden="true"></i> {{__('menu.admin')}}
                                         </a>
 {{--                                    @endif--}}
                                     <div class="dropdown-divider"></div>
                                     <button class="dropdown-item" form="logout-form" type="submit">
-                                        <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
+                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
                                     </button>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
