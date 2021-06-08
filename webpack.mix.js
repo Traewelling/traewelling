@@ -20,3 +20,7 @@ mix.js("resources/js/app.js", "public/js")
     .sass("resources/sass/admin.scss", "public/css")
     .sass("resources/sass/welcome.scss", "public/css")
     .sourceMaps();
+
+if (mix.inProduction()) {
+    mix.version();
+}
