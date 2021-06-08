@@ -194,8 +194,8 @@ class TransportController extends Controller
      * @throws HafasException
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
-
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers, $departure);
         if ($offset === null) {
@@ -589,16 +589,17 @@ class TransportController extends Controller
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-
-        $user->load(['statuses.trainCheckin']);
-
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(2);
         $end   = $end->clone()->subMinutes(2);
 
-        return $user->statuses->map(function($status) {
-            return $status->trainCheckin;
-        })->filter(function($trainCheckIn) use ($start, $end) {
+        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
+                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                       ->where('statuses.user_id', $user->id)
+                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
+                                       ->get();
+
+        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
             //use realtime-data or use planned if not available
             $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
             $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
