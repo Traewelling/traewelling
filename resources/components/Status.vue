@@ -91,15 +91,10 @@
       </div>
       <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
-<!--            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-          <!--            <a :href="`/profile/${status.username}`">-->
-          <!--                @if(auth()?->user()?->id == $status->user_id)-->
-          <!--                    {{ __('user.you') }}-->
-          <!--                @else-->
-          <!--                    {{ status.username }}-->
-          <!--                @endif-->
-          <!--            </a>-->
-          <router-link :to="{name: 'profile', params: {username: status.username}}">{{ status.username }}</router-link>,
+          <router-link :to="{name: 'profile', params: {username: status.username}}">
+            <span v-if="$auth.check() && $auth.user().id === status.user">{{ i18n.get("_.user.you") }}</span>
+            <span v-else>{{ status.username }}</span>
+          </router-link>,
           <router-link :to="{ name: 'singleStatus', params: {id: status.id, statusData: this.status } }">
             {{ moment(status.createdAt).fromNow() }}
           </router-link>

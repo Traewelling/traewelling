@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
+      <div class="col-md-8 col-lg-7">
         <div class="loading" v-if="loading">
           {{ i18n.get("_.vue.loading") }}
         </div>

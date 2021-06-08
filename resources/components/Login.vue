@@ -42,7 +42,9 @@ export default {
         },
         redirect: {name: "dashboard"},
         staySignedIn: true,
-        fetchUser: false,
+        fetchUser: true,
+      }).then((res) => {
+        this.$auth.user(res.data);
       });
     }
   }

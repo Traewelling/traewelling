@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -101,10 +102,7 @@ class AuthController extends ResponseController
      */
     public function user(Request $request): JsonResponse {
         $user = $request->user();
-        return response()->json([
-                                    'status' => 'success',
-                                    'data'   => $user
-                                ]);
+        return $this->sendResponse(new UserResource($user));
     }
 
     public function refresh() {
