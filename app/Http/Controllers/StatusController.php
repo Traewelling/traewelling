@@ -128,7 +128,7 @@ class StatusController extends Controller
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
                      ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
-                     ->orWhere('user_id', auth()->user()->id)
+                     ->orWhere('user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
