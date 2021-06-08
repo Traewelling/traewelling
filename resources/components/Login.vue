@@ -3,7 +3,7 @@
     <div class="card card-default">
       <div class="card-header">Connexion</div>
       <div class="card-body">
-        <div class="alert alert-danger" v-if="has_error">
+        <div class="alert alert-danger" v-if="hasError">
           <p>Erreur, impossible de se connecter avec ces identifiants.</p>
         </div>
         <form autocomplete="off" @submit.prevent="login" method="post">
@@ -27,27 +27,23 @@ export default {
     return {
       email: null,
       password: null,
-      has_error: false
-    }
+      hasError: false
+    };
   }, mounted() {
     //
   }, methods: {
     login() {
       // get the redirect object
-      var redirect = this.$auth.redirect()
-      var app      = this
+      var redirect = this.$auth.redirect();
       this.$auth.login({
         data: {
-          email: app.email,
-          password: app.password
+          email: this.email,
+          password: this.password
         },
-        redirect: {name: 'dashboard'},
+        redirect: {name: "dashboard"},
         staySignedIn: true,
         fetchUser: false,
-      })
-          .then(null, (res) => {
-            console.log(res);
-          })
+      });
     }
   }
 }

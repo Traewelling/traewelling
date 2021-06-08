@@ -78,7 +78,7 @@ export let StatusModel = {
 
 export let PolyLineModel = {
 
-}
+};
 
 export let ProfileModel = {
     id: 0,
@@ -100,4 +100,4 @@ export let LeaderboardUserModel = {
     trainDistance: 0.0,
     trainSpeed: 0.0,
     points: 0
-}
+};
