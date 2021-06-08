@@ -251,7 +251,7 @@ export default {
             .then(() => {this.status.liked = false;
               this.status.likes -= 1;
               let index = this.likes.indexOf(this.$auth.user());
-              if (index != -1) {
+              if (index !== -1) {
                 this.likes.splice(index);
               }
             })
@@ -260,7 +260,6 @@ export default {
             })
 
       }
-      console.log("like!");
     }
   },
   created() {

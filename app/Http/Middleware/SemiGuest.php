@@ -26,7 +26,6 @@ class SemiGuest extends Middleware
             return $next($request);
         }
 
-
         return $next($request);
     }
 }
