@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
@@ -13,7 +14,7 @@ class NotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $user;
+    protected User $user;
 
     protected function setUp(): void {
         parent::setUp();
