@@ -38,8 +38,11 @@ class NotificationController extends Controller
 
                        if ($notification->html != null) {
                            return collect([
-                                              'html'    => $notification->html,
-                                              'read_at' => $notification->read_at,
+                                              'notifiable_type' => $notification->notifiable_type,
+                                              'notifiable_id'   => $notification->notifiable_id,
+                                              'type'            => $notification->type,
+                                              'html'            => $notification->html,
+                                              'read_at'         => $notification->read_at,
                                           ]);
                        }
                        return null;
