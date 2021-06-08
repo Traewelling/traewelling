@@ -44,7 +44,7 @@ class StatusController extends ResponseController
                           ->with('trainCheckin.HafasTrip.getPolyLine')
                           ->get()
                           ->reject(function($status) {
-                              return $status->user->userInvisibleToMe;
+                              return ($status->user->userInvisibleToMe || $status->statusInvisibleToMe);
                           })
                           ->mapWithKeys(function($status) {
                               return [ $status->id => $status->trainCheckin->getMapLines() ];

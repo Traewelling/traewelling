@@ -113,24 +113,29 @@
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
                                 @if (auth()->user()->socialProfile->twitter_id != null)
-                                    <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
-                                           name="tweet_check">
-                                    <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
-                                        <i class="fab fa-twitter"></i>
-                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
-                                    </label>
+                                    <div class="btn-group">
+                                        <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
+                                               name="tweet_check"/>
+                                        <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
+                                            <i class="fab fa-twitter"></i>
+                                            <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
+                                        </label>
+                                    </div>
                                 @endif
 
                                 @if (auth()->user()->socialProfile->mastodon_id != null)
-                                    <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
-                                           name="toot_check"/>
-                                    <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
-                                        <i class="fab fa-mastodon"></i>
-                                        <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
-                                    </label>
+                                    <div class="btn-group">
+                                        <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
+                                               name="toot_check"/>
+                                        <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
+                                            <i class="fab fa-mastodon"></i>
+                                            <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
+                                        </label>
+                                    </div>
                                 @endif
                             @endif
                             @include('includes.business-dropdown')
+                            @include('includes.visibility-dropdown')
                         </div>
 
                         @if($events->count() == 1)

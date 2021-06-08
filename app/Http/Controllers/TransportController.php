@@ -294,6 +294,7 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
+                                        $visibility,
                                         $eventId = 0,
                                         Carbon $departure = null,
                                         Carbon $arrival = null): array {
@@ -367,9 +368,10 @@ class TransportController extends Controller
         }
 
         $status = Status::create([
-                                     'user_id'  => $user->id,
-                                     'body'     => $body,
-                                     'business' => $businessCheck
+                                     'user_id'    => $user->id,
+                                     'body'       => $body,
+                                     'business'   => $businessCheck,
+                                     'visibility' => $visibility
                                  ]);
 
         $plannedDeparture = Carbon::parse(
