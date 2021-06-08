@@ -7,6 +7,7 @@
     'month' => $date->isoFormat('MMMM'),
     'year' => $date->isoFormat('YYYY')
 ]))
+@section('canonical', route('leaderboard.month', ['date' => $date->format('Y-m')]))
 
 @section('content')
     <div class="container">

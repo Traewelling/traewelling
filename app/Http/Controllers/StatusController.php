@@ -109,7 +109,7 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getDashboard($user): Paginator {
+    public static function getDashboard(User $user): Paginator {
         $userIds        = $user->follows->pluck('id');
         $userIds[]      = $user->id;
         $followingIDs   = $user->follows->pluck('id');
@@ -117,7 +117,7 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
@@ -139,7 +139,7 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
