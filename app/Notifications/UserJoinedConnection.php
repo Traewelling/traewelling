@@ -14,10 +14,10 @@ class UserJoinedConnection extends Notification
 {
     use Queueable;
 
-    private ?int  $statusId;
-    private mixed $linename;
-    private mixed $origin;
-    private mixed $destination;
+    private ?int $statusId;
+    private      $linename;
+    private      $origin;
+    private      $destination;
 
     /**
      * Create a new notification instance
