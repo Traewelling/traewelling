@@ -17,7 +17,7 @@
         </div>
 
         <div v-if="status">
-          <Status :status="status" :polyline="polyline" :stopovers="stopovers" show-date="true"></Status>
+          <Status :status="status" :polyline="polyline" :stopovers="stopovers" :likes="likes" show-date="true"></Status>
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
 import axios from "axios";
 import Status from "../components/Status";
 import moment from "moment";
-import {StatusModel} from "../js/APImodels";
+import {ProfileModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "SingleStatus",
@@ -39,6 +39,7 @@ export default {
       status: StatusModel,
       polyline: null, //ToDo Typedef
       stopovers: null, //ToDo Typedef
+      likes: null,
       moment: moment
     };
   },
@@ -48,6 +49,7 @@ export default {
     } else {
       this.status = this.statusData;
       this.fetchPolyline();
+      this.fetchLikes();
     }
   },
   components: {
@@ -60,13 +62,14 @@ export default {
     fetchData() {
       this.error   = null;
       this.loading = true;
-      this.fetchPolyline();
       axios
           .get("/statuses/" + this.$route.params.id)
           .then((response) => {
             this.loading = false;
             this.status  = response.data.data;
+            this.fetchPolyline();
             this.fetchStopovers();
+            this.fetchLikes();
           })
           .catch((error) => {
             this.loading = false;
@@ -75,7 +78,7 @@ export default {
     },
     fetchPolyline() {
       axios
-          .get("/polyline/" + this.$route.params.id)
+          .get("/polyline/" + this.status.id)
           .then((response) => {
             this.polyline = [response.data.data];
           })
@@ -88,6 +91,16 @@ export default {
           .get("/stopovers/" + this.status.train.trip)
           .then((response) => {
             this.stopovers = response.data.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+    },
+    fetchLikes() {
+      axios
+          .get("/statuses/" + this.status.id + "/likedby")
+          .then((response) => {
+            this.likes = response.data.data;
           })
           .catch((error) => {
             console.error(error);

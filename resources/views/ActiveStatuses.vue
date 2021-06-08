@@ -40,6 +40,7 @@ export default {
     return {
       loading: true,
       error: null,
+      interval: null,
       statuses: [StatusModel],
       stopovers: null, //ToDo Typedef
       polylines: null //ToDo Typedef

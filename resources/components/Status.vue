@@ -121,13 +121,15 @@
               <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i> {{ i18n.get("_.status.edit")}}</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fas fa-trash" aria-hidden="true"></i> {{ i18n.get("_.status.delete")}}</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>
+                {{ i18n.get("_.status.edit") }}</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-trash" aria-hidden="true"></i>
+                {{ i18n.get("_.status.delete") }}</a></li>
             </ul>
           </li>
         </ul>
         <ul class="list-inline" v-else>
-          <li class="list-inline-item d-lg-none" :id="`avatar-small-${status.id}`">
+          <li class="list-inline-item d-lg-none">
             <router-link :to="{name: 'profile', params: {username: status.username}}">
               <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
                    :alt="i18n.get('_.settings.picture')">
@@ -136,26 +138,23 @@
         </ul>
       </div>
 
-      <!--    <div v-if="isSingleStatus" v-for="[] as likes" class="card-footer text-muted clearfix">-->
-      <!--      <div class="col-xs-2">-->
-      <!--        <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
-      <!--          <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"-->
-      <!--               class="profile-image float-left" alt="{{__('settings.picture')}}">-->
-      <!--        </a>-->
-      <!--      </div>-->
-      <!--      <div class="col-xs-10">-->
-      <!--                <span class="like-text pl-2 d-table-cell">-->
-      <!--                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">-->
-      <!--                        {{ $like->user->username }}-->
-      <!--                    </a>-->
-      <!--                    @if($like->user == $status->user)-->
-      <!--                        {{ __('user.liked-own-status') }}-->
-      <!--                    @else-->
-      <!--                        {{ __('user.liked-status') }}-->
-      <!--                    @endif-->
-      <!--                </span>-->
-      <!--      </div>-->
-      <!--    </div>-->
+      <div v-for="like in likes" v-bind:key="likes.id" class="card-footer text-muted clearfix">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <router-link :to="{name: 'profile', params: {username: like.username}}">
+              <img :src="`/profile/${like.username}/profilepicture`" class="profile-image"
+                   :alt="i18n.get('_.settings.picture')">
+            </router-link>
+          </li>
+          <li class="list-inline-item like-text">
+            <router-link :to="{name: 'profile', params: {username: like.username}}">
+              {{ like.username }}
+            </router-link>
+            <span v-if="like.id === status.user">{{ i18n.get("_.user.liked-own-status") }}</span>
+            <span v-else>{{ i18n.get("_.user.liked-status") }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -183,6 +182,7 @@ export default {
   props: {
     status: StatusModel,
     showDate: false,
+    likes: null,
     polyline: null, //ToDo Typedef
     stopovers: null //ToDo Typedef
   },
