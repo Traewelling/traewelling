@@ -36,18 +36,20 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
     });
 
-    Route::get('statuses', [StatusController::class, 'enRoute']);
-    Route::get('statuses/{id}', [StatusController::class, 'show']);
-    Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
-    Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
-    Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
-    Route::get('event/{slug}', [EventController::class, 'show']);
-    Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
-    Route::get('user/{username}', [UserController::class, 'show']);
-    Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
-    Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
-    Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
-    Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
+    Route::group(['middleware' => 'semiguest:api'], function() {
+        Route::get('statuses', [StatusController::class, 'enRoute'])->middleware('guest:api');
+        Route::get('statuses/{id}', [StatusController::class, 'show']);
+        Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
+        Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+        Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+        Route::get('event/{slug}', [EventController::class, 'show']);
+        Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+        Route::get('user/{username}', [UserController::class, 'show']);
+        Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+        Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
+        Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
+        Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
+    });
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
