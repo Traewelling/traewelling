@@ -1,12 +1,12 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business }}"
+     data-trwl-business-id="{{ $status->business }}" data-trwl-visibility="{{ $status->visibility }}"
 >
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)
             <div class="card-img-top">
                 <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                     data-polygon="{{ $status->trainCheckin->getMapLines() }}"></div>
+                     data-polygon="{{ json_encode($status->trainCheckin->getMapLines()) }}"></div>
             </div>
         @endif
     @endif
@@ -14,14 +14,15 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
-                <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}">
+                <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
+                     alt="{{ $status->user->username }}">
             </a>
         </div>
 
         <div class="col ps-0">
             <ul class="timeline">
                 <li>
-                    <i>&nbsp;</i>
+                    <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;"
@@ -37,36 +38,37 @@
                         <span>
                             @if (file_exists(public_path('img/'.$status->trainCheckin->HafasTrip->category.'.svg')))
                                 <img class="product-icon"
-                                     src="{{ asset('img/'.$status->trainCheckin->HafasTrip->category.'.svg') }}">
+                                     src="{{ asset('img/'.$status->trainCheckin->HafasTrip->category.'.svg') }}"
+                                     alt="{{$status->trainCheckin->HafasTrip->category}}">
                             @else
-                                <i class="fa fa-train d-inline"></i>
+                                <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
                         <span class="ps-2">
-                            <i class="fa fa-route d-inline"></i>&nbsp;
+                            <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
                             {{number($status->trainCheckin->distance, 0)}}<small>km</small>
                         </span>
                         <span class="ps-2">
-                            <i class="fa fa-stopwatch d-inline"></i>&nbsp;
+                            <i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;
                             {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
                         </span>
 
                         @if($status->business == 1)
                             <span class="pl-sm-2">
                                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                                   title="{{ __('stationboard.business.business') }}"></i>
+                                   title="{{ __('stationboard.business.business') }}" aria-hidden="true"></i>
                             </span>
                         @endif
                         @if($status->business == 2)
                             <span class="pl-sm-2">
                                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                                   title="{{ __('stationboard.business.commute') }}"></i>
+                                   title="{{ __('stationboard.business.commute') }}" aria-hidden="true"></i>
                             </span>
                         @endif
                         @if($status->event != null)
                             <br/>
                             <span class="pl-sm-2">
-                                <i class="fa fa-calendar-day"></i>
+                                <i class="fa fa-calendar-day" aria-hidden="true"></i>
                                 <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">
                                     {{ $status->event->name }}
                                 </a>
@@ -75,7 +77,8 @@
                     </p>
 
                     @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right"></i> {{ $status->body }}</p>
+                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ $status->body }}
+                        </p>
                     @endif
 
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
@@ -86,7 +89,7 @@
                     @endif
                 </li>
                 <li>
-                    <i>&nbsp;</i>
+                    <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
@@ -115,6 +118,10 @@
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
+            <i class="fas
+{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility]}} visibility-icon text-small"
+               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility)}}" data-mdb-toggle="tooltip"
+               data-mdb-placement="top"></i>
             <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                 @if(auth()?->user()?->id == $status->user_id)
                     {{__('user.you')}}
@@ -130,7 +137,8 @@
             @auth
                 <li class="
                 @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
+                    id="avatar-small-{{ $status->id }}"
+                    data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
@@ -145,11 +153,15 @@
                 </li>
                 @if(auth()->user()->id == $status->user_id)
                     <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>
+                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </a>
                     </li>
 
                     <li class="list-inline-item like-text">
-                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>
+                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </a>
                     </li>
                 @endif
             @else

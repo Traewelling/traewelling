@@ -2,14 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,14 +27,12 @@ class CheckinTest extends TestCase
      * @test
      */
     public function stationboardTest() {
-        $requestDate       = new DateTime($this->plus_one_day_then_8pm);
+        $requestDate       = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::createFromTimestamp(
-                $requestDate->format('U')
-            )
+            $requestDate
         );
         $station           = $trainStationboard['station'];
         $departures        = $trainStationboard['departures'];
@@ -49,9 +48,7 @@ class CheckinTest extends TestCase
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
         }, true));
-
     }
-
 
     /**
      * The nearby endpoint should redirect the user to the
@@ -64,9 +61,24 @@ class CheckinTest extends TestCase
 
         // GIVEN: A bunch of locations around Europe that should return true
         $locations = [
-            //["name" => "Dortmund Hbf", "station" => "Hauptbahnhof, Dortmund", "latitude" => 51.517, "longitude" => 7.4592],
-            ["name" => "FRA", "station" => "Frankfurt(M) Flughafen Fernbf", "latitude" => 50.052926, "longitude" => 8.569776],
-            //["name" => "Moskau", "station" => "Moskva Oktiabrskaia", "latitude" => 55.776111, "longitude" => 37.655278]
+            /*[
+                "name"      => "Dortmund Hbf",
+                "station"   => "Hauptbahnhof, Dortmund",
+                "latitude"  => 51.517,
+                "longitude" => 7.4592
+            ], */
+            [
+                "name"      => "FRA",
+                "station"   => "Frankfurt(M) Flughafen Fernbf",
+                "latitude"  => 50.052926,
+                "longitude" => 8.569776
+            ]
+            /*, [
+                "name"      => "Moskau",
+                "station"   => "Moskva Oktiabrskaia",
+                "latitude"  => 55.776111,
+                "longitude" => 37.655278
+            ]*/
         ];
 
         foreach ($locations as $testcase) {
@@ -132,12 +144,12 @@ class CheckinTest extends TestCase
      */
     public function testCheckin() {
         // First: Get a train that's fine for our stuff
-        $now               = new DateTime($this->plus_one_day_then_8pm);
+        $timestamp         = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::createFromTimestamp($now->format('U')),
+            $timestamp,
             TravelType::EXPRESS
         );
 
@@ -151,7 +163,7 @@ class CheckinTest extends TestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0) {
+               || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
@@ -159,7 +171,7 @@ class CheckinTest extends TestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -174,12 +186,13 @@ class CheckinTest extends TestCase
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'        => 'Example Body',
-                             'tripID'      => $departure->tripId,
-                             'start'       => $ibnr,
-                             'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-                             'departure'   => Carbon::parse($departure->plannedWhen),
-                             'arrival'     => Carbon::parse($trip['stopovers'][0]['plannedArrival'])
+                             'body'              => 'Example Body',
+                             'tripID'            => $departure->tripId,
+                             'start'             => $ibnr,
+                             'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
+                             'departure'         => Carbon::parse($departure->plannedWhen),
+                             'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
+                             'checkinVisibility' => StatusVisibility::PUBLIC
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -290,6 +303,7 @@ class CheckinTest extends TestCase
             0,
             0,
             0,
+            StatusVisibility::PUBLIC,
             0,
             Carbon::parse($baseTrip->departure),
             Carbon::parse($baseTrip->arrival)
@@ -306,6 +320,7 @@ class CheckinTest extends TestCase
                     $user,
                     0,
                     0,
+                    StatusVisibility::PUBLIC,
                     0,
                     0,
                     Carbon::parse($trip->departure),
@@ -327,6 +342,7 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    0,
                     0,
                     0,
                     0,
@@ -393,11 +409,11 @@ class CheckinTest extends TestCase
      */
     public function testCheckinAtBus603Potsdam() {
         // First: Get a train that's fine for our stuff
-        $now               = new \DateTime("+1 days 10:00");
+        $timestamp         = Carbon::parse("+1 days 10:00");
         $stationname       = "Schloss Cecilienhof, Potsdam";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
-            Carbon::parse('+1 days 10:00'),
+            $timestamp,
             'bus'
         );
 
@@ -409,7 +425,7 @@ class CheckinTest extends TestCase
 
         // The bus runs in a 20min interval
         $departure = $trainStationboard['departures'][0];
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -424,14 +440,15 @@ class CheckinTest extends TestCase
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'        => 'Example Body',
-                             'tripID'      => $departure->tripId,
+                             'body'              => 'Example Body',
+                             'tripID'            => $departure->tripId,
                              // Höhenstr ist die nächste Haltestelle hinter Schloss Cecilienhof. Dort steigen wir ein
-                             'start'       => $trip['stopovers'][0]['stop']['id'],
-                             'departure'   => $trip['stopovers'][0]['departure'],
+                             'start'             => $trip['stopovers'][0]['stop']['id'],
+                             'departure'         => $trip['stopovers'][0]['departure'],
                              // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
-                             'destination' => $trip['stopovers'][5]['stop']['id'], // Reiterweg
-                             'arrival'     => $trip['stopovers'][5]['arrival']
+                             'destination'       => $trip['stopovers'][5]['stop']['id'], // Reiterweg
+                             'arrival'           => $trip['stopovers'][5]['arrival'],
+                             'checkinVisibility' => "0"
                          ]);
 
         $response->assertStatus(302);
@@ -458,7 +475,7 @@ class CheckinTest extends TestCase
     public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
-        $now               = new \DateTime("+1 days 10:03");
+        $timestamp         = Carbon::parse("+1 days 10:03");
         $stationname       = "Messe Nord / ICC, Berlin";
         $trainStationboard = TransportController::TrainStationboard(
             $stationname,
@@ -486,7 +503,7 @@ class CheckinTest extends TestCase
             }
         }
 
-        $this->isCorrectHafasTrip($departure, $now);
+        $this->isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -501,14 +518,15 @@ class CheckinTest extends TestCase
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'        => 'Example Body',
-                             'tripID'      => $departure->tripId,
+                             'body'              => 'Example Body',
+                             'tripID'            => $departure->tripId,
                              // Westkreuz is right behind Messe Nord / ICC. We hop in there.
-                             'start'       => $trip['stopovers'][0]['stop']['id'],
-                             'departure'   => $trip['stopovers'][0]['departure'],
+                             'start'             => $trip['stopovers'][0]['stop']['id'],
+                             'departure'         => $trip['stopovers'][0]['departure'],
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-                             'destination' => $trip['stopovers'][8]['stop']['id'], // Tempelhof
-                             'arrival'     => $trip['stopovers'][8]['arrival']
+                             'destination'       => $trip['stopovers'][8]['stop']['id'], // Tempelhof
+                             'arrival'           => $trip['stopovers'][8]['arrival'],
+                             'checkinVisibility' => StatusVisibility::PUBLIC
                          ]);
 
         $response->assertStatus(302);

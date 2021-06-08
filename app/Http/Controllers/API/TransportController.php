@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -109,7 +110,7 @@ class TransportController extends ResponseController
 
         if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
-        } else if ($hafasTrip == null) {
+        } elseif ($hafasTrip == null) {
             try {
                 $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
             } catch (HafasException $exception) {
@@ -127,6 +128,7 @@ class TransportController extends ResponseController
                 0,
                 $request->input('tweet'),
                 $request->input('toot'),
+                StatusVisibility::PUBLIC,
                 0,
                 isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
                 isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,

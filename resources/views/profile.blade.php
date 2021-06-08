@@ -1,12 +1,17 @@
 @extends('layouts.app')
 
-@section('title'){{ $user->name }}@endsection
+@section('title', $user->name)
+@section('canonical', route('account.show', ['username' => $user->username]))
 
-@section('metadata')
-    @if($user->prevent_index)
-        <meta name="robots" content="noindex"/>
-    @endif
-@endsection
+@if($user->prevent_index)
+    @section('meta-robots', 'noindex')
+@else
+    @section('meta-description', __('description.profile', [
+        'username' => $user->name,
+        'kmAmount' => number($user->train_distance, 0),
+        'hourAmount' => number($user->train_duration / 60, 0)
+    ]))
+@endif
 
 @section('content')
     <div class="px-4 py-5 mt-n4"
@@ -21,26 +26,7 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
-
-                        @if(auth()->user()->mutedUsers->contains('id', $user->id))
-                            <form style="display: inline;" method="POST" action="{{route('user.unmute')}}">
-                                @csrf
-                                <input type="hidden" name="user_id" value="{{$user->id}}"/>
-                                <button type="submit" class="btn btn-sm btn-primary" data-mdb-toggle="tooltip"
-                                        title="{{ __('user.unmute-tooltip') }}">
-                                    <i class="far fa-eye"></i>
-                                </button>
-                            </form>
-                        @else
-                            <form style="display: inline;" method="POST" action="{{route('user.mute')}}">
-                                @csrf
-                                <input type="hidden" name="user_id" value="{{$user->id}}"/>
-                                <button type="submit" class="btn btn-sm btn-primary" data-mdb-toggle="tooltip"
-                                        title="{{ __('user.mute-tooltip') }}">
-                                    <i class="far fa-eye-slash"></i>
-                                </button>
-                            </form>
-                        @endif
+                        @include('includes.mute-button')
                     @endauth
                 </h2>
                 <h2>

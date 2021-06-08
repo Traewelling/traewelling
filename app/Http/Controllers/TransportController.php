@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -195,8 +194,8 @@ class TransportController extends Controller
      * @throws HafasException
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
-
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers, $departure);
         if ($offset === null) {
@@ -295,6 +294,7 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
+                                        $visibility,
                                         $eventId = 0,
                                         Carbon $departure = null,
                                         Carbon $arrival = null): array {
@@ -368,9 +368,10 @@ class TransportController extends Controller
         }
 
         $status = Status::create([
-                                     'user_id'  => $user->id,
-                                     'body'     => $body,
-                                     'business' => $businessCheck
+                                     'user_id'    => $user->id,
+                                     'body'       => $body,
+                                     'business'   => $businessCheck,
+                                     'visibility' => $visibility
                                  ]);
 
         $plannedDeparture = Carbon::parse(
@@ -407,11 +408,6 @@ class TransportController extends Controller
                                 ]);
             }
         }
-
-        $user->train_distance += $trainCheckin->distance;
-        $user->train_duration += $trainCheckin->duration;
-
-        $user->update();
 
         if (isset($tootCheck) && $tootCheck == true) {
             self::postMastodon($status);
@@ -586,50 +582,6 @@ class TransportController extends Controller
         return $trainStation;
     }
 
-    public static function usageByDay(Carbon $date): array {
-        $hafas = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
-                          ->where("created_at", "<=", $date->copy()->endOfDay())
-                          ->count();
-
-        $returnArray = ["hafas" => $hafas];
-
-        /** Shortcut, wenn eh nichts passiert ist. */
-        if ($hafas == 0) {
-            return $returnArray;
-        }
-
-        $polylines                = PolyLine::where("created_at", ">=", $date->copy()->startOfDay())
-                                            ->where("created_at", "<=", $date->copy()->endOfDay())
-                                            ->count();
-        $returnArray['polylines'] = $polylines;
-
-        $transportTypes = [
-            HafasTravelType::NATIONAL_EXPRESS,
-            HafasTravelType::NATIONAL,
-            TravelType::EXPRESS,
-            HafasTravelType::REGIONAL_EXP,
-            HafasTravelType::REGIONAL,
-            HafasTravelType::SUBURBAN,
-            HafasTravelType::BUS,
-            HafasTravelType::TRAM,
-            HafasTravelType::SUBWAY,
-            HafasTravelType::FERRY,
-        ];
-
-        $seenCheckins = 0;
-        for ($i = 0; $seenCheckins < $hafas && $i < count($transportTypes); $i++) {
-            $transport = $transportTypes[$i];
-
-            $returnArray[$transport] = HafasTrip::where("created_at", ">=", $date->copy()->startOfDay())
-                                                ->where("created_at", "<=", $date->copy()->endOfDay())
-                                                ->where('category', '=', $transport)
-                                                ->count();
-            $seenCheckins            += $returnArray[$transport];
-        }
-
-        return $returnArray;
-    }
-
     /**
      * Check if there are colliding CheckIns
      * @param User $user
@@ -639,30 +591,31 @@ class TransportController extends Controller
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-
-        $user->load(['statuses.trainCheckin']);
-
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(2);
         $end   = $end->clone()->subMinutes(2);
 
-        return $user->statuses->map(function($status) {
-            return $status->trainCheckin;
-        })->filter(function($trainCheckIn) use ($start, $end) {
+        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
+                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                       ->where('statuses.user_id', $user->id)
+                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
+                                       ->get();
+
+        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
             //use realtime-data or use planned if not available
             $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
             $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
 
             return (
-                    $arrival->isAfter($start) &&
-                    $departure->isBefore($end)
-                ) || (
-                    $arrival->isAfter($end) &&
-                    $departure->isBefore($start)
-                ) || (
-                    $departure->isAfter($start) &&
-                    $arrival->isBefore($start)
-                );
+                       $arrival->isAfter($start) &&
+                       $departure->isBefore($end)
+                   ) || (
+                       $arrival->isAfter($end) &&
+                       $departure->isBefore($start)
+                   ) || (
+                       $departure->isAfter($start) &&
+                       $arrival->isBefore($start)
+                   );
         });
     }
 }

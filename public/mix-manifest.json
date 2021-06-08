@@ -1,7 +1,14 @@
 {
-    "/js/admin.js": "/js/admin.js",
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/css/admin.css": "/css/admin.css",
-    "/css/welcome.css": "/css/welcome.css"
+    "/js/admin.js": "/js/admin.js?id=0b7bf0dc9f08b6ff8372",
+    "/js/admin.js.map": "/js/admin.js.map?id=fd73d62e5fe07f17b8d3",
+    "/js/app.js": "/js/app.js?id=1ed05fe8f58ff8e63678",
+    "/css/app.css": "/css/app.css?id=efdf060814cf24eb2999",
+    "/css/vue.css": "/css/vue.css?id=aa2d6bef729ab5205ecf",
+    "/css/admin.css": "/css/admin.css?id=370e3ae77a10fcce53c8",
+    "/css/welcome.css": "/css/welcome.css?id=cf7e9996a1ea6ee83643",
+    "/js/app.js.map": "/js/app.js.map?id=3fa28c0b4c72e0169a36",
+    "/js/stats.js": "/js/stats.js?id=346a1bead02cdce9c49f",
+    "/js/stats.js.map": "/js/stats.js.map?id=f4d270e221b21b5ac831",
+    "/js/vue.js": "/js/vue.js?id=051f1e81a70ebf2dc09b",
+    "/js/vue.js.map": "/js/vue.js.map?id=bf1472de4c9e7fcda77b"
 }

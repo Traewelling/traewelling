@@ -1,6 +1,7 @@
 /**
  * Here, we include all of our external dependencies
  */
+
 require("jquery");
 
 require("./bootstrap");

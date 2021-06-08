@@ -34,6 +34,8 @@ class CreateBlogTable extends Migration
                                                'author_name'    => 'Levin Herr',
                                                'twitter_handle' => 'HerrLevin_',
                                                'published_at'   => '2013-11-02 00:00:00',
+                                               'created_at'     => '2013-11-02 00:00:00',
+                                               'updated_at'     => '2013-11-02 00:00:00',
                                                'body'           => 'In unserem ersten Blogpost möchte ich unsere zwei neuen Mitglieder im #Träwelling-Team recht herzlich begrüßen: @janh97 (Account inzwischen gelöscht) im Bereich “Design&Code” und @nerdhair_ (Account inzwischen gelöscht) im Bereich “Marketing".
 
 Wir arbeiten momentan hart daran, Fernbus-Unternehmen in unser System zu integrieren, die Benutzeroberfläche zu optimieren und viele neue Funktionen einzubauen.
@@ -47,6 +49,8 @@ Grüße, Levin.',
                                                'author_name'    => 'Levin Herr',
                                                'twitter_handle' => 'HerrLevin_',
                                                'published_at'   => '2013-11-29 00:00:00',
+                                               'created_at'     => '2013-11-29 00:00:00',
+                                               'updated_at'     => '2013-11-29 00:00:00',
                                                'body'           => '
 Heute habe ich ein kleines Update (Version 0.1.2.5-0009 β) herausgebracht, mit einem Feature, das “vieles” verändern wird.
 
@@ -72,6 +76,8 @@ Grüße, Levin',
                                                'author_name'    => 'Levin Herr',
                                                'twitter_handle' => 'HerrLevin_',
                                                'published_at'   => '2014-07-16 00:00:00',
+                                               'created_at'     => '2014-07-16 00:00:00',
+                                               'updated_at'     => '2014-07-16 00:00:00',
                                                'body'           => 'Ihr wartet alle schon sehnsüchtig auf eine App und endlich habe ich (Levin) es geschafft, eine total crappige App zu schreiben. Yay!
 
 Um diese App auf Herz und Nieren zu testen, brauchen wir natürlich ein paar Alpha-/Beta-Tester und dafür brauchen wir Dich! Ja, genau Dich!
@@ -97,6 +103,8 @@ Wir freuen uns auf euere Bewerbungen.
                                                'author_name'    => 'Levin Herr',
                                                'twitter_handle' => 'HerrLevin_',
                                                'published_at'   => '2017-08-01 00:00:00',
+                                               'created_at'     => '2017-08-01 00:00:00',
+                                               'updated_at'     => '2017-08-01 00:00:00',
                                                'body'           => '
 Bei uns ist intern einiges schief gelaufen. Es ging total an uns vorbei, dass opendata.ch ihre [Api abgeändert hat](https://opendata.ch/2017/06/search-ch-rettet-transport-opendata-ch/). So dachten wir, die Fehler, wie fehlende Abfahrten an gewissen Bahnhöfen, die gestern und heute (ab 31.07.2017) auftraten, waren ein typischer Schluckauf der SBB-API. Weit gefehlt.
 

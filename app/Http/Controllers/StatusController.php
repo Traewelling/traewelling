@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
 use App\Models\Like;
@@ -15,23 +17,33 @@ use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class StatusController extends Controller
 {
-    public static function getStatus(int $statusId) {
+    /**
+     * @param int $statusId
+     * @return Status
+     * @throws HttpException
+     * @throws ModelNotFoundException
+     * @api v1
+     * @frontend
+     */
+    public static function getStatus(int $statusId): Status {
         $status = Status::where('id', $statusId)->with('user',
                                                        'trainCheckin',
                                                        'trainCheckin.Origin',
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe) {
+        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == StatusVisibility::UNLISTED)) {
             return $status;
         }
 
-        abort(403);
+        abort(403, "Status invisible to you.");
     }
 
     /**
@@ -40,6 +52,8 @@ class StatusController extends Controller
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
      * @return Status|array|Builder|Model|object|null
+     * @api v1
+     * @frontend
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
         if ($userId === null) {
@@ -58,7 +72,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function($status) {
-                                  return !$status->user->userInvisibleToMe;
+                                  return (!$status->user->userInvisibleToMe && !$status->statusInvisibleToMe);
                               })
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -77,7 +91,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if ($status?->user?->userInvisibleToMe) {
+            if ($status?->user?->userInvisibleToMe || $status?->statusInvisibleToMe) {
                 return null;
             }
             return $status;
@@ -87,7 +101,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return $status->trainCheckin->getMapLines();
+            return json_encode($status->trainCheckin->getMapLines());
         });
         if ($array == true) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
@@ -96,7 +110,7 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getDashboard($user): Paginator {
+    public static function getDashboard(User $user): Paginator {
         $userIds        = $user->follows->pluck('id');
         $userIds[]      = $user->id;
         $followingIDs   = $user->follows->pluck('id');
@@ -104,12 +118,17 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
+                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
+                     ->orWhere('user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -120,14 +139,24 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
+                         $user = Auth::check() ? auth()->user() : null;
                          $query->where('users.private_profile', 0)
-                               ->orWhere('users.id', auth()->user()->id)
-                               ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                               ->where('visibility', StatusVisibility::PUBLIC)
+                               ->orWhere('users.id', $user->id)
+                               ->orWhere(function($query) {
+                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                         ->whereIn('users.id', $followings)
+                                         ->orWhere('visibility', StatusVisibility::PUBLIC);
+                               });
+                     })
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
                      })
                      ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
@@ -142,20 +171,14 @@ class StatusController extends Controller
         if ($status === null) {
             return null;
         }
-        $trainCheckin = $status->trainCheckin()->first();
-
         if ($user != $status->user) {
             return false;
         }
-        $user->train_distance -= $trainCheckin->distance;
-        $user->train_duration -= $trainCheckin->duration;
-
-        $user->update();
         $status->delete();
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck): bool|string|null {
+    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -166,6 +189,9 @@ class StatusController extends Controller
 
         $status->body     = $body;
         $status->business = $businessCheck;
+        if ($visibility != null) {
+            $status->visibility = $visibility;
+        }
         $status->update();
         return $status->body;
     }
@@ -175,9 +201,13 @@ class StatusController extends Controller
      * @param User $user
      * @param Status $status
      * @return Like
-     * @throws StatusAlreadyLikedException
+     * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
+
+        if (($status->StatusInvisibleToMe && $status->visibility != StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
+            throw new PermissionException();
+        }
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
@@ -204,15 +234,17 @@ class StatusController extends Controller
         return Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
     }
 
-    public static function ExportStatuses($startDate,
-                                          $endDate,
-                                          $fileType,
-                                          $privateTrips = true,
-                                          $businessTrips = true) {
+    public static function ExportStatuses(
+        Carbon $startDate,
+        Carbon $endDate,
+        string $fileType,
+        bool $privateTrips = true,
+        bool $businessTrips = true
+    ) {
         if (!$privateTrips && !$businessTrips) {
             abort(400, __('controller.status.export-neither-business'));
         }
-        $endInclLastOfMonth = (new DateTime($endDate))->add(new DateInterval("P1D"))->format("Y-m-d");
+        $endInclLastOfMonth = $endDate->clone()->addDay();
 
         $user          = Auth::user();
         $trainCheckins = Status::with('user',
@@ -222,8 +254,12 @@ class StatusController extends Controller
                                       'trainCheckin.hafastrip')
                                ->where('user_id', $user->id)
                                ->whereHas('trainCheckin', function($query) use ($startDate, $endInclLastOfMonth) {
-                                   $query->whereBetween('arrival', [$startDate, $endInclLastOfMonth]);
-                                   $query->orwhereBetween('departure', [$startDate, $endInclLastOfMonth]);
+                                   $query->whereBetween('arrival', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
+                                   $query->orwhereBetween('departure', [
+                                       $startDate->toIso8601String(), $endInclLastOfMonth->toIso8601String()
+                                   ]);
                                })
                                ->get()->sortBy('trainCheckin.departure');
         $export        = [];
@@ -252,8 +288,8 @@ class StatusController extends Controller
             $pdf = PDF::loadView('pdf.export-template',
                                  ['export'     => $export,
                                   'name'       => $user->name,
-                                  'start_date' => $startDate,
-                                  'end_date'   => $endDate])
+                                  'start_date' => $startDate->format('Y-m-d'),
+                                  'end_date'   => $endDate->format('Y-m-d')])
                       ->setPaper('a4', 'landscape');
             return $pdf->download(sprintf(config('app.name', 'Träwelling') . '_export_%s_to_%s.pdf',
                                           $startDate,
@@ -267,8 +303,8 @@ class StatusController extends Controller
                 'Content-Disposition' => sprintf('attachment; filename="' .
                                                  config('app.name', 'Träwelling') .
                                                  '_export_%s_to_%s.csv"',
-                                                 $startDate,
-                                                 $endDate),
+                                                 $startDate->format('Y-m-d'),
+                                                 $endDate->format('Y-m-d')),
                 'Expires'             => '0',
                 'Pragma'              => 'public'
             ];
@@ -306,8 +342,8 @@ class StatusController extends Controller
             'Content-Disposition' => sprintf('attachment; filename="' .
                                              config('app.name', 'Träwelling') .
                                              '_export_%s_to_%s.json"',
-                                             $startDate,
-                                             $endDate),
+                                             $startDate->format('Y-m-d'),
+                                             $endDate->format('Y-m-d')),
             'Expires'             => '0',
             'Pragma'              => 'public'
         ];
@@ -339,11 +375,16 @@ class StatusController extends Controller
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
-                              $query->where('users.private_profile', 0);
-                            if (auth()->check()) {
-                                $query->orWhere('users.id', auth()->user()->id)
-                                      ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
-                            }
+                              $query->where('users.private_profile', 0)
+                                    ->where('visibility', StatusVisibility::PUBLIC);
+                              if (auth()->check()) {
+                                  $query->orWhere('users.id', auth()->user()->id)
+                                        ->orWhere(function($query) {
+                                            $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                                  ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
+                                                  ->orWhere('visibility', StatusVisibility::PUBLIC);
+                                        });
+                              }
                           });
 
         if (auth()->check()) {
@@ -351,5 +392,19 @@ class StatusController extends Controller
         }
 
         return ['event' => $event, 'statuses' => $statuses->simplePaginate(15)];
+    }
+
+    public static function getFutureCheckins(): Paginator {
+        return auth()->user()->statuses()
+                     ->with('user',
+                            'trainCheckin',
+                            'trainCheckin.Origin',
+                            'trainCheckin.Destination',
+                            'trainCheckin.HafasTrip',
+                            'event')
+                     ->orderBy('created_at', 'DESC')
+                     ->whereHas('trainCheckin', function($query) {
+                         $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
+                     })->simplePaginate(15);
     }
 }

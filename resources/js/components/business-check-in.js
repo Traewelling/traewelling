@@ -1,35 +1,46 @@
 let statusBusiness;
+let statusVisibility;
 let statusBody;
-let statusId = 0;
+let statusId          = 0;
+let statusBodyElement = $("#status-body");
 
-let businessCheckInput = $("#business_check");
-let dropDownButton     = $("#businessDropdownButton");
-let dropDown           = $("#businessDropdown");
-const businessIcons    = ["fa-user", "fa-briefcase", "fa-building"];
+let businessCheckInput  = $("#business_check");
+let businessButton      = $("#businessDropdownButton");
+const businessIcons     = ["fa-user", "fa-briefcase", "fa-building"];
+let visibilityFormInput = $("#checkinVisibility");
+let visibilityButton    = $("#visibilityDropdownButton");
+const visibilityIcons   = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
 
-function setIconsForCheckIn(value) {
+function setIconForDropdown(value, button, inputFieldValue, icons) {
     let number  = parseInt(value, 10);
-    let classes = dropDownButton.children()[0].classList;
-    businessIcons.forEach((value) => {
+    let classes = button.children()[0].classList;
+    icons.forEach((value) => {
         classes.remove(value);
     });
-    classes.add(businessIcons[number]);
-    businessCheckInput.val(number);
+    classes.add(icons[number]);
+    inputFieldValue.val(number);
 }
 
 $(".trwl-business-item").on("click", function (event) {
-    setIconsForCheckIn(event.currentTarget.dataset.trwlBusiness);
+    setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessCheckInput, businessIcons);
+});
+
+$(".trwl-visibility-item").on("click", function (event) {
+    setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 });
 
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
 
-    statusId       = event.currentTarget.dataset.trwlStatusId;
-    statusBody     = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
-    statusBusiness = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
-    $("#status-body").val(statusBody);
-    $("#business_check").val(statusBusiness);
-    setIconsForCheckIn(statusBusiness);
+    statusId         = event.currentTarget.dataset.trwlStatusId;
+    statusBody       = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
+    statusBusiness   = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
+    statusVisibility = document.getElementById("status-" + statusId).dataset.trwlVisibility;
+    statusBodyElement.val(statusBody);
+    businessCheckInput.val(statusBusiness);
+    visibilityFormInput.val(statusVisibility);
+    setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
+    setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
     $("#edit-modal").modal("show");
 });
 
@@ -38,9 +49,10 @@ $(document).on("click", "#modal-trwl-edit-save", function () {
         method: "POST",
         url: urlEdit,
         data: {
-            body: $("#status-body").val(),
+            body: statusBodyElement.val(),
             statusId: statusId,
-            business_check: $("#business_check").val(),
+            business_check: businessCheckInput.val(),
+            checkinVisibility: visibilityFormInput.val(),
             _token: token
         }
     }).done(function (msg) {

@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'username', 'name', 'avatar', 'email', 'password', 'home_id',
+        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
         'always_dbl', 'private_profile', 'prevent_index', 'language'
     ];
     protected $hidden   = [
@@ -36,9 +38,26 @@ class User extends Authenticatable implements MustVerifyEmail
         'prevent_index'     => 'boolean',
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration'
     ];
 
+    public function getTrainDistanceAttribute(): float {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select('distance')
+                           ->sum('distance');
+    }
+
+    public function getTrainDurationAttribute(): float {
+        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
+                           ->select(['arrival', 'departure'])
+                           ->get()
+                           ->sum('duration');
+    }
+
+    /**
+     * @return float
+     * @deprecated Use speed variable at train_checkins instead
+     */
     public function getAverageSpeedAttribute(): float {
         return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }
@@ -163,5 +182,14 @@ class User extends Authenticatable implements MustVerifyEmail
             }
         }
         return $mastodonUrl;
+    }
+
+    /**
+     * Get the entity's notifications.
+     *
+     * @return MorphMany
+     */
+    public function notifications(): MorphMany {
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
     }
 }

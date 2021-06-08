@@ -23,6 +23,7 @@ class PrivacyAgreementController extends Controller
         $user                 = Auth::user();
         $user->privacy_ack_at = now();
         $user->save();
+
         if ($request->is('api*')) {
             return response()->json(['message' => 'privacy agreement successfully accepted'], 202);
         }

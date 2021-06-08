@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserMute;
 use Exception;
+use InvalidArgumentException;
 
 class UserController extends Controller
 {
@@ -17,10 +18,14 @@ class UserController extends Controller
      * @param User $userToBeMuted
      * @return bool
      * @throws UserAlreadyMutedException
+     * @throws InvalidArgumentException
      */
     public static function muteUser(User $user, User $userToBeMuted): bool {
         if ($user->mutedUsers->contains('id', $userToBeMuted->id)) {
             throw new UserAlreadyMutedException();
+        }
+        if ($user->id == $userToBeMuted->id) {
+            throw new InvalidArgumentException();
         }
         try {
             UserMute::create([

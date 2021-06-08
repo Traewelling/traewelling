@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\MastodonServer;
 use App\Models\Status;
-use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -17,9 +16,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -144,41 +142,67 @@ class UserController extends Controller
         return redirect()->route('account');
     }
 
+    /**
+     * @param User $user
+     * @return LengthAwarePaginator|null
+     * @throws PermissionException
+     * @api v1
+     * @frontend
+     */
+    public static function statusesForUser(User $user): ?LengthAwarePaginator {
+        if ($user->userInvisibleToMe) {
+            throw new PermissionException();
+        }
+        return $user->statuses()
+                    ->with([
+                               'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
+                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                           ])
+                    ->where(function($query) {
+                        $user = Auth::check() ? auth()->user() : null;
+                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
+                              ->orWhere('user_id', $user->id)
+                              ->orWhere(function($query) {
+                                  $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                                  $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                        ->whereIn('user_id', $followings);
+                              });
+                    })->orderByDesc('created_at')->paginate(15);
+    }
+
     public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
-        $statuses = null;
-
-        if (!$user->userInvisibleToMe) {
-            $statuses = $user->statuses()->with('user',
-                                                'trainCheckin',
-                                                'trainCheckin.Origin',
-                                                'trainCheckin.Destination',
-                                                'trainCheckin.HafasTrip',
-                                                'event')->orderBy('created_at', 'DESC')->paginate(15);
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (PermissionException) {
+            $statuses = null;
         }
-        $user->unsetRelation('socialProfile');
 
         return [
             'username'    => $username,
+            'statuses'    => $statuses,
             'twitterUrl'  => $user->twitterUrl,
             'mastodonUrl' => $user->mastodonUrl,
-            'statuses'    => $statuses,
             'user'        => $user
         ];
     }
 
     /**
      * Add $userToFollow to $user's Followings
-     * @param User $user The user who initiated the follow
-     * @param User $userToFollow The user who is followed
-     * @param bool $isApprovedRequest Differentiates between who to be notified
+     * @param User $user
+     * @param User $userToFollow
+     * @param bool $isApprovedRequest
      * @return bool
      * @throws AlreadyFollowingException
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
+        if ($user->is($userToFollow)) {
+            return false;
+        }
+
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
         if (self::isFollowing($user, $userToFollow)) {
@@ -248,56 +272,6 @@ class UserController extends Controller
         return $user->follows->contains('id', $userFollow->id);
     }
 
-    #[ArrayShape([
-        'users'      => "Illuminate\\Support\\Collection",
-        'friends'    => "Illuminate\\Support\\Collection",
-        'kilometers' => "Illuminate\\Support\\Collection"
-    ])]
-    public static function getLeaderboard(): array {
-        $checkIns = TrainCheckin::with(['status.user', 'HafasTrip.stopoversNEW.trainStation', 'Origin', 'Destination'])
-                                ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                                ->get();
-
-        $trainCheckIns = (clone $checkIns)
-            ->groupBy('status.user_id')
-            ->map(function($trainCheckIns) {
-                return [
-                    'user'     => $trainCheckIns->first()->status->user,
-                    'points'   => $trainCheckIns->sum('points'),
-                    'distance' => $trainCheckIns->sum('distance'),
-                    'duration' => $trainCheckIns->sum('duration'),
-                    'speed'    => $trainCheckIns->avg('speed')
-                ];
-            });
-
-        $friendsTrainCheckIns = null;
-        if (Auth::check()) {
-            $friendsTrainCheckIns = (clone $checkIns)
-                ->filter(function($trainCheckIn) {
-                    return Auth::user()->follows
-                            ->pluck('id')
-                            ->contains($trainCheckIn->status->user_id)
-                        || $trainCheckIn->status->user_id == Auth::user()->id;
-                })
-                ->groupBy('status.user_id')
-                ->map(function($trainCheckIns) {
-                    return [
-                        'user'     => $trainCheckIns->first()->status->user,
-                        'points'   => $trainCheckIns->sum('points'),
-                        'distance' => $trainCheckIns->sum('distance'),
-                        'duration' => $trainCheckIns->sum('duration'),
-                        'speed'    => $trainCheckIns->avg('speed')
-                    ];
-                });
-        }
-
-        return [
-            'users'      => (clone $trainCheckIns)->sortByDesc('points'),
-            'friends'    => $friendsTrainCheckIns?->sortByDesc('points') ?? null,
-            'kilometers' => (clone $trainCheckIns)->sortByDesc('distance')
-        ];
-    }
-
     public static function registerByDay(Carbon $date): int {
         return User::where("created_at", ">=", $date->copy()->startOfDay())
                    ->where("created_at", "<=", $date->copy()->endOfDay())
@@ -333,32 +307,5 @@ class UserController extends Controller
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
         )->simplePaginate(10);
-    }
-
-    public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        return Status::with(['trainCheckin', 'user'])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->where(
-                         'train_checkins.departure',
-                         '>=',
-                         $date->clone()->firstOfMonth()->toDateString()
-                     )
-                     ->where(
-                         'train_checkins.departure',
-                         '<=',
-                         $date->clone()->lastOfMonth()->toDateString() . ' 23:59:59'
-                     )
-                     ->get()
-                     ->groupBy('user_id')
-                     ->map(function($statuses) {
-                         return [
-                             'user'        => $statuses->first()->user,
-                             'points'      => $statuses->sum('trainCheckin.points'),
-                             'distance'    => $statuses->sum('distance'),
-                             'duration'    => $statuses->sum('trainCheckin.duration'),
-                             'statusCount' => $statuses->count()
-                         ];
-                     })
-                     ->sortByDesc('points');
     }
 }

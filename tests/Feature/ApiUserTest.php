@@ -3,13 +3,10 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\StatusController;
-use App\Http\Controllers\TransportController;
-use App\Models\HafasTrip;
-use App\Models\Status;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use \Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\File;
 use Tests\ApiTestCase;
 
 class ApiUserTest extends ApiTestCase
@@ -208,14 +205,14 @@ class ApiUserTest extends ApiTestCase
      */
     public function get_leaderboard() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get(route('api.v0.user.leaderboard'));
+                         ->get(route('api.v0.user.leaderboard'));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $response->assertJsonStructure([
-            "users",
-            "friends",
-            "kilometers"
-        ]);
+                                           "users",
+                                           "friends",
+                                           "kilometers"
+                                       ]);
     }
 
     /**

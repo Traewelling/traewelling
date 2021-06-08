@@ -1,37 +1,25 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
+        @include('layouts.includes.meta')
+
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}?1611964800"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
-        <meta name="copyright" content="Träwelling Team">
-        <meta name="description" content="{{__('about.block1')}}">
-        <meta name="keywords" content="Träwelling, Twitter, Deutsche, Bahn, Travel, Check-In, Zug, Bus, Tram, Mastodon">
-        <meta name="audience" content="Travellers">
-        <meta name="DC.Rights" content="Träwelling Team">
-        <meta name="DC.Description" content="{{__('about.block1')}}">
-        <meta name="DC.Language" content="de">
 
-        @include('layouts.includes.meta-pwa')
-        @yield('metadata')
+        @yield('head')
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
@@ -97,6 +85,14 @@
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
                             </li>
+                            @auth
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
+                                       href="{{ route('stats') }}">
+                                        {{__('stats')}}
+                                    </a>
+                                </li>
+                            @endauth
                         </ul>
                         <ul class="navbar-nav w-auto">
                             @guest
@@ -124,7 +120,8 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification"
+                                              hidden>0</span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -194,6 +191,9 @@
                     / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
                 </span>
                         <span class="footer-nav-link">
+                    / <a href="{{ route('events') }}">{{ __('events') }}</a>
+                </span>
+                        <span class="footer-nav-link">
                     / <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
                 </span>
                         <span class="footer-nav-link">
@@ -205,7 +205,12 @@
                     </p>
                     <p class="mb-0">{!! __('menu.developed') !!}</p>
                     <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
-                    <p class="mb-0 text-muted small">commit: {{ get_current_git_commit() }}</p>
+                    <p class="mb-0 text-muted small">commit:
+                        <a href="https://github.com/Traewelling/traewelling/commit/{{ get_current_git_commit() }}"
+                            class="text-muted">
+                            {{ get_current_git_commit() }}
+                        </a>
+                    </p>
                 </div>
             </footer>
         </div>
@@ -225,18 +230,19 @@
              * in the compontents folder. I moved the touch controls that were here and are needed for
              * checkin into components/stationboard.js.
              */
-            var token = '{{ csrf_token() }}';
-            var urlAvatarUpload = '{{route('settings.upload-image')}}';
-            var urlDelete = '{{ route('status.delete') }}';
-            var urlDisconnect = '{{ route('provider.destroy') }}';
-            var urlDislike = '{{ route('like.destroy') }}';
-            var urlEdit = '{{ route('edit') }}';
-            var urlFollow = '{{ route('follow.create') }}';
+            var token            = '{{ csrf_token() }}';
+            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
+            var urlDelete        = '{{ route('status.delete') }}';
+            var urlDisconnect    = '{{ route('provider.destroy') }}';
+            var urlDislike       = '{{ route('like.destroy') }}';
+            var urlEdit          = '{{ route('edit') }}';
+            var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike = '{{ route('like.create') }}';
-            var urlTrainTrip = '{{ route('trains.trip') }}';
-            var urlUnfollow = '{{ route('follow.destroy') }}';
-            var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
+            var urlLike          = '{{ route('like.create') }}';
+            var urlTrainTrip     = '{{ route('trains.trip') }}';
+            var urlUnfollow      = '{{ route('follow.destroy') }}';
+            var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
         </script>
     </body>
+    @yield('footer')
 </html>

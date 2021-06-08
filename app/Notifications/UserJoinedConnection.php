@@ -4,29 +4,27 @@ namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\Status;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use stdClass;
 
 class UserJoinedConnection extends Notification
 {
     use Queueable;
 
-    private $statusId;
-    private $linename;
-    private $origin;
-    private $destination;
+    private ?int $statusId;
+    private      $linename;
+    private      $origin;
+    private      $destination;
 
     /**
      * Create a new notification instance
      *
      * @return void
      */
-    public function __construct($statusId = null, $linename = null, $origin = null, $destination = null)
-    {
+    public function __construct(int $statusId = null, $linename = null, $origin = null, $destination = null) {
         $this->statusId    = $statusId;
         $this->linename    = $linename;
         $this->origin      = $origin;
@@ -36,37 +34,37 @@ class UserJoinedConnection extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed
      * @return array
      */
-    public function via()
-    {
+    public function via(): array {
         return ['database'];
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed
      * @return array
      */
-    public function toArray()
-    {
+    public function toArray(): array {
         return [
-            'status_id' => $this->statusId,
-            'linename' => $this->linename,
-            'origin' => $this->origin,
+            'status_id'   => $this->statusId,
+            'linename'    => $this->linename,
+            'origin'      => $this->origin,
             'destination' => $this->destination
         ];
     }
 
-    public static function detail($notification)
-    {
+    /**
+     * @param DatabaseNotification $notification
+     * @return stdClass
+     * @throws ShouldDeleteNotificationException
+     */
+    public static function detail(DatabaseNotification $notification): stdClass {
         $data                 = $notification->data;
-        $notification->detail = new \stdClass();
+        $notification->detail = new stdClass();
         try {
-            $status = status::findOrFail($data['status_id']);
-        } catch(ModelNotFoundException $e) {
+            $status = Status::findOrFail($data['status_id']);
+        } catch (ModelNotFoundException) {
             throw new ShouldDeleteNotificationException();
         }
 
@@ -74,33 +72,32 @@ class UserJoinedConnection extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification)
-    {
+    public static function render(DatabaseNotification $notification): ?string {
         try {
             $detail = self::detail($notification);
-        } catch (ShouldDeleteNotificationException $e) {
+        } catch (ShouldDeleteNotificationException) {
             $notification->delete();
             return null;
         }
         $data = $notification->data;
 
         return view("includes.notification", [
-            'color' => "neutral",
-            'icon' => "fa fa-train",
-            'lead' => __('notifications.userJoinedConnection.lead',
-                         ['username' => $detail->status->user->username
-                         ]),
-            "link" => route('statuses.get', ['id' => $detail->status->id]),
-            'notice' => trans_choice('notifications.userJoinedConnection.notice',
-                                     preg_match('/\s/', $data['linename']), [
-                                         'username' => $detail->status->user->username,
-                                         'linename' => $data['linename'],
-                                         'origin' => $data['origin'],
-                                         'destination' => $data['destination']
-                                     ]),
+            'color'           => "neutral",
+            'icon'            => "fa fa-train",
+            'lead'            => __('notifications.userJoinedConnection.lead',
+                                    ['username' => $detail->status->user->username
+                                    ]),
+            "link"            => route('statuses.get', ['id' => $detail->status->id]),
+            'notice'          => trans_choice('notifications.userJoinedConnection.notice',
+                                              preg_match('/\s/', $data['linename']), [
+                                                  'username'    => $detail->status->user->username,
+                                                  'linename'    => $data['linename'],
+                                                  'origin'      => $data['origin'],
+                                                  'destination' => $data['destination']
+                                              ]),
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read' => $notification->read_at != null,
-            'notificationId' => $notification->id
+            'read'            => $notification->read_at != null,
+            'notificationId'  => $notification->id
         ])->render();
     }
 }

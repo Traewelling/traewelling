@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Http\Controllers\EventController as EventBackend;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -70,7 +71,9 @@ class FrontendTransportController extends Controller
                                                  'longitude' => 'required|numeric|min:-180|max:180'
                                              ]);
 
-        $nearestStation = HafasController::getNearbyStations($validatedInput['latitude'], $validatedInput['longitude'], 1)->first();
+        $nearestStation = HafasController::getNearbyStations(
+            $validatedInput['latitude'], $validatedInput['longitude'], 1
+        )->first();
         if ($nearestStation === null) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
@@ -124,13 +127,14 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
-            'body'           => 'max:280',
-            'business_check' => 'digits_between:0,2',
-            'tweet_check'    => 'max:2',
-            'toot_check'     => 'max:2',
-            'event'          => 'integer',
-            'departure'      => ['required', 'date'],
-            'arrival'        => ['required', 'date'],
+            'body'              => 'max:280',
+            'business_check'    => 'digits_between:0,2',
+            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
+            'tweet_check'       => 'max:2',
+            'toot_check'        => 'max:2',
+            'event'             => 'integer',
+            'departure'         => ['required', 'date'],
+            'arrival'           => ['required', 'date'],
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
@@ -142,6 +146,7 @@ class FrontendTransportController extends Controller
                 $request->business_check,
                 $request->tweet_check,
                 $request->toot_check,
+                $request->checkinVisibility,
                 $request->event,
                 Carbon::parse($request->departure),
                 Carbon::parse($request->arrival),
@@ -207,5 +212,4 @@ class FrontendTransportController extends Controller
             'start'    => $request->start
         ]);
     }
-
 }
