@@ -19,7 +19,6 @@
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
 
-
         @yield('head')
     </head>
     <body>

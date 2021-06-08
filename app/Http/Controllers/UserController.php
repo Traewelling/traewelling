@@ -151,12 +151,11 @@ class UserController extends Controller
         if ($user->userInvisibleToMe) {
             throw new PermissionException();
         }
-        return $user->statuses()->with(['user',
-                                        'trainCheckin',
-                                        'trainCheckin.Origin',
-                                        'trainCheckin.Destination',
-                                        'trainCheckin.HafasTrip',
-                                        'event'])
+        return $user->statuses()
+                    ->with([
+                               'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
+                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                           ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user() : null;
                         $query->where('visibility', 0)
