@@ -26,6 +26,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('refresh', [v1Auth::class, 'refresh']);
         Route::get('user', [v1Auth::class, 'user'])->middleware('auth:api');
     });
+
+    Route::group(['middleware' => 'auth:api'], function() {
+        Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
+        Route::get('dashboard', [StatusController::class, 'getDashboard']);
+        Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
+    });
+
     Route::get('statuses', [StatusController::class, 'enRoute']);
     Route::get('statuses/{id}', [StatusController::class, 'show']);
     Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
@@ -37,12 +44,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
     Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
     Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
-
-    Route::group(['middleware' => 'auth:api'], function() {
-        Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
-        Route::get('dashboard', [StatusController::class, 'getDashboard']);
-        Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
-    });
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {

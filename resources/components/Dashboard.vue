@@ -16,9 +16,9 @@
           </p>
         </div>
         <div v-if="statuses">
-          <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
           <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers" v-bind:key="status.id"
                   :show-date="showDate(status, statuses)"/>
+<!--          ToDo Pagination-->
         </div>
       </div>
     </div>

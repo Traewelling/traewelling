@@ -23,8 +23,7 @@
                   {{ i18n.get("_.leaderboard.distance") }}
                 </a>
               </li>
-              <!--              ToDo: Friends-->
-              <li class="nav-item" v-if="$auth.check() && friends != null">
+              <li class="nav-item" v-if="$auth.check() && friends">
                 <a class="nav-link" id="friends-tab" data-toggle="tab" href="#leaderboard-friends"
                    role="tab" aria-controls="contact" aria-selected="false">
                   {{ i18n.get("_.leaderboard.friends") }}
@@ -39,13 +38,17 @@
               <div class="tab-pane fade table-responsive" id="leaderboard-distance" role="tabpanel">
                 <LeaderboardTable described-by="distance-tab" :users="distance"></LeaderboardTable>
               </div>
-              <div v-if="$auth.check() && friends != null" class="tab-pane fade table-responsive"
+              <div v-if="$auth.check() && friends" class="tab-pane fade table-responsive"
                    id="leaderboard-friends" role="tabpanel">
                 <LeaderboardTable described-by="distance-tab" :users="friends"></LeaderboardTable>
               </div>
             </div>
           </div>
           <div class="card-body" v-else> {{ i18n.get("_.vue.loading") }}</div>
+          <div class="card-footer text-muted">
+            <i class="far fa-question-circle" aria-hidden="true"></i>
+            {{ i18n.get("_.leaderboard.notice")}}
+          </div>
         </div>
       </div>
     </div>
@@ -59,6 +62,7 @@ import axios from "axios";
 import {LeaderboardUserModel} from "../js/APImodels";
 
 export default {
+  //ToDo format numbers correctly for languages, etc.
   name: "Leaderboard",
   data() {
     return {
@@ -102,6 +106,9 @@ export default {
             .then((response) => {
               this.loading = false;
               this.friends = response.data.data;
+              if (!Object.keys(this.friends).length) {
+                this.friends = null;
+              }
             })
             .catch((error) => {
               this.loading = false;
