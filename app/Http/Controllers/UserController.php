@@ -158,9 +158,8 @@ class UserController extends Controller
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user() : null;
-                        $query->where('visibility', 0)
-                              ->orWhere('visibility', 1)
-                              ->orWhere('user_id', $user)
+                        $query->whereIn('visibility', [0, 1])
+                              ->orWhere('user_id', $user->id)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                   $query->where('visibility', 2)

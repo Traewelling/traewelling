@@ -146,7 +146,7 @@ class StatusController extends Controller
                          $user = Auth::check() ? auth()->user() : null;
                          $query->where('users.private_profile', 0)
                                ->where('visibility', 0)
-                               ->orWhere('users.id', $user)
+                               ->orWhere('users.id', $user->id)
                                ->orWhere(function($query) {
                                    $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                    $query->where('visibility', 2)
