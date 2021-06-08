@@ -142,6 +142,10 @@ class FrontendStatusController extends Controller
     public function statusesByEvent(string $event): Renderable {
         $response = StatusController::getStatusesByEvent($event, null);
 
+        if($response['event']->end->isPast() && $response['statuses']->count() == 0) {
+            abort(404);
+        }
+
         return view('eventsMap', [
             'statuses' => $response['statuses'],
             'event'    => $response['event']

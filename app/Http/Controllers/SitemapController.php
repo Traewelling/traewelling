@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blogpost;
 use App\Models\Event;
+use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -77,7 +78,11 @@ class SitemapController extends Controller
     private function addEvents(Sitemap $sitemap): void {
         $sitemap->add(Url::create(route('events'))->setPriority(0.7));
 
-        $events = Event::all();
+        $eventIdsWithCheckins = Status::whereNotNull('event_id')->select('event_id');
+        $events               = Event::whereIn('id', $eventIdsWithCheckins)
+                                     ->orWhere('end', '>=', DB::raw('CURRENT_TIMESTAMP'))
+                                     ->get();
+
         foreach ($events as $event) {
             $sitemap->add(Url::create(route('statuses.byEvent', ['eventSlug' => $event->slug]))
                              ->setPriority(0.6));
