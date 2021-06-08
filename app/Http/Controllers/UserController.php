@@ -151,12 +151,13 @@ class UserController extends Controller
         if ($user->userInvisibleToMe) {
             throw new PermissionException();
         }
-        return $user->statuses()->with(['user',
-                                       'trainCheckin',
-                                       'trainCheckin.Origin',
-                                       'trainCheckin.Destination',
-                                       'trainCheckin.HafasTrip',
-                                       'event'])->orderByDesc('created_at')->paginate(15);
+        return $user->statuses()
+                    ->with([
+                               'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
+                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                           ])
+                    ->orderByDesc('created_at')
+                    ->paginate(15);
     }
 
     public static function getProfilePage($username): ?array {
