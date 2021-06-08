@@ -126,8 +126,7 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-                     ->where('visibility', 0)
-                     ->orWhere('visibility', 2)
+                     ->whereIn('visibility', [0, 2])
                      ->orWhere('user_id', auth()->user()->id)
                      ->withCount('likes')
                      ->latest()
@@ -144,12 +143,14 @@ class StatusController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
+                         $user = Auth::check() ? auth()->user() : null;
                          $query->where('users.private_profile', 0)
                                ->where('visibility', 0)
-                               ->orWhere('users.id', auth()->user()->id)
+                               ->orWhere('users.id', $user)
                                ->orWhere(function($query) {
+                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                    $query->where('visibility', 2)
-                                         ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
+                                         ->whereIn('users.id', $followings)
                                          ->orWhere('visibility', 0);
                                });
                      })
@@ -176,7 +177,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
+    public static function EditStatus($user, $statusId, $body, $businessCheck, int $visibility): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;

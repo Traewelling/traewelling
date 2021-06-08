@@ -115,7 +115,7 @@
                                 @if (auth()->user()->socialProfile->twitter_id != null)
                                     <div class="btn-group">
                                         <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
-                                               name="tweet_check">
+                                               name="tweet_check"/>
                                         <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
                                             <i class="fab fa-twitter"></i>
                                             <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>

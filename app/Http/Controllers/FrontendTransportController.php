@@ -126,14 +126,14 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
-            'body'           => 'max:280',
-            'business_check' => 'digits_between:0,2',
+            'body'              => 'max:280',
+            'business_check'    => 'digits_between:0,2',
             'checkinVisibility' => 'digits_between:0,3',
-            'tweet_check'    => 'max:2',
-            'toot_check'     => 'max:2',
-            'event'          => 'integer',
-            'departure'      => ['required', 'date'],
-            'arrival'        => ['required', 'date'],
+            'tweet_check'       => 'max:2',
+            'toot_check'        => 'max:2',
+            'event'             => 'integer',
+            'departure'         => ['required', 'date'],
+            'arrival'           => ['required', 'date'],
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(

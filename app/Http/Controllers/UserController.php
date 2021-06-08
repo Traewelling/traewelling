@@ -158,12 +158,14 @@ class UserController extends Controller
                                         'trainCheckin.HafasTrip',
                                         'event'])
                     ->where(function($query) {
+                        $user = Auth::check() ? auth()->user() : null;
                         $query->where('visibility', 0)
                               ->orWhere('visibility', 1)
-                              ->orWhere('user_id', auth()->user()->id)
+                              ->orWhere('user_id', $user)
                               ->orWhere(function($query) {
+                                  $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                   $query->where('visibility', 2)
-                                        ->whereIn('user_id', auth()->user()->follows()->select('follow_id'));
+                                        ->whereIn('user_id', $followings);
                               });
                     })->orderByDesc('created_at')->paginate(15);
     }
