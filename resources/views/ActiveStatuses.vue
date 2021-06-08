@@ -33,7 +33,6 @@
 import axios from "axios";
 import Status from "../components/Status";
 import Map from "../components/Map";
-import moment from "moment";
 import {StatusModel} from "../js/APImodels";
 
 export default {
@@ -71,7 +70,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
     },
     fetchStopovers() {

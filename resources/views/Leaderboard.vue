@@ -84,7 +84,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
       axios
           .get("/leaderboard/distance")
@@ -94,7 +94,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
       if (this.$auth.check()) {
         axios
@@ -105,7 +105,7 @@ export default {
             })
             .catch((error) => {
               this.loading = false;
-              this.error   = error.response.data.message || error.message;
+              this.error   = error.data.message || error.message;
             });
       }
     },

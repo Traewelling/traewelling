@@ -16,6 +16,7 @@ use App\Models\Status;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class StatusController extends ResponseController
 {
@@ -62,5 +63,13 @@ class StatusController extends ResponseController
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
         return $this->sendv1Response($trips);
+    }
+
+    public static function getDashboard(): AnonymousResourceCollection {
+        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
+    }
+
+    public static function getGlobalDashboard(): AnonymousResourceCollection {
+        return StatusResource::collection(StatusBackend::getGlobalDashboard());
     }
 }

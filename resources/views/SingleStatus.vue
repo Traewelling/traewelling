@@ -71,7 +71,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
     },
     fetchPolyline() {

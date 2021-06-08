@@ -100,7 +100,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
     },
     fetchStatuses() {
@@ -114,7 +114,7 @@ export default {
           })
           .catch((error) => {
             this.statusesLoading = false;
-            this.error           = error.response.data.message || error.message;
+            this.error           = error.data.message || error.message;
           });
     }
   }
