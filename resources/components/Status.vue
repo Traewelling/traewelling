@@ -126,7 +126,7 @@
             </ul>
           </li>
         </ul>
-        <ul v-else>
+        <ul class="list-inline" v-else>
           <li class="list-inline-item d-lg-none" :id="`avatar-small-${status.id}`">
             <router-link :to="{name: 'profile', params: {username: status.username}}">
               <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
