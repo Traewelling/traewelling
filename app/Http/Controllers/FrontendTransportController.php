@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -124,7 +125,7 @@ class FrontendTransportController extends Controller
         ]);
     }
 
-    public function TrainCheckin(Request $request): RedirectResponse {
+    public function TrainCheckin(Request $request) {
         $this->validate($request, [
             'body'           => 'max:280',
             'business_check' => 'digits_between:0,2',
