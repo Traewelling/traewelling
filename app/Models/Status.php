@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\StatusVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -96,11 +97,11 @@ class Status extends Model
      * @return bool
      */
     public function getStatusInvisibleToMeAttribute(): bool {
-        if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == 0) {
+        if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == StatusVisibility::PUBLIC) {
             return false;
         }
         $visible = false;
-        if ($this->visibility == 2) {
+        if ($this->visibility == StatusVisibility::FOLLOWERS) {
             $visible = (Auth::check() && Auth::user()->follows->contains('id', $this->user_id));
         }
         return !$visible;

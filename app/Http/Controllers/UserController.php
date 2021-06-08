@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
+use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -158,11 +160,11 @@ class UserController extends Controller
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user() : null;
-                        $query->whereIn('visibility', [0, 1])
+                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
                               ->orWhere('user_id', $user->id)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                  $query->where('visibility', 2)
+                                  $query->where('visibility', StatusVisibility::FOLLOWERS)
                                         ->whereIn('user_id', $followings);
                               });
                     })->orderByDesc('created_at')->paginate(15);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
@@ -38,7 +39,7 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == 1)) {
+        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == StatusVisibility::UNLISTED)) {
             return $status;
         }
 
@@ -126,7 +127,7 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
-                     ->whereIn('visibility', [0, 2])
+                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
                      ->orWhere('user_id', auth()->user()->id)
                      ->withCount('likes')
                      ->latest()
@@ -145,13 +146,13 @@ class StatusController extends Controller
                      ->where(function($query) {
                          $user = Auth::check() ? auth()->user() : null;
                          $query->where('users.private_profile', 0)
-                               ->where('visibility', 0)
+                               ->where('visibility', StatusVisibility::PUBLIC)
                                ->orWhere('users.id', $user->id)
                                ->orWhere(function($query) {
                                    $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                   $query->where('visibility', 2)
+                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
                                          ->whereIn('users.id', $followings)
-                                         ->orWhere('visibility', 0);
+                                         ->orWhere('visibility', StatusVisibility::PUBLIC);
                                });
                      })
                      ->whereHas('trainCheckin', function($query) {
@@ -177,7 +178,7 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck, int $visibility): bool|string|null {
+    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -204,7 +205,7 @@ class StatusController extends Controller
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if (($status->StatusInvisibleToMe && $status->visibility != 1) || $status->user->UserInvisibleToMe) {
+        if (($status->StatusInvisibleToMe && $status->visibility != StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
             throw new PermissionException();
         }
 
@@ -375,13 +376,13 @@ class StatusController extends Controller
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('visibility', 0);
+                                    ->where('visibility', StatusVisibility::PUBLIC);
                               if (auth()->check()) {
                                   $query->orWhere('users.id', auth()->user()->id)
                                         ->orWhere(function($query) {
-                                            $query->where('visibility', 2)
+                                            $query->where('visibility', StatusVisibility::FOLLOWERS)
                                                   ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
-                                                  ->orWhere('visibility', 0);
+                                                  ->orWhere('visibility', StatusVisibility::PUBLIC);
                                         });
                               }
                           });

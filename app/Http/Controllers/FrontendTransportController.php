@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -128,7 +129,7 @@ class FrontendTransportController extends Controller
         $this->validate($request, [
             'body'              => 'max:280',
             'business_check'    => 'digits_between:0,2',
-            'checkinVisibility' => 'digits_between:0,3',
+            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
             'tweet_check'       => 'max:2',
             'toot_check'        => 'max:2',
             'event'             => 'integer',

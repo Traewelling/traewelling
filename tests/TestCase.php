@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -150,7 +151,7 @@ abstract class TestCase extends BaseTestCase
                 businessCheck: 0,
                 tweetCheck: 0,
                 tootCheck: 0,
-                visibility: 0,
+                visibility: StatusVisibility::PUBLIC,
                 eventId: $eventId
             );
         } catch (StationNotOnTripException) {

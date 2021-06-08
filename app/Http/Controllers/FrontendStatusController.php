@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
@@ -69,8 +70,9 @@ class FrontendStatusController extends Controller
         $this->validate($request, [
             'body'              => ['max:280'],
             'business_check'    => ['required', 'digits_between:0,2'],
-            'checkinVisibility' => ['required', 'digits_between:0,3'],
+            'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
+
         $editStatusResponse = StatusBackend::EditStatus(
             Auth::user(),
             $request['statusId'],
