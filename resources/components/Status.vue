@@ -111,7 +111,7 @@
             </router-link>
           </li>
 
-          <li class="list-inline-item like-text">
+          <li class="list-inline-item like-text" @click="likeStatus">
             <i class="like fa-star" v-bind:class="{fas: status.liked, far: !status.liked}" aria-hidden="true"></i>
             <span class="pl-1" v-if="status.likes">{{ status.likes }}</span>
           </li>
@@ -163,6 +163,7 @@
 import moment from "moment";
 import Map from "../components/Map";
 import {StatusModel} from "../js/APImodels";
+import axios from "axios";
 
 export default {
   name: "Status.vue",
@@ -231,6 +232,35 @@ export default {
   methods: {
     startRefresh() {
       setInterval(() => (this.now = moment()), 1000);
+    },
+    likeStatus() {
+      if (this.status.liked === false) {
+        axios
+            .post("/like/" + this.status.id)
+            .then(() => {
+              this.status.liked = true;
+              this.status.likes += 1;
+              this.likes.push(this.$auth.user());
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+      } else {
+        axios
+            .delete("/like/" + this.status.id)
+            .then(() => {this.status.liked = false;
+              this.status.likes -= 1;
+              let index = this.likes.indexOf(this.$auth.user());
+              if (index != -1) {
+                this.likes.splice(index);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            })
+
+      }
+      console.log("like!");
     }
   },
   created() {

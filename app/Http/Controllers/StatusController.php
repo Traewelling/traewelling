@@ -188,6 +188,7 @@ class StatusController extends Controller
      * @param Status $status
      * @return Like
      * @throws StatusAlreadyLikedException
+     * @todo refactor this to take status IDs instead of models
      */
     public static function createLike(User $user, Status $status): Like {
 
@@ -203,6 +204,12 @@ class StatusController extends Controller
         return $like;
     }
 
+    /**
+     * @param $user
+     * @param $statusId
+     * @return bool
+     * @todo Refactor this to throw exceptions instead of bools
+     */
     public static function DestroyLike($user, $statusId): bool {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {

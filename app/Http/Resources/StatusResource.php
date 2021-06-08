@@ -23,7 +23,7 @@ class StatusResource extends JsonResource
             "username"  => (string) $this->user->username,
             "business"  => (int) $this->business,
             "likes"     => (int) $this->likes->count(),
-            "liked"     => empty($this->favorited) ? null : $this->favorited,
+            "liked"     => (bool) $this->favorited,
             "train"     => [
                 "trip"        => (int) $this->trainCheckin->HafasTrip->id,
                 "category"    => (string) $this->trainCheckin->HafasTrip->category,

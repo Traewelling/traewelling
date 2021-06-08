@@ -10,8 +10,8 @@ class ResponseController extends Controller
         return response()->json($response, 200);
     }
 
-    public function sendv1Response($response) {
-        return response()->json(["data" => $response], 200);
+    public function sendv1Response($response, $code=200) {
+        return response()->json(["data" => $response], $code);
     }
 
     public function sendError($error, $code = 404) {
