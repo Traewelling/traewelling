@@ -41,7 +41,9 @@
                     status.train.distance.toFixed(0)
                   }}<small>km</small>
               </span>
-                <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{ duration }}</span>
+                <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{
+                    duration
+                  }}</span>
                 <span v-if="status.business === 1" class="pl-sm-2">
                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
                    :title="i18n.get('_.stationboard.business.business')" aria-hidden="true"></i>
@@ -53,7 +55,9 @@
                 <br>
                 <span v-if="status.event != null" class="pl-sm-2">
                 <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                <a :href="`/event/${status.event.slug}`">{{ status.event.name }}</a>
+                <router-link :to="{name: 'event', params: {slug: status.event.slug}}">
+                  {{ status.event.name }}
+                </router-link>
               </span>
               </p>
               <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
@@ -89,7 +93,7 @@
              role="progressbar"
              v-bind:style="{width: percentage + '%'}"></div>
       </div>
-      <div class="card-footer text-muted interaction">
+      <div class="card-footer text-muted">
         <span class="float-end like-text">
           <router-link :to="{name: 'profile', params: {username: status.username}}">
             <span v-if="$auth.check() && $auth.user().id === status.user">{{ i18n.get("_.user.you") }}</span>
@@ -99,41 +103,36 @@
             {{ moment(status.createdAt).fromNow() }}
           </router-link>
         </span>
-        <ul class="list-inline">
-          <!--        @auth-->
-          <!--        <li class="-->
-          <!--                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"-->
-          <!--            id="avatar-small-{{ $status->id }}" data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">-->
-          <!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-          <!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
-          <!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
-          <!--          </a>-->
-          <!--        </li>-->
+        <ul class="list-inline" v-if="$auth.check()">
+          <li v-if="$auth.user().id !== status.user && status.likes === 0" class="list-inline-item d-lg-none">
+            <router-link :to="{name: 'profile', params: {username: status.username}}">
+              <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
+                   :alt="i18n.get('_.settings.picture')">
+            </router-link>
+          </li>
 
-          <!--        <li class="list-inline-item like-text">-->
-          <!--                    <span-->
-          <!--                        class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"-->
-          <!--                        data-statusid="{{ $status->id }}"></span>-->
-          <!--          <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"-->
-          <!--                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>-->
-          <!--        </li>-->
-          <!--        @if(auth()->user()->id == $status->user_id)-->
-          <!--        <li class="list-inline-item like-text">-->
-          <!--          <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-edit"></i></a>-->
-          <!--        </li>-->
+          <li class="list-inline-item like-text">
+            <i class="like fa-star" v-bind:class="{fas: status.liked, far: !status.liked}" aria-hidden="true"></i>
+            <span class="pl-1" v-if="status.likes">{{ status.likes }}</span>
+          </li>
 
-          <!--        <li class="list-inline-item like-text">-->
-          <!--          <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}"><i class="fas fa-trash"></i></a>-->
-          <!--        </li>-->
-          <!--        @endif-->
-          <!--        @else-->
-          <!--        <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">-->
-          <!--          <a href="{{ route('account.show', ['username' => $status->user->username]) }}">-->
-          <!--            <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"-->
-          <!--                 class="profile-image" alt="{{__('settings.picture')}}">-->
-          <!--          </a>-->
-          <!--        </li>-->
-          <!--        @endauth-->
+          <li class="list-inline-item like-text" v-if="$auth.user().id === status.user">
+            <a class="like-text" role="button" data-mdb-toggle="dropdown">
+              <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i> {{ i18n.get("_.status.edit")}}</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-trash" aria-hidden="true"></i> {{ i18n.get("_.status.delete")}}</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul v-else>
+          <li class="list-inline-item d-lg-none" :id="`avatar-small-${status.id}`">
+            <router-link :to="{name: 'profile', params: {username: status.username}}">
+              <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
+                   :alt="i18n.get('_.settings.picture')">
+            </router-link>
+          </li>
         </ul>
       </div>
 
