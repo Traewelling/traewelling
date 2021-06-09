@@ -6,6 +6,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\MissingParametersExection;
 use App\Exceptions\StationNotOnTripException;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -63,11 +64,11 @@ class TransportController extends Controller
      * @param Carbon|null $when
      * @param null $travelType
      * @return bool|array|null
-     * @throws HafasException
+     * @throws HafasException|MissingParametersExection
      */
     public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
-            return false;
+            throw new MissingParametersExection("$stationName");
         }
         if ($when === null) {
             $when = Carbon::now()->subMinutes(5);

@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\MissingParametersExection;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -46,8 +47,7 @@ class TransportController extends ResponseController
             );
         } catch (HafasException $exception) {
             return $this->sendError(400, $exception->getMessage());
-        }
-        if ($trainStationboardResponse === false) {
+        }  catch (MissingParametersExection) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
         }
         if ($trainStationboardResponse === null) {
