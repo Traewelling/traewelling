@@ -107,7 +107,7 @@
                                 <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
                                    role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">
-                                    NAME <span class="caret"></span>
+                                    $auth.user().username <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -121,19 +121,14 @@
                                         <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
                                     </a>
 {{--                                    @if(Auth::user()->role >= 5)--}}
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-tools" aria-hidden="true"></i> {{__('menu.admin')}}
-                                        </a>
+{{--                                        <a class="dropdown-item" href="#">--}}
+{{--                                            <i class="fas fa-tools" aria-hidden="true"></i> {{__('menu.admin')}}--}}
+{{--                                        </a>--}}
 {{--                                    @endif--}}
                                     <div class="dropdown-divider"></div>
-                                    <button class="dropdown-item" form="logout-form" type="submit">
+                                    <a class="dropdown-item"href="#" @click.prevent="$auth.logout()">
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
-                                    </button>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                          style="display: none;">
-                                        @csrf
-                                    </form>
+                                    </a>
                                 </div>
                             </li>
                         </ul>

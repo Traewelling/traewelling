@@ -86,11 +86,9 @@ class AuthController extends ResponseController
     public function logout(Request $request): JsonResponse {
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
-            $success['message'] = "Successfully logged out.";
-            return $this->sendResponse($success);
+            return $this->sendv1Response();
         } else {
-            $error = "Something went wrong.";
-            return $this->sendResponse($error);
+            return $this->sendv1Response("unknown", 500);
         }
     }
 
