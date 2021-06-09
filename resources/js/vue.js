@@ -76,15 +76,7 @@ new Vue({
  */
 window.addEventListener("load", () => {
     require("./components/alert");
-    require("./components/notifications-board");
-    require("./components/progressbar");
-    require("./components/settings");
     require("./components/station-autocomplete");
     require("./components/stationboard");
-    require("./components/statusMap");
-    require("./components/timepicker");
-    require("./components/business-check-in");
-    require("./../../node_modules/bootstrap/js/dist/modal");
-    require("./appControls");
     require("bootstrap-cookie-alert/cookiealert");
 });

@@ -20,7 +20,6 @@
 </template>
 
 <script>
-
 import {Modal} from "bootstrap";
 
 export default {
@@ -35,9 +34,6 @@ export default {
     abortText: null,
     confirmText: null,
     confirmButtonColor: null
-  },
-  mounted() {
-    this.modal = new Modal(this.$refs.deleteModal);
   },
   methods: {
     show() {

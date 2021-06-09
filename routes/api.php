@@ -14,6 +14,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\LikesController;
+use App\Http\Controllers\API\v1\NotificationController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\UserController;
@@ -38,6 +39,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('like/{status}', [LikesController::class, 'create']);
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
+        Route::get('notifications/count', [NotificationController::class, 'count']);
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {

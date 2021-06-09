@@ -18,6 +18,7 @@ export const router = new VueRouter({
         [
             {
                 path: "/",
+                name: "base",
                 redirect: {name: "statuses.active"},
             },
             {

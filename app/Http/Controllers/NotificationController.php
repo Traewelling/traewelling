@@ -86,4 +86,12 @@ class NotificationController extends Controller
     public function readAll() {
         Auth::user()->unreadNotifications->markAsRead();
     }
+
+    /**
+     * @return int
+     * @api v1
+     */
+    public static function count(): int {
+        return Auth::user()->notifications->count();
+    }
 }
