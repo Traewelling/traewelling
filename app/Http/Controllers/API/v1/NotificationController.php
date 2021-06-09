@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\NotificationController as NotificationBackend;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class NotificationController extends ResponseController
 {
@@ -18,11 +19,15 @@ class NotificationController extends ResponseController
 
     /**
      * Get all latest Messages
-     *
+     * @TODO make this json-only (remove render)
      * @return JsonResponse
      */
-    public function index(): JsonResponse {
-        $notificationResponse = NotificationBackend::latest();
-        return $this->sendResponse($notificationResponse);
+    public function index(Request $request): JsonResponse {
+        if ($request->get('render')) {
+            $notificationResponse = (new \App\Http\Controllers\NotificationController)->renderLatest();
+        } else {
+            $notificationResponse = NotificationBackend::latest();
+        }
+        return $this->sendv1Response($notificationResponse);
     }
 }

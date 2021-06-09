@@ -63,10 +63,10 @@
               ></NotificationsButton>
             </li>
             <li class="nav-item dropdown">
-              <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
+              <a href="#" class="nav-link dropdown-toggle"
                  role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                  aria-expanded="false">
-                {{ $auth.user().displayName }} <span class="caret"></span>
+                {{ $auth.user().displayName }}
               </a>
 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

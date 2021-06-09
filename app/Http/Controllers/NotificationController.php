@@ -11,6 +11,9 @@ use Throwable;
 
 class NotificationController extends Controller
 {
+    /**
+     * @api v1
+     */
     public static function latest() {
         return Auth::user()->notifications
             ->take(10)->map(function($notification) {
@@ -29,6 +32,10 @@ class NotificationController extends Controller
             ->values();
     }
 
+    /*
+     * @todo make static
+     * @api v1
+     */
     public function renderLatest(): Collection {
         return Auth::user()->notifications()
                    ->limit(10)

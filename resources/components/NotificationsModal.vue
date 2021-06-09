@@ -9,16 +9,17 @@
           </h4>
           <button type="button" class="close" id="mark-all-read"
                   :aria-label="i18n.get('_.notifications.mark-all-read')">
-            <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
+            <span aria-hidden="true"><i class="fas fa-check-double" aria-hidden="true"></i></span>
           </button>
           <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="notifications-list">
-          <div id="notifications-empty" class="text-center text-muted">{{ i18n.get('_.notifications.empty') }}
-            <br/>¯\_(ツ)_/¯
-          </div>
+        <div class="modal-body" id="notifications-list" ref="list">
+        </div>
+        <div id="notifications-empty" class="text-center text-muted" v-if="notifications == null">
+          {{ i18n.get('_.notifications.empty') }}
+          <br/>¯\_(ツ)_/¯
         </div>
       </div>
     </div>
@@ -33,6 +34,7 @@ export default {
   data() {
     return {
       modal: null,
+      notifications: null,
     };
   },
   mounted() {
@@ -40,10 +42,26 @@ export default {
   },
   methods: {
     show() {
+      this.fetchNotifications();
       this.modal.show();
     },
     hide() {
       this.modal.hide();
+    },
+    fetchNotifications() {
+      // ToDo: make this shit json only
+      // ToDo: interactions are broken
+      axios
+          .get('/notifications?render=true')
+          .then((response) => {
+            this.notifications = response.data.data;
+            this.notifications.forEach((notification) => {
+              this.$refs.list.insertAdjacentHTML("beforeend", notification.html);
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          });
     }
   }
 };
