@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\StatusVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,14 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property int user_id
+ * @property string body
+ * @property int business
+ * @property int visibility
+ */
 class Status extends Model
 {
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'event_id'];
+    protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
@@ -85,5 +92,21 @@ class Status extends Model
         }
 
         return $postText;
+    }
+
+    /**
+     * When is a status invisible?
+     * 0=public, 1=unlisted, 2=Followers, 3=Private
+     * @return bool
+     */
+    public function getStatusInvisibleToMeAttribute(): bool {
+        if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == StatusVisibility::PUBLIC) {
+            return false;
+        }
+        $visible = false;
+        if ($this->visibility == StatusVisibility::FOLLOWERS) {
+            $visible = (Auth::check() && Auth::user()->follows->contains('id', $this->user_id));
+        }
+        return !$visible;
     }
 }

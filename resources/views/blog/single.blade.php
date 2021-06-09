@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $blogpost->title)
+@section('canonical', route('blog.show', ['slug' => $blogpost->slug]))
 
 @section('meta-robots', 'index')
 @section('meta-description', Markdown::parse($blogpost->preview))

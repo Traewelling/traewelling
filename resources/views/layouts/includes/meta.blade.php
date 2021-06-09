@@ -18,6 +18,10 @@
 <meta name="theme-color" content="#c72730"/>
 <meta name="name" content="{{ config('app.name') }}"/>
 
+@hasSection('canonical')
+    <link rel="canonical" href="@yield('canonical')"/>
+@endif
+
 @hasSection('meta-robots')
     <meta name="robots" content="@yield('meta-robots')"/>
 @endif

@@ -79,7 +79,8 @@ class StatusController extends ResponseController
             Auth::user(),
             $request['statusId'],
             $request['body'],
-            $request['businessCheck']
+            $request['businessCheck'],
+            null
         );
         if ($editStatusResponse === null) {
             return $this->sendError('Not found');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\PermissionException;
+use App\Enum\StatusVisibility;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -70,14 +71,17 @@ class FrontendStatusController extends Controller
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
         $this->validate($request, [
-            'body'           => ['max:280'],
-            'business_check' => ['required', 'digits_between:0,2'],
+            'body'              => ['max:280'],
+            'business_check'    => ['required', 'digits_between:0,2'],
+            'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
+
         $editStatusResponse = StatusBackend::EditStatus(
             Auth::user(),
             $request['statusId'],
             $request['body'],
-            $request['business_check']
+            $request['business_check'],
+            $request['checkinVisibility']
         );
         if ($editStatusResponse === false) {
             return redirect()->back();
@@ -96,6 +100,8 @@ class FrontendStatusController extends Controller
             return response(__('controller.status.like-ok'), 201);
         } catch (StatusAlreadyLikedException $e) {
             return response(__('controller.status.like-already'), 409);
+        } catch (PermissionException) {
+            abort(403);
         }
     }
 
@@ -142,6 +148,10 @@ class FrontendStatusController extends Controller
 
     public function statusesByEvent(string $event): Renderable {
         $response = StatusController::getStatusesByEvent($event, null);
+
+        if($response['event']->end->isPast() && $response['statuses']->count() == 0) {
+            abort(404);
+        }
 
         return view('eventsMap', [
             'statuses' => $response['statuses'],
