@@ -98,6 +98,7 @@
     </nav>
     <main class="py-4">
       <router-view></router-view>
+      <NotificationsModal ref="notifModal"></NotificationsModal>
     </main>
   </div>
 </template>
@@ -129,7 +130,6 @@ export default {
   },
   methods: {
     showNotifications() {
-      console.log("a");
       this.$refs.notifModal.show();
     },
     fetchNotificationsCount() {

@@ -11,7 +11,7 @@
                   :aria-label="i18n.get('_.notifications.mark-all-read')">
             <span aria-hidden="true"><i class="fas fa-check-double" aria-hidden="true"></i></span>
           </button>
-          <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" aria-label="Close" v-on:click="hide">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -55,6 +55,7 @@ export default {
           .get('/notifications?render=true')
           .then((response) => {
             this.notifications = response.data.data;
+            this.$refs.list.innerHTML = null;
             this.notifications.forEach((notification) => {
               this.$refs.list.insertAdjacentHTML("beforeend", notification.html);
             });
