@@ -7,7 +7,6 @@ use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -159,14 +158,15 @@ class UserController extends Controller
                                'trainCheckin.HafasTrip.stopoversNEW', 'event'
                            ])
                     ->where(function($query) {
-                        $user = Auth::check() ? auth()->user() : null;
-                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
-                              ->orWhere('user_id', $user->id)
-                              ->orWhere(function($query) {
-                                  $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                  $query->where('visibility', StatusVisibility::FOLLOWERS)
-                                        ->whereIn('user_id', $followings);
-                              });
+                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED]);
+                        if (auth()->check()) {
+                            $query->orWhere('user_id', auth()->user()->id);
+                        }
+                        $query->orWhere(function($query) {
+                            $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                            $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                  ->whereIn('user_id', $followings);
+                        });
                     })->orderByDesc('created_at')->paginate(15);
     }
 
