@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Event;
 use App\Models\Status;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,14 +91,14 @@ class StatusController extends ResponseController
     }
 
     public function destroy($statusId) {
-        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $statusId);
-
-        if ($deleteStatusResponse === null) {
+        try {
+            StatusBackend::DeleteStatus(Auth::user(), $statusId);
+        } catch (ModelNotFoundException) {
             return $this->sendError('Not found');
-        }
-        if ($deleteStatusResponse === false) {
+        } catch (PermissionException) {
             return $this->sendError(__('controller.status.not-permitted'), 403);
         }
+
         return $this->sendResponse(__('controller.status.delete-ok'));
     }
 

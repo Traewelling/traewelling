@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -10,6 +11,7 @@ use Carbon\Carbon;
 use DateInterval;
 use DateTime;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -57,10 +59,12 @@ class FrontendStatusController extends Controller
     }
 
     public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
-        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
-        if ($deleteStatusResponse === false) {
+        try {
+            StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
+        } catch (PermissionException | ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
+
         return response()->json(['message' => __('controller.status.delete-ok')], 200);
     }
 

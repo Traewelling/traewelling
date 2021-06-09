@@ -7,7 +7,6 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
-
 class SemiGuest extends Middleware
 {
     /**
@@ -18,8 +17,7 @@ class SemiGuest extends Middleware
      * @param mixed ...$guards
      * @return mixed
      */
-    public function handle($request, Closure $next, ...$guards)
-    {
+    public function handle($request, Closure $next, ...$guards) {
         try {
             $this->authenticate($request, $guards);
         } catch (AuthenticationException) {

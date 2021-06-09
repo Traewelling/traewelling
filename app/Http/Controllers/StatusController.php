@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
 use App\Models\Like;
@@ -10,8 +11,6 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -154,14 +153,20 @@ class StatusController extends Controller
                      ->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId): ?bool {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @return bool|null
+     * @throws PermissionException|ModelNotFoundException
+     */
+    public static function DeleteStatus(User $user, int $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
-            return null;
+            throw new ModelNotFoundException();
         }
-        if ($user != $status->user) {
-            return false;
+        if ($user->id != $status->user->id) {
+            throw new PermissionException();
         }
         $status->delete();
         return true;

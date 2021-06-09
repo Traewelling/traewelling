@@ -23,7 +23,9 @@ class LikesController extends ResponseController
      * @todo maybe put this in separate controller?
      */
     public function show(int $status): AnonymousResourceCollection {
-        return UserResource::collection(User::whereIn('id', Like::where('status_id', $status)->select('user_id')->get())->get());
+        return UserResource::collection(
+            User::whereIn('id', Like::where('status_id', $status)->select('user_id')->get())->get()
+        );
     }
 
     /**
@@ -37,7 +39,7 @@ class LikesController extends ResponseController
         }
         try {
             StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendv1Response(["status" => "success"], 201);
+            return $this->sendv1Response(null, 201);
         } catch (StatusAlreadyLikedException) {
             abort(404);
         }
@@ -53,6 +55,6 @@ class LikesController extends ResponseController
         if ($destroyLikeResponse === false) {
             abort(404);
         }
-        return $this->sendv1Response(["status" => "success"]);
+        return $this->sendv1Response();
     }
 }

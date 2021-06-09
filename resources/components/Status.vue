@@ -111,7 +111,7 @@
             </router-link>
           </li>
 
-          <li class="list-inline-item like-text" @click="likeStatus">
+          <li class="list-inline-item like-text" v-on:click="likeStatus">
             <i class="like fa-star" v-bind:class="{fas: status.liked, far: !status.liked}" aria-hidden="true"></i>
             <span class="pl-1" v-if="status.likes">{{ status.likes }}</span>
           </li>
@@ -123,8 +123,8 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>
                 {{ i18n.get("_.status.edit") }}</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fas fa-trash" aria-hidden="true"></i>
-                {{ i18n.get("_.status.delete") }}</a></li>
+              <li><a class="dropdown-item" href="#" v-on:click="toggleDeleteModal">
+                <i class="fas fa-trash" aria-hidden="true"></i>{{ i18n.get("_.status.delete") }}</a></li>
             </ul>
           </li>
         </ul>
@@ -156,6 +156,14 @@
         </ul>
       </div>
     </div>
+    <ModalConfirm
+        ref="deleteModal"
+        v-on:confirm="deleteStatus"
+        :title-text="i18n.get('_.modals.deleteStatus-title')"
+        :abort-text="i18n.get('_.menu.abort')"
+        :confirm-text="i18n.get('_.modals.delete-confirm')"
+        confirm-button-color="btn-danger"
+    ></ModalConfirm>
   </div>
 </template>
 
@@ -164,6 +172,7 @@ import moment from "moment";
 import Map from "../components/Map";
 import {StatusModel} from "../js/APImodels";
 import axios from "axios";
+import ModalConfirm from "./ModalConfirm";
 
 export default {
   name: "Status.vue",
@@ -178,7 +187,8 @@ export default {
     };
   },
   components: {
-    Map
+    Map,
+    ModalConfirm
   },
   props: {
     status: StatusModel,
@@ -244,22 +254,35 @@ export default {
             })
             .catch((error) => {
               console.error(error);
-            })
+            });
       } else {
         axios
             .delete("/like/" + this.status.id)
-            .then(() => {this.status.liked = false;
+            .then(() => {
+              this.status.liked = false;
               this.status.likes -= 1;
-              let index = this.likes.indexOf(this.$auth.user());
+              let index         = this.likes.indexOf(this.$auth.user());
               if (index !== -1) {
                 this.likes.splice(index);
               }
             })
             .catch((error) => {
               console.error(error);
-            })
-
+            });
       }
+    },
+    deleteStatus() {
+      axios
+          .delete("/statuses/" + this.status.id)
+          .then(() => {
+            this.status = null;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    },
+    toggleDeleteModal() {
+      this.$refs.deleteModal.show();
     }
   },
   created() {

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PolylineResource;
@@ -13,6 +14,7 @@ use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -34,6 +36,22 @@ class StatusController extends ResponseController
     }
 
     /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function destroy($id): JsonResponse {
+        try {
+            StatusBackend::DeleteStatus(Auth::user(), $id);
+        } catch (PermissionException) {
+            abort(403);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        return $this->sendv1Response();
+    }
+
+    /**
      * @param string $parameters
      * @return AnonymousResourceCollection|JsonResponse
      * @todo extract this to backend
@@ -48,7 +66,7 @@ class StatusController extends ResponseController
                               return $status->user->userInvisibleToMe;
                           })
                           ->mapWithKeys(function($status) {
-                              return [ $status->id => $status->trainCheckin->getMapLines() ];
+                              return [$status->id => $status->trainCheckin->getMapLines()];
                           });
         return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
     }
