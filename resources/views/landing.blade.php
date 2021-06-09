@@ -107,35 +107,36 @@
                                 <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
                                    role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">
-                                    $auth.user().username <span class="caret"></span>
+                                    <span :v-="$auth.user().username"></span> <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-save" aria-hidden="true"></i> {{ __('menu.export') }}
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
-                                    </a>
-{{--                                    @if(Auth::user()->role >= 5)--}}
-{{--                                        <a class="dropdown-item" href="#">--}}
-{{--                                            <i class="fas fa-tools" aria-hidden="true"></i> {{__('menu.admin')}}--}}
-{{--                                        </a>--}}
-{{--                                    @endif--}}
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item"href="#" @click.prevent="$auth.logout()">
-                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
+                                <router-link :to="{ name: 'profile', params: {username: $auth.user().username}}"
+                                             class="dropdown-item">
+                                    <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
+                                </router-link>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-save" aria-hidden="true"></i> {{ __('menu.export') }}
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
+                                </a>
+                                {{--                                    @if(Auth::user()->role >= 5)--}}
+                                {{--                                        <a class="dropdown-item" href="#">--}}
+                                {{--                                            <i class="fas fa-tools" aria-hidden="true"></i> {{__('menu.admin')}}--}}
+                                {{--                                        </a>--}}
+                                {{--                                    @endif--}}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" @click.prevent="$auth.logout()">
+                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
+                                </a>
                     </div>
+                    </li>
+                    </ul>
                 </div>
-            </nav>
-            <app></app>
+        </div>
+        </nav>
+        <app></app>
         </div>
 
         <script src="{{ mix('js/vue.js') }}"></script>

@@ -55,7 +55,7 @@ export default {
       this.hide();
     }
   }
-}
+};
 </script>
 
 <style scoped>
