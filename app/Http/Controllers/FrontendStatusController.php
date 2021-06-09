@@ -166,68 +166,6 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function usageboard(Request $request): Renderable|RedirectResponse {
-        $begin = Carbon::now()->copy()->addDays(-14);
-        $end   = Carbon::now();
-
-        if ($request->input('begin') != "") {
-            $begin = Carbon::createFromFormat("Y-m-d", $request->input('begin'));
-        }
-        if ($request->input('end') != "") {
-            $end = Carbon::createFromFormat("Y-m-d", $request->input('end'));
-        }
-
-        if ($begin->isAfter($end)) {
-            return redirect()
-                ->back()
-                ->with('error',
-                       $begin->format('Y-m-d') .
-                       ' ist vor ' .
-                       $end->format('Y-m-d') .
-                       '. Das darf nicht.');
-        }
-        if ($end->isFuture()) {
-            $end = Carbon::now();
-        }
-
-        $dates                  = [];
-        $statusesByDay          = [];
-        $userRegistrationsByDay = [];
-        $hafasTripsByDay        = [];
-
-        // Wir schlagen einen Tag drauf, um ihn in der Loop direkt wieder runterzunehmen.
-        $dateIterator = $end->copy()->addDays(1);
-        $cnt          = 0;
-        $datediff     = $end->diffInDays($begin);
-        while ($cnt < $datediff) {
-            $cnt++;
-            $dateIterator->addDays(-1);
-            $dates[]                  = $dateIterator->format("Y-m-d");
-            $statusesByDay[]          = StatusController::usageByDay($dateIterator);
-            $userRegistrationsByDay[] = UserController::registerByDay($dateIterator);
-
-            // Wenn keine Status passiert sind, gibt es auch keine Möglichkeit, hafastrips anzulegen.
-            if ($statusesByDay[count($statusesByDay) - 1] == 0) { // Heute keine Stati
-                $hafasTripsByDay[] = (object) [];
-            } else {
-                $hafasTripsByDay[] = TransportController::usageByDay($dateIterator);
-            }
-        }
-
-        if (empty($dates)) {
-            $dates = [$begin->format("Y-m-d")];
-        }
-
-        return view('admin.usageboard', [
-            'begin'                  => $begin->format("Y-m-d"),
-            'end'                    => $end->format("Y-m-d"),
-            'dates'                  => $dates,
-            'statusesByDay'          => $statusesByDay,
-            'userRegistrationsByDay' => $userRegistrationsByDay,
-            'hafasTripsByDay'        => $hafasTripsByDay
-        ]);
-    }
-
     /**
      * @param $status
      * @return mixed

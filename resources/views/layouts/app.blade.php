@@ -206,7 +206,12 @@
                     </p>
                     <p class="mb-0">{!! __('menu.developed') !!}</p>
                     <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
-                    <p class="mb-0 text-muted small">commit: {{ get_current_git_commit() }}</p>
+                    <p class="mb-0 text-muted small">commit:
+                        <a href="https://github.com/Traewelling/traewelling/commit/{{ get_current_git_commit() }}"
+                            class="text-muted">
+                            {{ get_current_git_commit() }}
+                        </a>
+                    </p>
                 </div>
             </footer>
         </div>
