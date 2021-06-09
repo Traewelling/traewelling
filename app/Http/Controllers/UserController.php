@@ -159,9 +159,9 @@ class UserController extends Controller
                                'trainCheckin.HafasTrip.stopoversNEW', 'event'
                            ])
                     ->where(function($query) {
-                        $user = Auth::check() ? auth()->user() : null;
+                        $user = Auth::check() ? auth()->user()->id : null;
                         $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
-                              ->orWhere('user_id', $user->id)
+                              ->orWhere('user_id', $user)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
