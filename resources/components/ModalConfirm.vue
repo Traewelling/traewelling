@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       modal: null,
-    }
+    };
   },
   props: {
     titleText: null,
@@ -47,11 +47,11 @@ export default {
       this.modal.hide();
     },
     confirm() {
-      this.$emit('confirm');
+      this.$emit("confirm");
       this.hide();
     },
     abort() {
-      this.$emit('abort');
+      this.$emit("abort");
       this.hide();
     }
   }

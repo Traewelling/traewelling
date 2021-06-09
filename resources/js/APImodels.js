@@ -19,6 +19,24 @@ export let EventModel = {
     }
 };
 
+export let Stopover = {
+    name: "",
+    trainStationId: 0,
+    arrival: "",
+    arrivalPlanned: "",
+    arrivalReal: null,
+    arrivalPlatformPlanned: null,
+    arrivalPlatformReal: null,
+    departure: "",
+    departurePlanned: "",
+    departureReal: null,
+    departurePlatformPlanned: null,
+    departurePlatformReal: null,
+    plattform: null,
+    isArrivalDelayed: false,
+    isDepartureDelayed: false
+};
+
 export let StatusModel = {
     id: 0,
     body: "",
@@ -40,40 +58,8 @@ export let StatusModel = {
         delay: null,
         duration: 0,
         speed: 0,
-        origin: {
-            name: "",
-            trainStationId: 0,
-            arrival: "",
-            arrivalPlanned: "",
-            arrivalReal: null,
-            arrivalPlatformPlanned: null,
-            arrivalPlatformReal: null,
-            departure: "",
-            departurePlanned: "",
-            departureReal: null,
-            departurePlatformPlanned: null,
-            departurePlatformReal: null,
-            plattform: null,
-            isArrivalDelayed: false,
-            isDepartureDelayed: false
-        },
-        destination: {
-            name: "",
-            trainStationId: 0,
-            arrival: "",
-            arrivalPlanned: "",
-            arrivalReal: null,
-            arrivalPlatformPlanned: null,
-            arrivalPlatformReal: null,
-            departure: "",
-            departurePlanned: "",
-            departureReal: null,
-            departurePlatformPlanned: null,
-            departurePlatformReal: null,
-            plattform: null,
-            isArrivalDelayed: false,
-            isDepartureDelayed: false
-        },
+        origin: Stopover,
+        destination: Stopover,
         polyline: ""
     },
     EventModel

@@ -127,9 +127,11 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>&nbsp;
-                {{ i18n.get("_.status.edit") }}</a></li>
+                {{ i18n.get("_.status.edit") }}
+              </a></li>
               <li><a class="dropdown-item" href="#" v-on:click="toggleDeleteModal">
-                <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}</a></li>
+                <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}
+              </a></li>
             </ul>
           </li>
         </ul>
