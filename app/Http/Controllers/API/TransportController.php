@@ -48,15 +48,13 @@ class TransportController extends ResponseController
             );
         } catch (HafasException $exception) {
             return $this->sendError(400, $exception->getMessage());
-        } catch (MissingParametersExection) {
-            return $this->sendError(400, __('controller.transport.no-name-given'));
         } catch (ModelNotFoundException) {
             return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
         return $this->sendResponse([
                                        'station'    => $trainStationboardResponse['station'],
-                                       'when'       => $trainStationboardResponse['when'],
+                                       'when'       => $trainStationboardResponse['times']['now'],
                                        'departures' => $trainStationboardResponse['departures']
                                    ]);
     }

@@ -49,8 +49,6 @@ class FrontendTransportController extends Controller
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
-        } catch (MissingParametersExection) {
-            return redirect()->back()->with('error', __('controller.transport.no-name-given'));
         } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
@@ -58,7 +56,7 @@ class FrontendTransportController extends Controller
         return view('stationboard', [
                                       'station'    => $TrainStationboardResponse['station'],
                                       'departures' => $TrainStationboardResponse['departures'],
-                                      'when'       => $TrainStationboardResponse['when'],
+                                      'times'       => $TrainStationboardResponse['times'],
                                       'request'    => $request,
                                       'latest'     => TransportController::getLatestArrivals(Auth::user())
                                   ]

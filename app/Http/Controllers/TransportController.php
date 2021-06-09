@@ -64,47 +64,42 @@ class TransportController extends Controller
      * @param $stationName
      * @param Carbon|null $when
      * @param null $travelType
-     * @return bool|array|null
+     * @return array
      * @throws HafasException
-     * @throws MissingParametersExection
      * @throws ModelNotFoundException
      */
-    public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
-        if (empty($stationName)) {
-            throw new MissingParametersExection("$stationName");
-        }
-        if ($when === null) {
-            $when = Carbon::now()->subMinutes(5);
-        }
+    #[ArrayShape([
+        'station'    => "\App\Models\TrainStation|mixed|null",
+        'departures' => "\Illuminate\Support\Collection",
+        'times'      => "array"
+    ])]
+    public static function TrainStationboard(string $stationName, Carbon $when = null, string $travelType = null): array {
+        //first check if the query is a valid DS100 identifier
         if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
-            //first check if the query is a valid DS100 identifier
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
         }
+        //if we cannot find any station by DS100 identifier continue to search normal
         if (empty($station)) {
-            //if we cannot find any station by DS100 identifier continue to search normal
             $station = HafasController::getStations($stationName)->first();
             if ($station == null) {
                 throw new ModelNotFoundException;
             }
         }
+
+        $when  = $when ?? Carbon::now()->subMinutes(5);
+        $times = ['now'  => $when,
+                  'prev' => $when->clone()->subMinutes(15),
+                  'next' => $when->clone()->addMinutes(15)
+        ];
+
         $departures = HafasController::getDepartures(
-            $station,
-            $when,
-            15,
-            $travelType == null || $travelType == TravelType::EXPRESS,
-            $travelType == null || $travelType == TravelType::EXPRESS,
-            $travelType == null || $travelType == TravelType::REGIONAL,
-            $travelType == null || $travelType == TravelType::REGIONAL,
-            $travelType == null || $travelType == TravelType::SUBURBAN,
-            $travelType == null || $travelType == TravelType::BUS,
-            $travelType == null || $travelType == TravelType::FERRY,
-            $travelType == null || $travelType == TravelType::SUBWAY,
-            $travelType == null || $travelType == TravelType::TRAM,
-            false
+            station: $station,
+            when: $when,
+            type: $travelType
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });
-        return ['station' => $station, 'departures' => $departures, 'when' => $when];
+        return ['station' => $station, 'departures' => $departures, 'times' => $times];
     }
 
     public static function FastTripAccess($departure, $lineName, $number, $when) {
