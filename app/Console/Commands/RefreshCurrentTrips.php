@@ -6,9 +6,7 @@ use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class RefreshCurrentTrips extends Command
@@ -37,7 +35,7 @@ class RefreshCurrentTrips extends Command
             try {
                 echo "Refreshing " . $trip->linename . "...\r\n";
                 HafasController::fetchHafasTrip($trip->trip_id, $trip->linename);
-            } catch (Exception | Throwable $exception) {
+            } catch (Throwable $exception) {
                 report($exception);
                 echo "Error while refreshing " . $trip->linename . "! " . $exception->getMessage() . "\r\n";
                 echo "Full error is available in the server log.\r\n";
