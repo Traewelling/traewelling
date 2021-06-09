@@ -46,8 +46,7 @@ class AuthController extends ResponseController
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
         }
-        $error = "Sorry! Registration is not successful.";
-        return $this->sendError($error, 401);
+        return $this->sendError("Sorry! Registration is not successful.", 401);
     }
 
     /**
@@ -103,16 +102,12 @@ class AuthController extends ResponseController
         return $this->sendResponse(new UserResource($user));
     }
 
-    public function refresh() {
-        if ($token = $this->guard()->refresh()) {
+    public function refresh(): JsonResponse {
+        if ($token = Auth::guard()->refresh()) {
             return response()
                 ->json(['status' => 'successs'], 200)
                 ->header('Authorization', $token);
         }
         return response()->json(['error' => 'refresh_token_error'], 401);
-    }
-
-    private function guard() {
-        return Auth::guard();
     }
 }
