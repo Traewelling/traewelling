@@ -11,8 +11,7 @@ use Throwable;
 
 class RefreshCurrentTrips extends Command
 {
-    protected $signature = 'trwl:refreshTrips';
-
+    protected $signature   = 'trwl:refreshTrips';
     protected $description = 'Refresh delay data from current active trips';
 
     public function handle(): int {
