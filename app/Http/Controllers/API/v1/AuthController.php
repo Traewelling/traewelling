@@ -38,7 +38,7 @@ class AuthController extends ResponseController
         $input['password'] = Hash::make($input['password']);
         $user              = User::create($input);
 
-        if ($user) {
+        if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');
             return $this->sendResponse([
                                            'token'      => $userToken->accessToken,
