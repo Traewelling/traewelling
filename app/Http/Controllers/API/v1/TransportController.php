@@ -28,7 +28,7 @@ class TransportController extends ResponseController
         $validated = $validator->validate();
 
         try {
-            $trainStationboardResponse = TransportBackend::TrainStationboard(
+            $trainStationboardResponse = TransportBackend::getDepartures(
                 $name,
                 isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 $validated['travelType'] ?? null

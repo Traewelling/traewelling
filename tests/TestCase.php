@@ -103,9 +103,9 @@ abstract class TestCase extends BaseTestCase
         if ($user == null) {
             $user = $this->user;
         }
-        $trainStationboard = TransportController::TrainStationboard($stationName,
-                                                                    $timestamp,
-                                                                    TravelType::EXPRESS);
+        $trainStationboard = TransportController::getDepartures($stationName,
+                                                                $timestamp,
+                                                                TravelType::EXPRESS);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");

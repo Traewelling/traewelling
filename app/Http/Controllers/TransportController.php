@@ -61,19 +61,18 @@ class TransportController extends Controller
     }
 
     /**
-     * @param $stationName
+     * @param string $stationName
      * @param Carbon|null $when
-     * @param null $travelType
+     * @param string|null $travelType
      * @return array
      * @throws HafasException
-     * @throws ModelNotFoundException
      */
     #[ArrayShape([
         'station'    => "\App\Models\TrainStation|mixed|null",
         'departures' => "\Illuminate\Support\Collection",
         'times'      => "array"
     ])]
-    public static function TrainStationboard(string $stationName, Carbon $when = null, string $travelType = null): array {
+    public static function getDepartures(string $stationName, Carbon $when = null, string $travelType = null): array {
         //first check if the query is a valid DS100 identifier
         if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
@@ -99,6 +98,7 @@ class TransportController extends Controller
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });
+
         return ['station' => $station, 'departures' => $departures, 'times' => $times];
     }
 

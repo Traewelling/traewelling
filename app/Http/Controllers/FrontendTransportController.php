@@ -42,7 +42,7 @@ class FrontendTransportController extends Controller
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
         try {
-            $TrainStationboardResponse = TransportBackend::TrainStationboard(
+            $TrainStationboardResponse = TransportBackend::getDepartures(
                 $validated['station'],
                 $when,
                 $validated['travelType'] ?? null
