@@ -30,35 +30,34 @@
               <a :href="`/trains/stationboard?provider=train&station=${status.train.origin.name}`"
                  class="text-trwl clearfix">{{ status.train.origin.name }}</a>
               <p class="train-status text-muted">
-              <span>
-                <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
-                     :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
-                <i v-else class="fa fa-train d-inline" aria-hidden="true"></i>
-                {{ status.train.lineName }}
-              </span>
+                <span>
+                  <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
+                       :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
+                  <i v-else class="fa fa-train d-inline" aria-hidden="true"></i>
+                  {{ status.train.lineName }}
+                </span>
                 <span class="ps-2">
-                <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;{{
-                    status.train.distance.toFixed(0)
-                  }}<small>km</small>
-              </span>
-                <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;{{
-                    duration
-                  }}</span>
+                  <i class="fa fa-route d-inline" aria-hidden="true"></i>
+                  &nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
+                </span>
+                <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>
+                  &nbsp;{{ duration }}
+                </span>
                 <span v-if="status.business === 1" class="pl-sm-2">
-                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                   :title="i18n.get('_.stationboard.business.business')" aria-hidden="true"></i>
-              </span>
+                  <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                     :title="i18n.get('_.stationboard.business.business')" aria-hidden="true"></i>
+                </span>
                 <span v-else-if="status.business === 2" class="pl-sm-2">
-                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                   :title="i18n.get('_.stationboard.business.commute')" aria-hidden="true"></i>
-              </span>
+                  <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                     :title="i18n.get('_.stationboard.business.commute')" aria-hidden="true"></i>
+                </span>
                 <br>
                 <span v-if="status.event != null" class="pl-sm-2">
-                <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                <router-link :to="{name: 'event', params: {slug: status.event.slug}}">
-                  {{ status.event.name }}
-                </router-link>
-              </span>
+                  <i class="fa fa-calendar-day" aria-hidden="true"></i>
+                  <router-link :to="{name: 'event', params: {slug: status.event.slug}}">
+                    {{ status.event.name }}
+                  </router-link>
+                </span>
               </p>
               <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
                 {{ status.body }}</p>
@@ -95,6 +94,12 @@
       </div>
       <div class="card-footer text-muted">
         <span class="float-end like-text">
+          <i class="fas visibility-icon text-small"
+             :class="visibilityIcon"
+             :title="i18n.get('_.status.visibility.' + status.visibility)"
+             aria-hidden="true"
+             data-mdb-toggle="tooltip"
+             data-mdb-placement="top"></i>
           <router-link :to="{name: 'profile', params: {username: status.username}}">
             <span v-if="$auth.check() && $auth.user().id === status.user">{{ i18n.get("_.user.you") }}</span>
             <span v-else>{{ status.username }}</span>
@@ -121,10 +126,10 @@
               <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>&nbsp;
                 {{ i18n.get("_.status.edit") }}</a></li>
               <li><a class="dropdown-item" href="#" v-on:click="toggleDeleteModal">
-                <i class="fas fa-trash" aria-hidden="true"></i>{{ i18n.get("_.status.delete") }}</a></li>
+                <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}</a></li>
             </ul>
           </li>
         </ul>
@@ -237,6 +242,11 @@ export default {
         }
       }
       return null;
+    },
+    visibilityIcon() {
+      const icons = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
+
+      return icons[this.status.visibility];
     }
   },
   methods: {

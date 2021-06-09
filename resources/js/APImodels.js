@@ -27,6 +27,7 @@ export let StatusModel = {
     user: 0,
     username: "",
     business: 0,
+    visibility: 0,
     likes: 0,
     liked: null,
     train: {

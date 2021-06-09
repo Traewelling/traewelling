@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
-use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
 use App\Models\Like;
