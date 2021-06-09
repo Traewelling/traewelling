@@ -6,6 +6,8 @@ import Profile from "./views/Profile";
 import Event from "./views/Event";
 import Leaderboard from "./views/Leaderboard";
 import LeaderboardMonth from "./views/LeaderboardMonth";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 
 Vue.use(VueRouter);
 
@@ -16,38 +18,62 @@ export const router = new VueRouter({
         [
             {
                 path: "/",
-                redirect: { name: "statuses.active" }
+                redirect: {name: "statuses.active"},
             },
             {
                 path: "/statuses/active",
                 component: ActiveStatuses,
-                name: "statuses.active"
+                name: "statuses.active",
             },
             {
                 path: "/status/:id",
                 component: SingleStatus,
                 props: true,
-                name: "singleStatus"
+                name: "singleStatus",
             },
             {
                 path: "/profile/:username",
                 component: Profile,
-                name: "profile"
+                name: "profile",
             },
             {
                 path: "/event/:slug",
                 component: Event,
-                name: "event"
+                name: "event",
             },
             {
                 path: "/leaderboard/",
                 component: Leaderboard,
-                name: "leaderboard"
+                name: "leaderboard",
             },
             {
                 path: "/leaderboard/:month",
                 component: LeaderboardMonth,
-                name: "leaderboard.month"
+                name: "leaderboard.month",
+            },
+            {
+                path: "/login",
+                component: Login,
+                name: "auth.login",
+                meta: {
+                    auth: false
+                }
+            },
+            {
+                path: "/dashboard",
+                component: Dashboard,
+                name: "dashboard",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/dashboard/global",
+                component: Dashboard,
+                name: "dashboard.global",
+                meta: {
+                    auth: true
+                }
             }
 
         ],

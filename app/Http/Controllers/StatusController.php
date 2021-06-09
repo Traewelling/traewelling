@@ -12,8 +12,6 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -165,14 +163,20 @@ class StatusController extends Controller
                      ->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId): ?bool {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @return bool|null
+     * @throws PermissionException|ModelNotFoundException
+     */
+    public static function DeleteStatus(User $user, int $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
-            return null;
+            throw new ModelNotFoundException();
         }
-        if ($user != $status->user) {
-            return false;
+        if ($user->id != $status->user->id) {
+            throw new PermissionException();
         }
         $status->delete();
         return true;
@@ -201,6 +205,7 @@ class StatusController extends Controller
      * @param User $user
      * @param Status $status
      * @return Like
+     * @todo refactor this to take status IDs instead of models
      * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
@@ -221,6 +226,12 @@ class StatusController extends Controller
         return $like;
     }
 
+    /**
+     * @param $user
+     * @param $statusId
+     * @return bool
+     * @todo Refactor this to throw exceptions instead of bools
+     */
     public static function DestroyLike($user, $statusId): bool {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {

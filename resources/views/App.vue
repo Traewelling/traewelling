@@ -7,5 +7,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    this.$auth.load().then(() => {
+      if (this.$auth.check()) {
+        this.$auth.fetch()
+            .then((res) => {
+              this.$auth.user(res.data);
+            });
+      }
+    });
+  }
+};
 </script>
