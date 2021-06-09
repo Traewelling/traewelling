@@ -98,14 +98,13 @@ class AuthController extends ResponseController
      * @api v1
      */
     public function user(Request $request): JsonResponse {
-        $user = $request->user();
-        return $this->sendResponse(new UserResource($user));
+        return $this->sendResponse(new UserResource($request->user()));
     }
 
     public function refresh(): JsonResponse {
         if ($token = Auth::guard()->refresh()) {
             return response()
-                ->json(['status' => 'successs'], 200)
+                ->json(['status' => 'success'], 200)
                 ->header('Authorization', $token);
         }
         return response()->json(['error' => 'refresh_token_error'], 401);
