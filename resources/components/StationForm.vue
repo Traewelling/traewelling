@@ -55,7 +55,7 @@
           <!--                </a>-->
           <!--                @endforeach-->
         </div>
-        <button class="btn btn-outline-primary float-end" type="submit">
+        <button class="btn btn-outline-primary float-end" type="submit" v-on:click.prevent="submitStation('')">
           {{ i18n.get('_.stationboard.submit-search') }}
         </button>
         <button class="btn btn-outline-secondary" type="button" data-mdb-toggle="collapse"

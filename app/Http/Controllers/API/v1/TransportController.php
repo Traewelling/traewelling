@@ -9,13 +9,14 @@ use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class TransportController extends ResponseController
 {
-    public function departures(Request $request, string $name) {
+    public function departures(Request $request, string $name): JsonResponse {
         $validator = Validator::make($request->all(), [
             'when'       => ['nullable', 'date'],
             'travelType' => ['nullable', Rule::in(TravelType::getList())]
@@ -39,11 +40,12 @@ class TransportController extends ResponseController
             return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
-        return $this->sendv1Response([
-                                         'station'    => $trainStationboardResponse['station'],
-                                         'times'       => $trainStationboardResponse['times'],
-                                         'departures' => $trainStationboardResponse['departures']
-                                     ]);
+        return $this->sendv1Response(
+            data: $trainStationboardResponse['departures'],
+            additional: ["meta" => ['station' => $trainStationboardResponse['station'],
+                                    'times'   => $trainStationboardResponse['times'],
+                ]]
+        );
 
     }
 }
