@@ -12,6 +12,7 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +48,9 @@ class TransportController extends ResponseController
             );
         } catch (HafasException $exception) {
             return $this->sendError(400, $exception->getMessage());
-        }  catch (MissingParametersExection) {
+        } catch (MissingParametersExection) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
-        }
-        if ($trainStationboardResponse === null) {
-
+        } catch (ModelNotFoundException) {
             return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 

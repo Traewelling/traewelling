@@ -8,6 +8,7 @@ use App\Exceptions\MissingParametersExection;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -36,17 +37,15 @@ class TransportController extends ResponseController
             return $this->sendError(400, $exception->getMessage());
         } catch (MissingParametersExection) {
             return $this->sendError(400, __('controller.transport.no-name-given'));
-        }
-        if ($trainStationboardResponse === null) {
-
+        } catch (ModelNotFoundException) {
             return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
         return $this->sendv1Response([
-                                       'station'    => $trainStationboardResponse['station'],
-                                       'when'       => $trainStationboardResponse['when'],
-                                       'departures' => $trainStationboardResponse['departures']
-                                   ]);
+                                         'station'    => $trainStationboardResponse['station'],
+                                         'when'       => $trainStationboardResponse['when'],
+                                         'departures' => $trainStationboardResponse['departures']
+                                     ]);
 
     }
 }

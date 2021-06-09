@@ -24,6 +24,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -64,7 +65,9 @@ class TransportController extends Controller
      * @param Carbon|null $when
      * @param null $travelType
      * @return bool|array|null
-     * @throws HafasException|MissingParametersExection
+     * @throws HafasException
+     * @throws MissingParametersExection
+     * @throws ModelNotFoundException
      */
     public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
         if (empty($stationName)) {
@@ -77,12 +80,12 @@ class TransportController extends Controller
             //first check if the query is a valid DS100 identifier
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
         }
-        if (!isset($station) || $station == null) {
+        if (empty($station)) {
             //if we cannot find any station by DS100 identifier continue to search normal
             $station = HafasController::getStations($stationName)->first();
-        }
-        if ($station == null) {
-            return null;
+            if ($station == null) {
+                throw new ModelNotFoundException;
+            }
         }
         $departures = HafasController::getDepartures(
             $station,

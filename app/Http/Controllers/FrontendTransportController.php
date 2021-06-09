@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -50,8 +51,7 @@ class FrontendTransportController extends Controller
             return back()->with('error', $exception->getMessage());
         } catch (MissingParametersExection) {
             return redirect()->back()->with('error', __('controller.transport.no-name-given'));
-        }
-        if ($TrainStationboardResponse === null) {
+        } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
