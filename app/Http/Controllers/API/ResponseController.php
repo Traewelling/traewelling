@@ -7,18 +7,18 @@ use Illuminate\Http\JsonResponse;
 
 class ResponseController extends Controller
 {
-    public function sendResponse($response) {
+    public function sendResponse($response): JsonResponse {
         return response()->json($response, 200);
     }
 
-    public function sendv1Response($data = null, $code = 200): JsonResponse {
+    public function sendv1Response(array|string $data = null, int $code = 200): JsonResponse {
         if ($data === null) {
             return response()->json(["status" => "success"], $code);
         }
         return response()->json(["data" => $data], $code);
     }
 
-    public function sendError($error, $code = 404) {
+    public function sendError(array|string $error, int $code = 404): JsonResponse {
         $response = [
             'error' => $error,
         ];

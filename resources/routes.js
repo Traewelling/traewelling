@@ -24,28 +24,28 @@ export const router = new VueRouter({
             {
                 path: "/statuses/active",
                 component: ActiveStatuses,
-                name: "statuses.active",
+                name: "statuses.active"
             },
             {
                 path: "/status/:id",
                 component: SingleStatus,
                 props: true,
-                name: "singleStatus",
+                name: "singleStatus"
             },
             {
                 path: "/profile/:username",
                 component: Profile,
-                name: "profile",
+                name: "profile"
             },
             {
                 path: "/event/:slug",
                 component: Event,
-                name: "event",
+                name: "event"
             },
             {
                 path: "/leaderboard/",
                 component: Leaderboard,
-                name: "leaderboard",
+                name: "leaderboard"
             },
             {
                 path: "/leaderboard/:month",

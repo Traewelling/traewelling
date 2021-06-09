@@ -24,7 +24,7 @@ class LikesController extends ResponseController
      */
     public function show(int $status): AnonymousResourceCollection {
         return UserResource::collection(
-            User::whereIn('id', Like::where('status_id', $status)->select('user_id')->get())->get()
+            User::whereIn('id', Like::where('status_id', $status)->select('user_id'))->get()
         );
     }
 

@@ -113,7 +113,7 @@ class ApiStatusTest extends ApiTestCase
                                         'Accept'        => 'application/json'])
                          ->post(route('api.v0.statuses.like', ['statusId' => '1']));
         $response->assertStatus(400);
-        $this->assertTrue($response->getContent() == '{"error":false}');
+        $this->assertTrue($response->getContent() == '{"error":"false"}');
 
         //check if the like has been created
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,

@@ -36,10 +36,10 @@ class StatusController extends ResponseController
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return JsonResponse
      */
-    public function destroy($id): JsonResponse {
+    public function destroy(int $id): JsonResponse {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $id);
         } catch (PermissionException) {
