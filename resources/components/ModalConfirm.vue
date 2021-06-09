@@ -29,6 +29,9 @@ export default {
       modal: null,
     };
   },
+  mounted() {
+    this.modal = new Modal(this.$refs.deleteModal);
+  },
   props: {
     titleText: null,
     abortText: null,

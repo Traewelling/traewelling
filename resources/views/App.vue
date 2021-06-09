@@ -6,12 +6,12 @@
           Träwelling <!-- ToDo: get name from config -->
         </router-link>
         <div class="navbar-toggler">
-          <button v-if="$auth.check()" class="navbar-toggler" type="button"
-                  data-mdb-target="#notifications-board" aria-controls="navbarSupportedContent"
-                  :aria-label="i18n.get('_.Show notifications')">
-            <span class="far fa-bell"></span>
-            <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
-          </button>
+          <NotificationsButton
+              v-if="$auth.check()"
+              toggler="true"
+              @click="showNotifications"
+              :notifications-count="notificationsCount"
+          ></NotificationsButton>
           <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                   data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                   aria-expanded="false" :aria-label="i18n.get('_.Toggle navigation')">
@@ -57,21 +57,16 @@
               </div>
             </form>
             <li class="nav-item d-none d-md-inline-block">
-              <a href="#" class="nav-link">
-                <span
-                    class="notifications-bell fa-bell"
-                    :class="{fas: notificationsCount, far: !notificationsCount}"
-                ></span>
-                <span class="notifications-pill badge rounded-pill badge-notification" v-if="notificationsCount > 0">
-                  {{ notificationsCount }}
-                </span>
-              </a>
+              <NotificationsButton
+                  :notifications-count="notificationsCount"
+                  @click="showNotifications"
+              ></NotificationsButton>
             </li>
             <li class="nav-item dropdown">
               <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
                  role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                  aria-expanded="false">
-                {{$auth.user().displayName}} <span class="caret"></span>
+                {{ $auth.user().displayName }} <span class="caret"></span>
               </a>
 
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -103,13 +98,14 @@
     </nav>
     <main class="py-4">
       <router-view></router-view>
-      <!--      <NotificationsModal></NotificationsModal>-->
+      <NotificationsModal ref="notifModal"></NotificationsModal>
     </main>
   </div>
 </template>
 
 <script>
 import NotificationsModal from "../components/NotificationsModal";
+import NotificationsButton from "../components/NotificationsButton";
 
 export default {
   data() {
@@ -118,6 +114,7 @@ export default {
     };
   },
   components: {
+    NotificationsButton,
     NotificationsModal
   },
   mounted() {
@@ -132,15 +129,19 @@ export default {
     this.fetchNotificationsCount();
   },
   methods: {
+    showNotifications() {
+      console.log("a");
+      this.$refs.notifModal.show();
+    },
     fetchNotificationsCount() {
       axios
-      .get('/notifications/count')
-      .then((response) => {
-        this.notificationsCount = response.data.data;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+          .get('/notifications/count')
+          .then((response) => {
+            this.notificationsCount = response.data.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
     }
   }
 };

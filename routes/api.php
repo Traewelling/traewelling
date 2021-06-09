@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('like/{status}', [LikesController::class, 'create']);
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
+        Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/count', [NotificationController::class, 'count']);
     });
 
