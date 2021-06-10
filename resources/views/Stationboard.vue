@@ -64,10 +64,15 @@
                            :alt="departure.line.product"
                            :src="`/img/${departure.line.product}.svg`">
                       <i v-else class="fa fa-train" aria-hidden="true"></i>
-                      &nbsp;<span v-if="departure.line.name">{{ departure.line.name }}</span>
-                      <span v-else>{{ departure.line.fahrtNr }}</span>
+                      &nbsp;
+                      <span :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
+                        <span v-if="departure.line.name">{{ departure.line.name }}</span>
+                        <span v-else>{{ departure.line.fahrtNr }}</span>
+                      </span>
                     </td>
-                    <td class="text-wrap"> {{ departure.direction }}</td>
+                    <td class="text-wrap" :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
+                      {{ departure.direction }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
