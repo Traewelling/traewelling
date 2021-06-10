@@ -76,7 +76,5 @@ new Vue({
  */
 window.addEventListener("load", () => {
     require("./components/alert");
-    require("./components/station-autocomplete");
-    require("./components/stationboard");
     require("bootstrap-cookie-alert/cookiealert");
 });

@@ -9,6 +9,7 @@ import LeaderboardMonth from "./views/LeaderboardMonth";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Stationboard from "./views/Stationboard";
+import Trip from "./views/Trip";
 
 Vue.use(VueRouter);
 
@@ -81,6 +82,14 @@ export const router = new VueRouter({
                 path: "/trains/stationboard",
                 component:Stationboard,
                 name: "trains.stationboard",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/trains/trip",
+                component:Trip,
+                name: "trains.trip",
                 meta: {
                     auth: true
                 }

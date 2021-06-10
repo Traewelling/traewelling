@@ -48,4 +48,27 @@ class TransportController extends ResponseController
         );
 
     }
+
+    public function getTrip(Request $request): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tripID'   => 'required',
+            'lineName' => 'required',
+            'start'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+
+        $trainTripResponse = TransportBackend::getTrainTrip(
+            $request->tripID,
+            $request->lineName,
+            $request->start
+        );
+        if ($trainTripResponse === null) {
+            return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
+        }
+
+        return $this->sendv1Response(data: $trainTripResponse);
+    }
 }

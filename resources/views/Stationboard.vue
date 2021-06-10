@@ -24,7 +24,8 @@
             <div class="loading" v-if="loading">
               {{ i18n.get("_.vue.loading") }}
             </div>
-            <div class="card-body text-center text-danger text-bold" v-else-if="departures.length === 0">
+            <div class="card-body text-center text-danger text-bold"
+                 v-else-if="departures.length === 0 || departures === null">
               {{ i18n.get('_.stationboard.no-departures') }}
             </div>
             <div class="card-body p-0 table-responsive" v-else>
@@ -38,11 +39,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="departure in departures" :class="{trainrow: !departure.cancelled}"
-                      data-tripID="$departure->tripId"
-                      data-lineName="$departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr"
-                      data-start="$departure->stop->id"
-                      data-departure="$departure->plannedWhen">
+                  <tr v-for="departure in departures"
+                      :class="{trainrow: !departure.cancelled}"
+                      v-on:click="goToTrip(departure)">
                     <td class="ps-2 ps-md-4">
                       <span class="text-danger" v-if="departure.cancelled">
                         {{ i18n.get('_.stationboard.stop-cancelled') }}
@@ -126,6 +125,20 @@ export default {
           .catch((error) => {
             console.error(error);
           });
+    },
+    goToTrip(departure) {
+      if (departure.cancelled) {
+        console.error("stop cancelled");
+        return;
+      }
+      this.$router.push({
+        name: "trains.trip", query: {
+          tripID: departure.tripId,
+          lineName: departure.line.name ?? departure.line.fahrtNr,
+          start: departure.stop.id,
+          departure: departure.plannedWhen
+        }
+      });
     }
   }
 };

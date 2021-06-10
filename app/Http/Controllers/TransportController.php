@@ -8,6 +8,8 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\MissingParametersExection;
 use App\Exceptions\StationNotOnTripException;
+use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\StopoverResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -191,6 +193,7 @@ class TransportController extends Controller
      * @param Carbon|null $departure
      * @return array|null
      * @throws HafasException
+     * @deprecated replaced by getTrainTrip
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
@@ -211,6 +214,27 @@ class TransportController extends Controller
             'destination' => $destination, //deprecated. use hafasTrip->destinationStation instead
             'start'       => $start //deprecated. use hafasTrip->originStation instead
         ];
+    }
+
+    /**
+     * @param string $tripId
+     * @param string $lineName
+     * @param string $start
+     * @param Carbon|null $departure
+     * @return HafasTripResource
+     * @throws HafasException
+     * @api v1
+     */
+    public static function getTrainTrip(string $tripId, string $lineName, string $start, Carbon $departure = null): ?HafasTripResource {
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+//        ToDo: Check if train station is in stopovers
+//        $offset    = self::searchForId($start, $hafasTrip->stopoversNEW, $departure);
+//        if ($offset === null) {
+//            return null;
+//        }
+
+        return new HafasTripResource($hafasTrip);
     }
 
     public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
