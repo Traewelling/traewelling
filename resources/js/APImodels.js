@@ -67,9 +67,7 @@ export let StatusModel = {
     EventModel
 };
 
-export let PolyLineModel = {
-
-};
+export let PolyLineModel = {};
 
 export let ProfileModel = {
     id: 0,

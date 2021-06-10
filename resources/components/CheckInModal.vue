@@ -47,7 +47,7 @@ export default {
       axios
           .get('/notifications?render=true')
           .then((response) => {
-            this.notifications = response.data.data;
+            this.notifications        = response.data.data;
             this.$refs.list.innerHTML = null;
             this.notifications.forEach((notification) => {
               this.$refs.list.insertAdjacentHTML("beforeend", notification.html);

@@ -67,7 +67,7 @@ class TransportController extends ResponseController
                 $request->lineName,
                 $request->start
             );
-        } catch(StationNotOnTripException) {
+        } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
 
