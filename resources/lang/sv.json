@@ -427,5 +427,7 @@
     "status.visibility.2": "Endast för följare",
     "status.visibility.0": "Allmän",
     "status.visibility.0.detail": "Synlig för alla, visas på dashboard, vid evenemang etc.",
-    "status.visibility.1.detail": "Synlig för alla, endast tillgänglig i profilen"
+    "status.visibility.1.detail": "Synlig för alla, endast tillgänglig i profilen",
+    "status.visibility.2.detail": "Endast synlig för (godkända) följare",
+    "status.visibility.3": "Privat"
 }
