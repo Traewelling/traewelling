@@ -26,9 +26,9 @@
               </small>
               &nbsp; {{ departure.format('LT') }}
             </span>
-              <!--            ToDo: Add router-url, add better station-shit (like the helper method)-->
-              <a :href="`/trains/stationboard?provider=train&station=${status.train.origin.name}`"
-                 class="text-trwl clearfix">{{ status.train.origin.name }}</a>
+              <router-link :to="{name: 'trains.stationboard', query: {station: status.train.origin.name}}"
+                           class="text-trwl clearfix">{{ status.train.origin.name }}
+              </router-link>
               <p class="train-status text-muted">
                 <span>
                   <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
@@ -63,11 +63,11 @@
                 {{ status.body }}</p>
               <div v-if="nextStop != null">
                 <p class="text-muted font-italic">
-                  <!--                ToDo: fix with router link.-->
                   {{ i18n.get('_.stationboard.next-stop') }}
-                  <a :href="`/trains/stationboard?provider=train&station=${nextStop.name}`" class="text-trwl clearfix">{{
-                      nextStop.name
-                    }}</a>
+                  <router-link :to="{name: 'trains.stationboard', query: {station: nextStop.name}}"
+                               class="text-trwl clearfix">
+                    {{ nextStop.name }}
+                  </router-link>
                 </p>
               </div>
             </li>
@@ -80,9 +80,10 @@
               </small>
               &nbsp; {{ arrival.format('LT') }}
             </span>
-              <!--            {!! stationLink($status->trainCheckin->Destination->name) !!}-->
-              <a :href="`/trains/stationboard?provider=train&station=${status.train.destination.name}`"
-                 class="text-trwl clearfix">{{ status.train.destination.name }}</a>
+              <router-link :to="{name: 'trains.stationboard', query: {station: status.train.destination.name}}"
+                           class="text-trwl clearfix">
+                {{ status.train.destination.name }}
+              </router-link>
             </li>
           </ul>
         </div>
