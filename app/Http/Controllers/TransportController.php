@@ -230,7 +230,7 @@ class TransportController extends Controller
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        if ($hafasTrip->stopoversNEW->where('trainStation.ibnr', $departure)->count() == 0) {
+        if ($hafasTrip->stopoversNEW->where('trainStation.ibnr', $start)->count() == 0) {
             throw new StationNotOnTripException();
         }
         return new HafasTripResource($hafasTrip);
