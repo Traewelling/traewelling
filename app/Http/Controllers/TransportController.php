@@ -233,7 +233,6 @@ class TransportController extends Controller
 //        if ($offset === null) {
 //            return null;
 //        }
-
         return new HafasTripResource($hafasTrip);
     }
 

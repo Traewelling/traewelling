@@ -35,9 +35,9 @@ class TransportController extends ResponseController
                 $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
-            return $this->sendError(400, $exception->getMessage());
+            return $this->sendError("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
-            return $this->sendError(404, __('controller.transport.no-station-found'));
+            return $this->sendError("Your query matches no station", 404);
         }
 
         return $this->sendv1Response(

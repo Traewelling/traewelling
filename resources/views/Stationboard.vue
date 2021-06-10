@@ -40,7 +40,6 @@
                 </thead>
                 <tbody>
                   <tr v-for="departure in departures"
-                      :class="{trainrow: !departure.cancelled}"
                       v-on:click="goToTrip(departure)">
                     <td class="ps-2 ps-md-4">
                       <span class="text-danger" v-if="departure.cancelled">
@@ -86,6 +85,7 @@
 <script>
 import StationForm from "../components/StationForm";
 import moment from "moment";
+import {travelImages} from "../js/APImodels";
 
 export default {
   name: "Stationboard",
@@ -100,7 +100,7 @@ export default {
         next: 0
       },
       loading: false,
-      images: ['bus', 'suburban', 'subway', 'tram'],
+      images: travelImages,
       moment: moment
     };
   },

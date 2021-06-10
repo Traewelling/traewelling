@@ -3,30 +3,30 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7">
-          <div class="card">
+          <div class="card" v-if="hafasTrip != null">
             <div class="card-header" data-linename=" $hafasTrip->linename "
                  data-startname=" $hafasTrip->originStation->name " data-start=" request()->start "
                  data-tripid=" $hafasTrip->trip_id ">
               <div class="float-end">
-                <a href="#" class="train-destinationrow"
+                <a href="#"
                    data-ibnr="$terminalStop['stop']['id']"
                    data-stopname="$terminalStop['stop']['name']"
                    data-arrival="$terminalStop['plannedArrival']">
-                  <i class="fa fa-fast-forward"></i>
+                  <i class="fa fa-fast-forward" aria-hidden="true"></i>
                 </a>
               </div>
-              @if (file_exists(public_path('img/'.$hafasTrip->category.'.svg')))
-              <img class="product-icon" src=" asset('img/'.$hafasTrip->category.'.svg') "/>
-              @else
-              <i class="fa fa-train"></i>
-              @endif
-              $hafasTrip->linename
-              <i class="fas fa-arrow-alt-circle-right"></i>
-              $hafasTrip->destinationStation->name
+              <img v-if="images.includes(hafasTrip.category)"
+                   class="product-icon"
+                   :alt="hafasTrip.category"
+                   :src="`/img/${hafasTrip.category}.svg`">
+              <i v-else class="fa fa-train" aria-hidden="true"></i>
+              {{ this.hafasTrip.lineName }}
+              <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+              {{ this.hafasTrip.destination.name }}
             </div>
 
             <div class="card-body p-0 table-responsive">
-              <table class="table table-dark table-borderless table-hover m-0"
+              <table class="table table-dark table-borderless table-hover table-striped m-0"
                      data-linename=" $hafasTrip->linename "
                      data-startname=" $hafasTrip->originStation->name "
                      data-start=" request()->start "
@@ -35,52 +35,43 @@
                   <tr>
                     <th>{{ i18n.get('_.stationboard.stopover') }}</th>
                     <th></th>
-                    <th></th>
+                    <th class="ps-0"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach($stopovers as $stop)
-                  @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
-                  @continue
-                  @endif
-
-                  @if(@$stop['cancelled'] == 'true')
-                  <tr>
-                    <td> $stop['stop']['name']</td>
-                    <td>
-                      <span class="text-danger">{{ i18n.get('_.stationboard.stop-cancelled') }}</span><br/>&nbsp;
-                    </td>
-                    <td> $stop['departurePlatform']</td>
-                  </tr>
-                  @else
-                  <tr class="train-destinationrow"
+                  <tr v-for="stop in stopovers"
                       data-ibnr="$stop['stop']['id']"
                       data-stopname="$stop['stop']['name']"
                       data-arrival="$stop['plannedArrival']">
-                    <td> $stop['stop']['name']</td>
-                    <td>
-                      @if($stop['plannedArrival'] != null)
-                      {{ i18n.get('_.stationboard.arr') }}
-                      \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(i18n.get('_.time-format'))
-                      @if(isset($stop['arrivalDelay']))
-                      <small>(<span
-                          class="traindelay">+ $stop['arrivalDelay'] / 60 </span>)</small>
-                      @endif
-                      @endif
+                    <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}">{{ stop.name }}</td>
+                    <td v-if="!stop.cancelled">
+                      <span v-if="stop.arrival">
+                        {{ i18n.get('_.stationboard.arr') }}&nbsp;
+                        <span :class="{'text-danger': stop.isArrivalDelayed, 'text-success': stop.arrivalReal}">
+                          {{moment(stop.arrival).format("LT")}}
+                        </span>
+                        <small v-if="stop.isArrivalDelayed" class="text-muted text-decoration-line-through">
+                          {{ moment(stop.arrivalPlanned).format("LT") }}
+                        </small>
+                      </span>
                       <br/>
-                      @if($stop['plannedDeparture'] != null)
-                      {{ i18n.get('_.stationboard.dep') }}
-                      \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(i18n.get('_.time-format'))
-                      @if(isset($stop['departureDelay']))
-                      <small>(<span
-                          class="traindelay">+ $stop['departureDelay']/60 </span>)</small>
-                      @endif
-                      @endif
+                      <span v-if="stop.departure">
+                        {{ i18n.get('_.stationboard.dep') }}&nbsp;
+                        <span :class="{'text-danger': stop.isDepartureDelayed, 'text-success': stop.departureReal}">
+                          {{moment(stop.departure).format("LT")}}
+                        </span>
+                        <small v-if="stop.isDepartureDelayed" class="text-muted text-decoration-line-through">
+                          {{ moment(stop.departurePlanned).format("LT") }}
+                        </small>
+                      </span>
                     </td>
-                    <td> $stop['departurePlatform']</td>
+                    <td v-else class="text-danger">
+                      {{ i18n.get('_.stationboard.stop-cancelled') }}
+                    </td>
+                    <td class="ps-0" :class="{ 'text-danger text-decoration-line-through': stop.cancelled}">
+                      {{ stop.platform }}
+                    </td>
                   </tr>
-                  @endif
-                  @endforeach
                 </tbody>
               </table>
             </div>
@@ -93,8 +84,20 @@
 </template>
 
 <script>
+import {travelImages} from "../js/APImodels";
+import moment from "moment";
+
 export default {
   name: "Trip",
+  data() {
+    return {
+      loading: false,
+      images: travelImages,
+      hafasTrip: null,
+      stopovers: null,
+      moment: moment
+    };
+  },
   mounted() {
     this.fetchData();
   },
@@ -108,9 +111,12 @@ export default {
       axios
           .get('/trains/trip?tripID=' + query.tripID + "&lineName=" + query.lineName + "&start=" + query.start)
           .then((result) => {
-            // this.station    = result.data.meta.station;
-            // this.times      = result.data.meta.times;
-            // this.departures = result.data.data;
+            this.hafasTrip = result.data.data;
+          // @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
+
+            this.stopovers = this.hafasTrip.stopovers.filter((item) => {
+              return moment(item.arrivalPlanned).isAfter(moment(this.$route.query.departure));
+            });
             console.log(result);
             this.loading    = false;
 

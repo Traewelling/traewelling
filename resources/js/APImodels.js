@@ -1,3 +1,5 @@
+export let travelImages = ['bus', 'suburban', 'subway', 'tram'];
+
 export let EventModel = {
     id: 0,
     name: "",
