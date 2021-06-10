@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Exceptions\MissingParametersExection;
+use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
@@ -60,12 +61,13 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainTripResponse = TransportBackend::getTrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start
-        );
-        if ($trainTripResponse === null) {
+        try {
+            $trainTripResponse = TransportBackend::getTrainTrip(
+                $request->tripID,
+                $request->lineName,
+                $request->start
+            );
+        } catch(StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
 

@@ -223,16 +223,16 @@ class TransportController extends Controller
      * @param Carbon|null $departure
      * @return HafasTripResource
      * @throws HafasException
+     * @throws StationNotOnTripException
      * @api v1
      */
-    public static function getTrainTrip(string $tripId, string $lineName, string $start, Carbon $departure = null): ?HafasTripResource {
+    public static function getTrainTrip(string $tripId, string $lineName, string $start, Carbon $departure = null): HafasTripResource {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
-//        ToDo: Check if train station is in stopovers
-//        $offset    = self::searchForId($start, $hafasTrip->stopoversNEW, $departure);
-//        if ($offset === null) {
-//            return null;
-//        }
+
+        if ($hafasTrip->stopoversNEW->where('trainStation.ibnr', $departure)->count() == 0) {
+            throw new StationNotOnTripException();
+        }
         return new HafasTripResource($hafasTrip);
     }
 
