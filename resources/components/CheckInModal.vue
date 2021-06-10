@@ -35,30 +35,13 @@ export default {
   },
   methods: {
     show() {
-      this.fetchNotifications();
       this.modal.show();
     },
     hide() {
       this.modal.hide();
-    },
-    fetchNotifications() {
-      // ToDo: make this shit json only
-      // ToDo: interactions are broken
-      axios
-          .get('/notifications?render=true')
-          .then((response) => {
-            this.notifications        = response.data.data;
-            this.$refs.list.innerHTML = null;
-            this.notifications.forEach((notification) => {
-              this.$refs.list.insertAdjacentHTML("beforeend", notification.html);
-            });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
     }
   }
-}
+};
 </script>
 
 <style scoped>

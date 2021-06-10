@@ -114,7 +114,7 @@ export default {
       const when       = this.$route.query.when ?? "";
       const travelType = this.$route.query.travelType ?? "";
       axios
-          .get('/trains/station/' + this.$route.query.station + "/departures?when=" + when + "&travelType=" + travelType)
+          .get("/trains/station/" + this.$route.query.station + "/departures?when=" + when + "&travelType=" + travelType)
           .then((result) => {
             this.station    = result.data.meta.station;
             this.times      = result.data.meta.times;

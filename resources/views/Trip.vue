@@ -112,7 +112,7 @@ export default {
       this.station = null;
       const query  = this.$route.query;
       axios
-          .get('/trains/trip?tripID=' + query.tripID + "&lineName=" + query.lineName + "&start=" + query.start)
+          .get("/trains/trip?tripID=" + query.tripID + "&lineName=" + query.lineName + "&start=" + query.start)
           .then((result) => {
             this.hafasTrip = result.data.data;
             this.stopovers = this.hafasTrip.stopovers.filter((item) => {

@@ -157,7 +157,7 @@ export default {
       if (this.$route.query.when) {
         return this.$route.query.when;
       }
-      return moment().toISOString()
+      return moment().toISOString();
     }
   },
   mounted() {
@@ -165,7 +165,6 @@ export default {
   },
   methods: {
     submitStation(travelType = null, time = this.when) {
-      console.log("a");
       if (typeof travelType != "string") {
         travelType = this.currentTravelType;
       }
@@ -180,13 +179,13 @@ export default {
             })
             .catch(() => {
               this.$emit("refresh");
-            })
+            });
       } else {
-        console.error("station null")
+        console.error("station null");
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -11,7 +11,11 @@ class ResponseController extends Controller
         return response()->json($response, 200);
     }
 
-    public function sendv1Response(array|string|Object $data = null, int $code = 200, array $additional = null): JsonResponse {
+    public function sendv1Response(
+        array|string|object $data = null,
+        int $code = 200,
+        array $additional = null
+    ): JsonResponse {
         if ($data === null) {
             return response()->json(["status" => "success"], $code);
         }

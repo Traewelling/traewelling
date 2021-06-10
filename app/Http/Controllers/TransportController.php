@@ -220,13 +220,12 @@ class TransportController extends Controller
      * @param string $tripId
      * @param string $lineName
      * @param string $start
-     * @param Carbon|null $departure
      * @return HafasTripResource
      * @throws HafasException
      * @throws StationNotOnTripException
      * @api v1
      */
-    public static function getTrainTrip(string $tripId, string $lineName, string $start, Carbon $departure = null): HafasTripResource {
+    public static function getTrainTrip(string $tripId, string $lineName, string $start): HafasTripResource {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 

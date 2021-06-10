@@ -134,7 +134,7 @@ export default {
     },
     fetchNotificationsCount() {
       axios
-          .get('/notifications/count')
+          .get("/notifications/count")
           .then((response) => {
             this.notificationsCount = response.data.data;
           })
