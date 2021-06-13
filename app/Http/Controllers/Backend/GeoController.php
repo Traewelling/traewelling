@@ -85,8 +85,12 @@ abstract class GeoController extends Controller
         $stopovers = $stopovers->slice($originStopoverIndex, $destinationStopoverIndex - $originStopoverIndex + 1);
 
         $distance     = 0;
-        $lastStopover = $stopovers->first();
+        $lastStopover = null;
         foreach ($stopovers as $stopover) {
+            if ($lastStopover == null) {
+                $lastStopover = $stopover;
+                continue;
+            }
             $distance += self::calculateDistanceBetweenCoordinates(
                 latitudeA: $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
