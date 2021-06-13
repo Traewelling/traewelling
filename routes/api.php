@@ -26,9 +26,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('login', [v1Auth::class, 'login']);
         Route::post('signup', [v1Auth::class, 'signup']);
         Route::group(['middleware' => 'auth:api'], function() {
-            Route::post('refresh', [v1Auth::class, 'refresh'])->middleware('auth:api');
-            Route::post('logout', [v1Auth::class, 'logout'])->middleware('auth:api');
-            Route::get('user', [v1Auth::class, 'user'])->middleware('auth:api');
+            Route::post('refresh', [v1Auth::class, 'refresh']);
+            Route::post('logout', [v1Auth::class, 'logout']);
+            Route::get('user', [v1Auth::class, 'user']);
         });
     });
 

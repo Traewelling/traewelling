@@ -55,7 +55,7 @@ class FrontendTransportController extends Controller
         return view('stationboard', [
                                       'station'    => $TrainStationboardResponse['station'],
                                       'departures' => $TrainStationboardResponse['departures'],
-                                      'times'       => $TrainStationboardResponse['times'],
+                                      'times'      => $TrainStationboardResponse['times'],
                                       'request'    => $request,
                                       'latest'     => TransportController::getLatestArrivals(Auth::user())
                                   ]

@@ -14,7 +14,7 @@ class NotificationController extends ResponseController
      *
      * @return JsonResponse
      */
-    public function index() {
+    public function index(): JsonResponse {
         $notificationResponse = NotificationBackend::latest();
         return $this->sendResponse($notificationResponse);
     }

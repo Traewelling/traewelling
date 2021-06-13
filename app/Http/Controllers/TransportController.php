@@ -8,7 +8,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Resources\HafasTripResource;
-use App\Http\Resources\StopoverResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -87,9 +86,10 @@ class TransportController extends Controller
         }
 
         $when  = $when ?? Carbon::now()->subMinutes(5);
-        $times = ['now'  => $when,
-                  'prev' => $when->clone()->subMinutes(15),
-                  'next' => $when->clone()->addMinutes(15)
+        $times = [
+            'now'  => $when,
+            'prev' => $when->clone()->subMinutes(15),
+            'next' => $when->clone()->addMinutes(15)
         ];
 
         $departures = HafasController::getDepartures(

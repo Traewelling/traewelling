@@ -34,7 +34,7 @@ class TransportController extends ResponseController
                 isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 $validated['travelType'] ?? null
             );
-        } catch (HafasException $exception) {
+        } catch (HafasException) {
             return $this->sendError("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
             return $this->sendError("Your query matches no station", 404);
