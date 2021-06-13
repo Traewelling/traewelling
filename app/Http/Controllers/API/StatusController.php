@@ -6,13 +6,13 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Event;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use InvalidArgumentException;
 
 class StatusController extends ResponseController
 {
@@ -117,10 +117,13 @@ class StatusController extends ResponseController
 
     }
 
-    public function destroyLike($statusId) {
-        $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $statusId);
-
-        return $this->sendResponse($destroyLikeResponse);
+    public function destroyLike(int $statusId): JsonResponse {
+        try {
+            StatusBackend::destroyLike(Auth::user(), $statusId);
+            return $this->sendResponse(true);
+        } catch (InvalidArgumentException) {
+            return $this->sendResponse(false);
+        }
     }
 
     public function getLikes($statusId) {
