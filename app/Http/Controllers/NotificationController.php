@@ -33,17 +33,16 @@ class NotificationController extends Controller
     }
 
     /*
-     * @todo make static
      * @api v1
      */
-    public function renderLatest(): Collection {
+    public static function renderLatest(): Collection {
         return Auth::user()->notifications()
                    ->limit(10)
                    ->get()
                    ->map(function($notification) {
                        $notification->html = $notification->type::render($notification);
 
-                   if ($notification->html != null) {
+                       if ($notification->html != null) {
                            return collect([
                                               'notifiable_type' => $notification->notifiable_type,
                                               'notifiable_id'   => $notification->notifiable_id,
@@ -51,7 +50,7 @@ class NotificationController extends Controller
                                               'html'            => $notification->html,
                                               'read_at'         => $notification->read_at,
                                           ]);
-                   }
+                       }
                        return null;
                    })
                    ->filter(function($notificationOrNull) {
