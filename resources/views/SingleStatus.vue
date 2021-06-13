@@ -17,8 +17,7 @@
         </div>
 
         <div v-if="status">
-          <h5>{{ moment(status.train.origin.departure).format("dddd[,] LL") }}</h5>
-          <Status :status="status" :polyline="polyline" :stopovers="stopovers"></Status>
+          <Status :status="status" :polyline="polyline" :stopovers="stopovers" :likes="likes" show-date="true"></Status>
         </div>
       </div>
     </div>
@@ -29,6 +28,7 @@
 import axios from "axios";
 import Status from "../components/Status";
 import moment from "moment";
+import {ProfileModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "SingleStatus",
@@ -36,9 +36,10 @@ export default {
     return {
       error: false,
       loading: false,
-      status: null,
-      polyline: null,
-      stopovers: null,
+      status: StatusModel,
+      polyline: null, //ToDo Typedef
+      stopovers: null, //ToDo Typedef
+      likes: null,
       moment: moment
     };
   },
@@ -48,6 +49,7 @@ export default {
     } else {
       this.status = this.statusData;
       this.fetchPolyline();
+      this.fetchLikes();
     }
   },
   components: {
@@ -60,22 +62,23 @@ export default {
     fetchData() {
       this.error   = null;
       this.loading = true;
-      this.fetchPolyline();
       axios
-          .get("/api/v1/statuses/" + this.$route.params.id)
+          .get("/statuses/" + this.$route.params.id)
           .then((response) => {
             this.loading = false;
             this.status  = response.data.data;
+            this.fetchPolyline();
             this.fetchStopovers();
+            this.fetchLikes();
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
     },
     fetchPolyline() {
       axios
-          .get("/api/v1/polyline/" + this.$route.params.id)
+          .get("/polyline/" + this.status.id)
           .then((response) => {
             this.polyline = [response.data.data];
           })
@@ -85,9 +88,19 @@ export default {
     },
     fetchStopovers() {
       axios
-          .get("/api/v1/stopovers/" + this.status.train.trip)
+          .get("/stopovers/" + this.status.train.trip)
           .then((response) => {
             this.stopovers = response.data.data;
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+    },
+    fetchLikes() {
+      axios
+          .get("/statuses/" + this.status.id + "/likedby")
+          .then((response) => {
+            this.likes = response.data.data;
           })
           .catch((error) => {
             console.error(error);

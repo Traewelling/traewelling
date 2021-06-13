@@ -14,12 +14,14 @@
                     </div>
                     <div class="mt-2">
                         @include('includes.business-dropdown')
+                        @include('includes.visibility-dropdown')
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.discard')}}</button>
-                <button type="button" class="btn btn-primary" id="modal-trwl-edit-save">{{__('modals.edit-confirm')}}</button>
+                <button type="button" class="btn btn-primary"
+                        id="modal-trwl-edit-save">{{__('modals.edit-confirm')}}</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

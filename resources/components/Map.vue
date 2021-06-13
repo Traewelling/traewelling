@@ -49,16 +49,18 @@ export default {
       }
 
       let lines = L.featureGroup();
-      this.$props.polyLines.forEach((polyline) => {
-        Object.values(polyline).forEach((coordinates) => {
-          let line = L.polyline(coordinates).setStyle({color: "rgb(192, 57, 43)", weight: 5});
-          lines.addLayer(line);
-          //ToDo make the line more like the original
+      if (this.$props.polyLines) {
+        this.$props.polyLines.forEach((polyline) => {
+          Object.values(polyline).forEach((coordinates) => {
+            let line = L.polyline(coordinates).setStyle({color: "rgb(192, 57, 43)", weight: 5});
+            lines.addLayer(line);
+            //ToDo make the line more like the original
+          });
         });
-      });
 
-      lines.addTo(this.map);
-      this.map.fitBounds(lines.getBounds());
+        lines.addTo(this.map);
+        this.map.fitBounds(lines.getBounds());
+      }
     }
   },
   mounted() {
@@ -66,7 +68,9 @@ export default {
   },
   watch: {
     polyLines() {
-      this.updatePolylines();
+      if (this.$props.polyLines) {
+        this.updatePolylines();
+      }
     }
   }
 }

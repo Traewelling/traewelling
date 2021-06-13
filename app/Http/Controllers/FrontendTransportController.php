@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,25 +41,21 @@ class FrontendTransportController extends Controller
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
         try {
-            $TrainStationboardResponse = TransportBackend::TrainStationboard(
+            $TrainStationboardResponse = TransportBackend::getDepartures(
                 $validated['station'],
                 $when,
                 $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
-        }
-        if ($TrainStationboardResponse === false) {
-            return redirect()->back()->with('error', __('controller.transport.no-name-given'));
-        }
-        if ($TrainStationboardResponse === null) {
+        } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
         return view('stationboard', [
                                       'station'    => $TrainStationboardResponse['station'],
                                       'departures' => $TrainStationboardResponse['departures'],
-                                      'when'       => $TrainStationboardResponse['when'],
+                                      'times'      => $TrainStationboardResponse['times'],
                                       'request'    => $request,
                                       'latest'     => TransportController::getLatestArrivals(Auth::user())
                                   ]
@@ -126,13 +124,14 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request): RedirectResponse {
         $this->validate($request, [
-            'body'           => 'max:280',
-            'business_check' => 'digits_between:0,2',
-            'tweet_check'    => 'max:2',
-            'toot_check'     => 'max:2',
-            'event'          => 'integer',
-            'departure'      => ['required', 'date'],
-            'arrival'        => ['required', 'date'],
+            'body'              => 'max:280',
+            'business_check'    => 'digits_between:0,2',
+            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
+            'tweet_check'       => 'max:2',
+            'toot_check'        => 'max:2',
+            'event'             => 'integer',
+            'departure'         => ['required', 'date'],
+            'arrival'           => ['required', 'date'],
         ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
@@ -144,6 +143,7 @@ class FrontendTransportController extends Controller
                 $request->business_check,
                 $request->tweet_check,
                 $request->toot_check,
+                $request->checkinVisibility,
                 $request->event,
                 Carbon::parse($request->departure),
                 Carbon::parse($request->arrival),

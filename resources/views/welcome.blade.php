@@ -5,6 +5,7 @@
 
         @section('meta-description', __('about.block1'))
         @section('meta-robots', 'index')
+        @section('canonical', route('static.welcome'))
         @include('layouts.includes.meta')
 
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">

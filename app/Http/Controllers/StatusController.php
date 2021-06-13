@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Models\Event;
@@ -11,8 +12,6 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -24,12 +23,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class StatusController extends Controller
 {
     /**
-     * @api v1
-     * @frontend
      * @param int $statusId
      * @return Status
      * @throws HttpException
      * @throws ModelNotFoundException
+     * @api v1
+     * @frontend
      */
     public static function getStatus(int $statusId): Status {
         $status = Status::where('id', $statusId)->with('user',
@@ -38,7 +37,7 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe) {
+        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == StatusVisibility::UNLISTED)) {
             return $status;
         }
 
@@ -48,11 +47,11 @@ class StatusController extends Controller
     /**
      * This Method returns the current active status(es) for all users or a specific user.
      *
-     * @api v1
-     * @frontend
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
      * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
      * @return Status|array|Builder|Model|object|null
+     * @api v1
+     * @frontend
      */
     public static function getActiveStatuses($userId = null, bool $array = true) {
         if ($userId === null) {
@@ -71,7 +70,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function($status) {
-                                  return !$status->user->userInvisibleToMe;
+                                  return (!$status->user->userInvisibleToMe && !$status->statusInvisibleToMe);
                               })
                               ->sortByDesc(function($status) {
                                   return $status->trainCheckin->departure;
@@ -90,7 +89,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if ($status?->user?->userInvisibleToMe) {
+            if ($status?->user?->userInvisibleToMe || $status?->statusInvisibleToMe) {
                 return null;
             }
             return $status;
@@ -109,7 +108,7 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getDashboard($user): Paginator {
+    public static function getDashboard(User $user): Paginator {
         $userIds        = $user->follows->pluck('id');
         $userIds[]      = $user->id;
         $followingIDs   = $user->follows->pluck('id');
@@ -117,7 +116,7 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
@@ -126,6 +125,8 @@ class StatusController extends Controller
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('user_id', $followingIDs)
+                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
+                     ->orWhere('user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -136,14 +137,21 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW'
+                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
+                         $user = Auth::check() ? auth()->user()->id : null;
                          $query->where('users.private_profile', 0)
-                               ->orWhere('users.id', auth()->user()->id)
-                               ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
+                               ->where('visibility', StatusVisibility::PUBLIC)
+                               ->orWhere('users.id', $user)
+                               ->orWhere(function($query) {
+                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                         ->whereIn('users.id', $followings)
+                                         ->orWhere('visibility', StatusVisibility::PUBLIC);
+                               });
                      })
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
@@ -155,20 +163,26 @@ class StatusController extends Controller
                      ->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId): ?bool {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @return bool|null
+     * @throws PermissionException|ModelNotFoundException
+     */
+    public static function DeleteStatus(User $user, int $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
-            return null;
+            throw new ModelNotFoundException();
         }
-        if ($user != $status->user) {
-            return false;
+        if ($user->id != $status->user->id) {
+            throw new PermissionException();
         }
         $status->delete();
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck): bool|string|null {
+    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
         $status = Status::find($statusId);
         if ($status === null) {
             return null;
@@ -179,6 +193,9 @@ class StatusController extends Controller
 
         $status->body     = $body;
         $status->business = $businessCheck;
+        if ($visibility != null) {
+            $status->visibility = $visibility;
+        }
         $status->update();
         return $status->body;
     }
@@ -188,11 +205,12 @@ class StatusController extends Controller
      * @param User $user
      * @param Status $status
      * @return Like
+     * @todo refactor this to take status IDs instead of models
      * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if ($status->user->UserInvisibleToMe) {
+        if (($status->StatusInvisibleToMe && $status->visibility != StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
             throw new PermissionException();
         }
 
@@ -208,6 +226,12 @@ class StatusController extends Controller
         return $like;
     }
 
+    /**
+     * @param $user
+     * @param $statusId
+     * @return bool
+     * @todo Refactor this to throw exceptions instead of bools
+     */
     public static function DestroyLike($user, $statusId): bool {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like) {
@@ -362,11 +386,16 @@ class StatusController extends Controller
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
-                              $query->where('users.private_profile', 0);
-                            if (auth()->check()) {
-                                $query->orWhere('users.id', auth()->user()->id)
-                                      ->orWhereIn('users.id', auth()->user()->follows()->select('follow_id'));
-                            }
+                              $query->where('users.private_profile', 0)
+                                    ->where('visibility', StatusVisibility::PUBLIC);
+                              if (auth()->check()) {
+                                  $query->orWhere('users.id', auth()->user()->id)
+                                        ->orWhere(function($query) {
+                                            $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                                  ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
+                                                  ->orWhere('visibility', StatusVisibility::PUBLIC);
+                                        });
+                              }
                           });
 
         if (auth()->check()) {

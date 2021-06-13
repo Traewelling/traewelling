@@ -3,29 +3,28 @@
     <head>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
-        @include('layouts.includes.meta')
+    @include('layouts.includes.meta')
 
-        <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}?1611964800"></script>
+    <!-- Scripts -->
+        <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
 
-
         @yield('head')
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
              aria-hidden="true" aria-labelledby="notifications-board-title">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="notifications-board-title">
@@ -208,7 +207,7 @@
                     <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
                     <p class="mb-0 text-muted small">commit:
                         <a href="https://github.com/Traewelling/traewelling/commit/{{ get_current_git_commit() }}"
-                            class="text-muted">
+                           class="text-muted">
                             {{ get_current_git_commit() }}
                         </a>
                     </p>

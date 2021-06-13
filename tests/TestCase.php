@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -102,9 +103,9 @@ abstract class TestCase extends BaseTestCase
         if ($user == null) {
             $user = $this->user;
         }
-        $trainStationboard = TransportController::TrainStationboard($stationName,
-                                                                    $timestamp,
-                                                                    TravelType::EXPRESS);
+        $trainStationboard = TransportController::getDepartures($stationName,
+                                                                $timestamp,
+                                                                TravelType::EXPRESS);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
@@ -150,6 +151,7 @@ abstract class TestCase extends BaseTestCase
                 businessCheck: 0,
                 tweetCheck: 0,
                 tootCheck: 0,
+                visibility: StatusVisibility::PUBLIC,
                 eventId: $eventId
             );
         } catch (StationNotOnTripException) {

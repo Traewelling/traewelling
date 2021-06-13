@@ -8,6 +8,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Resources\HafasTripResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -24,6 +25,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -60,48 +62,46 @@ class TransportController extends Controller
     }
 
     /**
-     * @param $stationName
+     * @param string $stationName
      * @param Carbon|null $when
-     * @param null $travelType
-     * @return bool|array|null
+     * @param string|null $travelType
+     * @return array
      * @throws HafasException
      */
-    public static function TrainStationboard($stationName, Carbon $when = null, $travelType = null): bool|array|null {
-        if (empty($stationName)) {
-            return false;
-        }
-        if ($when === null) {
-            $when = Carbon::now()->subMinutes(5);
-        }
+    #[ArrayShape([
+        'station'    => "\App\Models\TrainStation|mixed|null",
+        'departures' => "\Illuminate\Support\Collection",
+        'times'      => "array"
+    ])]
+    public static function getDepartures(string $stationName, Carbon $when = null, string $travelType = null): array {
+        //first check if the query is a valid DS100 identifier
         if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
-            //first check if the query is a valid DS100 identifier
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
         }
-        if (!isset($station) || $station == null) {
-            //if we cannot find any station by DS100 identifier continue to search normal
+        //if we cannot find any station by DS100 identifier continue to search normal
+        if (empty($station)) {
             $station = HafasController::getStations($stationName)->first();
+            if ($station == null) {
+                throw new ModelNotFoundException;
+            }
         }
-        if ($station == null) {
-            return null;
-        }
+
+        $when  = $when ?? Carbon::now()->subMinutes(5);
+        $times = [
+            'now'  => $when,
+            'prev' => $when->clone()->subMinutes(15),
+            'next' => $when->clone()->addMinutes(15)
+        ];
+
         $departures = HafasController::getDepartures(
-            $station,
-            $when,
-            15,
-            $travelType == null || $travelType == TravelType::EXPRESS,
-            $travelType == null || $travelType == TravelType::EXPRESS,
-            $travelType == null || $travelType == TravelType::REGIONAL,
-            $travelType == null || $travelType == TravelType::REGIONAL,
-            $travelType == null || $travelType == TravelType::SUBURBAN,
-            $travelType == null || $travelType == TravelType::BUS,
-            $travelType == null || $travelType == TravelType::FERRY,
-            $travelType == null || $travelType == TravelType::SUBWAY,
-            $travelType == null || $travelType == TravelType::TRAM,
-            false
+            station: $station,
+            when: $when,
+            type: $travelType
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });
-        return ['station' => $station, 'departures' => $departures, 'when' => $when];
+
+        return ['station' => $station, 'departures' => $departures, 'times' => $times];
     }
 
     public static function FastTripAccess($departure, $lineName, $number, $when) {
@@ -193,10 +193,11 @@ class TransportController extends Controller
      * @param Carbon|null $departure
      * @return array|null
      * @throws HafasException
+     * @deprecated replaced by getTrainTrip
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
-
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers, $departure);
         if ($offset === null) {
@@ -213,6 +214,25 @@ class TransportController extends Controller
             'destination' => $destination, //deprecated. use hafasTrip->destinationStation instead
             'start'       => $start //deprecated. use hafasTrip->originStation instead
         ];
+    }
+
+    /**
+     * @param string $tripId
+     * @param string $lineName
+     * @param string $start
+     * @return HafasTripResource
+     * @throws HafasException
+     * @throws StationNotOnTripException
+     * @api v1
+     */
+    public static function getTrainTrip(string $tripId, string $lineName, string $start): HafasTripResource {
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+
+        if ($hafasTrip->stopoversNEW->where('trainStation.ibnr', $start)->count() == 0) {
+            throw new StationNotOnTripException();
+        }
+        return new HafasTripResource($hafasTrip);
     }
 
     public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
@@ -295,6 +315,7 @@ class TransportController extends Controller
                                         $businessCheck,
                                         $tweetCheck,
                                         $tootCheck,
+                                        $visibility,
                                         $eventId = 0,
                                         Carbon $departure = null,
                                         Carbon $arrival = null): array {
@@ -361,9 +382,10 @@ class TransportController extends Controller
         }
 
         $status = Status::create([
-                                     'user_id'  => $user->id,
-                                     'body'     => $body,
-                                     'business' => $businessCheck
+                                     'user_id'    => $user->id,
+                                     'body'       => $body,
+                                     'business'   => $businessCheck,
+                                     'visibility' => $visibility
                                  ]);
 
         $plannedDeparture = Carbon::parse(
@@ -583,16 +605,17 @@ class TransportController extends Controller
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-
-        $user->load(['statuses.trainCheckin']);
-
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(2);
         $end   = $end->clone()->subMinutes(2);
 
-        return $user->statuses->map(function($status) {
-            return $status->trainCheckin;
-        })->filter(function($trainCheckIn) use ($start, $end) {
+        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
+                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                       ->where('statuses.user_id', $user->id)
+                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
+                                       ->get();
+
+        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
             //use realtime-data or use planned if not available
             $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
             $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;

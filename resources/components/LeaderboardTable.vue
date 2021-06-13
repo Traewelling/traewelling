@@ -34,7 +34,7 @@ export default {
   name: "LeaderboardTable",
   props: {
     describedBy: null,
-    users: null,
+    users: null, //Idk, it doesn't want the model...
   },
   methods: {
     duration(input) {

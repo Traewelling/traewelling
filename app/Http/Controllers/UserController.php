@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
+use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -151,12 +153,21 @@ class UserController extends Controller
         if ($user->userInvisibleToMe) {
             throw new PermissionException();
         }
-        return $user->statuses()->with(['user',
-                                       'trainCheckin',
-                                       'trainCheckin.Origin',
-                                       'trainCheckin.Destination',
-                                       'trainCheckin.HafasTrip',
-                                       'event'])->orderByDesc('created_at')->paginate(15);
+        return $user->statuses()
+                    ->with([
+                               'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
+                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                           ])
+                    ->where(function($query) {
+                        $user = Auth::check() ? auth()->user()->id : null;
+                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
+                              ->orWhere('user_id', $user)
+                              ->orWhere(function($query) {
+                                  $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                                  $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                        ->whereIn('user_id', $followings);
+                              });
+                    })->orderByDesc('created_at')->paginate(15);
     }
 
     public static function getProfilePage($username): ?array {

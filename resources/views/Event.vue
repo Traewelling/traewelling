@@ -44,7 +44,7 @@
         <div v-if="statuses.length > 0" class="col-md-8 col-lg-7">
 
           <div v-if="statuses">
-            <Status v-for="status in statuses" :status="status"></Status>
+            <Status v-for="status in statuses" :status="status" v-bind:key="status.id"></Status>
           </div>
           <div class="mt-5">
             $statuses->links()
@@ -59,6 +59,7 @@
 import Status from "../components/Status";
 import moment from "moment";
 import axios from "axios";
+import {EventModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "Event",
@@ -67,27 +68,8 @@ export default {
       username: this.$route.params.username,
       loading: false,
       statusesLoading: false,
-      event: {
-        "id": 0,
-        "name": "",
-        "slug": "",
-        "hashtag": "",
-        "host": "",
-        "url": "",
-        "begin": "",
-        "end": "",
-        "trainDistance": 0,
-        "trainDuration": 0,
-        "station": {
-          "id": 0,
-          "name": "",
-          "latitude": 0,
-          "longitude": 0,
-          "ibnr": 0,
-          "rilIdentifier": null
-        }
-      },
-      statuses: null
+      event: EventModel,
+      statuses: [StatusModel]
     };
   },
   components: {
@@ -110,7 +92,7 @@ export default {
       this.error   = null;
       this.loading = true;
       axios
-          .get("/api/v1/event/" + this.$route.params.slug)
+          .get("/event/" + this.$route.params.slug)
           .then((response) => {
             this.loading = false;
             this.event   = response.data.data;
@@ -118,21 +100,21 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            this.error   = error.response.data.message || error.message;
+            this.error   = error.data.message || error.message;
           });
     },
     fetchStatuses() {
       this.error           = null;
       this.statusesLoading = true;
       axios
-          .get("/api/v1/event/" + this.$route.params.slug + "/statuses")
+          .get("/event/" + this.$route.params.slug + "/statuses")
           .then((response) => {
             this.statusesLoading = false;
             this.statuses        = response.data.data;
           })
           .catch((error) => {
             this.statusesLoading = false;
-            this.error           = error.response.data.message || error.message;
+            this.error           = error.data.message || error.message;
           });
     }
   }
