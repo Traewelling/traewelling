@@ -116,13 +116,13 @@ abstract class HafasController extends Controller
             $stations = collect();
             foreach ($data as $hafasStation) {
                 $station           = self::parseHafasStopObject($hafasStation);
-                $station->distance = $hafasStation->distance;
+                $station->distance = $hafasStation->distance ?? 0;
                 $stations->push($station);
             }
 
             return $stations;
         } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
+            $response = $e->getMessage();
             throw new HafasException($response->msg ?? $e->getMessage());
         }
     }
