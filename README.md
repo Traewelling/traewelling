@@ -75,15 +75,18 @@ feature - great; if you don't want to, that's fine, too.
 If you add code:
 
 * If you edit the language files, please check if your change is applicable at least in german.
+  
 * If you work on the front page (see screenshot above), please consider updating the screenshot.
+  
 * Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to
   have half-baked languages that have missing strings after a while.
+  
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
 ### Translations
 
-We currently support the languages German, English, Polish, French and Dutch. We would like to become even
-more international and for this we need you and your language skills.
+We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
+international and for this we need you and your language skills.
 
 We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add
 new translations and correct mistakes.
