@@ -6,7 +6,6 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\MissingParametersExection;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StopoverResource;

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
-use App\Exceptions\MissingParametersExection;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\TransportController as TransportBackend;
