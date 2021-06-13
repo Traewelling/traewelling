@@ -11,11 +11,17 @@ class ResponseController extends Controller
         return response()->json($response, 200);
     }
 
-    public function sendv1Response(array|string $data = null, int $code = 200): JsonResponse {
+    public function sendv1Response(
+        array|string|object $data = null,
+        int $code = 200,
+        array $additional = null
+    ): JsonResponse {
         if ($data === null) {
             return response()->json(["status" => "success"], $code);
         }
-        return response()->json(["data" => $data], $code);
+        $response = ["data" => $data];
+        $response = $additional ? array_merge($response, $additional) : $response;
+        return response()->json($response, $code);
     }
 
     public function sendError(array|string $error, int $code = 404): JsonResponse {

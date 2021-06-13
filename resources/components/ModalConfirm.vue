@@ -20,7 +20,6 @@
 </template>
 
 <script>
-
 import {Modal} from "bootstrap";
 
 export default {
@@ -30,14 +29,14 @@ export default {
       modal: null,
     };
   },
+  mounted() {
+    this.modal = new Modal(this.$refs.deleteModal);
+  },
   props: {
     titleText: null,
     abortText: null,
     confirmText: null,
     confirmButtonColor: null
-  },
-  mounted() {
-    this.modal = new Modal(this.$refs.deleteModal);
   },
   methods: {
     show() {

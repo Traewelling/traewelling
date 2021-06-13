@@ -30,7 +30,7 @@ class CheckinTest extends TestCase
         $requestDate       = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
-        $trainStationboard = TransportController::TrainStationboard(
+        $trainStationboard = TransportController::getDepartures(
             $stationname,
             $requestDate
         );
@@ -147,7 +147,7 @@ class CheckinTest extends TestCase
         $timestamp         = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
         $ibnr              = "8070003";
-        $trainStationboard = TransportController::TrainStationboard(
+        $trainStationboard = TransportController::getDepartures(
             $stationname,
             $timestamp,
             TravelType::EXPRESS
@@ -411,7 +411,7 @@ class CheckinTest extends TestCase
         // First: Get a train that's fine for our stuff
         $timestamp         = Carbon::parse("+1 days 10:00");
         $stationname       = "Schloss Cecilienhof, Potsdam";
-        $trainStationboard = TransportController::TrainStationboard(
+        $trainStationboard = TransportController::getDepartures(
             $stationname,
             $timestamp,
             'bus'
@@ -477,7 +477,7 @@ class CheckinTest extends TestCase
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
         $timestamp         = Carbon::parse("+1 days 10:03");
         $stationname       = "Messe Nord / ICC, Berlin";
-        $trainStationboard = TransportController::TrainStationboard(
+        $trainStationboard = TransportController::getDepartures(
             $stationname,
             Carbon::parse('+1 days 10:00'),
             'suburban'
