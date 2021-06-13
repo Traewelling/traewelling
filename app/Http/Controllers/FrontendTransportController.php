@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,25 +41,21 @@ class FrontendTransportController extends Controller
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
         try {
-            $TrainStationboardResponse = TransportBackend::TrainStationboard(
+            $TrainStationboardResponse = TransportBackend::getDepartures(
                 $validated['station'],
                 $when,
                 $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
-        }
-        if ($TrainStationboardResponse === false) {
-            return redirect()->back()->with('error', __('controller.transport.no-name-given'));
-        }
-        if ($TrainStationboardResponse === null) {
+        } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
 
         return view('stationboard', [
                                       'station'    => $TrainStationboardResponse['station'],
                                       'departures' => $TrainStationboardResponse['departures'],
-                                      'when'       => $TrainStationboardResponse['when'],
+                                      'times'      => $TrainStationboardResponse['times'],
                                       'request'    => $request,
                                       'latest'     => TransportController::getLatestArrivals(Auth::user())
                                   ]

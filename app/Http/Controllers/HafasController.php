@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\HafasTravelType;
+use App\Enum\HafasTravelType as HTT;
+use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -131,16 +132,7 @@ abstract class HafasController extends Controller
      * @param TrainStation $station
      * @param Carbon $when
      * @param int $duration
-     * @param bool $nationalExpress
-     * @param bool $national
-     * @param bool $regionalExp
-     * @param bool $regional
-     * @param bool $suburban
-     * @param bool $bus
-     * @param bool $ferry
-     * @param bool $subway
-     * @param bool $tram
-     * @param bool $taxi
+     * @param TravelType|string|null $type
      * @return Collection
      * @throws HafasException
      */
@@ -148,16 +140,7 @@ abstract class HafasController extends Controller
         TrainStation $station,
         Carbon $when,
         int $duration = 15,
-        bool $nationalExpress = true,
-        bool $national = true,
-        bool $regionalExp = true,
-        bool $regional = true,
-        bool $suburban = true,
-        bool $bus = true,
-        bool $ferry = true,
-        bool $subway = true,
-        bool $tram = true,
-        bool $taxi = true
+        TravelType|string $type = null
     ): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
@@ -165,16 +148,16 @@ abstract class HafasController extends Controller
                 'query' => [
                     'when'                            => $when->toIso8601String(),
                     'duration'                        => $duration,
-                    HafasTravelType::NATIONAL_EXPRESS => $nationalExpress ? 'true' : 'false',
-                    HafasTravelType::NATIONAL         => $national ? 'true' : 'false',
-                    HafasTravelType::REGIONAL_EXP     => $regionalExp ? 'true' : 'false',
-                    HafasTravelType::REGIONAL         => $regional ? 'true' : 'false',
-                    HafasTravelType::SUBURBAN         => $suburban ? 'true' : 'false',
-                    HafasTravelType::BUS              => $bus ? 'true' : 'false',
-                    HafasTravelType::FERRY            => $ferry ? 'true' : 'false',
-                    HafasTravelType::SUBWAY           => $subway ? 'true' : 'false',
-                    HafasTravelType::TRAM             => $tram ? 'true' : 'false',
-                    HafasTravelType::TAXI             => $taxi ? 'true' : 'false',
+                    HTT::NATIONAL_EXPRESS => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
+                    HTT::NATIONAL         => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
+                    HTT::REGIONAL_EXP     => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
+                    HTT::REGIONAL         => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
+                    HTT::SUBURBAN         => ($type == null || $type == TravelType::SUBURBAN) ? 'true' : 'false',
+                    HTT::BUS              => ($type == null || $type == TravelType::BUS) ? 'true' : 'false',
+                    HTT::FERRY            => ($type == null || $type == TravelType::FERRY) ? 'true' : 'false',
+                    HTT::SUBWAY           => ($type == null || $type == TravelType::SUBWAY) ? 'true' : 'false',
+                    HTT::TRAM             => ($type == null || $type == TravelType::TRAM) ? 'true' : 'false',
+                    HTT::TAXI             => 'false',
                 ]
             ]);
 

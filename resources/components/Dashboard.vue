@@ -2,6 +2,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-7">
+        <StationForm></StationForm>
         <div class="loading" v-if="loading">
           {{ i18n.get("_.vue.loading") }}
         </div>
@@ -15,6 +16,7 @@
             </button>
           </p>
         </div>
+        <!-- ToDo Future Check-ins -->
         <div v-if="statuses">
           <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers" v-bind:key="status.id"
                   :show-date="showDate(status, statuses)"/>
@@ -30,6 +32,7 @@ import axios from "axios";
 import Status from "../components/Status";
 import moment from "moment";
 import {StatusModel} from "../js/APImodels";
+import StationForm from "./StationForm";
 
 export default {
   data() {
@@ -42,6 +45,7 @@ export default {
     };
   },
   components: {
+    StationForm,
     Status
   },
   mounted() {

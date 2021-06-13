@@ -8,6 +8,8 @@ import Leaderboard from "./views/Leaderboard";
 import LeaderboardMonth from "./views/LeaderboardMonth";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import Stationboard from "./views/Stationboard";
+import Trip from "./views/Trip";
 
 Vue.use(VueRouter);
 
@@ -18,33 +20,34 @@ export const router = new VueRouter({
         [
             {
                 path: "/",
+                name: "base",
                 redirect: {name: "statuses.active"},
             },
             {
                 path: "/statuses/active",
                 component: ActiveStatuses,
-                name: "statuses.active",
+                name: "statuses.active"
             },
             {
                 path: "/status/:id",
                 component: SingleStatus,
                 props: true,
-                name: "singleStatus",
+                name: "singleStatus"
             },
             {
                 path: "/profile/:username",
                 component: Profile,
-                name: "profile",
+                name: "profile"
             },
             {
                 path: "/event/:slug",
                 component: Event,
-                name: "event",
+                name: "event"
             },
             {
                 path: "/leaderboard/",
                 component: Leaderboard,
-                name: "leaderboard",
+                name: "leaderboard"
             },
             {
                 path: "/leaderboard/:month",
@@ -71,6 +74,22 @@ export const router = new VueRouter({
                 path: "/dashboard/global",
                 component: Dashboard,
                 name: "dashboard.global",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/trains/stationboard",
+                component:Stationboard,
+                name: "trains.stationboard",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/trains/trip",
+                component:Trip,
+                name: "trains.trip",
                 meta: {
                     auth: true
                 }

@@ -41,21 +41,27 @@
     </div>
     <div class="container">
       <div v-if="loading || statusesLoading">
-         {{ i18n.get("_.vue.loading") }}
+        {{ i18n.get("_.vue.loading") }}
       </div>
 
       <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
         <div v-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
           <header><h3>{{ i18n.get("_.profile.private-profile-text") }}</h3></header>
           <h5>
-             {{ i18n.choice("_.profile.private-profile-information-text", 1, {"username": user.username, "request": i18n.get("_.profile.follow_req")}) }}
+            {{
+              i18n.choice("_.profile.private-profile-information-text", 1, {
+                "username": user.username,
+                "request": i18n.get("_.profile.follow_req")
+              })
+            }}
           </h5>
         </div>
         <div v-else-if="statuses.length > 0" class="col-md-8 col-lg-7">
           <header><h3>{{ i18n.get("_.profile.last-journeys-of") }} {{ user.displayName }}:</h3></header>
 
           <div v-if="statuses">
-            <Status v-for="status in statuses" :status="status" v-bind:key="status.id"></Status>
+            <Status v-for="status in statuses" :status="status" v-bind:key="status.id"
+                    :show-date="showDate(status, statuses)"/>
           </div>
           <div class="mt-5">
             $statuses->links()
@@ -107,6 +113,13 @@ export default {
     this.fetchData();
   },
   methods: {
+    showDate(item, statuses) {
+      let index = statuses.indexOf(item);
+      if (index === -1 || index === 0) {
+        return true;
+      }
+      return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
+    },
     fetchData() {
       this.error   = null;
       this.loading = true;

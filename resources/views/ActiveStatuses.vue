@@ -2,13 +2,13 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
-      <div class="card sticky-top">
-        <Map class="map embed-responsive embed-responsive-1by1" :poly-lines="polylines"></Map>
+        <div class="card sticky-top">
+          <Map class="map embed-responsive embed-responsive-1by1" :poly-lines="polylines"></Map>
+        </div>
       </div>
-    </div>
       <div class="col-md-8 col-lg-6">
         <div class="loading" v-if="loading">
-           {{ i18n.get("_.vue.loading") }}
+          {{ i18n.get("_.vue.loading") }}
         </div>
 
         <div v-if="error" class="error">
@@ -22,7 +22,8 @@
         </div>
         <div v-if="statuses">
           <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
-          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers" v-bind:key="status.id"></Status>
+          <Status v-for="status in statuses" :status="status" v-bind:stopovers="stopovers"
+                  v-bind:key="status.id"></Status>
         </div>
       </div>
     </div>
@@ -57,16 +58,18 @@ export default {
   methods: {
     fetchData() {
       const oldStatuses = this.statuses;
-      this.error   = this.statuses = null;
+      this.error        = this.statuses = null;
       axios
           .get("/statuses")
           .then((response) => {
-            this.loading  = false;
+            this.loading = false;
             // FixMe: Why is this comparison not working correctly?
-            if(oldStatuses != response.data.data) {
+            if (oldStatuses != response.data.data) {
               this.statuses = response.data.data;
-              this.fetchPolyline();
-              this.fetchStopovers();
+              if (this.statuses.length) {
+                this.fetchPolyline();
+                this.fetchStopovers();
+              }
             }
           })
           .catch((error) => {
