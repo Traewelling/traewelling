@@ -4,6 +4,9 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-7">
+            <div class="loading" v-if="loading">
+              {{ i18n.get("_.vue.loading") }}
+            </div>
             <div class="card" v-if="hafasTrip != null">
               <div class="card-header" data-linename=" $hafasTrip->linename "
                    data-startname=" $hafasTrip->originStation->name " data-start=" request()->start "
@@ -82,7 +85,11 @@
         </div>
       </div>
     </transition>
-    <CheckInModal ref="checkInModal"></CheckInModal>
+    <CheckInModal
+        ref="checkInModal"
+        :line-name="hafasTrip.lineName"
+        :destination="hafasTrip.destination.name"
+    ></CheckInModal>
   </div>
 </template>
 
