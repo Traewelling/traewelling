@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class StatusController extends Controller
@@ -205,8 +206,8 @@ class StatusController extends Controller
      * @param User $user
      * @param Status $status
      * @return Like
-     * @todo refactor this to take status IDs instead of models
      * @throws StatusAlreadyLikedException|PermissionException
+     * @todo refactor this to take status IDs instead of models
      */
     public static function createLike(User $user, Status $status): Like {
 
@@ -227,18 +228,17 @@ class StatusController extends Controller
     }
 
     /**
-     * @param $user
-     * @param $statusId
-     * @return bool
-     * @todo Refactor this to throw exceptions instead of bools
+     * @param User $user
+     * @param int $statusId
+     * @return void
+     * @throws InvalidArgumentException
      */
-    public static function DestroyLike($user, $statusId): bool {
+    public static function destroyLike(User $user, int $statusId): void {
         $like = $user->likes()->where('status_id', $statusId)->first();
-        if ($like) {
-            $like->delete();
-            return true;
+        if ($like == null) {
+            throw new InvalidArgumentException(__('controller.status.like-not-found'));
         }
-        return false;
+        $like->delete();
     }
 
     public static function getLikes($statusId) {
