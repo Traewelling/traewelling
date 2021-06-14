@@ -91,7 +91,7 @@ abstract class GeoController extends Controller
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance     += self::calculateDistanceBetweenCoordinates(
+            $distance    += self::calculateDistanceBetweenCoordinates(
                 latitudeA: $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
                 latitudeB: $stopover->trainStation->latitude,
