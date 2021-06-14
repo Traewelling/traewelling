@@ -290,22 +290,4 @@ abstract class HafasController extends Controller
 
         return $hafasTrip;
     }
-
-    /**
-     * @param $latitude
-     * @param $longitude
-     * @return mixed|null
-     * @throws GuzzleException
-     */
-    public static function getStationsByCoordinates($latitude, $longitude) {
-        $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
-        $json     = json_decode($response->getBody()->getContents());
-dd($json);
-        if (count($json) === 0) {
-            return null;
-        }
-
-        return $json[0];
-    }
 }
