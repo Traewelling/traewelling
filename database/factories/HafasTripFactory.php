@@ -104,6 +104,9 @@ class HafasTripFactory extends Factory
      */
     public function configure() {
         return $this->afterCreating(function(HafasTrip $hafasTrip) {
+            if(!isset($hafasTrip->stopovers)) {
+                return;
+            }
             $stopOvers = json_decode($hafasTrip->stopovers);
             $startTime = $hafasTrip->departure;
             $endTime   = $hafasTrip->arrival;
