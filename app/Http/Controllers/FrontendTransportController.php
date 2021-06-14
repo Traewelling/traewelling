@@ -64,15 +64,19 @@ class FrontendTransportController extends Controller
 
     public function StationByCoordinates(Request $request): RedirectResponse {
         $validatedInput = $request->validate([
-                                                 'latitude'  => 'required|numeric|min:-180|max:180',
-                                                 'longitude' => 'required|numeric|min:-180|max:180'
+                                                 'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
+                                                 'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
                                              ]);
+        try {
+            $nearestStation = HafasController::getNearbyStations(
+                $validatedInput['latitude'], $validatedInput['longitude'], 1
+            )->first();
+        } catch (HafasException) {
+            return back()->with('error', __('messages.exception.generalHafas'));
+        }
 
-        $nearestStation = HafasController::getNearbyStations(
-            $validatedInput['latitude'], $validatedInput['longitude'], 1
-        )->first();
         if ($nearestStation === null) {
-            return redirect()->back()->with('error', __('controller.transport.no-station-found'));
+            return back()->with('error', __('controller.transport.no-station-found'));
         }
 
         return redirect()->route('trains.stationboard', [
