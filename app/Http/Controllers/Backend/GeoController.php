@@ -75,10 +75,10 @@ abstract class GeoController extends Controller
         TrainStopover $destination
     ): float {
         $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
-        $originStopoverIndex      = $stopovers->search(function ($item) use($origin) {
+        $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
             return $item->id == $origin->id;
         });
-        $destinationStopoverIndex = $stopovers->search(function ($item) use($destination) {
+        $destinationStopoverIndex = $stopovers->search(function($item) use ($destination) {
             return $item->id == $destination->id;
         });
 
@@ -91,7 +91,7 @@ abstract class GeoController extends Controller
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance += self::calculateDistanceBetweenCoordinates(
+            $distance     += self::calculateDistanceBetweenCoordinates(
                 latitudeA: $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
                 latitudeB: $stopover->trainStation->latitude,
