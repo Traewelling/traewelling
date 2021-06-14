@@ -179,7 +179,6 @@ class FrontendStatusController extends Controller
     /**
      * @param $status
      * @return mixed
-     * @todo move to Status Model and return StopOver instead of String
      * @deprecated when vue is implemented
      */
     public static function nextStation(&$status) {

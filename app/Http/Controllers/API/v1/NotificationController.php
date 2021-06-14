@@ -13,18 +13,19 @@ class NotificationController extends ResponseController
      * Get the amount of (unread) messages
      * @return JsonResponse
      */
-    public function count():JsonResponse {
+    public function count(): JsonResponse {
         return $this->sendv1Response(NotificationBackend::count());
     }
 
     /**
      * Get all latest Messages
      * @TODO make this json-only (remove render)
+     * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
         if ($request->get('render')) {
-            $notificationResponse = (new \App\Http\Controllers\NotificationController)->renderLatest();
+            $notificationResponse = NotificationBackend::renderLatest();
         } else {
             $notificationResponse = NotificationBackend::latest();
         }
