@@ -4,9 +4,12 @@ on:
   push:
     branches-ignore:
       - 'i18n'
+      - 'i18n-push'
   pull_request:
+    types: [opened, reopened]
     branches-ignore:
       - 'i18n'
+      - 'i18n-push'
 
 jobs:
   laravel-tests:
