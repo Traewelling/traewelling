@@ -243,7 +243,6 @@ abstract class HafasController extends Controller
                                                    'origin'      => $origin->ibnr,
                                                    'destination' => $destination->ibnr,
                                                    'stopovers'   => json_encode($tripJson->stopovers),
-                                                   'polyline'    => $polyline->hash, //TODO: Remove after migration
                                                    'polyline_id' => $polyline->id,
                                                    'departure'   => $tripJson->plannedDeparture,
                                                    'arrival'     => $tripJson->plannedArrival,

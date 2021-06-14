@@ -15,7 +15,7 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'operator_id', 'origin', 'destination',
-        'stopovers', 'polyline', 'polyline_id', 'departure', 'arrival', 'delay'
+        'stopovers', 'polyline_id', 'departure', 'arrival', 'delay'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];

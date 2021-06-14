@@ -93,7 +93,6 @@ class HafasTripFactory extends Factory
             'departure'   => Carbon::now()->subMinutes(15)->format('c'),
             'arrival'     => Carbon::now()->addMinutes(80)->format('c'),
             'delay'       => null,
-            'polyline'    => $polyline->hash,
             'polyline_id' => $polyline->id,
         ];
     }
