@@ -422,5 +422,8 @@
     "events.notice": "Le évènement va être publié dès que l’équipe Träwelling l’aurait approuvé.",
     "leaderboard.notice": "Les données indiquées se réfèrent à tes enregistrements pendant les derniers 7 jours.",
     "localisation.not-available": "Désolé, ce contenu n’est pas encore disponible en français.",
-    "status.visibility.0": "Public"
+    "status.visibility.0": "Public",
+    "status.visibility.3": "Privé",
+    "date-format": "DD/MM/YYYY",
+    "transport_types.regionalExp": "TER"
 }
