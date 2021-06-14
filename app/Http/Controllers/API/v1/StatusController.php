@@ -60,7 +60,7 @@ class StatusController extends ResponseController
     public function getPolyline(string $parameters): JsonResponse {
         $ids      = explode(',', $parameters, 50);
         $mapLines = Status::whereIn('id', $ids)
-                          ->with('trainCheckin.HafasTrip.getPolyLine')
+                          ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
                           ->reject(function($status) {
                               return ($status->user->userInvisibleToMe || $status->statusInvisibleToMe);

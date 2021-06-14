@@ -146,8 +146,8 @@ abstract class HafasController extends Controller
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
                 'query' => [
-                    'when'                            => $when->toIso8601String(),
-                    'duration'                        => $duration,
+                    'when'                => $when->toIso8601String(),
+                    'duration'            => $duration,
                     HTT::NATIONAL_EXPRESS => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
                     HTT::NATIONAL         => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
                     HTT::REGIONAL_EXP     => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
@@ -231,7 +231,7 @@ abstract class HafasController extends Controller
             $tripJson->line->id = '';
         }
 
-        $polylineHash = TransportController::getPolylineHash(json_encode($tripJson->polyline))->hash;
+        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
 
         $hafasTrip = HafasTrip::updateOrCreate([
                                                    'trip_id' => $tripID
@@ -243,7 +243,8 @@ abstract class HafasController extends Controller
                                                    'origin'      => $origin->ibnr,
                                                    'destination' => $destination->ibnr,
                                                    'stopovers'   => json_encode($tripJson->stopovers),
-                                                   'polyline'    => $polylineHash,
+                                                   'polyline'    => $polyline->hash, //TODO: Remove after migration
+                                                   'polyline_id' => $polyline->id,
                                                    'departure'   => $tripJson->plannedDeparture,
                                                    'arrival'     => $tripJson->plannedArrival,
                                                    'delay'       => $tripJson->arrivalDelay ?? null
