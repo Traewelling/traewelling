@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 
 class RemovePolylineHashFromHafasTrips extends Migration
@@ -9,7 +10,9 @@ class RemovePolylineHashFromHafasTrips extends Migration
 
     public function up(): void {
         Schema::table('hafas_trips', function(Blueprint $table) {
-            $table->dropForeign(['polyline']);
+            if (!App::runningUnitTests()) {
+                $table->dropForeign(['polyline']);
+            }
             $table->dropColumn(['polyline']);
         });
     }
