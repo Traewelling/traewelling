@@ -4,10 +4,10 @@
 
 Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
 
-> Levin Baumann<br>
-> Kanonierstraße 7<br>
-> 76185 Karlsruhe<br>
-> levin@herrlev.in
+> NAME<br>
+> STREET<br>
+> CITY<br>
+> EMAIL
 
 Die verantwortliche Stelle entscheidet allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von
 personenbezogenen Daten (z.B. Namen, Kontaktdaten o. Ä.).

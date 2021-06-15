@@ -9,6 +9,7 @@ use Database\Seeders\Blogposts\Blogpost20140716;
 use Database\Seeders\Blogposts\Blogpost20170801;
 use Database\Seeders\Blogposts\Blogpost20191124;
 use Database\Seeders\Blogposts\Blogpost20200220;
+use Database\Seeders\Privacy\PrivacyAgreementSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +27,8 @@ class DatabaseSeeder extends Seeder
         $this->call(EventSeeder::class);
         $this->call(HafasTripSeeder::class);
         $this->call(TrainCheckinSeeder::class);
+
+        $this->call(PrivacyAgreementSeeder::class);
 
         //TODO: Until we have a new solution for our blog this will be the best way... urgh..
         $this->call(Blogpost20131102::class);

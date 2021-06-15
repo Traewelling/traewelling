@@ -4,10 +4,10 @@
 
 The responsible body for data processing on this website is:
 
-> Levin Baumann<br>
-> Kanonierstraße 7<br>
-> 76185 Karlsruhe<br>
-> levin@herrlev.in
+> NAME<br>
+> STREET<br>
+> CITY<br>
+> EMAIL
 
 The responsible body alone or together with others decides on the purposes and means of processing personal data (e.g.
 names, contact data, etc.).
