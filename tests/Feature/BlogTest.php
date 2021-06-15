@@ -18,6 +18,11 @@ class BlogTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void {
+        parent::setUp();
+        $this->artisan('db:seed --class=Database\\\\Seeders\\\\Blogposts\\\\BlogpostSeeder');
+    }
+
     /** Get the number of posts from the response. */
     private function getBlogpostsCount($response) {
         return $response->baseResponse->original->getData()['blogposts']->count();

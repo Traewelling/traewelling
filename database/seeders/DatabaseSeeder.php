@@ -3,12 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\TrainStation;
-use Database\Seeders\Blogposts\Blogpost20131102;
-use Database\Seeders\Blogposts\Blogpost20131129;
-use Database\Seeders\Blogposts\Blogpost20140716;
-use Database\Seeders\Blogposts\Blogpost20170801;
-use Database\Seeders\Blogposts\Blogpost20191124;
-use Database\Seeders\Blogposts\Blogpost20200220;
+use Database\Seeders\Blogposts\BlogpostSeeder;
 use Database\Seeders\Privacy\PrivacyAgreementSeeder;
 use Illuminate\Database\Seeder;
 
@@ -29,13 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TrainCheckinSeeder::class);
 
         $this->call(PrivacyAgreementSeeder::class);
-
-        //TODO: Until we have a new solution for our blog this will be the best way... urgh..
-        $this->call(Blogpost20131102::class);
-        $this->call(Blogpost20131129::class);
-        $this->call(Blogpost20140716::class);
-        $this->call(Blogpost20170801::class);
-        $this->call(Blogpost20191124::class);
-        $this->call(Blogpost20200220::class);
+        $this->call(BlogpostSeeder::class);
     }
 }

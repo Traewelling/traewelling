@@ -7,7 +7,6 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
-use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use Carbon\Carbon;
