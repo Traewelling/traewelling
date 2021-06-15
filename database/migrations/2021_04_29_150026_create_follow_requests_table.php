@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateFollowRequestsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up(): void {
         Schema::create('follow_requests', function(Blueprint $table) {
             $table->id();
@@ -30,11 +26,6 @@ class CreateFollowRequestsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down(): void {
         Schema::dropIfExists('follow_requests');
     }

@@ -4,6 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * @todo Squash to hafas_trips creation after resorting tables
+ * Class AddHafasOperatorToHafasTrips
+ */
 class AddHafasOperatorToHafasTrips extends Migration
 {
     public function up(): void {

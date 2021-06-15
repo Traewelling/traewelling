@@ -6,28 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSessionsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Schema::create('sessions', function(Blueprint $table) {
-            $table->string('id')->unique();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('id')->primary();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->text('payload');
-            $table->integer('last_activity');
+            $table->integer('last_activity')->index();
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('sessions');
     }
 }

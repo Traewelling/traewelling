@@ -5,12 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class InsertBlogpostOpenSource extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Blogpost::create([
                              'title'          => 'Träwelling goes Open Source!',
                              'slug'           => 'open-source-announcement',
@@ -36,12 +32,7 @@ Wir haben die [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html) ausgewählt, 
                          ]);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         //
     }
 }

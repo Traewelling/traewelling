@@ -4,22 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * @todo Squash to statuses creation after resorting tables
+ * Class AddForeignKeysToStatuses
+ */
 class AddForeignKeysToStatuses extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
-        Schema::table('statuses', function(Blueprint $table) {
-            $table->bigInteger('user_id')->unsigned()->change();
 
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
+    public function up(): void {
+        Schema::table('statuses', function(Blueprint $table) {
             $table->foreign('event_id')
                   ->references('id')
                   ->on('events')
@@ -28,18 +21,9 @@ class AddForeignKeysToStatuses extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::table('statuses', function(Blueprint $table) {
-            $table->dropForeign("statuses_user_id_foreign");
-            $table->dropForeign("statuses_event_id_foreign");
-        });
-        Schema::table('statuses', function(Blueprint $table) {
-            $table->integer('user_id')->unsigned()->change();
+            $table->dropForeign(['event_id']);
         });
     }
 }

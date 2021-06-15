@@ -5,12 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class InsertBlogpostRelease extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Blogpost::create([
                              'title'          => 'Träwelling-Release 1.0 - 2019',
                              'slug'           => 'traewelling-release-1-0',
@@ -81,12 +77,7 @@ P.S.: Wir sind derzeit etwas am "ausmisten": Wir haben die Absicht, alle alten A
                          ]);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         //
     }
 }

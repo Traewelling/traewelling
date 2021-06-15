@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\HafasController;
-use App\Models\TrainStopover;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTrainStopoversTable extends Migration
@@ -40,37 +37,6 @@ class CreateTrainStopoversTable extends Migration
                   ->on('train_stations')
                   ->cascadeOnUpdate();
         });
-
-        DB::table('hafas_trips')->orderBy('id')
-          ->whereNotNull('stopovers')
-          ->chunk(100, function($hafasTrips) {
-              foreach ($hafasTrips as $hafasTrip) {
-
-                  $stopovers = json_decode($hafasTrip->stopovers);
-
-                  foreach ($stopovers as $stopover) {
-
-                      $hafasStop = HafasController::parseHafasStopObject($stopover->stop);
-
-                      TrainStopover::updateOrCreate(
-                          [
-                              'trip_id'          => $hafasTrip->trip_id,
-                              'train_station_id' => $hafasStop->id
-                          ], [
-                              'arrival_planned'            => $stopover?->plannedArrival,
-                              'arrival_real'               => $stopover?->arrival,
-                              'arrival_platform_planned'   => $stopover?->plannedArrivalPlatform,
-                              'arrival_platform_real'      => $stopover?->arrivalPlatform,
-                              'departure_planned'          => $stopover?->plannedDeparture,
-                              'departure_real'             => $stopover?->departure,
-                              'departure_platform_planned' => $stopover?->plannedDeparturePlatform,
-                              'departure_platform_real'    => $stopover?->departurePlatform
-                          ]
-                      );
-                  }
-
-              }
-          });
     }
 
     public function down(): void {

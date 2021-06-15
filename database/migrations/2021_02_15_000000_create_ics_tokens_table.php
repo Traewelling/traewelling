@@ -10,7 +10,9 @@ class CreateIcsTokensTable extends Migration
         Schema::create('ics_tokens', function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('name')->default(null)->nullable();
             $table->uuid('token')->unique();
+            $table->timestamp('last_accessed')->default(null)->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

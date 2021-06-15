@@ -6,28 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateStatusesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Schema::create('statuses', function(Blueprint $table) {
             $table->id();
             $table->text('body')->nullable();
-            $table->integer('user_id')->unsigned();
-            $table->boolean('business')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedSmallInteger('business')->default(0);
+            $table->unsignedTinyInteger('visibility')->default(0);
             $table->string('type')->default('hafas');
+            $table->unsignedBigInteger('event_id')->nullable()->default(null);
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('statuses');
     }
 }

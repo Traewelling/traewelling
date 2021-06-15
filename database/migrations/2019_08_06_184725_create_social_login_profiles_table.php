@@ -6,16 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSocialLoginProfilesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Schema::create('social_login_profiles', function(Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->string('twitter_id')->nullable();
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('twitter_id')->nullable();
             $table->text('twitter_token')->nullable();
             $table->text('twitter_tokenSecret')->nullable();
             $table->string('mastodon_id')->nullable();
@@ -23,15 +19,16 @@ class CreateSocialLoginProfilesTable extends Migration
                   ->nullable();
             $table->text('mastodon_token')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('social_login_profiles');
     }
 }

@@ -6,12 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateMastodonServersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Schema::create('mastodon_servers', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('domain')->unique();
@@ -21,12 +17,7 @@ class CreateMastodonServersTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('mastodon_servers');
     }
 }

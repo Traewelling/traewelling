@@ -6,26 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePolyLinesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+
+    public function up(): void {
         Schema::create('poly_lines', function(Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('hash');
+            $table->id();
+            $table->string('hash')->unique();
             $table->json('polyline');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
+    public function down(): void {
         Schema::dropIfExists('poly_lines');
     }
 }
