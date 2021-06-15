@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +13,7 @@ class DatabaseSeeder extends Seeder
      * @return void
      */
     public function run() {
+        $this->call(PointsCalculationSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(FollowTableSeeder::class);
         TrainStation::factory()->count(50)->create();
