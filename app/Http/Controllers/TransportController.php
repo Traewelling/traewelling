@@ -7,6 +7,7 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Http\Controllers\Backend\GeoController;
 use App\Http\Resources\HafasTripResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -111,25 +112,6 @@ class TransportController extends Controller
             }
         }
         return null;
-    }
-
-    /**
-     * @param $latitude
-     * @param $longitude
-     * @return mixed|null
-     * @throws GuzzleException
-     * @todo move to HafasController
-     */
-    public static function StationByCoordinates($latitude, $longitude) {
-        $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-        $response = $client->request('GET', "stops/nearby?latitude=$latitude&longitude=$longitude&results=1");
-        $json     = json_decode($response->getBody()->getContents());
-
-        if (count($json) === 0) {
-            return null;
-        }
-
-        return $json[0];
     }
 
     private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
@@ -326,30 +308,8 @@ class TransportController extends Controller
         if ($offset1 === null || $offset2 === null) {
             throw new StationNotOnTripException();
         }
-        $polyline              = self::polyline($start, $destination, $hafasTrip->polyline);
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
-
-        $distance = self::distanceCalculation($originAttributes['stop']['location']['latitude'],
-                                              $originAttributes['stop']['location']['longitude'],
-                                              $destinationAttributes['stop']['location']['latitude'],
-                                              $destinationAttributes['stop']['location']['longitude']);
-        if ($polyline !== null) {
-            $distance = 0.0;
-            foreach ($polyline as $key => $point) {
-                if ($key === 0) {
-                    continue;
-                }
-                $distance += self::distanceCalculation(
-                    $point['geometry']['coordinates'][0],
-                    $point['geometry']['coordinates'][1],
-                    $polyline[$key - 1]['geometry']['coordinates'][0],
-                    $polyline[$key - 1]['geometry']['coordinates'][1]
-                );
-                // I really don't know what i did here or if there's a better version for this but fuck it,
-                // it's 5am and it works.
-            }
-        }
 
         $originStation      = self::getTrainStation(
             $originAttributes['stop']['id'],
@@ -363,7 +323,22 @@ class TransportController extends Controller
             $destinationAttributes['stop']['location']['latitude'],
             $destinationAttributes['stop']['location']['longitude']
         );
-        $points             = self::CalculateTrainPoints(
+
+        $departureStopover = $hafasTrip->stopoversNEW
+            ->where('train_station_id', $originStation->id)
+            ->where('departure_planned', $departure)
+            ->first();
+        $arrivalStopover   = $hafasTrip->stopoversNEW
+            ->where('train_station_id', $destinationStation->id)
+            ->where('arrival_planned', $arrival)
+            ->first();
+
+        $distance = 0;
+        if ($departureStopover != null && $arrivalStopover != null) {
+            $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
+        }
+
+        $points = self::CalculateTrainPoints(
             $distance,
             $hafasTrip->category,
             $stopovers[$offset1]['departure'],

@@ -8,10 +8,10 @@
   background-color: #1da1f2;
 }
 
+.btn-outline-twitter:active,
 .btn-check:active + .btn-outline-twitter,
 .btn-check:checked + .btn-outline-twitter,
 .btn-outline-twitter.active,
-.btn-outline-twitter:active,
 .show > .btn-outline-twitter.dropdown-toggle {
   color: #fff;
   background-color: #1da1f2;
@@ -27,10 +27,10 @@
   background-color: #2a90d9;
 }
 
+.btn-outline-mastodon:active,
 .btn-check:active + .btn-outline-mastodon,
 .btn-check:checked + .btn-outline-mastodon,
 .btn-outline-mastodon.active,
-.btn-outline-mastodon:active,
 .show > .btn-outline-mastodon.dropdown-toggle {
   color: #fff;
   background-color: #2a90d9;
@@ -41,10 +41,10 @@
   border-color: #495057;
 }
 
+.btn-outline-grey:active,
 .btn-check:active + .btn-outline-grey,
 .btn-check:checked + .btn-outline-grey,
 .btn-outline-grey.active,
-.btn-outline-grey:active,
 .show > .btn-outline-grey.dropdown-toggle {
   color: #fff;
   background-color: #495057;

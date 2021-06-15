@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\PermissionException;
 use App\Enum\StatusVisibility;
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +18,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FrontendStatusController extends Controller
@@ -105,12 +104,13 @@ class FrontendStatusController extends Controller
         }
     }
 
-    public function DestroyLike(Request $request) {
-        $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $request['statusId']);
-        if ($destroyLikeResponse === true) {
-            return response(__('controller.status.like-deleted'), 200);
+    public function DestroyLike(Request $request): Response {
+        try {
+            StatusBackend::destroyLike(Auth::user(), $request['statusId']);
+            return response(__('controller.status.like-deleted'));
+        } catch (InvalidArgumentException $exception) {
+            return response($exception->getMessage(), 404);
         }
-        return response(__('controller.status.like-not-found'), 404);
     }
 
     public function exportLanding(): Renderable {
@@ -149,7 +149,7 @@ class FrontendStatusController extends Controller
     public function statusesByEvent(string $event): Renderable {
         $response = StatusController::getStatusesByEvent($event, null);
 
-        if($response['event']->end->isPast() && $response['statuses']->count() == 0) {
+        if ($response['event']->end->isPast() && $response['statuses']->count() == 0) {
             abort(404);
         }
 
@@ -179,7 +179,6 @@ class FrontendStatusController extends Controller
     /**
      * @param $status
      * @return mixed
-     * @todo move to Status Model and return StopOver instead of String
      * @deprecated when vue is implemented
      */
     public static function nextStation(&$status) {
