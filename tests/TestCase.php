@@ -21,6 +21,11 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected function setUp(): void {
+        parent::setUp();
+        $this->artisan('db:seed');
+    }
+
     public function createGDPRAckedUser(array $defaultValues = []): User {
         $user = User::factory($defaultValues)->create();
         $this->acceptGDPR($user);
