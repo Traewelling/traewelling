@@ -12,6 +12,11 @@ class TransportControllerTest extends TestCase
 
     use RefreshDatabase;
 
+    protected function setUp(): void {
+        parent::setUp();
+        $this->artisan('db:seed --class=PointsCalculationSeeder');
+    }
+
     /**
      * Just the good things.
      */
