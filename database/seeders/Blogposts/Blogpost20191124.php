@@ -1,12 +1,14 @@
 <?php
 
-use App\Models\Blogpost;
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders\Blogposts;
 
-class InsertBlogpostRelease extends Migration
+use App\Models\Blogpost;
+use Illuminate\Database\Seeder;
+
+class Blogpost20191124 extends Seeder
 {
 
-    public function up(): void {
+    public function run(): void {
         Blogpost::create([
                              'title'          => 'Träwelling-Release 1.0 - 2019',
                              'slug'           => 'traewelling-release-1-0',
@@ -75,9 +77,5 @@ Karl[<i class="fab fa-mastodon"></i>](https://uelfte.club/@der_karl)
 
 P.S.: Wir sind derzeit etwas am "ausmisten": Wir haben die Absicht, alle alten Accounts, die mit nicht mehr existenten Twitter-Accounts verbunden sind, zu deaktivieren. Bitte meldet euch, wenn ihr einen alten Account habt, den ihr gerne mit einem aktuellen Twitter-Account verbinden möchtet.'
                          ]);
-    }
-
-    public function down(): void {
-        //
     }
 }

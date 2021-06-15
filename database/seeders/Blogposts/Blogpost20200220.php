@@ -1,12 +1,14 @@
 <?php
 
-use App\Models\Blogpost;
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders\Blogposts;
 
-class InsertBlogpostOpenSource extends Migration
+use App\Models\Blogpost;
+use Illuminate\Database\Seeder;
+
+class Blogpost20200220 extends Seeder
 {
 
-    public function up(): void {
+    public function run(): void {
         Blogpost::create([
                              'title'          => 'Träwelling goes Open Source!',
                              'slug'           => 'open-source-announcement',
@@ -30,9 +32,5 @@ Wenn Du Fragen hast, schreib einfach an [@traewelling](https://twitter.com/traew
 
 Wir haben die [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html) ausgewählt, weil wir mit unseren Entwicklungen öffentlich sein möchten und das von unseren Entwicklern auch erwarten. Bitte nimm den Code nicht und setze Deine eigene private Instanz - nutze stattdessen Dein Wissen, um Träwelling für alle Nutzer*innen zu verbessern.'
                          ]);
-    }
-
-    public function down(): void {
-        //
     }
 }
