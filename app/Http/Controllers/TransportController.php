@@ -8,7 +8,9 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -21,11 +23,13 @@ use App\Notifications\MastodonNotSent;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
+use Carbon\Traits\Creator;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -210,7 +214,7 @@ class TransportController extends Controller
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        if ($hafasTrip->stopoversNEW->where('trainStation.ibnr', $start)->count() == 0) {
+        if ($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
             throw new StationNotOnTripException();
         }
         return new HafasTripResource($hafasTrip);
@@ -240,7 +244,6 @@ class TransportController extends Controller
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        // print_r([$departureTime - 20*60 < $now, $now < $arrivalTime]);
         if (($departureTime - 20 * 60) < $now && $now < $arrivalTime) {
             return $points;
         }
@@ -277,6 +280,7 @@ class TransportController extends Controller
      * @throws CheckInCollisionException
      * @throws HafasException
      * @throws StationNotOnTripException
+     * @deprecated
      */
     #[ArrayShape([
         'success'              => "bool",
@@ -311,13 +315,13 @@ class TransportController extends Controller
         $originAttributes      = $stopovers[$offset1];
         $destinationAttributes = $stopovers[$offset2];
 
-        $originStation      = self::getTrainStation(
+        $originStation      = HafasController::getTrainStation(
             $originAttributes['stop']['id'],
             $originAttributes['stop']['name'],
             $originAttributes['stop']['location']['latitude'],
             $originAttributes['stop']['location']['longitude']
         );
-        $destinationStation = self::getTrainStation(
+        $destinationStation = HafasController::getTrainStation(
             $destinationAttributes['stop']['id'],
             $destinationAttributes['stop']['name'],
             $destinationAttributes['stop']['location']['latitude'],
@@ -431,10 +435,89 @@ class TransportController extends Controller
         ];
     }
 
+
+    /**
+     * @throws StationNotOnTripException
+     * @throws CheckInCollisionException
+     * @throws ModelNotFoundException
+     * @api v1
+     */
+    public static function createTrainCheckin(
+        Status $status,
+        HafasTrip $trip,
+        $entryStop,
+        $exitStop,
+        Carbon $departure = null,
+        Carbon $arrival = null,
+        bool $ibnr = false): array {
+        $trip->load('stopoversNEW');
+
+        if (!$ibnr) {
+            $firstStop = $trip->stopoversNEW->where('train_station_id', $entryStop)
+                                            ->where('departure_planned', $departure)->first();
+
+            $lastStop = $trip->stopoversNEW->where('train_station_id', $exitStop)
+                                           ->where('arrival_planned', $arrival)->first();
+        } else {
+            //will this work @kris?
+            $firstStop = $trip->stopoversNEW->where('train_station_id.ibnr', $entryStop)
+                                            ->where('departure_planned', $departure)->first();
+
+            $lastStop = $trip->stopoversNEW->where('train_station_id.ibnr', $exitStop)
+                                           ->where('arrival_planned', $arrival)->first();
+        }
+
+        if (empty($firstStop) || empty($lastStop)) {
+            throw new StationNotOnTripException();
+        }
+
+        $overlapping = self::getOverlappingCheckIns(
+            user: Auth::user(),
+            start: $firstStop->departure,
+            end: $lastStop->arrival
+        );
+        if ($overlapping->count() > 0) {
+            throw new CheckInCollisionException($overlapping->first());
+        }
+
+        $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
+
+        $points = self::CalculateTrainPoints(
+            distance: $distance,
+            category: $trip->category,
+            departure: $firstStop->planned_departure,
+            arrival: $lastStop->planned_arrival,
+            delay: $trip->delay
+        );
+
+        $trainCheckin = TrainCheckin::create([
+                                                 'status_id'   => $status->id,
+                                                 'trip_id'     => $trip->trip_id,
+                                                 'origin'      => $firstStop->trainStation->ibnr,
+                                                 'destination' => $lastStop->trainStation->ibnr,
+                                                 'distance'    => $distance,
+                                                 'delay'       => $trip->delay,
+                                                 'points'      => $points,
+                                                 'departure'   => $firstStop->departure_planned,
+                                                 'arrival'     => $lastStop->arrival_planned
+                                             ]);
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+            $otherStatus->user->notify(new UserJoinedConnection(statusId: $status->id,
+                linename: $trip->linename,
+                origin: $firstStop->name,
+                destination: $lastStop->name));
+        }
+
+        return [
+            'status' => new StatusResource($status),
+            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
+        ];
+    }
+
     /**
      * @param Status $status
      */
-    private static function postTwitter(Status $status): void {
+    public static function postTwitter(Status $status): void {
         if (config('trwl.post_social') !== true) {
             return;
         }
@@ -477,7 +560,7 @@ class TransportController extends Controller
     /**
      * @param Status $status
      */
-    private static function postMastodon(Status $status): void {
+    public static function postMastodon(Status $status): void {
         if (config('trwl.post_social') !== true) {
             return;
         }
@@ -495,36 +578,6 @@ class TransportController extends Controller
         } catch (Exception $e) {
             Log::error($e);
         }
-    }
-
-    /**
-     * Get the TrainStation Model from Database
-     * @param int $ibnr
-     * @param string|null $name
-     * @param float|null $latitude
-     * @param float|null $longitude
-     * @return TrainStation
-     * @throws HafasException
-     */
-    public static function getTrainStation(int $ibnr,
-                                           string $name = null,
-                                           float $latitude = null,
-                                           float $longitude = null): TrainStation {
-
-        if ($name === null || $latitude === null || $longitude === null) {
-            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if ($dbTrainStation !== null) {
-                return $dbTrainStation;
-            }
-            return HafasController::fetchTrainStation($ibnr);
-        }
-        return TrainStation::updateOrCreate([
-                                                'ibnr' => $ibnr
-                                            ], [
-                                                'name'      => $name,
-                                                'latitude'  => $latitude,
-                                                'longitude' => $longitude
-                                            ]);
     }
 
     /**
@@ -568,7 +621,7 @@ class TransportController extends Controller
      * @throws HafasException
      */
     public static function setHome(User $user, int $ibnr): TrainStation {
-        $trainStation = self::getTrainStation($ibnr);
+        $trainStation = HafasController::getTrainStation($ibnr);
 
         $user->update([
                           'home_id' => $trainStation->id

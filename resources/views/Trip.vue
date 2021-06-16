@@ -47,7 +47,7 @@
                         data-ibnr="$stop['stop']['id']"
                         data-stopname="$stop['stop']['name']"
                         data-arrival="$stop['plannedArrival']"
-                        @click="showModal">
+                        @click="showModal(stop)">
                       <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}">{{ stop.name }}</td>
                       <td v-if="!stop.cancelled">
                       <span v-if="stop.arrivalPlanned">
@@ -87,8 +87,8 @@
     </transition>
     <CheckInModal
         ref="checkInModal"
-        :line-name="hafasTrip.lineName"
-        :destination="hafasTrip.destination.name"
+        :destination="destination"
+        :train-data="trainData"
     ></CheckInModal>
   </div>
 </template>
@@ -107,7 +107,16 @@ export default {
       images: travelImages,
       hafasTrip: null,
       stopovers: null,
-      moment: moment
+      moment: moment,
+      destination: null,
+      trainData: {
+        tripID: 0,
+        lineName: '',
+        start: 0,
+        destination: 0,
+        departure: 0,
+        arrival: 0
+      }
     };
   },
   mounted() {
@@ -132,7 +141,16 @@ export default {
             console.error(error);
           });
     },
-    showModal() {
+    showModal(stop) {
+      this.trainData = {
+        tripID: this.$route.query.tripID,
+        lineName: this.$route.query.lineName,
+        start: this.$route.query.start,
+        destination: stop.id,
+        departure: this.$route.query.departure,
+        arrival: stop.arrivalPlanned
+      }
+      this.destination = stop.name;
       this.$refs.checkInModal.show();
     }
   }

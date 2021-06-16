@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class TransportController extends ResponseController
 {
@@ -78,76 +80,72 @@ class TransportController extends ResponseController
     }
 
 
-    public function create(Request $request) {
+    public function create(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'tripID'      => 'required',
-            'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
-            'start'       => ['required', 'numeric'],
-            'destination' => ['required', 'numeric'],
             'body'        => 'max:280',
+            'business'    => Rule::in(Business::getList()),
+            'visibility'  => Rule::in(StatusVisibility::getList()),
+            'event'       => 'integer',
             'tweet'       => 'boolean',
             'toot'        => 'boolean',
-            //nullable, so that it is not a breaking change
-            'departure'   => ['nullable', 'date'],
-            'arrival'     => ['nullable', 'date'],
+            'ibnr'        => 'boolean',
+            'tripID'      => 'required',
+            'lineName'    => 'required',
+            'start'       => ['required', 'numeric'],
+            'destination' => ['required', 'numeric'],
+            'departure'   => ['required', 'date'],
+            'arrival'     => ['required', 'date'],
         ]);
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
-        $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
-
-        if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
-            return $this->sendError('Please specify the trip with lineName.', 400);
-        } elseif ($hafasTrip == null) {
-            try {
-                $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
-            } catch (HafasException $exception) {
-                return $this->sendError($exception->getMessage(), 400);
-            }
-        }
 
         try {
-            $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $hafasTrip->trip_id,
-                $request->input('start'),
-                $request->input('destination'),
-                $request->input('body'),
-                auth()->user(),
-                0,
-                $request->input('tweet'),
-                $request->input('toot'),
-                StatusVisibility::PUBLIC,
-                0,
-                isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
-                isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
+            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+
+            $status = \App\Http\Controllers\StatusController::createStatus(
+                user: auth()->user(),
+                business: $request->input('business') ?? 0,
+                visibility: $request->input('visibility') ?? StatusVisibility::PUBLIC,
+                body: $request->input('body'),
+                eventId: $request->input('event')
             );
 
-            return $this->sendResponse([
-                                           'distance'             => $trainCheckinResponse['distance'],
-                                           'duration'             => $trainCheckinResponse['duration'],
-                                           'statusId'             => $trainCheckinResponse['statusId'],
-                                           'points'               => $trainCheckinResponse['points'],
-                                           'lineName'             => $trainCheckinResponse['lineName'],
-                                           'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
-                                               ->map(function($status) {
-                                                   return $status->user;
-                                               })
-                                       ]);
+            $trainCheckinResponse = TransportBackend::createTrainCheckin(
+                status: $status,
+                trip: $hafasTrip,
+                entryStop: $request->input('start'),
+                exitStop: $request->input('destination'),
+                departure: Carbon::parse($request->input('departure')),
+                arrival: Carbon::parse($request->input('arrival')),
+                ibnr: $request->input('ibnr') ?? false
+            );
 
+            if ($request->input('tweet')) {
+                TransportBackend::postTwitter($status);
+            }
+            if ($request->input('toot')) {
+                TransportBackend::postMastodon($status);
+            }
+
+            $trainCheckinResponse['alsoOnThisConnection']->map(function($status) {
+                return $status->user;
+            });
+
+            return $this->sendv1Response($trainCheckinResponse);
         } catch (CheckInCollisionException $e) {
-
+            $status?->delete();
             return $this->sendError([
                                         'status_id' => $e->getCollision()->status_id,
                                         'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {
-            return $this->sendError('Given stations are not on the trip.', 400);
-        } catch (Throwable $exception) {
-            report($exception);
-            return $this->sendError('Unknown Error occured', 500);
+            $status?->delete();
+            return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
+        } catch (HafasException $exception) {
+            $status?->delete();
+            return $this->sendError($exception->getMessage(), 400);
         }
-
     }
-
 }
