@@ -100,7 +100,7 @@ class TransportController extends ResponseController
         }
 
         try {
-            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+
 
             $status = StatusBackend::createStatus(
                 user: auth()->user(),
