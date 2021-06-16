@@ -100,8 +100,6 @@ class TransportController extends ResponseController
         }
 
         try {
-
-
             $status = StatusBackend::createStatus(
                 user: auth()->user(),
                 business: $request->input('business') ?? 0,
@@ -109,6 +107,8 @@ class TransportController extends ResponseController
                 body: $request->input('body'),
                 eventId: $request->input('eventID')
             );
+
+            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
 
             $trainCheckinResponse = TransportBackend::createTrainCheckin(
                 status: $status,
