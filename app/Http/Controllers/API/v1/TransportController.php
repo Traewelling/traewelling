@@ -84,7 +84,7 @@ class TransportController extends ResponseController
             'body'        => ['nullable', 'max:280'],
             'business'    => ['nullable', Rule::in(Business::getList())],
             'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
-            'eventID'       => ['nullable', 'integer', 'exists:events,id'],
+            'eventID'     => ['nullable', 'integer', 'exists:events,id'],
             'tweet'       => ['nullable', 'boolean'],
             'toot'        => ['nullable', 'boolean'],
             'ibnr'        => ['nullable', 'boolean'],
