@@ -14,6 +14,13 @@ class CreatePolyLinesTable extends Migration
             $table->json('polyline');
             $table->timestamps();
         });
+
+        //TODO: Move to hafas_trips table creation after resorting
+        Schema::table('hafas_trips', function(Blueprint $table) {
+            $table->foreign('polyline_id')
+                  ->references('id')
+                  ->on('poly_lines');
+        });
     }
 
     public function down(): void {
