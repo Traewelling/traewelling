@@ -20,8 +20,8 @@ class AddForeignKeysToHafasTrips extends Migration
                   ->references('ibnr')//TODO: Should use 'id' instead...
                   ->on('train_stations');
 
-            $table->foreign('polyline')
-                  ->references('hash')//TODO: Should use 'id' instead...
+            $table->foreign('polyline_id')
+                  ->references('id')//TODO: Should use 'id' instead...
                   ->on('poly_lines');
         });
     }

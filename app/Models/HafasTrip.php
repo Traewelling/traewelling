@@ -15,13 +15,13 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'operator_id', 'origin', 'destination',
-        'stopovers', 'polyline', 'departure', 'arrival', 'delay'
+        'stopovers', 'polyline_id', 'departure', 'arrival', 'delay'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
 
-    public function getPolyLine(): HasOne {
-        return $this->hasOne(PolyLine::class, 'hash', 'polyline');
+    public function polyline(): HasOne {
+        return $this->hasOne(PolyLine::class, 'id', 'polyline_id');
     }
 
     public function originStation(): BelongsTo {

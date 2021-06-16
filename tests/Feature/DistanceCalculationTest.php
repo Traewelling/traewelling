@@ -56,7 +56,8 @@ class DistanceCalculationTest extends TestCase
                                             'origin'      => $origin->ibnr,
                                             'destination' => $destination->ibnr,
                                             'stopovers'   => null,
-                                            'polyline'    => null,
+                                            'polyline'    => null, //TODO: Remove after migration
+                                            'polyline_id' => null,
                                         ])->create();
 
         $originStopover      = TrainStopover::factory([
@@ -95,7 +96,8 @@ class DistanceCalculationTest extends TestCase
         $hafasTrip = HafasTrip::factory([
                                             'origin'      => $origin->ibnr,
                                             'destination' => $destination->ibnr,
-                                            'polyline'    => null,
+                                            'polyline'    => null, //TODO: Remove after migration
+                                            'polyline_id' => null,
                                             'stopovers'   => '[{"stop":{"type":"stop","id":"8700030","name":"Lille Flandres","location":{"type":"location","id":"8700030","latitude":50.637486,"longitude":3.071129}},"arrival":null,"plannedArrival":null,"arrivalDelay":null,"arrivalPlatform":null,"plannedArrivalPlatform":null,"departure":"2021-06-09T11:42:00+02:00","plannedDeparture":"2021-06-09T11:42:00+02:00","departureDelay":null,"departurePlatform":null,"plannedDeparturePlatform":null},{"stop":{"type":"stop","id":"8700014","name":"Paris Nord","location":{"type":"location","id":"8700014","latitude":48.880886,"longitude":2.354931}},"arrival":"2021-06-09T12:44:00+02:00","plannedArrival":"2021-06-09T12:44:00+02:00","arrivalDelay":null,"arrivalPlatform":null,"plannedArrivalPlatform":null,"departure":null,"plannedDeparture":null,"departureDelay":null,"departurePlatform":null,"plannedDeparturePlatform":null}]',
                                         ])->create();
 

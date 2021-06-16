@@ -20,20 +20,19 @@
 * Meet new friends who are on the same train
 * Find who's going to an event and is in your train
 * Automatic sharing to Twitter and Mastodon
-* Beautiful sharepics for e.g. Instagram Stories
-* All texts in German and English
+* Available in German, English, Polish, French and Dutch
 
 ## Set up an instance
 
-We're using the [Laravel framework](https://laravel.com/docs/8.x) which depends on:
+We're using the [Laravel framework](https://laravel.com/docs/) which depends on:
 
 * PHP 8.0 (or higher)
-  * PHP GD library 
+	* PHP GD library
 * Composer
 * NodeJS
-  * [npm](https://www.npmjs.com/)
-* A database of choice, e.g. MariaDB or SQLite (preferrably MariaDB)
-  * If you're using SQLite, make sure you have `php-sqlite` installed 
+	* [npm](https://www.npmjs.com/)
+* A database of choice, e.g. MariaDB or SQLite (preferably MariaDB)
+	* If you're using SQLite, make sure you have `php-sqlite` installed
 * A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 
 After setting up those things, you can clone the repository and get the dependencies:
@@ -50,7 +49,8 @@ cp .env.example .env
 vi .env
 ```
 
-Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter). While you will not need all of those, you can stumple into weird bugs.
+Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter). While you will
+not need all of those, you can stumble into weird bugs.
 
 Then, generate some application keys and migrate the database to the latest level:
 
@@ -64,23 +64,35 @@ php artisan passport:install
 
 Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
 
-Use your webserver of choice or artisan (`php artisan serve`) to boot the application. You should see the Träwelling homepage.
+Use your webserver of choice or artisan (`php artisan serve`) to boot the application. You should see the Träwelling
+homepage.
 
 ## Contributing
 
-Contributions are more than welcome. Please open an issue for bugs or feature requests. If you want to implement the feature - great; if you don't want to, that's fine, too.
+Contributions are more than welcome. Please open an issue for bugs or feature requests. If you want to implement the
+feature - great; if you don't want to, that's fine, too.
 
 If you add code:
-* Please also commit the changes in the `public/` folder, just as `npm run dev` produces them. Yes, it's weird, but that's how we roll.
-* If you edit the language files, please check if your change is applicable for all languages.
+
+* If you edit the language files, please check if your change is applicable at least in german.
+  
 * If you work on the front page (see screenshot above), please consider updating the screenshot.
-* Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to have half-baked languages that have missing strings after a while.
+  
+* Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to
+  have half-baked languages that have missing strings after a while.
+  
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
 ### Translations
-We currently support the languages German and English. A few translations also in Swedish. We would like to become even more international and for this we need you and your language skills.
 
-We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add new translations and correct mistakes.
+We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
+international and for this we need you and your language skills.
+
+We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add
+new translations and correct mistakes.
 
 ## License
-We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you are required to publish changes that you make to this software. Please refrain from creating your own public instance of Träwelling, instead try to create a better version for everyone.
+
+We are using the [Affero General Public License](/LICENSE) ([why?](http://www.gnu.org/licenses/why-affero-gpl)) - you
+are required to publish changes that you make to this software. Please refrain from creating your own public instance of
+Träwelling, instead try to create a better version for everyone.

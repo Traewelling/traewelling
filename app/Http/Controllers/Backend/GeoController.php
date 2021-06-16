@@ -13,11 +13,11 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): float|int {
-        if ($hafasTrip->polyline == null || $hafasTrip?->getPolyLine?->polyline == null) {
+        if ($hafasTrip->polyline == null || $hafasTrip?->polyline?->polyline == null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
 
-        $allFeatures = json_decode($hafasTrip->getPolyLine->polyline);
+        $allFeatures = json_decode($hafasTrip->polyline->polyline);
 
         $originIndex      = null;
         $destinationIndex = null;
