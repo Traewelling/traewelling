@@ -11,14 +11,13 @@ use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\Models\HafasTrip;
+use \App\Http\Controllers\StatusController as StatusBackend;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Throwable;
 
 class TransportController extends ResponseController
 {
@@ -103,7 +102,7 @@ class TransportController extends ResponseController
         try {
             $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
 
-            $status = \App\Http\Controllers\StatusController::createStatus(
+            $status = StatusBackend::createStatus(
                 user: auth()->user(),
                 business: $request->input('business') ?? 0,
                 visibility: $request->input('visibility') ?? StatusVisibility::PUBLIC,

@@ -146,8 +146,8 @@ abstract class HafasController extends Controller
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
                 'query' => [
-                    'when'                            => $when->toIso8601String(),
-                    'duration'                        => $duration,
+                    'when'                => $when->toIso8601String(),
+                    'duration'            => $duration,
                     HTT::NATIONAL_EXPRESS => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
                     HTT::NATIONAL         => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
                     HTT::REGIONAL_EXP     => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',

@@ -103,7 +103,7 @@ class StatusController extends Controller
         $polylines = $statuses->map(function($status) {
             return json_encode($status->trainCheckin->getMapLines());
         });
-        if ($array == true) {
+        if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
         }
 
@@ -437,7 +437,7 @@ class StatusController extends Controller
             }
         }
 
-        $status = Status::create([
+        return Status::create([
                                      'user_id'    => $user->id,
                                      'body'       => $body,
                                      'business'   => $business,
@@ -446,7 +446,5 @@ class StatusController extends Controller
                                      'event'      => $event?->id
 
                                  ]);
-
-        return $status;
     }
 }

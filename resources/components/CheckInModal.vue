@@ -111,7 +111,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$props);
     this.modal = new Modal(this.$refs.checkinModal);
   },
   methods: {
@@ -129,7 +128,7 @@ export default {
         axios
             .post("/trains/checkin", formData)
             .then((result) => {
-              this.$router.push({name: "dashboard"})
+              this.$router.push({name: "dashboard"});
               this.hide();
               alert(result.data.status.train.points + " points");
             })

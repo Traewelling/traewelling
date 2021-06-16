@@ -111,7 +111,7 @@ export default {
       destination: null,
       trainData: {
         tripID: 0,
-        lineName: '',
+        lineName: "",
         start: 0,
         destination: 0,
         departure: 0,
@@ -142,14 +142,14 @@ export default {
           });
     },
     showModal(stop) {
-      this.trainData = {
+      this.trainData   = {
         tripID: this.$route.query.tripID,
         lineName: this.$route.query.lineName,
         start: this.$route.query.start,
         destination: stop.id,
         departure: this.$route.query.departure,
         arrival: stop.arrivalPlanned
-      }
+      };
       this.destination = stop.name;
       this.$refs.checkInModal.show();
     }

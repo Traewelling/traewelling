@@ -408,10 +408,10 @@ class TransportController extends Controller
             }
         }
 
-        if (isset($tootCheck) && $tootCheck == true) {
+        if (isset($tootCheck) && $tootCheck) {
             self::postMastodon($status);
         }
-        if (isset($tweetCheck) && $tweetCheck == true) {
+        if (isset($tweetCheck) && $tweetCheck) {
             self::postTwitter($status);
         }
 
@@ -509,7 +509,7 @@ class TransportController extends Controller
         }
 
         return [
-            'status' => new StatusResource($status),
+            'status'               => new StatusResource($status),
             'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
         ];
     }
