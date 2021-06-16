@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Carbon\Traits\Creator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -102,7 +103,7 @@ class StatusController extends Controller
         $polylines = $statuses->map(function($status) {
             return json_encode($status->trainCheckin->getMapLines());
         });
-        if ($array == true) {
+        if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
         }
 
@@ -417,5 +418,32 @@ class StatusController extends Controller
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
                      })->simplePaginate(15);
+    }
+
+    public static function createStatus(
+        User $user,
+        bool $business,
+        $visibility,
+        string $body = null,
+        int $eventId = null,
+        string $type = "hafas"
+    ): Status {
+        $event = null;
+        if ($eventId !== null) {
+            $event = Event::find($eventId);
+            if (!Carbon::now()->isBetween($event?->begin, $event?->end)) {
+                $event = null;
+            }
+        }
+
+        return Status::create([
+                                     'user_id'    => $user->id,
+                                     'body'       => $body,
+                                     'business'   => $business,
+                                     'visibility' => $visibility,
+                                     'type'       => $type,
+                                     'event'      => $event?->id
+
+                                 ]);
     }
 }

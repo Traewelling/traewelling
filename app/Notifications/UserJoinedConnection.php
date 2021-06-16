@@ -24,7 +24,12 @@ class UserJoinedConnection extends Notification
      *
      * @return void
      */
-    public function __construct(int $statusId = null, $linename = null, $origin = null, $destination = null) {
+    public function __construct(
+        int $statusId = null,
+        string $linename = null,
+        string $origin = null,
+        string $destination = null
+    ) {
         $this->statusId    = $statusId;
         $this->linename    = $linename;
         $this->origin      = $origin;

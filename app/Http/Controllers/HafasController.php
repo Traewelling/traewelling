@@ -25,7 +25,7 @@ abstract class HafasController extends Controller
      * @return TrainStation
      * @throws HafasException
      */
-    public static function fetchTrainStation(int $ibnr): TrainStation {
+    private static function fetchTrainStation(int $ibnr): TrainStation {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get("/stops/$ibnr");
@@ -164,6 +164,7 @@ abstract class HafasController extends Controller
             $data       = json_decode($response->getBody()->getContents());
             $departures = collect();
             foreach ($data as $departure) {
+                $departure->station = self::getTrainStation($departure->stop->id);
                 $departures->push($departure);
             }
 
@@ -289,5 +290,35 @@ abstract class HafasController extends Controller
         }
 
         return $hafasTrip;
+    }
+
+    /**
+     * Get the TrainStation Model from Database
+     * @param int $ibnr
+     * @param string|null $name
+     * @param float|null $latitude
+     * @param float|null $longitude
+     * @return TrainStation
+     * @throws HafasException
+     */
+    public static function getTrainStation(int $ibnr,
+                                           string $name = null,
+                                           float $latitude = null,
+                                           float $longitude = null): TrainStation {
+
+        if ($name === null || $latitude === null || $longitude === null) {
+            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
+            if ($dbTrainStation !== null) {
+                return $dbTrainStation;
+            }
+            return HafasController::fetchTrainStation($ibnr);
+        }
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $ibnr
+                                            ], [
+                                                'name'      => $name,
+                                                'latitude'  => $latitude,
+                                                'longitude' => $longitude
+                                            ]);
     }
 }
