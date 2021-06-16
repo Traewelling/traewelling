@@ -431,8 +431,7 @@ class StatusController extends Controller
         $event = null;
         if ($eventId !== null) {
             $event = Event::find($eventId);
-            //FixMe: Is the "new Carbon" really needed here?
-            if (!Carbon::now()->isBetween(new Carbon($event?->begin), new Carbon($event?->end))) {
+            if (!Carbon::now()->isBetween($event?->begin, $event?->end)) {
                 $event = null;
             }
         }

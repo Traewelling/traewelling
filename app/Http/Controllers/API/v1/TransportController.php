@@ -81,13 +81,13 @@ class TransportController extends ResponseController
 
     public function create(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'body'        => 'max:280',
-            'business'    => Rule::in(Business::getList()),
-            'visibility'  => Rule::in(StatusVisibility::getList()),
-            'event'       => 'integer',
-            'tweet'       => 'boolean',
-            'toot'        => 'boolean',
-            'ibnr'        => 'boolean',
+            'body'        => ['nullable', 'max:280'],
+            'business'    => ['nullable', Rule::in(Business::getList())],
+            'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
+            'eventID'       => ['nullable', 'integer', 'exists:events,id'],
+            'tweet'       => ['nullable', 'boolean'],
+            'toot'        => ['nullable', 'boolean'],
+            'ibnr'        => ['nullable', 'boolean'],
             'tripID'      => 'required',
             'lineName'    => 'required',
             'start'       => ['required', 'numeric'],
@@ -107,7 +107,7 @@ class TransportController extends ResponseController
                 business: $request->input('business') ?? 0,
                 visibility: $request->input('visibility') ?? StatusVisibility::PUBLIC,
                 body: $request->input('body'),
-                eventId: $request->input('event')
+                eventId: $request->input('eventID')
             );
 
             $trainCheckinResponse = TransportBackend::createTrainCheckin(

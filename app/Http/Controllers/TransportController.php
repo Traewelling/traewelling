@@ -445,11 +445,12 @@ class TransportController extends Controller
     public static function createTrainCheckin(
         Status $status,
         HafasTrip $trip,
-        $entryStop,
-        $exitStop,
+        int $entryStop,
+        int $exitStop,
         Carbon $departure = null,
         Carbon $arrival = null,
-        bool $ibnr = false): array {
+        bool $ibnr = false
+    ): array {
         $trip->load('stopoversNEW');
 
         if (!$ibnr) {
@@ -459,11 +460,10 @@ class TransportController extends Controller
             $lastStop = $trip->stopoversNEW->where('train_station_id', $exitStop)
                                            ->where('arrival_planned', $arrival)->first();
         } else {
-            //will this work @kris?
-            $firstStop = $trip->stopoversNEW->where('train_station_id.ibnr', $entryStop)
+            $firstStop = $trip->stopoversNEW->where('trainStation.ibnr', $entryStop)
                                             ->where('departure_planned', $departure)->first();
 
-            $lastStop = $trip->stopoversNEW->where('train_station_id.ibnr', $exitStop)
+            $lastStop = $trip->stopoversNEW->where('trainStation.ibnr', $exitStop)
                                            ->where('arrival_planned', $arrival)->first();
         }
 
@@ -502,10 +502,12 @@ class TransportController extends Controller
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            $otherStatus->user->notify(new UserJoinedConnection(statusId: $status->id,
-                linename: $trip->linename,
-                origin: $firstStop->name,
-                destination: $lastStop->name));
+            $otherStatus->user->notify(new UserJoinedConnection(
+                                           statusId: $status->id,
+                                           linename: $trip->linename,
+                                           origin: $firstStop->name,
+                                           destination: $lastStop->name
+                                       ));
         }
 
         return [
