@@ -79,9 +79,9 @@ class HafasTripFactory extends Factory
             $time->addMinutes(30);
         }
 
-        $polyline     = json_encode(['type'     => 'FeatureCollection',
-                                     'features' => $features]);
-        $polylineHash = TransportController::getPolylineHash($polyline)->hash;
+        $polyline = json_encode(['type'     => 'FeatureCollection',
+                                 'features' => $features]);
+        $polyline = TransportController::getPolylineHash($polyline);
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
             'category'    => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,
@@ -93,7 +93,7 @@ class HafasTripFactory extends Factory
             'departure'   => Carbon::now()->subMinutes(15)->format('c'),
             'arrival'     => Carbon::now()->addMinutes(80)->format('c'),
             'delay'       => null,
-            'polyline'    => $polylineHash,
+            'polyline_id' => $polyline->id,
         ];
     }
 
@@ -104,7 +104,7 @@ class HafasTripFactory extends Factory
      */
     public function configure() {
         return $this->afterCreating(function(HafasTrip $hafasTrip) {
-            if(!isset($hafasTrip->stopovers)) {
+            if (!isset($hafasTrip->stopovers)) {
                 return;
             }
             $stopOvers = json_decode($hafasTrip->stopovers);
