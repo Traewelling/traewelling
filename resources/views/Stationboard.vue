@@ -135,7 +135,7 @@ export default {
         name: "trains.trip", query: {
           tripID: departure.tripId,
           lineName: departure.line.name ?? departure.line.fahrtNr,
-          start: departure.stop.id,
+          start: departure.station.id,
           departure: departure.plannedWhen
         }
       });
