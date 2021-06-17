@@ -18,7 +18,7 @@ import Lang from "lang.js";
 import {i18nStrings} from "./translations";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import VueLocalStorage from 'vue-localstorage';
+import VueLocalStorage from "vue-localstorage";
 import auth from "@websanova/vue-auth/dist/v2/vue-auth.esm.js";
 import driverAuthBearer from "@websanova/vue-auth/dist/drivers/auth/bearer.esm.js";
 import driverHttpAxios from "@websanova/vue-auth/dist/drivers/http/axios.1.x.esm.js";
@@ -27,17 +27,17 @@ import driverRouterVueRouter from "@websanova/vue-auth/dist/drivers/router/vue-r
 window.Vue = require("vue");
 
 Vue.use(VueLocalStorage);
-let locale = Vue.localStorage.get('language');
-if (Vue.localStorage.get('language') == null && navigator.language) {
-    locale = navigator.language.substr(0, 2);
+let currentLocale = Vue.localStorage.get("language");
+if (Vue.localStorage.get("language") == null && navigator.language) {
+    currentLocale = navigator.language.substr(0, 2);
 }
-Vue.prototype.i18n = new Lang({
+Vue.prototype.i18n   = new Lang({
     messages: i18nStrings,
-    locale: locale,
+    locale: currentLocale,
     fallback: "en"
 });
 Vue.prototype.moment = moment;
-Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0,2));
+Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
 // Set Vue router
 Vue.router = router;
 Vue.use(VueRouter);

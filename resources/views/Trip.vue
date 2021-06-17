@@ -143,7 +143,7 @@ export default {
       this.$refs.checkInModal.show();
     },
     delay(planned, current) {
-      const delay = moment(current).diff(moment(planned), 'seconds');
+      const delay = moment(current).diff(moment(planned), "seconds");
 
       if (delay === 0) {
         return "text-success";
