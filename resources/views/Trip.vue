@@ -8,14 +8,9 @@
               {{ i18n.get("_.vue.loading") }}
             </div>
             <div class="card" v-if="hafasTrip != null">
-              <div class="card-header" data-linename=" $hafasTrip->linename "
-                   data-startname=" $hafasTrip->originStation->name " data-start=" request()->start "
-                   data-tripid=" $hafasTrip->trip_id ">
+              <div class="card-header">
                 <div class="float-end">
-                  <a href="#"
-                     data-ibnr="$terminalStop['stop']['id']"
-                     data-stopname="$terminalStop['stop']['name']"
-                     data-arrival="$terminalStop['plannedArrival']">
+                  <a href="#" @click="showModal(lastStation)">
                     <i class="fa fa-fast-forward" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -30,11 +25,7 @@
               </div>
 
               <div class="card-body p-0 table-responsive">
-                <table class="table table-dark table-borderless table-hover table-striped m-0"
-                       data-linename=" $hafasTrip->linename "
-                       data-startname=" $hafasTrip->originStation->name "
-                       data-start=" request()->start "
-                       data-tripid=" $hafasTrip->trip_id ">
+                <table class="table table-dark table-borderless table-hover table-striped m-0">
                   <thead>
                     <tr>
                       <th>{{ i18n.get('_.stationboard.stopover') }}</th>
@@ -43,16 +34,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="stop in stopovers"
-                        data-ibnr="$stop['stop']['id']"
-                        data-stopname="$stop['stop']['name']"
-                        data-arrival="$stop['plannedArrival']"
-                        @click="showModal(stop)">
+                    <tr v-for="stop in stopovers" @click="showModal(stop)">
                       <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}">{{ stop.name }}</td>
                       <td v-if="!stop.cancelled">
                       <span v-if="stop.arrivalPlanned">
                         {{ i18n.get('_.stationboard.arr') }}&nbsp;
-                        <span :class="{'text-danger': stop.isArrivalDelayed, 'text-success': stop.arrivalReal}">
+                        <span :class="delay(stop.arrivalPlanned, stop.arrivalReal)">
                           {{ moment(stop.arrival).format("LT") }}
                         </span>
                         <small v-if="stop.isArrivalDelayed" class="text-muted text-decoration-line-through">
@@ -62,7 +49,7 @@
                         <br/>
                         <span v-if="stop.departurePlanned">
                         {{ i18n.get('_.stationboard.dep') }}&nbsp;
-                        <span :class="{'text-danger': stop.isDepartureDelayed, 'text-success': stop.departureReal}">
+                        <span :class="delay(stop.departurePlanned, stop.departureReal)">
                           {{ moment(stop.departure).format("LT") }}
                         </span>
                         <small v-if="stop.isDepartureDelayed" class="text-muted text-decoration-line-through">
@@ -107,6 +94,7 @@ export default {
       images: travelImages,
       hafasTrip: null,
       stopovers: null,
+      lastStation: null,
       moment: moment,
       destination: null,
       trainData: {
@@ -134,8 +122,8 @@ export default {
             this.stopovers = this.hafasTrip.stopovers.filter((item) => {
               return moment(item.arrivalPlanned).isAfter(moment(this.$route.query.departure));
             });
+            this.lastStation = this.hafasTrip.stopovers.pop();
             this.loading   = false;
-
           })
           .catch((error) => {
             console.error(error);
@@ -152,6 +140,17 @@ export default {
       };
       this.destination = stop.name;
       this.$refs.checkInModal.show();
+    },
+    delay(planned, current) {
+      const delay = moment(current).diff(moment(planned), 'seconds');
+
+      if (delay === 0) {
+        return "text-success";
+      } else if (delay < 600) {
+        return "text-warning";
+      } else if (delay >= 600) {
+        return "text-danger";
+      }
     }
   }
 };
