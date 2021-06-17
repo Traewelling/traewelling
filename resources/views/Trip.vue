@@ -7,7 +7,7 @@
             <div class="loading" v-if="loading">
               {{ i18n.get("_.vue.loading") }}
             </div>
-            <div class="card" v-if="hafasTrip != null">
+            <div class="card" v-if="hafasTrip != null" id="trip-heading">
               <div class="card-header">
                 <div class="float-end">
                   <a href="#" @click="showModal(lastStation)">
@@ -25,12 +25,13 @@
               </div>
 
               <div class="card-body p-0 table-responsive">
-                <table class="table table-dark table-borderless table-hover table-striped m-0">
+                <table class="table table-dark table-borderless table-hover table-striped m-0"
+                       aria-describedby="trip-heading">
                   <thead>
                     <tr>
-                      <th>{{ i18n.get('_.stationboard.stopover') }}</th>
-                      <th></th>
-                      <th class="ps-0"></th>
+                      <th scope="col">{{ i18n.get('_.stationboard.stopover') }}</th>
+                      <th scope="col"></th>
+                      <th scope="col" class="ps-0"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -118,12 +119,12 @@ export default {
       axios
           .get("/trains/trip?tripID=" + query.tripID + "&lineName=" + query.lineName + "&start=" + query.start)
           .then((result) => {
-            this.hafasTrip = result.data.data;
-            this.stopovers = this.hafasTrip.stopovers.filter((item) => {
+            this.hafasTrip   = result.data.data;
+            this.stopovers   = this.hafasTrip.stopovers.filter((item) => {
               return moment(item.arrivalPlanned).isAfter(moment(this.$route.query.departure));
             });
             this.lastStation = this.hafasTrip.stopovers.pop();
-            this.loading   = false;
+            this.loading     = false;
           })
           .catch((error) => {
             console.error(error);
