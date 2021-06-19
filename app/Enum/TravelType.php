@@ -12,4 +12,5 @@ final class TravelType extends BasicEnum
     public const FERRY    = 'ferry';
     public const SUBWAY   = 'subway';
     public const TRAM     = 'tram';
+    public const TAXI     = 'taxi';
 }

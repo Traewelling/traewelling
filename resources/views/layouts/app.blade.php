@@ -3,9 +3,9 @@
     <head>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
-        @include('layouts.includes.meta')
+    @include('layouts.includes.meta')
 
-        <!-- Scripts -->
+    <!-- Scripts -->
         <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->
@@ -24,7 +24,7 @@
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
              aria-hidden="true" aria-labelledby="notifications-board-title">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="notifications-board-title">
@@ -207,7 +207,7 @@
                     <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
                     <p class="mb-0 text-muted small">commit:
                         <a href="https://github.com/Traewelling/traewelling/commit/{{ get_current_git_commit() }}"
-                            class="text-muted">
+                           class="text-muted">
                             {{ get_current_git_commit() }}
                         </a>
                     </p>

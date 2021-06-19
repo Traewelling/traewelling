@@ -12,14 +12,14 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use DateInterval;
-use DateTime;
+use Carbon\Traits\Creator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class StatusController extends Controller
@@ -62,7 +62,7 @@ class StatusController extends Controller
                                          'user',
                                          'trainCheckin.Origin',
                                          'trainCheckin.Destination',
-                                         'trainCheckin.HafasTrip.getPolyLine',
+                                         'trainCheckin.HafasTrip.polyline',
                                          'trainCheckin.HafasTrip.stopoversNEW.trainStation',
                                          'event'
                                      ])
@@ -82,7 +82,7 @@ class StatusController extends Controller
                                        'user',
                                        'trainCheckin.Origin',
                                        'trainCheckin.Destination',
-                                       'trainCheckin.HafasTrip.getPolyLine',
+                                       'trainCheckin.HafasTrip.polyline',
                                        'event'
                                    ])
                             ->whereHas('trainCheckin', function($query) {
@@ -103,7 +103,7 @@ class StatusController extends Controller
         $polylines = $statuses->map(function($status) {
             return json_encode($status->trainCheckin->getMapLines());
         });
-        if ($array == true) {
+        if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
         }
 
@@ -144,10 +144,10 @@ class StatusController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
-                         $user = Auth::check() ? auth()->user() : null;
+                         $user = Auth::check() ? auth()->user()->id : null;
                          $query->where('users.private_profile', 0)
                                ->where('visibility', StatusVisibility::PUBLIC)
-                               ->orWhere('users.id', $user->id)
+                               ->orWhere('users.id', $user)
                                ->orWhere(function($query) {
                                    $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                    $query->where('visibility', StatusVisibility::FOLLOWERS)
@@ -165,14 +165,20 @@ class StatusController extends Controller
                      ->simplePaginate(15);
     }
 
-    public static function DeleteStatus($user, $statusId): ?bool {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @return bool|null
+     * @throws PermissionException|ModelNotFoundException
+     */
+    public static function DeleteStatus(User $user, int $statusId): ?bool {
         $status = Status::find($statusId);
 
         if ($status === null) {
-            return null;
+            throw new ModelNotFoundException();
         }
-        if ($user != $status->user) {
-            return false;
+        if ($user->id != $status->user->id) {
+            throw new PermissionException();
         }
         $status->delete();
         return true;
@@ -202,6 +208,7 @@ class StatusController extends Controller
      * @param Status $status
      * @return Like
      * @throws StatusAlreadyLikedException|PermissionException
+     * @todo refactor this to take status IDs instead of models
      */
     public static function createLike(User $user, Status $status): Like {
 
@@ -221,13 +228,18 @@ class StatusController extends Controller
         return $like;
     }
 
-    public static function DestroyLike($user, $statusId): bool {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public static function destroyLike(User $user, int $statusId): void {
         $like = $user->likes()->where('status_id', $statusId)->first();
-        if ($like) {
-            $like->delete();
-            return true;
+        if ($like == null) {
+            throw new InvalidArgumentException(__('controller.status.like-not-found'));
         }
-        return false;
+        $like->delete();
     }
 
     public static function getLikes($statusId) {
@@ -406,5 +418,32 @@ class StatusController extends Controller
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
                      })->simplePaginate(15);
+    }
+
+    public static function createStatus(
+        User $user,
+        bool $business,
+        $visibility,
+        string $body = null,
+        int $eventId = null,
+        string $type = "hafas"
+    ): Status {
+        $event = null;
+        if ($eventId !== null) {
+            $event = Event::find($eventId);
+            if (!Carbon::now()->isBetween($event?->begin, $event?->end)) {
+                $event = null;
+            }
+        }
+
+        return Status::create([
+                                     'user_id'    => $user->id,
+                                     'body'       => $body,
+                                     'business'   => $business,
+                                     'visibility' => $visibility,
+                                     'type'       => $type,
+                                     'event'      => $event?->id
+
+                                 ]);
     }
 }

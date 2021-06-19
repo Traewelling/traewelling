@@ -29,7 +29,7 @@ class AddForeignKeysToHafasTrips extends Migration
                   ->onDelete('restrict')
                   ->onUpdate('cascade');
             $table->foreign('polyline')
-                  ->references('hash')//TODO: Should use 'id' instead...
+                  ->references('hash')
                   ->on('poly_lines')
                   ->onDelete('restrict')
                   ->onUpdate('cascade');

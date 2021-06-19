@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Event;
 use App\Models\Status;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use InvalidArgumentException;
 
 class StatusController extends ResponseController
 {
@@ -90,35 +92,38 @@ class StatusController extends ResponseController
     }
 
     public function destroy($statusId) {
-        $deleteStatusResponse = StatusBackend::DeleteStatus(Auth::user(), $statusId);
-
-        if ($deleteStatusResponse === null) {
+        try {
+            StatusBackend::DeleteStatus(Auth::user(), $statusId);
+        } catch (ModelNotFoundException) {
             return $this->sendError('Not found');
-        }
-        if ($deleteStatusResponse === false) {
+        } catch (PermissionException) {
             return $this->sendError(__('controller.status.not-permitted'), 403);
         }
+
         return $this->sendResponse(__('controller.status.delete-ok'));
     }
 
     public function createLike($statusId) {
         $status = Status::find($statusId);
         if ($status == null) {
-            return $this->sendError(false, 404);
+            return $this->sendError("false", 404);
         }
         try {
             StatusBackend::createLike(Auth::user(), $status);
             return $this->sendResponse(true);
         } catch (StatusAlreadyLikedException $e) {
-            return $this->sendError(false, 400);
+            return $this->sendError("false", 400);
         }
 
     }
 
-    public function destroyLike($statusId) {
-        $destroyLikeResponse = StatusBackend::DestroyLike(Auth::user(), $statusId);
-
-        return $this->sendResponse($destroyLikeResponse);
+    public function destroyLike(int $statusId): JsonResponse {
+        try {
+            StatusBackend::destroyLike(Auth::user(), $statusId);
+            return $this->sendResponse(true);
+        } catch (InvalidArgumentException) {
+            return $this->sendResponse(false);
+        }
     }
 
     public function getLikes($statusId) {

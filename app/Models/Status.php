@@ -41,7 +41,10 @@ class Status extends Model
         return $this->hasOne(Event::class, 'id', 'event_id');
     }
 
-    public function getFavoritedAttribute(): bool {
+    public function getFavoritedAttribute(): ?bool {
+        if(!Auth::check()) {
+            return null;
+        }
         return $this->likes->contains('user_id', Auth::id());
     }
 

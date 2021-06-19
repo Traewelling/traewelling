@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\HafasTravelType;
+use App\Enum\HafasTravelType as HTT;
+use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -24,7 +25,7 @@ abstract class HafasController extends Controller
      * @return TrainStation
      * @throws HafasException
      */
-    public static function fetchTrainStation(int $ibnr): TrainStation {
+    private static function fetchTrainStation(int $ibnr): TrainStation {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get("/stops/$ibnr");
@@ -116,13 +117,13 @@ abstract class HafasController extends Controller
             $stations = collect();
             foreach ($data as $hafasStation) {
                 $station           = self::parseHafasStopObject($hafasStation);
-                $station->distance = $hafasStation->distance;
+                $station->distance = $hafasStation->distance ?? 0;
                 $stations->push($station);
             }
 
             return $stations;
         } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
+            $response = $e->getMessage();
             throw new HafasException($response->msg ?? $e->getMessage());
         }
     }
@@ -131,16 +132,7 @@ abstract class HafasController extends Controller
      * @param TrainStation $station
      * @param Carbon $when
      * @param int $duration
-     * @param bool $nationalExpress
-     * @param bool $national
-     * @param bool $regionalExp
-     * @param bool $regional
-     * @param bool $suburban
-     * @param bool $bus
-     * @param bool $ferry
-     * @param bool $subway
-     * @param bool $tram
-     * @param bool $taxi
+     * @param TravelType|string|null $type
      * @return Collection
      * @throws HafasException
      */
@@ -148,39 +140,31 @@ abstract class HafasController extends Controller
         TrainStation $station,
         Carbon $when,
         int $duration = 15,
-        bool $nationalExpress = true,
-        bool $national = true,
-        bool $regionalExp = true,
-        bool $regional = true,
-        bool $suburban = true,
-        bool $bus = true,
-        bool $ferry = true,
-        bool $subway = true,
-        bool $tram = true,
-        bool $taxi = true
+        TravelType|string $type = null
     ): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest')]);
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
                 'query' => [
-                    'when'                            => $when->toIso8601String(),
-                    'duration'                        => $duration,
-                    HafasTravelType::NATIONAL_EXPRESS => $nationalExpress ? 'true' : 'false',
-                    HafasTravelType::NATIONAL         => $national ? 'true' : 'false',
-                    HafasTravelType::REGIONAL_EXP     => $regionalExp ? 'true' : 'false',
-                    HafasTravelType::REGIONAL         => $regional ? 'true' : 'false',
-                    HafasTravelType::SUBURBAN         => $suburban ? 'true' : 'false',
-                    HafasTravelType::BUS              => $bus ? 'true' : 'false',
-                    HafasTravelType::FERRY            => $ferry ? 'true' : 'false',
-                    HafasTravelType::SUBWAY           => $subway ? 'true' : 'false',
-                    HafasTravelType::TRAM             => $tram ? 'true' : 'false',
-                    HafasTravelType::TAXI             => $taxi ? 'true' : 'false',
+                    'when'                => $when->toIso8601String(),
+                    'duration'            => $duration,
+                    HTT::NATIONAL_EXPRESS => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
+                    HTT::NATIONAL         => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
+                    HTT::REGIONAL_EXP     => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
+                    HTT::REGIONAL         => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
+                    HTT::SUBURBAN         => ($type == null || $type == TravelType::SUBURBAN) ? 'true' : 'false',
+                    HTT::BUS              => ($type == null || $type == TravelType::BUS) ? 'true' : 'false',
+                    HTT::FERRY            => ($type == null || $type == TravelType::FERRY) ? 'true' : 'false',
+                    HTT::SUBWAY           => ($type == null || $type == TravelType::SUBWAY) ? 'true' : 'false',
+                    HTT::TRAM             => ($type == null || $type == TravelType::TRAM) ? 'true' : 'false',
+                    HTT::TAXI             => 'false',
                 ]
             ]);
 
             $data       = json_decode($response->getBody()->getContents());
             $departures = collect();
             foreach ($data as $departure) {
+                $departure->station = self::getTrainStation($departure->stop->id);
                 $departures->push($departure);
             }
 
@@ -248,7 +232,7 @@ abstract class HafasController extends Controller
             $tripJson->line->id = '';
         }
 
-        $polylineHash = TransportController::getPolylineHash(json_encode($tripJson->polyline))->hash;
+        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
 
         $hafasTrip = HafasTrip::updateOrCreate([
                                                    'trip_id' => $tripID
@@ -260,7 +244,7 @@ abstract class HafasController extends Controller
                                                    'origin'      => $origin->ibnr,
                                                    'destination' => $destination->ibnr,
                                                    'stopovers'   => json_encode($tripJson->stopovers),
-                                                   'polyline'    => $polylineHash,
+                                                   'polyline_id' => $polyline->id,
                                                    'departure'   => $tripJson->plannedDeparture,
                                                    'arrival'     => $tripJson->plannedArrival,
                                                    'delay'       => $tripJson->arrivalDelay ?? null
@@ -306,5 +290,35 @@ abstract class HafasController extends Controller
         }
 
         return $hafasTrip;
+    }
+
+    /**
+     * Get the TrainStation Model from Database
+     * @param int $ibnr
+     * @param string|null $name
+     * @param float|null $latitude
+     * @param float|null $longitude
+     * @return TrainStation
+     * @throws HafasException
+     */
+    public static function getTrainStation(int $ibnr,
+                                           string $name = null,
+                                           float $latitude = null,
+                                           float $longitude = null): TrainStation {
+
+        if ($name === null || $latitude === null || $longitude === null) {
+            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
+            if ($dbTrainStation !== null) {
+                return $dbTrainStation;
+            }
+            return HafasController::fetchTrainStation($ibnr);
+        }
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $ibnr
+                                            ], [
+                                                'name'      => $name,
+                                                'latitude'  => $latitude,
+                                                'longitude' => $longitude
+                                            ]);
     }
 }

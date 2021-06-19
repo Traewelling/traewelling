@@ -6,6 +6,10 @@ import Profile from "./views/Profile";
 import Event from "./views/Event";
 import Leaderboard from "./views/Leaderboard";
 import LeaderboardMonth from "./views/LeaderboardMonth";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Stationboard from "./views/Stationboard";
+import Trip from "./views/Trip";
 
 Vue.use(VueRouter);
 
@@ -16,7 +20,8 @@ export const router = new VueRouter({
         [
             {
                 path: "/",
-                redirect: { name: "statuses.active" }
+                name: "base",
+                redirect: {name: "statuses.active"},
             },
             {
                 path: "/statuses/active",
@@ -47,7 +52,47 @@ export const router = new VueRouter({
             {
                 path: "/leaderboard/:month",
                 component: LeaderboardMonth,
-                name: "leaderboard.month"
+                name: "leaderboard.month",
+            },
+            {
+                path: "/login",
+                component: Login,
+                name: "auth.login",
+                meta: {
+                    auth: false
+                }
+            },
+            {
+                path: "/dashboard",
+                component: Dashboard,
+                name: "dashboard",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/dashboard/global",
+                component: Dashboard,
+                name: "dashboard.global",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/trains/stationboard",
+                component:Stationboard,
+                name: "trains.stationboard",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/trains/trip",
+                component:Trip,
+                name: "trains.trip",
+                meta: {
+                    auth: true
+                }
             }
 
         ],

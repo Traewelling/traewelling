@@ -70,7 +70,7 @@ class TrainCheckin extends Model
     }
 
     public function getMapLines() {
-        $hafas = $this->HafasTrip->getPolyLine;
+        $hafas = $this->HafasTrip->polyline;
         if ($hafas === null) {
             $origin = $this->Origin;
 

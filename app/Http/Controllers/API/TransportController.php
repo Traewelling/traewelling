@@ -11,6 +11,7 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,25 +40,20 @@ class TransportController extends ResponseController
         $validated = $validator->validate();
 
         try {
-            $trainStationboardResponse = TransportBackend::TrainStationboard(
+            $trainStationboardResponse = TransportBackend::getDepartures(
                 $validated['station'],
                 isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
             return $this->sendError(400, $exception->getMessage());
-        }
-        if ($trainStationboardResponse === false) {
-            return $this->sendError(400, __('controller.transport.no-name-given'));
-        }
-        if ($trainStationboardResponse === null) {
-
+        } catch (ModelNotFoundException) {
             return $this->sendError(404, __('controller.transport.no-station-found'));
         }
 
         return $this->sendResponse([
                                        'station'    => $trainStationboardResponse['station'],
-                                       'when'       => $trainStationboardResponse['when'],
+                                       'when'       => $trainStationboardResponse['times']['now'],
                                        'departures' => $trainStationboardResponse['departures']
                                    ]);
     }
