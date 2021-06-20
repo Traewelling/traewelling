@@ -61,7 +61,7 @@ class SocialController extends Controller
                                                          'client_id'     => $info['client_id'],
                                                          'client_secret' => $info['client_secret'],
                                                      ]);
-                } catch (ClientException $e) {
+                } catch (ClientException) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
                 }
             }
@@ -77,7 +77,7 @@ class SocialController extends Controller
                                         'client_id'     => $info['client_id'],
                                         'client_secret' => $info['client_secret'],
                                     ]);
-                } catch (ClientException $e) {
+                } catch (ClientException) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
                 }
 
