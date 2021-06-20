@@ -165,10 +165,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getMastodonUrlAttribute(): ?string {
         $mastodonUrl = null;
-        if ($this->socialProfile != null) {
+        if (!empty($this->socialProfile)
+            && !empty($this->socialProfile->mastodon_token)
+            && !empty($this->socialProfile->mastodon_id)) {
             try {
                 $mastodonServer = MastodonServer::where('id', $this->socialProfile->mastodon_server)->first();
-                if ($mastodonServer != null) {
+                if ($mastodonServer) {
                     $mastodonDomain      = $mastodonServer->domain;
                     $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
                                                    ->token($this->socialProfile->mastodon_token)
