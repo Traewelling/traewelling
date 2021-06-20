@@ -15,6 +15,7 @@ class SocialLoginProfile extends Model
         'twitter_id', 'twitter_token', 'twitter_tokenSecret',
         'mastodon_id', 'mastodon_server', 'mastodon_token'
     ];
+    protected $hidden      = ['twitter_token', 'twitter_tokenSecret', 'mastodon_server', 'mastodon_token'];
     protected $encryptable = [
         'twitter_token', 'twitter_tokenSecret', 'mastodon_token'
     ];
