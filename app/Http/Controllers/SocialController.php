@@ -61,9 +61,26 @@ class SocialController extends Controller
                                                          'client_id'     => $info['client_id'],
                                                          'client_secret' => $info['client_secret'],
                                                      ]);
-                } catch (ClientException $e) {
+                } catch (ClientException) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
                 }
+            }
+            //If we ever run into a reset of Mastodon AppKeys (#), then this recreates the keys.
+            //Keys have to be set to 0 in the database, since the fields are covered by NOT NULL constraint
+            if ($server->client_id <= 1 || $server->client_secret <= 1) {
+                try {
+                    //create new app
+                    $info = Mastodon::domain($domain)->createApp(config('trwl.mastodon_appname'), config('trwl.mastodon_redirect'), 'write read');
+
+                    //save app info
+                    $server->update([
+                                        'client_id'     => $info['client_id'],
+                                        'client_secret' => $info['client_secret'],
+                                    ]);
+                } catch (ClientException) {
+                    return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+                }
+
             }
 
             //change config
