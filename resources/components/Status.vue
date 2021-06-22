@@ -104,9 +104,7 @@
           <router-link :to="{ name: 'singleStatus', params: {id: statusData.id, statusData: this.status } }">
             {{ moment(statusData.createdAt).fromNow() }}
           </router-link>
-        </span><a class="dropdown-item" href="#" v-on:click.prevent="share">
-        <i class="fas fa-share" aria-hidden="true"></i>&nbsp; {{ i18n.get("_.menu.share") }}
-      </a>
+        </span>
         <ul class="list-inline" v-if="$auth.check()">
           <li v-if="$auth.check() && $auth.user().id !== statusData.user && statusData.likes === 0"
               class="list-inline-item d-lg-none">
