@@ -46,7 +46,7 @@
           </ul>
           <ul class="navbar-nav w-auto" v-else>
             <form class="form-inline" action="#">
-              <div class="input-group ps-0 m-0">
+              <div class="input-group ps-0 m-0" hidden>
                 <input name="searchQuery" type="text"
                        class="border border-white rounded-left form-control my-0 py-1"
                        :placeholder="i18n.get('_.stationboard.submit-search')"

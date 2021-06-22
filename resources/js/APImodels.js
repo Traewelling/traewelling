@@ -130,4 +130,4 @@ export let visibility = [
         desc: "_.status.visibility.3",
         detail: "_.status.visibility.3.detail"
     },
-]
+];

@@ -185,7 +185,7 @@
 <script>
 import moment from "moment";
 import Map from "../components/Map";
-import {StatusModel, visibility, travelReason} from "../js/APImodels";
+import {StatusModel, travelReason, visibility} from "../js/APImodels";
 import axios from "axios";
 import ModalConfirm from "./ModalConfirm";
 import CheckInModal from "./CheckInModal";
@@ -325,14 +325,14 @@ export default {
 
       const shareData = {
         title: this.i18n.get("_.menu.share"),
-        text: this.i18n.choice('description.status', 1, {
-          'username': this.statusData.username,
-          'origin': this.statusData.train.origin.name,
-          'destination': this.statusData.train.destination.name,
-          'date': moment(this.statusData.train.origin.departure).format("LLL"),
-          'lineName': this.statusData.train.lineName
+        text: this.i18n.choice("description.status", 1, {
+          "username": this.statusData.username,
+          "origin": this.statusData.train.origin.name,
+          "destination": this.statusData.train.destination.name,
+          "date": moment(this.statusData.train.origin.departure).format("LLL"),
+          "lineName": this.statusData.train.lineName
         }),
-        url: "https://",
+        url: window.location.origin + "/statuses/" + this.statusData.id,
       };
 
       if (navigator.share) {

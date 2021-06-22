@@ -23,7 +23,7 @@ export default {
   name: "FADropdown",
   data() {
     return {
-      m_selected: null
+      selectedValue: null
     };
   },
   props: {
@@ -42,22 +42,22 @@ export default {
       return this.$props.dropdownContent;
     },
     selected() {
-      if (!this.m_selected && this.$props.preSelect) {
+      if (!this.selectedValue && this.$props.preSelect) {
         return this.$props.preSelect;
       }
-      if (this.m_selected) {
-        return this.m_selected;
+      if (this.selectedValue) {
+        return this.selectedValue;
       }
       return 0;
     }
   },
   methods: {
     selectItem(key) {
-      this.m_selected = key;
-      this.$emit("input", this.m_selected);
+      this.selectedValue = key;
+      this.$emit("input", this.selectedValue);
     }
   }
-}
+};
 </script>
 
 <style scoped>
