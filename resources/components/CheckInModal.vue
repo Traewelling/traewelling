@@ -36,8 +36,10 @@
                   <span class="visually-hidden-focusable">{{ i18n.get('_.stationboard.check-toot') }}</span>
                 </label>
               </div>
-              @include('includes.business-dropdown')
-              @include('includes.visibility-dropdown')
+              <div class="float-end">
+                <FADropdown pre-select="0" :dropdown-content="travelReason"></FADropdown>
+                <FADropdown pre-select="0" :dropdown-content="visibility"></FADropdown>
+              </div>
             </div>
 
             <!--            @if($events->count() == 1)-->
@@ -83,9 +85,12 @@ import {Modal} from "bootstrap";
 
 <script>
 import {Modal} from "bootstrap";
+import FADropdown from "./FADropdown";
+import {travelReason, visibility} from "../js/APImodels";
 
 export default {
   name: "CheckInModal",
+  components: {FADropdown},
   data() {
     return {
       modal: null,
@@ -97,7 +102,9 @@ export default {
         event: 0,
         tweet: false,
         toot: false,
-      }
+      },
+      travelReason: travelReason,
+      visibility: visibility
     };
   },
   props: {
