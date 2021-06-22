@@ -14,8 +14,8 @@
     "about.no-train-heading": "Varför visas inte mitt tåg?",
     "about.points-heading": "Hur beräknas poängen?",
     "about.points1": "Poängen består av produktklass och avstånd av din resa.",
-    "about.productclass": "produktklass",
-    "about.regional": "Regionala tåg (RB) / regional express (RE)",
+    "about.productclass": "Produktklass",
+    "about.regional": "Regionaltåg (RB) / Regionalexpress (RE)",
     "about.suburban": "S-tåg, färja",
     "about.tram": "Spårvagn / lätt järnväg, buss, tunnelbana",
     "about.who": "Träwelling har utvecklas av flera olika människor sedan 2013. Ibland bara buggfixar, några större förändringar. Mer detaljerad information, kolla in",
@@ -421,5 +421,14 @@
     "events.period": "Period",
     "events.live-and-upcoming": "Aktuella och kommande evenemang",
     "events.no-upcoming": "Inga kommande evenemang.",
-    "localisation.not-available": "Tyvärr är det här innehållet inte tillgänlig på ditt språk."
+    "localisation.not-available": "Tyvärr är det här innehållet inte tillgänlig på ditt språk.",
+    "transport_types.regionalExp": "Regionalexpress",
+    "status.visibility.1": "olistad",
+    "status.visibility.2": "Endast för följare",
+    "status.visibility.0": "Allmän",
+    "status.visibility.0.detail": "Synlig för alla, visas på dashboard, vid evenemang etc.",
+    "status.visibility.1.detail": "Synlig för alla, endast tillgänglig i profilen",
+    "status.visibility.2.detail": "Endast synlig för (godkända) följare",
+    "status.visibility.3": "Enskild",
+    "status.visibility.3.detail": "Endast synlig för dig"
 }
