@@ -43,13 +43,9 @@
                 <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>
                   &nbsp;{{ duration }}
                 </span>
-                <span v-if="status.business === 1" class="pl-sm-2">
-                  <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                     :title="i18n.get('_.stationboard.business.business')" aria-hidden="true"></i>
-                </span>
-                <span v-else-if="status.business === 2" class="pl-sm-2">
-                  <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                     :title="i18n.get('_.stationboard.business.commute')" aria-hidden="true"></i>
+                <span v-if="status.business > 0" class="pl-sm-2">
+                  <i :class="travelReason[status.business].icon" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                     aria-hidden="true" :title="i18n.get(travelReason[status.business].desc)"></i>
                 </span>
                 <br>
                 <span v-if="status.event != null" class="pl-sm-2">
@@ -96,8 +92,8 @@
       <div class="card-footer text-muted">
         <span class="float-end like-text">
           <i class="fas visibility-icon text-small"
-             :class="visibilityIcon"
-             :title="i18n.get('_.status.visibility.' + status.visibility)"
+             :class="visibilityIcon.icon"
+             :title="i18n.get(visibilityIcon.desc)"
              aria-hidden="true"
              data-mdb-toggle="tooltip"
              data-mdb-placement="top"></i>
@@ -181,6 +177,7 @@ import Map from "../components/Map";
 import {StatusModel} from "../js/APImodels";
 import axios from "axios";
 import ModalConfirm from "./ModalConfirm";
+import {visibility, travelReason} from "../js/APImodels";
 
 export default {
   name: "Status.vue",
@@ -191,7 +188,8 @@ export default {
       categories: ["bus", "suburban", "subway", "tram"],
       loading: false,
       error: false,
-      now: moment()
+      now: moment(),
+      travelReason: travelReason
     };
   },
   components: {
@@ -247,9 +245,7 @@ export default {
       return null;
     },
     visibilityIcon() {
-      const icons = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
-
-      return icons[this.status.visibility];
+      return visibility[this.status.visibility];
     }
   },
   methods: {

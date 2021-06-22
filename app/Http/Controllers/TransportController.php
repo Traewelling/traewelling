@@ -502,12 +502,14 @@ class TransportController extends Controller
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            $otherStatus->user->notify(new UserJoinedConnection(
-                                           statusId: $status->id,
-                                           linename: $trip->linename,
-                                           origin: $firstStop->name,
-                                           destination: $lastStop->name
-                                       ));
+            if ($otherStatus?->user) {
+                $otherStatus->user->notify(new UserJoinedConnection(
+                                               statusId: $status->id,
+                                               linename: $trip->linename,
+                                               origin: $firstStop->name,
+                                               destination: $lastStop->name
+                                           ));
+            }
         }
 
         return [

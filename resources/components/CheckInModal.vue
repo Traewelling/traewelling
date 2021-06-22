@@ -19,7 +19,7 @@
             </div>
 
             <div class="mt-2">
-              <div class="btn-group" v-if="$auth.user.twitterUrl != null">
+              <div class="btn-group" v-if="$auth.user().twitterUrl != null">
                 <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
                        v-model="status.tweet"/>
                 <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
@@ -27,8 +27,7 @@
                   <span class="visually-hidden-focusable">{{ i18n.get('_.stationboard.check-tweet') }}</span>
                 </label>
               </div>
-
-              <div class="btn-group" v-if="$auth.user.mastodonUrl != null">
+              <div class="btn-group" v-if="$auth.user().mastodonUrl != null">
                 <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
                        v-model="status.toot"/>
                 <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
@@ -36,9 +35,10 @@
                   <span class="visually-hidden-focusable">{{ i18n.get('_.stationboard.check-toot') }}</span>
                 </label>
               </div>
+
               <div class="float-end">
-                <FADropdown pre-select="0" :dropdown-content="travelReason"></FADropdown>
-                <FADropdown pre-select="0" :dropdown-content="visibility"></FADropdown>
+                <FADropdown pre-select="0" :dropdown-content="travelReason" v-model="status.business"></FADropdown>
+                <FADropdown pre-select="0" :dropdown-content="visibility" v-model="status.visibility"></FADropdown>
               </div>
             </div>
 

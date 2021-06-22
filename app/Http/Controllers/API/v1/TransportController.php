@@ -128,7 +128,9 @@ class TransportController extends ResponseController
             }
 
             $trainCheckinResponse['alsoOnThisConnection']->map(function($status) {
-                return $status->user;
+                if ($status?->user) {
+                    return $status->user;
+                }
             });
 
             return $this->sendv1Response($trainCheckinResponse);

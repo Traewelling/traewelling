@@ -54,6 +54,7 @@ export default {
   methods: {
     selectItem(key) {
       this.m_selected = key;
+      this.$emit("input", this.m_selected);
     }
   }
 }
