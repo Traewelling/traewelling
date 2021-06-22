@@ -191,7 +191,7 @@ class StatusController extends Controller
      * @param int $businessCheck
      * @param int $visibility
      * @return Status
-     * @throws PermissionException
+     * @throws PermissionException|ModelNotFoundException
      * @api v1
      */
     public static function EditStatus(
@@ -201,10 +201,8 @@ class StatusController extends Controller
         int $business,
         int $visibility
     ): Status {
-        $status = Status::find($statusId);
-        if ($status === null) {
-            throw new ModelNotFoundException();
-        }
+        $status = Status::findOrFail($statusId);
+
         if ($user->id !== $status->user->id) {
             throw new PermissionException();
         }

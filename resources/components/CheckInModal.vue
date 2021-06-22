@@ -109,7 +109,8 @@ export default {
         toot: false,
       },
       travelReason: travelReason,
-      visibility: visibility
+      visibility: visibility,
+      result: null
     };
   },
   props: {
@@ -151,7 +152,6 @@ export default {
   },
   methods: {
     show() {
-      console.log(this.$props.statusData);
       this.modal.show();
     },
     hide() {
@@ -178,9 +178,9 @@ export default {
       axios
           .put("/statuses/" + this.statusData.id, formData)
           .then((result) => {
-            this.$router.push({name: "dashboard"});
+            this.result = result.data.data;
+            this.$emit("updated");
             this.hide();
-            alert(result.data.status.train.points + " points");
           })
           .catch((error) => {
             console.error(error);

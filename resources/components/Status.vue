@@ -1,7 +1,7 @@
 <template>
   <div v-if="status">
     <h5 v-if="showDate || isSingleStatus" class="mt-4">
-      {{ moment(status.train.origin.departure).format("dddd[,] LL") }}
+      {{ moment(statusData.train.origin.departure).format("dddd[,] LL") }}
     </h5>
     <div class="card status mt-3">
       <div class="card-img-top" v-if="polyline">
@@ -10,8 +10,8 @@
 
       <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
-          <router-link :to="{ name: 'profile', params: {username: status.username}}">
-            <img :src="`/profile/${status.username}/profilepicture`" :alt="status.username">
+          <router-link :to="{ name: 'profile', params: {username: statusData.username}}">
+            <img :src="`/profile/${statusData.username}/profilepicture`" :alt="statusData.username">
           </router-link>
         </div>
 
@@ -20,43 +20,43 @@
             <li>
               <i class="trwl-bulletpoint" aria-hidden="true"></i>
               <span class="text-trwl float-end">
-              <small v-if="status.train.origin.isDepartureDelayed"
+              <small v-if="statusData.train.origin.isDepartureDelayed"
                      style="text-decoration: line-through;"
-                     class="text-muted">{{ moment(status.train.origin.departurePlanned).format('LT') }}
+                     class="text-muted">{{ moment(statusData.train.origin.departurePlanned).format('LT') }}
               </small>
               &nbsp; {{ departure.format('LT') }}
             </span>
-              <router-link :to="{name: 'trains.stationboard', query: {station: status.train.origin.name}}"
-                           class="text-trwl clearfix">{{ status.train.origin.name }}
+              <router-link :to="{name: 'trains.stationboard', query: {station: statusData.train.origin.name}}"
+                           class="text-trwl clearfix">{{ statusData.train.origin.name }}
               </router-link>
               <p class="train-status text-muted">
                 <span>
-                  <img v-if="categories.indexOf(status.train.category) > -1 " class="product-icon"
-                       :src="`/img/${status.train.category}.svg`" :alt="status.train.category">
+                  <img v-if="categories.indexOf(statusData.train.category) > -1 " class="product-icon"
+                       :src="`/img/${statusData.train.category}.svg`" :alt="statusData.train.category">
                   <i v-else class="fa fa-train d-inline" aria-hidden="true"></i>
-                  {{ status.train.lineName }}
+                  {{ statusData.train.lineName }}
                 </span>
                 <span class="ps-2">
                   <i class="fa fa-route d-inline" aria-hidden="true"></i>
-                  &nbsp;{{ status.train.distance.toFixed(0) }}<small>km</small>
+                  &nbsp;{{ statusData.train.distance.toFixed(0) }}<small>km</small>
                 </span>
                 <span class="ps-2"><i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>
                   &nbsp;{{ duration }}
                 </span>
-                <span v-if="status.business > 0" class="pl-sm-2">
-                  <i :class="travelReason[status.business].icon" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                     aria-hidden="true" :title="i18n.get(travelReason[status.business].desc)"></i>
+                <span v-if="statusData.business > 0" class="pl-sm-2">
+                  <i :class="travelReason[statusData.business].icon" data-mdb-toggle="tooltip" data-mdb-placement="top"
+                     aria-hidden="true" :title="i18n.get(travelReason[statusData.business].desc)"></i>
                 </span>
                 <br>
-                <span v-if="status.event != null" class="pl-sm-2">
+                <span v-if="statusData.event != null" class="pl-sm-2">
                   <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                  <router-link :to="{name: 'event', params: {slug: status.event.slug}}">
-                    {{ status.event.name }}
+                  <router-link :to="{name: 'event', params: {slug: statusData.event.slug}}">
+                    {{ statusData.event.name }}
                   </router-link>
                 </span>
               </p>
-              <p v-if="status.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
-                {{ status.body }}</p>
+              <p v-if="statusData.body" class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+                {{ statusData.body }}</p>
               <div v-if="nextStop != null">
                 <p class="text-muted font-italic">
                   {{ i18n.get('_.stationboard.next-stop') }}
@@ -70,15 +70,15 @@
             <li>
               <i class="trwl-bulletpoint" aria-hidden="true"></i>
               <span class="text-trwl float-end">
-              <small v-if="status.train.destination.isArrivalDelayed"
+              <small v-if="statusData.train.destination.isArrivalDelayed"
                      style="text-decoration: line-through;"
-                     class="text-muted">{{ moment(status.train.destination.arrivalPlanned).format('LT') }}
+                     class="text-muted">{{ moment(statusData.train.destination.arrivalPlanned).format('LT') }}
               </small>
               &nbsp; {{ arrival.format('LT') }}
             </span>
-              <router-link :to="{name: 'trains.stationboard', query: {station: status.train.destination.name}}"
+              <router-link :to="{name: 'trains.stationboard', query: {station: statusData.train.destination.name}}"
                            class="text-trwl clearfix">
-                {{ status.train.destination.name }}
+                {{ statusData.train.destination.name }}
               </router-link>
             </li>
           </ul>
@@ -97,28 +97,28 @@
              aria-hidden="true"
              data-mdb-toggle="tooltip"
              data-mdb-placement="top"></i>
-          <router-link :to="{name: 'profile', params: {username: status.username}}">
-            <span v-if="$auth.check() && $auth.user().id === status.user">{{ i18n.get("_.user.you") }}</span>
-            <span v-else>{{ status.username }}</span>
+          <router-link :to="{name: 'profile', params: {username: statusData.username}}">
+            <span v-if="$auth.check() && $auth.user().id === statusData.user">{{ i18n.get("_.user.you") }}</span>
+            <span v-else>{{ statusData.username }}</span>
           </router-link>,
-          <router-link :to="{ name: 'singleStatus', params: {id: status.id, statusData: this.status } }">
-            {{ moment(status.createdAt).fromNow() }}
+          <router-link :to="{ name: 'singleStatus', params: {id: statusData.id, statusData: this.status } }">
+            {{ moment(statusData.createdAt).fromNow() }}
           </router-link>
         </span>
         <ul class="list-inline" v-if="$auth.check()">
-          <li v-if="$auth.user().id !== status.user && status.likes === 0" class="list-inline-item d-lg-none">
-            <router-link :to="{name: 'profile', params: {username: status.username}}">
-              <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
+          <li v-if="$auth.user().id !== statusData.user && statusData.likes === 0" class="list-inline-item d-lg-none">
+            <router-link :to="{name: 'profile', params: {username: statusData.username}}">
+              <img :src="`/profile/${statusData.username}/profilepicture`" class="profile-image"
                    :alt="i18n.get('_.settings.picture')">
             </router-link>
           </li>
 
           <li class="list-inline-item like-text" v-on:click="likeStatus">
-            <i class="like fa-star" v-bind:class="{fas: status.liked, far: !status.liked}" aria-hidden="true"></i>
-            <span class="pl-1" v-if="status.likes">{{ status.likes }}</span>
+            <i class="like fa-star" v-bind:class="{fas: statusData.liked, far: !statusData.liked}" aria-hidden="true"></i>
+            <span class="pl-1" v-if="statusData.likes">{{ statusData.likes }}</span>
           </li>
 
-          <li class="list-inline-item like-text" v-if="$auth.user().id === status.user">
+          <li class="list-inline-item like-text" v-if="$auth.user().id === statusData.user">
             <a class="like-text" role="button" data-mdb-toggle="dropdown">
               <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
             </a>
@@ -134,8 +134,8 @@
         </ul>
         <ul class="list-inline" v-else>
           <li class="list-inline-item d-lg-none">
-            <router-link :to="{name: 'profile', params: {username: status.username}}">
-              <img :src="`/profile/${status.username}/profilepicture`" class="profile-image"
+            <router-link :to="{name: 'profile', params: {username: statusData.username}}">
+              <img :src="`/profile/${statusData.username}/profilepicture`" class="profile-image"
                    :alt="i18n.get('_.settings.picture')">
             </router-link>
           </li>
@@ -154,7 +154,7 @@
             <router-link :to="{name: 'profile', params: {username: like.username}}">
               {{ like.username }}
             </router-link>
-            <span v-if="like.id === status.user">{{ i18n.get("_.user.liked-own-status") }}</span>
+            <span v-if="like.id === statusData.user">{{ i18n.get("_.user.liked-own-status") }}</span>
             <span v-else>{{ i18n.get("_.user.liked-status") }}</span>
           </li>
         </ul>
@@ -162,7 +162,7 @@
     </div>
     <ModalConfirm
         ref="deleteModal"
-        v-if="status.user === $auth.user().id"
+        v-if="statusData.user === $auth.user().id"
         v-on:confirm="deleteStatus"
         :title-text="i18n.get('_.modals.deleteStatus-title')"
         :abort-text="i18n.get('_.menu.abort')"
@@ -171,7 +171,8 @@
     ></ModalConfirm>
     <CheckInModal
         ref="editModal"
-        v-if="status.user === $auth.user().id"
+        v-if="statusData.user === $auth.user().id"
+        v-on:updated="updateStatus"
         :status-data="status"
     ></CheckInModal>
   </div>
@@ -196,7 +197,8 @@ export default {
       loading: false,
       error: false,
       now: moment(),
-      travelReason: travelReason
+      travelReason: travelReason,
+      statusResponse: null
     };
   },
   components: {
@@ -212,23 +214,29 @@ export default {
     stopovers: null //ToDo Typedef
   },
   computed: {
+    statusData() {
+      if (!this.statusResponse) {
+        return this.$props.status;
+      }
+      return this.statusResponse;
+    },
     departure() {
-      return moment(this.status.train.origin.departure);
+      return moment(this.statusData.train.origin.departure);
     },
     arrival() {
-      return moment(this.status.train.destination.arrival);
+      return moment(this.statusData.train.destination.arrival);
     },
     duration() {
       // ToDo: This needs localization, currently handled in `durationToSpan`
-      const duration = moment.duration(this.status.train.duration, 'minutes').asMinutes();
+      const duration = moment.duration(this.statusData.train.duration, 'minutes').asMinutes();
       let minutes    = duration % 60;
       let hours      = Math.floor(duration / 60);
 
       return hours + "h " + minutes + "m";
     },
     percentage() {
-      const start = moment(this.status.train.origin.departure);
-      const end   = moment(this.status.train.destination.arrival);
+      const start = moment(this.statusData.train.origin.departure);
+      const end   = moment(this.statusData.train.destination.arrival);
       let percent;
       if (this.now > start && this.now < end) {
         percent = 100 * ((this.now - start) / (end - start));
@@ -242,7 +250,7 @@ export default {
     },
     nextStop() {
       if (this.stopovers != null && this.percentage < 100 && this.percentage > 0) {
-        let stopOvers = this.stopovers[this.status.train.trip];
+        let stopOvers = this.stopovers[this.statusData.train.trip];
         if (stopOvers && stopOvers.length > 0) {
           let future = stopOvers.filter((stopover) => {
             return moment(stopover.arrival).isAfter(this.now);
@@ -253,7 +261,7 @@ export default {
       return null;
     },
     visibilityIcon() {
-      return visibility[this.status.visibility];
+      return visibility[this.statusData.visibility];
     }
   },
   methods: {
@@ -261,12 +269,12 @@ export default {
       setInterval(() => (this.now = moment()), 1000);
     },
     likeStatus() {
-      if (this.status.liked === false) {
+      if (this.statusData.liked === false) {
         axios
-            .post("/like/" + this.status.id)
+            .post("/like/" + this.statusData.id)
             .then(() => {
-              this.status.liked = true;
-              this.status.likes += 1;
+              this.statusData.liked = true;
+              this.statusData.likes += 1;
               this.likes.push(this.$auth.user());
             })
             .catch((error) => {
@@ -274,10 +282,10 @@ export default {
             });
       } else {
         axios
-            .delete("/like/" + this.status.id)
+            .delete("/like/" + this.statusData.id)
             .then(() => {
-              this.status.liked = false;
-              this.status.likes -= 1;
+              this.statusData.liked = false;
+              this.statusData.likes -= 1;
               let index         = this.likes.indexOf(this.$auth.user());
               if (index !== -1) {
                 this.likes.splice(index);
@@ -290,13 +298,16 @@ export default {
     },
     deleteStatus() {
       axios
-          .delete("/statuses/" + this.status.id)
+          .delete("/statuses/" + this.statusData.id)
           .then(() => {
             this.status = null;
           })
           .catch((error) => {
             console.error(error);
           });
+    },
+    updateStatus() {
+      this.statusResponse = this.$refs.editModal.result;
     },
     toggleDeleteModal() {
       this.$refs.deleteModal.show();

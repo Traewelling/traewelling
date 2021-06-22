@@ -86,7 +86,7 @@ class StatusController extends ResponseController
         } catch (PermissionException) {
             abort(403);
         }
-        return $this->sendv1Response($editStatusResponse);
+        return $this->sendv1Response(new StatusResource($editStatusResponse));
     }
 
     /**
