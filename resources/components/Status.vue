@@ -104,25 +104,31 @@
           <router-link :to="{ name: 'singleStatus', params: {id: statusData.id, statusData: this.status } }">
             {{ moment(statusData.createdAt).fromNow() }}
           </router-link>
-        </span>
+        </span><a class="dropdown-item" href="#" v-on:click.prevent="share">
+        <i class="fas fa-share" aria-hidden="true"></i>&nbsp; {{ i18n.get("_.menu.share") }}
+      </a>
         <ul class="list-inline" v-if="$auth.check()">
-          <li v-if="$auth.user().id !== statusData.user && statusData.likes === 0" class="list-inline-item d-lg-none">
+          <li v-if="$auth.check() && $auth.user().id !== statusData.user && statusData.likes === 0"
+              class="list-inline-item d-lg-none">
             <router-link :to="{name: 'profile', params: {username: statusData.username}}">
               <img :src="`/profile/${statusData.username}/profilepicture`" class="profile-image"
                    :alt="i18n.get('_.settings.picture')">
             </router-link>
           </li>
-
-          <li class="list-inline-item like-text" v-on:click="likeStatus">
-            <i class="like fa-star" v-bind:class="{fas: statusData.liked, far: !statusData.liked}" aria-hidden="true"></i>
+          <li v-if="$auth.check()" class="list-inline-item like-text" v-on:click="likeStatus">
+            <i class="like fa-star" v-bind:class="{fas: statusData.liked, far: !statusData.liked}"
+               aria-hidden="true"></i>
             <span class="pl-1" v-if="statusData.likes">{{ statusData.likes }}</span>
           </li>
-
-          <li class="list-inline-item like-text" v-if="$auth.user().id === statusData.user">
+          <li v-if="$auth.check() && $auth.user().id === statusData.user" class="list-inline-item like-text">
             <a class="like-text" role="button" data-mdb-toggle="dropdown">
               <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
             </a>
             <ul class="dropdown-menu">
+              <li v-if="shareable"><a class="dropdown-item" href="#" v-on:click.prevent="share">
+                <i class="fas fa-share" aria-hidden="true"></i>&nbsp; {{ i18n.get("_.menu.share") }}
+              </a>
+              </li>
               <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleEditModal">
                 <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.editStatus-title") }}
               </a></li>
@@ -162,7 +168,7 @@
     </div>
     <ModalConfirm
         ref="deleteModal"
-        v-if="statusData.user === $auth.user().id"
+        v-if="$auth.check() && statusData.user === $auth.user().id"
         v-on:confirm="deleteStatus"
         :title-text="i18n.get('_.modals.deleteStatus-title')"
         :abort-text="i18n.get('_.menu.abort')"
@@ -171,7 +177,7 @@
     ></ModalConfirm>
     <CheckInModal
         ref="editModal"
-        v-if="statusData.user === $auth.user().id"
+        v-if="$auth.check() && statusData.user === $auth.user().id"
         v-on:updated="updateStatus"
         :status-data="status"
     ></CheckInModal>
@@ -181,10 +187,9 @@
 <script>
 import moment from "moment";
 import Map from "../components/Map";
-import {StatusModel} from "../js/APImodels";
+import {StatusModel, visibility, travelReason} from "../js/APImodels";
 import axios from "axios";
 import ModalConfirm from "./ModalConfirm";
-import {visibility, travelReason} from "../js/APImodels";
 import CheckInModal from "./CheckInModal";
 
 export default {
@@ -214,6 +219,9 @@ export default {
     stopovers: null //ToDo Typedef
   },
   computed: {
+    shareable() {
+      return navigator.share;
+    },
     statusData() {
       if (!this.statusResponse) {
         return this.$props.status;
@@ -286,7 +294,7 @@ export default {
             .then(() => {
               this.statusData.liked = false;
               this.statusData.likes -= 1;
-              let index         = this.likes.indexOf(this.$auth.user());
+              let index             = this.likes.indexOf(this.$auth.user());
               if (index !== -1) {
                 this.likes.splice(index);
               }
@@ -314,6 +322,24 @@ export default {
     },
     toggleEditModal() {
       this.$refs.editModal.show();
+    },
+    share() {
+
+      const shareData = {
+        title: this.i18n.get("_.menu.share"),
+        text: this.i18n.choice('description.status', 1, {
+          'username': this.statusData.username,
+          'origin': this.statusData.train.origin.name,
+          'destination': this.statusData.train.destination.name,
+          'date': moment(this.statusData.train.origin.departure).format("LLL"),
+          'lineName': this.statusData.train.lineName
+        }),
+        url: "https://",
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData);
+      }
     }
   },
   created() {
