@@ -75,17 +75,19 @@ class FrontendStatusController extends Controller
             'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
 
-        $editStatusResponse = StatusBackend::EditStatus(
-            Auth::user(),
-            $request['statusId'],
-            $request['body'],
-            $request['business_check'],
-            $request['checkinVisibility']
-        );
-        if ($editStatusResponse === false) {
+        try {
+            $editStatusResponse = StatusBackend::EditStatus(
+                Auth::user(),
+                $request['statusId'],
+                $request['body'],
+                $request['business_check'],
+                $request['checkinVisibility']
+            );
+        } catch (ModelNotFoundException | PermissionException) {
             return redirect()->back();
         }
-        return response()->json(['new_body' => $editStatusResponse], 200);
+
+        return response()->json(['new_body' => $editStatusResponse->body], 200);
     }
 
     public function createLike(Request $request) {

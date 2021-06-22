@@ -184,22 +184,36 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @param string $body
+     * @param int $businessCheck
+     * @param int $visibility
+     * @return Status
+     * @throws PermissionException
+     * @api v1
+     */
+    public static function EditStatus(
+        User $user,
+        int $statusId,
+        string $body,
+        int $business,
+        int $visibility
+    ): Status {
         $status = Status::find($statusId);
         if ($status === null) {
-            return null;
+            throw new ModelNotFoundException();
         }
-        if ($user != $status->user) {
-            return false;
+        if ($user->id !== $status->user->id) {
+            throw new PermissionException();
         }
 
-        $status->body     = $body;
-        $status->business = $businessCheck;
-        if ($visibility != null) {
-            $status->visibility = $visibility;
-        }
+        $status->body       = $body;
+        $status->business   = $business;
+        $status->visibility = $visibility;
         $status->update();
-        return $status->body;
+        return $status;
     }
 
     /**
@@ -437,13 +451,13 @@ class StatusController extends Controller
         }
 
         return Status::create([
-                                     'user_id'    => $user->id,
-                                     'body'       => $body,
-                                     'business'   => $business,
-                                     'visibility' => $visibility,
-                                     'type'       => $type,
-                                     'event'      => $event?->id
+                                  'user_id'    => $user->id,
+                                  'body'       => $body,
+                                  'business'   => $business,
+                                  'visibility' => $visibility,
+                                  'type'       => $type,
+                                  'event'      => $event?->id
 
-                                 ]);
+                              ]);
     }
 }

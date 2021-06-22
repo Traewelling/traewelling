@@ -75,20 +75,20 @@ class StatusController extends ResponseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), 400);
         }
-        $editStatusResponse = StatusBackend::EditStatus(
-            Auth::user(),
-            $request['statusId'],
-            $request['body'],
-            $request['businessCheck'],
-            null
-        );
-        if ($editStatusResponse === null) {
+        try {
+            $editStatusResponse = StatusBackend::EditStatus(
+                Auth::user(),
+                $request['statusId'],
+                $request['body'],
+                $request['businessCheck'],
+                null
+            );
+        } catch (ModelNotFoundException) {
             return $this->sendError('Not found');
-        }
-        if ($editStatusResponse === false) {
+        } catch (PermissionException) {
             return $this->sendError(__('controller.status.not-permitted'), 403);
         }
-        return $this->sendResponse(['newBody' => $editStatusResponse]);
+        return $this->sendResponse(['newBody' => $editStatusResponse->body]);
     }
 
     public function destroy($statusId) {

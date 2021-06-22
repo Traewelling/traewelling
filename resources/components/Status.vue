@@ -123,10 +123,10 @@
               <i class="fas fa-ellipsis-h" aria-hidden="true" :title="i18n.get('_.status.more')"></i>
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-edit" aria-hidden="true"></i>&nbsp;
-                {{ i18n.get("_.status.edit") }}
+              <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleEditModal">
+                <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.editStatus-title") }}
               </a></li>
-              <li><a class="dropdown-item" href="#" v-on:click="toggleDeleteModal">
+              <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleDeleteModal">
                 <i class="fas fa-trash" aria-hidden="true"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}
               </a></li>
             </ul>
@@ -162,12 +162,18 @@
     </div>
     <ModalConfirm
         ref="deleteModal"
+        v-if="status.user === $auth.user().id"
         v-on:confirm="deleteStatus"
         :title-text="i18n.get('_.modals.deleteStatus-title')"
         :abort-text="i18n.get('_.menu.abort')"
         :confirm-text="i18n.get('_.modals.delete-confirm')"
         confirm-button-color="btn-danger"
     ></ModalConfirm>
+    <CheckInModal
+        ref="editModal"
+        v-if="status.user === $auth.user().id"
+        :status-data="status"
+    ></CheckInModal>
   </div>
 </template>
 
@@ -178,6 +184,7 @@ import {StatusModel} from "../js/APImodels";
 import axios from "axios";
 import ModalConfirm from "./ModalConfirm";
 import {visibility, travelReason} from "../js/APImodels";
+import CheckInModal from "./CheckInModal";
 
 export default {
   name: "Status.vue",
@@ -193,6 +200,7 @@ export default {
     };
   },
   components: {
+    CheckInModal,
     Map,
     ModalConfirm
   },
@@ -292,6 +300,9 @@ export default {
     },
     toggleDeleteModal() {
       this.$refs.deleteModal.show();
+    },
+    toggleEditModal() {
+      this.$refs.editModal.show();
     }
   },
   created() {
