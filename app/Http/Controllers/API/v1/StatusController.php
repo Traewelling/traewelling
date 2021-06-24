@@ -80,12 +80,12 @@ class StatusController extends ResponseController
                 business: $validated['business'],
                 visibility: $validated['visibility']
             );
+            return $this->sendv1Response(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
             abort(404);
         } catch (PermissionException) {
             abort(403);
         }
-        return $this->sendv1Response(new StatusResource($editStatusResponse));
     }
 
     /**
