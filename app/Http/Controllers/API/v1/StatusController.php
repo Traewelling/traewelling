@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Enum\TravelType;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -14,15 +13,15 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Psy\Util\Json;
+use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
 {
@@ -59,11 +58,11 @@ class StatusController extends ResponseController
      * @param Request $request
      * @param int $statusId
      * @return JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'body'       => ['max:280', 'nullable'],
+            'body'       => ['nullable', 'max:280', 'nullable'],
             'business'   => ['required', Rule::in(Business::getList())],
             'visibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
