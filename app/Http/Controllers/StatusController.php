@@ -190,7 +190,7 @@ class StatusController extends Controller
      * @param int $business
      * @param int $visibility
      * @return Status
-     * @throws PermissionException
+     * @throws PermissionException|ModelNotFoundException
      * @api v1
      */
     public static function EditStatus(
