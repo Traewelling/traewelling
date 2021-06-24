@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use Carbon\Traits\Creator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -207,10 +206,11 @@ class StatusController extends Controller
             throw new PermissionException();
         }
 
-        $status->body       = $body;
-        $status->business   = $business;
-        $status->visibility = $visibility;
-        $status->update();
+        $status->update([
+                            'body'       => $body,
+                            'business'   => $business,
+                            'visibility' => $visibility,
+                        ]);
         return $status;
     }
 
