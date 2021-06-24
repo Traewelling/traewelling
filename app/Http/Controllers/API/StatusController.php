@@ -67,7 +67,7 @@ class StatusController extends ResponseController
         return $this->sendResponse($statusResponse);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'body'     => 'max:280',
             'business' => 'integer',
@@ -77,11 +77,11 @@ class StatusController extends ResponseController
         }
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                Auth::user(),
-                $request['statusId'],
-                $request['body'],
-                $request['businessCheck'],
-                null
+                user: Auth::user(),
+                statusId: $request['statusId'],
+                body: $request['body'],
+                business: $request['businessCheck'],
+                visibility: null
             );
         } catch (ModelNotFoundException) {
             return $this->sendError('Not found');
