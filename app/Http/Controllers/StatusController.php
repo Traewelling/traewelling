@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use Carbon\Traits\Creator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -184,22 +183,35 @@ class StatusController extends Controller
         return true;
     }
 
-    public static function EditStatus($user, $statusId, $body, $businessCheck, $visibility): bool|string|null {
-        $status = Status::find($statusId);
-        if ($status === null) {
-            return null;
-        }
-        if ($user != $status->user) {
-            return false;
+    /**
+     * @param User $user
+     * @param int $statusId
+     * @param string $body
+     * @param int $business
+     * @param int $visibility
+     * @return Status
+     * @throws PermissionException|ModelNotFoundException
+     * @api v1
+     */
+    public static function EditStatus(
+        User $user,
+        int $statusId,
+        string $body,
+        int $business,
+        int $visibility
+    ): Status {
+        $status = Status::findOrFail($statusId);
+
+        if ($user->id !== $status->user->id) {
+            throw new PermissionException();
         }
 
-        $status->body     = $body;
-        $status->business = $businessCheck;
-        if ($visibility != null) {
-            $status->visibility = $visibility;
-        }
-        $status->update();
-        return $status->body;
+        $status->update([
+                            'body'       => $body,
+                            'business'   => $business,
+                            'visibility' => $visibility,
+                        ]);
+        return $status;
     }
 
     /**
@@ -437,13 +449,13 @@ class StatusController extends Controller
         }
 
         return Status::create([
-                                     'user_id'    => $user->id,
-                                     'body'       => $body,
-                                     'business'   => $business,
-                                     'visibility' => $visibility,
-                                     'type'       => $type,
-                                     'event'      => $event?->id
+                                  'user_id'    => $user->id,
+                                  'body'       => $body,
+                                  'business'   => $business,
+                                  'visibility' => $visibility,
+                                  'type'       => $type,
+                                  'event'      => $event?->id
 
-                                 ]);
+                              ]);
     }
 }

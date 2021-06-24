@@ -3,6 +3,8 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -13,9 +15,13 @@ use App\Models\HafasTrip;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
 {
@@ -46,6 +52,40 @@ class StatusController extends ResponseController
         }
 
         return $this->sendv1Response();
+    }
+
+    /**
+     * @param Request $request
+     * @param int $statusId
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function update(Request $request, int $statusId): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'body'       => ['nullable', 'max:280', 'nullable'],
+            'business'   => ['required', Rule::in(Business::getList())],
+            'visibility' => ['required', Rule::in(StatusVisibility::getList())],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+        $validated = $validator->validate();
+
+        try {
+            $editStatusResponse = StatusBackend::EditStatus(
+                user: Auth::user(),
+                statusId: $statusId,
+                body: $validated['body'],
+                business: $validated['business'],
+                visibility: $validated['visibility']
+            );
+            return $this->sendv1Response(new StatusResource($editStatusResponse));
+        } catch (ModelNotFoundException) {
+            abort(404);
+        } catch (PermissionException) {
+            abort(403);
+        }
     }
 
     /**

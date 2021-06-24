@@ -90,3 +90,44 @@ export let LeaderboardUserModel = {
     trainSpeed: 0.0,
     points: 0
 };
+
+export let travelReason = [
+    {
+        icon: "fa fa-user",
+        desc: "_.stationboard.business.private",
+        detail: null
+    },
+    {
+        icon: "fa fa-briefcase",
+        desc: "_.stationboard.business.business",
+        detail: "_.stationboard.business.business.detail"
+    },
+    {
+        icon: "fa fa-building",
+        desc: "_.stationboard.business.commute",
+        detail: "_.stationboard.business.commute.detail"
+    }
+];
+
+export let visibility = [
+    {
+        icon: "fa fa-globe-americas",
+        desc: "_.status.visibility.0",
+        detail: "_.status.visibility.0.detail"
+    },
+    {
+        icon: "fa fa-lock-open",
+        desc: "_.status.visibility.1",
+        detail: "_.status.visibility.1.detail"
+    },
+    {
+        icon: "fa fa-user-friends",
+        desc: "_.status.visibility.2",
+        detail: "_.status.visibility.2.detail"
+    },
+    {
+        icon: "fa fa-lock",
+        desc: "_.status.visibility.3",
+        detail: "_.status.visibility.3.detail"
+    },
+];

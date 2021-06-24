@@ -46,7 +46,7 @@
           </ul>
           <ul class="navbar-nav w-auto" v-else>
             <form class="form-inline" action="#">
-              <div class="input-group ps-0 m-0">
+              <div class="input-group ps-0 m-0" hidden>
                 <input name="searchQuery" type="text"
                        class="border border-white rounded-left form-control my-0 py-1"
                        :placeholder="i18n.get('_.stationboard.submit-search')"
@@ -100,17 +100,64 @@
       <router-view></router-view>
       <NotificationsModal ref="notifModal"></NotificationsModal>
     </main>
+    <footer class="footer mt-auto py-3">
+      <div class="container">
+        <div class="btn-group dropup float-end">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-globe-europe" aria-hidden="true"></i> {{ i18n.get("_.settings.language.set") }}
+          </button>
+          <div class="dropdown-menu">
+            <a v-for="(lang, key) in langs" class="dropdown-item" href="?language=$key" @click.prevent="setLang(key)">
+              {{ lang }}
+            </a>
+          </div>
+        </div>
+        <p class="text-muted mb-0">
+                <span class="footer-nav-link">
+                    <a href="route('static.about')">{{ i18n.get("_.menu.about") }}</a>
+                </span>
+          <span class="footer-nav-link">
+                    / <a href=" route(globaldashboard) ">{{ i18n.get("_.menu.globaldashboard") }}</a>
+                </span>
+          <span class="footer-nav-link">
+                    / <a href=" route(events) ">{{ i18n.get("_.events") }}</a>
+                </span>
+          <span class="footer-nav-link">
+                    / <a href=" route(static.privacy) ">{{ i18n.get("_.menu.privacy") }}</a>
+                </span>
+          <span class="footer-nav-link">
+                    / <a href=" route(static.imprint) ">{{ i18n.get("_.menu.imprint") }}</a>
+                </span>
+          <span class="footer-nav-link">
+                    / <a href=" route(blog.all) ">{{ i18n.get("_.menu.blog") }}</a>
+                </span>
+        </p>
+        <p class="mb-0" v-html="i18n.get('_.menu.developed')"></p>
+        <p class="mb-0">&copy; {{ moment().format('Y') }} Tr&auml;welling</p>
+        <p class="mb-0 text-muted small">commit:
+          <!--          ToDo: get current commit -->
+          <a href="https://github.com/Traewelling/traewelling/commit/get_current_git_commit()"
+             class="text-muted">
+            get_current_git_commit()
+          </a>
+        </p>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script>
 import NotificationsModal from "../components/NotificationsModal";
 import NotificationsButton from "../components/NotificationsButton";
+import Vue from "vue";
+import {languages} from "../js/translations";
 
 export default {
   data() {
     return {
-      notificationsCount: 1
+      notificationsCount: 1,
+      langs: languages
     };
   },
   components: {
@@ -122,7 +169,10 @@ export default {
       if (this.$auth.check()) {
         this.$auth.fetch()
             .then((res) => {
-              this.$auth.user(res.data);
+              this.$auth.user(res.data.data);
+              if (this.$auth.user().language) {
+                this.setLang(this.$auth.user().language);
+              }
             });
       }
     });
@@ -141,6 +191,14 @@ export default {
           .catch((error) => {
             console.error(error);
           });
+    },
+    setLang(language) {
+      if (typeof language === "string" && languages.hasOwnProperty(language)) {
+        Vue.localStorage.set("language", language);
+        this.i18n.setLocale(language);
+        this.moment.locale(language.substr(0, 2));
+        this.$forceUpdate();
+      }
     }
   }
 };

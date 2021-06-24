@@ -3,8 +3,8 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">{{ this.$props.trainData.lineName }}
-            <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i> {{ this.$props.destination }}</h4>
+          <h4 class="modal-title">{{ this.lineName }}
+            <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i> {{ this.dest }}</h4>
           <button type="button" class="close" v-on:click="hide" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -19,7 +19,7 @@
             </div>
 
             <div class="mt-2">
-              <div class="btn-group" v-if="$auth.user.twitterUrl != null">
+              <div class="btn-group" v-if="!edit && $auth.user().twitterUrl != null">
                 <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
                        v-model="status.tweet"/>
                 <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
@@ -27,8 +27,7 @@
                   <span class="visually-hidden-focusable">{{ i18n.get('_.stationboard.check-tweet') }}</span>
                 </label>
               </div>
-
-              <div class="btn-group" v-if="$auth.user.mastodonUrl != null">
+              <div class="btn-group" v-if="!edit && $auth.user().mastodonUrl != null">
                 <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
                        v-model="status.toot"/>
                 <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
@@ -36,8 +35,13 @@
                   <span class="visually-hidden-focusable">{{ i18n.get('_.stationboard.check-toot') }}</span>
                 </label>
               </div>
-              @include('includes.business-dropdown')
-              @include('includes.visibility-dropdown')
+
+              <div class="float-end">
+                <FADropdown :pre-select="status.business" :dropdown-content="travelReason"
+                            v-model="status.business"></FADropdown>
+                <FADropdown :pre-select="status.visibility" :dropdown-content="visibility"
+                            v-model="status.visibility"></FADropdown>
+              </div>
             </div>
 
             <!--            @if($events->count() == 1)-->
@@ -71,7 +75,10 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" v-on:click="hide">{{ i18n.get('_.menu.abort') }}</button>
-          <button type="button" class="btn btn-primary" v-on:click="submitCheckin">
+          <button v-if="edit" type="button" class="btn btn-primary" v-on:click="editCheckin">
+            {{ i18n.get("_.modals.edit-confirm") }}
+          </button>
+          <button v-else type="button" class="btn btn-primary" v-on:click="submitCheckin">
             {{ i18n.get('_.stationboard.btn-checkin') }}
           </button>
         </div>
@@ -83,9 +90,12 @@ import {Modal} from "bootstrap";
 
 <script>
 import {Modal} from "bootstrap";
+import FADropdown from "./FADropdown";
+import {travelReason, visibility} from "../js/APImodels";
 
 export default {
   name: "CheckInModal",
+  components: {FADropdown},
   data() {
     return {
       modal: null,
@@ -97,11 +107,13 @@ export default {
         event: 0,
         tweet: false,
         toot: false,
-      }
+      },
+      travelReason: travelReason,
+      visibility: visibility,
+      result: null
     };
   },
   props: {
-    edit: null,
     destination: null,
     statusData: {
       type: Object
@@ -112,6 +124,31 @@ export default {
   },
   mounted() {
     this.modal = new Modal(this.$refs.checkinModal);
+    if (this.edit) {
+      this.status.body       = this.$props.statusData.body;
+      this.status.business   = this.$props.statusData.business;
+      this.status.visibility = this.$props.statusData.visibility;
+    }
+  },
+  computed: {
+    edit() {
+      if (this.$props.statusData) {
+        return true;
+      }
+      return false;
+    },
+    dest() {
+      if (this.edit) {
+        return this.$props.statusData.train.destination.name;
+      }
+      return this.$props.trainData;
+    },
+    lineName() {
+      if (this.edit) {
+        return this.$props.statusData.train.lineName;
+      }
+      return this.$props.trainData.lineName;
+    }
   },
   methods: {
     show() {
@@ -121,21 +158,34 @@ export default {
       this.modal.hide();
     },
     submitCheckin() {
-      if (this.edit == null) {
-        const formData = {};
-        Object.assign(formData, this.status);
-        Object.assign(formData, this.$props.trainData);
-        axios
-            .post("/trains/checkin", formData)
-            .then((result) => {
-              this.$router.push({name: "dashboard"});
-              this.hide();
-              alert(result.data.status.train.points + " points");
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-      }
+      const formData = {};
+      Object.assign(formData, this.status);
+      Object.assign(formData, this.$props.trainData);
+      axios
+          .post("/trains/checkin", formData)
+          .then((result) => {
+            this.$router.push({name: "dashboard"});
+            this.hide();
+            alert(result.data.status.train.points + " points");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    },
+    editCheckin() {
+      const formData = {};
+      Object.assign(formData, this.status);
+      axios
+          .put("/statuses/" + this.statusData.id, formData)
+          .then((result) => {
+            this.result = result.data.data;
+            this.$emit("updated");
+            this.hide();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
     }
   }
 };
