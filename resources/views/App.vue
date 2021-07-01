@@ -2,25 +2,25 @@
   <div>
     <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
       <div class="container">
-        <router-link class="navbar-brand" :to="{ name: 'base' }">
+        <router-link :to="{ name: 'base' }" class="navbar-brand">
           Träwelling <!-- ToDo: get name from config -->
         </router-link>
         <div class="navbar-toggler">
           <NotificationsButton
               v-if="$auth.check()"
+              :notifications-count="notificationsCount"
               toggler="true"
               @click="showNotifications"
-              :notifications-count="notificationsCount"
           ></NotificationsButton>
-          <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
-                  data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                  aria-expanded="false" :aria-label="i18n.get('_.Toggle navigation')">
-            <i class="fas fa-bars" aria-hidden="true"></i>
+          <button :aria-label="i18n.get('_.Toggle navigation')" aria-controls="navbarCollapse" aria-expanded="false"
+                  class="navbar-toggler" data-mdb-target="#navbarCollapse"
+                  data-mdb-toggle="collapse" type="button">
+            <i aria-hidden="true" class="fas fa-bars"></i>
           </button>
         </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div id="navbarCollapse" ref="navbar" class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item" v-if="$auth.check()">
+            <li v-if="$auth.check()" class="nav-item">
               <router-link :to="{ name: 'dashboard' }" class="nav-link">{{ i18n.get('_.menu.dashboard') }}</router-link>
             </li>
             <li class="nav-item">
@@ -34,7 +34,7 @@
               </router-link>
             </li>
           </ul>
-          <ul class="navbar-nav w-auto" v-if="!$auth.check()">
+          <ul v-if="!$auth.check()" class="navbar-nav w-auto">
             <li class="nav-item">
               <router-link :to="{ name: 'auth.login'}"
                            class="nav-link">{{ i18n.get('_.menu.login') }}
@@ -44,15 +44,15 @@
               <a class="nav-link" href="#">{{ i18n.get('_.menu.register') }}</a>
             </li>
           </ul>
-          <ul class="navbar-nav w-auto" v-else>
-            <form class="form-inline" action="#">
+          <ul v-else class="navbar-nav w-auto">
+            <form action="#" class="form-inline">
               <div class="input-group ps-0 m-0" hidden>
-                <input name="searchQuery" type="text"
+                <input :placeholder="i18n.get('_.stationboard.submit-search')" aria-label="User suchen"
                        class="border border-white rounded-left form-control my-0 py-1"
-                       :placeholder="i18n.get('_.stationboard.submit-search')"
-                       aria-label="User suchen"/>
+                       name="searchQuery"
+                       type="text"/>
                 <button class="input-group-text btn-primary" type="submit">
-                  <i class="fas fa-search" aria-hidden="true"></i>
+                  <i aria-hidden="true" class="fas fa-search"></i>
                 </button>
               </div>
             </form>
@@ -63,22 +63,22 @@
               ></NotificationsButton>
             </li>
             <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle"
-                 role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
-                 aria-expanded="false">
+              <a aria-expanded="false" aria-haspopup="true"
+                 class="nav-link dropdown-toggle" data-mdb-toggle="dropdown" href="#"
+                 role="button">
                 {{ $auth.user().displayName }}
               </a>
 
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+              <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
                 <router-link :to="{ name: 'profile', params: {username: $auth.user().username}}"
                              class="dropdown-item">
-                  <i class="fas fa-user" aria-hidden="true"></i> {{ i18n.get('_.menu.profile') }}
+                  <i aria-hidden="true" class="fas fa-user"></i> {{ i18n.get('_.menu.profile') }}
                 </router-link>
                 <a class="dropdown-item" href="#">
-                  <i class="fas fa-save" aria-hidden="true"></i> {{ i18n.get('_.menu.export') }}
+                  <i aria-hidden="true" class="fas fa-save"></i> {{ i18n.get('_.menu.export') }}
                 </a>
                 <a class="dropdown-item" href="#">
-                  <i class="fas fa-cog" aria-hidden="true"></i> {{ i18n.get('_.menu.settings') }}
+                  <i aria-hidden="true" class="fas fa-cog"></i> {{ i18n.get('_.menu.settings') }}
                 </a>
                 <!--                {{ &#45;&#45;@if(Auth::user()->role >= 5)&#45;&#45; }}-->
                 <!--                {{-->
@@ -88,7 +88,7 @@
                 <!--                {{ &#45;&#45;@endif&#45;&#45; }}-->
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click.prevent="$auth.logout()">
-                  <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ i18n.get('_.menu.logout') }}
+                  <i aria-hidden="true" class="fas fa-sign-out-alt"></i> {{ i18n.get('_.menu.logout') }}
                 </a>
               </div>
             </li>
@@ -103,9 +103,9 @@
     <footer class="footer mt-auto py-3">
       <div class="container">
         <div class="btn-group dropup float-end">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-globe-europe" aria-hidden="true"></i> {{ i18n.get("_.settings.language.set") }}
+          <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle"
+                  data-mdb-toggle="dropdown" type="button">
+            <i aria-hidden="true" class="fas fa-globe-europe"></i> {{ i18n.get("_.settings.language.set") }}
           </button>
           <div class="dropdown-menu">
             <a v-for="(lang, key) in langs" class="dropdown-item" href="?language=$key" @click.prevent="setLang(key)">
@@ -137,8 +137,8 @@
         <p class="mb-0">&copy; {{ moment().format('Y') }} Tr&auml;welling</p>
         <p class="mb-0 text-muted small">commit:
           <!--          ToDo: get current commit -->
-          <a href="https://github.com/Traewelling/traewelling/commit/get_current_git_commit()"
-             class="text-muted">
+          <a class="text-muted"
+             href="https://github.com/Traewelling/traewelling/commit/get_current_git_commit()">
             get_current_git_commit()
           </a>
         </p>
@@ -177,6 +177,11 @@ export default {
       }
     });
     this.fetchNotificationsCount();
+  },
+  watch: {
+    '$route'() {
+      $("#navbarCollapse").collapse("hide");
+    }
   },
   methods: {
     showNotifications() {
