@@ -141,7 +141,7 @@ export default {
       if (this.edit) {
         return this.$props.statusData.train.destination.name;
       }
-      return this.$props.trainData;
+      return this.$props.destination;
     },
     lineName() {
       if (this.edit) {
