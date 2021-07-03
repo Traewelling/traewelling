@@ -83,7 +83,7 @@ class TransportController extends ResponseController
         $validator = Validator::make($request->all(), [
             'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
-            'limit' => ['nullable', 'numeric', 'min:1', 'max:20']
+            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
         ]);
 
         if ($validator->fails()) {
