@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void {
         $schedule->command('trwl:cleanUpUsers')->daily();
+        $schedule->command('trwl:cleanUpHafasTrips')->daily();
         $schedule->command('trwl:refreshTrips')->everyMinute();
     }
 
