@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -219,7 +220,11 @@ class TransportController extends Controller
     public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
         $now = time();
 
-        $factor        = config('trwl.base_points.train.' . $category, 1);
+        $factor = 1;
+        if (in_array($category, HafasTravelType::getList())) {
+            $factor = config('trwl.base_points.train.' . $category, 1);
+        }
+
         $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points        = $factor + ceil($distance / 10);
