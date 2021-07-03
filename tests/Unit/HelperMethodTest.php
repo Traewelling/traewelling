@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use DOMDocument;
-use Tests\TestCase;
 use App;
+use DOMDocument;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class HelperMethodTest extends TestCase
 {

@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PrivateProfileFollowerRelationsTest extends TestCase

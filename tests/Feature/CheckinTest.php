@@ -7,7 +7,6 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
-use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use Carbon\Carbon;
@@ -19,6 +18,11 @@ class CheckinTest extends TestCase
 {
 
     use RefreshDatabase;
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->artisan('db:seed --class=PointsCalculationSeeder');
+    }
 
     private $plus_one_day_then_8pm = "+1 day 8:00";
 
@@ -192,7 +196,8 @@ class CheckinTest extends TestCase
                              'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
                              'departure'         => Carbon::parse($departure->plannedWhen),
                              'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
-                             'checkinVisibility' => StatusVisibility::PUBLIC
+                             'checkinVisibility' => StatusVisibility::PUBLIC,
+                             'business_check'    => 0
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -448,7 +453,8 @@ class CheckinTest extends TestCase
                              // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
                              'destination'       => $trip['stopovers'][5]['stop']['id'], // Reiterweg
                              'arrival'           => $trip['stopovers'][5]['arrival'],
-                             'checkinVisibility' => "0"
+                             'checkinVisibility' => "0",
+                             'business_check'    => 0
                          ]);
 
         $response->assertStatus(302);
@@ -526,7 +532,8 @@ class CheckinTest extends TestCase
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination'       => $trip['stopovers'][8]['stop']['id'], // Tempelhof
                              'arrival'           => $trip['stopovers'][8]['arrival'],
-                             'checkinVisibility' => StatusVisibility::PUBLIC
+                             'checkinVisibility' => StatusVisibility::PUBLIC,
+                             'business_check'    => 0
                          ]);
 
         $response->assertStatus(302);
