@@ -189,9 +189,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
 
-    Route::get('/transport/bus/autocomplete/{station}', [FrontendTransportController::class, 'BusAutocomplete'])
-         ->name('transport.bus.autocomplete');
-
     Route::get('/trains/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
          ->name('trains.stationboard');
 

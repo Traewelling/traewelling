@@ -25,11 +25,6 @@ class FrontendTransportController extends Controller
         return response()->json($TrainAutocompleteResponse);
     }
 
-    public function BusAutocomplete($station): JsonResponse {
-        $BusAutocompleteResponse = TransportBackend::BusAutocomplete($station);
-        return response()->json($BusAutocompleteResponse);
-    }
-
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
 
         $validated = $request->validate([
