@@ -25,6 +25,14 @@ use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
 {
+    public static function getDashboard(): AnonymousResourceCollection {
+        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
+    }
+
+    public static function getGlobalDashboard(): AnonymousResourceCollection {
+        return StatusResource::collection(StatusBackend::getGlobalDashboard());
+    }
+
     public function enRoute(): AnonymousResourceCollection {
         return StatusResource::collection(StatusBackend::getActiveStatuses(null, false)['statuses']);
     }
@@ -90,7 +98,7 @@ class StatusController extends ResponseController
 
     /**
      * @param string $parameters
-     * @return AnonymousResourceCollection|JsonResponse
+     * @return JsonResponse
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
@@ -100,7 +108,10 @@ class StatusController extends ResponseController
                           ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
                           ->reject(function($status) {
-                              return ($status->user->userInvisibleToMe || $status->statusInvisibleToMe);
+                              return ($status->user->userInvisibleToMe
+                                      || ($status->statusInvisibleToMe
+                                          && $status->visibility !== StatusVisibility::UNLISTED
+                                      ));
                           })
                           ->mapWithKeys(function($status) {
                               return [$status->id => $status->trainCheckin->getMapLines()];
@@ -118,13 +129,5 @@ class StatusController extends ResponseController
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
         return $this->sendv1Response($trips);
-    }
-
-    public static function getDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
-    }
-
-    public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getGlobalDashboard());
     }
 }
