@@ -247,7 +247,7 @@ class TransportController extends Controller
             return ceil($points * 0.25);
         }
 
-        // Else: Just give me one. It's a point for funniest and the minimal amount of points that you can get.
+        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
         return 1;
     }
 
