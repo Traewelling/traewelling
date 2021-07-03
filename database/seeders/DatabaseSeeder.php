@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
      * @return void
      */
     public function run(): void {
-        $this->call(PointsCalculationSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(FollowTableSeeder::class);
         TrainStation::factory()->count(50)->create();

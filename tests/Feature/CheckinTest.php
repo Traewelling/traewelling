@@ -21,7 +21,6 @@ class CheckinTest extends TestCase
 
     protected function setUp(): void {
         parent::setUp();
-        $this->artisan('db:seed --class=PointsCalculationSeeder');
     }
 
     private $plus_one_day_then_8pm = "+1 day 8:00";

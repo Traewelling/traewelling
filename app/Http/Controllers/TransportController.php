@@ -8,7 +8,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Resources\EventResource;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -23,15 +22,12 @@ use App\Notifications\MastodonNotSent;
 use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use Carbon\Traits\Creator;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
@@ -221,18 +217,9 @@ class TransportController extends Controller
     }
 
     public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
-        $now      = time();
-        $factorDB = DB::table('pointscalculation')
-                      ->where([
-                                  ['type', 'train'],
-                                  ['transport_type', $category
-                                  ]])
-                      ->first();
+        $now = time();
 
-        $factor = 1;
-        if ($factorDB != null) {
-            $factor = $factorDB->value;
-        }
+        $factor        = config('trwl.basis_points.train.' . $category, 1);
         $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points        = $factor + ceil($distance / 10);
@@ -260,7 +247,7 @@ class TransportController extends Controller
             return ceil($points * 0.25);
         }
 
-        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
+        // Else: Just give me one. It's a point for funniest and the minimal amount of points that you can get.
         return 1;
     }
 
@@ -273,6 +260,7 @@ class TransportController extends Controller
      * @param $businessCheck
      * @param $tweetCheck
      * @param $tootCheck
+     * @param $visibility
      * @param int $eventId
      * @param Carbon|null $departure
      * @param Carbon|null $arrival

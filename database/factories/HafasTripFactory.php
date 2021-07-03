@@ -84,7 +84,7 @@ class HafasTripFactory extends Factory
         $polyline = TransportController::getPolylineHash($polyline);
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
-            'category'    => DB::table('pointscalculation')->where('type', 'train')->get()->random()->transport_type,
+            'category'    => $this->faker->randomElement(HafasTravelType::getList()),
             'number'      => $this->faker->bothify('??-##'),
             'linename'    => $this->faker->bothify('?? ##'),
             'origin'      => $stops[0]->ibnr,
