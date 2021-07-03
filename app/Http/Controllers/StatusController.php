@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
@@ -186,19 +187,19 @@ class StatusController extends Controller
     /**
      * @param User $user
      * @param int $statusId
-     * @param string $body
+     * @param string|null $body
      * @param int $business
      * @param int $visibility
      * @return Status
-     * @throws PermissionException|ModelNotFoundException
+     * @throws PermissionException
      * @api v1
      */
     public static function EditStatus(
         User $user,
         int $statusId,
-        string $body,
-        int $business,
-        int $visibility
+        string $body = null,
+        int $business = Business::PRIVATE,
+        int $visibility = StatusVisibility::PUBLIC
     ): Status {
         $status = Status::findOrFail($statusId);
 

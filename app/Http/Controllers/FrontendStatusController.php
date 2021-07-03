@@ -70,18 +70,18 @@ class FrontendStatusController extends Controller
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
         $this->validate($request, [
-            'body'              => ['max:280'],
+            'body'              => ['nullable', 'max:280'],
             'business_check'    => ['required', 'digits_between:0,2'],
             'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                Auth::user(),
-                $request['statusId'],
-                $request['body'],
-                $request['business_check'],
-                $request['checkinVisibility']
+                user: Auth::user(),
+                statusId: $request['statusId'],
+                body: $request['body'] ?? null,
+                business: $request['business_check'],
+                visibility: $request['checkinVisibility']
             );
         } catch (ModelNotFoundException | PermissionException) {
             return redirect()->back();
