@@ -6,6 +6,7 @@ use App\Models\PrivacyAgreement;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PrivacyInterceptionMiddleware
 {
@@ -21,6 +22,11 @@ class PrivacyInterceptionMiddleware
         $agreement = PrivacyAgreement::where('valid_at', '<=', date("Y-m-d H:i:s"))
                                      ->orderByDesc('valid_at')
                                      ->first();
+
+        if ($agreement == null) {
+            Log::critical('No privacy agreement found!');
+            return $next($request);
+        }
 
         // Wenn die letzte Ausführung neuer ist als das Ack, redirecte mich bitte.
         if ($user->privacy_ack_at <= $agreement->valid_at) {

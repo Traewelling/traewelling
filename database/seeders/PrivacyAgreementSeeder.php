@@ -13,7 +13,7 @@ class PrivacyAgreementSeeder extends Seeder
         PrivacyAgreement::create([
                                      'body_md_de' => '# Allgemeiner Hinweis und Pflicht&shy;informationen',
                                      'body_md_en' => '# General notes and mandatory information',
-                                     'valid_at'   => Carbon::now()->toIso8601String()
+                                     'valid_at'   => Carbon::yesterday()->toIso8601String()
                                  ]);
     }
 }

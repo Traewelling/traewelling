@@ -30,18 +30,18 @@ class ApiAuthTest extends ApiTestCase
         //Test GDPR-Middleware
         $userToken = json_decode($response->getContent())->token;
         $response  = $this->withHeaders(['Authorization' => 'Bearer ' . $userToken])
-            ->json('GET', route('api.v0.getUser'));
+                          ->json('GET', route('api.v0.getUser'));
         $response->assertStatus(406);
         $response->assertJsonStructure([
-            'error',
-            'updated',
-            'german',
-            'english']);
+                                           'error',
+                                           'updated',
+                                           'german',
+                                           'english']);
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $userToken])
-            ->json('PUT', route('api.v0.user.accept_privacy'));
+                         ->json('PUT', route('api.v0.user.accept_privacy'));
         $response->assertStatus(202);
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $userToken])
-            ->get(route('api.v0.getUser'));
+                         ->get(route('api.v0.getUser'));
         $response->assertOk();
     }
 
@@ -52,7 +52,7 @@ class ApiAuthTest extends ApiTestCase
     public function logout_user() {
         $this->loginGertrudAndAckGDPR();
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('POST', route('api.v0.auth.logout'));
+                         ->json('POST', route('api.v0.auth.logout'));
         $response->assertOk();
         $response->assertJson(['message' => 'Successfully logged out.']);
     }

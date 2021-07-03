@@ -74,11 +74,11 @@ class UserRedirectionTest extends TestCase
         sleep(1);
 
         // Now the träwelling team puts up a new terms iteration:
-        $gdpr             = new PrivacyAgreement();
-        $gdpr->body_md_de = "Not empty";
-        $gdpr->body_md_en = "Not empty";
-        $gdpr->valid_at   = Carbon::now();
-        $gdpr->save();
+        PrivacyAgreement::create([
+                                     'body_md_de' => 'not empty',
+                                     'body_md_en' => 'not_empty',
+                                     'valid_at'   => Carbon::now()->toIso8601String(),
+                                 ]);
 
         // If the user opens the app again, they get intercepted again.
         $response = $this->actingAs($user)
