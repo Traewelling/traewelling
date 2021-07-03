@@ -6,30 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateEventsTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('events', function(Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->string('hashtag');
             $table->string('host'); // Einfach nur Name des Veranstalters, weil einfacher I guess
             $table->string('url');  // Event-URL
-            $table->unsignedBigInteger('trainstation');
+            $table->integer('trainstation');
             $table->dateTime('begin');
             $table->dateTime('end');
 
             $table->timestamps();
-
-            $table->foreign('trainstation')
-                  ->references('id')
-                  ->on('train_stations')
-                  ->cascadeOnUpdate();
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('events');
     }
 }

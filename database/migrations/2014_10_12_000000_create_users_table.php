@@ -6,31 +6,38 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('users', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('username')->unique();
-            $table->string('avatar')->nullable()->default(null);
+            $table->string('avatar')->default('user.jpg');
             $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('privacy_ack_at')->nullable();
             $table->string('password')->nullable();
+            $table->float('train_distance')->default(0.00);
+            $table->unsignedInteger('train_duration')->default(0); //travel_time
+            $table->unsignedInteger('points')->default(0);
             $table->boolean('always_dbl')->default(false);
-            $table->unsignedBigInteger('home_id')->nullable()->default(null);
-            $table->tinyInteger('role')->default('0');
-            $table->string('language', 12)->nullable()->default(null);
-            $table->boolean('private_profile')->default(false);
-            $table->boolean('prevent_index')
-                  ->comment('prevent search engines from indexing this profile')
-                  ->default(false);
+            $table->integer('home_id')->unsigned()
+                  ->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('users');
     }
 }

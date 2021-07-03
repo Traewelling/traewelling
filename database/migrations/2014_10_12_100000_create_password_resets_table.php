@@ -6,8 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePasswordResetsTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('password_resets', function(Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
@@ -15,7 +19,12 @@ class CreatePasswordResetsTable extends Migration
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('password_resets');
     }
 }

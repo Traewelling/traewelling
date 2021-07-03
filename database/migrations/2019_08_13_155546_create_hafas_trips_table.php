@@ -6,18 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateHafasTripsTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('hafas_trips', function(Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('trip_id')->unique();
+            $table->string('trip_id');
             $table->string('category');
             $table->string('number');
             $table->string('linename');
-            $table->unsignedBigInteger('origin');
-            $table->unsignedBigInteger('destination');
+            $table->string('origin');
+            $table->string('destination');
             $table->json('stopovers')->nullable();
-            $table->unsignedBigInteger('polyline_id')->nullable()->default(null);
+            //This has been changed from "json" to "string" so that the upcoming migrations won't fail b/c of non-matching collations.
+            // We know it's bad practice but it's better than defining a collation in another migration. That Database-Shit. Not Code-Shit.
+            $table->string('polyline')->nullable();
             $table->timestampTz('departure')->nullable();
             $table->timestampTz('arrival')->nullable();
             $table->integer('delay')->nullable();
@@ -25,7 +31,12 @@ class CreateHafasTripsTable extends Migration
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('hafas_trips');
     }
 }

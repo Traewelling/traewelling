@@ -6,8 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateBlogTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('blogposts', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
@@ -21,7 +25,12 @@ class CreateBlogTable extends Migration
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('blogposts');
     }
 }

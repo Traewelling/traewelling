@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeysToHafasTrips extends Migration
+class AddForeignKeysToTrainCheckins extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,16 @@ class AddForeignKeysToHafasTrips extends Migration
      * @return void
      */
     public function up() {
-        Schema::table('hafas_trips', function(Blueprint $table) {
+        Schema::table('train_checkins', function(Blueprint $table) {
+            $table->bigInteger('status_id')->unsigned()->change();
             $table->bigInteger('origin')->unsigned()->change();
             $table->bigInteger('destination')->unsigned()->change();
 
-            $table->unique('trip_id');
-
+            $table->foreign('status_id')
+                  ->references('id')
+                  ->on('statuses')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
             $table->foreign('origin')
                   ->references('ibnr')//TODO: Should use 'id' instead...
                   ->on('train_stations')
@@ -28,11 +32,11 @@ class AddForeignKeysToHafasTrips extends Migration
                   ->on('train_stations')
                   ->onDelete('restrict')
                   ->onUpdate('cascade');
-            $table->foreign('polyline')
-                  ->references('hash')//TODO: Should use 'id' instead...
-                  ->on('poly_lines')
+            $table->foreign('trip_id')
+                  ->references('trip_id')//TODO: Should use 'id' instead...
+                  ->on('hafas_trips')
                   ->onDelete('restrict')
-                  ->onUpdate('cascade');
+                  ->onUpdate('restrict');
         });
     }
 
@@ -42,14 +46,14 @@ class AddForeignKeysToHafasTrips extends Migration
      * @return void
      */
     public function down() {
-        Schema::table('hafas_trips', function(Blueprint $table) {
-            $table->dropUnique('hafas_trips_trip_id_unique');
-
-            $table->dropForeign("hafas_trips_origin_foreign");
-            $table->dropForeign("hafas_trips_destination_foreign");
-            $table->dropForeign("hafas_trips_polyline_foreign");
+        Schema::table('train_checkins', function(Blueprint $table) {
+            $table->dropForeign("train_checkins_origin_foreign");
+            $table->dropForeign("train_checkins_destination_foreign");
+            $table->dropForeign("train_checkins_trip_id_foreign");
+            $table->dropForeign("train_checkins_status_id_foreign");
         });
-        Schema::table('hafas_trips', function(Blueprint $table) {
+        Schema::table('train_checkins', function(Blueprint $table) {
+            $table->integer('status_id')->change();
             $table->string('origin', 255)->change();
             $table->string('destination', 255)->change();
         });

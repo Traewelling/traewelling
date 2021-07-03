@@ -6,8 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePrivacyAgreementsTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('privacy_agreements', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('body_md_de');
@@ -17,7 +21,12 @@ class CreatePrivacyAgreementsTable extends Migration
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('privacy_agreements');
     }
 }

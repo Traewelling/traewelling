@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFollowsTable extends Migration
+class AddUniqueKeyToLikes extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,8 @@ class CreateFollowsTable extends Migration
      * @return void
      */
     public function up() {
-        Schema::create('follows', function(Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->unsigned();
-            $table->integer('follow_id');
-            $table->timestamps();
+        Schema::table('likes', function(Blueprint $table) {
+            $table->unique(['user_id', 'status_id']);
         });
     }
 
@@ -26,6 +23,8 @@ class CreateFollowsTable extends Migration
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('follows');
+        Schema::table('likes', function(Blueprint $table) {
+            $table->dropUnique('likes_user_id_status_id_unique');
+        });
     }
 }

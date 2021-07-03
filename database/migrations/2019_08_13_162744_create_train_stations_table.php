@@ -6,28 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTrainStationsTable extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('train_stations', function(Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('ibnr')->unique();
-            $table->string('rilIdentifier')->nullable()->default(null);
+            $table->string('ibnr')->unique();
             $table->string('name');
-            $table->decimal('latitude', 9, 6);
-            $table->decimal('longitude', 9, 6);
+            $table->decimal('latitude', 8, 6);
+            $table->decimal('longitude', 8, 6);
             $table->timestamps();
-        });
-
-        //TODO: Squash to users when resorting tables
-        Schema::table('users', function(Blueprint $table) {
-            $table->foreign('home_id')
-                  ->references('id')
-                  ->on('train_stations')
-                  ->nullOnDelete();
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('train_stations');
     }
 }

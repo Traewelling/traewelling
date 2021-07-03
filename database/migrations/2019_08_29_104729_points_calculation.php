@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Schema;
 
 class PointsCalculation extends Migration
 {
-
-    public function up(): void {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up() {
         Schema::create('pointscalculation', function(Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('type');
@@ -18,7 +22,12 @@ class PointsCalculation extends Migration
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down() {
         Schema::dropIfExists('pointscalculation');
     }
 }
