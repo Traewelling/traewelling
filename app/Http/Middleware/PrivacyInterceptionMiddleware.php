@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\PrivacyAgreement;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class PrivacyInterceptionMiddleware
      */
     public function handle($request, Closure $next) {
         $user      = Auth::user();
-        $agreement = PrivacyAgreement::where('valid_at', '<=', date("Y-m-d H:i:s"))
+        $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
                                      ->orderByDesc('valid_at')
                                      ->first();
 

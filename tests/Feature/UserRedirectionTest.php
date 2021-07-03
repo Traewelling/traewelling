@@ -68,16 +68,13 @@ class UserRedirectionTest extends TestCase
         $this->followRedirects($response)
              ->assertSee(__('privacy.not-signed-yet'), false);
 
-        // Signs the terms and sleep a little while so `$gdpr->valid_at` is
-        // real-greater than `$user->privacy_ack_at`.
-        $this->acceptGDPR($user);
-        sleep(1);
+        $user->update(['privacy_ack_at' => Carbon::yesterday()->toIso8601String()]);
 
         // Now the träwelling team puts up a new terms iteration:
         PrivacyAgreement::create([
                                      'body_md_de' => 'not empty',
-                                     'body_md_en' => 'not_empty',
-                                     'valid_at'   => Carbon::yesterday()->toIso8601String(),
+                                     'body_md_en' => 'not empty',
+                                     'valid_at'   => Carbon::today()->toIso8601String(),
                                  ]);
 
         // If the user opens the app again, they get intercepted again.
