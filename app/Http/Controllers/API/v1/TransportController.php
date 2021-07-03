@@ -10,8 +10,9 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
-use \App\Http\Controllers\StatusController as StatusBackend;
+use App\Http\Resources\TrainstationResource;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -78,6 +79,33 @@ class TransportController extends ResponseController
         return $this->sendv1Response(data: $trainTripResponse);
     }
 
+    public function getNextStationByCoordinates(Request $request): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
+            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+        $validated = $validator->validate();
+
+        try {
+            $nearestStation = HafasController::getNearbyStations(
+                latitude: $validated['latitude'],
+                longitude: $validated['longitude'],
+                results: 1
+            )->first();
+        } catch (HafasException) {
+            return $this->sendError(__('messages.exception.generalHafas'), 503);
+        }
+
+        if ($nearestStation === null) {
+            return $this->sendError(__('controller.transport.no-station-found'));
+        }
+
+        return $this->sendv1Response(new TrainstationResource($nearestStation));
+    }
 
     public function create(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
