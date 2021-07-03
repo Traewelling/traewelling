@@ -83,6 +83,7 @@ class TransportController extends ResponseController
         $validator = Validator::make($request->all(), [
             'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
+            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
         ]);
 
         if ($validator->fails()) {
@@ -94,7 +95,7 @@ class TransportController extends ResponseController
             $nearestStation = HafasController::getNearbyStations(
                 latitude: $validated['latitude'],
                 longitude: $validated['longitude'],
-                results: 1
+                results: $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas'), 503);
