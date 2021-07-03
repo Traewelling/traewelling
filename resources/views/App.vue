@@ -118,7 +118,9 @@
                     <a href="route('static.about')">{{ i18n.get("_.menu.about") }}</a>
                 </span>
           <span class="footer-nav-link">
-                    / <a href=" route(globaldashboard) ">{{ i18n.get("_.menu.globaldashboard") }}</a>
+                    / <router-link :to="{name: 'dashboard.global'}">{{
+              i18n.get("_.menu.globaldashboard")
+            }}</router-link>
                 </span>
           <span class="footer-nav-link">
                     / <a href=" route(events) ">{{ i18n.get("_.events") }}</a>
