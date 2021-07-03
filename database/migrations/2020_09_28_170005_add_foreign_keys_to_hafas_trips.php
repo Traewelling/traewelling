@@ -28,11 +28,6 @@ class AddForeignKeysToHafasTrips extends Migration
                   ->on('train_stations')
                   ->onDelete('restrict')
                   ->onUpdate('cascade');
-            $table->foreign('polyline')
-                  ->references('hash')//TODO: Should use 'id' instead...
-                  ->on('poly_lines')
-                  ->onDelete('restrict')
-                  ->onUpdate('cascade');
         });
     }
 
@@ -47,7 +42,6 @@ class AddForeignKeysToHafasTrips extends Migration
 
             $table->dropForeign("hafas_trips_origin_foreign");
             $table->dropForeign("hafas_trips_destination_foreign");
-            $table->dropForeign("hafas_trips_polyline_foreign");
         });
         Schema::table('hafas_trips', function(Blueprint $table) {
             $table->string('origin', 255)->change();
