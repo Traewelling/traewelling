@@ -17,5 +17,4 @@ return [
 
     # DB_REST
     'db_rest'           => env('DB_REST'),
-    'flix_rest'         => env('FLIX_REST', 'https://1.flixbus.transport.rest/'),
 ];

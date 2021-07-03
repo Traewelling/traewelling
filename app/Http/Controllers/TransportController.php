@@ -49,22 +49,6 @@ class TransportController extends Controller
         });
     }
 
-    public static function BusAutocomplete($station) {
-        $client   = new Client(['base_uri' => config('trwl.flix_rest')]);
-        $response = $client->request('GET', "stations/?query=$station");
-        $json     = $response->getBody()->getContents();
-        $array    = json_decode($json, true);
-
-        foreach (array_keys($array) as $key) {
-            unset($array[$key]['relevance']);
-            unset($array[$key]['score']);
-            unset($array[$key]['weight']);
-            unset($array[$key]['type']);
-            $array[$key]['provider'] = 'bus';
-        }
-        return $array;
-    }
-
     /**
      * @param string $stationName
      * @param Carbon|null $when
