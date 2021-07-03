@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\HafasTrip;
+use App\Models\TrainCheckin;
+use Illuminate\Console\Command;
+
+class CleanUpHafasTrips extends Command
+{
+    protected $signature   = 'trwl:cleanUpHafasTrips';
+    protected $description = 'Delete unused and old HafasTrips from database';
+
+    public function handle(): int {
+        $usedTripIds  = TrainCheckin::groupBy('trip_id')->select('trip_id');
+        $affectedRows = HafasTrip::whereNotIn('trip_id', $usedTripIds)->delete();
+        Log::debug($affectedRows . ' unused HafasTrips deleted.');
+        return 0;
+    }
+}
