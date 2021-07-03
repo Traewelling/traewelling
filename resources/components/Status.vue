@@ -22,7 +22,9 @@
               <span class="text-trwl float-end">
               <small v-if="statusData.train.origin.isDepartureDelayed"
                      class="text-muted"
-                     style="text-decoration: line-through;">{{ moment(statusData.train.origin.departurePlanned).format('LT') }}
+                     style="text-decoration: line-through;">{{
+                  moment(statusData.train.origin.departurePlanned).format('LT')
+                }}
               </small>
               &nbsp; {{ departure.format('LT') }}
             </span>
@@ -73,7 +75,9 @@
               <span class="text-trwl float-end">
               <small v-if="statusData.train.destination.isArrivalDelayed"
                      class="text-muted"
-                     style="text-decoration: line-through;">{{ moment(statusData.train.destination.arrivalPlanned).format('LT') }}
+                     style="text-decoration: line-through;">{{
+                  moment(statusData.train.destination.arrivalPlanned).format('LT')
+                }}
               </small>
               &nbsp; {{ arrival.format('LT') }}
             </span>
@@ -91,7 +95,7 @@
              v-bind:style="{width: percentage + '%'}"></div>
       </div>
       <div class="card-footer text-muted">
-        <span class="float-end like-text">
+        <span class="float-end like-text small">
           <i :class="visibilityIcon.icon"
              :title="i18n.get(visibilityIcon.desc)"
              aria-hidden="true"
@@ -106,22 +110,21 @@
             {{ moment(statusData.createdAt).fromNow() }}
           </router-link>
         </span>
-        <ul v-if="$auth.check()" class="list-inline">
-          <li v-if="$auth.check() && $auth.user().id !== statusData.user && statusData.likes === 0"
-              class="list-inline-item d-lg-none">
+        <ul class="list-inline">
+          <li class="list-inline-item d-lg-none me-1">
             <router-link :to="{name: 'profile', params: {username: statusData.username}}">
               <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${statusData.username}/profilepicture`"
                    class="profile-image">
             </router-link>
           </li>
-          <li v-if="$auth.check()" class="list-inline-item like-text" v-on:click="likeStatus">
-            <i aria-hidden="true" class="like fa-star"
+          <li v-if="$auth.check()" class="list-inline-item like-text me-1" v-on:click="likeStatus">
+            <i aria-hidden="true" class="like fa-star small"
                v-bind:class="{fas: statusData.liked, far: !statusData.liked}"></i>
             <span v-if="statusData.likes" class="pl-1">{{ statusData.likes }}</span>
           </li>
           <li v-if="$auth.check() && $auth.user().id === statusData.user" class="list-inline-item like-text">
             <a class="like-text" data-mdb-toggle="dropdown" role="button">
-              <i :title="i18n.get('_.status.more')" aria-hidden="true" class="fas fa-ellipsis-h"></i>
+              <i :title="i18n.get('_.status.more')" aria-hidden="true" class="fas fa-ellipsis-h small"></i>
             </a>
             <ul class="dropdown-menu">
               <li v-if="shareable"><a class="dropdown-item" href="#" v-on:click.prevent="share">
@@ -135,14 +138,6 @@
                 <i aria-hidden="true" class="fas fa-trash"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}
               </a></li>
             </ul>
-          </li>
-        </ul>
-        <ul v-else class="list-inline">
-          <li class="list-inline-item d-lg-none">
-            <router-link :to="{name: 'profile', params: {username: statusData.username}}">
-              <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${statusData.username}/profilepicture`"
-                   class="profile-image">
-            </router-link>
           </li>
         </ul>
       </div>
