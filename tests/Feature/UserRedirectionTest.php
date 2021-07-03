@@ -77,7 +77,7 @@ class UserRedirectionTest extends TestCase
         PrivacyAgreement::create([
                                      'body_md_de' => 'not empty',
                                      'body_md_en' => 'not_empty',
-                                     'valid_at'   => Carbon::now()->toIso8601String(),
+                                     'valid_at'   => Carbon::yesterday()->toIso8601String(),
                                  ]);
 
         // If the user opens the app again, they get intercepted again.
