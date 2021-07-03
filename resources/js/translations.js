@@ -16,4 +16,15 @@ export const i18nStrings = {
     "nl._": nl,
     "sv._": sv,
     "pl._": pl
-}
+};
+
+export const languages = {
+    "en": "English",
+    "de": "Deutsch",
+    "de_he": "Deutsch (Südhessisch)",
+    "de_pfl": "Deutsch (Pfälzisch)",
+    "fr": "Français",
+    "nl": "Nederlands",
+    "sv": "Svenska",
+    "pl": "Polski"
+};

@@ -250,7 +250,7 @@
     "transport_types.bus": "Autobus",
     "transport_types.businessPlural": "Podróże biznesowe",
     "transport_types.private": "Podróż prywatna",
-    "transport_types.regional": "Osobowy/Regio/TLK",
+    "transport_types.regional": "Osobowy/Regio",
     "transport_types.suburban": "SKM",
     "transport_types.subway": "metro",
     "transport_types.tram": "tramwaj",
@@ -418,5 +418,15 @@
     "events.period": "Okres",
     "events.notice": "Twoje zgłoszenie zostanie opublikowane po weryfikacji przez drużynę Träwelling.",
     "description.en-route": "Mapa wszystkich podróży odbywanych obecnie.",
-    "localisation.not-available": "Niestety ninejsza zawartość nie jest dostępna w twoim języku."
+    "localisation.not-available": "Niestety ninejsza zawartość nie jest dostępna w twoim języku.",
+    "status.visibility.0": "Publiczny",
+    "status.visibility.1": "Niepubliczny",
+    "status.visibility.2": "Tylko obserwujący",
+    "status.visibility.3": "Prywatny",
+    "status.visibility.3.detail": "Widoczny tylko dla ciebie",
+    "status.visibility.0.detail": "Widoczny dla wszystkich, w panelu głównym, przy wydarzeniach, itd.",
+    "transport_types.regionalExp": "Regionalexpress/TLK",
+    "status.visibility.1.detail": "Widoczny dla wszystkich, tylko w profilu",
+    "status.visibility.2.detail": "Tylko zatwierdzeni obserwujący",
+    "date-format": "DD.MM.RRRR"
 }

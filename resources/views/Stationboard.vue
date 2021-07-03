@@ -46,15 +46,16 @@
                         {{ i18n.get('_.stationboard.stop-cancelled') }}
                       </span>
                       <span v-else>
-                        {{ moment(departure.plannedWhen).format("LT") }}
+                        <span :class="{
+                        'text-success': departure.delay === 0,
+                        'text-warning': departure.delay && departure.delay < 600,
+                        'text-danger': departure.delay >= 600 }">
+                          <span>{{ moment(departure.when).format("LT") }}</span>
+                        </span>
+                        <small v-if="departure.delay" class="text-muted text-decoration-line-through">
+                          {{ moment(departure.plannedWhen).format("LT") }}
+                        </small>
                       </span>
-                      <small v-if="departure.delay">
-                        <br>
-                        (<span :class="{
-                        'text-success': departure.delay < 180,
-                        'text-warning': departure.delay >=180 && departure.delay < 600,
-                        'text-danger': departure.delay >= 600 }">+ {{ departure.delay / 60 }}</span>)
-                      </small>
                     </td>
                     <td class="text-nowrap px-0">
                       <img v-if="images.includes(departure.line.product)"

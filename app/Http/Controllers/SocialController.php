@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use File;
 use GuzzleHttp\Exception\ClientException;
@@ -61,9 +62,26 @@ class SocialController extends Controller
                                                          'client_id'     => $info['client_id'],
                                                          'client_secret' => $info['client_secret'],
                                                      ]);
-                } catch (ClientException $e) {
+                } catch (ClientException) {
                     return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
                 }
+            }
+            //If we ever run into a reset of Mastodon AppKeys (#), then this recreates the keys.
+            //Keys have to be set to 0 in the database, since the fields are covered by NOT NULL constraint
+            if ($server->client_id <= 1 || $server->client_secret <= 1) {
+                try {
+                    //create new app
+                    $info = Mastodon::domain($domain)->createApp(config('trwl.mastodon_appname'), config('trwl.mastodon_redirect'), 'write read');
+
+                    //save app info
+                    $server->update([
+                                        'client_id'     => $info['client_id'],
+                                        'client_secret' => $info['client_secret'],
+                                    ]);
+                } catch (ClientException) {
+                    return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+                }
+
             }
 
             //change config
@@ -77,7 +95,7 @@ class SocialController extends Controller
         }
         try {
             return Socialite::driver($provider)->redirect();
-        } catch (Exception $e) {
+        } catch (Exception) {
             abort(404);
         }
     }
@@ -110,6 +128,7 @@ class SocialController extends Controller
         }
         if (!Auth::check()) {
             auth()->login($user, true);
+            $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
 
         return redirect()->route('dashboard');
@@ -153,11 +172,11 @@ class SocialController extends Controller
             }
             try {
                 $user = User::create([
-                                         'name'     => $getInfo->name,
-                                         'username' => $getInfo->nickname,
-                                         'email'    => $getInfo->email,
+                                         'name'       => $getInfo->name,
+                                         'username'   => $getInfo->nickname,
+                                         'email'      => $getInfo->email,
                                      ]);
-            } catch (QueryException $exception) {
+            } catch (QueryException) {
                 return null;
             }
         } else {

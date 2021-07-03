@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'private_profile', 'prevent_index', 'language'
+        'always_dbl', 'private_profile', 'prevent_index', 'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'private_profile'   => 'boolean',
         'prevent_index'     => 'boolean',
     ];
+    protected $dates    = ['last_login'];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration'
     ];
@@ -165,10 +166,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getMastodonUrlAttribute(): ?string {
         $mastodonUrl = null;
-        if ($this->socialProfile != null) {
+        if (!empty($this->socialProfile)
+            && !empty($this->socialProfile->mastodon_token)
+            && !empty($this->socialProfile->mastodon_id)) {
             try {
                 $mastodonServer = MastodonServer::where('id', $this->socialProfile->mastodon_server)->first();
-                if ($mastodonServer != null) {
+                if ($mastodonServer) {
                     $mastodonDomain      = $mastodonServer->domain;
                     $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
                                                    ->token($this->socialProfile->mastodon_token)
