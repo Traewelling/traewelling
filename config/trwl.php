@@ -17,4 +17,18 @@ return [
 
     # DB_REST
     'db_rest'           => env('DB_REST'),
+    'base_points' => [
+        'train' => [
+            'tram'            => env('BASE_POINTS_TRAIN_TRAM', 2),
+            'bus'             => env('BASE_POINTS_TRAIN_BUS', 2),
+            'subway'          => env('BASE_POINTS_TRAIN_SUBWAY', 2),
+            'suburban'        => env('BASE_POINTS_TRAIN_SUBURBAN', 3),
+            'ferry'           => env('BASE_POINTS_TRAIN_FERRY', 3),
+            'regional'        => env('BASE_POINTS_TRAIN_REGIONAL', 5),
+            'regionalExp'     => env('BASE_POINTS_TRAIN_REGIONALEXP', 6),
+            'express'         => env('BASE_POINTS_TRAIN_EXPRESS', 10),
+            'national'        => env('BASE_POINTS_TRAIN_NATIONAL', 10),
+            'nationalExpress' => env('BASE_POINTS_TRAIN_NATIONALEXPRESS', 10),
+        ]
+    ]
 ];
