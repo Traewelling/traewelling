@@ -79,7 +79,7 @@ class TransportController extends ResponseController
         return $this->sendv1Response(data: $trainTripResponse);
     }
 
-    public function getNextStationByCoordinates(Request $request) {
+    public function getNextStationByCoordinates(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
@@ -92,9 +92,9 @@ class TransportController extends ResponseController
 
         try {
             $nearestStation = HafasController::getNearbyStations(
-                $validated['latitude'],
-                $validated['longitude'],
-                1
+                latitude: $validated['latitude'],
+                longitude: $validated['longitude'],
+                results: 1
             )->first();
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas'), 503);
