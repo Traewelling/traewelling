@@ -24,6 +24,7 @@ class Status extends Model
     protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
+    protected $casts    = ['visibility' => 'integer'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
@@ -42,7 +43,7 @@ class Status extends Model
     }
 
     public function getFavoritedAttribute(): ?bool {
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return null;
         }
         return $this->likes->contains('user_id', Auth::id());
