@@ -120,10 +120,10 @@ class TransportController extends ResponseController
                 ibnr: $request->input('ibnr') ?? false
             );
 
-            if ($request->input('tweet')) {
+            if ($request->input('tweet') && auth()->user()?->socialProfile?->twitter_id != null) {
                 TransportBackend::postTwitter($status);
             }
-            if ($request->input('toot')) {
+            if ($request->input('toot') && auth()->user()?->socialProfile?->mastodon_id != null) {
                 TransportBackend::postMastodon($status);
             }
 
