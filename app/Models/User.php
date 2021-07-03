@@ -26,7 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'private_profile', 'prevent_index', 'language'
+        'always_dbl', 'private_profile', 'prevent_index', 'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'private_profile'   => 'boolean',
         'prevent_index'     => 'boolean',
     ];
+    protected $dates    = ['last_login'];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration'
     ];
