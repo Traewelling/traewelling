@@ -219,7 +219,7 @@ class TransportController extends Controller
     public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
         $now = time();
 
-        $factor        = config('trwl.basis_points.train.' . $category, 1);
+        $factor        = config('trwl.base_points.train.' . $category, 1);
         $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
         $points        = $factor + ceil($distance / 10);

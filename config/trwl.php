@@ -19,7 +19,7 @@ return [
     'db_rest'           => env('DB_REST'),
     'flix_rest'         => env('FLIX_REST', 'https://1.flixbus.transport.rest/'),
 
-    'basis_points' => [
+    'base_points' => [
         'train' => [
             'tram'            => env('BASIS_POINTS_TRAIN_TRAM', 2),
             'bus'             => env('BASIS_POINTS_TRAIN_BUS', 2),
