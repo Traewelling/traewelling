@@ -34,7 +34,8 @@ class CreateTrainStopoversTable extends Migration
 
             $table->foreign('trip_id')
                   ->references('trip_id')
-                  ->on('hafas_trips');
+                  ->on('hafas_trips')
+                  ->cascadeOnDelete();
             $table->foreign('train_station_id')
                   ->references('id')
                   ->on('train_stations')
