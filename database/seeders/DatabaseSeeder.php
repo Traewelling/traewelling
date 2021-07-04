@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\TrainStation;
 use Database\Seeders\Blogposts\BlogpostSeeder;
-use Database\Seeders\Privacy\PrivacyAgreementSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
