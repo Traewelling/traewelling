@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationController;
@@ -18,7 +19,6 @@ use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
-use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
@@ -43,9 +43,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/count', [NotificationController::class, 'count']);
         Route::get('trains/station/{name}/departures', [TransportController::class, 'departures']);
+        Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
+        Route::get('trains/station/latest', [TransportController::class, 'getLatestArrivals']);
         Route::get('trains/trip/', [TransportController::class, 'getTrip']);
         Route::post('trains/checkin', [TransportController::class, 'create']);
-        Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {

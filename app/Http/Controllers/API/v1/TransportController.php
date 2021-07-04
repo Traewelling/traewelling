@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -106,6 +107,16 @@ class TransportController extends ResponseController
         }
 
         return $this->sendv1Response(new TrainstationResource($nearestStation));
+    }
+
+    public function getLatestArrivals(Request $request): JsonResponse {
+        $validator = Validator::make($request->all(), [['limit' => ['nullable', 'integer', 'min:1', 'max:20']]]);
+
+        $validated = $validator->validate();
+
+        $arrivals = TransportBackend::getLatestArrivals(user: Auth::user(), limit: $validated['limit'] ?? 5);
+
+        return $this->sendv1Response(TrainstationResource::collection($arrivals));
     }
 
     public function create(Request $request): JsonResponse {
