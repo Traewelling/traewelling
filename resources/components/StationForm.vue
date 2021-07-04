@@ -23,6 +23,7 @@
                    class="btn btn-outline-grey stationSearchButton"
                    data-mdb-target="#last-stations"
                    data-mdb-toggle="collapse"
+                   @click="fetchLatestStations"
               >
                 <i class="fa fa-history"></i>
               </div>
@@ -44,18 +45,17 @@
             <!--                @endif-->
 
             <!--                @if($latest->count())-->
-            <span
+            <span v-if="latestStations"
                 class="list-group-item title list-group-item-action disabled">{{
                 i18n.get('_.stationboard.last-stations')
               }}</span>
-            <!--                @endif-->
-            <!--                @foreach($latest as $station)-->
-            <!--                <a href="route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ])"-->
-            <!--                   title="{{ $station->name }}" id="home-button"-->
-            <!--                   class="list-group-item list-group-item-action">-->
-            <!--                  {{ $station->name }}-->
-            <!--                </a>-->
-            <!--                @endforeach-->
+            <!-- FixMe: not working in stationboard -->
+            <router-link v-for="station in latestStations" v-bind:key="latestStations.id"
+                         class="list-group-item list-group-item-action"
+                         active-class=""
+                         :to="{name: 'trains.stationboard', query: {station: station.name}}">
+              {{ station.name }}
+            </router-link>
           </div>
           <button class="btn btn-outline-primary float-end" type="submit" v-on:click.prevent="submitStation('')">
             {{ i18n.get('_.stationboard.submit-search') }}
@@ -142,7 +142,8 @@ export default {
     return {
       station: null,
       errors: null,
-      loading: false
+      loading: false,
+      latestStations: null
     };
   },
   props: {
@@ -186,6 +187,23 @@ export default {
             });
       } else {
         console.error("station null");
+      }
+    },
+    fetchLatestStations() {
+      if (this.latestStations === null) {
+        this.loading = true;
+        axios
+            .get("/trains/station/latest")
+            .then((response) => {
+              if (response.data.data !== null) {
+                this.latestStations = response.data.data;
+              }
+              this.loading = false
+            })
+            .catch((error) => {
+              this.loading = false;
+              console.error(error);
+            });
       }
     },
     fetchNearbyStation(position) {

@@ -613,23 +613,24 @@ class TransportController extends Controller
     /**
      * Get the latest TrainStations the user is arrived.
      * @param User $user
-     * @param int $maxCount
+     * @param int $limit
      * @return Collection
      */
-    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+    public static function getLatestArrivals(User $user, int $limit = 5): Collection {
         return $user->statuses()
                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                     ->join('train_stations', 'train_stations.ibnr', '=', 'train_checkins.destination')
                     ->orderByDesc('train_checkins.arrival')
                     ->groupBy('train_stations.name')
                     ->select([
+                                 'train_stations.id',
                                  'train_stations.ibnr',
                                  'train_stations.rilIdentifier',
                                  'train_stations.name',
                                  'train_stations.latitude',
                                  'train_stations.longitude'
                              ])
-                    ->limit($maxCount)
+                    ->limit($limit)
                     ->get();
     }
 
