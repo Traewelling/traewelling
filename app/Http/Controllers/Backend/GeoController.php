@@ -45,17 +45,14 @@ abstract class GeoController extends Controller
         $distance     = 0;
         $lastStopover = null;
         foreach ($slicedFeatures as $stopover) {
-            if ($lastStopover == null) {
-                $lastStopover = $stopover;
-                continue;
+            if ($lastStopover != null) {
+                $distance += self::calculateDistanceBetweenCoordinates(
+                    latitudeA: $lastStopover->geometry->coordinates[1],
+                    longitudeA: $lastStopover->geometry->coordinates[0],
+                    latitudeB: $stopover->geometry->coordinates[1],
+                    longitudeB: $stopover->geometry->coordinates[0]
+                );
             }
-
-            $distance += self::calculateDistanceBetweenCoordinates(
-                latitudeA: $lastStopover->geometry->coordinates[0],
-                longitudeA: $lastStopover->geometry->coordinates[1],
-                latitudeB: $stopover->geometry->coordinates[0],
-                longitudeB: $stopover->geometry->coordinates[1]
-            );
 
             $lastStopover = $stopover;
         }
