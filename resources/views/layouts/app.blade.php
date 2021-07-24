@@ -197,7 +197,7 @@
                     / <a href="{{ route('legal.privacy') }}">{{ __('menu.privacy') }}</a>
                 </span>
                         <span class="footer-nav-link">
-                    / <a href="{{ route('legal.notice') }}">{{ __('menu.imprint') }}</a>
+                    / <a href="{{ route('legal.notice') }}">{{ __('menu.legal-notice') }}</a>
                 </span>
                         <span class="footer-nav-link">
                     / <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a>

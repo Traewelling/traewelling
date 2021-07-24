@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', __('menu.imprint'))
+@section('title', __('menu.legal-notice'))
 @section('meta-robots', 'noindex')
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1>{{__('menu.imprint')}}</h1>
+                <h1>{{__('menu.legal-notice')}}</h1>
 
                 <h2>Angaben gem&auml;&szlig; &sect; 5 TMG</h2>
                 <p>{{config('app.imprint.name')}}<br/>

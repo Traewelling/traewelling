@@ -129,7 +129,7 @@
                     / <a href=" route(legal.privacy) ">{{ i18n.get("_.menu.privacy") }}</a>
                 </span>
           <span class="footer-nav-link">
-                    / <a href=" route(legal.notice) ">{{ i18n.get("_.menu.imprint") }}</a>
+                    / <a href=" route(legal.notice) ">{{ i18n.get("_.menu.legal-notice") }}</a>
                 </span>
           <span class="footer-nav-link">
                     / <a href=" route(blog.all) ">{{ i18n.get("_.menu.blog") }}</a>
