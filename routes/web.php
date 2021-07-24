@@ -44,10 +44,15 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
 Route::view('/about', 'about')->name('static.about');
-Route::view('/imprint', 'imprint')->name('static.imprint');
 
-Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
-     ->name('static.privacy');
+Route::permanentRedirect('/imprint', '/legal/notice');
+Route::permanentRedirect('/privacy', '/legal/privacy');
+Route::prefix('legal')->group(function() {
+    Route::view('/notice', 'legal.notice')
+         ->name('legal.notice');
+    Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
+         ->name('legal.privacy');
+});
 
 Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('account.show');

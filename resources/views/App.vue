@@ -126,10 +126,10 @@
                     / <a href=" route(events) ">{{ i18n.get("_.events") }}</a>
                 </span>
           <span class="footer-nav-link">
-                    / <a href=" route(static.privacy) ">{{ i18n.get("_.menu.privacy") }}</a>
+                    / <a href=" route(legal.privacy) ">{{ i18n.get("_.menu.privacy") }}</a>
                 </span>
           <span class="footer-nav-link">
-                    / <a href=" route(static.imprint) ">{{ i18n.get("_.menu.imprint") }}</a>
+                    / <a href=" route(legal.notice) ">{{ i18n.get("_.menu.imprint") }}</a>
                 </span>
           <span class="footer-nav-link">
                     / <a href=" route(blog.all) ">{{ i18n.get("_.menu.blog") }}</a>

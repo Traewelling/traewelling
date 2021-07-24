@@ -194,10 +194,10 @@
                     / <a href="{{ route('events') }}">{{ __('events') }}</a>
                 </span>
                         <span class="footer-nav-link">
-                    / <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
+                    / <a href="{{ route('legal.privacy') }}">{{ __('menu.privacy') }}</a>
                 </span>
                         <span class="footer-nav-link">
-                    / <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a>
+                    / <a href="{{ route('legal.notice') }}">{{ __('menu.imprint') }}</a>
                 </span>
                         <span class="footer-nav-link">
                     / <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a>
@@ -217,7 +217,7 @@
 
         <div class="alert text-center cookiealert" role="alert">
             <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }}
-            <a href="{{route('static.privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
+            <a href="{{route('legal.privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
 
             <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
                 {{ __('messages.cookie-notice-button') }}

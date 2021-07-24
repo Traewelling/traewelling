@@ -1,6 +1,6 @@
 User-agent: *
-Disallow: /imprint
-Disallow: /privacy
+Disallow: /legal/notice
+Disallow: /legal/privacy
 
 User-agent: ia_archiver
 Disallow: /

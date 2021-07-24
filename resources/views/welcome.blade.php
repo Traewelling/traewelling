@@ -49,8 +49,8 @@
             </div>
 
             <div class="bottom-center links" style="">
-                <a href="{{ route('static.privacy') }}">{{ __('menu.privacy') }}</a>
-                <a href="{{ route('static.imprint') }}">{{ __('menu.imprint') }}</a>
+                <a href="{{ route('legal.privacy') }}">{{ __('menu.privacy') }}</a>
+                <a href="{{ route('legal.notice') }}">{{ __('menu.imprint') }}</a>
             </div>
         </div>
     </body>

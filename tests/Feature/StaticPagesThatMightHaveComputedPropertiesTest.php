@@ -37,13 +37,13 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
         $response->assertOk();
     }
 
-    public function testImprintGet() {
-        $response = $this->get('/imprint');
+    public function testLegalNoticeGet() {
+        $response = $this->get('/legal/notice');
         $response->assertOk();
     }
 
     public function testPrivacyGet() {
-        $response = $this->get('/privacy');
+        $response = $this->get('/legal/privacy');
         $response->assertOk();
     }
 

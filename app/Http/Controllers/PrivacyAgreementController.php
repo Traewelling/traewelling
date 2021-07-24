@@ -19,7 +19,7 @@ class PrivacyAgreementController extends Controller
                                      ->first();
         $user      = Auth::user();
 
-        return view('privacy-interception', ['agreement' => $agreement, 'user' => $user]);
+        return view('legal.privacy-interception', ['agreement' => $agreement, 'user' => $user]);
     }
 
     public function ack(Request $request): RedirectResponse|JsonResponse {
