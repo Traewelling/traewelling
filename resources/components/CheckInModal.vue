@@ -39,6 +39,7 @@
               <div class="float-end">
                 <FADropdown :pre-select="status.business" :dropdown-content="travelReason"
                             v-model="status.business"></FADropdown>
+                <!-- @todo Add features from PR#463 (Use default visibility) -->
                 <FADropdown :pre-select="status.visibility" :dropdown-content="visibility"
                             v-model="status.visibility"></FADropdown>
               </div>
