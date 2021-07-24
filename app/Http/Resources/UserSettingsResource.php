@@ -12,6 +12,7 @@ class UserSettingsResource extends JsonResource
      *
      * @param Request $request
      * @return array
+     * @todo remove twitterUrl after replaced url in vue profile template (it's unused)
      */
     public function toArray($request): array {
         return [

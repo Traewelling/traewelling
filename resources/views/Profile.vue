@@ -25,6 +25,7 @@
             <i class="fa fa-dice-d20 d-inline" aria-hidden="true"/>&nbsp;{{ user.points }}
           </span>
             <span class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
+            <!-- ToDo: Adapt twitterUrl to ID Link (as in blade template) and remove the getTwitterUrl method afterwards! -->
             <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
             <a :href="user.twitterUrl" rel="me" class="text-white" target="_blank">
               <i class="fab fa-twitter d-inline" aria-hidden="true"/>
