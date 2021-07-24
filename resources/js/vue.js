@@ -12,7 +12,7 @@ require("leaflet/dist/leaflet.js");
 
 import VueRouter from "vue-router";
 import {router} from "../routes";
-import App from "../views/App";
+import App from "../views/App.vue";
 import moment from "moment";
 import Lang from "lang.js";
 import {i18nStrings} from "./translations";
