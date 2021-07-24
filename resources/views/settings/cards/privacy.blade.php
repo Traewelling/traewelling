@@ -28,7 +28,31 @@
             </div>
             <hr/>
             <div class="form-group row">
+                <label for="name" class="col-md-4 col-form-label text-md-right">
+                    {{ __('settings.visibility.default') }}
+                </label>
+                <div class="col-md-6">
+                    <select class="form-control" name="default_status_visibility">
+                        @foreach(\App\Enum\StatusVisibility::getList() as $visibility)
+                            <option value="{{$visibility}}"
+                                    @if(auth()->user()->default_status_visibility == $visibility) selected @endif>
+                                {{__('status.visibility.' . $visibility)}}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('prevent_index')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+            </div>
+
+            <hr/>
+
+            <div class="form-group row">
                 <div class="col-md-6 offset-md-4">
+
+
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="private_profile" type="checkbox"
                                class="custom-control-input @error('private_profile') is-invalid @enderror"

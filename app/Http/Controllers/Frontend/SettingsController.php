@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\StatusVisibility;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
@@ -46,14 +47,19 @@ class SettingsController extends Controller
 
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'private_profile' => ['nullable'],
-                                            'prevent_index'   => ['required', 'gte:0', 'lte:1'],
+                                            'private_profile'           => ['nullable'],
+                                            'prevent_index'             => ['required', 'gte:0', 'lte:1'],
+                                            'default_status_visibility' => [
+                                                'required',
+                                                Rule::in(StatusVisibility::getList())
+                                            ]
                                         ]);
 
         auth()->user()->update([
-                                   'prevent_index'   => $validated['prevent_index'],
-                                   'private_profile' => isset($validated['private_profile'])
-                                       && $validated['private_profile'] == 'on',
+                                   'prevent_index'             => $validated['prevent_index'],
+                                   'private_profile'           => isset($validated['private_profile'])
+                                                                  && $validated['private_profile'] == 'on',
+                                   'default_status_visibility' => $validated['default_status_visibility'],
                                ]);
 
         return back()->with('success', __('settings.privacy.update.success'));
