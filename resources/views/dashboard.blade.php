@@ -38,7 +38,7 @@
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
             </div>
         </div>
-            {{ $statuses->links() }}
+        {{ $statuses->links() }}
 
         @include('includes.edit-modal')
         @include('includes.delete-modal')
