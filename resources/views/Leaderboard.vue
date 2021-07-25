@@ -59,7 +59,6 @@
 import moment from "moment";
 import LeaderboardTable from "../components/LeaderboardTable";
 import axios from "axios";
-import {LeaderboardUserModel} from "../js/APImodels";
 
 export default {
   //ToDo format numbers correctly for languages, etc.
@@ -71,6 +70,15 @@ export default {
       distance: null,
       friends: null,
       loading: false
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.i18n.get("_.menu.leaderboard"),
+      meta: [
+        {name: "description", content: this.i18n.get("_.description.leaderboard.main"), vmid: "description"},
+        {name: "DC.Description", content: this.i18n.get("_.description.leaderboard.main"), vmid: "DC.Description"}
+      ]
     };
   },
   components: {

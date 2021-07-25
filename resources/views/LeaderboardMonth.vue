@@ -126,7 +126,19 @@ export default {
     return {
       moment: moment,
       users: [LeaderboardUserModel],
-      loading: false
+      loading: false,
+      metaData: {
+        description: undefined
+      }
+    };
+  },
+  metaInfo() {
+    return {
+      title: this.i18n.get("_.menu.leaderboard"),
+      meta: [
+        {name: "description", content: this.metaData.description, vmid: "description"},
+        {name: "DC.Description", content: this.metaData.description, vmid: "DC.Description"}
+      ]
     };
   },
   computed: {
@@ -158,6 +170,12 @@ export default {
             this.error   = error.data.message || error.message;
           });
     },
+    updateMetadata() {
+      this.metaData.description = this.i18n.choice("_.description.leaderboard.monthly", 1, {
+        "month": this.month.format("MMMM"),
+        "year": this.month.format("YYYY")
+      });
+    }
   },
   watch: {
     month() {
@@ -165,6 +183,7 @@ export default {
     }
   },
   created() {
+    this.updateMetadata();
     this.fetchData();
   }
 };

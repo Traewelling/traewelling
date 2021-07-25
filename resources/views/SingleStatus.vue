@@ -67,7 +67,7 @@ export default {
         {name: "twitter:description", content: this.metaData.description, vmid: "twitter:description"},
         {name: "twitter:image", content: this.metaData.image, vmid: "twitter:image"}
       ]
-    }
+    };
   },
   created() {
     if (this.statusData == null) {

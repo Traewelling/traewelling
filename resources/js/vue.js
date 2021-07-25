@@ -110,7 +110,7 @@ new Vue({
                 {property: "og:type", content: "website"},
                 {name: "robots", content: "index,follow", vmid: "robots"}
             ]
-        }
+        };
     },
 });
 

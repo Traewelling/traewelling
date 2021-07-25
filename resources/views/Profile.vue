@@ -108,7 +108,7 @@ export default {
         {name: "description", content: this.description, vmid: "description"},
         {name: "DC.Description", content: this.description, vmid: "DC.Description"}
       ]
-    }
+    };
   },
   components: {
     Status
