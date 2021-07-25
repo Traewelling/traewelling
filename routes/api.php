@@ -43,6 +43,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/count', [NotificationController::class, 'count']);
         Route::get('trains/station/{name}/departures', [TransportController::class, 'departures']);
+        Route::put('trains/station/{name}/home', [TransportController::class, 'setHome']);
         Route::get('trains/trip/', [TransportController::class, 'getTrip']);
         Route::post('trains/checkin', [TransportController::class, 'create']);
         Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);

@@ -43,8 +43,8 @@ export default {
         redirect: {name: "dashboard"},
         staySignedIn: true,
         fetchUser: true,
-      }).then((res) => {
-        this.$auth.user(res.data);
+      }).then(() => {
+        this.$auth.fetch();
       });
     }
   }

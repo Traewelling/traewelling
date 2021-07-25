@@ -8,6 +8,9 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <div class="modal-body" v-if="bodyText">
+          <p v-html="this.$props.bodyText"></p>
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light" v-on:click="abort">{{ this.$props.abortText }}</button>
           <button type="button" class="btn" :class="confirmButtonColor" v-on:click="confirm">
@@ -36,7 +39,8 @@ export default {
     titleText: null,
     abortText: null,
     confirmText: null,
-    confirmButtonColor: null
+    confirmButtonColor: null,
+    bodyText: null
   },
   methods: {
     show() {
