@@ -29,28 +29,28 @@
               </div>
             </div>
           </div>
-          <div id="last-stations" class="list-group collapse">
-            <router-link v-if="$auth.user().home"
-                         :to="{name: 'trains.stationboard', query: {station: $auth.user().home.name }}"
-                         class="list-group-item list-group-item-action">
-              <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ $auth.user().home.name }}
-            </router-link>
-            <span v-else class="list-group-item title list-group-item-action disabled">
+            <div id="last-stations" class="list-group collapse">
+                <router-link v-if="$auth.user().home"
+                             :to="{name: 'trains.stationboard', query: {station: $auth.user().home.name }}"
+                             class="list-group-item list-group-item-action">
+                    <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ $auth.user().home.name }}
+                </router-link>
+                <span v-else class="list-group-item title list-group-item-action disabled">
               <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ i18n.get("_.user.home-not-set") }}
             </span>
-            <!--                @if($latest->count())-->
-            <span class="list-group-item title list-group-item-action disabled">
+                <!--                @if($latest->count())-->
+                <span class="list-group-item title list-group-item-action disabled">
               {{ i18n.get("_.stationboard.last-stations") }}
             </span>
-            <!--                @foreach($latest as $station)-->
-            <!--                <a href="route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ])"-->
-            <!--                   title="{{ $station->name }}" id="home-button"-->
-            <!--                   class="list-group-item list-group-item-action">-->
-            <!--                  {{ $station->name }}-->
-            <!--                </a>-->
-            <!--                @endforeach-->
-            <!--                @endif-->
-          </div>
+                <!--                @foreach($latest as $station)-->
+                <!--                <a href="route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ])"-->
+                <!--                   title="{{ $station->name }}" id="home-button"-->
+                <!--                   class="list-group-item list-group-item-action">-->
+                <!--                  {{ $station->name }}-->
+                <!--                </a>-->
+                <!--                @endforeach-->
+                <!--                @endif-->
+            </div>
           <button class="btn btn-outline-primary float-end" type="submit" v-on:click.prevent="submitStation('')">
             {{ i18n.get('_.stationboard.submit-search') }}
           </button>

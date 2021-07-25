@@ -94,7 +94,6 @@ export const router = new VueRouter({
                     auth: true
                 }
             }
-
         ],
     base: "/",
 });

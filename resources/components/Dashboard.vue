@@ -44,6 +44,11 @@ export default {
       moment: moment
     };
   },
+  metaInfo() {
+    return {
+      title: this.i18n.get("_.menu.dashboard")
+    };
+  },
   components: {
     StationForm,
     Status

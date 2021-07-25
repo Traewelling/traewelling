@@ -7,10 +7,10 @@
           <div class="card">
             <div class="card-header">
               <div class="float-end">
-                <a :aria-label="i18n.get('_.modals.setHome-title')" href="#" v-on:click.prevent="toggleSetHomeModal">
-                  <!-- ToDo: alt-text! -->
-                  <i class="fa fa-home" aria-hidden="true"></i>
-                </a>
+                  <a :aria-label="i18n.get('_.modals.setHome-title')" href="#" v-on:click.prevent="toggleSetHomeModal">
+                      <!-- ToDo: alt-text! -->
+                      <i class="fa fa-home" aria-hidden="true"></i>
+                  </a>
               </div>
               <span v-if="station" id="stationTableHeader">
               {{ station.name }}
@@ -69,9 +69,9 @@
                         <span v-else>{{ departure.line.fahrtNr }}</span>
                       </span>
                     </td>
-                    <td class="text-wrap" :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
-                      {{ departure.direction }}
-                    </td>
+                      <td class="text-wrap" :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
+                          {{ departure.direction }}
+                      </td>
                   </tr>
                 </tbody>
               </table>
@@ -79,15 +79,15 @@
           </div>
         </div>
       </div>
-      <ModalConfirm
-          ref="confirmHomeModal"
-          :abort-text="i18n.get('_.menu.abort')"
-          :confirm-text="i18n.get('_.modals.edit-confirm')"
-          :title-text="i18n.get('_.modals.setHome-title')"
-          :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
-          confirm-button-color="btn-success"
-          v-on:confirm="setHome"
-      ></ModalConfirm>
+        <ModalConfirm
+            ref="confirmHomeModal"
+            :abort-text="i18n.get('_.menu.abort')"
+            :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
+            :confirm-text="i18n.get('_.modals.edit-confirm')"
+            :title-text="i18n.get('_.modals.setHome-title')"
+            confirm-button-color="btn-success"
+            v-on:confirm="setHome"
+        ></ModalConfirm>
     </div>
   </transition>
 </template>
@@ -99,21 +99,21 @@ import moment from "moment";
 import {travelImages} from "../js/APImodels";
 
 export default {
-  name: "Stationboard",
-  components: {
-    StationForm,
-    ModalConfirm
-  },
-  data() {
-    return {
-      station: null,
-      departures: null,
-      times: {
-        now: 0,
-        prev: 0,
-        next: 0
-      },
-      loading: false,
+    name: "Stationboard",
+    components: {
+        StationForm,
+        ModalConfirm
+    },
+    data() {
+        return {
+            station: null,
+            departures: null,
+            times: {
+                now: 0,
+                prev: 0,
+                next: 0
+            },
+            loading: false,
       images: travelImages,
       moment: moment
     };
@@ -143,33 +143,33 @@ export default {
     goToTrip(departure) {
       if (departure.cancelled) {
         console.error("stop cancelled");
-        return;
+          return;
       }
-      this.$router.push({
-        name: "trains.trip", query: {
-          tripID: departure.tripId,
-          lineName: departure.line.name ?? departure.line.fahrtNr,
-          start: departure.station.id,
-          departure: departure.plannedWhen
-        }
-      });
+        this.$router.push({
+            name: "trains.trip", query: {
+                tripID: departure.tripId,
+                lineName: departure.line.name ?? departure.line.fahrtNr,
+                start: departure.station.id,
+                departure: departure.plannedWhen
+            }
+        });
     },
-    toggleSetHomeModal() {
-      this.$refs.confirmHomeModal.show();
-    },
-    setHome() {
-      axios
-          .put("/trains/station/" + this.station.name + "/home")
-          .then((result) => {
-            this.result = result.data.data;
-            //ToDo add a confirm popup or sth
-            this.$auth.fetch();
-            alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-    }
+      toggleSetHomeModal() {
+          this.$refs.confirmHomeModal.show();
+      },
+      setHome() {
+          axios
+              .put("/trains/station/" + this.station.name + "/home")
+              .then((result) => {
+                  this.result = result.data.data;
+                  //ToDo add a confirm popup or sth
+                  this.$auth.fetch();
+                  alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
+              })
+              .catch((error) => {
+                  console.error(error);
+              });
+      }
   }
 };
 </script>

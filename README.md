@@ -25,17 +25,18 @@
 ## Set up an instance
 
 To set up a Träwelling instance you'll need:
+
 * [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 * [MariaDB](https://mariadb.org/download) (SQLite is used for running tests)
 * A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 * [Composer](https://getcomposer.org/download/)
 * PHP 8.0 and the following extensions:
-  * gd
-  * sodium
-  * exif
-  * pdo_mysql
-  * pdo_sqlite
-	
+    * gd
+    * sodium
+    * exif
+    * pdo_mysql
+    * pdo_sqlite
+
 After setting up these, you can clone the repository and install the project's dependencies:
 
 ```sh
@@ -65,8 +66,8 @@ php artisan passport:install
 
 Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
 
-Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application. You should see the Träwelling
-homepage at http://localhost:8000.
+Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application. You should
+see the Träwelling homepage at http://localhost:8000.
 
 ## Contributing
 

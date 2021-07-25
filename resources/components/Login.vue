@@ -36,15 +36,15 @@ export default {
       // get the redirect object
       var redirect = this.$auth.redirect();
       this.$auth.login({
-        data: {
-          email: this.email,
-          password: this.password
-        },
-        redirect: {name: "dashboard"},
-        staySignedIn: true,
-        fetchUser: true,
+          data: {
+              email: this.email,
+              password: this.password
+          },
+          redirect: {name: "dashboard"},
+          staySignedIn: true,
+          fetchUser: true,
       }).then(() => {
-        this.$auth.fetch();
+          this.$auth.fetch();
       });
     }
   }
