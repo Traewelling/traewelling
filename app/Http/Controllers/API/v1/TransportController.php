@@ -52,7 +52,6 @@ class TransportController extends ResponseController
                                     'times'   => $trainStationboardResponse['times'],
                 ]]
         );
-
     }
 
     public function getTrip(Request $request): JsonResponse {
@@ -177,5 +176,19 @@ class TransportController extends ResponseController
             $status?->delete();
             return $this->sendError($exception->getMessage(), 400);
         }
+    }
+
+    public function setHome(string $stationName): JsonResponse {
+        try {
+            $station = TransportBackend::setTrainHome(user: auth()->user(), stationName: $stationName);
+        } catch (HafasException) {
+            return $this->sendError("There has been an error with our data provider", 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError("Your query matches no station", 404);
+        }
+
+        return $this->sendv1Response(
+            data: new TrainstationResource($station['station']),
+        );
     }
 }
