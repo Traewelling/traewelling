@@ -97,7 +97,7 @@ export default {
       user: ProfileModel,
       statuses: [StatusModel],
       description: undefined,
-      robots: undefined,
+      robots: "noindex",
     };
   },
   metaInfo() {
@@ -134,13 +134,12 @@ export default {
       return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
     },
     updateMetadata() {
-      if (true) {
-        this.description = this.i18n.choice("_.description.profile", 1, {
-          "username": this.user.username,
-          "kmAmount": this.user.trainDistance.toFixed(2),
-          "hourAmount": this.duration
-        });
-      } else {
+      this.description = this.i18n.choice("_.description.profile", 1, {
+        "username": this.user.username,
+        "kmAmount": this.user.trainDistance.toFixed(2),
+        "hourAmount": this.duration
+      });
+      if (this.user.preventIndex) {
         this.robots = "noindex";
       }
     },

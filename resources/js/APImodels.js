@@ -47,6 +47,7 @@ export let StatusModel = {
     type: "",
     createdAt: "",
     user: 0,
+    preventIndex: true,
     username: "",
     business: 0,
     visibility: 0,
@@ -83,6 +84,7 @@ export let ProfileModel = {
     mastodonUrl: null,
     privateProfile: false,
     userInvisibleToMe: true,
+    preventIndex: true,
 };
 
 export let LeaderboardUserModel = {

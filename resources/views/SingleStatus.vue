@@ -149,24 +149,22 @@ export default {
           })
     },
     updateMetadata() {
-      if (true) {
-        this.metaData.description = this.i18n.choice("_.description.status", 1, {
-          "username": this.status.username,
-          "origin": this.status.train.origin.name + this.rilIdentifierOrigin,
-          "destination": this.status.train.destination.name + this.rilIdentifierDestination,
-          "date": this.moment(this.status.train.origin.departure).format("LLL"),
-          "lineName": this.status.train.lineName
-        });
-        this.metaData.robots      = "index";
-      } else {
+      if (this.status.preventIndex) {
         this.metaData.robots = "noindex";
       }
-      this.metaData.url   = window.location.origin + this.$router.resolve({
+      this.metaData.description = this.i18n.choice("_.description.status", 1, {
+        "username": this.status.username,
+        "origin": this.status.train.origin.name + this.rilIdentifierOrigin,
+        "destination": this.status.train.destination.name + this.rilIdentifierDestination,
+        "date": this.moment(this.status.train.origin.departure).format("LLL"),
+        "lineName": this.status.train.lineName
+      });
+      this.metaData.url         = window.location.origin + this.$router.resolve({
         name: "singleStatus",
         params: {id: this.status.id}
       }).href
-      this.metaData.title = this.status.username;
-      this.metaData.image = "/profile/" + this.status.username + "/profilepicture";
+      this.metaData.title       = this.status.username;
+      this.metaData.image       = "/profile/" + this.status.username + "/profilepicture";
       console.log(this.metaData);
     }
   }
