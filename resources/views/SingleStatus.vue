@@ -162,10 +162,9 @@ export default {
       this.metaData.url         = window.location.origin + this.$router.resolve({
         name: "singleStatus",
         params: {id: this.status.id}
-      }).href //ToDo combine all window.location.origin...-methods to one single method
+      }).href; //ToDo combine all window.location.origin...-methods to one single method
       this.metaData.title       = this.i18n.choice("_.status.ogp-title", 1, {"name": this.status.username});
       this.metaData.image       = "/profile/" + this.status.username + "/profilepicture";
-      console.log(this.metaData);
     }
   }
 }

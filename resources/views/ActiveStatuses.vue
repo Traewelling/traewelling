@@ -56,7 +56,7 @@ export default {
         {name: "description", content: this.i18n.get("_.description.en-route"), vmid: "description"},
         {name: "DC.Description", content: this.i18n.get("_.description.en-route"), vmid: "DC.Description"}
       ]
-    }
+    };
   },
   components: {
     Status,
