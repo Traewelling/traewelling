@@ -215,6 +215,8 @@
     "modals.editStatus-title": "Edit status",
     "modals.deleteEvent-title": "Delete event",
     "modals.deleteEvent-body": "Are you sure, that you want to delete the event <em>:name</em>? Check-ins en route will be updated to <code>NULL</code>.",
+    "modals.setHome-title": "Set home station",
+    "modals.setHome-body": "Do you want to set <em>:stationName</em> as your home station?",
     "notifications.empty": "You have not received any notifications yet.",
     "notifications.title": "Notifications",
     "notifications.mark-all-read": "Mark all as read",

@@ -7,8 +7,8 @@
           <div class="card">
             <div class="card-header">
               <div class="float-end">
-                <a>
-                  <!-- ToDo: set home, but with modal! -->
+                <a href="#" v-on:click.prevent="toggleSetHomeModal">
+                  <!-- ToDo: alt-text! -->
                   <i class="fa fa-home" aria-hidden="true"></i>
                 </a>
               </div>
@@ -79,18 +79,31 @@
           </div>
         </div>
       </div>
+      <ModalConfirm
+          ref="confirmHomeModal"
+          :abort-text="i18n.get('_.menu.abort')"
+          :confirm-text="i18n.get('_.modals.edit-confirm')"
+          :title-text="i18n.get('_.modals.setHome-title')"
+          :body-text="this.i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
+          confirm-button-color="btn-success"
+          v-on:confirm="setHome"
+      ></ModalConfirm>
     </div>
   </transition>
 </template>
 
 <script>
 import StationForm from "../components/StationForm";
+import ModalConfirm from "../components/ModalConfirm";
 import moment from "moment";
 import {travelImages} from "../js/APImodels";
 
 export default {
   name: "Stationboard",
-  components: {StationForm},
+  components: {
+    StationForm,
+    ModalConfirm
+  },
   data() {
     return {
       station: null,
@@ -140,6 +153,12 @@ export default {
           departure: departure.plannedWhen
         }
       });
+    },
+    toggleSetHomeModal() {
+      this.$refs.confirmHomeModal.show();
+    },
+    setHome() {
+      alert("yay");
     }
   }
 };

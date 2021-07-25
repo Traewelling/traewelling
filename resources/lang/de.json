@@ -230,6 +230,8 @@
     "modals.editStatus-title": "Status bearbeiten",
     "modals.deleteEvent-title": "Event löschen",
     "modals.deleteEvent-body": "Bist Du sicher, dass Du das Event <em>:name</em> löschen möchtest? Check-ins auf dem Weg dahin fahren dann nach <code>NULL</code>.",
+    "modals.setHome-title": "Heimatbahnhof setzen",
+    "modals.setHome-body": "Möchtest du <em>:stationName</em> als Heimatbahnhof festlegen?",
     "notifications.empty": "Du hast bisher noch keine Benachrichtigungen bekommen.",
     "notifications.title": "Benachrichtigungen",
     "notifications.mark-all-read": "Alle als gelesen markieren",
