@@ -428,5 +428,7 @@
     "events.live-and-upcoming": "Current and future events",
     "events.notice": "Your submission will only be published once it has been approved by the Träwelling team.",
     "menu.show-more": "Show more",
-    "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation."
+    "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation.",
+    "date-format": "YYYY-MM-DD",
+    "transport_types.regionalExp": "Regional Express"
 }

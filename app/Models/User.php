@@ -141,6 +141,11 @@ class User extends Authenticatable implements MustVerifyEmail
                );
     }
 
+    /**
+     * @return string|null
+     * @todo delete after implemented ID-Link in vue Template
+     * @deprecated
+     */
     public function getTwitterUrlAttribute(): ?string {
         $twitterUrl = null;
         if ($this->socialProfile != null
