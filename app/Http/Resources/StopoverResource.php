@@ -17,6 +17,7 @@ class StopoverResource extends JsonResource
         return [
             "id"                       => (int) $this->train_station_id,
             "name"                     => $this->trainStation->name,
+            "rilIdentifier"            => $this->trainStation->rilIdentifier ?? null,
             "arrival"                  => $this->arrival,
             "arrivalPlanned"           => $this->arrival_planned,
             "arrivalReal"              => $this->arrival_real,

@@ -22,7 +22,9 @@ export let EventModel = {
 };
 
 export let Stopover = {
+    id: 0,
     name: "",
+    rilIdentifier: null,
     trainStationId: 0,
     arrival: "",
     arrivalPlanned: "",

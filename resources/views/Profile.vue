@@ -88,15 +88,27 @@ import Status from "../components/Status";
 import {ProfileModel, StatusModel} from "../js/APImodels";
 
 export default {
-  name: "Profile",
+  name: "ProfilePage",
   data() {
     return {
       username: this.$route.params.username,
       loading: false,
       statusesLoading: false,
       user: ProfileModel,
-      statuses: [StatusModel]
+      statuses: [StatusModel],
+      description: undefined,
+      robots: undefined,
     };
+  },
+  metaInfo() {
+    return {
+      title: this.user.displayName,
+      meta: [
+        {name: "robots", content: this.robots, vmid: "robots"},
+        {name: "description", content: this.description, vmid: "description"},
+        {name: "DC.Description", content: this.description, vmid: "DC.Description"}
+      ]
+    }
   },
   components: {
     Status
@@ -121,6 +133,17 @@ export default {
       }
       return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
     },
+    updateMetadata() {
+      if (true) {
+        this.description = this.i18n.choice("_.description.profile", 1, {
+          "username": this.user.username,
+          "kmAmount": this.user.trainDistance.toFixed(2),
+          "hourAmount": this.duration
+        });
+      } else {
+        this.robots = "noindex";
+      }
+    },
     fetchData() {
       this.error   = null;
       this.loading = true;
@@ -129,6 +152,7 @@ export default {
           .then((response) => {
             this.loading = false;
             this.user    = response.data.data;
+            this.updateMetadata();
             if (!this.user.userInvisibleToMe) {
               this.fetchStatuses();
             }

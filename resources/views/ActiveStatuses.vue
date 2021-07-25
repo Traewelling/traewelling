@@ -37,6 +37,7 @@ import Map from "../components/Map";
 import {StatusModel} from "../js/APImodels";
 
 export default {
+  name: "ActiveStatuses",
   data() {
     return {
       loading: true,
@@ -46,6 +47,16 @@ export default {
       stopovers: null, //ToDo Typedef
       polylines: null //ToDo Typedef
     };
+  },
+  metaInfo() {
+    return {
+      title: this.i18n.get("_.menu.active"),
+      meta: [
+        {name: "robots", content: "index", vmid: "robots"},
+        {name: "description", content: this.i18n.get("_.description.en-route"), vmid: "description"},
+        {name: "DC.Description", content: this.i18n.get("_.description.en-route"), vmid: "DC.Description"}
+      ]
+    }
   },
   components: {
     Status,
