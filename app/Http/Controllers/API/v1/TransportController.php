@@ -188,7 +188,7 @@ class TransportController extends ResponseController
         }
 
         return $this->sendv1Response(
-            data: new TrainstationResource($station['station']),
+            data: new TrainstationResource($station),
         );
     }
 }

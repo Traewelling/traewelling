@@ -158,7 +158,16 @@ export default {
       this.$refs.confirmHomeModal.show();
     },
     setHome() {
-      alert("yay");
+      axios
+          .put("/trains/station/" + this.station.name + "/home")
+          .then((result) => {
+            this.result = result.data.data;
+            //ToDo add a translation and a confirm popup or sth
+            alert(this.result.name + " set as your home!");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
     }
   }
 };
