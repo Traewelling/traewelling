@@ -163,7 +163,7 @@ export default {
         name: "singleStatus",
         params: {id: this.status.id}
       }).href
-      this.metaData.title       = this.status.username;
+      this.metaData.title       = this.i18n.choice("_.status.ogp-title", 1, {"name": this.status.username});
       this.metaData.image       = "/profile/" + this.status.username + "/profilepicture";
       console.log(this.metaData);
     }
