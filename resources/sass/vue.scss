@@ -7,10 +7,8 @@
 // Variables
 @import "variables";
 
-// Bootstrap
-//@import "~bootstrap/scss/bootstrap";
-// mdbootstrap pro
-@import '~mdb-ui-kit/css/mdb.min.css';
+// mdbootstrap
+@import '~mdb-ui-kit/src/scss/mdb.free.scss';
 
 body {
   font-family: "Nunito", sans-serif;
