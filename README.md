@@ -29,7 +29,7 @@ To set up a Träwelling instance you'll need:
 * [MariaDB](https://mariadb.org/download) (SQLite is used for running tests)
 * A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 * [Composer](https://getcomposer.org/download/)
-* PHP 8.0 (or higher) and the following extensions:
+* PHP 8.0 and the following extensions:
   * gd
   * sodium
   * exif
