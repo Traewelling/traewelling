@@ -1,10 +1,10 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/stats.js": "/js/stats.js",
-    "/js/admin.js": "/js/admin.js",
-    "/js/vue.js": "/js/vue.js",
-    "/css/vue.css": "/css/vue.css",
-    "/css/app.css": "/css/app.css",
-    "/css/welcome.css": "/css/welcome.css",
-    "/css/admin.css": "/css/admin.css"
+  "/js/app.js": "/js/app.js?id=873068844483db334a96",
+  "/js/stats.js": "/js/stats.js?id=a283d9f470f87191f0a4",
+  "/js/admin.js": "/js/admin.js?id=85cc565cce84bf48d125",
+  "/js/vue.js": "/js/vue.js?id=5be8c56f457ea4e93bff",
+  "/css/vue.css": "/css/vue.css?id=08121888397de7c72404",
+  "/css/app.css": "/css/app.css?id=64d37218f5603a068e3a",
+  "/css/welcome.css": "/css/welcome.css?id=2ae9a4575e032f1d920d",
+  "/css/admin.css": "/css/admin.css?id=4630aa46d4953b7c6858"
 }
