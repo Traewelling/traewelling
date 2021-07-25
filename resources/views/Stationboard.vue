@@ -7,7 +7,7 @@
           <div class="card">
             <div class="card-header">
               <div class="float-end">
-                <a href="#" v-on:click.prevent="toggleSetHomeModal">
+                <a :aria-label="i18n.get('_.modals.setHome-title')" href="#" v-on:click.prevent="toggleSetHomeModal">
                   <!-- ToDo: alt-text! -->
                   <i class="fa fa-home" aria-hidden="true"></i>
                 </a>
@@ -84,7 +84,7 @@
           :abort-text="i18n.get('_.menu.abort')"
           :confirm-text="i18n.get('_.modals.edit-confirm')"
           :title-text="i18n.get('_.modals.setHome-title')"
-          :body-text="this.i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
+          :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
           confirm-button-color="btn-success"
           v-on:confirm="setHome"
       ></ModalConfirm>
@@ -162,8 +162,10 @@ export default {
           .put("/trains/station/" + this.station.name + "/home")
           .then((result) => {
             this.result = result.data.data;
-            //ToDo add a translation and a confirm popup or sth
-            alert(this.result.name + " set as your home!");
+            //ToDo add a confirm popup or sth
+            this.$auth.fetch();
+            console.log(this.$auth.user());
+            alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
           })
           .catch((error) => {
             console.error(error);
