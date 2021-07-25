@@ -63,6 +63,7 @@ import {EventModel, StatusModel} from "../js/APImodels";
 
 export default {
   name: "Event",
+  //ToDo add Meta Tags
   data() {
     return {
       username: this.$route.params.username,
