@@ -164,7 +164,6 @@ export default {
             this.result = result.data.data;
             //ToDo add a confirm popup or sth
             this.$auth.fetch();
-            console.log(this.$auth.user());
             alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
           })
           .catch((error) => {
