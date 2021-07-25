@@ -3,13 +3,6 @@
  */
 
 import Vue from "vue";
-
-require("jquery");
-
-require("./bootstrap");
-require("awesomplete/awesomplete");
-require("leaflet/dist/leaflet.js");
-
 import VueRouter from "vue-router";
 import {router} from "../routes";
 import App from "../views/App";
@@ -23,6 +16,13 @@ import auth from "@websanova/vue-auth/dist/v2/vue-auth.esm.js";
 import driverAuthBearer from "@websanova/vue-auth/dist/drivers/auth/bearer.esm.js";
 import driverHttpAxios from "@websanova/vue-auth/dist/drivers/http/axios.1.x.esm.js";
 import driverRouterVueRouter from "@websanova/vue-auth/dist/drivers/router/vue-router.2.x.esm.js";
+import VueMeta from "vue-meta";
+
+require("jquery");
+
+require("./bootstrap");
+require("awesomplete/awesomplete");
+require("leaflet/dist/leaflet.js");
 
 window.Vue = require("vue");
 
@@ -69,6 +69,8 @@ Vue.use(auth, {
     fetchData: {url: "auth/user", method: "GET", enabled: true},
     // refreshData: {url: "auth/refresh", method: "GET", enabled: true, interval: 30}
 });
+
+Vue.use(VueMeta)
 
 new Vue({
     el: "#app",
