@@ -11,15 +11,15 @@ const mix = require("laravel-mix");
  |
  */
 
-mix.js("resources/js/app.js", "public/js");
-mix.js("resources/js/stats.js", "public/js");
-mix.sass("resources/sass/app.scss", "public/css");
-mix.js("resources/js/admin.js", "public/js");
-mix.sass("resources/sass/vue.scss", "public/css").vue();
-mix.js("resources/js/vue.js", "public/js").vue();
-mix.sass("resources/sass/admin.scss", "public/css");
-mix.sass("resources/sass/welcome.scss", "public/css");
-mix.sourceMaps();
+mix.js("resources/js/app.js", "public/js")
+    .js("resources/js/stats.js", "public/js")
+    .sass("resources/sass/app.scss", "public/css")
+    .js("resources/js/admin.js", "public/js")
+    .sass("resources/sass/vue.scss", "public/css").vue()
+    .js("resources/js/vue.js", "public/js").vue()
+    .sass("resources/sass/admin.scss", "public/css")
+    .sass("resources/sass/welcome.scss", "public/css")
+    .sourceMaps();
 
 if (mix.inProduction()) {
     mix.version();
