@@ -1,91 +1,129 @@
 <template>
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <header class="mb-auto">
-            <div>
-                <h3 class="float-md-start mb-0">Cover</h3>
-                <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <a aria-current="page" class="nav-link active" href="#">Home</a>
-                    <a class="nav-link" href="#">Features</a>
-                    <a class="nav-link" href="#">Contact</a>
-                </nav>
-            </div>
-        </header>
+    <div>
 
-        <main class="px-3">
-            <h1>Cover your page.</h1>
-            <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit
-                the text, and add your own fullscreen background photo to make it your own.</p>
-            <p class="lead">
-                <a class="btn btn-lg btn-secondary fw-bold border-white bg-white" href="#">Learn more</a>
-            </p>
-        </main>
+        <div class="videoContainer">
+            <div class="overlay"></div>
+            <video autoplay class="fullscreen-bg__video" loop muted>
+                <source src="img/vid1.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="d-flex w-100 h-100 p-3 mx-auto flex-column align-items-center position-fixed text-white">
+            <main class="d-flex mx-auto mt-auto align-items-center p-4 p-md-0">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="mb-3 justify-content-center">
+                                <img alt="logo" class="logo" src="/images/icons/logo.svg">
+                                <span class="h1">#Träwelling</span>
+                            </div>
+                            <p>{{ i18n.get("_.about.block1") }}</p>
+                            <a class="btn btn-white" href="#!">Get an account</a>
+                        </div>
+                        <div class="col-md-4 form-secion">
+                            <h2 class="mb-4">{{ i18n.get("_.user.login") }}</h2>
+                            <form action="#!">
+                                <div class="d-flex flex-row align-items-center justify-content-center">
+                                    <!--                                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>-->
+                                    <button aria-label="Twitter" class="btn btn-primary btn-floating mx-1"
+                                            type="button"> <!--ToDo i18n?-->
+                                        <i aria-hidden="true" class="fab fa-twitter"></i>
+                                    </button>
 
-        <footer class="mt-auto text-white-50">
-            <p>Cover template for <a class="text-white" href="https://getbootstrap.com/">Bootstrap</a>, by <a
-                class="text-white" href="https://twitter.com/mdo">@mdo</a>.</p>
-        </footer>
+                                    <button aria-label="Apple" class="btn btn-primary btn-floating mx-1"
+                                            type="button"> <!--ToDo i18n?-->
+                                        <i aria-hidden="true" class="fab fa-apple"></i>
+                                    </button>
+
+                                    <button aria-label="Mastodon" class="btn btn-primary btn-floating mx-1"
+                                            type="button"> <!--ToDo i18n?-->
+                                        <i aria-hidden="true" class="fab fa-mastodon"></i>
+                                    </button>
+                                </div>
+                                <div class="divider d-flex align-items-center my-4">
+                                    <p class="text-center fw-bold mx-3 mb-0">Or</p><!--ToDo i18n-->
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <input id="mail" class="form-control text-white" type="text"/>
+                                    <label class="form-label text-white" for="mail">{{
+                                            i18n.get("_.user.email")
+                                        }}</label>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <input id="password" class="form-control text-white" type="password"/>
+                                    <label class="form-label text-white"
+                                           for="password">{{ i18n.get("_.user.password") }}</label>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <input id="login" class="btn btn-white" name="login" type="button"
+                                           value="Login">
+                                    <a class="text-white"
+                                       href="#">{{ i18n.get("_.user.forgot-password") }}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <FooterComponent class="w-100" dashboard="true"></FooterComponent>
+        </div>
     </div>
 </template>
 
 <script>
+import FooterComponent from "../layouts/FooterComponent";
+
 export default {
-    name: "LoginView"
+    name: "LoginView",
+    components: {FooterComponent}
 }
 </script>
+<style>
+html, body {
+    height: 100%;
+}
 
+#app {
+    height: 100%;
+}
+</style>
 <style scoped>
-/*
- * Globals
- */
-
-
-/* Custom default button */
-.btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:focus {
-    color: #333;
-    text-shadow: none; /* Prevent inheritance from `body` */
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
 }
 
-
-/*
- * Base structure
- */
-
-body {
-    text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+.logo {
+    height: 50px;
 }
 
-.cover-container {
-    max-width: 42em;
+.videoContainer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-attachment: scroll;
+    overflow: hidden;
 }
 
-
-/*
- * Header
- */
-
-.nav-masthead .nav-link {
-    padding: .25rem 0;
-    font-weight: 700;
-    color: rgba(255, 255, 255, .5);
-    background-color: transparent;
-    border-bottom: .25rem solid transparent;
+.videoContainer video {
+    min-width: 100%;
+    min-height: 100%;
+    position: relative;
+    z-index: 1;
 }
 
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
-    border-bottom-color: rgba(255, 255, 255, .25);
-}
-
-.nav-masthead .nav-link + .nav-link {
-    margin-left: 1rem;
-}
-
-.nav-masthead .active {
-    color: #fff;
-    border-bottom-color: #fff;
+.videoContainer .overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-image: linear-gradient(#d4353e, #a20b12);
+    opacity: 0.8;
 }
 
 </style>

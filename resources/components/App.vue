@@ -3,16 +3,13 @@
 </template>
 
 <script>
-import Vue from "vue";
 import LayoutBasic from "./layouts/Basic";
-import {languages} from "../js/translations";
 
 export default {
     name: "App",
     data() {
         return {
             notificationsCount: 1,
-            langs: languages
         };
     },
     metaInfo() {
@@ -83,14 +80,6 @@ export default {
                 .catch((error) => {
                     console.error(error);
                 });
-        },
-        setLang(language) {
-            if (typeof language === "string" && languages.hasOwnProperty(language)) {
-                Vue.localStorage.set("language", language);
-                this.i18n.setLocale(language);
-                this.moment.locale(language.substr(0, 2));
-                this.$forceUpdate();
-            }
         }
     }
 };
