@@ -1,6 +1,6 @@
 <template>
     <LayoutBasic>
-        <div v-if="!loading" class="container">
+        <div v-if="!loading">
             <div class="row">
                 <div class="col-md-12">
                     <h4>{{ i18n.get("_.leaderboard.month") }} <strong>{{ month.format("MMMM YYYY") }}</strong></h4>

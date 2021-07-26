@@ -1,6 +1,5 @@
 <template>
     <LayoutBasic>
-        <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
                     <div class="card sticky-top">
@@ -28,7 +27,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </LayoutBasic>
 </template>
 

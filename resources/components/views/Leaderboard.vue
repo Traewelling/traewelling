@@ -1,6 +1,5 @@
 <template>
     <LayoutBasic>
-        <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-9 col-lg-9">
                     <div id="leaderboard" class="card">
@@ -53,7 +52,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </LayoutBasic>
 </template>
 
