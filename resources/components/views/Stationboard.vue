@@ -1,55 +1,51 @@
 <template>
     <LayoutBasic>
-        <transition mode="out-in" name="component-fade">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-8 col-lg-7">
-                        <StationForm :next="times.next" :now="times.now" :prev="times.prev"
-                                     v-on:refresh="fetchData"></StationForm>
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="float-end">
-                                    <a :aria-label="i18n.get('_.modals.setHome-title')" href="#"
-                                       v-on:click.prevent="toggleSetHomeModal">
-                                        <!-- ToDo: alt-text! -->
-                                        <i aria-hidden="true" class="fa fa-home"></i>
-                                    </a>
-                                </div>
-                                <span v-if="station" id="stationTableHeader">
-              {{ station.name }}
-              <small>
-                <i aria-hidden="true" class="far fa-clock fa-sm"></i>
-                {{ moment(this.times.now).format("LLL") }}
-              </small>
-            </span>
-                            </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <StationForm :next="times.next" :now="times.now" :prev="times.prev"
+                             v-on:refresh="fetchData"></StationForm>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="float-end">
+                            <a :aria-label="i18n.get('_.modals.setHome-title')" href="#"
+                               v-on:click.prevent="toggleSetHomeModal">
+                                <i aria-hidden="true" class="fa fa-home"></i>
+                            </a>
+                        </div>
+                        <span v-if="station" id="stationTableHeader">
+                            {{ station.name }}
+                            <small>
+                                <i aria-hidden="true" class="far fa-clock fa-sm"></i>
+                                {{ moment(this.times.now).format("LLL") }}
+                            </small>
+                        </span>
+                    </div>
 
-                            <Spinner v-if="loading" class="mt-5"/>
-                            <div v-else-if="departures.length === 0 || departures === null"
-                                 class="card-body text-center text-danger text-bold">
-                                {{ i18n.get('_.stationboard.no-departures') }}
-                            </div>
-                            <div v-else class="card-body p-0 table-responsive">
-                                <table aria-labelledby="stationTableHeader"
-                                       class="table table-dark table-borderless table-hover table-striped m-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="ps-2 ps-md-4" scope="col">{{
-                                                    i18n.get('_.stationboard.dep-time')
-                                                }}
-                                            </th>
-                                            <th class="px-0" scope="col">{{ i18n.get('_.stationboard.line') }}</th>
-                                            <th scope="col">{{ i18n.get('_.stationboard.destination') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="departure in departures"
-                                            v-on:click="goToTrip(departure)">
-                                            <td class="ps-2 ps-md-4">
+                    <Spinner v-if="loading" class="mt-5"/>
+                    <div v-else-if="!departures || departures.length === 0"
+                         class="card-body text-center text-danger text-bold">
+                        {{ i18n.get('_.stationboard.no-departures') }}
+                    </div>
+                    <div v-else class="card-body p-0 table-responsive">
+                        <table aria-labelledby="stationTableHeader"
+                               class="table table-dark table-borderless table-hover table-striped m-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-2 ps-md-4" scope="col">
+                                        {{ i18n.get('_.stationboard.dep-time') }}
+                                    </th>
+                                    <th class="px-0" scope="col">{{ i18n.get('_.stationboard.line') }}</th>
+                                    <th scope="col">{{ i18n.get('_.stationboard.destination') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="departure in departures"
+                                    v-on:click="goToTrip(departure)">
+                                    <td class="ps-2 ps-md-4">
                       <span v-if="departure.cancelled" class="text-danger">
                         {{ i18n.get('_.stationboard.stop-cancelled') }}
                       </span>
-                                                <span v-else>
+                                        <span v-else>
                         <span :class="{
                         'text-success': departure.delay === 0,
                         'text-warning': departure.delay && departure.delay < 600,
@@ -60,42 +56,40 @@
                           {{ moment(departure.plannedWhen).format("LT") }}
                         </small>
                       </span>
-                                            </td>
-                                            <td class="text-nowrap px-0">
-                                                <img v-if="images.includes(departure.line.product)"
-                                                     :alt="departure.line.product"
-                                                     :src="`/img/${departure.line.product}.svg`"
-                                                     class="product-icon">
-                                                <i v-else aria-hidden="true" class="fa fa-train"></i>
-                                                &nbsp;
-                                                <span
-                                                    :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
+                                    </td>
+                                    <td class="text-nowrap px-0">
+                                        <img v-if="images.includes(departure.line.product)"
+                                             :alt="departure.line.product"
+                                             :src="`/img/${departure.line.product}.svg`"
+                                             class="product-icon">
+                                        <i v-else aria-hidden="true" class="fa fa-train"></i>
+                                        &nbsp;
+                                        <span
+                                            :class="{ 'text-decoration-line-through text-danger': departure.cancelled}">
                         <span v-if="departure.line.name">{{ departure.line.name }}</span>
                         <span v-else>{{ departure.line.fahrtNr }}</span>
                       </span>
-                                            </td>
-                                            <td :class="{ 'text-decoration-line-through text-danger': departure.cancelled}"
-                                                class="text-wrap">
-                                                {{ departure.direction }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    </td>
+                                    <td :class="{ 'text-decoration-line-through text-danger': departure.cancelled}"
+                                        class="text-wrap">
+                                        {{ departure.direction }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <ModalConfirm
-                    ref="confirmHomeModal"
-                    :abort-text="i18n.get('_.menu.abort')"
-                    :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
-                    :confirm-text="i18n.get('_.modals.edit-confirm')"
-                    :title-text="i18n.get('_.modals.setHome-title')"
-                    confirm-button-color="btn-success"
-                    v-on:confirm="setHome"
-                ></ModalConfirm>
             </div>
-        </transition>
+        </div>
+        <ModalConfirm
+            ref="confirmHomeModal"
+            :abort-text="i18n.get('_.menu.abort')"
+            :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
+            :confirm-text="i18n.get('_.modals.edit-confirm')"
+            :title-text="i18n.get('_.modals.setHome-title')"
+            confirm-button-color="btn-success"
+            v-on:confirm="setHome"
+        ></ModalConfirm>
     </LayoutBasic>
 </template>
 
