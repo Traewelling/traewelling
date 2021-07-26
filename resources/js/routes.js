@@ -1,15 +1,16 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import ActiveStatuses from "./views/ActiveStatuses";
-import SingleStatus from "./views/SingleStatus";
-import Profile from "./views/Profile";
-import Event from "./views/Event";
-import Leaderboard from "./views/Leaderboard";
-import LeaderboardMonth from "./views/LeaderboardMonth";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Stationboard from "./views/Stationboard";
-import Trip from "./views/Trip";
+import ActiveStatuses from "../components/views/ActiveStatuses";
+import SingleStatus from "../components/views/SingleStatus";
+import Profile from "../components/views/Profile";
+import Event from "../components/views/Event";
+import Leaderboard from "../components/views/Leaderboard";
+import LeaderboardMonth from "../components/views/LeaderboardMonth";
+import Login from "../components/Login";
+import Dashboard from "../components/views/Dashboard";
+import Stationboard from "../components/views/Stationboard";
+import Trip from "../components/views/Trip";
+import LoginView from "../components/views/LoginView";
 
 Vue.use(VueRouter);
 
@@ -21,7 +22,12 @@ export const router = new VueRouter({
             {
                 path: "/",
                 name: "base",
-                redirect: {name: "statuses.active"},
+                redirect: {name: "index"},
+            },
+            {
+                path: "/test",
+                component: LoginView,
+                name: "index"
             },
             {
                 path: "/statuses/active",
