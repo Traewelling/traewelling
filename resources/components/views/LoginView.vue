@@ -10,7 +10,7 @@
         <div class="d-flex w-100 h-100 p-3 mx-auto flex-column align-items-center position-fixed text-white">
             <main class="d-flex mx-auto mt-auto align-items-center p-4 p-md-0">
                 <div class="container">
-                    <div class="row">
+                    <div class="row justify-content-between">
                         <div class="col-md-6 mb-3">
                             <div class="mb-3 justify-content-center">
                                 <img alt="logo" class="logo" src="/images/icons/logo.svg">
