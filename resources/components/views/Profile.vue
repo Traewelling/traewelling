@@ -39,9 +39,7 @@
                 </h2>
             </div>
         </template>
-        <div v-if="loading || statusesLoading">
-            {{ i18n.get("_.vue.loading") }}
-        </div>
+        <Spinner v-if="loading || statusesLoading" class="mt-5"/>
 
         <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
             <div v-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
@@ -65,7 +63,9 @@
                 </div>
                 <div class="mt-5">
                     <div v-if="links && links.next" class="text-center">
-                        <button class="btn btn-primary btn-lg btn-floating mt-4" @click.prevent="fetchMore">
+                        <button :aria-label="i18n.get('_.menu.show-more')"
+                                class="btn btn-primary btn-lg btn-floating mt-4"
+                                @click.prevent="fetchMore">
                             <i aria-hidden="true" class="fas fa-caret-down"></i>
                         </button>
                     </div>
@@ -87,6 +87,7 @@ import Status from "../Status";
 import {ProfileModel, StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import HeroLayout from "../layouts/HeroLayout";
+import Spinner from "../Spinner";
 
 export default {
     name: "ProfilePage",
@@ -113,6 +114,7 @@ export default {
         };
     },
     components: {
+        Spinner,
         HeroLayout,
         LayoutBasic,
         Status

@@ -117,24 +117,25 @@
                    class="profile-image">
             </router-link>
           </li>
-          <li v-if="$auth.check()" class="list-inline-item like-text me-1" v-on:click="likeStatus">
-            <i aria-hidden="true" class="like fa-star small"
-               v-bind:class="{fas: statusData.liked, far: !statusData.liked}"></i>
-            <span v-if="statusData.likes" class="pl-1">{{ statusData.likes }}</span>
+          <li v-if="$auth.check()" class="list-inline-item like-text me-1" tabindex="0" v-on:click="likeStatus">
+              <i aria-hidden="true" class="like fa-star small"
+                 v-bind:class="{fas: statusData.liked, far: !statusData.liked}"></i>
+              <span v-if="statusData.likes" class="pl-1">{{ statusData.likes }}</span>
           </li>
-          <li v-if="$auth.check() && $auth.user().id === statusData.user" class="list-inline-item like-text">
-            <a class="like-text" data-mdb-toggle="dropdown" role="button">
-              <i :title="i18n.get('_.status.more')" aria-hidden="true" class="fas fa-ellipsis-h small"></i>
-            </a>
-            <ul class="dropdown-menu">
-              <li v-if="shareable"><a class="dropdown-item" href="#" v-on:click.prevent="share">
-                <i aria-hidden="true" class="fas fa-share"></i>&nbsp; {{ i18n.get("_.menu.share") }}
-              </a>
-              </li>
-              <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleEditModal">
-                <i aria-hidden="true" class="fas fa-edit"></i>&nbsp;{{ i18n.get("_.modals.editStatus-title") }}
-              </a></li>
-              <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleDeleteModal">
+            <li v-if="$auth.check() && $auth.user().id === statusData.user" class="list-inline-item like-text">
+                <a :aria-label="i18n.get('_.menu.show-more')" class="like-text" data-mdb-toggle="dropdown" role="button"
+                   tabindex="0">
+                    <i aria-hidden="true" class="fas fa-ellipsis-h small"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li v-if="shareable"><a class="dropdown-item" href="#" v-on:click.prevent="share">
+                        <i aria-hidden="true" class="fas fa-share"></i>&nbsp; {{ i18n.get("_.menu.share") }}
+                    </a>
+                    </li>
+                    <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleEditModal">
+                        <i aria-hidden="true" class="fas fa-edit"></i>&nbsp;{{ i18n.get("_.modals.editStatus-title") }}
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" v-on:click.prevent="toggleDeleteModal">
                 <i aria-hidden="true" class="fas fa-trash"></i>&nbsp;{{ i18n.get("_.modals.delete-confirm") }}
               </a></li>
             </ul>

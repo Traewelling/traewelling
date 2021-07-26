@@ -24,9 +24,7 @@
             </span>
                             </div>
 
-                            <div v-if="loading" class="loading">
-                                {{ i18n.get("_.vue.loading") }}
-                            </div>
+                            <Spinner v-if="loading" class="mt-5"/>
                             <div v-else-if="departures.length === 0 || departures === null"
                                  class="card-body text-center text-danger text-bold">
                                 {{ i18n.get('_.stationboard.no-departures') }}
@@ -107,10 +105,12 @@ import ModalConfirm from "../ModalConfirm";
 import moment from "moment";
 import {travelImages} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     name: "Stationboard",
     components: {
+        Spinner,
         LayoutBasic,
         StationForm,
         ModalConfirm

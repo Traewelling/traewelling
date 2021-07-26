@@ -5,9 +5,7 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-8 col-lg-7">
-                            <div v-if="loading" class="loading">
-                                {{ i18n.get("_.vue.loading") }}
-                            </div>
+                            <Spinner v-if="loading" class="mt-5"/>
                             <div v-if="hafasTrip != null" id="trip-heading" class="card">
                                 <div class="card-header">
                                     <div class="float-end">
@@ -91,10 +89,11 @@ import {travelImages} from "../../js/APImodels";
 import moment from "moment";
 import CheckInModal from "../CheckInModal";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     name: "Trip",
-    components: {LayoutBasic, CheckInModal},
+    components: {Spinner, LayoutBasic, CheckInModal},
     data() {
         return {
             loading: false,

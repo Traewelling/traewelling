@@ -3,9 +3,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-7">
-                    <div v-if="loading" class="loading">
-                        {{ i18n.get("_.vue.loading") }}
-                    </div>
+                    <Spinner v-if="loading" class="mt-5"/>
 
                     <div v-if="error" class="error">
                         <p>{{ error }}</p>
@@ -33,6 +31,7 @@ import Status from "../Status";
 import moment from "moment";
 import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     name: "SingleStatus",
@@ -84,6 +83,7 @@ export default {
         }
     },
     components: {
+        Spinner,
         LayoutBasic,
         Status
     },

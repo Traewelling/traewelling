@@ -3,9 +3,7 @@
         <div class="row justify-content-center align-content-center">
             <div class="col-md-8 col-lg-7">
                 <StationForm></StationForm>
-                <div v-if="loading" class="loading">
-                    {{ i18n.get("_.vue.loading") }}
-                </div>
+                <Spinner v-if="loading" class="mt-5"/>
 
                 <div v-if="error" class="error">
                     <p>{{ error }}</p>
@@ -24,7 +22,9 @@
                             v-bind:stopovers="stopovers"/>
 
                     <div v-if="links && links.next" class="text-center">
-                        <button class="btn btn-primary btn-lg btn-floating mt-4" @click.prevent="fetchMore">
+                        <button aria-label="i18n.get('_.menu.show-more')"
+                                class="btn btn-primary btn-lg btn-floating mt-4"
+                                @click.prevent="fetchMore">
                             <i aria-hidden="true" class="fas fa-caret-down"></i>
                         </button>
                     </div>
@@ -41,6 +41,7 @@ import moment from "moment";
 import {StatusModel} from "../../js/APImodels";
 import StationForm from "../StationForm";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     data() {
@@ -59,6 +60,7 @@ export default {
         };
     },
     components: {
+        Spinner,
         LayoutBasic,
         StationForm,
         Status

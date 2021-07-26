@@ -117,7 +117,9 @@
             </div>
             <hr/>
         </div>
-        <div v-else> {{ i18n.get("_.vue.loading") }}</div>
+        <div v-else>
+            <Spinner class="mt-5"/>
+        </div>
     </LayoutBasic>
 </template>
 
@@ -127,6 +129,7 @@ import LeaderboardTable from "../LeaderboardTable";
 import axios from "axios";
 import {LeaderboardUserModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     name: "LeaderboardMonth",
@@ -161,6 +164,7 @@ export default {
         }
     },
     components: {
+        Spinner,
         LayoutBasic,
         LeaderboardTable
     },

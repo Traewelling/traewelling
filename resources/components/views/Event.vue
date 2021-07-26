@@ -35,10 +35,7 @@
                 </div>
             </div>
         </template>
-        <div v-if="loading || statusesLoading">
-            {{ i18n.get("_.vue.loading") }}
-        </div>
-
+        <Spinner v-if="loading || statusesLoading" class="mt-5"/>
         <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
             <div v-if="statuses.length > 0" class="col-md-8 col-lg-7">
 
@@ -60,6 +57,7 @@ import axios from "axios";
 import {EventModel, StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import HeroLayout from "../layouts/HeroLayout";
+import Spinner from "../Spinner";
 
 export default {
     name: "Event",
@@ -78,6 +76,7 @@ export default {
         };
     },
     components: {
+        Spinner,
         HeroLayout,
         LayoutBasic,
         Status

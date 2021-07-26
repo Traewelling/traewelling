@@ -7,9 +7,7 @@
                     </div>
                 </div>
                 <div class="col-md-8 col-lg-6">
-                    <div v-if="loading" class="loading">
-                        {{ i18n.get("_.vue.loading") }}
-                    </div>
+                    <Spinner v-if="loading" class="mt-5"/>
 
                     <div v-if="error" class="error">
                         <p>{{ error }}</p>
@@ -36,6 +34,7 @@ import Status from "../Status";
 import Map from "../Map";
 import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
+import Spinner from "../Spinner";
 
 export default {
     name: "ActiveStatuses",
@@ -60,6 +59,7 @@ export default {
         };
     },
     components: {
+        Spinner,
         Status,
         Map,
         LayoutBasic,
