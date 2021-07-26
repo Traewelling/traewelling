@@ -63,7 +63,6 @@ import HeroLayout from "../layouts/HeroLayout";
 
 export default {
     name: "Event",
-    //ToDo add Meta Tags
     data() {
         return {
             username: this.$route.params.username,
@@ -71,6 +70,11 @@ export default {
             statusesLoading: false,
             event: EventModel,
             statuses: [StatusModel]
+        };
+    },
+    metaInfo() {
+        return {
+            title: this.event.name //ToDo Add more Meta Tags
         };
     },
     components: {
