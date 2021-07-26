@@ -20,44 +20,7 @@
                             <a class="btn btn-white" href="#!">{{ i18n.get("_.menu.about") }}</a>
                         </div>
                         <div class="col-md-4 card text-dark">
-                            <form action="#!" class="card-body">
-                                <h2 class="card-title">{{ i18n.get("_.user.login") }}</h2>
-                                <div class="d-flex flex-row align-items-center justify-content-center">
-                                    <!--                                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>-->
-                                    <button aria-label="Twitter" class="btn btn-primary btn-floating mx-1"
-                                            type="button"> <!--ToDo i18n?-->
-                                        <i aria-hidden="true" class="fab fa-twitter"></i>
-                                    </button>
-                                    <button aria-label="Apple" class="btn btn-primary btn-floating mx-1"
-                                            type="button"> <!--ToDo i18n?-->
-                                        <i aria-hidden="true" class="fab fa-apple"></i>
-                                    </button>
-                                    <button aria-label="Mastodon" class="btn btn-primary btn-floating mx-1"
-                                            type="button"> <!--ToDo i18n?-->
-                                        <i aria-hidden="true" class="fab fa-mastodon"></i>
-                                    </button>
-                                </div>
-                                <div class="divider d-flex align-items-center mb-4 mt-2">
-                                    <p class="text-center fw-bold mx-3 mb-0">Or</p><!--ToDo i18n-->
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input id="mail" class="form-control text-dark" type="text"/>
-                                    <label class="form-label text-dark" for="mail">{{
-                                            i18n.get("_.user.email")
-                                        }}</label>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input id="password" class="form-control text-dark" type="password"/>
-                                    <label class="form-label text-dark"
-                                           for="password">{{ i18n.get("_.user.password") }}</label>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <input id="login" class="btn btn-white" name="login" type="button"
-                                           value="Login">
-                                    <a class="text-dark"
-                                       href="#">{{ i18n.get("_.user.forgot-password") }}</a>
-                                </div>
-                            </form>
+                            <Login></Login>
                         </div>
                     </div>
                 </div>
@@ -70,10 +33,36 @@
 
 <script>
 import FooterComponent from "../layouts/FooterComponent";
+import Login from "../Login";
 
 export default {
     name: "LoginView",
-    components: {FooterComponent}
+    components: {FooterComponent, Login},
+    data() {
+        return {
+            email: null,
+            password: null,
+            hasError: false
+        };
+    }, mounted() {
+        //
+    }, methods: {
+        login() {
+            // get the redirect object
+            var redirect = this.$auth.redirect();
+            this.$auth.login({
+                data: {
+                    email: this.email,
+                    password: this.password
+                },
+                redirect: {name: "dashboard"},
+                staySignedIn: true,
+                fetchUser: true,
+            }).then(() => {
+                this.$auth.fetch();
+            });
+        }
+    }
 }
 </script>
 <style>
@@ -86,13 +75,6 @@ html, body {
 }
 </style>
 <style scoped>
-.divider:after,
-.divider:before {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: #eee;
-}
 
 .logo {
     height: 50px;
