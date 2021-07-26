@@ -19,9 +19,9 @@
                 </div>
             </div>
             <nav class="text-muted mb-0">
-                <a :class="{'text-white': dashboard}" class="footer-link" href="route('static.about')">
+                <router-link :class="{'text-white': dashboard}" :to="{name: 'about'}" class="footer-link">
                     {{ i18n.get("_.menu.about") }}
-                </a>
+                </router-link>
                 <router-link v-if="$auth.check()" :class="{'text-white': dashboard}" :to="{name: 'dashboard.global'}"
                              class="footer-link">
                     {{ i18n.get("_.menu.globaldashboard") }}

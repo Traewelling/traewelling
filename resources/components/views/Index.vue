@@ -17,7 +17,10 @@
                                 <span class="h1">#Träwelling</span>
                             </div>
                             <p>{{ i18n.get("_.about.block1") }}</p>
-                            <a class="btn btn-white" href="#!">{{ i18n.get("_.menu.about") }}</a>
+                            <router-link :to="{name: 'about'}" class="btn btn-white">{{
+                                    i18n.get("_.menu.about")
+                                }}
+                            </router-link>
                         </div>
                         <div class="col-md-4 card text-dark">
                             <Login></Login>

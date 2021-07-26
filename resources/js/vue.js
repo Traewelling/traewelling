@@ -58,7 +58,8 @@ Vue.use(auth, {
     },
     options: {
         rolesKey: "type",
-        notFoundRedirect: {name: "statuses.active"},
+        notFoundRedirect: {name: "dashboard"},
+        forbiddenRedirect: {name: "dashboard"}
     },
     tokenDefaultName: "laravel-vue-spa",
     tokenStore: ["localStorage"],

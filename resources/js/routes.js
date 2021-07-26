@@ -10,7 +10,8 @@ import Login from "../components/Login";
 import Dashboard from "../components/views/Dashboard";
 import Stationboard from "../components/views/Stationboard";
 import Trip from "../components/views/Trip";
-import LoginView from "../components/views/LoginView";
+import Index from "../components/views/Index";
+import About from "../components/views/About";
 
 Vue.use(VueRouter);
 
@@ -21,13 +22,16 @@ export const router = new VueRouter({
         [
             {
                 path: "/",
-                name: "base",
-                redirect: {name: "index"},
+                component: Index,
+                name: "index",
+                meta: {
+                    auth: false
+                }
             },
             {
-                path: "/test",
-                component: LoginView,
-                name: "index"
+                path: "/about",
+                component: About,
+                name: "about"
             },
             {
                 path: "/statuses/active",
