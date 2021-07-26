@@ -64,7 +64,11 @@
                             :status="status"/>
                 </div>
                 <div class="mt-5">
-                    $statuses->links()
+                    <div v-if="links && links.next" class="text-center">
+                        <button class="btn btn-primary btn-lg btn-floating mt-4" @click.prevent="fetchMore">
+                            <i aria-hidden="true" class="fas fa-caret-down"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div v-else class="col-md-8 col-lg-7">
@@ -73,10 +77,6 @@
                 </h3>
             </div>
         </div>
-
-        <!--      @include('includes.edit-modal')-->
-        <!--      @include('includes.delete-modal')-->
-
     </HeroLayout>
 </template>
 
@@ -99,6 +99,7 @@ export default {
             statuses: [StatusModel],
             description: undefined,
             robots: "noindex",
+            links: null,
         };
     },
     metaInfo() {
@@ -172,11 +173,26 @@ export default {
                 .then((response) => {
                     this.statusesLoading = false;
                     this.statuses        = response.data.data;
+                    this.links           = response.data.links;
                 })
                 .catch((error) => {
                     this.statusesLoading = false;
                     this.error           = error.data.message || error.message;
                 });
+        },
+        fetchMore() {
+            this.error = null;
+            axios
+                .get(this.links.next)
+                .then((response) => {
+                    this.statuses = this.statuses.concat(response.data.data);
+                    this.links    = response.data.links;
+                    // this.fetchStopovers(response.data.data)
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.error   = error.data.message || error.message;
+                })
         }
     }
 }

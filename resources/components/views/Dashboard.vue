@@ -1,31 +1,36 @@
 <template>
     <LayoutBasic>
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-7">
-                    <StationForm></StationForm>
-                    <div v-if="loading" class="loading">
-                        {{ i18n.get("_.vue.loading") }}
-                    </div>
+        <div class="row justify-content-center align-content-center">
+            <div class="col-md-8 col-lg-7">
+                <StationForm></StationForm>
+                <div v-if="loading" class="loading">
+                    {{ i18n.get("_.vue.loading") }}
+                </div>
 
-                    <div v-if="error" class="error">
-                        <p>{{ error }}</p>
+                <div v-if="error" class="error">
+                    <p>{{ error }}</p>
 
-                        <p>
-                            <button @click.prevent="fetchData">
-                                {{ i18n.get("_.vue.tryAgain") }}
-                            </button>
-                        </p>
-                    </div>
-                    <!-- ToDo Future Check-ins -->
-                    <div v-if="statuses">
-                        <Status v-for="status in statuses" v-bind:key="status.id"
-                                :show-date="showDate(status, statuses)"
-                                :status="status"
-                                v-bind:stopovers="stopovers"/>
-                        <!--          ToDo Pagination-->
+                    <p>
+                        <button @click.prevent="fetchData">
+                            {{ i18n.get("_.vue.tryAgain") }}
+                        </button>
+                    </p>
+                </div>
+                <!-- ToDo Future Check-ins -->
+                <div v-if="statuses">
+                    <Status v-for="status in statuses" v-bind:key="status.id"
+                            :show-date="showDate(status, statuses)"
+                            :status="status"
+                            v-bind:stopovers="stopovers"/>
+
+                    <div v-if="links && links.next" class="text-center">
+                        <button class="btn btn-primary btn-lg btn-floating mt-4" @click.prevent="fetchMore">
+                            <i aria-hidden="true" class="fas fa-caret-down"></i>
+                        </button>
                     </div>
                 </div>
             </div>
+        </div>
     </LayoutBasic>
 </template>
 
@@ -43,8 +48,9 @@ export default {
             loading: true,
             error: null,
             statuses: [StatusModel],
-            stopovers: null, //ToDo Typedef
-            moment: moment
+            stopovers: [], //ToDo Typedef
+            moment: moment,
+            links: null,
         };
     },
     metaInfo() {
@@ -79,27 +85,49 @@ export default {
                         this.fetchData();
                     }
                     this.statuses = response.data.data;
-                    this.fetchStopovers();
+                    this.links    = response.data.links;
+                    this.fetchStopovers(this.statuses);
                 })
                 .catch((error) => {
                     this.loading = false;
                     this.error   = error.data.message || error.message;
                 });
         },
-        fetchStopovers() {
+        fetchMore() {
+            this.error = null;
+            axios
+                .get(this.links.next)
+                .then((response) => {
+                    this.statuses = this.statuses.concat(response.data.data);
+                    this.links    = response.data.links;
+                    this.fetchStopovers(response.data.data)
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.error   = error.data.message || error.message;
+                })
+        },
+        fetchStopovers(statuses) {
             let tripIds = "";
-            this.statuses.forEach((status) => {
-                tripIds += (status.train.trip + ",");
+            statuses.forEach((status) => {
+                if (!(status.train.trip in this.stopovers)) {
+                    tripIds += (status.train.trip + ",");
+                }
             });
             axios
                 .get("/stopovers/" + tripIds)
                 .then((response) => {
-                    this.stopovers = response.data.data;
+                    this.stopovers = this.stopovers.concat(response.data.data);
                 })
                 .catch((error) => {
                     this.loading = false;
                 });
         },
+    },
+    watch: {
+        '$route'() {
+            this.fetchData();
+        }
     },
 };
 </script>
