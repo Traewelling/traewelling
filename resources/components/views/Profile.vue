@@ -194,10 +194,10 @@ export default {
                 .catch((error) => {
                     this.loading = false;
                     this.error   = error.data.message || error.message;
-                })
+                });
         }
     }
-}
+};
 </script>
 
 <style scoped>

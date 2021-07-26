@@ -131,7 +131,7 @@ export default {
                 })
                 .catch((error) => {
                     console.error(error);
-                })
+                });
         },
         fetchStopovers() {
             axios
@@ -141,7 +141,7 @@ export default {
                 })
                 .catch((error) => {
                     console.error(error);
-                })
+                });
         },
         fetchLikes() {
             axios
@@ -151,7 +151,7 @@ export default {
                 })
                 .catch((error) => {
                     console.error(error);
-                })
+                });
         },
         updateMetadata() {
             if (this.status.preventIndex) {
@@ -172,7 +172,7 @@ export default {
             this.metaData.image       = "/profile/" + this.status.username + "/profilepicture";
         }
     }
-}
+};
 </script>
 
 <style scoped>

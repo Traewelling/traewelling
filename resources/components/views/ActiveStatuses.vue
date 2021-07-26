@@ -116,7 +116,7 @@ export default {
                 })
                 .catch((error) => {
                     console.error(error);
-                })
+                });
         },
         startRefresh() {
             setInterval(() => (this.fetchData()), 70000);

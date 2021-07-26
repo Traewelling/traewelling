@@ -109,7 +109,7 @@ import NotificationsButton from "../NotificationsButton";
 export default {
     name: "NavbarComponent",
     components: {NotificationsButton}
-}
+};
 </script>
 
 <style scoped>

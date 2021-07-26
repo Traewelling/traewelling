@@ -102,12 +102,12 @@ export default {
                 .then((response) => {
                     this.statuses = this.statuses.concat(response.data.data);
                     this.links    = response.data.links;
-                    this.fetchStopovers(response.data.data)
+                    this.fetchStopovers(response.data.data);
                 })
                 .catch((error) => {
                     this.loading = false;
                     this.error   = error.data.message || error.message;
-                })
+                });
         },
         fetchStopovers(statuses) {
             let tripIds = "";

@@ -23,7 +23,7 @@ import FooterComponent from "./FooterComponent";
 export default {
     name: "HeroLayout",
     components: {FooterComponent, NavbarComponent}
-}
+};
 </script>
 
 <style scoped>

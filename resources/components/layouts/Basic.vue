@@ -20,7 +20,7 @@ export default {
         FooterComponent,
         NavbarComponent,
     }
-}
+};
 </script>
 
 <style scoped>
