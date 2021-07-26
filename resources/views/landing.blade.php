@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
     <head>
         <title>{{ config('app.name', 'Träwelling') }}</title>
         <!-- CSRF Token -->
@@ -7,7 +7,7 @@
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/vue.css') }}" rel="stylesheet">
         <!-- Icons -->
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">

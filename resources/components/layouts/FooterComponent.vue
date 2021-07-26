@@ -5,8 +5,11 @@
                 <button :class="{'btn-sm btn-light': dashboard, 'btn-primary': !dashboard}" aria-expanded="false"
                         aria-haspopup="true"
                         class="btn dropdown-toggle"
-                        data-mdb-toggle="dropdown" type="button">
-                    <i aria-hidden="true" class="fas fa-globe-europe"></i> {{ i18n.get("_.settings.language.set") }}
+                        :aria-label="i18n.get('_.settings.language.set')" data-mdb-toggle="dropdown" type="button">
+                    <i aria-hidden="true" class="fas fa-globe-europe"></i><span aria-hidden="true"
+                                                                                class="d-none d-md-inline"> {{
+                        i18n.get("_.settings.language.set")
+                    }}</span>
                 </button>
                 <div class="dropdown-menu">
                     <a v-for="(lang, key) in langs" class="dropdown-item" href="?language=$key"
@@ -15,34 +18,27 @@
                     </a>
                 </div>
             </div>
-            <p class="text-muted mb-0">
-                <span class="footer-nav-link">
-                    <a :class="{'text-white-50': dashboard}" href="route('static.about')">{{
-                            i18n.get("_.menu.about")
-                        }}</a>
-                </span>
-                <span v-if="$auth.check()" class="footer-nav-link">
-                    / <router-link :class="{'text-white-50': dashboard}" :to="{name: 'dashboard.global'}">{{
-                        i18n.get("_.menu.globaldashboard")
-                    }}</router-link>
-                </span>
-                <span class="footer-nav-link">
-                    / <a :class="{'text-white-50': dashboard}" href=" route(events) ">{{ i18n.get("_.events") }}</a>
-                </span>
-                <span class="footer-nav-link">
-                    / <a :class="{'text-white-50': dashboard}"
-                         href=" route(static.privacy) ">{{ i18n.get("_.menu.privacy") }}</a>
-                </span>
-                <span class="footer-nav-link">
-                    / <a :class="{'text-white-50': dashboard}"
-                         href=" route(static.imprint) ">{{ i18n.get("_.menu.imprint") }}</a>
-                </span>
-                <span class="footer-nav-link">
-                    / <a :class="{'text-white-50': dashboard}" href=" route(blog.all) ">{{
-                        i18n.get("_.menu.blog")
-                    }}</a>
-                </span>
-            </p>
+            <nav class="text-muted mb-0">
+                <a :class="{'text-white': dashboard}" class="footer-link" href="route('static.about')">
+                    {{ i18n.get("_.menu.about") }}
+                </a>
+                <router-link v-if="$auth.check()" :class="{'text-white': dashboard}" :to="{name: 'dashboard.global'}"
+                             class="footer-link">
+                    {{ i18n.get("_.menu.globaldashboard") }}
+                </router-link>
+                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(events) ">
+                    {{ i18n.get("_.events") }}
+                </a>
+                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.privacy) ">
+                    {{ i18n.get("_.menu.privacy") }}
+                </a>
+                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.imprint) ">
+                    {{ i18n.get("_.menu.imprint") }}
+                </a>
+                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(blog.all) ">
+                    {{ i18n.get("_.menu.blog") }}
+                </a>
+            </nav>
             <p v-if="!dashboard" class="mb-0" v-html="i18n.get('_.menu.developed')"></p>
             <p class="mb-0">&copy; {{ moment().format('Y') }} Tr&auml;welling</p>
             <p v-if="!dashboard" class="mb-0 text-muted small">commit:
@@ -88,5 +84,11 @@ export default {
 </script>
 
 <style scoped>
+.footer-link {
+    text-decoration: none;
+}
 
+.footer-link:hover {
+    text-decoration: underline;
+}
 </style>

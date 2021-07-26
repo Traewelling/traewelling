@@ -4,59 +4,57 @@
         <div class="videoContainer">
             <div class="overlay"></div>
             <video autoplay class="fullscreen-bg__video" loop muted>
-                <source src="img/vid1.mp4" type="video/mp4">
+                <source src="img/vid2.mp4" type="video/mp4">
             </video>
         </div>
-        <div class="d-flex w-100 h-100 p-3 mx-auto flex-column align-items-center position-fixed text-white">
-            <main class="d-flex mx-auto mt-auto align-items-center p-4 p-md-0">
+        <div class="d-flex w-100 h-100 mx-auto flex-column position-absolute text-white">
+            <main class="d-flex mx-auto mt-auto p-4 p-md-0 p-sm-0">
                 <div class="container">
-                    <div class="row justify-content-between">
+                    <div class="row justify-content-between align-items-center">
                         <div class="col-md-6 mb-3">
-                            <div class="mb-3 justify-content-center">
+                            <div class="mb-3 align-items-center">
                                 <img alt="logo" class="logo" src="/images/icons/logo.svg">
                                 <span class="h1">#Träwelling</span>
                             </div>
                             <p>{{ i18n.get("_.about.block1") }}</p>
-                            <a class="btn btn-white" href="#!">Get an account</a>
+                            <a class="btn btn-white" href="#!">{{ i18n.get("_.menu.about") }}</a>
                         </div>
-                        <div class="col-md-4 form-secion">
-                            <h2 class="mb-4">{{ i18n.get("_.user.login") }}</h2>
-                            <form action="#!">
+                        <div class="col-md-4 card text-dark">
+                            <form action="#!" class="card-body">
+                                <h2 class="card-title">{{ i18n.get("_.user.login") }}</h2>
                                 <div class="d-flex flex-row align-items-center justify-content-center">
                                     <!--                                        <p class="lead fw-normal mb-0 me-3">Sign in with</p>-->
                                     <button aria-label="Twitter" class="btn btn-primary btn-floating mx-1"
                                             type="button"> <!--ToDo i18n?-->
                                         <i aria-hidden="true" class="fab fa-twitter"></i>
                                     </button>
-
                                     <button aria-label="Apple" class="btn btn-primary btn-floating mx-1"
                                             type="button"> <!--ToDo i18n?-->
                                         <i aria-hidden="true" class="fab fa-apple"></i>
                                     </button>
-
                                     <button aria-label="Mastodon" class="btn btn-primary btn-floating mx-1"
                                             type="button"> <!--ToDo i18n?-->
                                         <i aria-hidden="true" class="fab fa-mastodon"></i>
                                     </button>
                                 </div>
-                                <div class="divider d-flex align-items-center my-4">
+                                <div class="divider d-flex align-items-center mb-4 mt-2">
                                     <p class="text-center fw-bold mx-3 mb-0">Or</p><!--ToDo i18n-->
                                 </div>
                                 <div class="form-outline mb-4">
-                                    <input id="mail" class="form-control text-white" type="text"/>
-                                    <label class="form-label text-white" for="mail">{{
+                                    <input id="mail" class="form-control text-dark" type="text"/>
+                                    <label class="form-label text-dark" for="mail">{{
                                             i18n.get("_.user.email")
                                         }}</label>
                                 </div>
                                 <div class="form-outline mb-4">
-                                    <input id="password" class="form-control text-white" type="password"/>
-                                    <label class="form-label text-white"
+                                    <input id="password" class="form-control text-dark" type="password"/>
+                                    <label class="form-label text-dark"
                                            for="password">{{ i18n.get("_.user.password") }}</label>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <input id="login" class="btn btn-white" name="login" type="button"
                                            value="Login">
-                                    <a class="text-white"
+                                    <a class="text-dark"
                                        href="#">{{ i18n.get("_.user.forgot-password") }}</a>
                                 </div>
                             </form>
@@ -113,6 +111,12 @@ html, body {
     min-height: 100%;
     position: relative;
     z-index: 1;
+    background-image: url("https://images.pexels.com/photos/5387999/pexels-photo-5387999.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+    filter: grayscale(100%); /* Standard CSS */
+    -webkit-filter: grayscale(100%); /* CSS for Webkit Browsers */
+    filter: url(/elements/grayscale.svg#desaturate); /* Firefox 4-34 */
+    filter: gray; /* Internet Explorer IE6-9 */
+    -webkit-filter: grayscale(1); /* Old WebKit Browsers */
 }
 
 .videoContainer .overlay {
@@ -122,7 +126,7 @@ html, body {
     top: 0;
     left: 0;
     z-index: 2;
-    background-image: linear-gradient(#d4353e, #a20b12);
+    background-color: #a20b11;
     opacity: 0.8;
 }
 
