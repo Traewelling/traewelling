@@ -4,8 +4,8 @@
 
 import Vue from "vue";
 import VueRouter from "vue-router";
-import {router} from "../routes";
-import App from "../views/App";
+import {router} from "./routes";
+import App from "../components/App";
 import moment from "moment";
 import Lang from "lang.js";
 import {i18nStrings} from "./translations";
@@ -58,7 +58,8 @@ Vue.use(auth, {
     },
     options: {
         rolesKey: "type",
-        notFoundRedirect: {name: "statuses.active"},
+        notFoundRedirect: {name: "dashboard"},
+        forbiddenRedirect: {name: "dashboard"}
     },
     tokenDefaultName: "laravel-vue-spa",
     tokenStore: ["localStorage"],
