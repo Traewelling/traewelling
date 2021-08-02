@@ -6,6 +6,7 @@ use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\TwitterController;
@@ -502,9 +503,6 @@ class TransportController extends Controller
         if (config('trwl.post_social') !== true) {
             return;
         }
-        if ($status->user->socialProfile->twitter_id === null) {
-            return;
-        }
 
         try {
             $connection = TwitterController::getApi($status->user);
@@ -526,6 +524,8 @@ class TransportController extends Controller
             if ($connection->getLastHttpCode() != 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
+        } catch (NotConnectedException) {
+            return;
         } catch (Exception $exception) {
             Log::error($exception);
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.

@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Backend\TwitterController;
+use App\Exceptions\NotConnectedException;
+use App\Http\Controllers\Backend\Social\TwitterController;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -142,20 +143,17 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getTwitterUrlAttribute(): ?string {
-        $twitterUrl = null;
-        if ($this->socialProfile != null
-            && !empty($this->socialProfile->twitter_token)
-            && !empty($this->socialProfile->twitter_tokenSecret)) {
-            try {
-                $connection = TwitterController::getApi($this);
-                $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
-                $twitterUrl = "https://twitter.com/" . $getInfo->screen_name;
-            } catch (Exception $exception) {
-                // The big whale time or $user has removed the api rights but has not told us yet.
-                Log::warning($exception);
-            }
+        try {
+            $connection = TwitterController::getApi($this);
+            $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
+            return "https://twitter.com/" . $getInfo->screen_name;
+        } catch (NotConnectedException) {
+            return null;
+        } catch (Exception $exception) {
+            // The big whale time or $user has removed the api rights but has not told us yet.
+            Log::warning($exception);
+            return null;
         }
-        return $twitterUrl;
     }
 
     public function getMastodonUrlAttribute(): ?string {
