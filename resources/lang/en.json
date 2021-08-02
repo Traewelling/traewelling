@@ -50,7 +50,8 @@
     "user.reset-pw-link": "Send Password Reset Link",
     "user.username": "Username",
     "user.you": "You",
-    "user.home-set": "We set your home to :Station.",
+    "user.home-set": "We set your home station to :Station.",
+    "user.home-not-set": "You haven't set a home station yet.",
     "user.always-dbl": "Tweet with #dbl?",
     "user.private-profile": "Private profile",
     "user.liked-status": "likes this status.",
@@ -202,6 +203,7 @@
     "menu.settings.follower-requests": "Follower requests",
     "menu.admin": "Admin-Panel",
     "menu.readmore": "Read more",
+    "menu.loading": "Loading",
     "messages.cookie-notice": "We use cookies for our login-system.",
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Learn more",
@@ -215,6 +217,8 @@
     "modals.editStatus-title": "Edit status",
     "modals.deleteEvent-title": "Delete event",
     "modals.deleteEvent-body": "Are you sure, that you want to delete the event <em>:name</em>? Check-ins en route will be updated to <code>NULL</code>.",
+    "modals.setHome-title": "Set home station",
+    "modals.setHome-body": "Do you want to set <em>:stationName</em> as your home station?",
     "notifications.empty": "You have not received any notifications yet.",
     "notifications.title": "Notifications",
     "notifications.mark-all-read": "Mark all as read",
@@ -428,5 +432,7 @@
     "events.live-and-upcoming": "Current and future events",
     "events.notice": "Your submission will only be published once it has been approved by the Träwelling team.",
     "menu.show-more": "Show more",
-    "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation."
+    "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation.",
+    "date-format": "YYYY-MM-DD",
+    "transport_types.regionalExp": "Regional Express"
 }

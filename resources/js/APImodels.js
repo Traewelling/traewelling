@@ -22,7 +22,9 @@ export let EventModel = {
 };
 
 export let Stopover = {
+    id: 0,
     name: "",
+    rilIdentifier: null,
     trainStationId: 0,
     arrival: "",
     arrivalPlanned: "",
@@ -45,6 +47,7 @@ export let StatusModel = {
     type: "",
     createdAt: "",
     user: 0,
+    preventIndex: true,
     username: "",
     business: 0,
     visibility: 0,
@@ -81,6 +84,7 @@ export let ProfileModel = {
     mastodonUrl: null,
     privateProfile: false,
     userInvisibleToMe: true,
+    preventIndex: true,
 };
 
 export let LeaderboardUserModel = {

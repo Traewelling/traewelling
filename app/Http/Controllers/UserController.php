@@ -170,6 +170,9 @@ class UserController extends Controller
                     })->orderByDesc('created_at')->paginate(15);
     }
 
+    /**
+     * @todo remove twitterUrl after implemented ID-Link in vue Template
+     */
     public static function getProfilePage($username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
