@@ -3,6 +3,7 @@
     <div class="card">
       <div class="card-header">{{ i18n.get('_.stationboard.where-are-you') }}</div>
       <div class="card-body">
+        <!-- ToDo: Add this to a notification bubble-thingy -->
         <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
           {{ i18n.get('_.stationboard.position-unavailable') }}
           <button aria-label="Close" class="close" data-dismiss="alert" type="button">
@@ -15,10 +16,6 @@
               <input id="station-autocomplete" v-model="station"
                      :placeholder="`${i18n.get('_.stationboard.station-placeholder')} / DS100`" class="form-control"
                      type="text"/>
-              <!--                         @isset(request()->station) value="{{request()->station}}" @endisset-->
-
-
-              <!--                  @if($latest->count() > 0 || Auth::user()->home)-->
               <div :title="i18n.get('_.stationboard.last-stations')"
                    class="btn btn-outline-grey stationSearchButton"
                    data-mdb-target="#last-stations"
@@ -26,37 +23,34 @@
               >
                 <i class="fa fa-history"></i>
               </div>
-              <!--                  @endif-->
-
               <div :title="i18n.get('_.stationboard.search-by-location')"
                    class="btn btn-outline-grey stationSearchButton" @click="getGeoLocation">
                 <i class="fa fa-map-marker-alt"></i>
               </div>
             </div>
           </div>
-          <div id="last-stations" class="list-group collapse">
-            <!--                @if(Auth::user()->home)-->
-            <a class="list-group-item list-group-item-action"
-               href="route('trains.stationboard', ['provider' => 'train', 'station' => Auth::user()->home->name ])">
-              <!--                   title="{{ Auth::user()->home->name }}" id="home-button"-->
-              <i class="fa fa-home mr-2"></i> Auth::user()->home->name
-            </a>
-            <!--                @endif-->
-
-            <!--                @if($latest->count())-->
-            <span
-                class="list-group-item title list-group-item-action disabled">{{
-                i18n.get('_.stationboard.last-stations')
-              }}</span>
-            <!--                @endif-->
-            <!--                @foreach($latest as $station)-->
-            <!--                <a href="route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ])"-->
-            <!--                   title="{{ $station->name }}" id="home-button"-->
-            <!--                   class="list-group-item list-group-item-action">-->
-            <!--                  {{ $station->name }}-->
-            <!--                </a>-->
-            <!--                @endforeach-->
-          </div>
+            <div id="last-stations" class="list-group collapse">
+                <router-link v-if="$auth.user().home"
+                             :to="{name: 'trains.stationboard', query: {station: $auth.user().home.name }}"
+                             class="list-group-item list-group-item-action">
+                    <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ $auth.user().home.name }}
+                </router-link>
+                <span v-else class="list-group-item title list-group-item-action disabled">
+              <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ i18n.get("_.user.home-not-set") }}
+            </span>
+                <!--                @if($latest->count())-->
+                <span class="list-group-item title list-group-item-action disabled">
+              {{ i18n.get("_.stationboard.last-stations") }}
+            </span>
+                <!--                @foreach($latest as $station)-->
+                <!--                <a href="route('trains.stationboard', ['provider' => 'train', 'station' => $station->name ])"-->
+                <!--                   title="{{ $station->name }}" id="home-button"-->
+                <!--                   class="list-group-item list-group-item-action">-->
+                <!--                  {{ $station->name }}-->
+                <!--                </a>-->
+                <!--                @endforeach-->
+                <!--                @endif-->
+            </div>
           <button class="btn btn-outline-primary float-end" type="submit" v-on:click.prevent="submitStation('')">
             {{ i18n.get('_.stationboard.submit-search') }}
           </button>

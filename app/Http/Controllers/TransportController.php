@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\TwitterController;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -26,6 +25,7 @@ use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -53,6 +53,7 @@ class TransportController extends Controller
      * @param string|null $travelType
      * @return array
      * @throws HafasException
+     * @api v1
      */
     #[ArrayShape([
         'station'    => "\App\Models\TrainStation|mixed|null",
@@ -90,6 +91,14 @@ class TransportController extends Controller
         return ['station' => $station, 'departures' => $departures, 'times' => $times];
     }
 
+    /**
+     * @param $departure
+     * @param $lineName
+     * @param $number
+     * @param $when
+     * @return mixed|null
+     * @deprecated with vue, replaced by frontend logic
+     */
     public static function FastTripAccess($departure, $lineName, $number, $when) {
         $departuresArray = self::getTrainDepartures($departure, $when);
         foreach ($departuresArray as $departure) {
@@ -100,6 +109,14 @@ class TransportController extends Controller
         return null;
     }
 
+    /**
+     * @param $ibnr
+     * @param string $when
+     * @param null $trainType
+     * @return array
+     * @throws GuzzleException
+     * @deprecated replaced by getDepartures()
+     */
     private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
         $trainTypes = [
@@ -202,45 +219,6 @@ class TransportController extends Controller
         return new HafasTripResource($hafasTrip);
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
-        $now = time();
-
-        $factor = 1;
-        if (in_array($category, HafasTravelType::getList())) {
-            $factor = config('trwl.base_points.train.' . $category, 1);
-        }
-
-        $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
-        $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
-        $points        = $factor + ceil($distance / 10);
-
-        /**
-         * Full points, 20min before the departure time or during the ride
-         *   D-20         D                      A
-         *    |           |                      |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if (($departureTime - 20 * 60) < $now && $now < $arrivalTime) {
-            return $points;
-        }
-
-        /**
-         * Reduced points, one hour before departure and after arrival
-         *
-         *   D-60         D          A          A+60
-         *    |           |          |           |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if (($departureTime - 60 * 60) < $now && $now < ($arrivalTime + 60 * 60)) {
-            return ceil($points * 0.25);
-        }
-
-        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
-        return 1;
-    }
-
     /**
      * @param $tripId
      * @param $start
@@ -258,7 +236,7 @@ class TransportController extends Controller
      * @throws CheckInCollisionException
      * @throws HafasException
      * @throws StationNotOnTripException
-     * @deprecated
+     * @deprecated replaced by createTrainCheckin()
      */
     #[ArrayShape([
         'success'              => "bool",
@@ -413,6 +391,147 @@ class TransportController extends Controller
         ];
     }
 
+    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
+        $now = time();
+
+        $factor = 1;
+        if (in_array($category, HafasTravelType::getList())) {
+            $factor = config('trwl.base_points.train.' . $category, 1);
+        }
+
+        $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
+        $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
+        $points        = $factor + ceil($distance / 10);
+
+        /**
+         * Full points, 20min before the departure time or during the ride
+         *   D-20         D                      A
+         *    |           |                      |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        if (($departureTime - 20 * 60) < $now && $now < $arrivalTime) {
+            return $points;
+        }
+
+        /**
+         * Reduced points, one hour before departure and after arrival
+         *
+         *   D-60         D          A          A+60
+         *    |           |          |           |
+         * -----------------------------------------> t
+         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+         */
+        if (($departureTime - 60 * 60) < $now && $now < ($arrivalTime + 60 * 60)) {
+            return ceil($points * 0.25);
+        }
+
+        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
+        return 1;
+    }
+
+    /**
+     * Check if there are colliding CheckIns
+     * @param User $user
+     * @param Carbon $start
+     * @param Carbon $end
+     * @return Collection
+     * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
+     */
+    private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
+        //increase the tolerance for start and end of collisions
+        $start = $start->clone()->addMinutes(2);
+        $end   = $end->clone()->subMinutes(2);
+
+        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
+                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                       ->where('statuses.user_id', $user->id)
+                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
+                                       ->get();
+
+        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
+            //use realtime-data or use planned if not available
+            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
+            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
+
+            return (
+                       $arrival->isAfter($start) &&
+                       $departure->isBefore($end)
+                   ) || (
+                       $arrival->isAfter($end) &&
+                       $departure->isBefore($start)
+                   ) || (
+                       $departure->isAfter($start) &&
+                       $arrival->isBefore($start)
+                   );
+        });
+    }
+
+    /**
+     * @param Status $status
+     */
+    public static function postMastodon(Status $status): void {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->mastodon_server === null) {
+            return;
+        }
+
+        try {
+            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
+            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
+            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+        } catch (RequestException $e) {
+            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    /**
+     * @param Status $status
+     */
+    public static function postTwitter(Status $status): void {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->twitter_id === null) {
+            return;
+        }
+
+        try {
+            $connection = new TwitterOAuth(
+                config('trwl.twitter_id'),
+                config('trwl.twitter_secret'),
+                $status->user->socialProfile->twitter_token,
+                $status->user->socialProfile->twitter_tokenSecret
+            );
+            #dbl only works on Twitter.
+            $socialText = $status->socialText;
+            if ($status->user->always_dbl) {
+                $socialText .= "#dbl ";
+            }
+            $socialText .= ' ' . url("/status/{$status->id}");
+            $connection->post(
+                "statuses/update",
+                [
+                    "status" => $socialText,
+                    'lat'    => $status->trainCheckin->Origin->latitude,
+                    'lon'    => $status->trainCheckin->Origin->longitude
+                ]
+            );
+
+            if ($connection->getLastHttpCode() != 200) {
+                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
+            }
+        } catch (Exception $exception) {
+            Log::error($exception);
+            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+            // However, we still want to continue if it explodes, thus why not catch exceptions here.
+        }
+    }
 
     /**
      * @throws StationNotOnTripException
@@ -497,66 +616,6 @@ class TransportController extends Controller
     }
 
     /**
-     * @param Status $status
-     */
-    public static function postTwitter(Status $status): void {
-        if (config('trwl.post_social') !== true) {
-            return;
-        }
-
-        try {
-            $connection = TwitterController::getApi($status->user);
-            #dbl only works on Twitter.
-            $socialText = $status->socialText;
-            if ($status->user->always_dbl) {
-                $socialText .= "#dbl ";
-            }
-            $socialText .= ' ' . url("/status/{$status->id}");
-            $connection->post(
-                "statuses/update",
-                [
-                    "status" => $socialText,
-                    'lat'    => $status->trainCheckin->Origin->latitude,
-                    'lon'    => $status->trainCheckin->Origin->longitude
-                ]
-            );
-
-            if ($connection->getLastHttpCode() != 200) {
-                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
-            }
-        } catch (NotConnectedException) {
-            return;
-        } catch (Exception $exception) {
-            Log::error($exception);
-            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
-            // However, we still want to continue if it explodes, thus why not catch exceptions here.
-        }
-    }
-
-    /**
-     * @param Status $status
-     */
-    public static function postMastodon(Status $status): void {
-        if (config('trwl.post_social') !== true) {
-            return;
-        }
-        if ($status->user->socialProfile->mastodon_server === null) {
-            return;
-        }
-
-        try {
-            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
-            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
-            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
-            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
-        } catch (RequestException $e) {
-            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-        } catch (Exception $e) {
-            Log::error($e);
-        }
-    }
-
-    /**
      * Get the PolyLine Model from Database
      * @param string $polyline The Polyline as a json string given by hafas
      * @return PolyLine
@@ -595,6 +654,7 @@ class TransportController extends Controller
      * @param int $ibnr
      * @return TrainStation
      * @throws HafasException
+     * @deprecated replaced by setTrainHome()
      */
     public static function setHome(User $user, int $ibnr): TrainStation {
         $trainStation = HafasController::getTrainStation($ibnr);
@@ -607,39 +667,21 @@ class TransportController extends Controller
     }
 
     /**
-     * Check if there are colliding CheckIns
      * @param User $user
-     * @param Carbon $start
-     * @param Carbon $end
-     * @return Collection
-     * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
+     * @param string $stationName
+     * @return TrainStation
+     * @throws HafasException
+     * @api v1
      */
-    private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
-        //increase the tolerance for start and end of collisions
-        $start = $start->clone()->addMinutes(2);
-        $end   = $end->clone()->subMinutes(2);
+    public static function setTrainHome(User $user, string $stationName): TrainStation {
+        $trainStation = HafasController::getStations(query: $stationName)->first();
+        if ($trainStation == null) {
+            throw new ModelNotFoundException;
+        }
 
-        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
-                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
-                                       ->where('statuses.user_id', $user->id)
-                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
-                                       ->get();
-
-        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
-            //use realtime-data or use planned if not available
-            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
-            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
-
-            return (
-                       $arrival->isAfter($start) &&
-                       $departure->isBefore($end)
-                   ) || (
-                       $arrival->isAfter($end) &&
-                       $departure->isBefore($start)
-                   ) || (
-                       $departure->isAfter($start) &&
-                       $arrival->isBefore($start)
-                   );
-        });
+        $user->update([
+                          'home_id' => $trainStation->id
+                      ]);
+        return $trainStation;
     }
 }

@@ -18,9 +18,6 @@
       <option name="SPACE_BEFORE_CLOSURE_LEFT_PARENTHESIS" value="false" />
       <option name="FORCE_SHORT_DECLARATION_ARRAY_STYLE" value="true" />
     </PHPCodeStyleSettings>
-    <editorconfig>
-      <option name="ENABLED" value="false" />
-    </editorconfig>
     <codeStyleSettings language="Markdown">
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
