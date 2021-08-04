@@ -402,13 +402,14 @@
     "stats": "Statistiken",
     "stats.personal": "Persönliche Statistiken vom :fromDate bis :toDate",
     "stats.global": "Globale Statistiken",
-    "stats.companies": "Deine Lieblingsverkehrsunternehmen",
-    "stats.categories": "Deine Lieblingsreisetypen",
+    "stats.companies": "Verkehrsunternehmen",
+    "stats.categories": "Verkehrsmittel deiner Reisen",
     "stats.volume": "Dein Reisevolumen",
     "stats.per-week": "pro Kalenderwoche",
     "stats.trips": "Fahrten",
     "stats.no-data": "Es sind keine Daten in dem Zeitraum vorhanden.",
     "stats.time-in-minutes": "Reisezeit in Minuten",
+    "stats.purpose": "Zwecke deiner Reisen",
     "stats.week-short": "KW",
     "stats.global.distance": "Reisedistanz aller Träweller",
     "stats.global.duration": "Reisedauer aller Träweller",
@@ -432,5 +433,6 @@
     "description.leaderboard.monthly": "Die Top Träweller im :month :year der letzten 7 Tage.",
     "description.en-route": "Übersichtskarte über alle Träweller, welche gerade auf der Welt unterwegs sind.",
     "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage.",
-    "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung."
+    "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung.",
+    "minutes": "Minuten"
 }

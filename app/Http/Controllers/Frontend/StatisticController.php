@@ -22,17 +22,19 @@ class StatisticController extends Controller
 
         $globalStats = StatisticBackend::getGlobalCheckInStats($from, $to);
 
-        $topCategories = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
-        $topOperators  = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
-        $travelTime    = StatisticBackend::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
+        $topCategories  = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
+        $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
+        $travelTime     = StatisticBackend::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
+        $travelPurposes = StatisticBackend::getTravelPurposes(auth()->user(), $from, $to);
 
         return view('stats.stats', [
-            'from'          => $from,
-            'to'            => $to,
-            'globalStats'   => $globalStats,
-            'topCategories' => $topCategories,
-            'topOperators'  => $topOperators,
-            'travelTime'    => $travelTime,
+            'from'           => $from,
+            'to'             => $to,
+            'globalStats'    => $globalStats,
+            'topCategories'  => $topCategories,
+            'topOperators'   => $topOperators,
+            'travelTime'     => $travelTime,
+            'travelPurposes' => $travelPurposes,
         ]);
     }
 }
