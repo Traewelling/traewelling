@@ -1,0 +1,21 @@
+{
+    "name": "Träwelling",
+    "short_name": "Träwelling",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#c72730",
+    "background_color": "#ffffff",
+    "description": "Free check-in service to log your public transit journeys",
+    "icons": [
+        {
+            "src": "images/icons/logo512.png",
+            "sizes": "512x512",
+            "type": "image\/png"
+        },
+        {
+            "src": "images/icons/logo128.png",
+            "sizes": "128x128",
+            "type": "image\/png"
+        }
+    ]
+}
