@@ -29,7 +29,7 @@
                         </div>
                     @endif
 
-                    @if($user->privacy_ack_at == null || $agreement->valid_at->isAfter($user->privacy_ack_at))
+                    @if($agreement->valid_at->isAfter($user->privacy_ack_at))
                         <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
                               style="background-color: hsl(216, 25%, 95.1%);">
                             @csrf
