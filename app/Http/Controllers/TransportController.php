@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -338,6 +338,7 @@ class TransportController extends Controller
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
+                                                 'user_id'     => $user->id,
                                                  'trip_id'     => $tripId,
                                                  'origin'      => $originStation->ibnr,
                                                  'destination' => $destinationStation->ibnr,
@@ -502,12 +503,7 @@ class TransportController extends Controller
         }
 
         try {
-            $connection = new TwitterOAuth(
-                config('trwl.twitter_id'),
-                config('trwl.twitter_secret'),
-                $status->user->socialProfile->twitter_token,
-                $status->user->socialProfile->twitter_tokenSecret
-            );
+            $connection = TwitterController::getApi($status->user);
             #dbl only works on Twitter.
             $socialText = $status->socialText;
             if ($status->user->always_dbl) {
@@ -589,6 +585,7 @@ class TransportController extends Controller
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
+                                                 'user_id'     => auth()->user()->id,
                                                  'trip_id'     => $trip->trip_id,
                                                  'origin'      => $firstStop->trainStation->ibnr,
                                                  'destination' => $lastStop->trainStation->ibnr,

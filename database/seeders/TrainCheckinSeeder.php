@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\User;
@@ -16,7 +18,7 @@ class TrainCheckinSeeder extends Seeder
      *
      * @return void
      */
-    public function run() {
+    public function run(): void {
         foreach (User::all() as $user) {
             $trip = HafasTrip::all()->random();
             try {
@@ -32,7 +34,7 @@ class TrainCheckinSeeder extends Seeder
                     StatusVisibility::PUBLIC,
                     rand(0, 1)
                 );
-            } catch (CheckInCollisionException $e) {
+            } catch (CheckInCollisionException | HafasException | StationNotOnTripException) {
                 continue;
             }
         }

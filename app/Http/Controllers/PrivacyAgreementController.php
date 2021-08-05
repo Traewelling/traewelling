@@ -23,9 +23,7 @@ class PrivacyAgreementController extends Controller
     }
 
     public function ack(Request $request): RedirectResponse|JsonResponse {
-        $user                 = Auth::user();
-        $user->privacy_ack_at = now();
-        $user->save();
+        auth()->user()->update(['privacy_ack_at' => Carbon::now()->toIso8601String()]);
 
         if ($request->is('api*')) {
             return response()->json(['message' => 'privacy agreement successfully accepted'], 202);

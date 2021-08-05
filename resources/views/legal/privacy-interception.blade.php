@@ -21,7 +21,7 @@
                                 {!! __('privacy.not-signed-yet') !!}
                             </p>
                         </div>
-                    @elseif($user->privacy_ack_at < $agreement->valid_at)
+                    @elseif($user->privacy_ack_at->isBefore($agreement->valid_at))
                         <div class="card mb-3">
                             <p class="card-body mb-0">
                                 {!! __('privacy.we-changed') !!}
@@ -29,7 +29,7 @@
                         </div>
                     @endif
 
-                    @if($user->privacy_ack_at < $agreement->valid_at || $user->privacy_ack_at == null)
+                    @if($agreement->valid_at->isAfter($user->privacy_ack_at))
                         <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
                               style="background-color: hsl(216, 25%, 95.1%);">
                             @csrf
