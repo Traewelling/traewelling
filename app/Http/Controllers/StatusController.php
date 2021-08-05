@@ -126,9 +126,9 @@ class StatusController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('user_id', $followingIDs)
+                     ->whereIn('statuses.user_id', $followingIDs)
                      ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
-                     ->orWhere('user_id', $user->id)
+                     ->orWhere('statuses.user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -158,7 +158,7 @@ class StatusController extends Controller
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
                      })
-                     ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
