@@ -47,7 +47,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('trains/trip/', [TransportController::class, 'getTrip']);
         Route::post('trains/checkin', [TransportController::class, 'create']);
         Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
-        Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainstationAutocomplete']);
+        Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {

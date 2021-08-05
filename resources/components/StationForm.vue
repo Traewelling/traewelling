@@ -191,7 +191,7 @@ export default {
                     }
                     try {
                         const source = await axios.get(`/trains/station/autocomplete/${query}`);
-                        return await source.data;
+                        return await source.data.data;
                     } catch (error) {
                         console.error(error);
                     }
