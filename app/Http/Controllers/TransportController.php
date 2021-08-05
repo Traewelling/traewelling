@@ -385,7 +385,7 @@ class TransportController extends Controller
             'points'               => $trainCheckin->points,
             'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
             'lineName'             => $hafasTrip->linename,
-            'distance'             => $trainCheckin->distance,
+            'distance'             => $trainCheckin->distance / 1000,
             'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];

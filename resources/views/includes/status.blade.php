@@ -46,7 +46,7 @@
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
-                            {{number($status->trainCheckin->distance, 0)}}<small>km</small>
+                            {{number($status->trainCheckin->distance / 1000, 0)}}<small>km</small>
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;
