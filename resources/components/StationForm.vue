@@ -1,7 +1,14 @@
 <template>
     <div>
         <div class="card">
-            <div class="card-header">{{ i18n.get('_.stationboard.where-are-you') }}</div>
+            <div class="card-header">{{ i18n.get('_.stationboard.where-are-you') }}
+                <span class="float-end">
+                    <a :title="i18n.get('_.stationboard.search-by-location')" class="text-trwl" href="#"
+                       @click.prevent="getGeoLocation">
+                        <i aria-hidden="true" class="fa fa-map-marker-alt"></i>
+                    </a>
+                </span>
+            </div>
             <div class="card-body">
                 <!-- ToDo: Add this to a notification bubble-thingy -->
                 <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
@@ -12,31 +19,23 @@
                 </div>
                 <form v-on:submit.prevent="submitStation">
                     <div id="station-autocomplete-container">
-                        <div class="input-group mb-2 mr-sm-2">
-                            <input id="autoComplete" v-model="station"
-                                   class="form-control"
-                                   type="text"/>
-                            <div :title="i18n.get('_.stationboard.last-stations')"
-                                 class="btn btn-outline-grey stationSearchButton"
-                                 data-mdb-target="#last-stations"
-                                 data-mdb-toggle="collapse"
-                            >
-                                <i class="fa fa-history"></i>
-                            </div>
-                            <div :title="i18n.get('_.stationboard.search-by-location')"
-                                 class="btn btn-outline-grey stationSearchButton" @click="getGeoLocation">
-                                <i class="fa fa-map-marker-alt"></i>
-                            </div>
-                        </div>
+                        <input id="autoComplete" v-model="station"
+                               class="form-control w-100 mb-3"
+                               type="text"/>
+                        <!--                        <div class="input-group mb-2 mr-sm-2 w-100">-->
+
+                        <!--                            <div :title="i18n.get('_.stationboard.last-stations')"-->
+                        <!--                                 class="btn btn-outline-grey stationSearchButton"-->
+                        <!--                                 data-mdb-target="#last-stations"-->
+                        <!--                                 data-mdb-toggle="collapse"-->
+                        <!--                            >-->
+                        <!--                                <i class="fa fa-history"></i>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
                     </div>
                     <div id="last-stations" class="list-group collapse">
-                        <router-link v-if="$auth.user().home"
-                                     :to="{name: 'trains.stationboard', query: {station: $auth.user().home.name }}"
-                                     class="list-group-item list-group-item-action">
-                            <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ $auth.user().home.name }}
-                        </router-link>
-                        <span v-else class="list-group-item title list-group-item-action disabled">
-              <i aria-hidden="true" class="fa fa-home mr-2"></i> {{ i18n.get("_.user.home-not-set") }}
+                        <span class="list-group-item title list-group-item-action disabled">
+              <i aria-hidden="true" class="fa fa-home mr-2"></i>
             </span>
                         <!--                @if($latest->count())-->
                         <span class="list-group-item title list-group-item-action disabled">
@@ -51,10 +50,20 @@
                         <!--                @endforeach-->
                         <!--                @endif-->
                     </div>
-                    <button class="btn btn-outline-primary float-end" type="submit"
-                            v-on:click.prevent="submitStation('')">
-                        {{ i18n.get('_.stationboard.submit-search') }}
-                    </button>
+                    <div class="btn-group float-end">
+                        <router-link v-if="$auth.user().home"
+                                     :to="{name: 'trains.stationboard', query: {station: $auth.user().home.name }}"
+                                     class="btn btn-outline-primary">
+                            <i aria-hidden="true" class="fa fa-home mr-2"></i>
+                        </router-link>
+                        <!--                        <button v-else class="btn btn-outline-primary" @click="{{ i18n.get("_.user.home-not-set") }}">-->
+                        <!--                            <i aria-hidden="true" class="fa fa-home mr-2"></i>-->
+                        <!--                        </button>-->
+                        <button class="btn btn-outline-primary float-end" type="submit"
+                                v-on:click.prevent="submitStation('')">
+                            {{ i18n.get('_.stationboard.submit-search') }}
+                        </button>
+                    </div>
                     <button aria-expanded="false" class="btn btn-outline-secondary" data-mdb-target="#collapseFilter"
                             data-mdb-toggle="collapse" type="button">
                         {{ i18n.get('_.stationboard.filter-products') }}
