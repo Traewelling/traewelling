@@ -182,8 +182,16 @@ export default {
             selector: "#autoComplete",
             debounce: 300,
             threshold: 2,
-            searchEngine: "strict",
-            placeHolder: this.i18n.get('_.stationboard.station-placeholder') + " / DS100",
+            placeHolder: this.i18n.get('_.stationboard.station-placeholder') + " / DS100", events: {
+                input: {
+                    selection: (event) => {
+                        const selection            = event.detail.selection.value;
+                        autoCompleteJS.input.value = selection.name;
+                        this.station               = selection.name;
+                        this.submitStation('');
+                    }
+                }
+            },
             data: {
                 src: async (query) => {
                     if (query.length < 3) {
@@ -199,6 +207,7 @@ export default {
                 keys: ['name'],
             },
             resultsList: {
+                class: "mt-0",
                 element: (list, data) => {
                     if (!data.results.length) {
                         const message = document.createElement("div");
@@ -207,12 +216,11 @@ export default {
                         list.prepend(message);
                     }
                 },
+                maxResults: 8,
                 noResults: true,
             },
             resultItem: {
-                highlight: {
-                    render: true
-                }
+                highlight: "p-0"
             }
         });
     },
