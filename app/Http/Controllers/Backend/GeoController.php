@@ -12,7 +12,7 @@ abstract class GeoController extends Controller
         HafasTrip $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
-    ): float|int {
+    ): int {
         if ($hafasTrip->polyline == null || $hafasTrip?->polyline?->polyline == null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
@@ -70,7 +70,7 @@ abstract class GeoController extends Controller
         HafasTrip $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
-    ): float {
+    ): int {
         $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
             return $item->id == $origin->id;
@@ -104,7 +104,7 @@ abstract class GeoController extends Controller
         float $longitudeA,
         float $latitudeB,
         float $longitudeB
-    ): float {
+    ): int {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
         }
