@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\Business;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -26,6 +27,17 @@ class StatisticController extends Controller
         $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
         $travelTime     = StatisticBackend::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
         $travelPurposes = StatisticBackend::getTravelPurposes(auth()->user(), $from, $to);
+
+        $travelPurposes = $travelPurposes->map(function($row) {
+            if ($row->reason == Business::PRIVATE) {
+                $row->reason = __('stationboard.business.private');
+            } elseif ($row->reason == Business::BUSINESS) {
+                $row->reason = __('stationboard.business.business');
+            } elseif ($row->reason == Business::COMMUTE) {
+                $row->reason = __('stationboard.business.commute');
+            }
+            return $row;
+        });
 
         return view('stats.stats', [
             'from'           => $from,

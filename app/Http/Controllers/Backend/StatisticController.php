@@ -129,16 +129,6 @@ class StatisticController extends Controller
                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
                           ])
                  ->orderByDesc('duration')
-                 ->get()
-                 ->map(function($row) {
-                     if ($row->reason == Business::PRIVATE) {
-                         $row->reason = __('stationboard.business.private');
-                     } elseif ($row->reason == Business::BUSINESS) {
-                         $row->reason = __('stationboard.business.business');
-                     } elseif ($row->reason == Business::COMMUTE) {
-                         $row->reason = __('stationboard.business.commute');
-                     }
-                     return $row;
-                 });
+                 ->get();
     }
 }
