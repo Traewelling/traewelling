@@ -48,9 +48,9 @@ Route::view('/about', 'about')->name('static.about');
 Route::permanentRedirect('/imprint', '/legal/');
 Route::permanentRedirect('/privacy', '/legal/privacy-policy');
 Route::prefix('legal')->group(function() {
-    Route::view('/notice', 'legal.notice')
+    Route::view('/', 'legal.notice')
          ->name('legal.notice');
-    Route::get('/privacy', [PrivacyAgreementController::class, 'intercept'])
+    Route::get('/privacy-policy', [PrivacyAgreementController::class, 'intercept'])
          ->name('legal.privacy');
 });
 
