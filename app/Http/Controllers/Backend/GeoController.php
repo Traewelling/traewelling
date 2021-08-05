@@ -88,7 +88,7 @@ abstract class GeoController extends Controller
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance    += self::calculateDistanceBetweenCoordinates(
+            $distance     += self::calculateDistanceBetweenCoordinates(
                 latitudeA: $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
                 latitudeB: $stopover->trainStation->latitude,
@@ -103,8 +103,7 @@ abstract class GeoController extends Controller
         float $latitudeA,
         float $longitudeA,
         float $latitudeB,
-        float $longitudeB,
-        int $decimals = 3
+        float $longitudeB
     ): float {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
@@ -120,6 +119,6 @@ abstract class GeoController extends Controller
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
                     * $equatorialRadiusInKilometers;
 
-        return round($distance, $decimals);
+        return round($distance, 3) * 1000;
     }
 }

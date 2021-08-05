@@ -299,7 +299,7 @@ class TransportController extends Controller
         }
 
         $points = self::CalculateTrainPoints(
-            $distance,
+            $distance / 1000,
             $hafasTrip->category,
             $stopovers[$offset1]['departure'],
             $stopovers[$offset2]['arrival'],

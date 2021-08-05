@@ -26,7 +26,6 @@ class DistanceCalculationTest extends TestCase
             longitudeA: 9.741083,
             latitudeB: 48.993962,
             longitudeB: 8.401107,
-            decimals: 0,
         );
         $this->assertEquals(388, $result);
     }
@@ -37,7 +36,6 @@ class DistanceCalculationTest extends TestCase
             longitudeA: 9.741083,
             latitudeB: 52.374497,
             longitudeB: 9.738573,
-            decimals: 2,
         );
         $this->assertEquals(0.29, $result);
     }

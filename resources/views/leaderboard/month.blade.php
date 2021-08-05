@@ -69,7 +69,7 @@
                                     </td>
                                     <td>
                                         <i class="fas fa-route"></i>
-                                        {{number($place->distance, 0)}}km
+                                        {{number($place->distance / 1000, 0)}}km
                                     </td>
                                 </tr>
                             </table>
@@ -112,7 +112,7 @@
                                             </a>
                                         </td>
                                         <td>{{ number( $place->duration, 0) }}<small>min</small></td>
-                                        <td>{{ number( $place->distance, 0) }}<small>km</small></td>
+                                        <td>{{ number( $place->distance / 1000, 0) }}<small>km</small></td>
                                         <td>{{ number( $place->points, 0) }}</td>
                                     </tr>
                                 @endforeach
