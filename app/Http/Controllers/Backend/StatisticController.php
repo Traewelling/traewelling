@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enum\Business;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
@@ -109,5 +110,25 @@ class StatisticController extends Controller
                      $row->date = Carbon::today()->setISODate($row->year, $row->kw);
                      return $row;
                  });
+    }
+
+    public static function getTravelPurposes(User $user, Carbon $since, Carbon $until): Collection {
+        if ($since->isAfter($until)) {
+            throw new InvalidArgumentException('since cannot be after until');
+        }
+
+        return DB::table('train_checkins')
+                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                 ->where('statuses.user_id', '=', $user->id)
+                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                 ->groupBy('statuses.business')
+                 ->select([
+                              DB::raw('statuses.business AS reason'),
+                              DB::raw('COUNT(*) AS count'),
+                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
+                          ])
+                 ->orderByDesc('duration')
+                 ->get();
     }
 }

@@ -18,10 +18,13 @@
                 <hr/>
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        @include('stats.includes.chart_companies')
+                        @include('stats.includes.chart_purpose')
                     </div>
                     <div class="col-md-6 mb-4">
                         @include('stats.includes.chart_categories')
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        @include('stats.includes.chart_companies')
                     </div>
                     <hr/>
                     <div class="col-12 mb-4">

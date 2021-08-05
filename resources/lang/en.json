@@ -384,13 +384,14 @@
     "stats": "Statistics",
     "stats.personal": "Personal statistics from :fromDate to :toDate",
     "stats.global": "Global statistics",
-    "stats.companies": "Your favorite transport companies",
-    "stats.categories": "Your favorite travel types",
+    "stats.companies": "Transport companies",
+    "stats.categories": "Means of transport of your travels",
     "stats.volume": "Your travel volume",
     "stats.per-week": "per week",
     "stats.trips": "Journeys",
     "stats.no-data": "There are no data available in the period.",
     "stats.time-in-minutes": "Travel time in minutes",
+    "stats.purpose": "Purpose of your travels",
     "stats.week-short": "Week",
     "stats.global.distance": "Travel distance of all Träwelling users",
     "stats.global.duration": "Travel time of all Träwelling users",
@@ -434,5 +435,6 @@
     "menu.show-more": "Show more",
     "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation.",
     "date-format": "YYYY-MM-DD",
-    "transport_types.regionalExp": "Regional Express"
+    "transport_types.regionalExp": "Regional Express",
+    "minutes": "minutes"
 }
