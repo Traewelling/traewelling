@@ -161,21 +161,30 @@ export default {
         }
     },
     mounted() {
-        this.station         = this.$route.query.station;
-        const autoCompleteJS = new autoComplete({
+        this.station          = this.$route.query.station;
+        const popularStations = [
+            {name: "Hamburg Hbf"}, {name: "Berlin Hbf"}, {name: "München Hbf"}, {name: "Köln Hbf"}, {name: "Frankfurt(Main)Hbf"}, {name: "Stuttgart Hbf"},
+            {name: "Düsseldorf Hbf"}, {name: "Leipzig Hbf"}, {name: "Dortmund Hbf"}, {name: "Essen Hbf"}, {name: "Bremen Hbf"}, {name: "Dresden Hbf"},
+            {name: "Hannover Hbf"}, {name: "Nürnberg Hbf"}, {name: "Duisburg Hbf"}, {name: "Bochum Hbf"}, {name: "Wuppertal Hbf"}, {name: "Bielefeld Hbf"},
+            {name: "Bonn Hbf"}, {name: "Münster Hbf"}, {name: "Karlsruhe Hbf"}, {name: "Mannheim Hbf"}, {name: "Augsburg Hbf"}, {name: "Wiesbaden Hbf"},
+            {name: "Mönchengladbach Hbf"}
+        ];
+        const autoCompleteJS  = new autoComplete({
             selector: "#autoComplete",
+            debounce: 300,
+            threshold: 2,
+            searchEngine: "strict",
             placeHolder: this.i18n.get('_.stationboard.station-placeholder') + " / DS100",
             data: {
                 src: async (query) => {
+                    if (query.length < 3) {
+                        return popularStations;
+                    }
                     try {
-                        // Fetch Data from external Source
                         const source = await axios.get(`/trains/station/autocomplete/${query}`);
-                        // Data is array of `Objects` | `Strings`
-                        const data   = await source.data;
-
-                        return data;
+                        return await source.data;
                     } catch (error) {
-                        return error;
+                        console.error(error);
                     }
                 },
                 keys: ['name'],
@@ -185,9 +194,7 @@ export default {
                     if (!data.results.length) {
                         const message = document.createElement("div");
                         message.setAttribute("class", "no_result");
-                        // Add message text content
-                        message.innerHTML = `<span>Found No Results for "${data.query}"</span>`; //ToDo translate
-                        // Append message element to the results list
+                        message.innerHTML = `<span>${this.i18n.get("_.controller.transport.no-station-found")}</span>`;
                         list.prepend(message);
                     }
                 },
