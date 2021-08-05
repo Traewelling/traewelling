@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +12,7 @@ class TrainCheckin extends Model
 {
     protected $fillable = [
         'status_id', 'trip_id', 'origin', 'destination',
-        'distance', 'delay', 'points', 'departure', 'arrival'
+        'distance', 'points', 'departure', 'arrival'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
@@ -41,12 +40,12 @@ class TrainCheckin extends Model
                                                   ->first();
         if ($stopOver == null) {
             $stopOver = TrainStopover::updateOrCreate([
-                                                  "trip_id"          => $this->trip_id,
-                                                  "train_station_id" => $this->Origin->id
-                                              ], [
-                                                  "departure_planned" => $this->departure,
-                                                  "arrival_planned"   => $this->departure,
-                                              ]);
+                                                          "trip_id"          => $this->trip_id,
+                                                          "train_station_id" => $this->Origin->id
+                                                      ], [
+                                                          "departure_planned" => $this->departure,
+                                                          "arrival_planned"   => $this->departure,
+                                                      ]);
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;

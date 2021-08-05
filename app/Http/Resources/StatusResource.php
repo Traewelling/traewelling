@@ -33,7 +33,6 @@ class StatusResource extends JsonResource
                 "lineName"    => (string) $this->trainCheckin->HafasTrip->linename,
                 "distance"    => (float) $this->trainCheckin->distance,
                 "points"      => (int) $this->trainCheckin->points,
-                "delay"       => (float) $this->trainCheckin->delay,
                 "duration"    => (int) $this->trainCheckin->duration,
                 "speed"       => (float) $this->trainCheckin->speed,
                 "origin"      => new StopoverResource($this->trainCheckin->origin_stopover),
