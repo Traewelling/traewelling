@@ -1,6 +1,6 @@
 User-agent: *
-Disallow: /legal/notice
-Disallow: /legal/privacy
+Disallow: /legal/
+Disallow: /legal/privacy-policy
 
 User-agent: ia_archiver
 Disallow: /

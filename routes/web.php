@@ -45,8 +45,8 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
 
 Route::view('/about', 'about')->name('static.about');
 
-Route::permanentRedirect('/imprint', '/legal/notice');
-Route::permanentRedirect('/privacy', '/legal/privacy');
+Route::permanentRedirect('/imprint', '/legal/');
+Route::permanentRedirect('/privacy', '/legal/privacy-policy');
 Route::prefix('legal')->group(function() {
     Route::view('/notice', 'legal.notice')
          ->name('legal.notice');

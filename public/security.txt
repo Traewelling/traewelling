@@ -4,6 +4,6 @@ Encryption: https://herrlev.in/pgp_key.asc
 Contact: mailto:jannik@outlook.com
 Encryption: https://blog.iamjannik.me/2017/pgp/
 
-Contact: https://traewelling.de/legal/notice
+Contact: https://traewelling.de/legal/
 Preferred-Languages: de, en
 Canonical: https://traewelling.de/security.txt

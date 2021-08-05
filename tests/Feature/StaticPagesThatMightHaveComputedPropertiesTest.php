@@ -38,12 +38,12 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
     }
 
     public function testLegalNoticeGet() {
-        $response = $this->get('/legal/notice');
+        $response = $this->get('/legal/');
         $response->assertOk();
     }
 
     public function testPrivacyGet() {
-        $response = $this->get('/legal/privacy');
+        $response = $this->get('/legal/privacy-policy');
         $response->assertOk();
     }
 
