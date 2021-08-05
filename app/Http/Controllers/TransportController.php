@@ -59,7 +59,7 @@ class TransportController extends Controller
      * @throws HafasException
      * @api v1
      */
-    public static function getTrainStationAutocomplete($query): Collection {
+    public static function getTrainStationAutocomplete(string $query): Collection {
         return HafasController::getStations($query)->map(function($station) {
             return [
                 'ibnr' => $station->ibnr,

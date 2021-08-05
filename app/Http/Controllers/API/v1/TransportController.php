@@ -192,9 +192,6 @@ class TransportController extends ResponseController
         );
     }
 
-    /**
-     *ToDo: fix this method
-     */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
