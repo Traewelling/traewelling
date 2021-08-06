@@ -16,8 +16,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.purpose') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" :options="chartOptions" :series="series"
-                                           type="pie" width="380"></apexchart>
+                                <apexchart v-if="travelPurpose.length > 0" ref="purpose" :options="testoptions"
+                                           type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -27,8 +27,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.categories') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" :options="chartOptions" :series="series"
-                                           type="pie" width="380"></apexchart>
+                                <apexchart v-if="travelPurpose.length > 0" ref="categories" :options="testoptions"
+                                           type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -38,7 +38,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.companies') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" ref="testpie" :options="testoptions"
+                                <apexchart v-if="travelPurpose.length > 0" ref="companies" :options="testoptions"
                                            :series="series" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
@@ -144,6 +144,23 @@ export default {
                 {name: 'business', value: 5},
                 {name: 'commute', value: 10}
             ],
+            trainProviders: [
+                {name: 'üstra Hannoversche Verkehsbetriebe AG', value: 325},
+                {name: 'DB Regio AG Nord', value: 63},
+                {name: 'metronom', value: 9},
+                {name: 'cantus Verkehrsgesellschaft', value: 7},
+                {name: 'erixx', value: 3},
+                {name: 'DB Regio AG Südost', value: 1},
+                {name: 'RegioTram', value: 1},
+                {name: 'DB Fernverkehr AG', value: 1},
+            ],
+            travelCategories: [
+                {name: 'Fernverkehr', value: 2},
+                {name: 'Regional', value: 47},
+                {name: 'Bus', value: 76},
+                {name: 'S-Bahn', value: 107},
+                {name: 'Tram', value: 532},
+            ],
             series: [44, 55, 13, 43, 22],
             chartOptions: {
                 chart: {
@@ -186,6 +203,7 @@ export default {
                 dataLabels: {
                     enabled: true
                 },
+                legend: false,
                 series: [],
                 noData: {
                     text: this.i18n.get("_.menu.loading")
@@ -198,9 +216,17 @@ export default {
             name: "Sales",
             data: this.travelPurpose
         }]);
-        this.$refs.testpie.updateOptions({
+        this.$refs.purpose.updateOptions({
             labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
             series: this.travelPurpose.map(x => x.value)
+        });
+        this.$refs.companies.updateOptions({
+            labels: this.trainProviders.map((x) => x.name),
+            series: this.trainProviders.map(x => x.value)
+        })
+        this.$refs.categories.updateOptions({
+            labels: this.travelCategories.map((x) => x.name),
+            series: this.travelCategories.map(x => x.value)
         })
     }
 };
