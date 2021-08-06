@@ -38,8 +38,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.companies') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" :options="chartOptions" :series="series"
-                                           type="pie" width="380"></apexchart>
+                                <apexchart v-if="travelPurpose.length > 0" ref="testpie" :options="testoptions"
+                                           :series="series" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -52,8 +52,8 @@
                                 <h5>{{ i18n.get('_.stats.volume') }} <small>{{ i18n.get('_.stats.per-week') }}</small>
                                 </h5>
                                 @if($travelTime->count() > 0)
-                                <apexchart v-if="travelPurpose.length > 0" :options="chartOptions" :series="series"
-                                           type="line" width="380"></apexchart>
+                                <apexchart v-if="travelPurpose.length > 0" ref="testchart"
+                                           :options="ajaxChartsOptions" type="line" width="380"></apexchart>
                                 @else
                                 <p class="text-danger font-weight-bold mt-2">{{ i18n.get('_.stats.no-data') }}</p>
                                 @endif
@@ -140,9 +140,9 @@ export default {
     data() {
         return {
             travelPurpose: [
-                {name: 'Privat', data: [20]},
-                {x: 'Geschäftlich', y: 5},
-                {x: 'commute', y: 10}
+                {name: 'private', value: 20},
+                {name: 'business', value: 5},
+                {name: 'commute', value: 10}
             ],
             series: [44, 55, 13, 43, 22],
             chartOptions: {
@@ -163,9 +163,47 @@ export default {
                     }
                 }]
             },
+            ajaxChartsOptions: {
+                chart: {
+                    height: 350,
+                    type: 'bar',
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                series: [],
+                title: {
+                    text: 'Ajax Example',
+                },
+                noData: {
+                    text: 'Loading...'
+                }
+            },
+            testoptions: {
+                chart: {
+                    type: "pie",
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                series: [],
+                noData: {
+                    text: this.i18n.get("_.menu.loading")
+                }
+            }
         }
+    },
+    mounted() {
+        this.$refs.testchart.updateSeries([{
+            name: "Sales",
+            data: this.travelPurpose
+        }]);
+        this.$refs.testpie.updateOptions({
+            labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
+            series: this.travelPurpose.map(x => x.value)
+        })
     }
-}
+};
 </script>
 
 <style scoped>
