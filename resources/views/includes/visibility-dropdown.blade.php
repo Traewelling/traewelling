@@ -5,29 +5,21 @@
             data-mdb-toggle="dropdown"
             aria-expanded="false"
     >
-        <i class="fa fa-globe-americas" aria-hidden="true"></i>
+        <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock'][auth()->user()?->default_status_visibility ?? 0]}}"
+           aria-hidden="true"></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
-        <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="0">
-            <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ __('status.visibility.0') }}
-            <br/>
-            <span class="text-muted"> {{ __('status.visibility.0.detail') }}</span>
-        </li>
-        <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="1">
-            <i class="fa fa-lock-open" aria-hidden="true"></i> {{ __('status.visibility.1') }}
-            <br/>
-            <span class="text-muted"> {{ __('status.visibility.1.detail') }}</span>
-        </li>
-        <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="2">
-            <i class="fa fa-user-friends" aria-hidden="true"></i> {{ __('status.visibility.2') }}
-            <br/>
-            <span class="text-muted"> {{ __('status.visibility.2.detail') }}</span>
-        </li>
-        <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="3">
-            <i class="fa fa-lock" aria-hidden="true"></i> {{ __('status.visibility.3') }}
-            <br/>
-            <span class="text-muted"> {{ __('status.visibility.3.detail') }}</span>
-        </li>
+        @foreach(\App\Enum\StatusVisibility::getList() as $visibility)
+            @if(auth()->check() && auth()->user()->default_status_visibility <= $visibility)
+                <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="{{$visibility}}">
+                    <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock'][$visibility]}}"
+                       aria-hidden="true"></i> {{ __('status.visibility.' . $visibility) }}
+                    <br/>
+                    <span class="text-muted"> {{ __('status.visibility.' . $visibility . '.detail') }}</span>
+                </li>
+            @endif
+        @endforeach
     </ul>
-    <input type="hidden" id="checkinVisibility" name="checkinVisibility" value="0"/>
+    <input type="hidden" id="checkinVisibility" name="checkinVisibility"
+           value="{{auth()->user()?->default_status_visibility ?? 0}}"/>
 </div>
