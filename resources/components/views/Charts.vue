@@ -16,7 +16,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.purpose') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" ref="purpose" :options="testoptions"
+                                <apexchart v-if="travelPurpose.length > 0" ref="purpose" :options="pieChartOptions"
                                            type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
@@ -27,7 +27,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.categories') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" ref="categories" :options="testoptions"
+                                <apexchart v-if="travelPurpose.length > 0" ref="categories" :options="pieChartOptions"
                                            type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
@@ -38,7 +38,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.companies') }}</h5>
-                                <apexchart v-if="travelPurpose.length > 0" ref="companies" :options="testoptions"
+                                <apexchart v-if="trainProviders.length > 0" ref="companies" :options="pieChartOptions"
                                            :series="series" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
@@ -51,12 +51,11 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.volume') }} <small>{{ i18n.get('_.stats.per-week') }}</small>
                                 </h5>
-                                @if($travelTime->count() > 0)
-                                <apexchart v-if="travelPurpose.length > 0" ref="testchart"
-                                           :options="ajaxChartsOptions" type="line" width="380"></apexchart>
-                                @else
-                                <p class="text-danger font-weight-bold mt-2">{{ i18n.get('_.stats.no-data') }}</p>
-                                @endif
+                                <apexchart v-if="travelTime.length > 0" ref="travelTimeChart"
+                                           :options="barChartOptions" type="line" width="100%"></apexchart>
+                                <p v-else class="text-danger font-weight-bold mt-2">{{
+                                        i18n.get('_.stats.no-data')
+                                    }}</p>
                             </div>
                         </div>
                     </div>
@@ -161,7 +160,20 @@ export default {
                 {name: 'S-Bahn', value: 107},
                 {name: 'Tram', value: 532},
             ],
-            series: [44, 55, 13, 43, 22],
+            travelTime: [
+                {name: '1 / 2021', value: 1},
+                {name: '2 / 2021', value: 1},
+                {name: '3 / 2021', value: 1},
+                {name: '4 / 2021', value: 1},
+                {name: '5 / 2021', value: 1},
+                {name: '6 / 2021', value: 17},
+                {name: '7 / 2021', value: 28},
+                {name: '8 / 2021', value: 4},
+                {name: '9 / 2021', value: 1},
+                {name: '10 / 2021', value: 1},
+                {name: '11 / 2021', value: 1},
+                {name: '12 / 2021', value: 1},
+            ],
             chartOptions: {
                 chart: {
                     width: 380,
@@ -196,7 +208,7 @@ export default {
                     text: 'Loading...'
                 }
             },
-            testoptions: {
+            pieChartOptions: {
                 chart: {
                     type: "pie",
                 },
@@ -208,13 +220,44 @@ export default {
                 noData: {
                     text: this.i18n.get("_.menu.loading")
                 }
-            }
+            },
+            barChartOptions: {
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    toolbar: false
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                }
+            },
+
+
         }
     },
     mounted() {
-        this.$refs.testchart.updateSeries([{
-            name: "Sales",
-            data: this.travelPurpose
+        this.$refs.travelTimeChart.updateSeries([{
+            name: this.i18n.get('_.stats.time-in-minutes'),
+            data:
+                this.travelTime.map((x) => {
+                        return {"x": x.name, "y": x.value}
+                    }
+                )
         }]);
         this.$refs.purpose.updateOptions({
             labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
