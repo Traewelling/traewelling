@@ -48,6 +48,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('trains/checkin', [TransportController::class, 'create']);
         Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
         Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+        Route::group(['prefix' => 'statistics'], function() {
+            Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
+        });
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {

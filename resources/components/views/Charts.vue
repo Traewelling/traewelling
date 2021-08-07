@@ -259,18 +259,39 @@ export default {
                     }
                 )
         }]);
-        this.$refs.purpose.updateOptions({
-            labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
-            series: this.travelPurpose.map(x => x.value)
-        });
-        this.$refs.companies.updateOptions({
-            labels: this.trainProviders.map((x) => x.name),
-            series: this.trainProviders.map(x => x.value)
-        })
-        this.$refs.categories.updateOptions({
-            labels: this.travelCategories.map((x) => x.name),
-            series: this.travelCategories.map(x => x.value)
-        })
+        this.fetchReasons();
+    },
+    methods: {
+        fetchReasons() {
+            axios
+                .get('/statistics')
+                .then((response) => {
+                    console.log(response.data.data.purpose);
+                    this.travelPurpose  = response.data.data.purpose;
+                    this.trainProviders = response.data.data.operators;
+                    this.updatePurpose();
+                    this.updateCategories();
+                    this.updateProviders();
+                })
+        },
+        updatePurpose() {
+            this.$refs.purpose.updateOptions({
+                labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
+                series: this.travelPurpose.map(x => x.count)
+            });
+        },
+        updateCategories() {
+            this.$refs.categories.updateOptions({
+                labels: this.travelCategories.map((x) => x.name),
+                series: this.travelCategories.map(x => x.value)
+            });
+        },
+        updateProviders() {
+            this.$refs.companies.updateOptions({
+                labels: this.trainProviders.map((x) => x.name),
+                series: this.trainProviders.map(x => x.count)
+            });
+        }
     }
 };
 </script>
