@@ -29,7 +29,6 @@ class StatisticsController extends ResponseController
 
     /**
      * @return AnonymousResourceCollection
-     * @todo Cannot be implemented unless login is working
      */
     public function leaderboardFriends(): AnonymousResourceCollection {
         return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(onlyFollowings: true));

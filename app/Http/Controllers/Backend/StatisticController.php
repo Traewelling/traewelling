@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Enum\Business;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
@@ -24,9 +23,8 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->select([
                               DB::raw('SUM(train_checkins.distance) AS distance'),
-                              DB::raw(
-                                  'SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration'
-                              ),
+                              DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure,
+                              train_checkins.arrival)) AS duration'),
                               DB::raw('COUNT(DISTINCT statuses.user_id) AS user_count')
                           ])
                  ->first();
@@ -49,18 +47,15 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '>=', $since->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('hafas_trips.category')
-                 ->select(['hafas_trips.category', DB::raw('COUNT(*) AS count')])
+                 ->select([
+                              'hafas_trips.category AS name',
+                              DB::raw('COUNT(*) AS count'),
+                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure,
+                              train_checkins.arrival)) AS duration')
+                          ])
+                 ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
-                 ->get()
-                 ->map(function($data) {
-                     $data->category = __('transport_types.' . $data->category);
-                     return $data;
-                 })
-                 ->groupBy('category')
-                 ->map(function($data) {
-                     return $data->sum('count');
-                 })
-                 ->sort();
+                 ->get();
     }
 
     public static function getTopTripOperatorByUser(
@@ -81,7 +76,12 @@ class StatisticController extends Controller
                  ->where('train_checkins.departure', '>=', $since->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('hafas_operators.name')
-                 ->select(['hafas_operators.name', DB::raw('COUNT(*) AS count')])
+                 ->select([
+                              'hafas_operators.name',
+                              DB::raw('COUNT(*) AS count'),
+                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure,
+                              train_checkins.arrival)) AS duration')
+                          ])
                  ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
                  ->get();
@@ -101,6 +101,7 @@ class StatisticController extends Controller
                  ->select([
                               DB::raw('YEAR(train_checkins.departure) AS year'),
                               DB::raw('WEEK(train_checkins.departure, 1) AS kw'),
+                              DB::raw('COUNT(*) AS count'),
                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
                           ])
                  ->orderBy(DB::raw('YEAR(train_checkins.departure)'))
