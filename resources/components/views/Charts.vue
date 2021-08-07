@@ -1,7 +1,7 @@
 <template>
     <LayoutBasic>
         <div class="mb-4">
-            <div class="dropdown float-end">
+            <div id="daterange" class="dropdown float-end">
                 <button
                     id="dateRangeDropdown"
                     aria-expanded="false"
@@ -14,41 +14,34 @@
                 </button>
                 <ul aria-labelledby="dateRangeDropdown" class="dropdown-menu">
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchDateRange(7)">{{
+                           @click.prevent="fetchRecentDays(7)">{{
                             i18n.choice('_.stats.range.days', 1, {"days": 7})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchDateRange(15)">{{
+                           @click.prevent="fetchRecentDays(15)">{{
                             i18n.choice('_.stats.range.days', 1, {"days": 15})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchDateRange(30)">{{
+                           @click.prevent="fetchRecentDays(30)">{{
                             i18n.choice('_.stats.range.days', 1, {"days": 30})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchDateRange(60)">{{
+                           @click.prevent="fetchRecentDays(60)">{{
                             i18n.choice('_.stats.range.days', 1, {"days": 60})
                         }}</a>
                     </li>
                     <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">{{ i18n.choice('_.stats.range.picker') }}</a></li>
+                    <li><a class="dropdown-item" href="#"
+                           @click.prevent="picker.show()">{{ i18n.choice('_.stats.range.picker') }}</a></li>
                 </ul>
             </div>
             <h1 class="h3 mr-auto mb-0 text-gray-800">{{ i18n.get('_.stats') }}</h1>
         </div>
         <div class="row">
             <div class="col-lg-8">
-                <!--                <h4>-->
-                <!--                    {{-->
-                <!--                        i18n.choice('_.stats.personal', 1, {-->
-                <!--                            'fromDate': moment(this.from).format('LLL'),-->
-                <!--                            'toDate': moment(this.until).format('LLL')-->
-                <!--                        })-->
-                <!--                    }}-->
-                <!--                </h4>-->
                 <hr/>
                 <div class="row">
                     <div class="col-md-6 mb-4">
@@ -101,7 +94,6 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <!--                <h4>{{ i18n.get('_.stats.global') }}</h4>-->
                 <hr/>
                 <div class="card mb-4">
                     <div class="card-body">
@@ -170,17 +162,20 @@
 import LayoutBasic from "../layouts/Basic";
 import VueApexCharts from 'vue-apexcharts'
 import moment from "moment";
+import Litepicker from "litepicker";
 
 export default {
     name: "Charts",
     components: {
         LayoutBasic,
         apexchart: VueApexCharts,
-        moment
+        moment,
+        Litepicker
     },
     data() {
         return {
             loading: true,
+            picker: null,
             from: moment().subtract(1, "month").toISOString(),
             until: moment().toISOString(),
             fromGlobal: 0,
@@ -258,6 +253,21 @@ export default {
     mounted() {
         this.fetchGlobalData();
         this.fetchPersonalData();
+        this.picker = new Litepicker({
+            element: document.getElementById('daterange'),
+            singleMode: false,
+            lang: this.i18n.getLocale(),
+            tooltipNumber: (totalDays) => {
+                return totalDays - 1;
+            },
+            setup: (picker) => {
+                picker.on('selected', (date1, date2) => {
+                    this.from  = moment(date1.toDateString()).toISOString();
+                    this.until = moment(date2.toDateString()).toISOString();
+                    this.fetchPersonalData();
+                });
+            },
+        });
     },
     computed: {
         globalDuration() {
@@ -277,14 +287,14 @@ export default {
         }
     },
     methods: {
-        fetchDateRange(delta) {
+        fetchRecentDays(delta) {
             this.from  = moment().subtract(delta, "days").toISOString();
             this.until = moment().toISOString();
             this.fetchPersonalData();
         },
         fetchPersonalData() {
             axios
-                .get('/statistics?from=' + this.from + "&unitl=" + this.until)
+                .get('/statistics?from=' + this.from + "&until=" + this.until)
                 .then((response) => {
                     this.travelPurpose    = response.data.data.purpose;
                     this.trainProviders   = response.data.data.operators;
@@ -338,7 +348,6 @@ export default {
             this.travelTime.forEach(function callback(value) {
                 let currentDate = moment(value.date);
                 while (value.date && store.diff(currentDate) !== 0) {
-                    console.log("a");
                     fixedTravelTime.push({
                         date: store.format('L'),
                         count: 0,
@@ -350,8 +359,6 @@ export default {
                 fixedTravelTime.push(value);
                 store = currentDate.add(1, 'day');
             });
-
-            console.log(fixedTravelTime);
 
             this.$refs.travelTimeChart.updateSeries([
                 {

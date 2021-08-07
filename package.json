@@ -38,6 +38,7 @@
         "font-awesome": "^4.7.0",
         "lang.js": "^1.1.14",
         "leaflet": "^1.7.1",
+        "litepicker": "^2.0.11",
         "mdb-ui-kit": "^3.4.0",
         "moment": "^2.29.1",
         "momentjs": "^2.0.0",
