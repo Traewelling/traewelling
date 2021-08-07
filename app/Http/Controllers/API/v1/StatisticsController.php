@@ -44,26 +44,35 @@ class StatisticsController extends ResponseController
 
     public function getPersonalStatistics(Request $request) {
         $validated = $request->validate([
-                                            'from' => ['nullable', 'date'],
-                                            'to'   => ['nullable', 'date', 'after_or_equal:from']
+                                            'from'  => ['nullable', 'date'],
+                                            'until' => ['nullable', 'date', 'after_or_equal:from']
                                         ]);
 
-        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
-        $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
+        $from  = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
+        $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::now();
 
-        $travelPurposes = StatisticsTravelPurposeResource::collection(StatisticBackend::getTravelPurposes(auth()->user(), $from, $to));
-        $topCategories  = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
-        $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
-        $travelTime     = StatisticBackend::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
+        $purposes   = StatisticsTravelPurposeResource::collection(
+            StatisticBackend::getTravelPurposes(user: auth()->user(), from: $from, until: $until)
+        );
+        $categories = StatisticBackend::getTopTravelCategoryByUser(user: auth()->user(), from: $from, until: $until);
+        $operators  = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
+        $travelTime = StatisticBackend::getWeeklyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
 
-        $returnarray = [
-            'purpose'    => $travelPurposes,
-            'categories' => $topCategories,
-            'operators'  => $topOperators,
+        $returnData = [
+            'purpose'    => $purposes,
+            'categories' => $categories,
+            'operators'  => $operators,
             'time'       => $travelTime
         ];
 
-        return $this->sendv1Response($returnarray);
+        $additionalData = [
+            'meta' => [
+                'from'  => $from,
+                'until' => $until
+            ]
+        ];
+
+        return $this->sendv1Response(data: $returnData, code: 200, additional: $additionalData);
 
     }
 }

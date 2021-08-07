@@ -12,6 +12,7 @@ use stdClass;
 
 class StatisticController extends Controller
 {
+
     public static function getGlobalCheckInStats(Carbon $since, Carbon $until): stdClass {
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
@@ -32,11 +33,11 @@ class StatisticController extends Controller
 
     public static function getTopTravelCategoryByUser(
         User $user,
-        Carbon $since,
+        Carbon $from,
         Carbon $until,
         int $limit = 10
     ): Collection {
-        if ($since->isAfter($until)) {
+        if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
 
@@ -44,7 +45,7 @@ class StatisticController extends Controller
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
                  ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
                  ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('hafas_trips.category')
                  ->select([
@@ -60,11 +61,11 @@ class StatisticController extends Controller
 
     public static function getTopTripOperatorByUser(
         User $user,
-        Carbon $since,
+        Carbon $from,
         Carbon $until,
         int $limit = 10
     ): Collection {
-        if ($since->isAfter($until)) {
+        if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
 
@@ -73,7 +74,7 @@ class StatisticController extends Controller
                  ->join('hafas_trips', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
                  ->join('hafas_operators', 'hafas_operators.id', '=', 'hafas_trips.operator_id')
                  ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('hafas_operators.name')
                  ->select([
@@ -87,15 +88,15 @@ class StatisticController extends Controller
                  ->get();
     }
 
-    public static function getWeeklyTravelTimeByUser(User $user, Carbon $since, Carbon $until): Collection {
-        if ($since->isAfter($until)) {
+    public static function getWeeklyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
+        if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
 
         return DB::table('train_checkins')
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
                  ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy([DB::raw('YEAR(train_checkins.departure)'), DB::raw('WEEK(train_checkins.departure, 1)')])
                  ->select([
@@ -113,15 +114,15 @@ class StatisticController extends Controller
                  });
     }
 
-    public static function getTravelPurposes(User $user, Carbon $since, Carbon $until): Collection {
-        if ($since->isAfter($until)) {
+    public static function getTravelPurposes(User $user, Carbon $from, Carbon $until): Collection {
+        if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
 
         return DB::table('train_checkins')
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
                  ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->groupBy('statuses.business')
                  ->select([

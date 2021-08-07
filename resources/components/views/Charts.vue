@@ -5,8 +5,8 @@
                 <h4>
                     {{
                         i18n.choice('_.stats.personal', 1, {
-                            'fromDate': 'a',
-                            'toDate': 'b'
+                            'fromDate': moment(this.from).format('LLL'),
+                            'toDate': moment(this.until).format('LLL')
                         })
                     }}
                 </h4>
@@ -67,7 +67,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4 text-center">
-                                <i class="fas fa-ruler fa-4x mt-1"></i>
+                                <i aria-hidden="true" class="fas fa-ruler fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
@@ -83,7 +83,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4 text-center">
-                                <i class="fas fa-clock fa-4x mt-1"></i>
+                                <i aria-hidden="true" class="fas fa-clock fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
@@ -99,7 +99,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-4 text-center">
-                                <i class="fas fa-users fa-4x mt-1"></i>
+                                <i aria-hidden="true" class="fas fa-users fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
@@ -129,36 +129,27 @@
 <script>
 import LayoutBasic from "../layouts/Basic";
 import VueApexCharts from 'vue-apexcharts'
+import moment from "moment";
 
 export default {
     name: "Charts",
     components: {
         LayoutBasic,
-        apexchart: VueApexCharts
+        apexchart: VueApexCharts,
+        moment
     },
     data() {
         return {
+            from: null,
+            until: null,
             travelPurpose: [
-                {name: 'private', value: 20},
-                {name: 'business', value: 5},
-                {name: 'commute', value: 10}
+                {name: '', count: 0, duration: 0},
             ],
             trainProviders: [
-                {name: 'üstra Hannoversche Verkehsbetriebe AG', value: 325},
-                {name: 'DB Regio AG Nord', value: 63},
-                {name: 'metronom', value: 9},
-                {name: 'cantus Verkehrsgesellschaft', value: 7},
-                {name: 'erixx', value: 3},
-                {name: 'DB Regio AG Südost', value: 1},
-                {name: 'RegioTram', value: 1},
-                {name: 'DB Fernverkehr AG', value: 1},
+                {name: '', count: 0, duration: 0},
             ],
             travelCategories: [
-                {name: 'Fernverkehr', value: 2},
-                {name: 'Regional', value: 47},
-                {name: 'Bus', value: 76},
-                {name: 'S-Bahn', value: 107},
-                {name: 'Tram', value: 532},
+                {name: '', count: 0, duration: 0},
             ],
             travelTime: [
                 {name: '1 / 2021', value: 1},
@@ -174,40 +165,6 @@ export default {
                 {name: '11 / 2021', value: 1},
                 {name: '12 / 2021', value: 1},
             ],
-            chartOptions: {
-                chart: {
-                    width: 380,
-                    type: 'pie',
-                },
-                labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }]
-            },
-            ajaxChartsOptions: {
-                chart: {
-                    height: 350,
-                    type: 'bar',
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                series: [],
-                title: {
-                    text: 'Ajax Example',
-                },
-                noData: {
-                    text: 'Loading...'
-                }
-            },
             pieChartOptions: {
                 chart: {
                     type: "pie",
@@ -267,8 +224,11 @@ export default {
                 .get('/statistics')
                 .then((response) => {
                     console.log(response.data.data.purpose);
-                    this.travelPurpose  = response.data.data.purpose;
-                    this.trainProviders = response.data.data.operators;
+                    this.travelPurpose    = response.data.data.purpose;
+                    this.trainProviders   = response.data.data.operators;
+                    this.travelCategories = response.data.data.categories;
+                    this.from             = response.data.meta.from;
+                    this.until            = response.data.meta.until;
                     this.updatePurpose();
                     this.updateCategories();
                     this.updateProviders();
@@ -282,8 +242,8 @@ export default {
         },
         updateCategories() {
             this.$refs.categories.updateOptions({
-                labels: this.travelCategories.map((x) => x.name),
-                series: this.travelCategories.map(x => x.value)
+                labels: this.travelCategories.map((x) => this.i18n.get("_.transport_types." + x.name)),
+                series: this.travelCategories.map(x => x.count)
             });
         },
         updateProviders() {
