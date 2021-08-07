@@ -95,6 +95,8 @@ export let LeaderboardUserModel = {
     points: 0
 };
 
+
+//No API responses but instead formatting guidelines
 export let travelReason = [
     {
         icon: "fa fa-user",
