@@ -121,6 +121,7 @@ export default {
     },
     computed: {
         duration() {
+            //ToDo this needs localization, also this is code duplication...
             const duration = moment.duration(this.user.trainDuration, "minutes").asMinutes();
             let minutes    = duration % 60;
             let hours      = Math.floor(duration / 60);

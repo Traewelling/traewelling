@@ -17,7 +17,7 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.purpose') }}</h5>
                                 <apexchart v-if="travelPurpose.length > 0" ref="purpose" :options="pieChartOptions"
-                                           type="pie" width="100%"></apexchart>
+                                           :series="emptySeries" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -28,7 +28,7 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.categories') }}</h5>
                                 <apexchart v-if="travelPurpose.length > 0" ref="categories" :options="pieChartOptions"
-                                           type="pie" width="100%"></apexchart>
+                                           :series="emptySeries" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -39,7 +39,7 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get('_.stats.companies') }}</h5>
                                 <apexchart v-if="trainProviders.length > 0" ref="companies" :options="pieChartOptions"
-                                           :series="series" type="pie" width="100%"></apexchart>
+                                           :series="emptySeries" type="pie" width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
                             </div>
@@ -52,7 +52,8 @@
                                 <h5>{{ i18n.get('_.stats.volume') }} <small>{{ i18n.get('_.stats.per-week') }}</small>
                                 </h5>
                                 <apexchart v-if="travelTime.length > 0" ref="travelTimeChart"
-                                           :options="barChartOptions" type="line" width="100%"></apexchart>
+                                           :options="barChartOptions" :series="emptySeries" type="line"
+                                           width="100%"></apexchart>
                                 <p v-else class="text-danger font-weight-bold mt-2">{{
                                         i18n.get('_.stats.no-data')
                                     }}</p>
@@ -71,7 +72,7 @@
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
-                     number($globalStats->distance, 0)  km
+                     {{ this.globalData.distance }}  km
                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get('_.stats.global.distance') }}</small>
@@ -87,7 +88,7 @@
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
-                    {!! durationToSpan(secondsToDuration($globalStats->duration)) !!}
+                    {{ this.globalDuration }}
                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get('_.stats.global.duration') }}</small>
@@ -103,7 +104,7 @@
                             </div>
                             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
-                     $globalStats->user_count x
+                     {{ globalData.activeUsers }} x
                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get('_.stats.global.active') }}</small>
@@ -114,8 +115,8 @@
                 <hr/>
                 <small class="text-muted">*{{
                         i18n.choice('_.stats.global.explain', 1, {
-                            'fromDate': 'a',
-                            'toDate': 'b'
+                            'fromDate': moment(this.fromGlobal).format('LLL'),
+                            'toDate': moment(this.untilGlobal).format('LLL')
                         })
                     }}</small>
                 <hr/>
@@ -142,6 +143,14 @@ export default {
         return {
             from: null,
             until: null,
+            fromGlobal: null,
+            untilGlobal: null,
+            emptySeries: [],
+            globalData: {
+                distance: 15.123,
+                duration: 0,
+                activeUsers: 0
+            },
             travelPurpose: [
                 {name: '', count: 0, duration: 0},
             ],
@@ -216,14 +225,24 @@ export default {
                     }
                 )
         }]);
-        this.fetchReasons();
+        this.fetchGlobalData();
+        this.fetchPersonalData();
+    },
+    computed: {
+        globalDuration() {
+            //ToDo this needs localization, also this is code duplication...
+            const duration = moment.duration(this.globalData.duration, "minutes").asMinutes();
+            let minutes    = duration % 60;
+            let hours      = Math.floor(duration / 60);
+
+            return hours + "h " + minutes + "m";
+        },
     },
     methods: {
-        fetchReasons() {
+        fetchPersonalData() {
             axios
                 .get('/statistics')
                 .then((response) => {
-                    console.log(response.data.data.purpose);
                     this.travelPurpose    = response.data.data.purpose;
                     this.trainProviders   = response.data.data.operators;
                     this.travelCategories = response.data.data.categories;
@@ -233,6 +252,21 @@ export default {
                     this.updateCategories();
                     this.updateProviders();
                 })
+                .catch((error) => {
+                    console.error(error)
+                });
+        },
+        fetchGlobalData() {
+            axios
+                .get('/statistics/global')
+                .then((response) => {
+                    this.globalData  = response.data.data;
+                    this.untilGlobal = response.data.meta.until;
+                    this.fromGlobal  = response.data.meta.from;
+                })
+                .catch((error) => {
+                    console.error(error)
+                });
         },
         updatePurpose() {
             this.$refs.purpose.updateOptions({

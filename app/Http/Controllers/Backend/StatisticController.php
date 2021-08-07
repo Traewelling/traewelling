@@ -13,14 +13,20 @@ use stdClass;
 class StatisticController extends Controller
 {
 
-    public static function getGlobalCheckInStats(Carbon $since, Carbon $until): stdClass {
-        if ($since->isAfter($until)) {
+    /**
+     * @param Carbon $from
+     * @param Carbon $until
+     * @return stdClass
+     * @api v1
+     */
+    public static function getGlobalCheckInStats(Carbon $from, Carbon $until): stdClass {
+        if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
 
         return DB::table('train_checkins')
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('train_checkins.departure', '>=', $since->toIso8601String())
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
                  ->select([
                               DB::raw('SUM(train_checkins.distance) AS distance'),
@@ -31,6 +37,14 @@ class StatisticController extends Controller
                  ->first();
     }
 
+    /**
+     * @param User $user
+     * @param Carbon $from
+     * @param Carbon $until
+     * @param int $limit
+     * @return Collection
+     * @api v1
+     */
     public static function getTopTravelCategoryByUser(
         User $user,
         Carbon $from,
@@ -59,6 +73,14 @@ class StatisticController extends Controller
                  ->get();
     }
 
+    /**
+     * @param User $user
+     * @param Carbon $from
+     * @param Carbon $until
+     * @param int $limit
+     * @return Collection
+     * @api v1
+     */
     public static function getTopTripOperatorByUser(
         User $user,
         Carbon $from,
@@ -88,6 +110,13 @@ class StatisticController extends Controller
                  ->get();
     }
 
+    /**
+     * @param User $user
+     * @param Carbon $from
+     * @param Carbon $until
+     * @return Collection
+     * @api v1
+     */
     public static function getWeeklyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
@@ -114,6 +143,13 @@ class StatisticController extends Controller
                  });
     }
 
+    /**
+     * @param User $user
+     * @param Carbon $from
+     * @param Carbon $until
+     * @return Collection
+     * @api v1
+     */
     public static function getTravelPurposes(User $user, Carbon $from, Carbon $until): Collection {
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');

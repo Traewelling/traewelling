@@ -50,6 +50,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
         Route::group(['prefix' => 'statistics'], function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
+            Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
         });
     });
 

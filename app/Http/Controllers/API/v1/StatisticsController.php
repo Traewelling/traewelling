@@ -6,8 +6,10 @@ use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Resources\LeaderboardUserResource;
+use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -37,12 +39,16 @@ class StatisticsController extends ResponseController
     /**
      * @return AnonymousResourceCollection
      */
-    public function leaderboardForMonth(string $date) {
+    public function leaderboardForMonth(string $date): AnonymousResourceCollection {
         $date = Carbon::parse($date);
         return LeaderboardUserResource::collection(LeaderboardBackend::getMonthlyLeaderboard(date: $date));
     }
 
-    public function getPersonalStatistics(Request $request) {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getPersonalStatistics(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'from'  => ['nullable', 'date'],
                                             'until' => ['nullable', 'date', 'after_or_equal:from']
@@ -74,5 +80,21 @@ class StatisticsController extends ResponseController
 
         return $this->sendv1Response(data: $returnData, code: 200, additional: $additionalData);
 
+    }
+
+    public function getGlobalStatistics(): JsonResponse {
+        $from  = Carbon::now()->subWeeks(4);
+        $until = Carbon::now();
+
+        $data = new StatisticsGlobalData(StatisticBackend::getGlobalCheckInStats(from: $from, until: $until));
+
+        $additionalData = [
+            'meta' => [
+                'from'  => $from,
+                'until' => $until
+            ]
+        ];
+
+        return $this->sendv1Response(data: $data, code: 200, additional: $additionalData);
     }
 }
