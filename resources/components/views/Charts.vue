@@ -205,12 +205,7 @@ export default {
                 {name: '', count: 0, duration: 0},
             ],
             travelTime: [
-                {kw: 1, year: 2021, count: 1},
-                {kw: 2, year: 2021, count: 1},
-                {kw: 3, year: 2021, count: 1},
-                {kw: 4, year: 2021, count: 1},
-                {kw: 5, year: 2021, count: 1},
-                {kw: 6, year: 2021, count: 1},
+                {date: 0, duration: 2021, count: 1},
             ],
             pieChartOptions: {
                 chart: {
@@ -230,7 +225,8 @@ export default {
                     toolbar: false
                 },
                 dataLabels: {
-                    enabled: false
+                    enabled: true,
+                    enabledOnSeries: [1]
                 },
                 stroke: {
                     curve: 'smooth',
@@ -338,22 +334,21 @@ export default {
         },
         updateVolume() {
             let fixedTravelTime = [];
-            let store           = this.travelTime[0].kw;
+            let store           = moment(this.travelTime[0].date);
             this.travelTime.forEach(function callback(value) {
-                console.log(value.kw);
-                while (store !== value.kw) {
+                let currentDate = moment(value.date);
+                while (value.date && store.diff(currentDate) !== 0) {
                     console.log("a");
                     fixedTravelTime.push({
-                        year: value.year,
-                        kw: store,
+                        date: store.format('L'),
                         count: 0,
                         duration: 0,
-                        date: null
                     });
-                    store += 1;
+                    store.add(1, 'day');
                 }
-                fixedTravelTime.push(value)
-                store = value.kw + 1;
+                value.date = currentDate.format('L');
+                fixedTravelTime.push(value);
+                store = currentDate.add(1, 'day');
             });
 
             console.log(fixedTravelTime);
@@ -364,7 +359,7 @@ export default {
                     type: 'line',
                     data: fixedTravelTime.map((x) => {
                         return {
-                            x: x.kw + "/" + x.year,
+                            x: x.date,
                             y: x.duration
                         }
                     })
@@ -373,7 +368,7 @@ export default {
                     type: 'column',
                     data: fixedTravelTime.map((x) => {
                         return {
-                            x: x.kw + "/" + x.year,
+                            x: x.date,
                             y: x.count
                         }
                     })

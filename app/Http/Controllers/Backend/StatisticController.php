@@ -115,7 +115,7 @@ class StatisticController extends Controller
      * @param Carbon $from
      * @param Carbon $until
      * @return Collection
-     * @api v1
+     * @deprecated this will be replaced by getDailyTravelTimeByUser
      */
     public static function getWeeklyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
         if ($from->isAfter($until)) {
@@ -142,6 +142,35 @@ class StatisticController extends Controller
                      return $row;
                  });
     }
+
+    /**
+     * @param User $user
+     * @param Carbon $from
+     * @param Carbon $until
+     * @return Collection
+     * @api v1
+     */
+    public static function getDailyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
+        if ($from->isAfter($until)) {
+            throw new InvalidArgumentException('since cannot be after until');
+        }
+
+
+        return DB::table('train_checkins')
+                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                 ->where('statuses.user_id', '=', $user->id)
+                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
+                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                 ->groupBy([DB::raw('date(train_checkins.departure)')])
+                 ->select([
+                              DB::raw('DATE(train_checkins.departure) AS date'),
+                              DB::raw('COUNT(*) AS count'),
+                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
+                          ])
+                 ->orderBy(DB::raw('date'))
+                 ->get();
+    }
+
 
     /**
      * @param User $user

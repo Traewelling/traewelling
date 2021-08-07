@@ -62,7 +62,7 @@ class StatisticsController extends ResponseController
         );
         $categories = StatisticBackend::getTopTravelCategoryByUser(user: auth()->user(), from: $from, until: $until);
         $operators  = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
-        $travelTime = StatisticBackend::getWeeklyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
+        $travelTime = StatisticBackend::getDailyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
 
         $returnData = [
             'purpose'    => $purposes,
