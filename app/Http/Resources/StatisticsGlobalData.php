@@ -13,7 +13,7 @@ class StatisticsGlobalData extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         return [
             'distance'    => $this->distance,
             'duration'    => $this->duration,

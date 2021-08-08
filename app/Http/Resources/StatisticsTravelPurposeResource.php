@@ -14,7 +14,7 @@ class StatisticsTravelPurposeResource extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         if ($this->reason == Business::PRIVATE) {
             $this->reason = 'private';
         } elseif ($this->reason == Business::BUSINESS) {

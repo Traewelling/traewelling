@@ -13,7 +13,7 @@ class TrainstationResource extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         return [
             "id"            => (int) $this->id,
             "name"          => $this->name,
