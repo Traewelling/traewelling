@@ -19,8 +19,8 @@
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchRecentDays(15)">{{
-                            i18n.choice('_.stats.range.days', 1, {"days": 15})
+                           @click.prevent="fetchRecentDays(14)">{{
+                            i18n.choice('_.stats.range.days', 1, {"days": 14})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
