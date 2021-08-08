@@ -81,7 +81,7 @@
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>{{ i18n.get('_.stats.volume') }} <small>{{ i18n.get('_.stats.per-week') }}</small>
+                                <h5>{{ i18n.get('_.stats.volume') }}
                                 </h5>
                                 <p v-if="travelTime.length <= 0" class="text-danger font-weight-bold mt-2">
                                     {{ i18n.get('_.stats.no-data') }}</p>
