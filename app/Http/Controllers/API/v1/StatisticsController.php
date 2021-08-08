@@ -37,6 +37,7 @@ class StatisticsController extends ResponseController
     }
 
     /**
+     * @param string $date
      * @return AnonymousResourceCollection
      */
     public function leaderboardForMonth(string $date): AnonymousResourceCollection {
@@ -78,8 +79,7 @@ class StatisticsController extends ResponseController
             ]
         ];
 
-        return $this->sendv1Response(data: $returnData, code: 200, additional: $additionalData);
-
+        return $this->sendv1Response(data: $returnData, additional: $additionalData);
     }
 
     public function getGlobalStatistics(): JsonResponse {
@@ -95,6 +95,6 @@ class StatisticsController extends ResponseController
             ]
         ];
 
-        return $this->sendv1Response(data: $data, code: 200, additional: $additionalData);
+        return $this->sendv1Response(data: $data, additional: $additionalData);
     }
 }
