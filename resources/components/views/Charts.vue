@@ -255,6 +255,11 @@ export default {
             },
         };
     },
+    metaInfo() {
+        return {
+            title: this.i18n.get("_.stats")
+        };
+    },
     mounted() {
         this.fetchGlobalData();
         this.fetchPersonalData();
