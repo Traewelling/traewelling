@@ -13,29 +13,32 @@
                     {{ i18n.get("_.stats.range") }} ({{ this.dateRange }})
                 </button>
                 <ul aria-labelledby="dateRangeDropdown" class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchRecentDays(7)">{{
-                            i18n.choice("_.stats.range.days", 1, {"days": 7})
-                        }}</a>
+                    <li>
+                        <a class="dropdown-item" href="#" @click.prevent="fetchRecentDays(7)">
+                            {{ i18n.choice("_.stats.range.days", 1, {"days": 7}) }}
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchRecentDays(14)">{{
-                            i18n.choice("_.stats.range.days", 1, {"days": 14})
-                        }}</a>
+                    <li>
+                        <a class="dropdown-item" href="#" @click.prevent="fetchRecentDays(14)">
+                            {{ i18n.choice("_.stats.range.days", 1, {"days": 14}) }}
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchRecentDays(30)">{{
-                            i18n.choice("_.stats.range.days", 1, {"days": 30})
-                        }}</a>
+                    <li>
+                        <a class="dropdown-item" href="#" @click.prevent="fetchRecentDays(30)">
+                            {{ i18n.choice("_.stats.range.days", 1, {"days": 30}) }}
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="#"
-                           @click.prevent="fetchRecentDays(60)">{{
-                            i18n.choice("_.stats.range.days", 1, {"days": 60})
-                        }}</a>
+                    <li>
+                        <a class="dropdown-item" href="#" @click.prevent="fetchRecentDays(60)">
+                            {{ i18n.choice("_.stats.range.days", 1, {"days": 60}) }}
+                        </a>
                     </li>
                     <li class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#"
-                           @click.prevent="picker.show()">{{ i18n.choice("_.stats.range.picker") }}</a></li>
+                    <li>
+                        <a class="dropdown-item" href="#" @click.prevent="picker.show()">
+                            {{ i18n.choice("_.stats.range.picker") }}
+                        </a>
+                    </li>
                 </ul>
             </div>
             <h1 class="h3 mr-auto mb-0 text-gray-800">{{ i18n.get("_.stats") }}</h1>
@@ -49,7 +52,8 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get("_.stats.purpose") }}</h5>
                                 <p v-if="travelPurpose.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get("_.stats.no-data") }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}
+                                </p>
                                 <apexchart ref="purpose" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -60,7 +64,8 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get("_.stats.categories") }}</h5>
                                 <p v-if="travelCategories.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get("_.stats.no-data") }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}
+                                </p>
                                 <apexchart ref="categories" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -71,7 +76,8 @@
                             <div class="card-body">
                                 <h5>{{ i18n.get("_.stats.companies") }}</h5>
                                 <p v-if="trainProviders.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get("_.stats.no-data") }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}
+                                </p>
                                 <apexchart ref="companies" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -84,7 +90,8 @@
                                 <h5>{{ i18n.get("_.stats.volume") }} <small>{{ i18n.get("_.stats.per-week") }}</small>
                                 </h5>
                                 <p v-if="travelTime.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get("_.stats.no-data") }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}
+                                </p>
                                 <apexchart ref="travelTimeChart"
                                            :options="barChartOptions" :series="emptyDataSeries" type="line"
                                            width="100%"></apexchart>
@@ -102,9 +109,9 @@
                                 <i aria-hidden="true" class="fas fa-ruler fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
-                <span class="font-weight-bold color-main fs-2">
-                     {{ this.globalData.distance }}  km
-                </span>
+                                <span class="font-weight-bold color-main fs-2">
+                                    {{ this.globalData.distance }}  km
+                                </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.distance") }}</small>
                             </div>
@@ -118,9 +125,9 @@
                                 <i aria-hidden="true" class="fas fa-clock fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
-                <span class="font-weight-bold color-main fs-2">
-                    {{ this.globalDuration }}
-                </span>
+                                <span class="font-weight-bold color-main fs-2">
+                                    {{ this.globalDuration }}
+                                </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.duration") }}</small>
                             </div>
@@ -134,9 +141,9 @@
                                 <i aria-hidden="true" class="fas fa-users fa-4x mt-1"></i>
                             </div>
                             <div class="col-8 text-center">
-                <span class="font-weight-bold color-main fs-2">
-                     {{ globalData.activeUsers }} x
-                </span>
+                                <span class="font-weight-bold color-main fs-2">
+                                    {{ globalData.activeUsers }} x
+                                </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.active") }}</small>
                             </div>
@@ -144,17 +151,17 @@
                     </div>
                 </div>
                 <hr/>
-                <small class="text-muted">*{{
+                <small class="text-muted">
+                    *{{
                         i18n.choice("_.stats.global.explain", 1, {
                             "fromDate": moment(this.fromGlobal).format("LLL"),
                             "toDate": moment(this.untilGlobal).format("LLL")
                         })
-                    }}</small>
+                    }}
+                </small>
                 <hr/>
-
             </div>
         </div>
-
     </LayoutBasic>
 </template>
 
