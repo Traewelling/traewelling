@@ -10,35 +10,35 @@
                     type="button"
                 >
                     <i aria-hidden="true" class="fas fa-calendar"></i>&nbsp;
-                    {{ i18n.get('_.stats.range') }} ({{ this.dateRange }})
+                    {{ i18n.get("_.stats.range") }} ({{ this.dateRange }})
                 </button>
                 <ul aria-labelledby="dateRangeDropdown" class="dropdown-menu">
                     <li><a class="dropdown-item" href="#"
                            @click.prevent="fetchRecentDays(7)">{{
-                            i18n.choice('_.stats.range.days', 1, {"days": 7})
+                            i18n.choice("_.stats.range.days", 1, {"days": 7})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
                            @click.prevent="fetchRecentDays(14)">{{
-                            i18n.choice('_.stats.range.days', 1, {"days": 14})
+                            i18n.choice("_.stats.range.days", 1, {"days": 14})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
                            @click.prevent="fetchRecentDays(30)">{{
-                            i18n.choice('_.stats.range.days', 1, {"days": 30})
+                            i18n.choice("_.stats.range.days", 1, {"days": 30})
                         }}</a>
                     </li>
                     <li><a class="dropdown-item" href="#"
                            @click.prevent="fetchRecentDays(60)">{{
-                            i18n.choice('_.stats.range.days', 1, {"days": 60})
+                            i18n.choice("_.stats.range.days", 1, {"days": 60})
                         }}</a>
                     </li>
                     <li class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#"
-                           @click.prevent="picker.show()">{{ i18n.choice('_.stats.range.picker') }}</a></li>
+                           @click.prevent="picker.show()">{{ i18n.choice("_.stats.range.picker") }}</a></li>
                 </ul>
             </div>
-            <h1 class="h3 mr-auto mb-0 text-gray-800">{{ i18n.get('_.stats') }}</h1>
+            <h1 class="h3 mr-auto mb-0 text-gray-800">{{ i18n.get("_.stats") }}</h1>
         </div>
         <div class="row">
             <div class="col-lg-8">
@@ -47,9 +47,9 @@
                     <div class="col-md-6 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>{{ i18n.get('_.stats.purpose') }}</h5>
+                                <h5>{{ i18n.get("_.stats.purpose") }}</h5>
                                 <p v-if="travelPurpose.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get('_.stats.no-data') }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}</p>
                                 <apexchart ref="purpose" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -58,9 +58,9 @@
                     <div class="col-md-6 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>{{ i18n.get('_.stats.categories') }}</h5>
+                                <h5>{{ i18n.get("_.stats.categories") }}</h5>
                                 <p v-if="travelCategories.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get('_.stats.no-data') }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}</p>
                                 <apexchart ref="categories" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -69,9 +69,9 @@
                     <div class="col-md-6 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>{{ i18n.get('_.stats.companies') }}</h5>
+                                <h5>{{ i18n.get("_.stats.companies") }}</h5>
                                 <p v-if="trainProviders.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get('_.stats.no-data') }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}</p>
                                 <apexchart ref="companies" :options="pieChartOptions"
                                            :series="emptySeries" type="pie" width="100%"></apexchart>
                             </div>
@@ -81,10 +81,10 @@
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5>{{ i18n.get('_.stats.volume') }} <small>{{ i18n.get('_.stats.per-week') }}</small>
+                                <h5>{{ i18n.get("_.stats.volume") }} <small>{{ i18n.get("_.stats.per-week") }}</small>
                                 </h5>
                                 <p v-if="travelTime.length <= 0" class="text-danger font-weight-bold mt-2">
-                                    {{ i18n.get('_.stats.no-data') }}</p>
+                                    {{ i18n.get("_.stats.no-data") }}</p>
                                 <apexchart ref="travelTimeChart"
                                            :options="barChartOptions" :series="emptyDataSeries" type="line"
                                            width="100%"></apexchart>
@@ -106,7 +106,7 @@
                      {{ this.globalData.distance }}  km
                 </span>
                                 <br>
-                                <small class="text-muted">{{ i18n.get('_.stats.global.distance') }}</small>
+                                <small class="text-muted">{{ i18n.get("_.stats.global.distance") }}</small>
                             </div>
                         </div>
                     </div>
@@ -122,7 +122,7 @@
                     {{ this.globalDuration }}
                 </span>
                                 <br>
-                                <small class="text-muted">{{ i18n.get('_.stats.global.duration') }}</small>
+                                <small class="text-muted">{{ i18n.get("_.stats.global.duration") }}</small>
                             </div>
                         </div>
                     </div>
@@ -138,16 +138,16 @@
                      {{ globalData.activeUsers }} x
                 </span>
                                 <br>
-                                <small class="text-muted">{{ i18n.get('_.stats.global.active') }}</small>
+                                <small class="text-muted">{{ i18n.get("_.stats.global.active") }}</small>
                             </div>
                         </div>
                     </div>
                 </div>
                 <hr/>
                 <small class="text-muted">*{{
-                        i18n.choice('_.stats.global.explain', 1, {
-                            'fromDate': moment(this.fromGlobal).format('LLL'),
-                            'toDate': moment(this.untilGlobal).format('LLL')
+                        i18n.choice("_.stats.global.explain", 1, {
+                            "fromDate": moment(this.fromGlobal).format("LLL"),
+                            "toDate": moment(this.untilGlobal).format("LLL")
                         })
                     }}</small>
                 <hr/>
@@ -160,7 +160,7 @@
 
 <script>
 import LayoutBasic from "../layouts/Basic";
-import VueApexCharts from 'vue-apexcharts'
+import VueApexCharts from "vue-apexcharts";
 import moment from "moment";
 import Litepicker from "litepicker";
 
@@ -180,9 +180,9 @@ export default {
             until: moment().toISOString(),
             fromGlobal: 0,
             untilGlobal: 0,
-            emptySeries: ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1',],
+            emptySeries: ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",],
             emptyDataSeries: [{
-                name: 'series-1',
+                name: "series-1",
                 data: []
             }],
             globalData: {
@@ -191,13 +191,13 @@ export default {
                 activeUsers: 0
             },
             travelPurpose: [
-                {name: '', count: 0, duration: 0},
+                {name: "", count: 0, duration: 0},
             ],
             trainProviders: [
-                {name: '', count: 0, duration: 0},
+                {name: "", count: 0, duration: 0},
             ],
             travelCategories: [
-                {name: '', count: 0, duration: 0},
+                {name: "", count: 0, duration: 0},
             ],
             travelTime: [
                 {date: 0, duration: 2021, count: 1},
@@ -224,44 +224,42 @@ export default {
                     enabledOnSeries: [1]
                 },
                 stroke: {
-                    curve: 'smooth',
+                    curve: "smooth",
                 },
                 grid: {
                     row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
                         opacity: 0.5
                     },
                 },
                 yaxis: [
                     {
                         title: {
-                            text: this.i18n.get('_.stats.time-in-minutes')
+                            text: this.i18n.get("_.stats.time-in-minutes")
                         },
                     },
                     {
                         opposite: true,
                         title: {
-                            text: this.i18n.get('_.stats.trips')
+                            text: this.i18n.get("_.stats.trips")
                         }
                     }
                 ],
             },
-
-
-        }
+        };
     },
     mounted() {
         this.fetchGlobalData();
         this.fetchPersonalData();
         this.picker = new Litepicker({
-            element: document.getElementById('daterange'),
+            element: document.getElementById("daterange"),
             singleMode: false,
             lang: this.i18n.getLocale(),
             tooltipNumber: (totalDays) => {
                 return totalDays - 1;
             },
             setup: (picker) => {
-                picker.on('selected', (date1, date2) => {
+                picker.on("selected", (date1, date2) => {
                     this.from  = moment(date1.toDateString()).toISOString();
                     this.until = moment(date2.toDateString()).toISOString();
                     this.fetchPersonalData();
@@ -294,7 +292,7 @@ export default {
         },
         fetchPersonalData() {
             axios
-                .get('/statistics?from=' + this.from + "&until=" + this.until)
+                .get("/statistics?from=" + this.from + "&until=" + this.until)
                 .then((response) => {
                     this.travelPurpose    = response.data.data.purpose;
                     this.trainProviders   = response.data.data.operators;
@@ -309,19 +307,19 @@ export default {
                     this.updateVolume();
                 })
                 .catch((error) => {
-                    console.error(error)
+                    console.error(error);
                 });
         },
         fetchGlobalData() {
             axios
-                .get('/statistics/global')
+                .get("/statistics/global")
                 .then((response) => {
                     this.globalData  = response.data.data;
                     this.untilGlobal = response.data.meta.until;
                     this.fromGlobal  = response.data.meta.from;
                 })
                 .catch((error) => {
-                    console.error(error)
+                    console.error(error);
                 });
         },
         updatePurpose() {
@@ -333,13 +331,13 @@ export default {
         updateCategories() {
             this.$refs.categories.updateOptions({
                 labels: this.travelCategories.map((x) => this.i18n.get("_.transport_types." + x.name)),
-                series: this.travelCategories.map(x => x.count)
+                series: this.travelCategories.map((x) => x.count)
             });
         },
         updateProviders() {
             this.$refs.companies.updateOptions({
                 labels: this.trainProviders.map((x) => x.name),
-                series: this.trainProviders.map(x => x.count)
+                series: this.trainProviders.map((x) => x.count)
             });
         },
         updateVolume() {
@@ -349,21 +347,21 @@ export default {
                 let currentDate = moment(value.date);
                 while (value.date && store.diff(currentDate) !== 0) {
                     fixedTravelTime.push({
-                        date: store.format('L'),
+                        date: store.format("L"),
                         count: 0,
                         duration: 0,
                     });
-                    store.add(1, 'day');
+                    store.add(1, "day");
                 }
-                value.date = currentDate.format('L');
+                value.date = currentDate.format("L");
                 fixedTravelTime.push(value);
-                store = currentDate.add(1, 'day');
+                store = currentDate.add(1, "day");
             });
 
             this.$refs.travelTimeChart.updateSeries([
                 {
-                    name: this.i18n.get('_.stats.time-in-minutes'),
-                    type: 'line',
+                    name: this.i18n.get("_.stats.time-in-minutes"),
+                    type: "line",
                     data: fixedTravelTime.map((x) => {
                         return {
                             x: x.date,
@@ -371,8 +369,8 @@ export default {
                         }
                     })
                 }, {
-                    name: this.i18n.get('_.stats.trips'),
-                    type: 'column',
+                    name: this.i18n.get("_.stats.trips"),
+                    type: "column",
                     data: fixedTravelTime.map((x) => {
                         return {
                             x: x.date,
