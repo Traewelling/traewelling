@@ -18,14 +18,14 @@
                 type: 'pie',
                 data: {
                     labels: [
-                        @foreach($topCategories as $category => $count)
-                            '{{$category}}',
+                        @foreach($topCategories as $category)
+                            '{{$category->name}}',
                         @endforeach
                     ],
                     datasets: [{
                         data: [
-                            @foreach($topCategories as $category => $count)
-                                '{{$count}}',
+                            @foreach($topCategories as $category)
+                                '{{$category->count}}',
                             @endforeach
                         ],
                         backgroundColor: [

@@ -36,6 +36,11 @@
                             {{ i18n.get('_.menu.active') }}
                         </router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link :to="{ name: 'statistics'}" class="nav-link">
+                            {{ i18n.get('_.stats') }}
+                        </router-link>
+                    </li>
                 </ul>
                 <ul v-if="!$auth.check()" class="navbar-nav w-auto">
                     <li class="nav-item">

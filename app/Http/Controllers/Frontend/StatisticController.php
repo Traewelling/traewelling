@@ -39,6 +39,11 @@ class StatisticController extends Controller
             return $row;
         });
 
+        $topCategories = $topCategories->map(function($row) {
+            $row->name = __('transport_types.' . $row->name);
+            return $row;
+        });
+
         return view('stats.stats', [
             'from'           => $from,
             'to'             => $to,
