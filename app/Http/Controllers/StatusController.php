@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -150,9 +151,9 @@ class StatusController extends Controller
                                ->orWhere('users.id', $user)
                                ->orWhere(function($query) {
                                    $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
-                                         ->whereIn('users.id', $followings)
-                                         ->orWhere('visibility', StatusVisibility::PUBLIC);
+                                   $query->whereIn('users.id', $followings)
+                                         ->where('visibility', StatusVisibility::PUBLIC)
+                                         ->where('visibility', StatusVisibility::FOLLOWERS);
                                });
                      })
                      ->whereHas('trainCheckin', function($query) {
@@ -290,7 +291,7 @@ class StatusController extends Controller
         $export        = [];
 
         foreach ($trainCheckins as $t) {
-            $interval = (new \DateTime($t->trainCheckin->departure))->diff(new \DateTime($t->trainCheckin->arrival));
+            $interval = (new DateTime($t->trainCheckin->departure))->diff(new DateTime($t->trainCheckin->arrival));
             $export   = array_merge($export, [[
                                                   (string) $t->id,
                                                   $t->trainCheckin->hafastrip->category,
