@@ -14,7 +14,35 @@
                         </button>
                     </p>
                 </div>
-                <!-- ToDo Future Check-ins -->
+                <div id="accordionFutureCheckIns" class="accordion accordion-flush mt-5 mb-0">
+                    <div class="accordion-item">
+                        <h1 id="flush-headingOne" class="accordion-header">
+                            <button
+                                aria-controls="future-check-ins"
+                                aria-expanded="false"
+                                class="accordion-button collapsed px-0"
+                                data-mdb-target="#future-check-ins"
+                                data-mdb-toggle="collapse"
+                                type="button"
+                            >
+                                {{ i18n.get('_.dashboard.future') }}
+                            </button>
+                        </h1>
+                        <div
+                            id="future-check-ins"
+                            aria-labelledby="flush-headingOne"
+                            class="accordion-collapse collapse"
+                            data-mdb-parent="#accordionFutureCheckIns"
+                        >
+                            <div class="accordion-body p-0">
+                                <Status v-for="status in futureStatuses" v-bind:key="status.id"
+                                        :show-date="showDate(status, statuses)"
+                                        :status="status"
+                                        v-bind:stopovers="stopovers"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div v-if="statuses">
                     <Status v-for="status in statuses" v-bind:key="status.id"
                             :show-date="showDate(status, statuses)"
@@ -49,6 +77,7 @@ export default {
             loading: true,
             error: null,
             statuses: [StatusModel],
+            futureStatuses: [StatusModel],
             stopovers: [], //ToDo Typedef
             moment: moment,
             links: null,
@@ -79,6 +108,16 @@ export default {
         fetchData() {
             this.error = this.statuses = null;
             axios
+                .get('/dashboard/future')
+                .then((response) => {
+                    this.futureStatuses = response.data.data;
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.error   = error.data.message || error.message;
+                    console.error(this.error);
+                });
+            axios
                 .get(this.$route.path)
                 .then((response) => {
                     this.loading = false;
@@ -93,6 +132,7 @@ export default {
                 .catch((error) => {
                     this.loading = false;
                     this.error   = error.data.message || error.message;
+                    console.error(this.error);
                 });
         },
         fetchMore() {
