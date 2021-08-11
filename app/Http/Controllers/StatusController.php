@@ -121,11 +121,9 @@ class StatusController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
-                     ->whereHas('trainCheckin', function($query) {
-                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
@@ -145,20 +143,27 @@ class StatusController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function($query) {
-                         $user = Auth::check() ? auth()->user()->id : null;
-                         $query->where('users.private_profile', 0)
-                               ->where('visibility', StatusVisibility::PUBLIC)
-                               ->orWhere('users.id', $user)
-                               ->orWhere(function($query) {
-                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                   $query->whereIn('users.id', $followings)
-                                         ->where('visibility', StatusVisibility::PUBLIC)
-                                         ->where('visibility', StatusVisibility::FOLLOWERS);
-                               });
+                         //Visibility checks: One of the following options must be true
+
+                         //Option 1: User is public AND status is public
+                         $query->where(function($query) {
+                             $query->where('users.private_profile', 0)
+                                   ->where('visibility', StatusVisibility::PUBLIC);
+                         });
+
+                         //Option 2: Status is from oneself
+                         if (auth()->check()) {
+                             $query->orWhere('users.id', auth()->user()->id);
+                         }
+
+                         //Option 3: Status is from a followed BUT not unlisted or private
+                         $query->orWhere(function($query) {
+                             $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                             $query->whereIn('users.id', $followings)
+                                   ->whereNotIn('visibility', [StatusVisibility::UNLISTED, StatusVisibility::PRIVATE]);
+                         });
                      })
-                     ->whereHas('trainCheckin', function($query) {
-                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
