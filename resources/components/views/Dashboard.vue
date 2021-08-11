@@ -14,7 +14,8 @@
                         </button>
                     </p>
                 </div>
-                <div id="accordionFutureCheckIns" class="accordion accordion-flush mt-5 mb-0">
+                <div v-if="futureStatuses.length && !loading" id="accordionFutureCheckIns"
+                     class="accordion accordion-flush mt-5 mb-0">
                     <div class="accordion-item">
                         <h1 id="flush-headingOne" class="accordion-header">
                             <button
@@ -106,7 +107,7 @@ export default {
             return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
         },
         fetchData() {
-            this.error = this.statuses = null;
+            this.error = this.statuses = this.futureStatuses = null;
             axios
                 .get('/dashboard/future')
                 .then((response) => {
