@@ -85,6 +85,7 @@ export let ProfileModel = {
     privateProfile: false,
     userInvisibleToMe: true,
     following: false,
+    followPending: false,
     preventIndex: true,
 };
 
