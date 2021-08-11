@@ -84,6 +84,7 @@ export let ProfileModel = {
     mastodonUrl: null,
     privateProfile: false,
     userInvisibleToMe: true,
+    following: false,
     preventIndex: true,
 };
 

@@ -39,13 +39,17 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $dates    = ['email_verified_at', 'privacy_ack_at', 'last_login'];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration', 'following'
     ];
 
     public function getTrainDistanceAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->select('distance')
                            ->sum('distance');
+    }
+
+    public function statuses(): HasMany {
+        return $this->hasMany(Status::class);
     }
 
     public function getTrainDurationAttribute(): float {
@@ -65,10 +69,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function socialProfile(): HasOne {
         return $this->hasOne(SocialLoginProfile::class);
-    }
-
-    public function statuses(): HasMany {
-        return $this->hasMany(Status::class);
     }
 
     public function home(): HasOne {
@@ -139,6 +139,13 @@ class User extends Authenticatable implements MustVerifyEmail
                        && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
                    )
                );
+    }
+
+    public function getFollowingAttribute(): bool {
+        if (auth()->check() && auth()->user()->follows->contains('id', $this->id)) {
+            return true;
+        }
+        return false;
     }
 
     /**
