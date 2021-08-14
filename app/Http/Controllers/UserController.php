@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\IdentidalModelException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\Status;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
@@ -73,17 +73,6 @@ class UserController extends Controller
                     ->encode('png')->getEncoded();
     }
 
-    public function deleteProfilePicture(): RedirectResponse {
-        $user = Auth::user();
-
-        if ($user->avatar != null) {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            $user->update(['avatar' => null]);
-        }
-
-        return back();
-    }
-
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
         $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
@@ -104,42 +93,27 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-
-    public function deleteSession(): RedirectResponse {
-        $user = Auth::user();
-        Auth::logout();
-        foreach ($user->sessions as $session) {
-            $session->delete();
-        }
-        return redirect()->route('static.welcome');
-    }
-
     /**
-     * delete a specific session for user
-     * @param Request $request
-     * @return RedirectResponse
+     * @todo remove twitterUrl after implemented ID-Link in vue Template
      */
-    public function deleteToken(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
-                                        ]);
-        $token     = Token::find($validated['tokenId']);
-        if ($token->user->id == Auth::user()->id) {
-            $token->revoke();
+    public static function getProfilePage($username): ?array {
+        $user = User::where('username', 'like', $username)->first();
+        if ($user === null) {
+            return null;
         }
-        return redirect()->route('settings');
-    }
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (PermissionException) {
+            $statuses = null;
+        }
 
-    //Save Changes on Settings-Page
-    public function SaveAccount(Request $request): RedirectResponse {
-
-        $this->validate($request, [
-            'name' => 'required|max:120'
-        ]);
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $request['name'];
-        $user->update();
-        return redirect()->route('account');
+        return [
+            'username'    => $username,
+            'statuses'    => $statuses,
+            'twitterUrl'  => $user->twitterUrl,
+            'mastodonUrl' => $user->mastodonUrl,
+            'user'        => $user
+        ];
     }
 
     /**
@@ -171,27 +145,44 @@ class UserController extends Controller
     }
 
     /**
-     * @todo remove twitterUrl after implemented ID-Link in vue Template
+     * @param User $user
+     * @param User $userToFollow
+     * @return User
+     * @throws AlreadyFollowingException
+     * @throws IdentidalModelException
+     * @api v1
      */
-    public static function getProfilePage($username): ?array {
-        $user = User::where('username', 'like', $username)->first();
-        if ($user === null) {
-            return null;
+    public static function createOrRequestFollow(User $user, User $userToFollow): User {
+        if ($user->is($userToFollow)) {
+            throw new IdentidalModelException();
         }
-        try {
-            $statuses = UserController::statusesForUser($user);
-        } catch (PermissionException) {
-            $statuses = null;
+        if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
+            throw new AlreadyFollowingException($user, $userToFollow);
         }
 
-        return [
-            'username'    => $username,
-            'statuses'    => $statuses,
-            'twitterUrl'  => $user->twitterUrl,
-            'mastodonUrl' => $user->mastodonUrl,
-            'user'        => $user
-        ];
+        // Request follow if user is a private profile
+        if ($userToFollow->private_profile) {
+            $follow = FollowRequest::create([
+                                                'user_id'   => $user->id,
+                                                'follow_id' => $userToFollow->id
+                                            ]);
+
+            $userToFollow->notify(new FollowRequestIssued($follow));
+            $user->load('follows');
+            $userToFollow->fresh();
+            return $userToFollow;
+        }
+
+        $follow = Follow::create([
+                                     'user_id'   => $user->id,
+                                     'follow_id' => $userToFollow->id
+                                 ]);
+        $user->notify(new FollowRequestApproved($follow));
+        $userToFollow->fresh();
+        return $userToFollow;
     }
+
+    //Save Changes on Settings-Page
 
     /**
      * Add $userToFollow to $user's Followings
@@ -200,6 +191,7 @@ class UserController extends Controller
      * @param bool $isApprovedRequest
      * @return bool
      * @throws AlreadyFollowingException
+     * @deprecated
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
         if ($user->is($userToFollow)) {
@@ -230,11 +222,23 @@ class UserController extends Controller
     }
 
     /**
+     * Returnes whether $user follows $userFollow
+     * @param User $user
+     * @param User $userFollow
+     * @return bool
+     * @deprecated Following-Attribute
+     */
+    private static function isFollowing(User $user, User $userFollow): bool {
+        return $user->follows->contains('id', $userFollow->id);
+    }
+
+    /**
      * Add $userToFollow to $user's FollowerRequests
      * @param User $user
      * @param User $userToFollow The user of the person who is followed
      * @return bool
      * @throws AlreadyFollowingException
+     * @deprecated
      */
     public static function requestFollow(User $user, User $userToFollow): bool {
         if ($userToFollow->followRequests->contains('user_id', $user->id)) {
@@ -263,16 +267,6 @@ class UserController extends Controller
         Follow::where('user_id', $user->id)->where('follow_id', $userToUnfollow->id)->delete();
         $user->load('follows');
         return self::isFollowing($user, $userToUnfollow) == false;
-    }
-
-    /**
-     * Returnes whether $user follows $userFollow
-     * @param User $user
-     * @param User $userFollow
-     * @return bool
-     */
-    private static function isFollowing(User $user, User $userFollow): bool {
-        return $user->follows->contains('id', $userFollow->id);
     }
 
     public static function registerByDay(Carbon $date): int {
@@ -310,5 +304,52 @@ class UserController extends Controller
         )->orWhere(
             'username', 'like', "%{$searchQuery}%"
         )->simplePaginate(10);
+    }
+
+    public function deleteProfilePicture(): RedirectResponse {
+        $user = Auth::user();
+
+        if ($user->avatar != null) {
+            File::delete(public_path('/uploads/avatars/' . $user->avatar));
+            $user->update(['avatar' => null]);
+        }
+
+        return back();
+    }
+
+    public function deleteSession(): RedirectResponse {
+        $user = Auth::user();
+        Auth::logout();
+        foreach ($user->sessions as $session) {
+            $session->delete();
+        }
+        return redirect()->route('static.welcome');
+    }
+
+    /**
+     * delete a specific session for user
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteToken(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'tokenId' => ['required', 'exists:oauth_access_tokens,id']
+                                        ]);
+        $token     = Token::find($validated['tokenId']);
+        if ($token->user->id == Auth::user()->id) {
+            $token->revoke();
+        }
+        return redirect()->route('settings');
+    }
+
+    public function SaveAccount(Request $request): RedirectResponse {
+
+        $this->validate($request, [
+            'name' => 'required|max:120'
+        ]);
+        $user       = User::where('id', Auth::user()->id)->first();
+        $user->name = $request['name'];
+        $user->update();
+        return redirect()->route('account');
     }
 }

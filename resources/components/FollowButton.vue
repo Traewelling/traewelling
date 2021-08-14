@@ -28,24 +28,39 @@ export default {
             userData: ProfileModel
         };
     },
-    props: {
-        user: null
+    props: ['user'],
+    mounted() {
+        this.userData = this.$props.user;
     },
     watch: {
-        user() {
+        user(val, oldVal) {
+            console.log('test');
             this.userData = this.$props.user;
         }
     },
     methods: {
         follow() {
             axios
-                .
+                .post('/user/createFollow', {userId: this.user.id})
+                .then((result) => {
+                    this.userData = result.data.data;
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
         },
         unfollow() {
-
+            axios
+                .delete('/user/destroyFollow', {data: {userId: this.user.id}})
+                .then((result) => {
+                    this.userData = result.data.data;
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
         },
         requestFollow() {
-
+            this.follow();
         }
     }
 };

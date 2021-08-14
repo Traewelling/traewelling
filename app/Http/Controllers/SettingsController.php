@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AlreadyFollowingException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
-use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -15,8 +15,8 @@ class SettingsController extends Controller
 {
     public function renderFollowerSettings(): Renderable {
         return view('settings.follower', [
-            'requests'  => auth()->user()->followRequests()->paginate(15),
-            'followers' => auth()->user()->followers()->paginate(15)
+            'requests'  => auth()->user()->followRequests()->with('user')->paginate(15),
+            'followers' => auth()->user()->followers()->with('user')->paginate(15)
         ]);
     }
 
@@ -39,7 +39,7 @@ class SettingsController extends Controller
      *
      * @param int $userId The id of the user who is approving a follower
      * @param int $approverId The id of a to-be-approved follower
-     * @throws ModelNotFoundException|\App\Exceptions\AlreadyFollowingException
+     * @throws ModelNotFoundException|AlreadyFollowingException
      */
     public static function approveFollower(int $userId, int $approverId): bool {
         $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();

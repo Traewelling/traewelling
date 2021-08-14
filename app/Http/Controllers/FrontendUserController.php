@@ -47,6 +47,7 @@ class FrontendUserController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
+     * @deprecated
      */
     public function CreateFollow(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -91,6 +92,7 @@ class FrontendUserController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
+     * @deprecated
      */
     public function destroyFollow(Request $request): JsonResponse {
         $validated      = $request->validate([
