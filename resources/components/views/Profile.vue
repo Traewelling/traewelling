@@ -10,7 +10,6 @@
                                                    class="fas fa-user-lock"/>
                     </strong> <br/>
                     <small class="font-weight-light">@{{ user.username }}</small>
-                    <!--          ToDo: Implement Follow-Button to vue-->
                     <FollowButton :user="user"></FollowButton>
                 </h2>
                 <h2>

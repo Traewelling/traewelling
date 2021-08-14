@@ -168,9 +168,9 @@ class UserController extends Controller
                                             ]);
 
             $userToFollow->notify(new FollowRequestIssued($follow));
-            $user->load('follows');
+            $user->load('followRequests');
             $userToFollow->fresh();
-            return $userToFollow;
+            return $userToFollow; //FixMe somehow the refresh does not really work. The Request-Attribute is still false.
         }
 
         $follow = Follow::create([
