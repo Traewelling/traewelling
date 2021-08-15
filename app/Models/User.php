@@ -142,7 +142,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getFollowingAttribute(): bool {
-//        dd($this->followers->contains('user_id', 13));
         return (auth()->check() && $this->followers->contains('user_id', auth()->user()->id));
     }
 
