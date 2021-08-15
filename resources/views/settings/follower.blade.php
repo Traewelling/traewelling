@@ -84,26 +84,28 @@
                                         <tr style="vertical-align: middle">
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                    <a href="{{ route('account.show', ['username' => $follower->username]) }}">
-                                                        <img src="{{ route('account.showProfilePicture', ['username' => $follower->username]) }}"
-                                                             style="height: 4em;"
+                                                    <a href="{{ route('account.show', ['username' => $follower->user->username]) }}">
+                                                        <img
+                                                            src="{{ route('account.showProfilePicture', ['username' => $follower->user->username]) }}"
+                                                            style="height: 4em;"
                                                         />
                                                     </a>
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{{route('account.show', ['username' => $follower->username])}}">
-                                                    {{$follower->name}}
-                                                    @if($follower->name != $follower->username)
+                                                <a href="{{route('account.show', ['username' => $follower->user->username])}}">
+                                                    {{$follower->user->name}}
+                                                    @if($follower->user->name != $follower->user->username)
                                                         <br/>
-                                                        <small>{{'@' . $follower->username}}</small>
+                                                        <small>{{'@' . $follower->user->username}}</small>
                                                     @endif
                                                 </a>
                                             </td>
                                             <td>
                                                 <form method="POST" action="{{route('settings.follower.remove')}}">
                                                     @csrf
-                                                    <input type="hidden" name="user_id" value="{{$follower->id}}"/>
+                                                    <input type="hidden" name="user_id"
+                                                           value="{{$follower->user->id}}"/>
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-user-minus"></i>
                                                         {{__('settings.follower.delete')}}

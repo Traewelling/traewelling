@@ -91,8 +91,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
 
-    public function followers(): BelongsToMany {
-        return $this->belongsToMany(User::class, 'follows', 'follow_id', 'user_id');
+    public function followers(): HasMany {
+        return $this->hasMany(Follow::class, 'follow_id', 'id');
     }
 
     public function sessions(): HasMany {
@@ -142,11 +142,11 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getFollowingAttribute(): bool {
-        return (auth()->check() && auth()->user()->follows->contains('id', $this->id));
+        return (auth()->check() && $this->followers->contains('user_id', auth()->user()->id));
     }
 
     public function getFollowPendingAttribute(): bool {
-        return (auth()->check() && auth()->user()->followRequests->contains('user_id', $this->id));
+        return (auth()->check() && $this->followRequests->contains('user_id', auth()->user()->id));
     }
 
     /**
