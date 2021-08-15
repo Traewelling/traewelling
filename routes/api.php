@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
+        Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
         Route::post('like/{status}', [LikesController::class, 'create']);
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
