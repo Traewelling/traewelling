@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\IdentidalModelException;
+use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\UserController as UserBackend;
@@ -55,7 +55,7 @@ class UserController extends ResponseController
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
             return $this->sendError(['message' => __('controller.user.follow-error')], 409);
-        } catch (IdentidalModelException) {
+        } catch (IdenticalModelException) {
             abort(409);
         }
 

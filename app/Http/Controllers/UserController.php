@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\IdentidalModelException;
+use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -149,12 +149,12 @@ class UserController extends Controller
      * @param User $userToFollow
      * @return User
      * @throws AlreadyFollowingException
-     * @throws IdentidalModelException
+     * @throws IdenticalModelException
      * @api v1
      */
     public static function createOrRequestFollow(User $user, User $userToFollow): User {
         if ($user->is($userToFollow)) {
-            throw new IdentidalModelException();
+            throw new IdenticalModelException();
         }
         if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
             throw new AlreadyFollowingException($user, $userToFollow);

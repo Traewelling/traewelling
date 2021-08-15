@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class IdentidalModelException extends Exception
+class IdenticalModelException extends Exception
 {
     //
 }
