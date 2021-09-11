@@ -82,8 +82,8 @@ class TransportController extends Controller
 
         $departures = HafasController::getDepartures(
             station: $station,
-            when: $when,
-            type: $travelType
+            when:    $when,
+            type:    $travelType
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });
@@ -97,6 +97,7 @@ class TransportController extends Controller
      * @param $number
      * @param $when
      * @return mixed|null
+     * @throws GuzzleException
      * @deprecated with vue, replaced by frontend logic
      */
     public static function FastTripAccess($departure, $lineName, $number, $when) {
@@ -145,8 +146,7 @@ class TransportController extends Controller
                 }
             }
         }
-        $json = self::sortByWhenOrScheduledWhen($json);
-        return $json;
+        return self::sortByWhenOrScheduledWhen($json);
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
@@ -293,13 +293,13 @@ class TransportController extends Controller
             ->where('arrival_planned', $arrival)
             ->first();
 
-        $distance = 0;
+        $distanceInMeters = 0;
         if ($departureStopover != null && $arrivalStopover != null) {
-            $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
+            $distanceInMeters = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
         }
 
         $points = self::CalculateTrainPoints(
-            $distance / 1000,
+            $distanceInMeters,
             $hafasTrip->category,
             $stopovers[$offset1]['departure'],
             $stopovers[$offset2]['arrival'],
@@ -341,7 +341,7 @@ class TransportController extends Controller
                                                  'trip_id'     => $tripId,
                                                  'origin'      => $originStation->ibnr,
                                                  'destination' => $destinationStation->ibnr,
-                                                 'distance'    => $distance,
+                                                 'distance'    => $distanceInMeters,
                                                  'delay'       => $hafasTrip->delay,
                                                  'points'      => $points,
                                                  'departure'   => $plannedDeparture,
@@ -391,7 +391,7 @@ class TransportController extends Controller
         ];
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
+    public static function CalculateTrainPoints(int $distance, $category, $departure, $arrival, $delay): int {
         $now = time();
 
         $factor = 1;
@@ -401,7 +401,7 @@ class TransportController extends Controller
 
         $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
         $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
-        $points        = $factor + ceil($distance / 10);
+        $points        = $factor + ceil($distance / 10000);
 
         /**
          * Full points, 20min before the departure time or during the ride
@@ -540,13 +540,13 @@ class TransportController extends Controller
      * @api v1
      */
     public static function createTrainCheckin(
-        Status $status,
+        Status    $status,
         HafasTrip $trip,
-        int $entryStop,
-        int $exitStop,
-        Carbon $departure = null,
-        Carbon $arrival = null,
-        bool $ibnr = false
+        int       $entryStop,
+        int       $exitStop,
+        Carbon    $departure = null,
+        Carbon    $arrival = null,
+        bool      $ibnr = false
     ): array {
         $trip->load('stopoversNEW');
 
@@ -569,9 +569,9 @@ class TransportController extends Controller
         }
 
         $overlapping = self::getOverlappingCheckIns(
-            user: Auth::user(),
+            user:  Auth::user(),
             start: $firstStop->departure,
-            end: $lastStop->arrival
+            end:   $lastStop->arrival
         );
         if ($overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
@@ -580,11 +580,11 @@ class TransportController extends Controller
         $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
 
         $points = self::CalculateTrainPoints(
-            distance: $distance,
-            category: $trip->category,
+            distance:  $distance,
+            category:  $trip->category,
             departure: $firstStop->planned_departure,
-            arrival: $lastStop->planned_arrival,
-            delay: $trip->delay
+            arrival:   $lastStop->planned_arrival,
+            delay:     $trip->delay
         );
 
         $trainCheckin = TrainCheckin::create([
@@ -601,9 +601,9 @@ class TransportController extends Controller
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             if ($otherStatus?->user) {
                 $otherStatus->user->notify(new UserJoinedConnection(
-                                               statusId: $status->id,
-                                               linename: $trip->linename,
-                                               origin: $firstStop->name,
+                                               statusId:    $status->id,
+                                               linename:    $trip->linename,
+                                               origin:      $firstStop->name,
                                                destination: $lastStop->name
                                            ));
             }
