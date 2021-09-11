@@ -9,7 +9,7 @@ use App\Models\TrainStopover;
 abstract class GeoController extends Controller
 {
     public static function calculateDistance(
-        HafasTrip $hafasTrip,
+        HafasTrip     $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
@@ -47,9 +47,9 @@ abstract class GeoController extends Controller
         foreach ($slicedFeatures as $stopover) {
             if ($lastStopover != null) {
                 $distance += self::calculateDistanceBetweenCoordinates(
-                    latitudeA: $lastStopover->geometry->coordinates[1],
+                    latitudeA:  $lastStopover->geometry->coordinates[1],
                     longitudeA: $lastStopover->geometry->coordinates[0],
-                    latitudeB: $stopover->geometry->coordinates[1],
+                    latitudeB:  $stopover->geometry->coordinates[1],
                     longitudeB: $stopover->geometry->coordinates[0]
                 );
             }
@@ -67,7 +67,7 @@ abstract class GeoController extends Controller
      * @return float
      */
     private static function calculateDistanceByStopovers(
-        HafasTrip $hafasTrip,
+        HafasTrip     $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
@@ -89,9 +89,9 @@ abstract class GeoController extends Controller
                 continue;
             }
             $distance     += self::calculateDistanceBetweenCoordinates(
-                latitudeA: $lastStopover->trainStation->latitude,
+                latitudeA:  $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
-                latitudeB: $stopover->trainStation->latitude,
+                latitudeB:  $stopover->trainStation->latitude,
                 longitudeB: $stopover->trainStation->longitude
             );
             $lastStopover = $stopover;
@@ -109,7 +109,7 @@ abstract class GeoController extends Controller
             return 0.0;
         }
 
-        $equatorialRadiusInKilometers = 6378.137;
+        $equatorialRadiusInMeters = 6378137;
 
         $pi       = pi();
         $latA     = $latitudeA / 180 * $pi;
@@ -117,8 +117,8 @@ abstract class GeoController extends Controller
         $latB     = $latitudeB / 180 * $pi;
         $lonB     = $longitudeB / 180 * $pi;
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                    * $equatorialRadiusInKilometers;
+                    * $equatorialRadiusInMeters;
 
-        return round($distance, 3) * 1000;
+        return round($distance);
     }
 }
