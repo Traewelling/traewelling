@@ -11,7 +11,7 @@ class ChangeColumnForTrainCheckins extends Migration
     public function up(): void {
         Schema::table('train_checkins', function(Blueprint $table) {
             $table->unsignedInteger('distance')
-                  ->comment('meter')
+                  ->comment('meters')
                   ->nullable()
                   ->default(null)
                   ->change();
