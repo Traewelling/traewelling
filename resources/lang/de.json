@@ -119,6 +119,7 @@
     "dates.Wednesday": "Mittwoch",
     "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
     "dateformat.month-and-year": "MMMM YYYY",
+    "error.bad-request": "Die Anfrage ist ungültig.",
     "events.header": "Veranstaltung: :name",
     "events.name": "Name",
     "events.hashtag": "Hashtag",
