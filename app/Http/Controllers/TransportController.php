@@ -462,8 +462,12 @@ class TransportController extends Controller
      */
     private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
         //increase the tolerance for start and end of collisions
-        $start = $start->clone()->addMinutes(2);
-        $end   = $end->clone()->subMinutes(2);
+        $start = $start->clone()->addMinutes(10);
+        $end   = $end->clone()->subMinutes(10);
+
+        if($end->isBefore($start)) {
+            return collect();
+        }
 
         $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
                                        ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
