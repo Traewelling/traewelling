@@ -6,9 +6,9 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Carbon\Carbon;
 
-class TransportControllerTest extends TestCase
-{
+class TransportControllerTest extends TestCase {
 
     use RefreshDatabase;
 
@@ -22,42 +22,24 @@ class TransportControllerTest extends TestCase
     public function testCalculateTrainPoints_positive_tests() {
         // 50km in an IC/ICE => 50/10 + 10 = 15 points
         $this->assertEquals(15, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: "-2 minutes",
-            arrival: "+10 minutes",
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->subMinutes(2),
+            arrival:         Carbon::now()->addMinutes(10),
         ));
         // 50km in an RB => 50/10 + 5 = 10 points
         $this->assertEquals(10, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::REGIONAL,
-            departure: "-2 minutes",
-            arrival: "+10 minutes",
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::REGIONAL,
+            departure:       Carbon::now()->subMinutes(2),
+            arrival:         Carbon::now()->addMinutes(10),
         ));
         // 18km in a Bus => 20/10 + 2 = 4 points
         $this->assertEquals(4, TransportController::CalculateTrainPoints(
-            distance: 18,
-            category: HafasTravelType::BUS,
-            departure: "-2 minutes",
-            arrival: "+10 minutes",
-            delay: 0
-        ));
-    }
-
-    /**
-     * If the connection was not on time, we should still get the same points.
-     * 50km in an IC/ICE => 15 points.
-     * Everything is 30min late, assuming that departure delay = arrival delay (That's just how traewelling works).
-     */
-    public function testCalculateTrainPoints_delayed_trains() {
-        $this->assertEquals(15, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: "-32 minutes",
-            arrival: "-20 minutes",
-            delay: 30 * 60
+            distanceInMeter: 18000,
+            category:        HafasTravelType::BUS,
+            departure:       Carbon::now()->subMinutes(2),
+            arrival:         Carbon::now()->addMinutes(10),
         ));
     }
 
@@ -67,11 +49,10 @@ class TransportControllerTest extends TestCase
      */
     public function testCalculateTrainPoints_unknown_product() {
         $this->assertEquals(6, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: 'unknown_mode_of_transport',
-            departure: "-2 minutes",
-            arrival: "+10 minutes",
-            delay: 0
+            distanceInMeter: 50000,
+            category:        'unknown_mode_of_transport',
+            departure:       Carbon::now()->subMinutes(2),
+            arrival:         Carbon::now()->addMinutes(10),
         ));
     }
 
@@ -79,37 +60,32 @@ class TransportControllerTest extends TestCase
      * I'm trying to check-into trains that depart in the future.
      */
     public function testCalculateTrainPoints_early_checkins() {
-        $now = time();
-
         // < 20min before
         // 50/10 + 10 = 15
         $this->assertEquals(15, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now + 18 * 60 /* departure 18min from now */,
-            arrival: $now + 40 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->addMinutes(18),
+            arrival:         Carbon::now()->addMinutes(40),
         ));
 
         // < 60min before, but > 20min
         // (50/10 + 10) * 0.25 = 4
         $this->assertEquals(4, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now + 40 * 60 /* departure 40min from now */,
-            arrival: $now + 100 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->addMinutes(40),
+            arrival:         Carbon::now()->addMinutes(100),
         ));
 
         // > 60min before
         // Only returns one fun-point
         // 0*(50/10) + 10 = 1
         $this->assertEquals(1, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now + 62 * 60 /* departure 62min from now */,
-            arrival: $now + 100 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->addMinutes(62),
+            arrival:         Carbon::now()->addMinutes(100),
         ));
     }
 
@@ -117,37 +93,32 @@ class TransportControllerTest extends TestCase
      * I'm trying to check-into trains that have depart in the past.
      */
     public function testCalculateTrainPoints_late_checkins() {
-        $now = time();
-
         // just before the Arrival
         // 50/10 + 10 = 15
         $this->assertEquals(15, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now - 62 * 60,
-            arrival: $now + 1 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->subMinutes(62),
+            arrival:         Carbon::now()->addMinute(),
         ));
 
         // upto 60min after the Arrival
         // (50/10 + 10) * 0.25 = 4
         $this->assertEquals(4, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now - 92 * 60,
-            arrival: $now - 35 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->subMinutes(92),
+            arrival:         Carbon::now()->subMinutes(35),
         ));
 
         // longer in the past
         // Only returns one fun-point
         // 0*(50/10) + 10 = 1
         $this->assertEquals(1, TransportController::CalculateTrainPoints(
-            distance: 50,
-            category: HafasTravelType::NATIONAL_EXPRESS,
-            departure: $now - 62 * 60,
-            arrival: $now - 61 * 60,
-            delay: 0
+            distanceInMeter: 50000,
+            category:        HafasTravelType::NATIONAL_EXPRESS,
+            departure:       Carbon::now()->subMinutes(62),
+            arrival:         Carbon::now()->subMinutes(61),
         ));
     }
 }
