@@ -42,7 +42,9 @@
                 @include('includes.status')
             </div>
         </div>
-        @include('includes.edit-modal')
-        @include('includes.delete-modal')
+        @if(auth()->check() && auth()->user()->id == $status->user_id)
+            @include('includes.edit-modal')
+            @include('includes.delete-modal')
+        @endif
     </div>
 @endsection

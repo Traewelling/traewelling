@@ -250,12 +250,12 @@ return [
 
     ],
 
-    'imprint' => [
-        'name'     => env('IMPRINT_NAME'),
-        'address1' => env('IMPRINT_ADDRESS1'),
-        'address2' => env('IMPRINT_ADDRESS2'),
-        'tel'      => env('IMPRINT_TEL'),
-        'email'    => env('IMPRINT_EMAIL')
+    'legal' => [
+        'name'     => env('LEGAL_NAME'),
+        'address1' => env('LEGAL_ADDRESS1'),
+        'address2' => env('LEGAL_ADDRESS2'),
+        'tel'      => env('LEGAL_TEL'),
+        'email'    => env('LEGAL_EMAIL')
     ],
 
     'telegram' => [

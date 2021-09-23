@@ -33,6 +33,10 @@ class StatusController extends ResponseController
         return StatusResource::collection(StatusBackend::getGlobalDashboard());
     }
 
+    public static function getFutureCheckins(): AnonymousResourceCollection {
+        return StatusResource::collection(StatusBackend::getFutureCheckins());
+    }
+
     public function enRoute(): AnonymousResourceCollection {
         return StatusResource::collection(StatusBackend::getActiveStatuses(null, false)['statuses']);
     }

@@ -26,6 +26,8 @@ class UserResource extends JsonResource
             'mastodonUrl'       => $this->mastodonUrl ?? null,
             'privateProfile'    => (bool) $this->private_profile,
             'userInvisibleToMe' => (bool) $this->userInvisibleToMe,
+            'following'         => (bool) $this->following,
+            'followPending'     => (bool) $this->followPending,
             'preventIndex'      => (bool) $this->prevent_index,
         ];
     }

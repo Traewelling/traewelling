@@ -12,6 +12,7 @@ import Stationboard from "../components/views/Stationboard";
 import Trip from "../components/views/Trip";
 import Index from "../components/views/Index";
 import About from "../components/views/About";
+import Charts from "../components/views/Charts";
 
 Vue.use(VueRouter);
 
@@ -98,8 +99,16 @@ export const router = new VueRouter({
             },
             {
                 path: "/trains/trip",
-                component:Trip,
+                component: Trip,
                 name: "trains.trip",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/statistics",
+                component: Charts,
+                name: "statistics",
                 meta: {
                     auth: true
                 }

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class CleanUpHafasTrips extends Command
 {

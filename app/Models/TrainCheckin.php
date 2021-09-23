@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Support\Collection;
 class TrainCheckin extends Model
 {
     protected $fillable = [
-        'status_id', 'trip_id', 'origin', 'destination',
+        'status_id', 'user_id', 'trip_id', 'origin', 'destination',
         'distance', 'points', 'departure', 'arrival'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -20,6 +21,10 @@ class TrainCheckin extends Model
 
     public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
+    }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function Origin(): HasOne {
@@ -130,6 +135,10 @@ class TrainCheckin extends Model
         return $this->duration == 0 ? 0 : $this->distance / ($this->duration / 60);
     }
 
+    /**
+     * @return Collection
+     * @todo Sichtbarkeit der CheckIns prüfen! Hier werden auch Private CheckIns angezeigt
+     */
     public function getAlsoOnThisConnectionAttribute(): Collection {
         return TrainCheckin::with(['status'])
                            ->where([

@@ -3,8 +3,6 @@
     "type": "project",
     "description": "Free and open source check-in service to log your public transit journeys",
     "keywords": [
-        "framework",
-        "laravel",
         "traewelling",
         "träwelling",
         "social",
@@ -17,7 +15,7 @@
         "php": "^8.0",
         "ext-gd": "*",
         "ext-json": "*",
-        "abraham/twitteroauth": "^2.0",
+        "abraham/twitteroauth": "^3.0",
         "barryvdh/laravel-dompdf": "^0.9",
         "brianium/paratest": "^6.3",
         "doctrine/dbal": "^3.0",

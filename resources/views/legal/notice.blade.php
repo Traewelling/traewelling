@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
-@section('title', __('menu.imprint'))
+@section('title', __('menu.legal-notice'))
 @section('meta-robots', 'noindex')
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1>{{__('menu.imprint')}}</h1>
+                <h1>{{__('menu.legal-notice')}}</h1>
 
                 <h2>Angaben gem&auml;&szlig; &sect; 5 TMG</h2>
-                <p>{{config('app.imprint.name')}}<br/>
-                    {{config('app.imprint.address1')}}<br/>
-                    {{config('app.imprint.address2')}}</p>
+                <p>{{config('app.legal.name')}}<br/>
+                    {{config('app.legal.address1')}}<br/>
+                    {{config('app.legal.address2')}}</p>
 
                 <h2>Kontakt</h2>
-                <p>E-Mail: {{config('app.imprint.email')}}</p>
-                <p>Tel.: {{config('app.imprint.tel')}}</p>
+                <p>E-Mail: {{config('app.legal.email')}}</p>
+                <p>Tel.: {{config('app.legal.tel')}}</p>
 
                 <h3>Haftung f&uuml;r Inhalte</h3>
                 <p>Als Diensteanbieter sind wir gem&auml;&szlig; &sect; 7 Abs.1 TMG f&uuml;r eigene Inhalte auf diesen

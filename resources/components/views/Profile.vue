@@ -10,8 +10,7 @@
                                                    class="fas fa-user-lock"/>
                     </strong> <br/>
                     <small class="font-weight-light">@{{ user.username }}</small>
-                    <!--          ToDo: Implement Follow-Button to vue-->
-                    FOLLOW
+                    <FollowButton :user="user"></FollowButton>
                 </h2>
                 <h2>
           <span class="font-weight-bold">
@@ -88,6 +87,7 @@ import {ProfileModel, StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import HeroLayout from "../layouts/HeroLayout";
 import Spinner from "../Spinner";
+import FollowButton from "../FollowButton";
 
 export default {
     name: "ProfilePage",
@@ -114,6 +114,7 @@ export default {
         };
     },
     components: {
+        FollowButton,
         Spinner,
         HeroLayout,
         LayoutBasic,
@@ -121,6 +122,7 @@ export default {
     },
     computed: {
         duration() {
+            //ToDo this needs localization, also this is code duplication...
             const duration = moment.duration(this.user.trainDuration, "minutes").asMinutes();
             let minutes    = duration % 60;
             let hours      = Math.floor(duration / 60);

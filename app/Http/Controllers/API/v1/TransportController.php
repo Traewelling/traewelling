@@ -191,4 +191,13 @@ class TransportController extends ResponseController
             data: new TrainstationResource($station),
         );
     }
+
+    public function getTrainStationAutocomplete(string $query): JsonResponse {
+        try {
+            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
+            return $this->sendv1Response($trainAutocompleteResponse);
+        } catch (HafasException) {
+            return $this->sendError("There has been an error with our data provider", 400);
+        }
+    }
 }

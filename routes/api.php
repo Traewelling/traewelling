@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
+        Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
         Route::post('like/{status}', [LikesController::class, 'create']);
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
@@ -47,6 +48,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('trains/trip/', [TransportController::class, 'getTrip']);
         Route::post('trains/checkin', [TransportController::class, 'create']);
         Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
+        Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+        Route::group(['prefix' => 'statistics'], function() {
+            Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
+            Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
+        });
+        Route::post('user/createFollow', [UserController::class, 'createFollow']);
+        Route::delete('user/destroyFollow', [UserController::class, 'destroyFollow']);
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {
