@@ -34,11 +34,11 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
-class TransportController extends Controller
-{
+class TransportController extends Controller {
 
     /**
      * @param $station
+     *
      * @return Collection
      * @throws HafasException
      * @deprecated
@@ -55,6 +55,7 @@ class TransportController extends Controller
 
     /**
      * @param $query
+     *
      * @return Collection
      * @throws HafasException
      * @api v1
@@ -258,6 +259,7 @@ class TransportController extends Controller
      * @param int         $eventId
      * @param Carbon|null $departure
      * @param Carbon|null $arrival
+     *
      * @return array
      * @throws CheckInCollisionException
      * @throws HafasException
@@ -411,7 +413,7 @@ class TransportController extends Controller
             'points'               => $trainCheckin->points,
             'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
             'lineName'             => $hafasTrip->linename,
-            'distance'             => $trainCheckin->distance / 1000,
+            'distance'             => $trainCheckin->distance,
             'duration'             => $trainCheckin->duration,
             'event'                => $event ?? null
         ];
