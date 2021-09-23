@@ -439,5 +439,14 @@
     "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation.",
     "date-format": "YYYY-MM-DD",
     "transport_types.regionalExp": "Regional Express",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "support": "Support",
+    "support.create": "Create support request",
+    "support.submit": "Submit support request",
+    "support.email-required": "You need a verified email address to submit a support request. Only then we can answer you.",
+    "go-to-settings": "Go to settings",
+    "subject": "Subject",
+    "how-can-we-help": "How can we help?",
+    "support.answer": "We will answer you as soon as possible. The answer will be sent to your e-mail address :address.",
+    "support.success": "We have received your request (Ticket #:ticketNumber). We will answer you as soon as possible by e-mail."
 }
