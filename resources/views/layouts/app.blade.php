@@ -141,6 +141,9 @@
                                         <a class="dropdown-item" href="{{ route('settings') }}">
                                             <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                         </a>
+                                        <a class="dropdown-item" href="{{ route('support') }}">
+                                            <i class="fas fa-headset"></i> {{ __('support') }}
+                                        </a>
                                         @if(Auth::user()->role >= 5)
                                             <a class="dropdown-item" href="{{route('admin.dashboard')}}">
                                                 <i class="fas fa-tools"></i> {{__('menu.admin')}}

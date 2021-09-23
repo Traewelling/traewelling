@@ -77,10 +77,10 @@ class FrontendStatusController extends Controller
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                user: Auth::user(),
-                statusId: $request['statusId'],
-                body: $request['body'] ?? null,
-                business: $request['business_check'],
+                user:       Auth::user(),
+                statusId:   $request['statusId'],
+                body:       $request['body'] ?? null,
+                business:   $request['business_check'],
                 visibility: $request['checkinVisibility']
             );
         } catch (ModelNotFoundException | PermissionException) {
@@ -131,8 +131,8 @@ class FrontendStatusController extends Controller
 
         return StatusBackend::ExportStatuses(
             startDate: Carbon::parse($validated['begin']),
-            endDate: Carbon::parse($validated['end']),
-            fileType: $request->input('filetype')
+            endDate:   Carbon::parse($validated['end']),
+            fileType:  $request->input('filetype')
         );
     }
 
