@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -120,15 +121,13 @@ class StatusController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
-                     ->whereHas('trainCheckin', function($query) {
-                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('user_id', $followingIDs)
+                     ->whereIn('statuses.user_id', $followingIDs)
                      ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
-                     ->orWhere('user_id', $user->id)
+                     ->orWhere('statuses.user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
@@ -143,22 +142,29 @@ class StatusController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->where(function($query) {
-                         $user = Auth::check() ? auth()->user()->id : null;
-                         $query->where('users.private_profile', 0)
-                               ->where('visibility', StatusVisibility::PUBLIC)
-                               ->orWhere('users.id', $user)
-                               ->orWhere(function($query) {
-                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                   $query->where('visibility', StatusVisibility::FOLLOWERS)
-                                         ->whereIn('users.id', $followings)
-                                         ->orWhere('visibility', StatusVisibility::PUBLIC);
-                               });
+                     ->where(function(Builder $query) {
+                         //Visibility checks: One of the following options must be true
+
+                         //Option 1: User is public AND status is public
+                         $query->where(function(Builder $query) {
+                             $query->where('users.private_profile', 0)
+                                   ->where('visibility', StatusVisibility::PUBLIC);
+                         });
+
+                         //Option 2: Status is from oneself
+                         if (auth()->check()) {
+                             $query->orWhere('users.id', auth()->user()->id);
+                         }
+
+                         //Option 3: Status is from a followed BUT not unlisted or private
+                         $query->orWhere(function(Builder $query) {
+                             $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
+                             $query->whereIn('users.id', $followings)
+                                   ->whereNotIn('visibility', [StatusVisibility::UNLISTED, StatusVisibility::PRIVATE]);
+                         });
                      })
-                     ->whereHas('trainCheckin', function($query) {
-                         $query->where('departure', '<', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })
-                     ->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'))
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
+                     ->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')
@@ -290,7 +296,7 @@ class StatusController extends Controller
         $export        = [];
 
         foreach ($trainCheckins as $t) {
-            $interval = (new \DateTime($t->trainCheckin->departure))->diff(new \DateTime($t->trainCheckin->arrival));
+            $interval = (new DateTime($t->trainCheckin->departure))->diff(new DateTime($t->trainCheckin->arrival));
             $export   = array_merge($export, [[
                                                   (string) $t->id,
                                                   $t->trainCheckin->hafastrip->category,

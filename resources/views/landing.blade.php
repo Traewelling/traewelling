@@ -17,6 +17,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/icons/touch-icon-iphone-retina.png') }}"/>
         <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('images/icons/touch-icon-ipad-retina.png') }}"/>
         <link rel="author" href="/humans.txt">
+        <link rel="manifest" href="/manifest.json">
     </head>
     <body>
         <div id="app">

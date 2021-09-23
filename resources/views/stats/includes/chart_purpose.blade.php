@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <h5>{{__('stats.companies')}}</h5>
-        @if($topOperators->count() > 0)
-            <canvas id="chart_companies"></canvas>
+        <h5>{{__('stats.purpose')}}</h5>
+        @if($travelPurposes->count() > 0)
+            <canvas id="chart_purpose"></canvas>
         @else
             <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
@@ -11,20 +11,20 @@
 
 @section('footer')
     @parent
-    @if($topOperators->count() > 0)
+    @if($travelPurposes->count() > 0)
         <script>
-            new Chart(document.getElementById('chart_companies').getContext('2d'), {
+            new Chart(document.getElementById('chart_purpose').getContext('2d'), {
                 type: 'pie',
                 data: {
                     labels: [
-                        @foreach($topOperators as $operator)
-                            '{{$operator->name}}',
+                        @foreach($travelPurposes as $row)
+                            '{{$row->reason}}',
                         @endforeach
                     ],
                     datasets: [{
                         data: [
-                            @foreach($topOperators as $operator)
-                                '{{$operator->count}}',
+                            @foreach($travelPurposes as $row)
+                                '{{$row->duration}}',
                             @endforeach
                         ],
                         backgroundColor: [
@@ -54,14 +54,14 @@
                     },
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'left'
                     },
                     tooltips: {
                         enabled: true,
                         mode: 'single',
                         callbacks: {
                             label: function (tooltipItems, data) {
-                                return data.labels[tooltipItems.index] + ': ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' {{__('stats.trips')}}';
+                                return data.labels[tooltipItems.index] + ': ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' {{__('minutes')}}';
                             }
                         }
                     },

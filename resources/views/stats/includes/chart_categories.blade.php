@@ -4,15 +4,6 @@
 
         @if($topCategories->count() > 0)
             <canvas id="chart_favourite_types"></canvas>
-            <hr/>
-            <table>
-                @foreach($topCategories as $category => $count)
-                    <tr>
-                        <td>{{$count}} {{__('stats.trips')}}</td>
-                        <td>{{$category}}</td>
-                    </tr>
-                @endforeach
-            </table>
         @else
             <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
@@ -27,14 +18,14 @@
                 type: 'pie',
                 data: {
                     labels: [
-                        @foreach($topCategories as $category => $count)
-                            '{{$category}}',
+                        @foreach($topCategories as $category)
+                            '{{$category->name}}',
                         @endforeach
                     ],
                     datasets: [{
                         data: [
-                            @foreach($topCategories as $category => $count)
-                                '{{$count}}',
+                            @foreach($topCategories as $category)
+                                '{{$category->count}}',
                             @endforeach
                         ],
                         backgroundColor: [
@@ -63,8 +54,18 @@
                         }
                     },
                     legend: {
-                        display: false
-                    }
+                        display: true,
+                        position: 'right'
+                    },
+                    tooltips: {
+                        enabled: true,
+                        mode: 'single',
+                        callbacks: {
+                            label: function (tooltipItems, data) {
+                                return data.labels[tooltipItems.index] + ': ' + data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index] + ' {{__('stats.trips')}}';
+                            }
+                        }
+                    },
                 }
             });
         </script>

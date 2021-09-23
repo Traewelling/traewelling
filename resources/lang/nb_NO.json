@@ -251,7 +251,7 @@
     "events.url": "Ekstern nettside",
     "events.begin": "Begynner",
     "events.end": "Slutter",
-    "events.on-my-way-dropdown": "Jeg er på vei til",
+    "events.on-my-way-dropdown": "Jeg er på vei til:",
     "export.btn": "Eksporter",
     "export.end": "Slutt",
     "export.submit": "Eksporter som PDF",

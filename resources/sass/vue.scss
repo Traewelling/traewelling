@@ -10,6 +10,8 @@
 // mdbootstrap
 @import '~mdb-ui-kit/src/scss/mdb.free.scss';
 
+@import '~@tarekraafat/autocomplete.js/dist/css/autoComplete.02.css';
+
 body {
   font-family: "Nunito", sans-serif;
   font-weight: 300;
@@ -30,10 +32,6 @@ body {
 // Leaflet
 @import "~leaflet/dist/leaflet.css";
 
-// Station Autocomplete
-@import "~awesomplete/awesomplete.css";
-@import "components/station-autocomplete";
-
 // Components
 @import "./components/status";
 @import "./components/activeJourneys";
@@ -47,5 +45,13 @@ body {
 @import "./components/custom-buttons";
 
 .table-vertical-center td {
-  vertical-align: middle;
+    vertical-align: middle;
+}
+
+.autoComplete_wrapper > ul > li mark {
+    color: $trwlRot;
+}
+
+.autoComplete_wrapper {
+    width: 100% !important;
 }

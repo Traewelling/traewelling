@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Exceptions\NotConnectedException;
+use App\Http\Controllers\Backend\Social\TwitterController;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,7 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'private_profile', 'prevent_index', 'language', 'last_login',
+        'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -38,13 +39,17 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $dates    = ['email_verified_at', 'privacy_ack_at', 'last_login'];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration', 'following', 'followPending'
     ];
 
     public function getTrainDistanceAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->select('distance')
                            ->sum('distance');
+    }
+
+    public function statuses(): HasMany {
+        return $this->hasMany(Status::class);
     }
 
     public function getTrainDurationAttribute(): float {
@@ -64,10 +69,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function socialProfile(): HasOne {
         return $this->hasOne(SocialLoginProfile::class);
-    }
-
-    public function statuses(): HasMany {
-        return $this->hasMany(Status::class);
     }
 
     public function home(): HasOne {
@@ -90,8 +91,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
 
-    public function followers(): BelongsToMany {
-        return $this->belongsToMany(User::class, 'follows', 'follow_id', 'user_id');
+    public function followers(): HasMany {
+        return $this->hasMany(Follow::class, 'follow_id', 'id');
     }
 
     public function sessions(): HasMany {
@@ -140,32 +141,31 @@ class User extends Authenticatable implements MustVerifyEmail
                );
     }
 
+    public function getFollowingAttribute(): bool {
+        return (auth()->check() && $this->followers->contains('user_id', auth()->user()->id));
+    }
+
+    public function getFollowPendingAttribute(): bool {
+        return (auth()->check() && $this->followRequests->contains('user_id', auth()->user()->id));
+    }
+
     /**
      * @return string|null
      * @todo delete after implemented ID-Link in vue Template
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        $twitterUrl = null;
-        if ($this->socialProfile != null
-            && !empty($this->socialProfile->twitter_token)
-            && !empty($this->socialProfile->twitter_tokenSecret)) {
-            try {
-                $connection = new TwitterOAuth(
-                    config('trwl.twitter_id'),
-                    config('trwl.twitter_secret'),
-                    $this->socialProfile->twitter_token,
-                    $this->socialProfile->twitter_tokenSecret
-                );
-
-                $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
-                $twitterUrl = "https://twitter.com/" . $getInfo->screen_name;
-            } catch (Exception $exception) {
-                // The big whale time or $user has removed the api rights but has not told us yet.
-                Log::warning($exception);
-            }
+        try {
+            $connection = TwitterController::getApi($this);
+            $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
+            return "https://twitter.com/" . $getInfo->screen_name;
+        } catch (NotConnectedException) {
+            return null;
+        } catch (Exception $exception) {
+            // The big whale time or $user has removed the api rights but has not told us yet.
+            Log::warning($exception);
+            return null;
         }
-        return $twitterUrl;
     }
 
     public function getMastodonUrlAttribute(): ?string {

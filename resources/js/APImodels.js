@@ -84,6 +84,8 @@ export let ProfileModel = {
     mastodonUrl: null,
     privateProfile: false,
     userInvisibleToMe: true,
+    following: false,
+    followPending: false,
     preventIndex: true,
 };
 
@@ -95,6 +97,8 @@ export let LeaderboardUserModel = {
     points: 0
 };
 
+
+//No API responses but instead formatting guidelines
 export let travelReason = [
     {
         icon: "fa fa-user",
