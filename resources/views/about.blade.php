@@ -25,7 +25,7 @@
 
                 <h3>{{ __('about.feature-missing-heading') }}</h3>
                 <p class="lead">{{ __('about.feature-missing') }} <a
-                            href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
+                        href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
 
                 <h3>{{ __('about.points-heading') }}</h3>
                 <p class="lead">
@@ -63,6 +63,7 @@
                 </table>
 
                 <p class="lead">{!! __('about.calculation') !!}</p>
-
             </div>
+        </div>
+    </div>
 @endsection
