@@ -204,7 +204,7 @@ class UserController extends Controller
             throw new AlreadyFollowingException($user, $userToFollow);
         }
         // Request follow if user is a private profile
-        if ($userToFollow->private_profile && !$isApprovedRequest) {
+        if (($userToFollow->private_profile || $userToFollow->follower_approval) && !$isApprovedRequest) {
             return self::requestFollow($user, $userToFollow);
         }
 

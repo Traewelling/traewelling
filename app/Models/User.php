@@ -26,16 +26,17 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'language', 'last_login',
+        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at', 'always_dbl',
+        'default_status_visibility', 'private_profile', 'follower_approval', 'prevent_index', 'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
         'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $casts    = [
-        'private_profile' => 'boolean',
-        'prevent_index'   => 'boolean',
+        'private_profile'   => 'boolean',
+        'prevent_index'     => 'boolean',
+        'follower_approval' => 'boolean',
     ];
     protected $dates    = ['email_verified_at', 'privacy_ack_at', 'last_login'];
     protected $appends  = [
