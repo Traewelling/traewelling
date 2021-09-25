@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\TwitterController;
+use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -34,7 +34,8 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
-class TransportController extends Controller {
+class TransportController extends Controller
+{
 
     /**
      * @param $station
@@ -70,7 +71,7 @@ class TransportController extends Controller {
     }
 
     /**
-     * @param string      $stationName
+     * @param string $stationName
      * @param Carbon|null $when
      * @param string|null $travelType
      *
@@ -85,13 +86,13 @@ class TransportController extends Controller {
     ])]
     public static function getDepartures(string $stationName, Carbon $when = null, string $travelType = null): array {
         //first check if the query is a valid DS100 identifier
-        if(strlen($stationName) <= 5 && ctype_upper($stationName)) {
+        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
         }
         //if we cannot find any station by DS100 identifier continue to search normal
-        if(empty($station)) {
+        if (empty($station)) {
             $station = HafasController::getStations($stationName)->first();
-            if($station == null) {
+            if ($station == null) {
                 throw new ModelNotFoundException;
             }
         }
@@ -126,8 +127,8 @@ class TransportController extends Controller {
      */
     public static function FastTripAccess($departure, $lineName, $number, $when) {
         $departuresArray = self::getTrainDepartures($departure, $when);
-        foreach($departuresArray as $departure) {
-            if($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
+        foreach ($departuresArray as $departure) {
+            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
                 return $departure;
             }
         }
@@ -137,7 +138,7 @@ class TransportController extends Controller {
     /**
      * @param        $ibnr
      * @param string $when
-     * @param null   $trainType
+     * @param null $trainType
      *
      * @return array
      * @throws GuzzleException
@@ -156,7 +157,7 @@ class TransportController extends Controller {
         ];
         $appendix   = '';
 
-        if($trainType != null) {
+        if ($trainType != null) {
             $trainTypes[$trainType] = 'true';
             $appendix               = '&' . http_build_query($trainTypes);
         }
@@ -164,9 +165,9 @@ class TransportController extends Controller {
         $json     = json_decode($response->getBody()->getContents());
 
         //remove express trains in filtered results
-        if($trainType != null && $trainType != TravelType::EXPRESS) {
-            foreach($json as $key => $item) {
-                if($item->line->product != $trainType) {
+        if ($trainType != null && $trainType != TravelType::EXPRESS) {
+            foreach ($json as $key => $item) {
+                if ($item->line->product != $trainType) {
                     unset($json[$key]);
                 }
             }
@@ -180,12 +181,12 @@ class TransportController extends Controller {
     public static function sortByWhenOrScheduledWhen(array $departuresList): array {
         uasort($departuresList, function($a, $b) {
             $dateA = $a->when;
-            if($dateA == null) {
+            if ($dateA == null) {
                 $dateA = $a->scheduledWhen;
             }
 
             $dateB = $b->when;
-            if($dateB == null) {
+            if ($dateB == null) {
                 $dateB = $b->scheduledWhen;
             }
 
@@ -196,8 +197,8 @@ class TransportController extends Controller {
     }
 
     /**
-     * @param string      $tripId   TripID in Hafas format
-     * @param string      $lineName Line Name in Hafas format
+     * @param string $tripId TripID in Hafas format
+     * @param string $lineName Line Name in Hafas format
      * @param             $start
      * @param Carbon|null $departure
      *
@@ -210,7 +211,7 @@ class TransportController extends Controller {
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset    = self::searchForId($start, $stopovers, $departure);
-        if($offset === null) {
+        if ($offset === null) {
             return null;
         }
         $stopovers   = array_slice($stopovers, $offset + 1);
@@ -240,7 +241,7 @@ class TransportController extends Controller {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        if($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
+        if ($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
             throw new StationNotOnTripException();
         }
         return new HafasTripResource($hafasTrip);
@@ -256,7 +257,7 @@ class TransportController extends Controller {
      * @param             $tweetCheck
      * @param             $tootCheck
      * @param             $visibility
-     * @param int         $eventId
+     * @param int $eventId
      * @param Carbon|null $departure
      * @param Carbon|null $arrival
      *
@@ -293,7 +294,7 @@ class TransportController extends Controller {
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset1   = self::searchForId($start, $stopovers, $departure);
         $offset2   = self::searchForId($destination, $stopovers, null, $arrival);
-        if($offset1 === null || $offset2 === null) {
+        if ($offset1 === null || $offset2 === null) {
             throw new StationNotOnTripException();
         }
         $originAttributes      = $stopovers[$offset1];
@@ -322,11 +323,11 @@ class TransportController extends Controller {
             ->first();
 
         $distanceInMeters = 0;
-        if($departureStopover != null && $arrivalStopover != null) {
+        if ($departureStopover != null && $arrivalStopover != null) {
             $distanceInMeters = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
         }
 
-        $points = self::CalculateTrainPoints(
+        $points = PointsCalculationController::calculatePoints(
             $distanceInMeters,
             $hafasTrip->category,
             Carbon::parse($stopovers[$offset1]['departure']),
@@ -336,7 +337,7 @@ class TransportController extends Controller {
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
 
-        if($stopovers[$offset2]['arrival']) {
+        if ($stopovers[$offset2]['arrival']) {
             $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
             $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
         } else {
@@ -345,7 +346,7 @@ class TransportController extends Controller {
         }
 
         $overlapping = self::getOverlappingCheckIns($user, $departure, $arrival);
-        if($overlapping->count() > 0) {
+        if ($overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
         }
 
@@ -380,27 +381,27 @@ class TransportController extends Controller {
 
         // Let's connect our statuses and the events
         $event = null;
-        if($eventId != 0) {
+        if ($eventId != 0) {
             $event = Event::find($eventId);
-            if($event === null) {
+            if ($event === null) {
                 abort(404);
             }
-            if(Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
+            if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
                 $status->update([
                                     'event_id' => $event->id
                                 ]);
             }
         }
 
-        if(isset($tootCheck) && $tootCheck) {
+        if (isset($tootCheck) && $tootCheck) {
             self::postMastodon($status);
         }
-        if(isset($tweetCheck) && $tweetCheck) {
+        if (isset($tweetCheck) && $tweetCheck) {
             self::postTwitter($status);
         }
 
         // check for other people on this train
-        foreach($trainCheckin->alsoOnThisConnection as $otherStatus) {
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             $otherStatus->user->notify(new UserJoinedConnection($status->id,
                                                                 $status->trainCheckin->HafasTrip->linename,
                                                                 $status->trainCheckin->Origin->name,
@@ -419,45 +420,10 @@ class TransportController extends Controller {
         ];
     }
 
-    public static function CalculateTrainPoints(int $distanceInMeter, string $category, Carbon $departure, Carbon $arrival): int {
-        $factor = 1;
-        if(in_array($category, HafasTravelType::getList())) {
-            $factor = config('trwl.base_points.train.' . $category, 1);
-        }
-
-        $points = $factor + ceil($distanceInMeter / 10000);
-
-        /**
-         * Full points, 20min before the departure time or during the ride
-         *   D-20         D                      A
-         *    |           |                      |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if(Carbon::now()->isBetween($departure->clone()->subMinutes(20), $arrival)) {
-            return $points;
-        }
-
-        /**
-         * Reduced points, one hour before departure and after arrival
-         *
-         *   D-60         D          A          A+60
-         *    |           |          |           |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if(Carbon::now()->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
-            return ceil($points * 0.25);
-        }
-
-        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
-        return 1;
-    }
-
     /**
      * Check if there are colliding CheckIns
      *
-     * @param User   $user
+     * @param User $user
      * @param Carbon $start
      * @param Carbon $end
      *
@@ -469,7 +435,7 @@ class TransportController extends Controller {
         $start = $start->clone()->addMinutes(10);
         $end   = $end->clone()->subMinutes(10);
 
-        if($end->isBefore($start)) {
+        if ($end->isBefore($start)) {
             return collect();
         }
 
@@ -501,10 +467,10 @@ class TransportController extends Controller {
      * @param Status $status
      */
     public static function postMastodon(Status $status): void {
-        if(config('trwl.post_social') !== true) {
+        if (config('trwl.post_social') !== true) {
             return;
         }
-        if($status->user->socialProfile->mastodon_server === null) {
+        if ($status->user->socialProfile->mastodon_server === null) {
             return;
         }
 
@@ -513,9 +479,9 @@ class TransportController extends Controller {
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
             Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
-        } catch(RequestException $e) {
+        } catch (RequestException $e) {
             $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e);
         }
     }
@@ -524,10 +490,10 @@ class TransportController extends Controller {
      * @param Status $status
      */
     public static function postTwitter(Status $status): void {
-        if(config('trwl.post_social') !== true) {
+        if (config('trwl.post_social') !== true) {
             return;
         }
-        if($status->user->socialProfile->twitter_id === null) {
+        if ($status->user->socialProfile->twitter_id === null) {
             return;
         }
 
@@ -535,7 +501,7 @@ class TransportController extends Controller {
             $connection = TwitterController::getApi($status->user);
             #dbl only works on Twitter.
             $socialText = $status->socialText;
-            if($status->user->always_dbl) {
+            if ($status->user->always_dbl) {
                 $socialText .= "#dbl ";
             }
             $socialText .= ' ' . url("/status/{$status->id}");
@@ -548,10 +514,10 @@ class TransportController extends Controller {
                 ]
             );
 
-            if($connection->getLastHttpCode() != 200) {
+            if ($connection->getLastHttpCode() != 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception);
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
@@ -575,7 +541,7 @@ class TransportController extends Controller {
     ): array {
         $trip->load('stopoversNEW');
 
-        if(!$ibnr) {
+        if (!$ibnr) {
             $firstStop = $trip->stopoversNEW->where('train_station_id', $entryStop)
                                             ->where('departure_planned', $departure)->first();
 
@@ -589,7 +555,7 @@ class TransportController extends Controller {
                                            ->where('arrival_planned', $arrival)->first();
         }
 
-        if(empty($firstStop) || empty($lastStop)) {
+        if (empty($firstStop) || empty($lastStop)) {
             throw new StationNotOnTripException();
         }
 
@@ -598,13 +564,13 @@ class TransportController extends Controller {
             start: $firstStop->departure,
             end:   $lastStop->arrival
         );
-        if($overlapping->count() > 0) {
+        if ($overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
         }
 
         $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
 
-        $points = self::CalculateTrainPoints(
+        $points = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
             category:        $trip->category,
             departure:       $firstStop->departure,
@@ -623,8 +589,8 @@ class TransportController extends Controller {
                                                  'departure'   => $firstStop->departure_planned,
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
-        foreach($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            if($otherStatus?->user) {
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+            if ($otherStatus?->user) {
                 $otherStatus->user->notify(new UserJoinedConnection(
                                                statusId:    $status->id,
                                                linename:    $trip->linename,
@@ -659,7 +625,7 @@ class TransportController extends Controller {
      * Get the latest TrainStations the user is arrived.
      *
      * @param User $user
-     * @param int  $maxCount
+     * @param int $maxCount
      *
      * @return Collection
      */
@@ -680,7 +646,7 @@ class TransportController extends Controller {
 
     /**
      * @param User $user
-     * @param int  $ibnr
+     * @param int $ibnr
      *
      * @return TrainStation
      * @throws HafasException
@@ -697,7 +663,7 @@ class TransportController extends Controller {
     }
 
     /**
-     * @param User   $user
+     * @param User $user
      * @param string $stationName
      *
      * @return TrainStation
@@ -706,7 +672,7 @@ class TransportController extends Controller {
      */
     public static function setTrainHome(User $user, string $stationName): TrainStation {
         $trainStation = HafasController::getStations(query: $stationName)->first();
-        if($trainStation == null) {
+        if ($trainStation == null) {
             throw new ModelNotFoundException;
         }
 
