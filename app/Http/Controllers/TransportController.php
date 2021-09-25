@@ -71,7 +71,7 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $stationName
+     * @param string      $stationName
      * @param Carbon|null $when
      * @param string|null $travelType
      *
@@ -138,7 +138,7 @@ class TransportController extends Controller
     /**
      * @param        $ibnr
      * @param string $when
-     * @param null $trainType
+     * @param null   $trainType
      *
      * @return array
      * @throws GuzzleException
@@ -197,8 +197,8 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $tripId TripID in Hafas format
-     * @param string $lineName Line Name in Hafas format
+     * @param string      $tripId   TripID in Hafas format
+     * @param string      $lineName Line Name in Hafas format
      * @param             $start
      * @param Carbon|null $departure
      *
@@ -257,7 +257,7 @@ class TransportController extends Controller
      * @param             $tweetCheck
      * @param             $tootCheck
      * @param             $visibility
-     * @param int $eventId
+     * @param int         $eventId
      * @param Carbon|null $departure
      * @param Carbon|null $arrival
      *
@@ -423,7 +423,7 @@ class TransportController extends Controller
     /**
      * Check if there are colliding CheckIns
      *
-     * @param User $user
+     * @param User   $user
      * @param Carbon $start
      * @param Carbon $end
      *
@@ -625,7 +625,7 @@ class TransportController extends Controller
      * Get the latest TrainStations the user is arrived.
      *
      * @param User $user
-     * @param int $maxCount
+     * @param int  $maxCount
      *
      * @return Collection
      */
@@ -646,7 +646,7 @@ class TransportController extends Controller
 
     /**
      * @param User $user
-     * @param int $ibnr
+     * @param int  $ibnr
      *
      * @return TrainStation
      * @throws HafasException
@@ -663,7 +663,7 @@ class TransportController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param string $stationName
      *
      * @return TrainStation
