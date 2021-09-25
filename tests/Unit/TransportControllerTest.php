@@ -72,7 +72,7 @@ class TransportControllerTest extends TestCase {
 
         // < 60min before, but > 20min
         // (50/10 + 10) * 0.25 = 4
-        $this->assertEquals(4, PointsCalculationController::calculatePointss(
+        $this->assertEquals(4, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(40),
