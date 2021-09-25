@@ -51,8 +51,6 @@
 
             <div class="form-group row">
                 <div class="col-md-6 offset-md-4">
-
-
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="private_profile" type="checkbox"
                                class="custom-control-input @error('private_profile') is-invalid @enderror"
@@ -61,6 +59,26 @@
                             {{ __('user.private-profile') }}
                         </label>
                     </div>
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input id="follower_approval" type="checkbox"
+                               class="custom-control-input @error('follower_approval') is-invalid @enderror"
+                               name="follower_approval" {{ auth()->user()->follower_approval ? 'checked' : '' }} />
+                        <label class="custom-control-label" for="follower_approval">
+                            {{ __('user.follower_approval') }}
+                        </label>
+                    </div>
+                    <script>
+                        document.getElementById('follower_approval').addEventListener('change', (event) => {
+                            if (!event.currentTarget.checked) {
+                                document.getElementById("private_profile").checked = false;
+                            }
+                        });
+                        document.getElementById('private_profile').addEventListener('change', (event) => {
+                            if (event.currentTarget.checked) {
+                                document.getElementById("follower_approval").checked = true;
+                            }
+                        });
+                    </script>
                     <a href="{{route('settings.follower')}}">
                         {{__('settings.follower.manage')}}
                     </a>

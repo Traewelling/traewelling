@@ -91,6 +91,7 @@
     "user.home-not-set": "Du hast noch keinen Heimatbahnhof festgelegt.",
     "user.always-dbl": "Mit #dbl twittern?",
     "user.private-profile": "Privates Profil",
+    "user.follower_approval": "Follower müssen bestätigt werden",
     "user.liked-status": "gefällt dieser Status.",
     "user.liked-own-status": "gefällt der eigene Status.",
     "user.invalid-mastodon": ":domain scheint keine Mastodon-Instanz zu sein.",

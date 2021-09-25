@@ -48,6 +48,7 @@ class SettingsController extends Controller
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'private_profile'           => ['nullable'],
+                                            'follower_approval'         => ['nullable'],
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
                                             'default_status_visibility' => [
                                                 'required',
@@ -55,10 +56,20 @@ class SettingsController extends Controller
                                             ]
                                         ]);
 
+        $privateProfile   = isset($validated['private_profile']) && $validated['private_profile'] == 'on';
+        $followerApproval = isset($validated['follower_approval']) && $validated['follower_approval'] == 'on';
+
+        if ($privateProfile) {
+            $followerApproval = true;
+        }
+        if (!$followerApproval) {
+            $privateProfile = false;
+        }
+
         auth()->user()->update([
                                    'prevent_index'             => $validated['prevent_index'],
-                                   'private_profile'           => isset($validated['private_profile'])
-                                                                  && $validated['private_profile'] == 'on',
+                                   'private_profile'           => $privateProfile,
+                                   'follower_approval'         => $followerApproval,
                                    'default_status_visibility' => $validated['default_status_visibility'],
                                ]);
 
