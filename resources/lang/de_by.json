@@ -41,7 +41,7 @@
     "controller.status.like-ok": "Gfoit dr!",
     "controller.transport.checkin-heading": "Oicheckt",
     "controller.status.status-not-found": "Status id gfunda",
-    "controller.transport.social-post": "I bi grad in dr :lineName noch :Destination! #NowTräwelling #NauTräwelling |I bi grad in dr Linie :lineName noch :Destination! #NowTräwelling #NauTräwelling ",
+    "controller.transport.social-post": "I bi grad in dr :lineName noch :Destination! #NowTräwelling|I bi grad in dr Linie :lineName noch :Destination! #NowTräwelling ",
     "about.name-heading": "Woher kimmt dr Name?",
     "about.no-train-heading": "Warum werd mei Ziagla id azoigt?",
     "about.points-heading": "Wia werad die Punkte usgreachnat?",
