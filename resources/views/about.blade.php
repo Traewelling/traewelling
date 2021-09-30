@@ -39,26 +39,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">{{ __('about.tram') }}</th>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.suburban') }}</th>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.regional') }}</th>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.express') }}</th>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.international') }}</th>
-                            <td>10</td>
-                        </tr>
+                        @foreach(\App\Enum\HafasTravelType::getList() as $category)
+                            <tr>
+                                <th scope="row">{{ __('transport_types.' . $category) }}</th>
+                                <td>{{config('trwl.base_points.train.' . $category, 1)}}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
