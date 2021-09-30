@@ -95,6 +95,7 @@
     "controller.user.follow-request-ok": "Requested follow.",
     "controller.user.password-changed-ok": "Password changed.",
     "controller.user.password-wrong": "Password wrong.",
+    "error.bad-request": "The request is invalid.",
     "dates.-on-": " on ",
     "dates.decimal_point": ".",
     "dates.thousands_sep": ",",

@@ -58,14 +58,22 @@ class FrontendStatusController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @todo Is this api? Because of JsonReponse. But if yes: Why it does an Redirect?
+     * @return JsonResponse|RedirectResponse
+     */
     public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
         try {
-            StatusBackend::DeleteStatus(Auth::user(), $request['statusId']);
+            if(!is_numeric($request['statusId'])) {
+                return redirect()->back()->with('error', __('error.bad-request'));
+            }
+            StatusBackend::DeleteStatus(Auth::user(), (int)$request['statusId']);
         } catch (PermissionException | ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
 
-        return response()->json(['message' => __('controller.status.delete-ok')], 200);
+        return response()->json(['message' => __('controller.status.delete-ok')]);
     }
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
