@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title')RIS @endsection
+@section('title', 'RIS')
 
 @section('content')
     @include('includes.station-autocomplete')
@@ -33,7 +33,8 @@
                             <input type="hidden" name="travelType" value="{{$request->travelType}}"/>
                             <div class="input-group mb-3 mx-auto">
                                 <input type="datetime-local" class="form-control" id="timepicker" name="when"
-                                       aria-describedby="button-addontime" value="{{  $times['now']->format("Y-m-d\TH:i") }}"/>
+                                       aria-describedby="button-addontime"
+                                       value="{{  $times['now']->format("Y-m-d\TH:i") }}"/>
                                 <button class="btn btn-outline-primary" type="submit" id="button-addontime"
                                         data-mdb-ripple-color="dark">
                                     {{__('stationboard.set-time')}}
@@ -65,7 +66,7 @@
                                 </tr>
                             </table>
                         @else
-                            <table class="table table-dark table-borderless table-hover m-0">
+                            <table class="table table-dark table-borderless table-hover m-0" id="stationboard">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -75,44 +76,52 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($departures as $departure)
-                                    <tr @if(!isset($departure->cancelled)) class="trainrow"
-                                        @endif data-tripID="{{ $departure->tripId }}"
-                                        data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}"
-                                        data-start="{{ $departure->stop->id }}"
-                                        data-departure="{{ $departure->plannedWhen }}">
-                                        <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
-                                                <img class="product-icon"
-                                                     alt="Icon of {{$departure->line->product}}"
-                                                     src="{{ asset('img/'.$departure->line->product.'.svg') }}">
-                                            @else
-                                                <i class="fa fa-train"></i>
-                                            @endif</td>
-                                        <td>
-                                            @if($departure->line->name)
-                                                {!! str_replace(" ", "&nbsp;", $departure->line->name) !!}
-                                            @else
-                                                {!! str_replace(" ", "&nbsp;", $departure->line->fahrtNr) !!}
-                                            @endif
+                                    @foreach($departures as $departure)
+                                        @if(!$loop->first && !$loop->last && \Carbon\Carbon::parse($departures[$loop->index - 1]->when)->isPast() && \Carbon\Carbon::parse($departures[$loop->index]->when)->isAfter(\Carbon\Carbon::now()->setSecond(0)))
+                                            <tr>
+                                                <td colspan="4" class="stationboardDivider">
+                                                    <small>{{__('request-time', ['time' => \Carbon\Carbon::now()->isoFormat(__('time-format'))])}}</small>
+                                                </td>
+                                            </tr>
+                                        @endif
 
-                                        </td>
-                                        <td>{{ $departure->direction }}</td>
-                                        <td>
-                                            @if(isset($departure->cancelled))
-                                                <span class="text-danger">
+                                        <tr @if(!isset($departure->cancelled)) class="trainrow"
+                                            @endif data-tripID="{{ $departure->tripId }}"
+                                            data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}"
+                                            data-start="{{ $departure->stop->id }}"
+                                            data-departure="{{ $departure->plannedWhen }}">
+                                            <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
+                                                    <img class="product-icon"
+                                                         alt="Icon of {{$departure->line->product}}"
+                                                         src="{{ asset('img/'.$departure->line->product.'.svg') }}">
+                                                @else
+                                                    <i class="fa fa-train"></i>
+                                                @endif</td>
+                                            <td>
+                                                @if($departure->line->name)
+                                                    {!! str_replace(" ", "&nbsp;", $departure->line->name) !!}
+                                                @else
+                                                    {!! str_replace(" ", "&nbsp;", $departure->line->fahrtNr) !!}
+                                                @endif
+
+                                            </td>
+                                            <td>{{ $departure->direction }}</td>
+                                            <td>
+                                                @if(isset($departure->cancelled))
+                                                    <span class="text-danger">
                                                     {{ __('stationboard.stop-cancelled') }}
                                                 </span>
-                                            @else
-                                                {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
-                                                @if(isset($departure->delay))
-                                                    <small>(<span class="traindelay">
+                                                @else
+                                                    {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                    @if(isset($departure->delay))
+                                                        <small>(<span class="traindelay">
                                                             +{{ $departure->delay / 60 }}
                                                         </span>)</small>
+                                                    @endif
                                                 @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         @endif
