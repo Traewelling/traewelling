@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'next'     => 'Volgende &raquo;',
     'previous' => '&laquo; Vorige',

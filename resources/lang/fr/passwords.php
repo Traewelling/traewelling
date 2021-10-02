@@ -10,6 +10,9 @@
 | has failed, such as for an invalid token or invalid new password.
 |
 */
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 
 return [
     'reset'     => 'Votre mot de passe a été réinitialisé !',

@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'accepted'             => ':Attribute moet geaccepteerd zijn.',
     'accepted_if'          => ':Attribute moet worden geaccepteerd als :other :value is.',

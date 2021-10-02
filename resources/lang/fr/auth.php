@@ -10,7 +10,9 @@
 | these language lines according to your application's requirements.
 |
 */
-
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'failed'   => 'Ces identifiants ne correspondent pas à nos enregistrements.',
     'password' => 'Le mot de passe fourni est incorrect.',

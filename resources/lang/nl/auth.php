@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'failed'   => 'Deze combinatie van e-mailadres en wachtwoord is niet geldig.',
     'password' => 'Het opgegeven wachtwoord is onjuist.',

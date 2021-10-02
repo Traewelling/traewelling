@@ -10,6 +10,9 @@
 | as the size rules. Feel free to tweak each of these messages here.
 |
 */
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 
 return [
     'accepted'             => 'Le champ :attribute doit être accepté.',

@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'accepted'             => 'Pole :attribute musi zostać zaakceptowane.',
     'accepted_if'          => 'The :attribute must be accepted when :other is :value.',

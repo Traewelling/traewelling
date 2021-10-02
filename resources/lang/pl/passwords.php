@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'reset'     => 'Hasło zostało zresetowane!',
     'sent'      => 'Przypomnienie hasła zostało wysłane!',

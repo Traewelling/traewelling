@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'accepted'             => 'Dit veld moet geaccepteerd zijn.',
     'accepted_if'          => 'This field must be accepted when :other is :value.',

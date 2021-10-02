@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'accepted'             => 'Ce champ doit être accepté.',
     'accepted_if'          => 'Ce champ doit être accepté quand :other a la valeur :value.',

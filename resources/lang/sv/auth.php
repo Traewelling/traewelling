@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'failed'   => 'Dessa uppgifter stämmer inte överens med vårt register.',
     'password' => 'The provided password is incorrect.',

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'attributes' => [
         'address'               => 'Address',

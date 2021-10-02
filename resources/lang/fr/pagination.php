@@ -10,6 +10,9 @@
 | you want to customize your views to better match your application.
 |
 */
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 
 return [
     'next'     => 'Suivant &raquo;',

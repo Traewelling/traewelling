@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * @copyright https://github.com/Laravel-Lang/lang MIT-License
+ */
 return [
     'reset'     => 'Lösenordet har blivit återställt!',
     'sent'      => 'Lösenordspåminnelse skickad!',
