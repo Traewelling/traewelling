@@ -6,7 +6,6 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Controllers\Backend\Export\Format\JsonExportController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;
@@ -20,7 +19,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FrontendStatusController extends Controller
 {
