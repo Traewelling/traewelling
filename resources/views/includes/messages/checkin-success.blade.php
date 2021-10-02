@@ -4,7 +4,7 @@
         <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
         <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</p>
         @if(session()->get('checkin-success')['alsoOnThisConnection']->count() >= 1)
-            <p>{{ trans_choice('controller.transport.also-in-connection', session()->get('checkin-success')['alsoOnThisConnection']->count()) }}</p>
+            <span>{{ trans_choice('controller.transport.also-in-connection', session()->get('checkin-success')['alsoOnThisConnection']->count()) }}</span>
             <table style="margin-left: auto;margin-right: auto;">
                 <tbody>
                     @foreach(session()->get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
