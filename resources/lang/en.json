@@ -63,7 +63,7 @@
     "controller.transport.no-name-given": "You need to provide a station name!",
     "controller.transport.not-in-stopovers": "Start-ID is not in stopovers.",
     "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename: <a href=\":url\">#:id</a>",
-    "controller.transport.also-in-connection": "Also in this connection are:",
+    "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
     "controller.transport.social-post-for": " for #:hashtag",

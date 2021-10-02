@@ -63,41 +63,8 @@
                 </div>
             @endif
 
-            @if(Session::has('checkin-success'))
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                    <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
-                    <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', Session::get('checkin-success')['lineName']), ['lineName' => Session::get('checkin-success')['lineName']]) }}</p>
-                    @if(Session::get('checkin-success')['alsoOnThisConnection']->count() >= 1)
-                        <p>{{ __('controller.transport.also-in-connection') }}</p>
-                        <ul>
-                            @foreach(Session::get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
-                                <li>
-                                    <a href="{{ route('account.show', ['username' => $otherStatus->user->username]) }}">{{ '@' . $otherStatus->user->username }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    @if(Session::get('checkin-success')['event'])
-                        <p>
-                            {!!  __('events.on-your-way', [
-                                "name" => Session::get('checkin-success')['event']['name'],
-                                "url" => route('statuses.byEvent', ['eventSlug' => Session::get('checkin-success')['event']['slug']])
-                            ]) !!}
-                        </p>
-                    @endif
-                    <hr>
-                    <p class="mb-0">
-                        <i class="fa fa-stopwatch d-inline"></i>&nbsp;<b>{!! durationToSpan(secondsToDuration(Session::get('checkin-success')['duration'] * 60)) !!}</b>
-                        —
-                        <i class="fa fa-route d-inline"></i>&nbsp;<b>{{ number(Session::get('checkin-success')['distance']) }}
-                            <small>km</small></b>
-                        —
-                        <i class="fa fa-dice-d20 d-inline"></i>&nbsp;<b>{{ Session::get('checkin-success')['points'] }}
-                            <small>{{__('profile.points-abbr')}}</small></b>
-                    </p>
-                </div>
-            @endif
+            @include('includes.messages.checkin-success')
+
             <div id="alert_placeholder"></div>
         </div>
     </div>
