@@ -10,37 +10,16 @@
                 @endforeach
             @endif
 
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <strong>{!! $message !!}</strong>
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+            @foreach(['success' => 'success', 'error' => 'danger', 'warning' => 'warning', 'info' => 'info'] as $sessionKey => $cssKey)
+                @if ($message = session()->get($sessionKey))
+                    <div class="alert alert-{{$cssKey}} alert-dismissible">
+                        <strong>{!! $message !!}</strong>
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+            @endforeach
 
-            @if ($message = Session::get('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    <strong>{!! $message !!}</strong>
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-
-            @if ($message = Session::get('warning'))
-                <div class="alert alert-warning alert-dismissible">
-                    <strong>{!! $message !!}</strong>
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-
-            @if ($message = Session::get('info'))
-                <div class="alert alert-info alert-dismissible">
-                    <strong>{!! $message !!}</strong>
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @if($message = Session::get('mail-prompt'))
+            @if($message = session()->get('mail-prompt'))
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                     <strong>{!! $message !!}</strong>
