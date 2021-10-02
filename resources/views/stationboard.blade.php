@@ -137,7 +137,17 @@
                                                 @endif
                                             </td>
                                             <td class="text-wrap">
-                                                {{$departure->direction}}
+                                                @if(isset($departure->cancelled))
+                                                    <span class="text-danger">
+                                                        {{ __('stationboard.stop-cancelled') }}
+                                                    </span>
+                                                    <br/>
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        {{$departure->direction}}
+                                                    </small>
+                                                @else
+                                                    {{$departure->direction}}
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
