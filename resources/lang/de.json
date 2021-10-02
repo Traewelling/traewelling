@@ -55,7 +55,7 @@
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
     "controller.transport.not-in-stopovers": "Die Start-ID ist nicht in den Zwischenstops.",
     "controller.transport.overlapping-checkin": "Du hast bereits einen Check-In in Verbindung :linename: <a href=\":url\">#:id</a>",
-    "controller.transport.also-in-connection": "Auch in dieser Verbindung sind:",
+    "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
     "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
     "controller.transport.social-post-for": " für #:hashtag",
@@ -451,5 +451,6 @@
     "subject": "Betreff",
     "how-can-we-help": "Wie können wir helfen?",
     "support.answer": "Wir werden dir so schnell wie möglich antworten. Die Antwort erhältst du an deine E-Mail Adresse :address.",
-    "support.success": "Deine Anfrage ist bei uns eingegangen (Ticket #:ticketNumber). Wir werden dir so schnell wie möglich per E-Mail antworten."
+    "support.success": "Deine Anfrage ist bei uns eingegangen (Ticket #:ticketNumber). Wir werden dir so schnell wie möglich per E-Mail antworten.",
+    "request-time": "abgefragt um :time"
 }

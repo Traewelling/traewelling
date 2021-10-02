@@ -63,7 +63,7 @@
     "controller.transport.no-name-given": "You need to provide a station name!",
     "controller.transport.not-in-stopovers": "Start-ID is not in stopovers.",
     "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename: <a href=\":url\">#:id</a>",
-    "controller.transport.also-in-connection": "Also in this connection are:",
+    "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
     "controller.transport.social-post-for": " for #:hashtag",
@@ -453,5 +453,6 @@
     "support.success": "We have received your request (Ticket #:ticketNumber). We will answer you as soon as possible by e-mail.",
     "settings.visibility": "Visibility",
     "settings.visibility.disclaimer": "If your profile is private, even statuses marked as public will only be shown to your followers.",
-    "settings.visibility.default": "CheckIns: Default visibility"
+    "settings.visibility.default": "CheckIns: Default visibility",
+    "request-time": "requested at :time"
 }
