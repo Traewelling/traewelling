@@ -55,7 +55,7 @@
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
     "controller.transport.not-in-stopovers": "Die Start-ID ist nicht in den Zwischenstops.",
     "controller.transport.overlapping-checkin": "Du hast bereits einen Check-In in Verbindung :linename: <a href=\":url\">#:id</a>",
-    "controller.transport.also-in-connection": "Auch in dieser Verbindung sind:",
+    "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
     "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
     "controller.transport.social-post-for": " für #:hashtag",
@@ -119,6 +119,7 @@
     "dates.Wednesday": "Mittwoch",
     "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
     "dateformat.month-and-year": "MMMM YYYY",
+    "error.bad-request": "Die Anfrage ist ungültig.",
     "events.header": "Veranstaltung: :name",
     "events.name": "Name",
     "events.hashtag": "Hashtag",
@@ -392,8 +393,9 @@
     "transport_types.business": "Geschäftliche Reise",
     "transport_types.businessPlural": "Geschäftliche Reisen",
     "transport_types.express": "Fernverkehr",
-    "transport_types.national": "Fernverkehr",
-    "transport_types.nationalExpress": "Fernverkehr",
+    "transport_types.taxi": "Taxi",
+    "transport_types.national": "Fernverkehr (IC, EC, ...)",
+    "transport_types.nationalExpress": "Fernverkehr (ICE, ...)",
     "transport_types.ferry": "Fähre",
     "transport_types.private": "Private Reise",
     "transport_types.privatePlural": "Private Reisen",
@@ -440,5 +442,6 @@
     "description.en-route": "Übersichtskarte über alle Träweller, welche gerade auf der Welt unterwegs sind.",
     "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage.",
     "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung.",
-    "minutes": "Minuten"
+    "minutes": "Minuten",
+    "request-time": "abgefragt um :time"
 }
