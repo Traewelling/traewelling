@@ -444,5 +444,6 @@
     "minutes": "minutes",
     "settings.visibility": "Visibility",
     "settings.visibility.disclaimer": "If your profile is private, even statuses marked as public will only be shown to your followers.",
-    "settings.visibility.default": "CheckIns: Default visibility"
+    "settings.visibility.default": "CheckIns: Default visibility",
+    "request-time": "requested at :time"
 }
