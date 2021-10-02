@@ -10,7 +10,7 @@
                     @foreach(session()->get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
                         @if($otherStatus->statusInvisibleToMe)
                             <tr>
-                                <td colspan="5">👻 Privater Benutzer</td>
+                                <td colspan="5">👻 {{__('user.private-profile')}}</td>
                             </tr>
                         @else
                             <tr>
