@@ -10,12 +10,15 @@
                     @foreach(session()->get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
                         @if($otherStatus->statusInvisibleToMe)
                             <tr>
-                                <td colspan="5">👻 {{__('user.private-profile')}}</td>
+                                <td colspan="5">
+                                    <i class="fas fa-user-secret" aria-hidden="true"></i>
+                                    {{__('user.private-profile')}}
+                                </td>
                             </tr>
                         @else
                             <tr>
                                 <td>
-                                    👤
+                                    <i class="fas fa-user" aria-hidden="true"></i>
                                     <a href="{{ route('account.show', ['username' => $otherStatus->user->username]) }}">
                                         {{ '@' . $otherStatus->user->username }}
                                     </a>
