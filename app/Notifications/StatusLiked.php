@@ -16,7 +16,7 @@ class StatusLiked extends Notification
 {
     use Queueable;
 
-    public $like;
+    public ?Like $like;
 
     /**
      * Create a new notification instance
@@ -33,7 +33,7 @@ class StatusLiked extends Notification
      * @param mixed
      * @return array
      */
-    public function via() {
+    public function via(): array {
         return ['database'];
     }
 
@@ -43,7 +43,7 @@ class StatusLiked extends Notification
      * @param mixed
      * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         return [
             'status_id' => $this->like->status_id,
             'like_id'   => $this->like->id,
@@ -51,14 +51,14 @@ class StatusLiked extends Notification
         ];
     }
 
-    public static function detail($notification) {
+    public static function detail($notification): stdClass {
         $data = $notification->data;
 
         try {
             $like   = Like::findOrFail($data['like_id']);
             $sender = User::findOrFail($like->user_id);
             $status = Status::findOrFail($like->status_id);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             // Either the status was unliked, or the sender has deleted its account,
             // or the status was deleted. Eitherway, we don't need the notification anymore.
             throw new ShouldDeleteNotificationException();
@@ -71,10 +71,10 @@ class StatusLiked extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification): ?string {
         try {
-            $detail = Self::detail($notification);
-        } catch (ShouldDeleteNotificationException $e) {
+            $detail = self::detail($notification);
+        } catch (ShouldDeleteNotificationException) {
             $notification->delete();
             return null;
         }
@@ -90,7 +90,7 @@ class StatusLiked extends Notification
                 preg_match('/\s/', $hafas->linename),
                 [
                     'line'        => $hafas->linename,
-                    'createdDate' => Carbon::parse($hafas->departure)->format('Y-m-d')
+                    'createdDate' => Carbon::parse($hafas->departure)->isoFormat(__('date-format'))
                 ]
             ),
             'date_for_humans' => $notification->created_at->diffForHumans(),
