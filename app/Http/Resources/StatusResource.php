@@ -18,7 +18,6 @@ class StatusResource extends JsonResource
             "id"           => (int) $this->id,
             "body"         => (string) $this->body,
             "type"         => (string) $this->type,
-            "createdAt"    => (string) $this->created_at,
             "user"         => (int) $this->user->id,
             "username"     => (string) $this->user->username,
             "preventIndex" => (bool) $this->user->prevent_index,
@@ -26,6 +25,7 @@ class StatusResource extends JsonResource
             "visibility"   => (int) $this->visibility,
             "likes"        => (int) $this->likes->count(),
             "liked"        => (bool) $this->favorited,
+            "createdAt"    => $this->created_at->toIso8601String(),
             "train"        => [
                 "trip"        => (int) $this->trainCheckin->HafasTrip->id,
                 "category"    => (string) $this->trainCheckin->HafasTrip->category,
@@ -38,8 +38,7 @@ class StatusResource extends JsonResource
                 "origin"      => new StopoverResource($this->trainCheckin->origin_stopover),
                 "destination" => new StopoverResource($this->trainCheckin->destination_stopover)
             ],
-            //ToDo: Custom Resource for event
-            "event"        => empty($this->event) ? null : $this->event
+            "event"        => new EventResource($this?->event)
         ];
     }
 }
