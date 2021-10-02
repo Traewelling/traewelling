@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\Backend\Export\Format\JsonExportController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;
@@ -121,27 +122,6 @@ class FrontendStatusController extends Controller
         } catch (InvalidArgumentException $exception) {
             return response($exception->getMessage(), 404);
         }
-    }
-
-    public function exportLanding(): Renderable {
-        return view('export')->with([
-                                        'begin_of_month' => Carbon::now()->firstOfMonth()->format('Y-m-d'),
-                                        'end_of_month'   => Carbon::now()->lastOfMonth()->format('Y-m-d')
-                                    ]);
-    }
-
-    public function export(Request $request): JsonResponse|StreamedResponse|Response {
-        $validated = $request->validate([
-                                            'begin'    => ['required', 'date', 'before_or_equal:end'],
-                                            'end'      => ['required', 'date', 'after_or_equal:begin'],
-                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
-                                        ]);
-
-        return StatusBackend::ExportStatuses(
-            startDate: Carbon::parse($validated['begin']),
-            endDate: Carbon::parse($validated['end']),
-            fileType: $request->input('filetype')
-        );
     }
 
     public function getActiveStatuses(): Renderable {

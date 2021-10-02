@@ -154,6 +154,7 @@
     "export.page": "Page",
     "export.journey-from-to": "Journey from :origin to :destination",
     "export.reason": "Reason",
+    "export.reason.private": "Private travel",
     "export.reason.business": "Business travel",
     "export.reason.commute": "Commute",
     "export.title.status-id": "Status-ID",
