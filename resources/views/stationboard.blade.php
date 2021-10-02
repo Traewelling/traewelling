@@ -66,20 +66,26 @@
                                 </tr>
                             </table>
                         @else
-                            <table class="table table-dark table-borderless table-hover m-0" id="stationboard">
+                            <table aria-labelledby="stationTableHeader" id="stationboard"
+                                   class="table table-dark table-borderless table-hover table-striped m-0">
                                 <thead>
                                     <tr>
-                                        <th></th>
-                                        <th>{{__('stationboard.line')}}</th>
-                                        <th>{{__('stationboard.destination')}}</th>
-                                        <th>{{__('stationboard.dep-time')}}</th>
+                                        <th scope="col" class="ps-2 ps-md-4">
+                                            {{__('stationboard.dep-time')}}
+                                        </th>
+                                        <th scope="col" class="px-0">
+                                            {{__('stationboard.line')}}
+                                        </th>
+                                        <th scope="col">
+                                            {{__('stationboard.destination')}}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($departures as $departure)
                                         @if(!$loop->first && !$loop->last && \Carbon\Carbon::parse($departures[$loop->index - 1]->when)->isPast() && \Carbon\Carbon::parse($departures[$loop->index]->when)->isAfter(\Carbon\Carbon::now()->setSecond(0)))
                                             <tr>
-                                                <td colspan="4" class="stationboardDivider">
+                                                <td colspan="3" class="stationboardDivider">
                                                     <small>{{__('request-time', ['time' => \Carbon\Carbon::now()->isoFormat(__('time-format'))])}}</small>
                                                 </td>
                                             </tr>
@@ -90,34 +96,57 @@
                                             data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}"
                                             data-start="{{ $departure->stop->id }}"
                                             data-departure="{{ $departure->plannedWhen }}">
-                                            <td>@if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
-                                                    <img class="product-icon"
-                                                         alt="Icon of {{$departure->line->product}}"
-                                                         src="{{ asset('img/'.$departure->line->product.'.svg') }}">
+                                            <td class="ps-2 ps-md-4">
+                                                @if($departure->delay === null)
+                                                    <span class="text-white">
+                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                    </span>
+                                                @elseif($departure->delay === 0)
+                                                    <span class="text-success">
+                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                    </span>
+                                                @elseif($departure->delay < (5*60))
+                                                    <span class="text-warning">
+                                                        {{\Carbon\Carbon::parse($departure->when)->isoFormat(__('time-format'))}}
+                                                    </span>
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                    </small>
+                                                @else
+                                                    <span class="text-danger">
+                                                        {{\Carbon\Carbon::parse($departure->when)->isoFormat(__('time-format'))}}
+                                                    </span>
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                    </small>
+                                                @endif
+                                            </td>
+                                            <td class="text-nowrap px-0">
+                                                @if (file_exists(public_path('img/'.$departure->line->product.'.svg')))
+                                                    <img alt="{{$departure->line->product}}"
+                                                         src="{{ asset('img/'.$departure->line->product.'.svg') }}"
+                                                         class="product-icon">
                                                 @else
                                                     <i class="fa fa-train"></i>
-                                                @endif</td>
-                                            <td>
+                                                @endif
+                                                &nbsp;
                                                 @if($departure->line->name)
                                                     {!! str_replace(" ", "&nbsp;", $departure->line->name) !!}
                                                 @else
                                                     {!! str_replace(" ", "&nbsp;", $departure->line->fahrtNr) !!}
                                                 @endif
-
                                             </td>
-                                            <td>{{ $departure->direction }}</td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 @if(isset($departure->cancelled))
                                                     <span class="text-danger">
-                                                    {{ __('stationboard.stop-cancelled') }}
-                                                </span>
+                                                        {{ __('stationboard.stop-cancelled') }}
+                                                    </span>
+                                                    <br/>
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        {{$departure->direction}}
+                                                    </small>
                                                 @else
-                                                    {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
-                                                    @if(isset($departure->delay))
-                                                        <small>(<span class="traindelay">
-                                                            +{{ $departure->delay / 60 }}
-                                                        </span>)</small>
-                                                    @endif
+                                                    {{$departure->direction}}
                                                 @endif
                                             </td>
                                         </tr>
