@@ -131,7 +131,7 @@ class TransportController extends ResponseController
             );
 
             return $this->sendResponse([
-                                           'distance'             => $trainCheckinResponse['distance'],
+                                           'distance'             => $trainCheckinResponse['distance'] / 1000,
                                            'duration'             => $trainCheckinResponse['duration'],
                                            'statusId'             => $trainCheckinResponse['statusId'],
                                            'points'               => $trainCheckinResponse['points'],

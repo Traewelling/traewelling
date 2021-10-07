@@ -19,8 +19,8 @@
                     </a>
                 </td>
                 <td>{!! durationToSpan(secondsToDuration(60 * $row->duration)) !!}</td>
-                <td>{{ number($row->distance) }}<small>km</small></td>
-                <td>{{ number($row->speed) }}<small>km/h</small></td>
+                <td>{{ number($row->distance / 1000) }}<small>km</small></td>
+                <td>{{ number($row->speed / 1000) }}<small>km/h</small></td>
                 <td>{{ number($row->points, 0) }}</td>
             </tr>
         @endforeach

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\HafasTravelType;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\TwitterController;
+use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -39,6 +39,7 @@ class TransportController extends Controller
 
     /**
      * @param $station
+     *
      * @return Collection
      * @throws HafasException
      * @deprecated
@@ -55,6 +56,7 @@ class TransportController extends Controller
 
     /**
      * @param $query
+     *
      * @return Collection
      * @throws HafasException
      * @api v1
@@ -69,9 +71,10 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $stationName
+     * @param string      $stationName
      * @param Carbon|null $when
      * @param string|null $travelType
+     *
      * @return array
      * @throws HafasException
      * @api v1
@@ -103,8 +106,8 @@ class TransportController extends Controller
 
         $departures = HafasController::getDepartures(
             station: $station,
-            when: $when,
-            type: $travelType
+            when:    $when,
+            type:    $travelType
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });
@@ -117,7 +120,9 @@ class TransportController extends Controller
      * @param $lineName
      * @param $number
      * @param $when
+     *
      * @return mixed|null
+     * @throws GuzzleException
      * @deprecated with vue, replaced by frontend logic
      */
     public static function FastTripAccess($departure, $lineName, $number, $when) {
@@ -131,9 +136,10 @@ class TransportController extends Controller
     }
 
     /**
-     * @param $ibnr
+     * @param        $ibnr
      * @param string $when
-     * @param null $trainType
+     * @param null   $trainType
+     *
      * @return array
      * @throws GuzzleException
      * @deprecated replaced by getDepartures()
@@ -166,8 +172,7 @@ class TransportController extends Controller
                 }
             }
         }
-        $json = self::sortByWhenOrScheduledWhen($json);
-        return $json;
+        return self::sortByWhenOrScheduledWhen($json);
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
@@ -192,10 +197,11 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $tripId TripID in Hafas format
-     * @param string $lineName Line Name in Hafas format
-     * @param $start
+     * @param string      $tripId   TripID in Hafas format
+     * @param string      $lineName Line Name in Hafas format
+     * @param             $start
      * @param Carbon|null $departure
+     *
      * @return array|null
      * @throws HafasException
      * @deprecated replaced by getTrainTrip
@@ -225,6 +231,7 @@ class TransportController extends Controller
      * @param string $tripId
      * @param string $lineName
      * @param string $start
+     *
      * @return HafasTripResource
      * @throws HafasException
      * @throws StationNotOnTripException
@@ -241,18 +248,19 @@ class TransportController extends Controller
     }
 
     /**
-     * @param $tripId
-     * @param $start
-     * @param $destination
-     * @param $body
-     * @param $user
-     * @param $businessCheck
-     * @param $tweetCheck
-     * @param $tootCheck
-     * @param $visibility
-     * @param int $eventId
+     * @param             $tripId
+     * @param             $start
+     * @param             $destination
+     * @param             $body
+     * @param             $user
+     * @param             $businessCheck
+     * @param             $tweetCheck
+     * @param             $tootCheck
+     * @param             $visibility
+     * @param int         $eventId
      * @param Carbon|null $departure
      * @param Carbon|null $arrival
+     *
      * @return array
      * @throws CheckInCollisionException
      * @throws HafasException
@@ -270,15 +278,15 @@ class TransportController extends Controller
         'event'                => "mixed"
     ])]
     public static function TrainCheckin($tripId,
-                                        $start,
-                                        $destination,
-                                        $body,
-                                        $user,
-                                        $businessCheck,
-                                        $tweetCheck,
-                                        $tootCheck,
-                                        $visibility,
-                                        $eventId = 0,
+        $start,
+        $destination,
+        $body,
+        $user,
+        $businessCheck,
+        $tweetCheck,
+        $tootCheck,
+        $visibility,
+        $eventId = 0,
                                         Carbon $departure = null,
                                         Carbon $arrival = null): array {
 
@@ -314,17 +322,16 @@ class TransportController extends Controller
             ->where('arrival_planned', $arrival)
             ->first();
 
-        $distance = 0;
+        $distanceInMeters = 0;
         if ($departureStopover != null && $arrivalStopover != null) {
-            $distance = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
+            $distanceInMeters = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
         }
 
-        $points = self::CalculateTrainPoints(
-            $distance,
+        $points = PointsCalculationController::calculatePoints(
+            $distanceInMeters,
             $hafasTrip->category,
-            $stopovers[$offset1]['departure'],
-            $stopovers[$offset2]['arrival'],
-            $hafasTrip->delay
+            Carbon::parse($stopovers[$offset1]['departure']),
+            Carbon::parse($stopovers[$offset2]['arrival']),
         );
 
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
@@ -363,7 +370,7 @@ class TransportController extends Controller
                                                  'trip_id'     => $tripId,
                                                  'origin'      => $originStation->ibnr,
                                                  'destination' => $destinationStation->ibnr,
-                                                 'distance'    => $distance,
+                                                 'distance'    => $distanceInMeters,
                                                  'delay'       => $hafasTrip->delay,
                                                  'points'      => $points,
                                                  'departure'   => $plannedDeparture,
@@ -413,50 +420,13 @@ class TransportController extends Controller
         ];
     }
 
-    public static function CalculateTrainPoints($distance, $category, $departure, $arrival, $delay): int {
-        $now = time();
-
-        $factor = 1;
-        if (in_array($category, HafasTravelType::getList())) {
-            $factor = config('trwl.base_points.train.' . $category, 1);
-        }
-
-        $arrivalTime   = ((is_int($arrival)) ? $arrival : strtotime($arrival)) + $delay;
-        $departureTime = ((is_int($departure)) ? $departure : strtotime($departure)) + $delay;
-        $points        = $factor + ceil($distance / 10);
-
-        /**
-         * Full points, 20min before the departure time or during the ride
-         *   D-20         D                      A
-         *    |           |                      |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if (($departureTime - 20 * 60) < $now && $now < $arrivalTime) {
-            return $points;
-        }
-
-        /**
-         * Reduced points, one hour before departure and after arrival
-         *
-         *   D-60         D          A          A+60
-         *    |           |          |           |
-         * -----------------------------------------> t
-         *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-         */
-        if (($departureTime - 60 * 60) < $now && $now < ($arrivalTime + 60 * 60)) {
-            return ceil($points * 0.25);
-        }
-
-        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
-        return 1;
-    }
-
     /**
      * Check if there are colliding CheckIns
-     * @param User $user
+     *
+     * @param User   $user
      * @param Carbon $start
      * @param Carbon $end
+     *
      * @return Collection
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
@@ -465,7 +435,7 @@ class TransportController extends Controller
         $start = $start->clone()->addMinutes(10);
         $end   = $end->clone()->subMinutes(10);
 
-        if($end->isBefore($start)) {
+        if ($end->isBefore($start)) {
             return collect();
         }
 
@@ -561,13 +531,13 @@ class TransportController extends Controller
      * @api v1
      */
     public static function createTrainCheckin(
-        Status $status,
+        Status    $status,
         HafasTrip $trip,
-        int $entryStop,
-        int $exitStop,
-        Carbon $departure = null,
-        Carbon $arrival = null,
-        bool $ibnr = false
+        int       $entryStop,
+        int       $exitStop,
+        Carbon    $departure = null,
+        Carbon    $arrival = null,
+        bool      $ibnr = false
     ): array {
         $trip->load('stopoversNEW');
 
@@ -590,9 +560,9 @@ class TransportController extends Controller
         }
 
         $overlapping = self::getOverlappingCheckIns(
-            user: Auth::user(),
+            user:  Auth::user(),
             start: $firstStop->departure,
-            end: $lastStop->arrival
+            end:   $lastStop->arrival
         );
         if ($overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
@@ -600,12 +570,11 @@ class TransportController extends Controller
 
         $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
 
-        $points = self::CalculateTrainPoints(
-            distance: $distance,
-            category: $trip->category,
-            departure: $firstStop->planned_departure,
-            arrival: $lastStop->planned_arrival,
-            delay: $trip->delay
+        $points = PointsCalculationController::calculatePoints(
+            distanceInMeter: $distance,
+            category:        $trip->category,
+            departure:       $firstStop->departure,
+            arrival:         $lastStop->arrival
         );
 
         $trainCheckin = TrainCheckin::create([
@@ -623,9 +592,9 @@ class TransportController extends Controller
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             if ($otherStatus?->user) {
                 $otherStatus->user->notify(new UserJoinedConnection(
-                                               statusId: $status->id,
-                                               linename: $trip->linename,
-                                               origin: $firstStop->name,
+                                               statusId:    $status->id,
+                                               linename:    $trip->linename,
+                                               origin:      $firstStop->name,
                                                destination: $lastStop->name
                                            ));
             }
@@ -639,7 +608,9 @@ class TransportController extends Controller
 
     /**
      * Get the PolyLine Model from Database
+     *
      * @param string $polyline The Polyline as a json string given by hafas
+     *
      * @return PolyLine
      */
     public static function getPolylineHash(string $polyline): PolyLine {
@@ -652,8 +623,10 @@ class TransportController extends Controller
 
     /**
      * Get the latest TrainStations the user is arrived.
+     *
      * @param User $user
-     * @param int $maxCount
+     * @param int  $maxCount
+     *
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
@@ -673,7 +646,8 @@ class TransportController extends Controller
 
     /**
      * @param User $user
-     * @param int $ibnr
+     * @param int  $ibnr
+     *
      * @return TrainStation
      * @throws HafasException
      * @deprecated replaced by setTrainHome()
@@ -689,8 +663,9 @@ class TransportController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param string $stationName
+     *
      * @return TrainStation
      * @throws HafasException
      * @api v1
