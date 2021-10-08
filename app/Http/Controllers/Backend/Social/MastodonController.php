@@ -8,9 +8,6 @@ use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Revolution\Mastodon\Facades\Mastodon;
 
 abstract class MastodonController extends Controller
@@ -20,52 +17,30 @@ abstract class MastodonController extends Controller
      * If logged in, the user will have the login-provider added.
      * If a user with corresponding login-provider already exists, it will be returned.
      *
-     * @param $getInfo (response of Socialite->user())
-     * @param $domain
+     * @param \Laravel\Socialite\Contracts\User $socialiteUser
+     * @param MastodonServer                    $server
      *
-     * @return User|RedirectResponse|null model
+     * @return User model
      */
-    public static function createUser(\Laravel\Socialite\Contracts\User $getInfo, $domain): User|RedirectResponse|null {
-        $identifier = SocialLoginProfile::where('mastodon_id', $getInfo->id)
-                                        ->where(
-                                            'mastodon_server',
-                                            MastodonServer::where('domain', $domain)->first()->id
-                                        )
-                                        ->first();
+    public static function getUserFromSocialite(
+        \Laravel\Socialite\Contracts\User $socialiteUser,
+        MastodonServer                    $server
+    ): User {
+        $socialProfile = SocialLoginProfile::where('mastodon_id', $socialiteUser->id)
+                                           ->where('mastodon_server', $server->id)
+                                           ->first();
 
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($identifier != null) {
-                return redirect()->to('/dashboard')->withErrors([__('controller.social.already-connected-error')]);
-            }
-        } elseif ($identifier === null) {
-            $existingUser = User::where('username', $getInfo->nickname)->first();
-            $errorCount   = 0;
-            while ($errorCount < 10 && $existingUser !== null) {
-                $getInfo->nickname = $getInfo->nickname . rand(1, 10);
-                $existingUser      = User::where('username', $getInfo->nickname)->first();
-                $errorCount++;
-            }
-            try {
-                $user = User::create([
-                                         'name'     => $getInfo->name,
-                                         'username' => $getInfo->nickname,
-                                         'email'    => $getInfo->email,
-                                     ]);
-            } catch (QueryException) {
-                return null;
+        if ($socialProfile === null) {
+            if (auth()->check()) {
+                self::updateToken(auth()->user(), $socialiteUser, $server);
+                return auth()->user();
+            } else {
+                return self::createUser($socialiteUser, $server);
             }
         } else {
-            $user = User::where('id', $identifier->user_id)->first();
+            self::updateToken($socialProfile->user, $socialiteUser, $server);
+            return $socialProfile->user;
         }
-
-        $socialProfile                  = $user->socialProfile ?: new SocialLoginProfile;
-        $socialProfile->mastodon_id     = $getInfo->id;
-        $socialProfile->mastodon_token  = $getInfo->token;
-        $socialProfile->mastodon_server = MastodonServer::where('domain', $domain)->first()->id;
-
-        $user->socialProfile()->save($socialProfile);
-        return $user;
     }
 
     /**
@@ -88,7 +63,7 @@ abstract class MastodonController extends Controller
         return $mastodonServer ?? self::createMastodonServer($domain);
     }
 
-    public static function formatDomain(string $domain) {
+    public static function formatDomain(string $domain): string {
         $domain = strtolower($domain);
         $domain = str_replace('http://', 'https://', $domain);
         if (!str_starts_with($domain, 'https://')) {
@@ -116,5 +91,23 @@ abstract class MastodonController extends Controller
             report($exception);
             throw new InvalidMastodonException();
         }
+    }
+
+    private static function createUser(\Laravel\Socialite\Contracts\User $socialiteUser, MastodonServer $server): User {
+        //TODO: Fetch profile image (see issue #5)
+        $user = User::create([
+                                 'name'     => SocialController::getDisplayName($socialiteUser),
+                                 'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),
+                             ]);
+        self::updateToken($user, $socialiteUser, $server);
+        return $user;
+    }
+
+    private static function updateToken(User $user, \Laravel\Socialite\Contracts\User $socialiteUser, MastodonServer $server) {
+        $user->socialProfile->update([
+                                         'mastodon_id'     => $socialiteUser->id,
+                                         'mastodon_token'  => $socialiteUser->token,
+                                         'mastodon_server' => $server->id,
+                                     ]);
     }
 }

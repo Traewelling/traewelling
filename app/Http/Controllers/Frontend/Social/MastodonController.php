@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class MastodonController extends Controller
@@ -29,7 +28,8 @@ class MastodonController extends Controller
 
         try {
             $server = MastodonBackend::getMastodonServer($domain);
-        } catch (InvalidMastodonException) {
+        } catch (InvalidMastodonException $exception) {
+            report($exception);
             return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
         }
 
@@ -69,12 +69,12 @@ class MastodonController extends Controller
         config(['services.mastodon.client_id' => $server->client_id]);
         config(['services.mastodon.client_secret' => $server->client_secret]);
 
-        $getInfo = Socialite::driver('mastodon')->user();
-        $user    = MastodonBackend::createUser($getInfo, $domain);
+        $socialiteUser = Socialite::driver('mastodon')->user();
+        $user          = MastodonBackend::getUserFromSocialite($socialiteUser, $server);
         if ($user === null) {
             return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
-        if (!Auth::check()) {
+        if (!auth()->check()) {
             auth()->login($user, true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
@@ -82,10 +82,10 @@ class MastodonController extends Controller
         //TODO: Check and implement
         if ($request->query->get('return', 'none') == 'token') {
             $token = $request->user()->createToken('token');
-            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                  [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       'token'      => $token->accessToken,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       'expires_at' => $token->token->expires_at->toIso8601String()
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   ], 200)
+            return response()->json([
+                                        'token'      => $token->accessToken,
+                                        'expires_at' => $token->token->expires_at->toIso8601String()
+                                    ])
                              ->header('Authorization', $token->accessToken);
         }
 
