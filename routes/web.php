@@ -215,8 +215,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
          ->name('busses.stationboard');
 
-    Route::get('/mastodon/test', [SocialController::class, 'testMastodon']);
-
     Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
          ->name('notifications.latest');
 
