@@ -10,6 +10,7 @@ use Exception;
 use File;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,8 +93,12 @@ class SocialController extends Controller
             session(['mastodon_domain' => $domain]);
             session(['mastodon_server' => $server]);
 
+            // TODO: same functionality with additional redirect query for mastodon
         }
         try {
+            if($provider == 'twitter' && $request->query->get('return', 'none') == 'token')
+                config(['services.twitter.redirect' => env('TWITTER_REDIRECT') . '?return=token']);
+
             return Socialite::driver($provider)->redirect();
         } catch (Exception) {
             abort(404);
@@ -104,11 +109,12 @@ class SocialController extends Controller
      * handles callback of login-provider with socialite.
      * Calls createUser
      *
-     * @param $provider
+     * @param         $provider
+     * @param Request $request
      *
-     * @return RedirectResponse
+     * @return JsonResponse|RedirectResponse
      */
-    public function callback($provider): RedirectResponse {
+    public function callback($provider, Request $request): JsonResponse|RedirectResponse {
         $domain = '';
         if ($provider === 'mastodon') {
             $domain = session('mastodon_domain');
@@ -129,6 +135,15 @@ class SocialController extends Controller
         if (!Auth::check()) {
             auth()->login($user, true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
+        }
+
+        if($request->query->get('return', 'none') == 'token') {
+            $token = $request->user()->createToken('token');
+            return response()->json([
+                           'token'      => $token->accessToken,
+                           'expires_at' => $token->token->expires_at->toIso8601String()
+                       ], 200)
+                ->header('Authorization', $token->accessToken);
         }
 
         return redirect()->route('dashboard');
