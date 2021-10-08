@@ -178,7 +178,7 @@ class FrontendStatusController extends Controller
             'title'       => __('status.ogp-title', ['name' => $statusResponse->user->username]),
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
                 'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,
-                'distance'    => $statusResponse->trainCheckin->distance / 1000,
+                'distance'    => number($statusResponse->trainCheckin->distance / 1000, 1),
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
