@@ -68,6 +68,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function socialProfile(): HasOne {
+        if ($this->hasOne(SocialLoginProfile::class)->count() == 0) {
+            SocialLoginProfile::create(['user_id' => $this->id]);
+        }
         return $this->hasOne(SocialLoginProfile::class);
     }
 

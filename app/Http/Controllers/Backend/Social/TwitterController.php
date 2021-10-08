@@ -7,9 +7,6 @@ use App\Exceptions\NotConnectedException;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
 abstract class TwitterController extends Controller
@@ -39,46 +36,66 @@ abstract class TwitterController extends Controller
      * If logged in, the user will have the login-provider added.
      * If a user with corresponding login-provider already exists, it will be returned.
      *
-     * @param $getInfo (response of Socialite->user())
+     * @param \Laravel\Socialite\Contracts\User $socialiteUser
      *
-     * @return User|RedirectResponse|null model
+     * @return User model
      */
-    public static function createUser($getInfo): User|RedirectResponse|null {
-        $identifier = SocialLoginProfile::where('twitter_id', $getInfo->id)->first();
+    public static function getUserFromSocialite(\Laravel\Socialite\Contracts\User $socialiteUser): User {
+        $socialProfile = SocialLoginProfile::where('twitter_id', $socialiteUser->id)->first();
 
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($identifier != null) {
-                return redirect()->to('/dashboard')->withErrors([__('controller.social.already-connected-error')]);
-            }
-        } elseif ($identifier === null) {
-            $existingUser = User::where('username', $getInfo->nickname)->first();
-            $errorCount   = 0;
-            while ($errorCount < 10 && $existingUser !== null) {
-                $getInfo->nickname = $getInfo->nickname . rand(1, 10);
-                $existingUser      = User::where('username', $getInfo->nickname)->first();
-                $errorCount++;
-            }
-            try {
-                $user = User::create([
-                                         'name'     => $getInfo->name,
-                                         'username' => $getInfo->nickname,
-                                         'email'    => $getInfo->email,
-                                     ]);
-            } catch (QueryException) {
-                return null;
+        if ($socialProfile === null) {
+            if (auth()->check()) {
+                self::updateToken(auth()->user(), $socialiteUser);
+                return $socialProfile->user;
+            } else {
+                return self::createUser($socialiteUser);
             }
         } else {
-            $user = User::where('id', $identifier->user_id)->first();
+            //TODO: User should be logged in as this user
+            self::updateToken($socialProfile->user, $socialiteUser);
+            return $socialProfile->user;
         }
+    }
 
-        $socialProfile                      = $user->socialProfile ?: new SocialLoginProfile;
-        $socialProfile->twitter_id          = $getInfo->id;
-        $socialProfile->twitter_token       = $getInfo->token;
-        $socialProfile->twitter_tokenSecret = $getInfo->tokenSecret;
-
-        $user->socialProfile()->save($socialProfile);
-
+    private static function createUser(\Laravel\Socialite\Contracts\User $socialiteUser): User {
+        //TODO: Fetch profile image (see issue #5)
+        $user = User::create([
+                                 'name'     => self::getDisplayName($socialiteUser),
+                                 'username' => self::getUniqueUsername($socialiteUser->getNickname()),
+                             ]);
+        self::updateToken($user, $socialiteUser);
         return $user;
+    }
+
+    private static function getDisplayName(\Laravel\Socialite\Contracts\User $socialiteUser): string {
+        if (trim($socialiteUser->getName()) == '') {
+            return $socialiteUser->getNickname();
+        }
+        return $socialiteUser->getName();
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return string
+     * @todo Kann ausgelagert werden -> ist was allgemeines (Mastodon?)
+     */
+    private static function getUniqueUsername(string $username): string {
+        $existingUser = User::where('username', $username)->first();
+        $errorCount   = 0;
+        while ($errorCount < 10 && $existingUser !== null) {
+            $username     = $username . rand(1, 10);
+            $existingUser = User::where('username', $username)->first();
+            $errorCount++;
+        }
+        return $username;
+    }
+
+    private static function updateToken(User $user, \Laravel\Socialite\Contracts\User $socialiteUser) {
+        $user->socialProfile->update([
+                                         'twitter_id'          => $socialiteUser->id,
+                                         'twitter_token'       => $socialiteUser->token,
+                                         'twitter_tokenSecret' => $socialiteUser->tokenSecret,
+                                     ]);
     }
 }
