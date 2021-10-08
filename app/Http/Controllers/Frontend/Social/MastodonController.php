@@ -8,6 +8,7 @@ use App\Models\MastodonServer;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,6 +89,10 @@ class MastodonController extends Controller
 
 
         try {
+            //TODO: Check and implement
+            if ($request->query->get('return', 'none') == 'token') {
+                config(['services.mastodon.redirect' => env('MASTODON_REDIRECT') . '?return=token']);
+            }
             return Socialite::driver('mastodon')->redirect();
         } catch (Exception) {
             abort(404);
@@ -98,9 +103,11 @@ class MastodonController extends Controller
      * handles callback of login-provider with socialite.
      * Calls createUser
      *
-     * @return RedirectResponse
+     * @param Request $request
+     *
+     * @return JsonResponse|RedirectResponse
      */
-    public function callback(): RedirectResponse {
+    public function callback(Request $request): JsonResponse|RedirectResponse {
         $domain = session('mastodon_domain');
         $server = session('mastodon_server');
 
@@ -117,6 +124,16 @@ class MastodonController extends Controller
         if (!Auth::check()) {
             auth()->login($user, true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
+        }
+
+        //TODO: Check and implement
+        if ($request->query->get('return', 'none') == 'token') {
+            $token = $request->user()->createToken('token');
+            return response()->json(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'token'      => $token->accessToken,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'expires_at' => $token->token->expires_at->toIso8601String()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ], 200)
+                             ->header('Authorization', $token->accessToken);
         }
 
         return redirect()->route('dashboard');
