@@ -17,23 +17,18 @@ abstract class MastodonController extends Controller
      * If logged in, the user will have the login-provider added.
      * If a user with corresponding login-provider already exists, it will be returned.
      *
-     * @param $getInfo  (response of Socialite->user())
-     * @param $provider (String of login-provider)
+     * @param $getInfo (response of Socialite->user())
      * @param $domain
      *
      * @return User|RedirectResponse|null model
      */
-    public static function createUser($getInfo, $provider, $domain): User|RedirectResponse|null {
-        if ($provider === 'mastodon') {
-            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)
-                                            ->where(
-                                                'mastodon_server',
-                                                MastodonServer::where('domain', $domain)->first()->id
-                                            )
-                                            ->first();
-        } else {
-            $identifier = SocialLoginProfile::where($provider . '_id', $getInfo->id)->first();
-        }
+    public static function createUser($getInfo, $domain): User|RedirectResponse|null {
+        $identifier = SocialLoginProfile::where('mastodon_id', $getInfo->id)
+                                        ->where(
+                                            'mastodon_server',
+                                            MastodonServer::where('domain', $domain)->first()->id
+                                        )
+                                        ->first();
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -61,22 +56,12 @@ abstract class MastodonController extends Controller
             $user = User::where('id', $identifier->user_id)->first();
         }
 
-        $socialProfile                   = $user->socialProfile ?: new SocialLoginProfile;
-        $providerField                   = "{$provider}_id";
-        $socialProfile->{$providerField} = $getInfo->id;
-
-        if ($provider === 'twitter') {
-            $socialProfile->twitter_token       = $getInfo->token;
-            $socialProfile->twitter_tokenSecret = $getInfo->tokenSecret;
-        }
-        if ($provider === 'mastodon') {
-            $socialProfile->mastodon_token  = $getInfo->token;
-            $socialProfile->mastodon_server = MastodonServer::where('domain', $domain)->first()->id;
-        }
+        $socialProfile                  = $user->socialProfile ?: new SocialLoginProfile;
+        $socialProfile->mastodon_id     = $getInfo->id;
+        $socialProfile->mastodon_token  = $getInfo->token;
+        $socialProfile->mastodon_server = MastodonServer::where('domain', $domain)->first()->id;
 
         $user->socialProfile()->save($socialProfile);
-
-
         return $user;
     }
 }

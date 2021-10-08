@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Social;
 
+use App\Http\Controllers\Backend\Social\MastodonController as MastodonBackend;
 use App\Http\Controllers\Controller;
 use App\Models\MastodonServer;
 use Carbon\Carbon;
@@ -54,7 +55,8 @@ class MastodonController extends Controller
                                                      'client_id'     => $info['client_id'],
                                                      'client_secret' => $info['client_secret'],
                                                  ]);
-            } catch (ClientException) {
+            } catch (ClientException $exception) {
+                report($exception);
                 return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
             }
         }
@@ -96,11 +98,9 @@ class MastodonController extends Controller
      * handles callback of login-provider with socialite.
      * Calls createUser
      *
-     * @param $provider
-     *
      * @return RedirectResponse
      */
-    public function callback($provider): RedirectResponse {
+    public function callback(): RedirectResponse {
         $domain = session('mastodon_domain');
         $server = session('mastodon_server');
 
@@ -110,7 +110,7 @@ class MastodonController extends Controller
 
 
         $getInfo = Socialite::driver('mastodon')->user();
-        $user    = $this->createUser($getInfo, $provider, $domain);
+        $user    = MastodonBackend::createUser($getInfo, $domain);
         if ($user === null) {
             return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
@@ -120,6 +120,5 @@ class MastodonController extends Controller
         }
 
         return redirect()->route('dashboard');
-
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Social;
 
+use App\Http\Controllers\Backend\Social\TwitterController as TwitterBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -28,13 +29,11 @@ class TwitterController extends Controller
      * handles callback of login-provider with socialite.
      * Calls createUser
      *
-     * @param $provider
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function callback($provider): RedirectResponse {
+    public function callback(): RedirectResponse {
         $getInfo = Socialite::driver('twitter')->user();
-        $user    = $this->createUser($getInfo, $provider, '');
+        $user    = TwitterBackend::createUser($getInfo);
         if ($user === null) {
             return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
@@ -44,6 +43,5 @@ class TwitterController extends Controller
         }
 
         return redirect()->route('dashboard');
-
     }
 }

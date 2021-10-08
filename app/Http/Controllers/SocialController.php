@@ -2,14 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MastodonServer;
-use App\Models\SocialLoginProfile;
-use App\Models\User;
 use File;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Mastodon;
 use Redirect;
