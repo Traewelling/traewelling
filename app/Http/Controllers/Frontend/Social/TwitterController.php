@@ -40,19 +40,18 @@ class TwitterController extends Controller
      * @return JsonResponse|RedirectResponse JSON if ?return=token, otherwise Redirect
      */
     public function callback(Request $request): JsonResponse|RedirectResponse {
-        $socialiteUser = Socialite::driver('twitter')->user();
-        $user    = TwitterBackend::getUserFromSocialite($socialiteUser);
+        $socialiteUser = Socialite::driver(driver: 'twitter')->user();
+        $user          = TwitterBackend::getUserFromSocialite($socialiteUser);
 
         if ($user === null) {
             return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
 
         if (!auth()->check()) {
-            auth()->login($user, true);
+            auth()->login(user: $user, remember: true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
 
-        //TODO: Check and implement
         if ($request->query->get('return', 'none') == 'token') {
             $token = $request->user()->createToken('token');
             return response()->json([

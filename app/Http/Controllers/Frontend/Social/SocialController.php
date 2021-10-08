@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Frontend\Social;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 class SocialController extends Controller
 {
 
-    public function destroyProvider(Request $request) {
+    public function destroyProvider(Request $request): Response|Application|ResponseFactory {
         $validated = $request->validate([
                                             'provider' => ['required', Rule::in(['twitter', 'mastodon'])]
                                         ]);

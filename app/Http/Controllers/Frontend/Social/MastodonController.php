@@ -41,15 +41,11 @@ class MastodonController extends Controller
         session(['mastodon_domain' => $domain]);
         session(['mastodon_server' => $server]);
 
-
         try {
-            //TODO: Check and implement
-            if ($request->query->get('return', 'none') == 'token') {
-                config(['services.mastodon.redirect' => config('services.mastodon.redirect') . '?return=token']);
-            }
             return Socialite::driver('mastodon')->redirect();
-        } catch (Exception) {
-            abort(404);
+        } catch (Exception $exception) {
+            report($exception);
+            return back()->with('error', __('messages.exception.general'));
         }
     }
 
@@ -61,7 +57,7 @@ class MastodonController extends Controller
      *
      * @return JsonResponse|RedirectResponse
      */
-    public function callback(Request $request): JsonResponse|RedirectResponse {
+    public function callback(): JsonResponse|RedirectResponse {
         $domain = session('mastodon_domain');
         $server = session('mastodon_server');
 
@@ -69,24 +65,14 @@ class MastodonController extends Controller
         config(['services.mastodon.client_id' => $server->client_id]);
         config(['services.mastodon.client_secret' => $server->client_secret]);
 
-        $socialiteUser = Socialite::driver('mastodon')->user();
+        $socialiteUser = Socialite::driver(driver: 'mastodon')->user();
         $user          = MastodonBackend::getUserFromSocialite($socialiteUser, $server);
         if ($user === null) {
             return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
         }
         if (!auth()->check()) {
-            auth()->login($user, true);
+            auth()->login(user: $user, remember: true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
-        }
-
-        //TODO: Check and implement
-        if ($request->query->get('return', 'none') == 'token') {
-            $token = $request->user()->createToken('token');
-            return response()->json([
-                                        'token'      => $token->accessToken,
-                                        'expires_at' => $token->token->expires_at->toIso8601String()
-                                    ])
-                             ->header('Authorization', $token->accessToken);
         }
 
         return redirect()->route('dashboard');
