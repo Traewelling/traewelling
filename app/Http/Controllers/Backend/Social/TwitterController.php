@@ -46,7 +46,7 @@ abstract class TwitterController extends Controller
         if ($socialProfile === null) {
             if (auth()->check()) {
                 self::updateToken(auth()->user(), $socialiteUser);
-                return $socialProfile->user;
+                return auth()->user();
             } else {
                 return self::createUser($socialiteUser);
             }
