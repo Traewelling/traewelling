@@ -209,7 +209,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
          ->name('trains.checkin');
 
-    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setHome'])
+    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
 
     Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
