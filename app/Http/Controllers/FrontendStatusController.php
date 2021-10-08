@@ -60,15 +60,16 @@ class FrontendStatusController extends Controller
 
     /**
      * @param Request $request
-     * @todo Is this api? Because of JsonReponse. But if yes: Why it does an Redirect?
+     *
      * @return JsonResponse|RedirectResponse
+     * @todo Is this api? Because of JsonReponse. But if yes: Why it does an Redirect?
      */
     public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
         try {
-            if(!is_numeric($request['statusId'])) {
+            if (!is_numeric($request['statusId'])) {
                 return redirect()->back()->with('error', __('error.bad-request'));
             }
-            StatusBackend::DeleteStatus(Auth::user(), (int)$request['statusId']);
+            StatusBackend::DeleteStatus(Auth::user(), (int) $request['statusId']);
         } catch (PermissionException | ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
@@ -85,10 +86,10 @@ class FrontendStatusController extends Controller
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                user: Auth::user(),
-                statusId: $request['statusId'],
-                body: $request['body'] ?? null,
-                business: $request['business_check'],
+                user:       Auth::user(),
+                statusId:   $request['statusId'],
+                body:       $request['body'] ?? null,
+                business:   $request['business_check'],
                 visibility: $request['checkinVisibility']
             );
         } catch (ModelNotFoundException | PermissionException) {
@@ -139,8 +140,8 @@ class FrontendStatusController extends Controller
 
         return StatusBackend::ExportStatuses(
             startDate: Carbon::parse($validated['begin']),
-            endDate: Carbon::parse($validated['end']),
-            fileType: $request->input('filetype')
+            endDate:   Carbon::parse($validated['end']),
+            fileType:  $request->input('filetype')
         );
     }
 
@@ -188,6 +189,7 @@ class FrontendStatusController extends Controller
 
     /**
      * @param $status
+     *
      * @return mixed
      * @deprecated when vue is implemented
      */
