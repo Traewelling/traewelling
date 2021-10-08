@@ -51,7 +51,6 @@ abstract class TwitterController extends Controller
                 return self::createUser($socialiteUser);
             }
         } else {
-            //TODO: User should be logged in as this user
             self::updateToken($socialProfile->user, $socialiteUser);
             return $socialProfile->user;
         }
@@ -60,35 +59,11 @@ abstract class TwitterController extends Controller
     private static function createUser(\Laravel\Socialite\Contracts\User $socialiteUser): User {
         //TODO: Fetch profile image (see issue #5)
         $user = User::create([
-                                 'name'     => self::getDisplayName($socialiteUser),
-                                 'username' => self::getUniqueUsername($socialiteUser->getNickname()),
+                                 'name'     => SocialController::getDisplayName($socialiteUser),
+                                 'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),
                              ]);
         self::updateToken($user, $socialiteUser);
         return $user;
-    }
-
-    private static function getDisplayName(\Laravel\Socialite\Contracts\User $socialiteUser): string {
-        if (trim($socialiteUser->getName()) == '') {
-            return $socialiteUser->getNickname();
-        }
-        return $socialiteUser->getName();
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return string
-     * @todo Kann ausgelagert werden -> ist was allgemeines (Mastodon?)
-     */
-    private static function getUniqueUsername(string $username): string {
-        $existingUser = User::where('username', $username)->first();
-        $errorCount   = 0;
-        while ($errorCount < 10 && $existingUser !== null) {
-            $username     = $username . rand(1, 10);
-            $existingUser = User::where('username', $username)->first();
-            $errorCount++;
-        }
-        return $username;
     }
 
     private static function updateToken(User $user, \Laravel\Socialite\Contracts\User $socialiteUser) {
