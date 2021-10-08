@@ -7,7 +7,6 @@ use App\Http\Controllers\Backend\Social\MastodonController as MastodonBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
@@ -53,11 +52,9 @@ class MastodonController extends Controller
      * handles callback of login-provider with socialite.
      * Calls createUser
      *
-     * @param Request $request
-     *
-     * @return JsonResponse|RedirectResponse
+     * @return RedirectResponse
      */
-    public function callback(): JsonResponse|RedirectResponse {
+    public function callback(): RedirectResponse {
         $domain = session('mastodon_domain');
         $server = session('mastodon_server');
 
