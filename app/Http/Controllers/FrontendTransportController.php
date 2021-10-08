@@ -20,8 +20,8 @@ use Throwable;
 
 class FrontendTransportController extends Controller
 {
-    public function TrainAutocomplete($station): JsonResponse {
-        $TrainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
+    public function TrainAutocomplete(string $station): JsonResponse {
+        $TrainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
         return response()->json($TrainAutocompleteResponse);
     }
 
