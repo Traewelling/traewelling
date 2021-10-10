@@ -43,13 +43,17 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/count', [NotificationController::class, 'count']);
-        Route::get('trains/station/{name}/departures', [TransportController::class, 'departures']);
-        Route::put('trains/station/{name}/home', [TransportController::class, 'setHome']);
-        Route::get('trains/trip/', [TransportController::class, 'getTrip']);
-        Route::post('trains/checkin', [TransportController::class, 'create']);
-        Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
-        Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
-        Route::get('trains/station/latest', [TransportController::class, 'getLatestTrainstations']);
+        Route::group(['prefix' => 'trains'], function() {
+            Route::get('trip/', [TransportController::class, 'getTrip']);
+            Route::post('checkin', [TransportController::class, 'create']);
+            Route::group(['prefix' => 'station'], function() {
+                Route::get('{name}/departures', [TransportController::class, 'departures']);
+                Route::put('{name}/home', [TransportController::class, 'setHome']);
+                Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
+                Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+                Route::get('history', [TransportController::class, 'getLatestTrainstations']);
+            });
+        });
         Route::group(['prefix' => 'statistics'], function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
