@@ -42,6 +42,7 @@ class StatisticsController extends ResponseController
 
     /**
      * @param string $date
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboardForMonth(string $date): AnonymousResourceCollection {
@@ -51,6 +52,7 @@ class StatisticsController extends ResponseController
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function getPersonalStatistics(Request $request): JsonResponse {
@@ -104,8 +106,8 @@ class StatisticsController extends ResponseController
 
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
         $validated = $request->validate([
-                                            'from'    => ['required', 'date', 'before_or_equal:until'],
-                                            'until'      => ['required', 'date', 'after_or_equal:from'],
+                                            'from'     => ['required', 'date', 'before_or_equal:until'],
+                                            'until'    => ['required', 'date', 'after_or_equal:from'],
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
