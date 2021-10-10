@@ -318,7 +318,7 @@ export default {
                     from: this.from,
                     until: this.until,
                     filetype: type
-                })
+                }, { responseType: 'blob' })
                 .then((res) => {
                     const { data, headers } = res
                     const fileName = headers['content-disposition'].replace(/\w+;filename=(.*)/, '$1')
