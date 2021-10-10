@@ -17,8 +17,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Mail\Transport\Transport;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Nette\Utils\Json;
 
 class TransportController extends ResponseController
 {
@@ -199,5 +203,9 @@ class TransportController extends ResponseController
         } catch (HafasException) {
             return $this->sendError("There has been an error with our data provider", 400);
         }
+    }
+
+    public function getLatestTrainStations(): AnonymousResourceCollection {
+        return TrainstationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
     }
 }

@@ -49,6 +49,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::post('trains/checkin', [TransportController::class, 'create']);
         Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
         Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+        Route::get('trains/station/latest', [TransportController::class, 'getLatestTrainstations']);
         Route::group(['prefix' => 'statistics'], function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
