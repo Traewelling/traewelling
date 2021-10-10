@@ -5,7 +5,7 @@
             <h3 class="mb-0 mr-auto text-gray-800">{{ i18n.get("_.stats") }}</h3>
             <div class="w-100"></div>
             <div class="btn-group me-2 mb-1">
-                <button class="btn btn-primary text-nowrap">
+                <button class="btn btn-primary text-nowrap" @click="generateExport('pdf')">
                     <i class="fa fa-save" aria-hidden="true"></i> {{ i18n.get("_.export.submit") }}
                 </button>
                 <button class="btn btn-primary dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
@@ -13,8 +13,8 @@
                     <span class="sr-only">{{ i18n.get("_.sr.dropdown.toggle") }}</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button class="dropdown-item">.csv</button>
-                    <button class="dropdown-item">.json</button>
+                    <button class="dropdown-item" @click="generateExport('csv')">.csv</button>
+                    <button class="dropdown-item" @click="generateExport('json')">.json</button>
                 </div>
             </div>
             <div id="daterange" class="dropdown">
@@ -312,6 +312,28 @@ export default {
         }
     },
     methods: {
+        generateExport(type) {
+            axios
+                .post("/statistics/export", {
+                    from: this.from,
+                    until: this.until,
+                    filetype: type
+                })
+                .then((res) => {
+                    const { data, headers } = res
+                    const fileName = headers['content-disposition'].replace(/\w+;filename=(.*)/, '$1')
+                    const blob = new Blob([data], {type: headers['content-type']})
+                    let dom = document.createElement('a')
+                    let url = window.URL.createObjectURL(blob)
+                    dom.href = url
+                    dom.download = decodeURI(fileName)
+                    dom.style.display = 'none'
+                    document.body.appendChild(dom)
+                    dom.click()
+                    dom.parentNode.removeChild(dom)
+                    window.URL.revokeObjectURL(url)
+            });
+        },
         fetchRecentDays(delta) {
             this.from  = moment().subtract(delta, "days").toISOString();
             this.until = moment().toISOString();
