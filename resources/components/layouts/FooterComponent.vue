@@ -1,23 +1,7 @@
 <template>
     <footer class="footer mt-auto py-3">
-        <div class="container">
-            <div class="btn-group dropup float-end">
-                <button :class="{'btn-sm btn-light': dashboard, 'btn-primary': !dashboard}" aria-expanded="false"
-                        aria-haspopup="true"
-                        class="btn dropdown-toggle"
-                        :aria-label="i18n.get('_.settings.language.set')" data-mdb-toggle="dropdown" type="button">
-                    <i aria-hidden="true" class="fas fa-globe-europe"></i>
-                    <span aria-hidden="true" class="d-none d-md-inline">
-                        {{ i18n.get("_.settings.language.set") }}
-                    </span>
-                </button>
-                <div class="dropdown-menu">
-                    <a v-for="(lang, key) in langs" class="dropdown-item" href="?language=$key"
-                       @click.prevent="setLang(key)">
-                        {{ lang }}
-                    </a>
-                </div>
-            </div>
+        <div :class="{'d-none': hideFooter}" class="container">
+            <ChangeLanguageButton :dashboard="dashboard" class="float-end"/>
             <nav class="text-muted mb-0">
                 <router-link :class="{'text-white': dashboard}" :to="{name: 'about'}" class="footer-link">
                     {{ i18n.get("_.menu.about") }}
@@ -56,7 +40,7 @@
 <script>
 import NotificationsModal from "../NotificationsModal";
 import {languages} from "../../js/translations";
-import Vue from "vue";
+import ChangeLanguageButton from "../ChangeLanguageButton";
 
 export default {
     name: "FooterComponent",
@@ -65,20 +49,10 @@ export default {
             langs: languages
         };
     },
-    components: {NotificationsModal},
+    components: {ChangeLanguageButton, NotificationsModal},
     props: {
-        dashboard: false
-    },
-    methods: {
-        setLang(language) {
-            if (typeof language === "string" && languages.hasOwnProperty(language)) {
-                Vue.localStorage.set("language", language);
-                this.i18n.setLocale(language);
-                this.moment.locale(language.substr(0, 2));
-                this.$forceUpdate();
-                window.location.reload(); //ToDo change this to a better concept, so that the whole page doesn't need to be reloaded
-            }
-        }
+        dashboard: false,
+        hideFooter: false
     }
 };
 </script>

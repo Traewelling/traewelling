@@ -2,6 +2,19 @@
     <div>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
+            <li v-if="desktop && dashboard" class="nav-item">
+                <router-link :to="{ name: 'dashboard.global' }" class="nav-link bg-transparent" role="tab">
+                    <i aria-hidden="true" class="fas fa-globe me-2"></i>
+                    {{ i18n.get("_.menu.globaldashboard") }}
+                </router-link>
+            </li>
+            <li v-else-if="desktop" class="nav-item">
+                <router-link :to="{ name: 'dashboard' }" active-class="" class="nav-link bg-transparent"
+                             role="tab">
+                    <i aria-hidden="true" class="fas fa-user-friends me-2"></i>
+                    {{ i18n.get("_.menu.dashboard") }}
+                </router-link>
+            </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'profile', params: {username: $auth.user().username}}"
                              class="nav-link bg-transparent">
@@ -54,6 +67,9 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-0">
             <li class="nav-item">
+                <ChangeLanguageButton navbar="true"/>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link bg-transparent" href="#" @click.prevent="$auth.logout()">
                     <i aria-hidden="true" class="fas fa-sign-out-alt me-2"></i>
                     {{ i18n.get('_.menu.logout') }}
@@ -74,8 +90,18 @@
 </template>
 
 <script>
+import ChangeLanguageButton from "../ChangeLanguageButton";
+
 export default {
-    name: "SidebarNavContent"
+    name: "SidebarNavContent",
+    components: {ChangeLanguageButton},
+    props: {desktop: false},
+    computed: {
+        dashboard() {
+            return this.$route.path === "/dashboard";
+
+        }
+    }
 }
 </script>
 

@@ -15,6 +15,7 @@
             </li>
         </ul>
         <div class="col-md-9 col-lg-7">
+            <StationForm class="d-none d-md-block"/>
             <Spinner v-if="loading" class="mt-5"/>
 
             <div v-if="error" class="error">

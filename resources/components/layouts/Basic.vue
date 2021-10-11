@@ -12,7 +12,7 @@
                 <OffCanvasNavigation/>
             </div>
         </main>
-        <FooterComponent/>
+        <FooterComponent hideFooter="false"/>
         <MobileFooterNav/>
     </div>
 </template>

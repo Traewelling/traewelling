@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
-        <SidebarNavContent/>
+        <SidebarNavContent desktop="true"/>
     </div>
 </template>
 
