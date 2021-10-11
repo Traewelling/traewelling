@@ -1,9 +1,10 @@
 <template>
     <LayoutBasic>
             <div class="col-md-8 col-lg-7">
-                <StationForm :hideTimepicker="station === null" :next="times.next" :now="times.now" :prev="times.prev"
+                <StationForm :hideTimepicker="!this.$route.query.station" :next="times.next" :now="times.now"
+                             :prev="times.prev"
                              v-on:refresh="fetchData"></StationForm>
-                <div v-if="station !== null" class="card">
+                <div v-if="this.$route.query.station" class="card">
                     <div class="card-header">
                         <div class="float-end">
                             <a :aria-label="i18n.get('_.modals.setHome-title')" href="#"
