@@ -12,17 +12,14 @@ use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\Http\Resources\TrainstationResource;
+use App\Http\Resources\TrainStationResource;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Mail\Transport\Transport;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Nette\Utils\Json;
 
 class TransportController extends ResponseController
 {
@@ -108,7 +105,7 @@ class TransportController extends ResponseController
             return $this->sendError(__('controller.transport.no-station-found'));
         }
 
-        return $this->sendv1Response(new TrainstationResource($nearestStation));
+        return $this->sendv1Response(new TrainStationResource($nearestStation));
     }
 
     public function create(Request $request): JsonResponse {
@@ -192,7 +189,7 @@ class TransportController extends ResponseController
         }
 
         return $this->sendv1Response(
-            data: new TrainstationResource($station),
+            data: new TrainStationResource($station),
         );
     }
 
@@ -205,7 +202,7 @@ class TransportController extends ResponseController
         }
     }
 
-    public function getLatestTrainStations(): AnonymousResourceCollection {
-        return TrainstationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
+    public function getTrainStationHistory(): AnonymousResourceCollection {
+        return TrainStationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
     }
 }

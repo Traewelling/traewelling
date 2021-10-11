@@ -51,7 +51,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
                 Route::put('{name}/home', [TransportController::class, 'setHome']);
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
-                Route::get('history', [TransportController::class, 'getLatestTrainstations']);
+                Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
         Route::group(['prefix' => 'statistics'], function() {
