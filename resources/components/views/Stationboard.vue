@@ -1,6 +1,5 @@
 <template>
     <LayoutBasic>
-        <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 <StationForm :next="times.next" :now="times.now" :prev="times.prev"
                              v-on:refresh="fetchData"></StationForm>
@@ -80,7 +79,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         <ModalConfirm
             ref="confirmHomeModal"
             :abort-text="i18n.get('_.menu.abort')"

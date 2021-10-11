@@ -49,7 +49,7 @@
             </li>
             <li class="nav-item">
                 <router-link :to="{ name: 'profile', params: {username: $auth.user().username}}"
-                             class="nav-link bg-transparent">
+                             active-class="bg-primary text-light" class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-user-alt me-2"></i>
                     {{ i18n.get("_.menu.profile") }}
                 </router-link>

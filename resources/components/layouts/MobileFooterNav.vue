@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar fixed-bottom navbar-dark bg-trwl px-2 d-md-none">
-        <router-link :to="{ name: 'dashboard' }" class="navbar-brand nav-link">
+        <router-link :to="{ name: 'dashboard' }" active-class="text-white" class="navbar-brand nav-link">
             <i class="fa fa-home" aria-hidden="true"></i>
             <span class="sr-only">{{ i18n.get('_.menu.dashboard') }}</span>
         </router-link>
