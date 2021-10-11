@@ -17,7 +17,7 @@
                     {{ i18n.get("_.menu.privacy") }}
                 </a>
                 <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.imprint) ">
-                    {{ i18n.get("_.menu.imprint") }}
+                    {{ i18n.get("_.menu.legal-notice") }}
                 </a>
                 <a :class="{'text-white': dashboard}" class="footer-link" href="https://blog.traewelling.de">
                     {{ i18n.get("_.menu.blog") }}

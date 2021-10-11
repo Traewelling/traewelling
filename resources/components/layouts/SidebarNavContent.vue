@@ -1,7 +1,39 @@
 <template>
     <div>
+        <router-link v-if="$auth.check()" :to="{ name: 'profile', params: {username: $auth.user().username}}"
+                     class="d-flex align-items-center link-dark text-decoration-none">
+            <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${$auth.user().username}/profilepicture`"
+                 class="rounded-circle me-2" height="32" width="32">
+            <strong>{{ $auth.user().displayName }}</strong>&nbsp;
+            <small class="text-muted">@{{ $auth.user().username }}</small>
+        </router-link>
+        <div v-if="$auth.check()" class="row text-black-50 mt-1 justify">
+            <div class="col">
+                <i aria-hidden="true" class="fas fa-dice-d20"/>
+                <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
+                {{ $auth.user().points.toFixed(0) }}
+            </div>
+            <div class="col">
+                <i aria-hidden="true" class="fas fa-clock"/>
+                <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
+                {{ $auth.user().trainDuration.toFixed(0) }}min
+            </div>
+            <div class="col">
+                <i aria-hidden="true" class="fas fa-route"/>
+                <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
+                {{ $auth.user().trainDistance.toFixed(0) }}km
+            </div>
+        </div>
         <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul v-if="!$auth.check()" class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                    <i aria-hidden="true" class="fas fa-calendar me-2"></i>
+                    {{ i18n.get("_.events") }}
+                </a>
+            </li>
+        </ul>
+        <ul v-if="$auth.check()" class="nav nav-pills flex-column mb-auto">
             <li v-if="desktop && dashboard" class="nav-item">
                 <router-link :to="{ name: 'dashboard.global' }" class="nav-link bg-transparent" role="tab">
                     <i aria-hidden="true" class="fas fa-globe me-2"></i>
@@ -69,7 +101,7 @@
             <li class="nav-item">
                 <ChangeLanguageButton navbar="true"/>
             </li>
-            <li class="nav-item">
+            <li v-if="$auth.check()" class="nav-item">
                 <a class="nav-link bg-transparent" href="#" @click.prevent="$auth.logout()">
                     <i aria-hidden="true" class="fas fa-sign-out-alt me-2"></i>
                     {{ i18n.get('_.menu.logout') }}
