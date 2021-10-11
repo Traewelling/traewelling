@@ -216,7 +216,7 @@ export default {
   methods: {
     fetchData() {
       axios
-          .get('/trains/station/history')
+          .get("/trains/station/history")
           .then((response) => {
             this.history = response.data.data;
           })
