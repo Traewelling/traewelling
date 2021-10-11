@@ -72,7 +72,7 @@
             <div v-if="users.length > 3" class="row justify-content-center">
                 <div class="col-md-8 col-lg-7">
                     <div class="card">
-                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive p-0">
                             <table :aria-label="i18n.get('_.menu.leaderboard')" class="table table-vertical-center">
                                 <thead>
                                     <tr>

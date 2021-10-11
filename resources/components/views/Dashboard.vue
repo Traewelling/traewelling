@@ -1,7 +1,6 @@
 <template>
     <LayoutBasic>
-        <!-- Tabs navs -->
-        <ul id="ex1" class="nav nav-tabs nav-fill d-md-none mx-n2 mt-n4" role="tablist">
+        <ul id="ex1" class="nav nav-tabs nav-fill d-md-none  px-0 mt-n4" role="tablist">
             <li class="nav-item" role="presentation">
                 <router-link :to="{ name: 'dashboard' }" active-class="" class="nav-link" exact-active-class="active"
                              role="tab">

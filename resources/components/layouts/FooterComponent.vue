@@ -1,6 +1,6 @@
 <template>
     <footer class="footer mt-auto py-3">
-        <div :class="{'d-none': hideFooter}" class="container">
+        <div :class="{'d-md-block': !hideFooter}" class="container d-none">
             <ChangeLanguageButton :dashboard="dashboard" class="float-end"/>
             <nav class="text-muted mb-0">
                 <router-link :class="{'text-white': dashboard}" :to="{name: 'about'}" class="footer-link">
