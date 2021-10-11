@@ -1,5 +1,5 @@
 <template>
-    <LayoutBasic>
+    <LayoutBasicNoSidebar>
         <div class="mb-4">
             <div id="daterange" class="dropdown float-end">
                 <button
@@ -161,7 +161,7 @@
                 <hr/>
             </div>
         </div>
-    </LayoutBasic>
+    </LayoutBasicNoSidebar>
 </template>
 
 <script>
@@ -169,10 +169,12 @@ import LayoutBasic from "../layouts/Basic";
 import VueApexCharts from "vue-apexcharts";
 import moment from "moment";
 import Litepicker from "litepicker";
+import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "Charts",
     components: {
+        LayoutBasicNoSidebar,
         LayoutBasic,
         apexchart: VueApexCharts,
         moment,

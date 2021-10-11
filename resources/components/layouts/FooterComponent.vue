@@ -6,10 +6,10 @@
                         aria-haspopup="true"
                         class="btn dropdown-toggle"
                         :aria-label="i18n.get('_.settings.language.set')" data-mdb-toggle="dropdown" type="button">
-                    <i aria-hidden="true" class="fas fa-globe-europe"></i><span aria-hidden="true"
-                                                                                class="d-none d-md-inline"> {{
-                        i18n.get("_.settings.language.set")
-                    }}</span>
+                    <i aria-hidden="true" class="fas fa-globe-europe"></i>
+                    <span aria-hidden="true" class="d-none d-md-inline">
+                        {{ i18n.get("_.settings.language.set") }}
+                    </span>
                 </button>
                 <div class="dropdown-menu">
                     <a v-for="(lang, key) in langs" class="dropdown-item" href="?language=$key"
@@ -35,7 +35,7 @@
                 <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.imprint) ">
                     {{ i18n.get("_.menu.imprint") }}
                 </a>
-                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(blog.all) ">
+                <a :class="{'text-white': dashboard}" class="footer-link" href="https://blog.traewelling.de">
                     {{ i18n.get("_.menu.blog") }}
                 </a>
             </nav>

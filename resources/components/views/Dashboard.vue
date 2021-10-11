@@ -1,89 +1,44 @@
 <template>
     <LayoutBasic>
         <!-- Tabs navs -->
-        <ul class="nav nav-tabs nav-fill mb-3 d-md--none" id="ex1" role="tablist">
+        <ul id="ex1" class="nav nav-tabs nav-fill d-md-none mx-n2 mt-n4" role="tablist">
             <li class="nav-item" role="presentation">
-                <a
-                    class="nav-link active"
-                    id="ex2-tab-1"
-                    data-mdb-toggle="tab"
-                    href="#ex2-tabs-1"
-                    role="tab"
-                    aria-controls="ex2-tabs-1"
-                    aria-selected="true"
-                >Global Dashboard</a
-                >
+                <router-link :to="{ name: 'dashboard' }" active-class="" class="nav-link" exact-active-class="active"
+                             role="tab">
+                    {{ i18n.get('_.menu.dashboard') }}
+                </router-link>
             </li>
             <li class="nav-item" role="presentation">
-                <a
-                    class="nav-link"
-                    id="ex2-tab-3"
-                    data-mdb-toggle="tab"
-                    href="#ex2-tabs-3"
-                    role="tab"
-                    aria-controls="ex2-tabs-3"
-                    aria-selected="false"
-                >Private Dashboard</a
-                >
+                <router-link :to="{ name: 'dashboard.global' }" class="nav-link" role="tab">
+                    {{ i18n.get("_.menu.globaldashboard") }}
+                </router-link>
             </li>
         </ul>
-        <!-- Tabs navs -->
+        <div class="col-md-9 col-lg-7">
+            <Spinner v-if="loading" class="mt-5"/>
 
-        <!-- Tabs content -->
-        <div class="tab-content" id="ex2-content">
-            <div
-                class="tab-pane fade show active"
-                id="ex2-tabs-1"
-                role="tabpanel"
-                aria-labelledby="ex2-tab-1"
-            >
-                Tab 1 content
-            </div>
-            <div
-                class="tab-pane fade"
-                id="ex2-tabs-2"
-                role="tabpanel"
-                aria-labelledby="ex2-tab-2"
-            >
-                Tab 2 content
-            </div>
-            <div
-                class="tab-pane fade"
-                id="ex2-tabs-3"
-                role="tabpanel"
-                aria-labelledby="ex2-tab-3"
-            >
-                Tab 3 content
-            </div>
-        </div>
-        <!-- Tabs content -->
-        <div class="row justify-content-center align-content-center">
-            <div class="col-md-8 col-lg-7">
-                <StationForm></StationForm>
-                <Spinner v-if="loading" class="mt-5"/>
+            <div v-if="error" class="error">
+                <p>{{ error }}</p>
 
-                <div v-if="error" class="error">
-                    <p>{{ error }}</p>
-
-                    <p>
-                        <button @click.prevent="fetchData">
-                            {{ i18n.get("_.vue.tryAgain") }}
-                        </button>
-                    </p>
-                </div>
-                <div v-if="futureStatuses.length && !loading" id="accordionFutureCheckIns"
-                     class="accordion accordion-flush mt-5 mb-0">
-                    <div class="accordion-item">
-                        <h1 id="flush-headingOne" class="accordion-header">
-                            <button
-                                aria-controls="future-check-ins"
-                                aria-expanded="false"
-                                class="accordion-button collapsed px-0"
-                                data-mdb-target="#future-check-ins"
-                                data-mdb-toggle="collapse"
-                                type="button"
-                            >
-                                {{ i18n.get('_.dashboard.future') }}
+                <p>
+                    <button @click.prevent="fetchData">
+                        {{ i18n.get("_.vue.tryAgain") }}
+                    </button>
+                </p>
+            </div>
+            <div v-if="futureStatuses.length && !loading" id="accordionFutureCheckIns"
+                 class="accordion accordion-flush mt-5 mb-0">
+                <div class="accordion-item">
+                    <h1 id="flush-headingOne" class="accordion-header">
+                        <button
+                            aria-controls="future-check-ins"
+                            aria-expanded="false"
+                            class="accordion-button collapsed px-0"
+                            data-mdb-target="#future-check-ins"
+                            data-mdb-toggle="collapse"
+                            type="button"
+                        >
+                            {{ i18n.get('_.dashboard.future') }}
                             </button>
                         </h1>
                         <div
@@ -116,7 +71,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </LayoutBasic>
 </template>
 

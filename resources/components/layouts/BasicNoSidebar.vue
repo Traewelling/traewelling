@@ -3,12 +3,7 @@
         <NavbarComponent/>
         <main class="py-4">
             <div class="container">
-                <div class="row mb-3">
-                    <div class="col-md-3 d-none d-md-block">
-                        <SidebarNav/>
-                    </div>
-                    <slot/>
-                </div>
+                <slot/>
                 <OffCanvasNavigation/>
             </div>
         </main>
@@ -25,7 +20,7 @@ import OffCanvasNavigation from "./OffCanvasNavigation";
 import SidebarNav from "./SidebarNav";
 
 export default {
-    name: "LayoutBasic",
+    name: "LayoutBasicNoSidebar",
     components: {
         SidebarNav,
         OffCanvasNavigation,

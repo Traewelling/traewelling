@@ -1,9 +1,17 @@
 <template>
     <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
-            <router-link :to="{ name: 'base' }" class="navbar-brand">
+            <router-link :to="{ name: 'base' }" class="navbar-brand d-none d-md-block">
                 Träwelling <!-- ToDo: get name from config -->
             </router-link>
+
+            <button :aria-label="i18n.get('_.Toggle navigation')"
+                    aria-controls="offcanvasNavigation"
+                    class="navbar-toggler float-start" data-mdb-target="#offcanvasNavigation"
+                    data-mdb-toggle="offcanvas"
+                    type="button">
+                <i aria-hidden="true" class="fas fa-bars"></i>
+            </button>
             <div class="navbar-toggler">
                 <NotificationsButton
                     v-if="$auth.check()"
@@ -11,12 +19,6 @@
                     toggler="true"
                     @click="showNotifications"
                 ></NotificationsButton>
-                <!--<button :aria-label="i18n.get('_.Toggle navigation')" aria-controls="navbarCollapse"
-                        aria-expanded="false"
-                        class="navbar-toggler" data-mdb-target="#navbarCollapse"
-                        data-mdb-toggle="collapse" type="button">
-                    <i aria-hidden="true" class="fas fa-bars"></i>
-                </button>-->
             </div>
             <div id="navbarCollapse" ref="navbar" class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">

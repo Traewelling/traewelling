@@ -1,5 +1,5 @@
 <template>
-    <LayoutBasic>
+    <LayoutBasicNoSidebar>
         <div class="row justify-content-center">
             <div id="about-page" class="col-lg-8">
                 <h1>{{ i18n.get("_.about.heading") }}</h1>
@@ -20,11 +20,11 @@
                 <p class="lead">{{ i18n.get("_.about.feature-missing") }} <a
                     href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
 
-                <h3>{{ i18n.get("_.about.points-heading") }}</h3>
+                <h3 id="points-calculation">{{ i18n.get("_.about.points-heading") }}</h3>
                 <p class="lead">
                     {{ i18n.get("_.about.points1") }}
                 </p>
-                <table class="table">
+                <table aria-labelledby="#points-calculation" class="table">
                     <thead>
                         <tr>
                             <th scope="col">{{ i18n.get("_.about.productclass") }}</th>
@@ -59,15 +59,16 @@
 
             </div>
         </div>
-    </LayoutBasic>
+    </LayoutBasicNoSidebar>
 </template>
 
 <script>
 import LayoutBasic from "../layouts/Basic";
+import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "About",
-    components: {LayoutBasic},
+    components: {LayoutBasicNoSidebar, LayoutBasic},
     metaInfo() {
         return {
             title: this.i18n.get("_.about.faq-heading"),
