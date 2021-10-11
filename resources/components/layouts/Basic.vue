@@ -7,16 +7,19 @@
             </div>
         </main>
         <FooterComponent/>
+        <MobileFooterNav/>
     </div>
 </template>
 
 <script>
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
+import MobileFooterNav from "./MobileFooterNav";
 
 export default {
     name: "LayoutBasic",
     components: {
+        MobileFooterNav,
         FooterComponent,
         NavbarComponent,
     }
