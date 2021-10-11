@@ -17,7 +17,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form v-on:submit.prevent="submitStation">
+                <form autocomplete="off" v-on:submit.prevent="submitStation">
                     <div id="station-autocomplete-container">
                         <input id="autoComplete" v-model="station"
                                class="form-control w-100 mb-3"
@@ -99,7 +99,7 @@
             </div>
         </div>
 
-        <div v-if="now != null" id="timepicker-wrapper">
+        <div v-if="now != null && !hideTimepicker" id="timepicker-wrapper">
             <div class="text-center">
                 <div class="btn-group" role="group">
                     <a :title="i18n.get('_.stationboard.minus-15')"
@@ -153,7 +153,8 @@ export default {
     props: {
         now: null,
         next: null,
-        prev: null
+        prev: null,
+        hideTimepicker: false
     },
     computed: {
         currentTravelType() {

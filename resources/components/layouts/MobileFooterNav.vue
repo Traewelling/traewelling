@@ -8,6 +8,10 @@
             <i class="fa fa-crown" aria-hidden="true"></i>
             <span class="sr-only">{{ i18n.get('_.menu.leaderboard') }}</span>
         </router-link>
+        <router-link :to="{ name: 'trains.stationboard' }" class="navbar-brand nav-link">
+            <i aria-hidden="true" class="fas fa-ticket-alt"></i>
+            <span class="sr-only">{{ i18n.get('_.menu.leaderboard') }}</span>
+        </router-link>
         <router-link :to="{ name: 'statuses.active'}" class="navbar-brand nav-link">
             <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
             <span class="sr-only">{{ i18n.get('_.menu.active') }}</span>
