@@ -11,12 +11,12 @@
                     toggler="true"
                     @click="showNotifications"
                 ></NotificationsButton>
-                <button :aria-label="i18n.get('_.Toggle navigation')" aria-controls="navbarCollapse"
+                <!--<button :aria-label="i18n.get('_.Toggle navigation')" aria-controls="navbarCollapse"
                         aria-expanded="false"
                         class="navbar-toggler" data-mdb-target="#navbarCollapse"
                         data-mdb-toggle="collapse" type="button">
                     <i aria-hidden="true" class="fas fa-bars"></i>
-                </button>
+                </button>-->
             </div>
             <div id="navbarCollapse" ref="navbar" class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
