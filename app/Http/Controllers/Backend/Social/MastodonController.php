@@ -23,10 +23,7 @@ abstract class MastodonController extends Controller
      *
      * @return User model
      */
-    public static function getUserFromSocialite(
-        SocialiteUser  $socialiteUser,
-        MastodonServer $server
-    ): User {
+    public static function getUserFromSocialite(SocialiteUser $socialiteUser, MastodonServer $server): User {
         $socialProfile = SocialLoginProfile::where('mastodon_id', $socialiteUser->id)
                                            ->where('mastodon_server', $server->id)
                                            ->first();
@@ -35,13 +32,11 @@ abstract class MastodonController extends Controller
             if (auth()->check()) {
                 self::updateToken(auth()->user(), $socialiteUser, $server);
                 return auth()->user();
-            } else {
-                return self::createUser($socialiteUser, $server);
             }
-        } else {
-            self::updateToken($socialProfile->user, $socialiteUser, $server);
-            return $socialProfile->user;
+            return self::createUser($socialiteUser, $server);
         }
+        self::updateToken($socialProfile->user, $socialiteUser, $server);
+        return $socialProfile->user;
     }
 
     /**
@@ -107,7 +102,7 @@ abstract class MastodonController extends Controller
         return $user;
     }
 
-    private static function updateToken(User $user, SocialiteUser $socialiteUser, MastodonServer $server) {
+    private static function updateToken(User $user, SocialiteUser $socialiteUser, MastodonServer $server): void {
         $user->socialProfile->update([
                                          'mastodon_id'     => $socialiteUser->id,
                                          'mastodon_token'  => $socialiteUser->token,

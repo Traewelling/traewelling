@@ -19,7 +19,7 @@ abstract class SocialController extends Controller
         $existingUser = User::where('username', $username)->first();
         $errorCount   = 0;
         while ($errorCount < 10 && $existingUser !== null) {
-            $username     = $username . rand(1, 10);
+            $username     .= random_int(1, 10);
             $existingUser = User::where('username', $username)->first();
             $errorCount++;
         }

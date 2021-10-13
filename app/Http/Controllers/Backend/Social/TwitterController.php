@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
 use InvalidArgumentException;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 abstract class TwitterController extends Controller
 {
@@ -20,14 +21,14 @@ abstract class TwitterController extends Controller
      */
     public static function getApi(User $user): TwitterOAuth {
         $sPro = $user?->socialProfile;
-        if ($sPro?->twitter_id == null || $sPro?->twitter_token == null || $sPro?->twitter_tokenSecret == null) {
+        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null || $sPro?->twitter_tokenSecret === null) {
             throw new NotConnectedException();
         }
         return new TwitterOAuth(
-            config('trwl.twitter_id'),
-            config('trwl.twitter_secret'),
-            $user->socialProfile->twitter_token,
-            $user->socialProfile->twitter_tokenSecret
+            consumerKey:      config('trwl.twitter_id'),
+            consumerSecret:   config('trwl.twitter_secret'),
+            oauthToken:       $user->socialProfile->twitter_token,
+            oauthTokenSecret: $user->socialProfile->twitter_tokenSecret
         );
     }
 
@@ -36,27 +37,25 @@ abstract class TwitterController extends Controller
      * If logged in, the user will have the login-provider added.
      * If a user with corresponding login-provider already exists, it will be returned.
      *
-     * @param \Laravel\Socialite\Contracts\User $socialiteUser
+     * @param SocialiteUser $socialiteUser
      *
      * @return User model
      */
-    public static function getUserFromSocialite(\Laravel\Socialite\Contracts\User $socialiteUser): User {
+    public static function getUserFromSocialite(SocialiteUser $socialiteUser): User {
         $socialProfile = SocialLoginProfile::where('twitter_id', $socialiteUser->id)->first();
 
         if ($socialProfile === null) {
             if (auth()->check()) {
                 self::updateToken(auth()->user(), $socialiteUser);
                 return auth()->user();
-            } else {
-                return self::createUser($socialiteUser);
             }
-        } else {
-            self::updateToken($socialProfile->user, $socialiteUser);
-            return $socialProfile->user;
+            return self::createUser($socialiteUser);
         }
+        self::updateToken($socialProfile->user, $socialiteUser);
+        return $socialProfile->user;
     }
 
-    private static function createUser(\Laravel\Socialite\Contracts\User $socialiteUser): User {
+    private static function createUser(SocialiteUser $socialiteUser): User {
         $user = User::create([
                                  'name'     => SocialController::getDisplayName($socialiteUser),
                                  'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),
@@ -65,7 +64,7 @@ abstract class TwitterController extends Controller
         return $user;
     }
 
-    private static function updateToken(User $user, \Laravel\Socialite\Contracts\User $socialiteUser) {
+    private static function updateToken(User $user, SocialiteUser $socialiteUser): void {
         $user->socialProfile->update([
                                          'twitter_id'          => $socialiteUser->id,
                                          'twitter_token'       => $socialiteUser->token,
