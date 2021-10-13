@@ -57,7 +57,6 @@ abstract class TwitterController extends Controller
     }
 
     private static function createUser(\Laravel\Socialite\Contracts\User $socialiteUser): User {
-        //TODO: Fetch profile image (see issue #5)
         $user = User::create([
                                  'name'     => SocialController::getDisplayName($socialiteUser),
                                  'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),

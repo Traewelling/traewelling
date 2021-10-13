@@ -99,7 +99,6 @@ abstract class MastodonController extends Controller
     }
 
     private static function createUser(SocialiteUser $socialiteUser, MastodonServer $server): User {
-        //TODO: Fetch profile image (see issue #5)
         $user = User::create([
                                  'name'     => SocialController::getDisplayName($socialiteUser),
                                  'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),
