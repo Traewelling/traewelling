@@ -9,10 +9,10 @@ use App\Models\TrainStopover;
 abstract class GeoController extends Controller
 {
     public static function calculateDistance(
-        HafasTrip $hafasTrip,
+        HafasTrip     $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
-    ): float|int {
+    ): int {
         if ($hafasTrip->polyline == null || $hafasTrip?->polyline?->polyline == null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
@@ -47,9 +47,9 @@ abstract class GeoController extends Controller
         foreach ($slicedFeatures as $stopover) {
             if ($lastStopover != null) {
                 $distance += self::calculateDistanceBetweenCoordinates(
-                    latitudeA: $lastStopover->geometry->coordinates[1],
+                    latitudeA:  $lastStopover->geometry->coordinates[1],
                     longitudeA: $lastStopover->geometry->coordinates[0],
-                    latitudeB: $stopover->geometry->coordinates[1],
+                    latitudeB:  $stopover->geometry->coordinates[1],
                     longitudeB: $stopover->geometry->coordinates[0]
                 );
             }
@@ -67,10 +67,10 @@ abstract class GeoController extends Controller
      * @return float
      */
     private static function calculateDistanceByStopovers(
-        HafasTrip $hafasTrip,
+        HafasTrip     $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
-    ): float {
+    ): int {
         $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
             return $item->id == $origin->id;
@@ -88,10 +88,10 @@ abstract class GeoController extends Controller
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance    += self::calculateDistanceBetweenCoordinates(
-                latitudeA: $lastStopover->trainStation->latitude,
+            $distance     += self::calculateDistanceBetweenCoordinates(
+                latitudeA:  $lastStopover->trainStation->latitude,
                 longitudeA: $lastStopover->trainStation->longitude,
-                latitudeB: $stopover->trainStation->latitude,
+                latitudeB:  $stopover->trainStation->latitude,
                 longitudeB: $stopover->trainStation->longitude
             );
             $lastStopover = $stopover;
@@ -103,14 +103,13 @@ abstract class GeoController extends Controller
         float $latitudeA,
         float $longitudeA,
         float $latitudeB,
-        float $longitudeB,
-        int $decimals = 3
-    ): float {
+        float $longitudeB
+    ): int {
         if ($longitudeA === $longitudeB && $latitudeA === $latitudeB) {
             return 0.0;
         }
 
-        $equatorialRadiusInKilometers = 6378.137;
+        $equatorialRadiusInMeters = 6378137;
 
         $pi       = pi();
         $latA     = $latitudeA / 180 * $pi;
@@ -118,8 +117,8 @@ abstract class GeoController extends Controller
         $latB     = $latitudeB / 180 * $pi;
         $lonB     = $longitudeB / 180 * $pi;
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                    * $equatorialRadiusInKilometers;
+                    * $equatorialRadiusInMeters;
 
-        return round($distance, $decimals);
+        return round($distance);
     }
 }
