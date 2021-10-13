@@ -13,7 +13,7 @@ class SupportController extends Controller
 
     public static function renderSupportPage(): View {
         return view('support.form', [
-            'emailAvailable' => isset(auth()->user()->email) && isset(auth()->user()->email_verified_at)
+            'emailAvailable' => isset(auth()->user()->email, auth()->user()->email_verified_at)
         ]);
     }
 
@@ -27,5 +27,4 @@ class SupportController extends Controller
 
         return back()->with('success', __('support.success', ['ticketNumber' => $ticketNumber]));
     }
-
 }
