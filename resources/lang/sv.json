@@ -228,12 +228,12 @@
     "dates.March": "mars",
     "dates.May": "maj",
     "dates.Sunday": "söndag",
-    "transport_types.national": "Fjärrtrafik",
+    "transport_types.national": "Fjärrtrafik (IC, EC, ...)",
     "admin.checkins": "Incheckningar",
     "settings.delete-profile-picture-btn": "Ta bort profilbild",
     "profile.last-journeys-of": "Senaste resor från",
     "settings.lastactivity": "Sista aktivitet",
-    "transport_types.nationalExpress": "Fjärrtrafik",
+    "transport_types.nationalExpress": "Fjärrtrafik (ICE, ...)",
     "settings.device": "Enhet",
     "settings.deleteallsessions": "Avsluta alla sessioner",
     "settings.new-password": "Ny lösenord",
@@ -442,5 +442,6 @@
     "settings.visibility": "synlighet",
     "settings.visibility.default": "CheckIns: standard synlighet",
     "stats.range": "Tidsperiod",
-    "stats.range.days": "Sista :days dagar"
+    "stats.range.days": "Sista :days dagar",
+    "transport_types.taxi": "Taxi"
 }
