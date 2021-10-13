@@ -117,14 +117,14 @@ class FrontendUserController extends Controller
         try {
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
 
-            if ($userSearchResponse->count() == 1) {
+            if ($userSearchResponse->count() === 1) {
                 return redirect()->route('account.show', ['username' => $userSearchResponse->first()->username]);
             }
         } catch (HttpException) {
             return redirect()->back();
         }
 
-        return view("search", [
+        return view('search', [
             'userSearchResponse' => $userSearchResponse
         ]);
     }
