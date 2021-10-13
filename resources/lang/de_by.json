@@ -60,7 +60,7 @@
     "controller.user.follow-destroyed": "Du folgsch dera Person nimme.",
     "controller.status.like-not-found": "Dean Like gaits id.",
     "controller.user.follow-delete-not-permitted": "Dia Aktion isch id erlaubt.",
-    "controller.transport.also-in-connection": "Ja sag amoi, au in der Verbindung sand:",
+    "controller.transport.also-in-connection": "Ja sag amoi, au in der Verbindung is:|Ja sag amoi, au in der Verbindung sand:",
     "controller.status.like-already": "Dean Like gaits schu.",
     "user.mute-tooltip": "B'nutzr schdummschalda",
     "status.visibility.0": "Öffatlich",

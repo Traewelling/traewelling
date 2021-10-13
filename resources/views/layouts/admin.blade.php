@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
+        <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
     </head>
     <body class="hold-transition sidebar-mini">
         <div class="wrapper">
@@ -89,6 +90,12 @@
                                         </a>
                                     </li>
                                 </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('admin.status')}}" class="nav-link">
+                                    <em class="fas fa-train nav-icon"></em>
+                                    <p>Status</p>
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{url('/')}}" class="nav-link">

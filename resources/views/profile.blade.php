@@ -8,7 +8,7 @@
 @else
     @section('meta-description', __('description.profile', [
         'username' => $user->name,
-        'kmAmount' => number($user->train_distance, 0),
+        'kmAmount' => number($user->train_distance / 1000, 0),
         'hourAmount' => number($user->train_duration / 60, 0)
     ]))
 @endif
@@ -30,7 +30,7 @@
                     @endauth
                 </h2>
                 <h2>
-                    <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance) }}</span><span
+                    <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
                             class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
                     <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
