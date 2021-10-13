@@ -418,7 +418,6 @@
     "localisation.not-available": "Dere Inhalt do steht aktuell leider net uff doiner Sprooch zur Verfügung.",
     "leaderboard.notice": "Die do angezeichde Dade basiere uff de Check-Ins vun de letschde 7 Daa.",
     "stats.global.active": "Akdive Träweller",
-    "description.blog.category": "Die neischte Bloginträäch in de Kategorie :category",
     "description.leaderboard.main": "Die Top Träweller vun de letschde 7 Daa.",
     "description.leaderboard.monthly": "Die Top Träweller im :month :year vun de letschde 7 Daa.",
     "stats.global.distance": "Rääsedistanz vun alle Träweller",
@@ -427,7 +426,6 @@
     "user.muted.text": "Du kannsch die Check-Ins vun :username ned siehn, weil de denne Benutzer stummgeschalde hasch.",
     "user.unmute-tooltip": "Benutzer nimmie stummschalde",
     "dashboard.future": "Dei Check-Ins in de Zukunfd",
-    "description.blog": "Die neischte Bloginträäch",
     "description.profile": ":username is schun :kmAmount Kilomeder in :hourAmount Stunne in öffentliche Verkehrsmiddeln unnerweegs gewän.",
     "description.status": "Die Rääs vun :username aus :origin noo :destination am :date in :lineName.",
     "description.en-route": "Üwwersichtskart üwwer alle Träweller, welle g'rad uff de Welt unnerweegs sinn."

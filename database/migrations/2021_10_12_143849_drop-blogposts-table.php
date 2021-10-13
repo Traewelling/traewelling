@@ -12,7 +12,7 @@ class DropBlogpostsTable extends Migration
 
     public function down(): void {
         Schema::create('blogposts', function(Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('title');
             $table->string('slug');
             $table->string('author_name');

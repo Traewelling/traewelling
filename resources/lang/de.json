@@ -434,8 +434,6 @@
     "user.already-unmuted": "Der Benutzer :username ist nicht stummgeschaltet.",
     "user.unmute-tooltip": "Benutzer nicht mehr stummschalten",
     "dashboard.future": "Deine Check-ins in der Zukunft",
-    "description.blog": "Die neuesten Blogeinträge",
-    "description.blog.category": "Die neuesten Blogeinträge in der Kategorie :category",
     "description.profile": ":username ist bereits :kmAmount Kilometer in :hourAmount Stunden in öffentlichen Verkehrsmitteln unterwegs gewesen.",
     "description.status": "Die Reise von :username von :origin nach :destination am :date in :lineName.",
     "description.leaderboard.main": "Die Top Träweller der letzten 7 Tage.",
