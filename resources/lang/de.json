@@ -341,6 +341,7 @@
     "settings.request.accept-success": "Folgen-Anfrage erfolgreich akzeptiert.",
     "settings.request.reject-success": "Folgen-Anfrage erfolgreich abgelehnt.",
     "settings.language.set": "Sprache ändern",
+    "sr.dropdown.toggle": "Dropdown ein- und ausblenden",
     "settings.visibility": "Sichtbarkeit",
     "settings.visibility.default": "CheckIns: Standardsichtbarkeit",
     "settings.visibility.disclaimer": "Wenn dein Profil privat ist, werden auch als öffentlich gekennzeichnete Status nur deinen Followern angezeigt.",
