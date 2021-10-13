@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\TrainStation;
-use Database\Seeders\Blogposts\BlogpostSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,7 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EventSeeder::class);
         $this->call(HafasTripSeeder::class);
         $this->call(TrainCheckinSeeder::class);
-
         $this->call(PrivacyAgreementSeeder::class);
     }
 }

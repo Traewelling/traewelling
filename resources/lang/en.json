@@ -421,8 +421,6 @@
     "user.unmute-tooltip": "Unmute user",
     "leaderboard.notice": "The data shown here is based on the check-ins of the last 7 days.",
     "localisation.not-available": "Sorry, this content is currently not available in your language.",
-    "description.blog.category": "The latest blog posts in the category :category",
-    "description.blog": "The latest blog posts",
     "description.leaderboard.main": "The top Träwellers of the past 7 days.",
     "description.leaderboard.monthly": "The top Träwellers in :month :year for the last 7 days.",
     "description.status": "The journey of :username from :origin to :destination on :date in :lineName.",
