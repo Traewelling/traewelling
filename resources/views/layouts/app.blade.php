@@ -205,7 +205,7 @@
                     / <a href="{{ route('legal.notice') }}">{{ __('menu.legal-notice') }}</a>
                 </span>
                         <span class="footer-nav-link">
-                    / <a href="{{ route('blog.all') }}">{{ __('menu.blog') }}</a>
+                    / <a href="https://blog.traewelling.de" target="blog">{{ __('menu.blog') }}</a>
                 </span>
                     </p>
                     <p class="mb-0">{!! __('menu.developed') !!}</p>
