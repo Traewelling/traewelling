@@ -37,20 +37,20 @@
                                 </a>
                                 <br/>
                                 <span style="font-size: 0.875em;">
-                                        <span class="font-weight-bold">
-                                            <i class="fa fa-route d-inline"></i>
-                                            {{ number($user->train_distance / 1000) }}
-                                        </span>
-                                        <span class="small font-weight-lighter">km</span>
-                                        <span class="font-weight-bold ps-sm-2">
-                                            <i class="fa fa-stopwatch d-inline"></i>
-                                            {!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}
-                                        </span>
-                                        <span class="font-weight-bold ps-sm-2">
-                                            <i class="fa fa-dice-d20 d-inline"></i>
-                                            {{ $user->points }}
-                                        </span>
-                                        <span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
+                                    <span class="font-weight-bold">
+                                        <i class="fa fa-route d-inline"></i>
+                                        {{ number($user->train_distance / 1000) }}
+                                    </span>
+                                    <span class="small font-weight-lighter">km</span>
+                                    <span class="font-weight-bold ps-sm-2">
+                                        <i class="fa fa-stopwatch d-inline"></i>
+                                        {!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}
+                                    </span>
+                                    <span class="font-weight-bold ps-sm-2">
+                                        <i class="fa fa-dice-d20 d-inline"></i>
+                                        {{ $user->points }}
+                                    </span>
+                                    <span class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                                 </span>
                             </div>
                         </div>
