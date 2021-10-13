@@ -24,8 +24,10 @@
                 <p class="lead">{{ __('about.no-train') }}</p>
 
                 <h3>{{ __('about.feature-missing-heading') }}</h3>
-                <p class="lead">{{ __('about.feature-missing') }} <a
-                            href="mailto:hi@traewelling.de">hi@traewelling.de</a>.</p>
+                <p class="lead">
+                    {{ __('about.feature-missing') }}
+                    <a href="mailto:hi@traewelling.de">hi@traewelling.de</a>.
+                </p>
 
                 <h3>{{ __('about.points-heading') }}</h3>
                 <p class="lead">
@@ -39,30 +41,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">{{ __('about.tram') }}</th>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.suburban') }}</th>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.regional') }}</th>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.express') }}</th>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('about.international') }}</th>
-                            <td>10</td>
-                        </tr>
+                        @foreach(\App\Enum\HafasTravelType::getList() as $category)
+                            <tr>
+                                <th scope="row">{{ __('transport_types.' . $category) }}</th>
+                                <td>{{config('trwl.base_points.train.' . $category, 1)}}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
                 <p class="lead">{!! __('about.calculation') !!}</p>
-
             </div>
+        </div>
+    </div>
 @endsection

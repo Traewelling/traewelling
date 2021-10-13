@@ -80,15 +80,17 @@ Route::get('/callback/{provider}', 'SocialController@callback');
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->name('statuses.get');
 
+
 Route::prefix('blog')->group(function() {
-    Route::get('/', [BlogController::class, 'renderMain'])
+    Route::permanentRedirect('/', 'https://blog.traewelling.de')
          ->name('blog.all');
 
-    Route::get('/{slug}', [BlogController::class, 'renderSingle'])
+    Route::permanentRedirect('/{slug}', 'https://blog.traewelling.de/posts/{slug}')
          ->name('blog.show');
 
-    Route::get('/cat/{category}', [BlogController::class, 'renderCategory'])
-         ->name('blog.category');
+    Route::get('/cat/{category}', function($category) {
+        return redirect('https://blog.traewelling.de/categories/' . strtolower($category), 301);
+    })->name('blog.category');
 });
 
 /**
@@ -209,13 +211,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
          ->name('trains.checkin');
 
-    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setHome'])
+    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
 
     Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
          ->name('busses.stationboard');
-
-    Route::get('/mastodon/test', [SocialController::class, 'testMastodon']);
 
     Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
          ->name('notifications.latest');

@@ -22,6 +22,5 @@ class DatabaseSeeder extends Seeder
         $this->call(TrainCheckinSeeder::class);
 
         $this->call(PrivacyAgreementSeeder::class);
-        $this->call(BlogpostSeeder::class);
     }
 }
