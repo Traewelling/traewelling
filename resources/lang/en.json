@@ -263,6 +263,7 @@
     "profile.unfollow": "Unfollow",
     "profile.private-profile-text": "This profile is private.",
     "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click \":request\".",
+    "search-results": "Search results",
     "settings.action": "Action",
     "settings.btn-update": "Update",
     "settings.choose-file": "Choose file",
