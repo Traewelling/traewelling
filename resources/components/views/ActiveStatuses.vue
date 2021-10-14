@@ -1,31 +1,31 @@
 <template>
-    <LayoutBasic>
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <div class="card sticky-top">
-                        <Map :poly-lines="polylines" class="map embed-responsive embed-responsive-1by1"></Map>
-                    </div>
-                </div>
-                <div class="col-md-8 col-lg-6">
-                    <Spinner v-if="loading" class="mt-5"/>
-
-                    <div v-if="error" class="error">
-                        <p>{{ error }}</p>
-
-                        <p>
-                            <button @click.prevent="fetchData">
-                                {{ i18n.get("_.vue.tryAgain") }}
-                            </button>
-                        </p>
-                    </div>
-                    <div v-if="statuses">
-                        <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
-                        <Status v-for="status in statuses" v-bind:key="status.id" :status="status"
-                                v-bind:stopovers="stopovers"></Status>
-                    </div>
+    <LayoutBasicNoSidebar>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card sticky-top">
+                    <Map :poly-lines="polylines" class="map embed-responsive embed-responsive-1by1"></Map>
                 </div>
             </div>
-    </LayoutBasic>
+            <div class="col-md-8 col-lg-6">
+                <Spinner v-if="loading" class="mt-5"/>
+
+                <div v-if="error" class="error">
+                    <p>{{ error }}</p>
+
+                    <p>
+                        <button @click.prevent="fetchData">
+                            {{ i18n.get("_.vue.tryAgain") }}
+                        </button>
+                    </p>
+                </div>
+                <div v-if="statuses">
+                    <h4 class="mt-4"> {{ i18n.get("_.menu.active") }} </h4>
+                    <Status v-for="status in statuses" v-bind:key="status.id" :status="status"
+                            v-bind:stopovers="stopovers"></Status>
+                </div>
+            </div>
+        </div>
+    </LayoutBasicNoSidebar>
 </template>
 
 <script>
@@ -35,6 +35,7 @@ import Map from "../Map";
 import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "ActiveStatuses",
@@ -59,6 +60,7 @@ export default {
         };
     },
     components: {
+        LayoutBasicNoSidebar,
         Spinner,
         Status,
         Map,

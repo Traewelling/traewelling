@@ -8,7 +8,7 @@
                 <Map :poly-lines="polyline" class="map embed-responsive embed-responsive-16by9"></Map>
             </div>
 
-            <div class="card-body row">
+            <div class="card-body row py-1 ps-2 pe-3">
                 <div class="col-2 image-box pe-0 d-none d-lg-flex">
                     <router-link :to="{ name: 'profile', params: {username: statusData.username}}">
                         <img :alt="statusData.username" :src="`/profile/${statusData.username}/profilepicture`">
