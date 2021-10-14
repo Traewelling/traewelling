@@ -10,8 +10,8 @@ use Carbon\Carbon;
 abstract class JsonExportController extends Controller
 {
 
-    public static function generateExport(User $user, Carbon $from, Carbon $to): string {
-        $preparedData = ExportController::getExportableStatuses($user, $from, $to)->map(function($status) {
+    public static function generateExport(User $user, Carbon $timestampFrom, Carbon $timestampTo): string {
+        $preparedData = ExportController::getExportableStatuses($user, $timestampFrom, $timestampTo)->map(function($status) {
             return [
                 'status_id' => $status->id,
                 'journey'   => [

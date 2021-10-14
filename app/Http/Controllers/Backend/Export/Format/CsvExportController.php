@@ -11,8 +11,8 @@ use Closure;
 abstract class CsvExportController extends Controller
 {
 
-    public static function generateExport(User $user, Carbon $from, Carbon $to): Closure {
-        $data = ExportController::getExportableStatuses($user, $from, $to);
+    public static function generateExport(User $user, Carbon $timestampFrom, Carbon $timestampTo): Closure {
+        $data = ExportController::getExportableStatuses($user, $timestampFrom, $timestampTo);
 
         return static function() use ($data) {
             $fileStream = fopen('php://output', 'w');
