@@ -43,15 +43,21 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/count', [NotificationController::class, 'count']);
-        Route::get('trains/station/{name}/departures', [TransportController::class, 'departures']);
-        Route::put('trains/station/{name}/home', [TransportController::class, 'setHome']);
-        Route::get('trains/trip/', [TransportController::class, 'getTrip']);
-        Route::post('trains/checkin', [TransportController::class, 'create']);
-        Route::get('trains/station/nearby', [TransportController::class, 'getNextStationByCoordinates']);
-        Route::get('trains/station/autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+        Route::group(['prefix' => 'trains'], function() {
+            Route::get('trip/', [TransportController::class, 'getTrip']);
+            Route::post('checkin', [TransportController::class, 'create']);
+            Route::group(['prefix' => 'station'], function() {
+                Route::get('{name}/departures', [TransportController::class, 'departures']);
+                Route::put('{name}/home', [TransportController::class, 'setHome']);
+                Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
+                Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
+                Route::get('history', [TransportController::class, 'getTrainStationHistory']);
+            });
+        });
         Route::group(['prefix' => 'statistics'], function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
+            Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
         Route::post('user/createFollow', [UserController::class, 'createFollow']);
         Route::delete('user/destroyFollow', [UserController::class, 'destroyFollow']);

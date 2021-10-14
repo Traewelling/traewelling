@@ -83,9 +83,6 @@
                                 <i aria-hidden="true" class="fas fa-user"></i> {{ i18n.get('_.menu.profile') }}
                             </router-link>
                             <a class="dropdown-item" href="#">
-                                <i aria-hidden="true" class="fas fa-save"></i> {{ i18n.get('_.menu.export') }}
-                            </a>
-                            <a class="dropdown-item" href="#">
                                 <i aria-hidden="true" class="fas fa-cog"></i> {{ i18n.get('_.menu.settings') }}
                             </a>
                             <!--                {{ &#45;&#45;@if(Auth::user()->role >= 5)&#45;&#45; }}-->

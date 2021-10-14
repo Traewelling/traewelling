@@ -180,16 +180,16 @@ class FrontendTransportController extends Controller
 
     }
 
-    public function setHome(Request $request): RedirectResponse {
+    public function setTrainHome(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'ibnr' => ['required', 'numeric']
+                                            'stationName' => ['required', 'max:255']
                                         ]);
 
         try {
-            $trainStation = TransportBackend::setHome(Auth::user(), $validated['ibnr']);
+            $trainStation = TransportBackend::setTrainHome(auth()->user(), $validated['stationName']);
 
             return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
-        } catch (HafasException $e) {
+        } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
     }

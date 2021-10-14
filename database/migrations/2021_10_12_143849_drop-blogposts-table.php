@@ -4,16 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBlogTable extends Migration
+class DropBlogpostsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+    public function up(): void {
+        Schema::dropIfExists('blogposts');
+    }
+
+    public function down(): void {
         Schema::create('blogposts', function(Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('title');
             $table->string('slug');
             $table->string('author_name');
@@ -23,14 +22,5 @@ class CreateBlogTable extends Migration
             $table->string('category');
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down() {
-        Schema::dropIfExists('blogposts');
     }
 }

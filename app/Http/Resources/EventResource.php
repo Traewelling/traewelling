@@ -25,7 +25,7 @@ class EventResource extends JsonResource
             "end"           => $this->end?->toIso8601String(),
             "trainDistance" => $this->trainDistance,
             "trainDuration" => $this->trainDuration,
-            "station"       => new TrainstationResource($this->station)
+            "station" => new TrainStationResource($this->station)
         ];
     }
 }
