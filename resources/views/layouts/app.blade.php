@@ -3,9 +3,9 @@
     <head>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
-    @include('layouts.includes.meta')
+        @include('layouts.includes.meta')
 
-    <!-- Scripts -->
+        <!-- Scripts -->
         <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->

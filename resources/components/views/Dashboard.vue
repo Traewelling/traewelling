@@ -1,32 +1,44 @@
 <template>
     <LayoutBasic>
-        <div class="row justify-content-center align-content-center">
-            <div class="col-md-8 col-lg-7">
-                <StationForm></StationForm>
-                <Spinner v-if="loading" class="mt-5"/>
+        <ul id="ex1" class="nav nav-tabs nav-fill d-md-none  px-0 mt-n4" role="tablist">
+            <li class="nav-item" role="presentation">
+                <router-link :to="{ name: 'dashboard' }" active-class="" class="nav-link" exact-active-class="active"
+                             role="tab">
+                    {{ i18n.get('_.menu.dashboard') }}
+                </router-link>
+            </li>
+            <li class="nav-item" role="presentation">
+                <router-link :to="{ name: 'dashboard.global' }" class="nav-link" role="tab">
+                    {{ i18n.get("_.menu.globaldashboard") }}
+                </router-link>
+            </li>
+        </ul>
+        <div class="col-md-9 col-lg-7">
+            <StationForm class="d-none d-md-block"/>
+            <Spinner v-if="loading" class="mt-5"/>
 
-                <div v-if="error" class="error">
-                    <p>{{ error }}</p>
+            <div v-if="error" class="error">
+                <p>{{ error }}</p>
 
-                    <p>
-                        <button @click.prevent="fetchData">
-                            {{ i18n.get("_.vue.tryAgain") }}
-                        </button>
-                    </p>
-                </div>
-                <div v-if="futureStatuses.length && !loading" id="accordionFutureCheckIns"
-                     class="accordion accordion-flush mt-5 mb-0">
-                    <div class="accordion-item">
-                        <h1 id="flush-headingOne" class="accordion-header">
-                            <button
-                                aria-controls="future-check-ins"
-                                aria-expanded="false"
-                                class="accordion-button collapsed px-0"
-                                data-mdb-target="#future-check-ins"
-                                data-mdb-toggle="collapse"
-                                type="button"
-                            >
-                                {{ i18n.get('_.dashboard.future') }}
+                <p>
+                    <button @click.prevent="fetchData">
+                        {{ i18n.get("_.vue.tryAgain") }}
+                    </button>
+                </p>
+            </div>
+            <div v-if="futureStatuses.length && !loading" id="accordionFutureCheckIns"
+                 class="accordion accordion-flush mt-5 mb-0">
+                <div class="accordion-item">
+                    <h1 id="flush-headingOne" class="accordion-header">
+                        <button
+                            aria-controls="future-check-ins"
+                            aria-expanded="false"
+                            class="accordion-button collapsed px-0"
+                            data-mdb-target="#future-check-ins"
+                            data-mdb-toggle="collapse"
+                            type="button"
+                        >
+                            {{ i18n.get('_.dashboard.future') }}
                             </button>
                         </h1>
                         <div
@@ -59,7 +71,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </LayoutBasic>
 </template>
 

@@ -444,5 +444,7 @@
     "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage.",
     "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung.",
     "minutes": "Minuten",
-    "request-time": "abgefragt um :time"
+    "request-time": "abgefragt um :time",
+    "settings.request.accept": "Follower akzeptieren",
+    "settings.follower.following-since": "Folgt seit"
 }
