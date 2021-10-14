@@ -10,7 +10,7 @@ import SidebarNavContent from "./SidebarNavContent";
 export default {
     name: "SidebarNav",
     components: {SidebarNavContent}
-}
+};
 </script>
 
 <style scoped>

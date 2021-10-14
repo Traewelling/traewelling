@@ -18,7 +18,7 @@ import SidebarNavContent from "./SidebarNavContent";
 export default {
     name: "offcanvasNavigation",
     components: {SidebarNavContent}
-}
+};
 </script>
 
 <style scoped>
