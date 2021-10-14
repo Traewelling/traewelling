@@ -25,7 +25,11 @@ class SupportController extends Controller
                                         ]);
 
         try {
-            $ticketNumber = TicketController::createTicket(auth()->user(), $validated['subject'], $validated['message']);
+            $ticketNumber = TicketController::createTicket(
+                user:    auth()->user(),
+                subject: $validated['subject'],
+                message: $validated['message'],
+            );
             return back()->with('success', __('support.success', ['ticketNumber' => $ticketNumber]));
         } catch (GuzzleException $exception) {
             report($exception);
