@@ -11,6 +11,7 @@
                     </strong> <br/>
                     <small class="font-weight-light">@{{ user.username }}</small>
                     <FollowButton :user="user"></FollowButton>
+                    <MuteButton :user="user"></MuteButton>
                 </h2>
                 <h2>
           <span class="font-weight-bold">
@@ -88,6 +89,7 @@ import LayoutBasic from "../layouts/Basic";
 import HeroLayout from "../layouts/HeroLayout";
 import Spinner from "../Spinner";
 import FollowButton from "../FollowButton";
+import MuteButton from "../MuteButton";
 
 export default {
     name: "ProfilePage",
@@ -114,6 +116,7 @@ export default {
         };
     },
     components: {
+        MuteButton,
         FollowButton,
         Spinner,
         HeroLayout,

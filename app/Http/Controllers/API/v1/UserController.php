@@ -81,14 +81,14 @@ class UserController extends ResponseController
 
     public function createMute(Request $request): JsonResponse {
         $validated     = $request->validate([
-                                                'user_id' => [
+                                                'userId' => [
                                                     'required',
                                                     'exists:users,id',
                                                     Rule::notIn(auth()->user()->mutedUsers->pluck('id')),
                                                     Rule::notIn([auth()->user()->id]),
                                                 ]
                                             ]);
-        $userToBeMuted = User::findOrFail($validated['user_id']);
+        $userToBeMuted = User::findOrFail($validated['userId']);
 
         try {
             $muteUserResponse = \App\Http\Controllers\Backend\UserController::muteUser(auth()->user(), $userToBeMuted);
@@ -105,14 +105,14 @@ class UserController extends ResponseController
 
     public function destroyMute(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'user_id' => [
+                                            'userId' => [
                                                 'required',
                                                 'exists:users,id',
                                                 Rule::in(auth()->user()->mutedUsers->pluck('id'))
                                             ]
                                         ]);
 
-        $userToBeUnmuted = User::findOrFail($validated['user_id']);
+        $userToBeUnmuted = User::findOrFail($validated['userId']);
 
         try {
             $unmuteUserResponse = \App\Http\Controllers\Backend\UserController::unmuteUser(auth()->user(), $userToBeUnmuted);
