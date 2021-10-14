@@ -645,24 +645,6 @@ class TransportController extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int  $ibnr
-     *
-     * @return TrainStation
-     * @throws HafasException
-     * @deprecated replaced by setTrainHome()
-     */
-    public static function setHome(User $user, int $ibnr): TrainStation {
-        $trainStation = HafasController::getTrainStation($ibnr);
-
-        $user->update([
-                          'home_id' => $trainStation->id
-                      ]);
-
-        return $trainStation;
-    }
-
-    /**
      * @param User   $user
      * @param string $stationName
      *

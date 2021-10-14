@@ -19,7 +19,8 @@
                 <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.imprint) ">
                     {{ i18n.get("_.menu.legal-notice") }}
                 </a>
-                <a :class="{'text-white': dashboard}" class="footer-link" href="https://blog.traewelling.de">
+                <a :class="{'text-white': dashboard}" class="footer-link" href="https://blog.traewelling.de"
+                   target="blog">
                     {{ i18n.get("_.menu.blog") }}
                 </a>
             </nav>
