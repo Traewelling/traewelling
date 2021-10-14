@@ -57,8 +57,6 @@ Homestead.json
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-.idea/php.xml
-.idea/trwl.iml
 
 # Gradle
 .idea/**/gradle.xml

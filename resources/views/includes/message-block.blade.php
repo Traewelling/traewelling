@@ -35,9 +35,9 @@
                 </div>
             @endif
 
-            @if(Session::has('message'))
+            @if(session()->has('message'))
                 <div class="alert my-3 alert-info alert-dismissible" role="alert">
-                    {!! Session::get('message') !!}
+                    {!! session()->get('message') !!}
                     <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif

@@ -132,7 +132,7 @@ class TrainCheckin extends Model
     }
 
     public function getSpeedAttribute(): float {
-        return $this->duration == 0 ? 0 : $this->distance / ($this->duration / 60);
+        return $this->duration == 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
     }
 
     /**

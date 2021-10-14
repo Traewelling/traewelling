@@ -48,7 +48,7 @@
             —
             <i class="fa fa-route d-inline"></i>&nbsp;
             <b>
-                {{ number(session()->get('checkin-success')['distance']) }}
+                {{ number(session()->get('checkin-success')['distance'] / 1000) }}
                 <small>km</small>
             </b>
             —

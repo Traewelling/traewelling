@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
@@ -12,6 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends ResponseController
 {
@@ -38,6 +42,7 @@ class StatisticsController extends ResponseController
 
     /**
      * @param string $date
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboardForMonth(string $date): AnonymousResourceCollection {
@@ -47,6 +52,7 @@ class StatisticsController extends ResponseController
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function getPersonalStatistics(Request $request): JsonResponse {
@@ -96,5 +102,19 @@ class StatisticsController extends ResponseController
         ];
 
         return $this->sendv1Response(data: $data, additional: $additionalData);
+    }
+
+    public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
+        $validated = $request->validate([
+                                            'from'     => ['required', 'date', 'before_or_equal:until'],
+                                            'until'    => ['required', 'date', 'after_or_equal:from'],
+                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
+                                        ]);
+
+        return StatusBackend::ExportStatuses(
+            startDate: Carbon::parse($validated['from']),
+            endDate:   Carbon::parse($validated['until']),
+            fileType:  $request->input('filetype')
+        );
     }
 }
