@@ -61,7 +61,6 @@
     "controller.transport.social-post-for": " für #:hashtag",
     "controller.transport.no-station-found": "Für diese Such wurd koa Hoaldestell gfunne.",
     "controller.user.follow-404": "Dieser Follow existierte gar nedd.",
-    "controller.user.follow-already-exists": "Du folgst dieser Person schunn.",
     "controller.user.follow-delete-not-permitted": "Diese Akzion is nedd erlaubt.",
     "controller.user.follow-destroyed": "Du folgst dieser Person nemöj.",
     "controller.user.follow-ok": "Benutzer gfolgt.",
@@ -196,7 +195,6 @@
     "menu.profile": "Profil",
     "menu.register": "Registriere",
     "menu.settings": "Oischdellungen",
-    "menu.settings-myFollower": "Moi Follower",
     "menu.admin": "Admin-Panel",
     "menu.readmore": "Mej lese",
     "messages.cookie-notice": "Mer nutze Cookies für unser Login-System.",
@@ -408,8 +406,6 @@
     "status.visibility.2.detail": "Blous für (akzeptierte) Follower sischtbar",
     "status.visibility.3": "Privat",
     "status.visibility.3.detail": "Blous für disch sischtbar",
-    "description.blog": "Die naischde Blogeinträge",
-    "description.blog.category": "Die naischde Blogeinträge inde Kategorie :category",
     "description.status": "Die Reis vunn :username vunn :origin noach :destination oam :date in :lineName.",
     "description.profile": ":username is schunn :kmAmount Kilometer in :hourAmount Schdunne in öffentlischen Verkehrsmiddeln unnerwejgs gewese.",
     "description.leaderboard.main": "Die Top Träweller der leddschde 7 Doache.",
@@ -430,5 +426,6 @@
     "event": "Veranstaltung",
     "events": "Veranstaltunge",
     "auth.required": "Du muschd oigeloggt soi, um diese Funkzion nutze zu kenne.",
-    "menu.show-more": "Mej anzeige"
+    "menu.show-more": "Mej anzeige",
+    "user.home-not-set": "Du hoaschd noch koan Heimatbahnhof festgelegt."
 }
