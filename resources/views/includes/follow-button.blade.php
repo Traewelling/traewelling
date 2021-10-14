@@ -15,7 +15,7 @@
     @endif
 @endif
 <script>
-    window.translFollow = "{{__('profile.follow')}}";
+    window.translFollow   = "{{__('profile.follow')}}";
     window.translUnfollow = "{{__('profile.unfollow')}}";
-    window.translPending = "{{__('profile.follow_req.pending')}}";
+    window.translPending  = "{{__('profile.follow_req.pending')}}";
 </script>
