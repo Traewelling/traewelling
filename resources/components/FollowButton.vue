@@ -1,18 +1,18 @@
 <template>
         <a v-if="userData.id == $auth.user().id" class="btn btn-sm btn-primary" href="#">{{
-                i18n.get('_.profile.settings')
+                i18n.get("_.profile.settings")
             }}</a>
-        <a v-else-if="userData.privateProfile && userData.followPending" aria-disabled="true"
-           class="btn btn-sm btn-primary disabled"
-           href="#">{{ i18n.get('_.profile.follow_req.pending') }}</a>
+    <a v-else-if="userData.privateProfile && userData.followPending" aria-disabled="true"
+       class="btn btn-sm btn-primary disabled"
+       href="#">{{ i18n.get("_.profile.follow_req.pending") }}</a>
         <a v-else-if="userData.privateProfile && !userData.following" class="btn btn-sm btn-primary follow"
            href="#" @click.prevent="follow">{{
-                i18n.get('_.profile.follow_req')
+                i18n.get("_.profile.follow_req")
             }}</a>
-        <a v-else-if="!userData.following" class="btn btn-sm btn-primary follow"
-           href="#" @click.prevent="follow">{{ i18n.get('_.profile.follow') }}</a>
-        <a v-else class="btn btn-sm btn-danger follow" href="#"
-           @click.prevent="unfollow">{{ i18n.get('_.profile.unfollow') }}</a>
+    <a v-else-if="!userData.following" class="btn btn-sm btn-primary follow"
+       href="#" @click.prevent="follow">{{ i18n.get("_.profile.follow") }}</a>
+    <a v-else class="btn btn-sm btn-danger follow" href="#"
+       @click.prevent="unfollow">{{ i18n.get("_.profile.unfollow") }}</a>
 </template>
 
 <script>
@@ -26,23 +26,23 @@ export default {
             userData: ProfileModel
         };
     },
-    props: ['user'],
+    props: ["user"],
     mounted() {
         this.userData = this.$props.user;
     },
     watch: {
         user(val, oldVal) {
-            console.log('test');
+            console.log("test");
             this.userData = this.$props.user;
         }
     },
     methods: {
         follow() {
             axios
-                .post('/user/createFollow', {userId: this.user.id})
+                .post("/user/createFollow", {userId: this.user.id})
                 .then((result) => {
                     this.userData = result.data.data;
-                    this.$emit('updateUser', this.userData);
+                    this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -50,10 +50,10 @@ export default {
         },
         unfollow() {
             axios
-                .delete('/user/destroyFollow', {data: {userId: this.user.id}})
+                .delete("/user/destroyFollow", {data: {userId: this.user.id}})
                 .then((result) => {
                     this.userData = result.data.data;
-                    this.$emit('updateUser', this.userData);
+                    this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
                     console.error(error);

@@ -9,6 +9,7 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
@@ -21,23 +22,11 @@ use Illuminate\Validation\Rule;
 
 class UserController extends ResponseController
 {
-    public function authenticated(): UserResource {
-        return new UserResource(Auth::user());
-    }
-
-    /**
-     * Returns Model of user
-     * @param string $username
-     * @return UserResource
-     * @todo Maybe put this into another method?
-     */
-    public function show(string $username): UserResource {
-        return new UserResource(User::where('username', 'like', $username)->firstOrFail());
-    }
-
     /**
      * Returns paginated statuses for user
+     *
      * @param string $username
+     *
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $username): AnonymousResourceCollection {
@@ -48,6 +37,22 @@ class UserController extends ResponseController
             abort(404, "No statuses found, or statuses are not visible to you.");
         }
         return StatusResource::collection($userResponse);
+    }
+
+    public function authenticated(): UserResource {
+        return new UserResource(Auth::user());
+    }
+
+    /**
+     * Returns Model of user
+     *
+     * @param string $username
+     *
+     * @return UserResource
+     * @todo Maybe put this into another method?
+     */
+    public function show(string $username): UserResource {
+        return new UserResource(User::where('username', 'like', $username)->firstOrFail());
     }
 
     public function createFollow(Request $request): JsonResponse {
@@ -90,9 +95,14 @@ class UserController extends ResponseController
         $userToBeMuted = User::find($validated['userId']);
 
         try {
-            $muteUserResponse = \App\Http\Controllers\Backend\UserController::muteUser(auth()->user(), $userToBeMuted);
+            $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
         } catch (UserAlreadyMutedException) {
-            return $this->sendError(['message' => __('user.already-muted', ['username' => $userToBeMuted->username])], 409);
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-muted',
+                                            ['username' => $userToBeMuted->username]
+                                        )
+                                    ], 409);
         }
 
         $userToBeMuted->refresh();
@@ -113,10 +123,15 @@ class UserController extends ResponseController
         $userToBeUnmuted = User::find($validated['userId']);
 
         try {
-            $unmuteUserResponse = \App\Http\Controllers\Backend\UserController::unmuteUser(auth()->user(), $userToBeUnmuted);
+            $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
 
         } catch (UserNotMutedException) {
-            return $this->sendError(['message' => __('user.already-unmuted', ['username' => $userToBeUnmuted->username])], 409);
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-unmuted',
+                                            ['username' => $userToBeUnmuted->username]
+                                        )
+                                    ], 409);
         }
 
         $userToBeUnmuted->refresh();
