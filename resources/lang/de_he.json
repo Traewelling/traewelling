@@ -55,7 +55,7 @@
     "controller.transport.no-name-given": "Du muschd en Stazionsname angewwe!",
     "controller.transport.not-in-stopovers": "Die Start-ID is nedd inde Zwischestops.",
     "controller.transport.overlapping-checkin": "Du hoaschd schunn en Scheck-In in Verbindung :linename: <a href=\":url\">#:id</a>",
-    "controller.transport.also-in-connection": "Aa in der Verbindung sinn:",
+    "controller.transport.also-in-connection": "Aa in der Verbindung is:|Aa in der Verbindung sinn:",
     "controller.transport.social-post": "Isch bin groad in :lineName noach :Destination! #NowTräwelling |Isch bin groad in Linie :lineName noach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Isch bin groad in :lineName noach :destination für #:hashtag! #NowTräwelling | Isch bin groad in Linie :lineName noach #destination für #:hashtag! #NowTräwelling ",
     "controller.transport.social-post-for": " für #:hashtag",
@@ -408,8 +408,6 @@
     "status.visibility.2.detail": "Blous für (akzeptierte) Follower sischtbar",
     "status.visibility.3": "Privat",
     "status.visibility.3.detail": "Blous für disch sischtbar",
-    "description.blog": "Die naischde Blogeinträge",
-    "description.blog.category": "Die naischde Blogeinträge inde Kategorie :category",
     "description.status": "Die Reis vunn :username vunn :origin noach :destination oam :date in :lineName.",
     "description.profile": ":username is schunn :kmAmount Kilometer in :hourAmount Schdunne in öffentlischen Verkehrsmiddeln unnerwejgs gewese.",
     "description.leaderboard.main": "Die Top Träweller der leddschde 7 Doache.",
@@ -430,5 +428,6 @@
     "event": "Veranstaltung",
     "events": "Veranstaltunge",
     "auth.required": "Du muschd oigeloggt soi, um diese Funkzion nutze zu kenne.",
-    "menu.show-more": "Mej anzeige"
+    "menu.show-more": "Mej anzeige",
+    "user.home-not-set": "Du hoaschd noch koan Heimatbahnhof festgelegt."
 }

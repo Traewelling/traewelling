@@ -26,9 +26,8 @@ class DistanceCalculationTest extends TestCase
             longitudeA: 9.741083,
             latitudeB: 48.993962,
             longitudeB: 8.401107,
-            decimals: 0,
         );
-        $this->assertEquals(388, $result);
+        $this->assertEquals(388213, $result);
     }
 
     public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke() {
@@ -37,9 +36,8 @@ class DistanceCalculationTest extends TestCase
             longitudeA: 9.741083,
             latitudeB: 52.374497,
             longitudeB: 9.738573,
-            decimals: 2,
         );
-        $this->assertEquals(0.29, $result);
+        $this->assertEquals(289, $result);
     }
 
     public function test_distance_calculation_between_simple_stopovers() {
@@ -75,7 +73,7 @@ class DistanceCalculationTest extends TestCase
         $hafasTrip->load(['stopoversNEW']);
 
         $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
-        $this->assertEquals(4.526, $result);
+        $this->assertEquals(4526, $result);
     }
 
     public function test_distance_calculation_for_foreign_trip_with_stopovers() {
@@ -113,6 +111,6 @@ class DistanceCalculationTest extends TestCase
         $hafasTrip->load(['stopoversNEW']);
 
         $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
-        $this->assertEquals(202.21, $result);
+        $this->assertEquals(202210, $result);
     }
 }

@@ -131,7 +131,7 @@ class TransportController extends ResponseController
             );
 
             return $this->sendResponse([
-                                           'distance'             => $trainCheckinResponse['distance'],
+                                           'distance'             => $trainCheckinResponse['distance'] / 1000,
                                            'duration'             => $trainCheckinResponse['duration'],
                                            'statusId'             => $trainCheckinResponse['statusId'],
                                            'points'               => $trainCheckinResponse['points'],
@@ -199,7 +199,8 @@ class TransportController extends ResponseController
         }
 
         try {
-            $trainStation = TransportBackend::setHome(Auth::user(), $request->ibnr);
+            $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
+            $trainStation = TransportBackend::setTrainHome(Auth::user(), $station->name);
             return $this->sendResponse($trainStation->name);
         } catch (HafasException $e) {
             return $this->sendError([

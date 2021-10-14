@@ -15,7 +15,7 @@
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{
                             number($statuses->reduce(function($carry, $s) {
-                                return $carry + $s->trainCheckin->distance;
+                                return $carry + $s->trainCheckin->distance / 1000;
                             }), 0)
                         }}</span><span class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(

@@ -308,7 +308,7 @@ class StatusController extends Controller
                                                   $t->trainCheckin->Destination->latitude . ', ' . $t->trainCheckin->Destination->longitude,
                                                   $t->trainCheckin->arrival,
                                                   $interval->h . ":" . sprintf('%02d', $interval->i),
-                                                  $t->trainCheckin->distance,
+                                                  round($t->trainCheckin->distance / 1000),
                                                   $t->trainCheckin->points,
                                                   (string) $t->body,
                                                   '',

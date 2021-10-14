@@ -21,11 +21,11 @@ class EventResource extends JsonResource
             "hashtag"       => $this->hashtag,
             "host"          => $this->host,
             "url"           => $this->url,
-            "begin"         => $this->begin,
-            "end"           => $this->end,
+            "begin"         => $this->begin?->toIso8601String(),
+            "end"           => $this->end?->toIso8601String(),
             "trainDistance" => $this->trainDistance,
             "trainDuration" => $this->trainDuration,
-            "station"       => new TrainstationResource($this->station)
+            "station" => new TrainStationResource($this->station)
         ];
     }
 }

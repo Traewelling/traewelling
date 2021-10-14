@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blogpost;
 use App\Models\Event;
 use App\Models\Status;
 use Carbon\Carbon;
@@ -24,9 +23,6 @@ class SitemapController extends Controller
 
         if ($request->has('static')) {
             $this->addStatic($sitemap);
-        }
-        if ($request->has('blog')) {
-            $this->addBlogposts($sitemap);
         }
         if ($request->has('profiles')) {
             $this->addProfiles($sitemap);
@@ -60,18 +56,6 @@ class SitemapController extends Controller
         foreach ($dates as $date) {
             $sitemap->add(Url::create(route('leaderboard.month', ['date' => $date->year . '-' . $date->month]))
                              ->setPriority(0.6));
-        }
-    }
-
-    private function addBlogposts(Sitemap $sitemap): void {
-        $blogposts = Blogpost::where('published_at', '<', Carbon::now()->toIso8601String())->get();
-
-        foreach ($blogposts as $blogpost) {
-            $url = Url::create(route('blog.show', ['slug' => $blogpost->slug]))
-                      ->setPriority(0.6)
-                      ->setLastModificationDate($blogpost->updated_at)
-                      ->setChangeFrequency('monthly');
-            $sitemap->add($url);
         }
     }
 

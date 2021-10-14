@@ -128,20 +128,24 @@ class UserController extends Controller
             throw new PermissionException();
         }
         return $user->statuses()
+                    ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
                                'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
                                'trainCheckin.HafasTrip.stopoversNEW', 'event'
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user()->id : null;
-                        $query->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
-                              ->orWhere('user_id', $user)
+                        $query->whereIn('statuses.visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
+                              ->orWhere('statuses.user_id', $user)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                  $query->where('visibility', StatusVisibility::FOLLOWERS)
-                                        ->whereIn('user_id', $followings);
+                                  $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
+                                        ->whereIn('statuses.user_id', $followings);
                               });
-                    })->orderByDesc('created_at')->paginate(15);
+                    })
+                    ->select('statuses.*')
+                    ->orderByDesc('train_checkins.departure')
+                    ->paginate(15);
     }
 
     /**
