@@ -16,8 +16,10 @@ abstract class JsonExportController extends Controller
                 'status_id' => $status->id,
                 'journey'   => [
                     'departure' => [
-                        'departurePlanned' => $status->trainCheckin->origin_stopover->departure_planned?->toIso8601String(),
-                        'departureReal'    => $status->trainCheckin->origin_stopover->departure_real?->toIso8601String(),
+                        'departurePlanned' => $status->trainCheckin->origin_stopover
+                            ->departure_planned?->toIso8601String(),
+                        'departureReal'    => $status->trainCheckin->origin_stopover
+                            ->departure_real?->toIso8601String(),
                         'station'          => [
                             'type' => 'stop',
                             'id'   => $status->trainCheckin->Origin->ibnr,
@@ -25,8 +27,10 @@ abstract class JsonExportController extends Controller
                         ]
                     ],
                     'arrival'   => [
-                        'arrivalPlanned' => $status->trainCheckin->origin_stopover->arrival_planned?->toIso8601String(),
-                        'arrivalReal'    => $status->trainCheckin->origin_stopover->arrival_real?->toIso8601String(),
+                        'arrivalPlanned' => $status->trainCheckin->origin_stopover
+                            ->arrival_planned?->toIso8601String(),
+                        'arrivalReal'    => $status->trainCheckin->origin_stopover
+                            ->arrival_real?->toIso8601String(),
                         'station'        => [
                             'type' => 'stop',
                             'id'   => $status->trainCheckin->Destination->ibnr,
@@ -65,5 +69,4 @@ abstract class JsonExportController extends Controller
                                'data' => $preparedData,
                            ]);
     }
-
 }

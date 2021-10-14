@@ -18,5 +18,4 @@ abstract class ExportController extends Controller
                      ->where('train_checkins.departure', '<=', $to->toIso8601String())
                      ->get();
     }
-
 }

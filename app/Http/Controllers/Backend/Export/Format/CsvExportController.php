@@ -14,7 +14,7 @@ abstract class CsvExportController extends Controller
     public static function generateExport(User $user, Carbon $from, Carbon $to): Closure {
         $data = ExportController::getExportableStatuses($user, $from, $to);
 
-        return function() use ($data) {
+        return static function() use ($data) {
             $fileStream = fopen('php://output', 'w');
             fputcsv(
                 stream:    $fileStream,
@@ -36,27 +36,26 @@ abstract class CsvExportController extends Controller
                                __('export.title.status'),
                                __('export.title.type'),
                            ],
-                separator: "\t"
+                separator: "\t",
             );
             foreach ($data as $status) {
-
                 $row = [
                     $status->id,
-                    $status->trainCheckin->HafasTrip->category, //traintype
-                    $status->trainCheckin->HafasTrip->lineName, //trainnumber
-                    $status->trainCheckin->Origin->name,//origin name
-                    $status->trainCheckin->Origin->latitude . ', ' . $status->trainCheckin->Origin->longitude, //origin coordinates
-                    $status->trainCheckin->origin_stopover->departure_planned?->toIso8601String(),//origin time planned
-                    $status->trainCheckin->origin_stopover->departure?->toIso8601String(),//origin time real
-                    $status->trainCheckin->Destination->name,//destination name
-                    $status->trainCheckin->Destination->latitude . ', ' . $status->trainCheckin->Destination->longitude, //destination coordinates
-                    $status->trainCheckin->destination_stopover->arrival_planned?->toIso8601String(),//destination time planned
-                    $status->trainCheckin->destination_stopover->arrival?->toIso8601String(),//destination time real
-                    $status->trainCheckin->duration, //duration
-                    $status->trainCheckin->distance,//distance
-                    $status->points,//points
-                    $status->body,//status?
-                    $status->business//type?
+                    $status->trainCheckin->HafasTrip->category,
+                    $status->trainCheckin->HafasTrip->lineName,
+                    $status->trainCheckin->Origin->name,
+                    $status->trainCheckin->Origin->latitude . ', ' . $status->trainCheckin->Origin->longitude,
+                    $status->trainCheckin->origin_stopover->departure_planned?->toIso8601String(),
+                    $status->trainCheckin->origin_stopover->departure?->toIso8601String(),
+                    $status->trainCheckin->Destination->name,
+                    $status->trainCheckin->Destination->latitude . ', ' . $status->trainCheckin->Destination->longitude,
+                    $status->trainCheckin->destination_stopover->arrival_planned?->toIso8601String(),
+                    $status->trainCheckin->destination_stopover->arrival?->toIso8601String(),
+                    $status->trainCheckin->duration,
+                    $status->trainCheckin->distance,
+                    $status->points,
+                    $status->body,
+                    $status->business,
                 ];
 
                 fputcsv($fileStream, $row, "\t");
@@ -64,5 +63,4 @@ abstract class CsvExportController extends Controller
             fclose($fileStream);
         };
     }
-
 }
