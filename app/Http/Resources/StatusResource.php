@@ -33,11 +33,10 @@ class StatusResource extends JsonResource
                 "lineName"    => (string) $this->trainCheckin->HafasTrip->linename,
                 "distance"    => (int) $this->trainCheckin->distance, //TODO: Levin, das hier sind jetzt Meter (vorher km). Das muss in Vue angepasst werden.
                 "points"      => (int) $this->trainCheckin->points,
-                "delay"       => (float) $this->trainCheckin->delay,
                 "duration"    => (int) $this->trainCheckin->duration,
                 "speed"       => (float) $this->trainCheckin->speed,
                 "origin"      => new StopoverResource($this->trainCheckin->origin_stopover),
-                "destination" => new StopoverResource($this->trainCheckin->destination_stopover)
+                "destination" => new StopoverResource($this->trainCheckin->destination_stopover),
             ],
             "event"        => new EventResource($this?->event)
         ];

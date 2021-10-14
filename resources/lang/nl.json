@@ -51,7 +51,6 @@
     "controller.social.delete-set-password": "Voordat je een SSO provider verwijdert moet je een email adres instellen om jezelf niet buiten te sloten.",
     "controller.transport.social-post-with-event": "Ik ben nu in :lineName naar :destination voor #:hashtag! #NowTräwelling | Ik ben nu in lijn :lineName to #destination voor #:hashtag! #NowTräwelling ",
     "controller.transport.no-station-found": "Er is geen halte gevonden voor deze zoekopdracht.",
-    "controller.user.follow-already-exists": "Je volgt deze persoon al.",
     "controller.user.follow-ok": "Gebruiker gevolgd.",
     "controller.user.follow-request-already-exists": "Je hebt deze persoon al aangevraagd om hem of haar te volgen.",
     "user.email-verify": "Bevestig e-mail adres",
