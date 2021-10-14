@@ -36,7 +36,7 @@ class StatusResource extends JsonResource
                 "duration"    => (int) $this->trainCheckin->duration,
                 "speed"       => (float) $this->trainCheckin->speed,
                 "origin"      => new StopoverResource($this->trainCheckin->origin_stopover),
-                "destination" => new StopoverResource($this->trainCheckin->destination_stopover)
+                "destination" => new StopoverResource($this->trainCheckin->destination_stopover),
             ],
             "event"        => new EventResource($this?->event)
         ];
