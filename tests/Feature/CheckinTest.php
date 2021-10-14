@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
@@ -29,7 +30,7 @@ class CheckinTest extends TestCase
      * Use the stationboard api and check if it works.
      * @test
      */
-    public function stationboardTest() {
+    public function stationboardTest(): void {
         $requestDate       = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(Main)Hbf";
         $ibnr              = 8000105; // This station has departures throughout the night.
@@ -50,7 +51,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        },                             true));
+        }, true));
     }
 
     /**
@@ -58,7 +59,7 @@ class CheckinTest extends TestCase
      *
      * @test
      */
-    public function stationboardByLocationPositiveTest() {
+    public function stationboardByLocationPositiveTest(): void {
         // GIVEN: A logged-in and gdpr-acked user
         $user = $this->createGDPRAckedUser();
 
@@ -104,7 +105,7 @@ class CheckinTest extends TestCase
     /**
      * @test
      */
-    public function stationboardByLocationNegativeTest() {
+    public function stationboardByLocationNegativeTest(): void {
         // GIVEN: A logged-in and gdpr-acked user
         $user = $this->createGDPRAckedUser();
 
@@ -145,7 +146,7 @@ class CheckinTest extends TestCase
      * THEN You can see the status information.
      * @test
      */
-    public function testCheckin() {
+    public function testCheckin(): void {
         // First: Get a train that's fine for our stuff
         $timestamp         = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname       = "Frankfurt(M) Flughafen Fernbf";
@@ -157,9 +158,8 @@ class CheckinTest extends TestCase
         );
 
         $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
+        if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
-            return;
         }
 
         // Second: We don't like broken or cancelled trains.
@@ -170,7 +170,6 @@ class CheckinTest extends TestCase
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
-                return;
             }
         }
         $departure = $trainStationboard['departures'][$i];
@@ -221,7 +220,7 @@ class CheckinTest extends TestCase
      * Test if the checkin collision is truly working
      * @test
      */
-    public function testCheckinCollision() {
+    public function testCheckinCollision(): void {
         // GIVEN: Generate TrainStations
         TrainStation::factory()->count(4)->create();
 
@@ -258,44 +257,44 @@ class CheckinTest extends TestCase
         );
 
         //Trips Case 1 - 4 for which a collisionException should be thrown
-        array_push($collisionTrips, HafasTrip::factory()->create(
+        $collisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))
             ]
-        ));
-        array_push($collisionTrips, HafasTrip::factory()->create(
+        );
+        $collisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('12:45')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
             ]
-        ));
-        array_push($collisionTrips, HafasTrip::factory()->create(
+        );
+        $collisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('12:15')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))
             ]
-        ));
-        array_push($collisionTrips, HafasTrip::factory()->create(
+        );
+        $collisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
             ]
-        ));
+        );
 
         //Trips case 5 & 6 for which no Exception should be thrown
-        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+        $nonCollisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('11:15')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))
             ]
-        ));
-        array_push($nonCollisionTrips, HafasTrip::factory()->create(
+        );
+        $nonCollisionTrips[] = HafasTrip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:s', strtotime('13:30')),
                 'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))
             ]
-        ));
+        );
 
 
         TransportController::TrainCheckin(
@@ -368,9 +367,8 @@ class CheckinTest extends TestCase
      * what the dashboard get's to see of it. We expect the dashboard to return 200OK, show the
      * checkin-data and the rest of the interface (Here: the stationboard-autocomplete and one of
      * the footer sentences).
-     * @test
      */
-    public function testCheckinSuccessFlash() {
+    public function testCheckinSuccessFlash(): void {
         // GIVEN: A gdpr-acked user
         $user = $this->createGDPRAckedUser();
 
@@ -407,11 +405,11 @@ class CheckinTest extends TestCase
      * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus). Previously,
      * TRWL produced negative trip durations, or unexpected route distances.
      *
-     * @author jeyemwey
+     * @throws HafasException
      * @see    https://github.com/Traewelling/traewelling/issues/37
-     * @test
+     * @author jeyemwey
      */
-    public function testCheckinAtBus603Potsdam() {
+    public function testCheckinAtBus603Potsdam(): void {
         // First: Get a train that's fine for our stuff
         $timestamp         = Carbon::parse("+1 days 10:00");
         $stationname       = "Schloss Cecilienhof, Potsdam";
@@ -422,14 +420,14 @@ class CheckinTest extends TestCase
         );
 
         $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
+        if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching bus. Is it night in $stationname?");
             return;
         }
 
         // The bus runs in a 20min interval
         $departure = $trainStationboard['departures'][0];
-        $this->isCorrectHafasTrip($departure, $timestamp);
+        self::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
@@ -475,9 +473,8 @@ class CheckinTest extends TestCase
      *
      * @author jeyemwey
      * @see    https://github.com/Traewelling/traewelling/issues/37
-     * @test
      */
-    public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {
+    public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz(): void {
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
         $timestamp         = Carbon::parse("+1 days 10:03");
@@ -489,9 +486,8 @@ class CheckinTest extends TestCase
         );
 
         $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
+        if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching train.");
-            return;
         }
 
         $i         = 0;
@@ -499,16 +495,16 @@ class CheckinTest extends TestCase
         while ($i < $countDepartures) {
             $departure = $trainStationboard['departures'][$i];
             // We're searching for a counter-clockwise running train which are labeled "S 42"
-            if ($departure->line->name == "S 42") {
+            if ($departure->line->name === "S 42") {
                 break;
             }
             $i++; // Maybe the next one?
-            if ($i == $countDepartures) {
+            if ($i === $countDepartures) {
                 $this->markTestSkipped("Berlins Ringbahn only runs in one direction right now.");
             }
         }
 
-        $this->isCorrectHafasTrip($departure, $timestamp);
+        self::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         $trip = TransportController::TrainTrip(
