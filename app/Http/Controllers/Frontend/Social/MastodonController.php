@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Symfony\Component\HttpFoundation\RedirectResponse as SympfonyRedirectResponse;
 
 class MastodonController extends Controller
 {
@@ -18,9 +19,9 @@ class MastodonController extends Controller
      *
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse
+     * @return SympfonyRedirectResponse|RedirectResponse
      */
-    public function redirect(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|RedirectResponse {
+    public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
         $request->request->set('domain', MastodonBackend::formatDomain($request->input('domain')));
         $validated = $request->validate(['domain' => ['required', 'active_url']]);
         $domain    = $validated['domain'];

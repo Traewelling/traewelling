@@ -22,7 +22,7 @@ class TwitterController extends Controller
      */
     public function redirect(Request $request): RedirectResponse {
         try {
-            if ($request->query->get('return', 'none') == 'token') {
+            if ($request->query->get('return', 'none') === 'token') {
                 config(['services.twitter.redirect' => config('trwl.twitter_redirect') . '?return=token']);
             }
             return Socialite::driver('twitter')->redirect();
@@ -52,7 +52,7 @@ class TwitterController extends Controller
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
 
-        if ($request->query->get('return', 'none') == 'token') {
+        if ($request->query->get('return', 'none') === 'token') {
             $token = $request->user()->createToken('token');
             return response()->json([
                                         'token'      => $token->accessToken,
