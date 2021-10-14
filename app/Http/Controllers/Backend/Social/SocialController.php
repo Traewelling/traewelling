@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Backend\Social;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 abstract class SocialController extends Controller
 {
 
-    public static function getDisplayName(\Laravel\Socialite\Contracts\User $socialiteUser): string {
-        if (trim($socialiteUser->getName()) == '') {
+    public static function getDisplayName(SocialiteUser $socialiteUser): string {
+        if (trim($socialiteUser->getName()) === '') {
             return $socialiteUser->getNickname();
         }
         return $socialiteUser->getName();
@@ -19,7 +20,7 @@ abstract class SocialController extends Controller
         $existingUser = User::where('username', $username)->first();
         $errorCount   = 0;
         while ($errorCount < 10 && $existingUser !== null) {
-            $username    .= random_int(1, 10);
+            $username     .= random_int(1, 10);
             $existingUser = User::where('username', $username)->first();
             $errorCount++;
         }
