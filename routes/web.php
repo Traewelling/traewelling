@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
