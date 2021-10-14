@@ -104,11 +104,14 @@
                     <span class="page-number">{{ __('export.page') }}</span>
                 </div>
                 <div class="center">
-                    0 {{ __('export.reason.private') }} | 1 {{ __('export.reason.business') }} | 2 {{ __('export.reason.commute') }}
+                    0 {{ __('export.reason.private') }} |
+                    1 {{ __('export.reason.business') }} |
+                    2 {{ __('export.reason.commute') }}
                 </div>
                 <div class="left">
-                    <span
-                        class="promo">{!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}</span>
+                    <span class="promo">
+                        {!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}
+                    </span>
                 </div>
             </div>
         </div>
