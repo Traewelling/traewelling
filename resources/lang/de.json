@@ -452,5 +452,7 @@
     "how-can-we-help": "Wie können wir helfen?",
     "support.answer": "Wir werden dir so schnell wie möglich antworten. Die Antwort erhältst du an deine E-Mail Adresse :address.",
     "support.success": "Deine Anfrage ist bei uns eingegangen (Ticket #:ticketNumber). Wir werden dir so schnell wie möglich per E-Mail antworten.",
-    "request-time": "abgefragt um :time"
+    "request-time": "abgefragt um :time",
+    "settings.request.accept": "Follower akzeptieren",
+    "settings.follower.following-since": "Folgt seit"
 }

@@ -1,5 +1,5 @@
 <template>
-    <LayoutBasic>
+    <LayoutBasicNoSidebar>
         <div v-if="!loading">
             <div class="row">
                 <div class="col-md-12">
@@ -43,19 +43,22 @@
                                          style="font-size: 1.3em;">
                                 {{ place.username }}
                             </router-link>
-                            <table class="table text-muted">
+                            <table class="table text-muted" role="presentation">
                                 <tbody>
                                     <tr>
                                         <td>
                                             <i aria-hidden="true" class="fas fa-dice-d20"/>
+                                            <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
                                             {{ place.points.toFixed(0) }}
                                         </td>
                                         <td>
                                             <i aria-hidden="true" class="fas fa-clock"/>
+                                            <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
                                             {{ place.trainDuration.toFixed(0) }}min
                                         </td>
                                         <td>
                                             <i aria-hidden="true" class="fas fa-route"/>
+                                            <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
                                             {{ place.trainDistance.toFixed(0) }}km
                                         </td>
                                     </tr>
@@ -69,8 +72,8 @@
             <div v-if="users.length > 3" class="row justify-content-center">
                 <div class="col-md-8 col-lg-7">
                     <div class="card">
-                        <div class="card-body table-responsive">
-                            <table class="table table-vertical-center">
+                        <div class="card-body table-responsive p-0">
+                            <table :aria-label="i18n.get('_.menu.leaderboard')" class="table table-vertical-center">
                                 <thead>
                                     <tr>
                                         <th scope="col"> {{ i18n.get("_.leaderboard.rank") }}</th>
@@ -120,7 +123,7 @@
         <div v-else>
             <Spinner class="mt-5"/>
         </div>
-    </LayoutBasic>
+    </LayoutBasicNoSidebar>
 </template>
 
 <script>
@@ -130,6 +133,7 @@ import axios from "axios";
 import {LeaderboardUserModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "LeaderboardMonth",
@@ -164,6 +168,7 @@ export default {
         }
     },
     components: {
+        LayoutBasicNoSidebar,
         Spinner,
         LayoutBasic,
         LeaderboardTable
