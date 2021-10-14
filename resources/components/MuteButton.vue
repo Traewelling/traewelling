@@ -1,18 +1,12 @@
 <template>
-        <a v-if="userData.id == $auth.user().id" class="btn btn-sm btn-primary" href="#">{{
-                i18n.get('_.profile.settings')
-            }}</a>
-        <a v-else-if="userData.privateProfile && userData.followPending" aria-disabled="true"
-           class="btn btn-sm btn-primary disabled"
-           href="#">{{ i18n.get('_.profile.follow_req.pending') }}</a>
-        <a v-else-if="userData.privateProfile && !userData.following" class="btn btn-sm btn-primary follow"
-           href="#" @click.prevent="follow">{{
-                i18n.get('_.profile.follow_req')
-            }}</a>
-        <a v-else-if="!userData.following" class="btn btn-sm btn-primary follow"
-           href="#" @click.prevent="follow">{{ i18n.get('_.profile.follow') }}</a>
-        <a v-else class="btn btn-sm btn-danger follow" href="#"
-           @click.prevent="unfollow">{{ i18n.get('_.profile.unfollow') }}</a>
+    <a v-if="showButton && userData.muted" class="btn btn-sm btn-primary" data-mdb-toggle="tooltip"
+       title="{{ __('user.unmute-tooltip') }}" href="#">
+        <i class="far fa-eye-slash" aria-hidden="true"></i>
+    </a>
+    <a v-else-if="showButton" class="btn btn-sm btn-primary disabled" data-mdb-toggle="tooltip"
+       title="{{ __('user.mute-tooltip') }}" href="#">
+        <i class="far fa-eye" aria-hidden="true"></i>
+    </a>
 </template>
 
 <script>
@@ -36,10 +30,15 @@ export default {
             this.userData = this.$props.user;
         }
     },
+    computed: {
+        showButton() {
+            return this.userData.id !== $auth.user().id;
+        }
+    },
     methods: {
         follow() {
             axios
-                .post('/user/createFollow', {userId: this.user.id})
+                .post('/user/createMute', {userId: this.user.id})
                 .then((result) => {
                     this.userData = result.data.data;
                 })
@@ -49,7 +48,7 @@ export default {
         },
         unfollow() {
             axios
-                .delete('/user/destroyFollow', {data: {userId: this.user.id}})
+                .delete('/user/destroyMute', {data: {userId: this.user.id}})
                 .then((result) => {
                     this.userData = result.data.data;
                     if (this.userData.privateProfile) {
