@@ -1,6 +1,5 @@
 <template>
     <LayoutBasic>
-        <div class="row justify-content-center">
             <div class="col-md-9 col-lg-9">
                 <div id="leaderboard" class="card">
                     <div class="card-header">
@@ -9,22 +8,22 @@
                         </router-link>
                         {{ i18n.get("_.menu.leaderboard") }}
                     </div>
-                    <div v-if="!loading" class="card-body">
-                        <ul id="myTab" class="nav nav-tabs" role="tablist">
+                    <div v-if="!loading" class="card-body p-0">
+                        <ul id="myTab" class="nav nav-tabs nav-fill" role="tablist">
                             <li class="nav-item">
-                                <a id="main-tab" aria-controls="home" aria-selected="true" class="nav-link active"
+                                <a id="main-tab" aria-controls="home" aria-selected="true" class="nav-link active px-4"
                                    data-toggle="tab" href="#leaderboard-main" role="tab">
                                     {{ i18n.get("_.leaderboard.top") }} {{ users.length }}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a id="distance-tab" aria-controls="profile" aria-selected="false" class="nav-link"
+                                <a id="distance-tab" aria-controls="profile" aria-selected="false" class="nav-link px-4"
                                    data-toggle="tab" href="#leaderboard-distance" role="tab">
                                     {{ i18n.get("_.leaderboard.distance") }}
                                 </a>
                             </li>
                             <li v-if="$auth.check() && friends" class="nav-item">
-                                <a id="friends-tab" aria-controls="contact" aria-selected="false" class="nav-link"
+                                <a id="friends-tab" aria-controls="contact" aria-selected="false" class="nav-link px-4"
                                    data-toggle="tab" href="#leaderboard-friends" role="tab">
                                     {{ i18n.get("_.leaderboard.friends") }}
                                 </a>
@@ -53,7 +52,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </LayoutBasic>
 </template>
 

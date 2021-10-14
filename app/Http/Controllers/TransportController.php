@@ -271,7 +271,7 @@ class TransportController extends Controller
         'success'              => "bool",
         'statusId'             => "int",
         'points'               => "int",
-        'alsoOnThisConnection' => "Illuminate\\Support\\Collection",
+        'alsoOnThisConnection' => Collection::class,
         'lineName'             => "string",
         'distance'             => "float",
         'duration'             => "float",
@@ -371,7 +371,6 @@ class TransportController extends Controller
                                                  'origin'      => $originStation->ibnr,
                                                  'destination' => $destinationStation->ibnr,
                                                  'distance'    => $distanceInMeters,
-                                                 'delay'       => $hafasTrip->delay,
                                                  'points'      => $points,
                                                  'departure'   => $plannedDeparture,
                                                  'arrival'     => $plannedArrival
@@ -584,7 +583,6 @@ class TransportController extends Controller
                                                  'origin'      => $firstStop->trainStation->ibnr,
                                                  'destination' => $lastStop->trainStation->ibnr,
                                                  'distance'    => $distance,
-                                                 'delay'       => $trip->delay,
                                                  'points'      => $points,
                                                  'departure'   => $firstStop->departure_planned,
                                                  'arrival'     => $lastStop->arrival_planned

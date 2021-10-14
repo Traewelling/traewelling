@@ -39,7 +39,8 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $dates    = ['email_verified_at', 'privacy_ack_at', 'last_login'];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration', 'following', 'followPending'
+        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
+        'following', 'followPending', 'muted'
     ];
 
     public function getTrainDistanceAttribute(): float {
@@ -150,6 +151,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getFollowPendingAttribute(): bool {
         return (auth()->check() && $this->followRequests->contains('user_id', auth()->user()->id));
+    }
+
+    public function getMutedAttribute(): bool {
+        return (auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id));
     }
 
     /**

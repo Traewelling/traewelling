@@ -1,5 +1,5 @@
 <template>
-    <LayoutBasic>
+    <LayoutBasicNoSidebar>
 
         <div class="d-sm-flex mb-2">
             <h3 class="mb-0 mr-auto text-gray-800">{{ i18n.get("_.stats") }}</h3>
@@ -177,7 +177,7 @@
                 <hr/>
             </div>
         </div>
-    </LayoutBasic>
+    </LayoutBasicNoSidebar>
 </template>
 
 <script>
@@ -185,10 +185,12 @@ import LayoutBasic from "../layouts/Basic";
 import VueApexCharts from "vue-apexcharts";
 import moment from "moment";
 import Litepicker from "litepicker";
+import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "Charts",
     components: {
+        LayoutBasicNoSidebar,
         LayoutBasic,
         apexchart: VueApexCharts,
         moment,
