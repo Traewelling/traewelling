@@ -28,15 +28,16 @@ abstract class MastodonController extends Controller
                                            ->where('mastodon_server', $server->id)
                                            ->first();
 
-        if ($socialProfile === null) {
-            if (auth()->check()) {
-                self::updateToken(auth()->user(), $socialiteUser, $server);
-                return auth()->user();
-            }
-            return self::createUser($socialiteUser, $server);
+        if ($socialProfile !== null) {
+            self::updateToken($socialProfile->user, $socialiteUser, $server);
+            return $socialProfile->user;
         }
-        self::updateToken($socialProfile->user, $socialiteUser, $server);
-        return $socialProfile->user;
+
+        if (auth()->check()) {
+            self::updateToken(auth()->user(), $socialiteUser, $server);
+            return auth()->user();
+        }
+        return self::createUser($socialiteUser, $server);
     }
 
     /**

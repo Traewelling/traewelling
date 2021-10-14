@@ -44,15 +44,16 @@ abstract class TwitterController extends Controller
     public static function getUserFromSocialite(SocialiteUser $socialiteUser): User {
         $socialProfile = SocialLoginProfile::where('twitter_id', $socialiteUser->id)->first();
 
-        if ($socialProfile === null) {
-            if (auth()->check()) {
-                self::updateToken(auth()->user(), $socialiteUser);
-                return auth()->user();
-            }
-            return self::createUser($socialiteUser);
+        if ($socialProfile !== null) {
+            self::updateToken($socialProfile->user, $socialiteUser);
+            return $socialProfile->user;
         }
-        self::updateToken($socialProfile->user, $socialiteUser);
-        return $socialProfile->user;
+
+        if (auth()->check()) {
+            self::updateToken(auth()->user(), $socialiteUser);
+            return auth()->user();
+        }
+        return self::createUser($socialiteUser);
     }
 
     private static function createUser(SocialiteUser $socialiteUser): User {
