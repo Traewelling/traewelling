@@ -60,7 +60,6 @@ export let StatusModel = {
         lineName: null,
         distance: 0,
         points: 0,
-        delay: null,
         duration: 0,
         speed: 0,
         origin: Stopover,
