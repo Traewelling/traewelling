@@ -6,6 +6,8 @@ namespace App\Http\Controllers\API\v1;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
+use App\Exceptions\UserAlreadyMutedException;
+use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
@@ -15,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends ResponseController
 {
@@ -74,5 +77,54 @@ class UserController extends ResponseController
         $userToUnfollow->fresh();
         return $this->sendv1Response(new UserResource($userToUnfollow));
 
+    }
+
+    public function createMute(Request $request): JsonResponse {
+        $validated     = $request->validate([
+                                                'user_id' => [
+                                                    'required',
+                                                    'exists:users,id',
+                                                    Rule::notIn(auth()->user()->mutedUsers->pluck('id')),
+                                                    Rule::notIn([auth()->user()->id]),
+                                                ]
+                                            ]);
+        $userToBeMuted = User::findOrFail($validated['user_id']);
+
+        try {
+            $muteUserResponse = \App\Http\Controllers\Backend\UserController::muteUser(auth()->user(), $userToBeMuted);
+        } catch (UserAlreadyMutedException) {
+            return $this->sendError(['message' => __('user.already-muted', ['username' => $userToBeMuted->username])], 409);
+        }
+
+        $userToBeMuted->refresh();
+        if ($muteUserResponse) {
+            return $this->sendv1Response(new UserResource($userToBeMuted), 201);
+        }
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
+    }
+
+    public function destroyMute(Request $request): JsonResponse {
+        $validated = $request->validate([
+                                            'user_id' => [
+                                                'required',
+                                                'exists:users,id',
+                                                Rule::in(auth()->user()->mutedUsers->pluck('id'))
+                                            ]
+                                        ]);
+
+        $userToBeUnmuted = User::findOrFail($validated['user_id']);
+
+        try {
+            $unmuteUserResponse = \App\Http\Controllers\Backend\UserController::unmuteUser(auth()->user(), $userToBeUnmuted);
+
+        } catch (UserNotMutedException) {
+            return $this->sendError(['message' => __('user.already-unmuted', ['username' => $userToBeUnmuted->username])], 409);
+        }
+
+        $userToBeUnmuted->refresh();
+        if ($unmuteUserResponse) {
+            return $this->sendv1Response(new UserResource($userToBeUnmuted));
+        }
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 }
