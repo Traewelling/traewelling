@@ -26,24 +26,24 @@ class ExportController extends Controller
 
     public function renderExport(Request $request) {
         $validated = $request->validate([
-                                            'begin'    => ['required', 'date', 'before_or_equal:end'],
-                                            'end'      => ['required', 'date', 'after_or_equal:begin'],
+                                            'from'    => ['required', 'date', 'before_or_equal:until'],
+                                            'until'      => ['required', 'date', 'after_or_equal:from'],
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
-        $begin = Carbon::parse($validated['begin']);
-        $end   = Carbon::parse($validated['end']);
+        $from = Carbon::parse($validated['from']);
+        $until   = Carbon::parse($validated['until']);
 
         if ($validated['filetype'] === 'json') {
-            return $this->exportJson($begin, $end);
+            return $this->exportJson($from, $until);
         }
 
         if ($validated['filetype'] === 'pdf') {
-            return $this->exportPdf($begin, $end);
+            return $this->exportPdf($from, $until);
         }
 
         if ($validated['filetype'] === 'csv') {
-            return $this->exportCsv($begin, $end);
+            return $this->exportCsv($from, $until);
         }
     }
 
