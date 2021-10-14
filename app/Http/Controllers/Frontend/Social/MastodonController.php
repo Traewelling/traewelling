@@ -24,21 +24,22 @@ class MastodonController extends Controller
     public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
         $request->request->set('domain', MastodonBackend::formatDomain($request->input('domain')));
         $validated = $request->validate(['domain' => ['required', 'active_url']]);
-        $domain    = $validated['domain'];
 
         try {
-            $server = MastodonBackend::getMastodonServer($domain);
+            $server = MastodonBackend::getMastodonServer($validated['domain']);
         } catch (InvalidMastodonException $exception) {
             report($exception);
-            return redirect()->back()->with('error', __('user.invalid-mastodon', ['domain' => $domain]));
+            return redirect()->back()->with('error', __('user.invalid-mastodon', [
+                'domain' => $validated['domain']
+            ]));
         }
 
         //change config
-        config(['services.mastodon.domain' => $domain]);
+        config(['services.mastodon.domain' => $server->domain]);
         config(['services.mastodon.client_id' => $server->client_id]);
         config(['services.mastodon.client_secret' => $server->client_secret]);
 
-        session(['mastodon_domain' => $domain]);
+        session(['mastodon_domain' => $server->domain]);
         session(['mastodon_server' => $server]);
 
         try {
