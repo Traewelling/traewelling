@@ -11,6 +11,7 @@ class UserResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function toArray($request): array {
@@ -26,6 +27,7 @@ class UserResource extends JsonResource
             'mastodonUrl'       => $this->mastodonUrl ?? null,
             'privateProfile'    => (bool) $this->private_profile,
             'userInvisibleToMe' => (bool) $this->userInvisibleToMe,
+            'muted'             => (bool) $this->muted,
             'following'         => (bool) $this->following,
             'followPending'     => (bool) $this->followPending,
             'preventIndex'      => (bool) $this->prevent_index,

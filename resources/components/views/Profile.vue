@@ -6,11 +6,12 @@
                  height="20%" width="20%"/>
             <div class="text-white px-4">
                 <h2 class="card-title font-bold">
-                    <strong>{{ user.username }} <i v-if="user.privateProfile" aria-hidden="true"
-                                                   class="fas fa-user-lock"/>
+                    <strong>{{ user.displayName }} <i v-if="user.privateProfile" aria-hidden="true"
+                                                      class="fas fa-user-lock"/>
                     </strong> <br/>
                     <small class="font-weight-light">@{{ user.username }}</small>
-                    <FollowButton :user="user"></FollowButton>
+                    <FollowButton :user="user" v-on:updateUser="updateUser"></FollowButton>
+                    <MuteButton v-if="!user.privateProfile" :user="user" v-on:updateUser="updateUser"></MuteButton>
                 </h2>
                 <h2>
           <span class="font-weight-bold">
@@ -41,7 +42,14 @@
         <Spinner v-if="loading || statusesLoading" class="mt-5"/>
 
         <div v-if="!statusesLoading && !loading" class="row justify-content-center mt-5">
-            <div v-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
+
+            <div v-if="user.muted" class="col-md-8 col-lg-7 text-center mb-5">
+                <header><h3>{{ i18n.get('_.user.muted.heading') }}</h3></header>
+                <h5>{{ i18n.choice("_.user.muted.text", 1, {"username": user.username}) }}</h5>
+                <MuteButton :user="user" bigButton="true"
+                            v-on:updateUser="updateUser"></MuteButton>
+            </div>
+            <div v-else-if="user.userInvisibleToMe" class="col-md-8 col-lg-7 text-center mb-5">
                 <header><h3>{{ i18n.get("_.profile.private-profile-text") }}</h3></header>
                 <h5>
                     {{
@@ -88,6 +96,7 @@ import LayoutBasic from "../layouts/Basic";
 import HeroLayout from "../layouts/HeroLayout";
 import Spinner from "../Spinner";
 import FollowButton from "../FollowButton";
+import MuteButton from "../MuteButton";
 
 export default {
     name: "ProfilePage",
@@ -114,6 +123,7 @@ export default {
         };
     },
     components: {
+        MuteButton,
         FollowButton,
         Spinner,
         HeroLayout,
@@ -134,6 +144,14 @@ export default {
         this.fetchData();
     },
     methods: {
+        updateUser(user) {
+            if (!user.userInvisibleToMe) {
+                this.fetchStatuses();
+            } else {
+                this.statuses = [];
+            }
+            this.user = user;
+        },
         showDate(item, statuses) {
             let index = statuses.indexOf(item);
             if (index === -1 || index === 0) {

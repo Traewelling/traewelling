@@ -61,6 +61,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         });
         Route::post('user/createFollow', [UserController::class, 'createFollow']);
         Route::delete('user/destroyFollow', [UserController::class, 'destroyFollow']);
+        Route::post('user/createMute', [UserController::class, 'createMute']);
+        Route::delete('user/destroyMute', [UserController::class, 'destroyMute']);
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {
