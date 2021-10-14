@@ -428,5 +428,6 @@
     "event": "Veranstaltung",
     "events": "Veranstaltunge",
     "auth.required": "Du muschd oigeloggt soi, um diese Funkzion nutze zu kenne.",
-    "menu.show-more": "Mej anzeige"
+    "menu.show-more": "Mej anzeige",
+    "user.home-not-set": "Du hoaschd noch koan Heimatbahnhof festgelegt."
 }
