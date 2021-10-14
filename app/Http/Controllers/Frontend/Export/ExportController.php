@@ -34,11 +34,15 @@ class ExportController extends Controller
         $begin = Carbon::parse($validated['begin']);
         $end   = Carbon::parse($validated['end']);
 
-        if ($validated['filetype'] == 'json') {
+        if ($validated['filetype'] === 'json') {
             return $this->exportJson($begin, $end);
-        } elseif ($validated['filetype'] == 'pdf') {
+        }
+
+        if ($validated['filetype'] === 'pdf') {
             return $this->exportPdf($begin, $end);
-        } elseif ($validated['filetype'] == 'csv') {
+        }
+
+        if ($validated['filetype'] === 'csv') {
             return $this->exportCsv($begin, $end);
         }
     }
