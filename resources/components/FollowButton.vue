@@ -42,6 +42,7 @@ export default {
                 .post('/user/createFollow', {userId: this.user.id})
                 .then((result) => {
                     this.userData = result.data.data;
+                    this.$emit('updateUser', this.userData);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -52,9 +53,7 @@ export default {
                 .delete('/user/destroyFollow', {data: {userId: this.user.id}})
                 .then((result) => {
                     this.userData = result.data.data;
-                    if (this.userData.privateProfile) {
-                        window.location.reload();
-                    }
+                    this.$emit('updateUser', this.userData);
                 })
                 .catch((error) => {
                     console.error(error);

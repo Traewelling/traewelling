@@ -84,11 +84,10 @@ class UserController extends ResponseController
                                                 'userId' => [
                                                     'required',
                                                     'exists:users,id',
-                                                    Rule::notIn(auth()->user()->mutedUsers->pluck('id')),
                                                     Rule::notIn([auth()->user()->id]),
                                                 ]
                                             ]);
-        $userToBeMuted = User::findOrFail($validated['userId']);
+        $userToBeMuted = User::find($validated['userId']);
 
         try {
             $muteUserResponse = \App\Http\Controllers\Backend\UserController::muteUser(auth()->user(), $userToBeMuted);
@@ -108,11 +107,10 @@ class UserController extends ResponseController
                                             'userId' => [
                                                 'required',
                                                 'exists:users,id',
-                                                Rule::in(auth()->user()->mutedUsers->pluck('id'))
                                             ]
                                         ]);
 
-        $userToBeUnmuted = User::findOrFail($validated['userId']);
+        $userToBeUnmuted = User::find($validated['userId']);
 
         try {
             $unmuteUserResponse = \App\Http\Controllers\Backend\UserController::unmuteUser(auth()->user(), $userToBeUnmuted);
