@@ -50,7 +50,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        }, true));
+        },                             true));
     }
 
     /**
@@ -408,7 +408,7 @@ class CheckinTest extends TestCase
      * TRWL produced negative trip durations, or unexpected route distances.
      *
      * @author jeyemwey
-     * @see https://github.com/Traewelling/traewelling/issues/37
+     * @see    https://github.com/Traewelling/traewelling/issues/37
      * @test
      */
     public function testCheckinAtBus603Potsdam() {
@@ -474,7 +474,7 @@ class CheckinTest extends TestCase
      * was negative in time from our trip. This led to negative durations.
      *
      * @author jeyemwey
-     * @see https://github.com/Traewelling/traewelling/issues/37
+     * @see    https://github.com/Traewelling/traewelling/issues/37
      * @test
      */
     public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz() {

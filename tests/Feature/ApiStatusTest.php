@@ -20,8 +20,8 @@ class ApiStatusTest extends ApiTestCase
      */
     public function statuses_enroute() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.enroute'));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.enroute'));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
@@ -33,24 +33,24 @@ class ApiStatusTest extends ApiTestCase
     public function get_global_statuses() {
         //test global dashboard
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.index'));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.index'));
         $response->assertOk();
 
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         //test page 2
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->json('GET', route('api.v0.statuses.index'), ['page' => 2]);
+                                        'Accept'        => 'application/json'])
+                         ->json('GET', route('api.v0.statuses.index'), ['page' => 2]);
         $response->assertOk();
 
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
 
         //test gertrud posts
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
+                                        'Accept'        => 'application/json'])
             //->get(route('api.v0.statuses.index'), ['view' => 'user', 'username' => 'gertrud123']);
-            ->json('GET', route('api.v0.statuses.index'), ['view' => 'user', 'username' => 'gertrud123']);
+                         ->json('GET', route('api.v0.statuses.index'), ['view' => 'user', 'username' => 'gertrud123']);
         $response->assertOk();
 
 
@@ -63,8 +63,8 @@ class ApiStatusTest extends ApiTestCase
      */
     public function get_event_statuses() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.event', ['statusId' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.event', ['statusId' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $firstTrain = json_decode($response->getContent(), true)['data'][0];
@@ -83,8 +83,8 @@ class ApiStatusTest extends ApiTestCase
      */
     public function get_status_by_id() {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.show', ['status' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.show', ['status' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
     }
@@ -96,8 +96,8 @@ class ApiStatusTest extends ApiTestCase
     public function check_like_dislike_listlike_functionality() {
         //First check if there are no likes for a status
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue(empty(json_decode($response->getContent())->data));
 
@@ -117,22 +117,22 @@ class ApiStatusTest extends ApiTestCase
 
         //check if the like has been created
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent())->data));
 
         //Delete the like
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->delete(route('api.v0.statuses.like', ['statusId' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->delete(route('api.v0.statuses.like', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue($response->getContent() == 'true');
 
         //check if the like has been deleted
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-            'Accept'        => 'application/json'])
-            ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
+                                        'Accept'        => 'application/json'])
+                         ->get(route('api.v0.statuses.likes', ['statusId' => '1']));
         $response->assertOk();
         $this->assertTrue(empty(json_decode($response->getContent())->data));
 
