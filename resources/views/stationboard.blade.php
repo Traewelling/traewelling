@@ -47,7 +47,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-end">
-                            <a href="{{ route('user.setHome', ['ibnr' => $station->ibnr]) }}">
+                            <a href="{{ route('user.setHome', ['stationName' => $station->name]) }}">
                                 <i class="fa fa-home"></i>
                             </a>
                         </div>
