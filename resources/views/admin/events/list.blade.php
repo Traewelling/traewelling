@@ -5,6 +5,10 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            <a href="{{route('admin.events.create')}}" class="btn btn-sm btn-success float-end">
+                <i class="bi bi-plus-square"></i>
+                Neu
+            </a>
             @if($events->count() === 0)
                 <p class="font-weight-bold text-danger">
                     Es sind aktuell keine Veranstaltungen vorhanden. :(
