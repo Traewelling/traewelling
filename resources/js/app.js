@@ -2,8 +2,6 @@
  * Here, we include all of our external dependencies
  */
 
-require("jquery");
-
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
