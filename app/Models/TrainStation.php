@@ -15,7 +15,8 @@ class TrainStation extends Model
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
         'latitude'  => 'double',
-        'longitude' => 'double'
+        'longitude' => 'double',
+        'ibnr'      => 'integer',
     ];
 
     public function events(): HasMany {
