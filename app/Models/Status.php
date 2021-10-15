@@ -107,7 +107,7 @@ class Status extends Model
         if ($this->user->userInvisibleToMe) {
             return true;
         }
-        if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == StatusVisibility::PUBLIC) {
+        if ((Auth::check() && Auth::id() == $this->user_id) || $this->visibility == StatusVisibility::PUBLIC) {
             return false;
         }
         $visible = false;

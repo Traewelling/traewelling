@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Http\Request;
 
 class SemiGuest extends Middleware
 {
@@ -14,10 +14,11 @@ class SemiGuest extends Middleware
      *
      * @param Request $request
      * @param Closure $next
-     * @param mixed ...$guards
+     * @param mixed   ...$guards
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next, ...$guards) {
+    public function handle($request, Closure $next, ...$guards): mixed {
         try {
             $this->authenticate($request, $guards);
         } catch (AuthenticationException) {

@@ -11,6 +11,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class SettingsController extends Controller
 {
     public function renderFollowerSettings(): Renderable {
@@ -37,8 +40,9 @@ class SettingsController extends Controller
 
     /**
      *
-     * @param int $userId The id of the user who is approving a follower
+     * @param int $userId     The id of the user who is approving a follower
      * @param int $approverId The id of a to-be-approved follower
+     *
      * @throws ModelNotFoundException|AlreadyFollowingException
      */
     public static function approveFollower(int $userId, int $approverId): bool {
@@ -55,6 +59,7 @@ class SettingsController extends Controller
     /**
      * @param int $userId
      * @param int $followerID
+     *
      * @return FollowRequest|null
      */
     public static function rejectFollower(int $userId, int $followerID): ?FollowRequest {

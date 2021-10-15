@@ -26,9 +26,10 @@ trait Encryptable
      *
      * @param $key
      * @param $value
+     *
      * @return Encryptable
      */
-    public function setAttribute($key, $value) {
+    public function setAttribute($key, $value): mixed {
         if ($value === null) {
             return parent::setAttribute($key, $value);
         }
@@ -44,7 +45,7 @@ trait Encryptable
      *
      * @return array
      */
-    public function attributesToArray() {
+    public function attributesToArray(): array {
         $attributes = parent::attributesToArray();
         foreach ($this->encryptable as $key) {
             if (isset($attributes[$key])) {

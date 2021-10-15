@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,13 +43,13 @@ class TrainCheckin extends Model
                                                   ->where('departure_planned', $this->departure)
                                                   ->first();
         if ($stopOver == null) {
-            $stopOver = TrainStopover::updateOrCreate([
-                                                          "trip_id"          => $this->trip_id,
-                                                          "train_station_id" => $this->Origin->id
-                                                      ], [
-                                                          "departure_planned" => $this->departure,
-                                                          "arrival_planned"   => $this->departure,
-                                                      ]);
+            $stopOver = TrainStopover::updateOrCreate(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "trip_id"          => $this->trip_id,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "train_station_id" => $this->Origin->id
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ], [
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "departure_planned" => $this->departure,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "arrival_planned"   => $this->departure,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ]);
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;
@@ -61,19 +60,24 @@ class TrainCheckin extends Model
                                                   ->where('arrival_planned', $this->arrival)
                                                   ->first();
         if ($stopOver == null) {
-            $stopOver = TrainStopover::updateOrCreate([
+            $stopOver = TrainStopover::updateOrCreate(   [
                                                           "trip_id"          => $this->trip_id,
                                                           "train_station_id" => $this->Destination->id
                                                       ], [
-                                                          "departure_planned" => $this->arrival,
-                                                          "arrival_planned"   => $this->arrival,
-                                                      ]);
+                                                             "departure_planned" => $this->arrival,
+                                                             "arrival_planned"   => $this->arrival,
+                                                         ]);
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;
     }
 
-    public function getMapLines() {
+    /**
+     * @return array
+     * @deprecated I have not found any use. It can be removed in my opinion.
+     *             ~ kr
+     */
+    public function getMapLines(): array {
         $hafas = $this->HafasTrip->polyline;
         if ($hafas === null) {
             $origin = $this->Origin;
@@ -140,16 +144,16 @@ class TrainCheckin extends Model
      * @todo Sichtbarkeit der CheckIns prüfen! Hier werden auch Private CheckIns angezeigt
      */
     public function getAlsoOnThisConnectionAttribute(): Collection {
-        return TrainCheckin::with(['status'])
-                           ->where([
-                                       ['status_id', '<>', $this->status->id],
-                                       ['trip_id', '=', $this->HafasTrip->trip_id],
-                                       ['arrival', '>', $this->departure],
-                                       ['departure', '<', $this->arrival]
-                                   ])
-                           ->get()
-                           ->map(function($trainCheckIn) {
-                               return $trainCheckIn->status;
-                           });
+        return self::with(['status'])
+                   ->where([
+                               ['status_id', '<>', $this->status->id],
+                               ['trip_id', '=', $this->HafasTrip->trip_id],
+                               ['arrival', '>', $this->departure],
+                               ['departure', '<', $this->arrival]
+                           ])
+                   ->get()
+                   ->map(function($trainCheckIn) {
+                       return $trainCheckIn->status;
+                   });
     }
 }

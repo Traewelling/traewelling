@@ -15,14 +15,15 @@ class PrivacyInterceptionMiddleware
      *
      * @param Request $request
      * @param Closure $next
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next) {
+    public function handle(Request $request, Closure $next): mixed {
         $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
                                      ->orderByDesc('valid_at')
                                      ->first();
 
-        if ($agreement == null) {
+        if ($agreement === null) {
             Log::critical('No privacy agreement found!');
             return $next($request);
         }
@@ -35,12 +36,15 @@ class PrivacyInterceptionMiddleware
                                              ->orderByDesc('valid_at')
                                              ->take(1)
                                              ->first();
-                return response()->json([
-                                            'error'   => 'Privacy agreement not yet accepted!',
-                                            'updated' => $agreement->valid_at,
-                                            'german'  => $agreement->body_md_de,
-                                            'english' => $agreement->body_md_en
-                                        ], 406);
+                return response()->json(
+                    data:   [
+                                'error'   => 'Privacy agreement not yet accepted!',
+                                'updated' => $agreement->valid_at,
+                                'german'  => $agreement->body_md_de,
+                                'english' => $agreement->body_md_en
+                            ],
+                    status: 406
+                );
             }
             return redirect()->route('gdpr.intercept');
         }

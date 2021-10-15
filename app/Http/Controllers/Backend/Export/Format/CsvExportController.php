@@ -15,7 +15,7 @@ abstract class CsvExportController extends Controller
         $data = ExportController::getExportableStatuses($user, $timestampFrom, $timestampTo);
 
         return static function() use ($data) {
-            $fileStream = fopen('php://output', 'w');
+            $fileStream = fopen('php://output', 'wb');
             fputcsv(
                 stream:    $fileStream,
                 fields:    [
