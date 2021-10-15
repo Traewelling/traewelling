@@ -23,7 +23,7 @@
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link">
+                        <a href="{{ route('dashboard') }}" class="nav-link text-muted">
                             <i class="bi bi-skip-backward me-2" aria-hidden="true"></i>
                             Zurück zu Träwelling
                         </a>
@@ -37,14 +37,14 @@
                     </li>
                     <li>
                         <a href="{{route('admin.events')}}"
-                           class="nav-link text-white {{ request()->is('admin.events') ? 'active' : '' }}">
+                           class="nav-link text-white {{ request()->is('admin/events/*') ? 'active' : '' }}">
                             <i class="bi bi-calendar2-event me-2" aria-hidden="true"></i>
                             Veranstaltungen
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.status') }}"
-                           class="nav-link text-white {{ request()->is('admin.status') ? 'active' : '' }}">
+                           class="nav-link text-white {{ request()->is('admin/status/*') ? 'active' : '' }}">
                             <i class="bi bi-person-rolodex me-2" aria-hidden="true"></i>
                             Status
                         </a>
@@ -85,7 +85,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="container-fluid">
+            <div class="container-fluid bg-light px-5 pt-4">
                 @hasSection('title')
                     <h1 class="mt-3 mb-3 text-dark">@yield('title')</h1>
                 @endif

@@ -17,8 +17,8 @@
                 </div>
                 <div class="col-md-4">
                     <label for="btn">&nbsp;</label>
-                    <input type="submit" id="btn btn-primary" value="{{__('admin.select-range')}}"
-                           class="btn-primary form-control"/>
+                    <input type="submit" id="btn-primary" value="{{__('admin.select-range')}}"
+                           class="btn btn-primary form-control"/>
                 </div>
             </form>
 
