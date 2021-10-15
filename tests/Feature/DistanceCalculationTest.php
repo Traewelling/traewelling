@@ -22,9 +22,9 @@ class DistanceCalculationTest extends TestCase
 
     public function test_distance_calculation_between_hanover_and_karlsruhe() {
         $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA: 52.376589,
+            latitudeA:  52.376589,
             longitudeA: 9.741083,
-            latitudeB: 48.993962,
+            latitudeB:  48.993962,
             longitudeB: 8.401107,
         );
         $this->assertEquals(388213, $result);
@@ -32,9 +32,9 @@ class DistanceCalculationTest extends TestCase
 
     public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke() {
         $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA: 52.376589,
+            latitudeA:  52.376589,
             longitudeA: 9.741083,
-            latitudeB: 52.374497,
+            latitudeB:  52.374497,
             longitudeB: 9.738573,
         );
         $this->assertEquals(289, $result);

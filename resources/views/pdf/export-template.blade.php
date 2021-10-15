@@ -74,7 +74,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin:0;
+                margin: 0;
             }
 
             .footer-wrapper {
@@ -104,20 +104,32 @@
                     <span class="page-number">{{ __('export.page') }}</span>
                 </div>
                 <div class="center">
-                    1 {{ __('export.reason.business') }} | 2 {{ __('export.reason.commute') }}
+                    0 {{ __('export.reason.private') }} |
+                    1 {{ __('export.reason.business') }} |
+                    2 {{ __('export.reason.commute') }}
                 </div>
                 <div class="left">
-                    <span class="promo">{!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}</span>
+                    <span class="promo">
+                        {!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}
+                    </span>
                 </div>
             </div>
         </div>
         <div class="export-container">
             <table class="top">
                 <tr>
-                    <td><img src="{{ public_path('images/icons/logo128.png') }}" height="64"></td>
-                    <td class="heading">{{ config('app.name', 'Träwelling') }} {{ __('export.export') }}:
-                        {{ $start_date }} &ndash; {{ $end_date }}</td>
-                    <td class="username">{{ date('Y-m-d') }}<br>{{ $name }}</td>
+                    <td>
+                        <img src="{{ public_path('images/icons/logo128.png') }}" height="64"/>
+                    </td>
+                    <td class="heading">
+                        {{ config('app.name', 'Träwelling') }} {{ __('export.export') }}:
+                        {{ $begin->isoFormat(__('date-format')) }} &ndash; {{ $end->isoFormat(__('date-format')) }}
+                    </td>
+                    <td class="username">
+                        {{ \Carbon\Carbon::now()->isoFormat(__('date-format')) }}
+                        <br>
+                        {{ auth()->user()->username }}
+                    </td>
                 </tr>
             </table>
             <table cellpadding="0" cellspacing="0">
@@ -135,17 +147,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($export as $e)
+                    @foreach($statuses as $status)
                         <tr>
-                            <td>{{ __('transport_types.'.$e[1]) }}</td>
-                            <td>{{ $e[2] }}</td>
-                            <td>{{ $e[3] }}</td>
-                            <td>{{ $e[5] }}</td>
-                            <td>{{ $e[6] }}</td>
-                            <td>{{ $e[8] }}</td>
-                            <td>{{ $e[9] }}</td>
-                            <td>{{ $e[10] }}</td>
-                            <td><i>{{ $e[14] > 0 ? $e[14] : ''  }}</i></td>
+                            <td>{{ __('transport_types.'. $status->trainCheckin->HafasTrip->category) }}</td>
+                            <td>{{ $status->trainCheckin->HafasTrip->lineName }}</td>
+                            <td>{{ $status->trainCheckin->Origin->name }}</td>
+                            <td>{{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>{{ $status->trainCheckin->Destination->name }}</td>
+                            <td>{{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>{{ $status->trainCheckin->duration }} min</td>
+                            <td>{{ $status->trainCheckin->distance }} km</td>
+                            <td><i>{{ $status->business }}</i></td>
                         </tr>
                     @endforeach
                 </tbody>

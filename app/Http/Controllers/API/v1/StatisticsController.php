@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
-use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
@@ -111,10 +111,10 @@ class StatisticsController extends ResponseController
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
-        return StatusBackend::ExportStatuses(
-            startDate: Carbon::parse($validated['from']),
-            endDate:   Carbon::parse($validated['until']),
-            fileType:  $request->input('filetype')
+        return ExportController::generateExport(
+            from:     Carbon::parse($validated['from']),
+            until:    Carbon::parse($validated['until']),
+            filetype: $request->input('filetype')
         );
     }
 }

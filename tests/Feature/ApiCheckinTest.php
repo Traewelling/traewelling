@@ -10,7 +10,7 @@ class ApiCheckinTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    private $plus_one_day_then_8pm = "+1 day 8:00";
+    private string $plus_one_day_then_8pm = "+1 day 8:00";
 
     public function setUp(): void {
         parent::setUp();
@@ -22,9 +22,9 @@ class ApiCheckinTest extends ApiTestCase
      *
      * @test
      */
-    public function autocomplete() {
+    public function autocomplete(): void {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get(route('api.v0.checkin.train.autocomplete', ['station' => 'Hamb']));
+                         ->get(route('api.v0.checkin.train.autocomplete', ['station' => 'Hamb']));
         $response->assertOk();
     }
 
@@ -32,7 +32,7 @@ class ApiCheckinTest extends ApiTestCase
      * Use the stationboard api and check if it works.
      * @test
      */
-    public function stationboardTest() {
+    public function stationboardTest(): void {
         $requestDate = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
         $ibnr        = 8000105;
@@ -62,65 +62,70 @@ class ApiCheckinTest extends ApiTestCase
      *
      * @test
      */
-    public function testCheckin() {
+    public function testCheckin(): void {
         // First: Get a train
         $timestamp   = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
         $response    = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('GET', route('api.v0.checkin.train.stationboard'), ['station' => $stationname,
-                'when' => $timestamp->toIso8601String()]);
+                            ->json('GET', route('api.v0.checkin.train.stationboard'), [
+                                'station' => $stationname,
+                                'when'    => $timestamp->toIso8601String(),
+                            ]);
 
         $trainStationboard = json_decode($response->getContent(), true);
         $countDepartures   = count($trainStationboard['departures']);
-        if($countDepartures == 0) {
+        if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
-            return;
         }
 
         // Second: We don't like broken or cancelled trains.
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]['cancelled'])
                 && $trainStationboard['departures'][$i]['cancelled'])
-            || count($trainStationboard['departures'][$i]['remarks']) != 0
+               || count($trainStationboard['departures'][$i]['remarks']) != 0
         ) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
-                return;
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip((object) $departure, $timestamp);
+        self::isCorrectHafasTrip((object) $departure, $timestamp);
 
         // Third: Get the trip information for train
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('GET', route('api.v0.checkin.train.trip'), ['tripID' => $departure['tripId'],
-                'lineName' => $departure['line']['name'], 'start' => $departure['stop']['location']['id']]);
+                         ->json('GET', route('api.v0.checkin.train.trip'), [
+                             'tripID'   => $departure['tripId'],
+                             'lineName' => $departure['line']['name'],
+                             'start'    => $departure['stop']['location']['id']
+                         ]);
 
         $trip = json_decode($response->getContent(), true);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('POST', route('api.v0.checkin.train.checkin'), ['tripID' => $departure['tripId'],
-                 'start' => (string) $departure['stop']['location']['id'],
-                 'destination' => $trip['stopovers'][0]['stop']['location']['id'],
-                'body' => 'Example Body']);
+                         ->json('POST', route('api.v0.checkin.train.checkin'), [
+                             'tripID'      => $departure['tripId'],
+                             'start'       => (string) $departure['stop']['location']['id'],
+                             'destination' => $trip['stopovers'][0]['stop']['location']['id'],
+                             'body'        => 'Example Body',
+                         ]);
         $response->assertOk();
         $response->assertJsonStructure([
-            'distance',
-            'duration',
-            'points',
-            'lineName',
-            'alsoOnThisConnection'
-        ]);
+                                           'distance',
+                                           'duration',
+                                           'points',
+                                           'lineName',
+                                           'alsoOnThisConnection'
+                                       ]);
     }
 
     /**
      * Test if the latest stations are really shown.
      * @test
      */
-    public function latestStationsTest() {
+    public function latestStationsTest(): void {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('GET', route('api.v0.checkin.train.latest'));
+                         ->json('GET', route('api.v0.checkin.train.latest'));
         $response->assertOk();
     }
 
@@ -128,18 +133,18 @@ class ApiCheckinTest extends ApiTestCase
      * Test the home stations
      * @test
      */
-    public function homeStationTest() {
+    public function homeStationTest(): void {
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('PUT', route('api.v0.checkin.train.home'), ['ibnr' => '8000105']);
+                         ->json('PUT', route('api.v0.checkin.train.home'), ['ibnr' => '8000105']);
         $response->assertOk();
-        $this->assertTrue($response->getContent() == '"Frankfurt(Main)Hbf"');
+        $this->assertEquals($response->getContent(), '"Frankfurt(Main)Hbf"');
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->json('GET', route('api.v0.checkin.train.home'));
+                         ->json('GET', route('api.v0.checkin.train.home'));
         $response->assertOk();
         $response->assertJsonStructure(['id', 'ibnr', 'name', 'latitude', 'longitude']);
         $station = json_decode($response->getContent(), true)['name'];
-        $this->assertTrue($station == "Frankfurt(Main)Hbf");
+        $this->assertEquals($station, "Frankfurt(Main)Hbf");
     }
 }
