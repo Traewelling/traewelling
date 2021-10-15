@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
 
+/**
+ * @deprecated Will be replaced by APIv1
+ */
 class TransportController extends ResponseController
 {
     public function TrainAutocomplete($station): JsonResponse {

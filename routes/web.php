@@ -32,7 +32,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-require_once realpath(dirname(__FILE__)) . '/web/admin.php';
+require_once realpath(__DIR__) . '/web/admin.php';
 
 Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
      ->name('account.showProfilePicture');

@@ -17,8 +17,8 @@ abstract class LeaderboardController extends Controller
         string $orderBy = 'points',
         Carbon $since = null,
         Carbon $until = null,
-        int $limit = 20,
-        bool $onlyFollowings = false
+        int    $limit = 20,
+        bool   $onlyFollowings = false
     ): Collection {
         if ($since == null) {
             $since = Carbon::now()->subWeek();
@@ -107,14 +107,16 @@ abstract class LeaderboardController extends Controller
     }
 
     private static function getDurationSelector(): string {
-        if (config('database.default') == 'mysql') {
+        if (config('database.default') === 'mysql') {
             return 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
-        } elseif (config('database.default') == 'sqlite') {
+        }
+
+        if (config('database.default') === 'sqlite') {
             // Sorry for this disgusting code. But we test with SQLite.
             // There are different functions than with MySQL/MariaDB.
             return 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';
-        } else {
-            throw new UnexpectedValueException('Driver not supported');
         }
+
+        throw new UnexpectedValueException('Driver not supported');
     }
 }

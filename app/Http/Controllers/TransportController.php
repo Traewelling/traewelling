@@ -34,6 +34,9 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class TransportController extends Controller
 {
 

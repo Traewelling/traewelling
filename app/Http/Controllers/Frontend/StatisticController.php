@@ -29,11 +29,11 @@ class StatisticController extends Controller
         $travelPurposes = StatisticBackend::getTravelPurposes(auth()->user(), $from, $to);
 
         $travelPurposes = $travelPurposes->map(function($row) {
-            if ($row->reason == Business::PRIVATE) {
+            if ($row->reason === Business::PRIVATE) {
                 $row->reason = __('stationboard.business.private');
-            } elseif ($row->reason == Business::BUSINESS) {
+            } elseif ($row->reason === Business::BUSINESS) {
                 $row->reason = __('stationboard.business.business');
-            } elseif ($row->reason == Business::COMMUTE) {
+            } elseif ($row->reason === Business::COMMUTE) {
                 $row->reason = __('stationboard.business.commute');
             }
             return $row;

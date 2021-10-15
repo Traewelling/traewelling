@@ -15,9 +15,9 @@ class UserJoinedConnection extends Notification
     use Queueable;
 
     private ?int $statusId;
-    private      $linename;
-    private      $origin;
-    private      $destination;
+    private ?string $linename;
+    private ?string $origin;
+    private ?string $destination;
 
     /**
      * Create a new notification instance
@@ -25,7 +25,7 @@ class UserJoinedConnection extends Notification
      * @return void
      */
     public function __construct(
-        int $statusId = null,
+        int    $statusId = null,
         string $linename = null,
         string $origin = null,
         string $destination = null
@@ -61,6 +61,7 @@ class UserJoinedConnection extends Notification
 
     /**
      * @param DatabaseNotification $notification
+     *
      * @return stdClass
      * @throws ShouldDeleteNotificationException
      */

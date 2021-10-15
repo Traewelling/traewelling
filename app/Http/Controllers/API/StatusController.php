@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
+/**
+ * @deprecated Will be replaced by APIv1
+ */
 class StatusController extends ResponseController
 {
 
@@ -77,10 +80,10 @@ class StatusController extends ResponseController
         }
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                user: Auth::user(),
-                statusId: $request['statusId'],
-                body: $request['body'],
-                business: $request['businessCheck'],
+                user:       Auth::user(),
+                statusId:   $request['statusId'],
+                body:       $request['body'],
+                business:   $request['businessCheck'],
                 visibility: null
             );
         } catch (ModelNotFoundException) {

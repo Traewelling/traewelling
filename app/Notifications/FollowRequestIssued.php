@@ -6,9 +6,7 @@ use App\Exceptions\ShouldDeleteNotificationException;
 use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
 use stdClass;
@@ -52,6 +50,7 @@ class FollowRequestIssued extends Notification
     /**Detail-Handler of notification
      *
      * @param mixed $notification
+     *
      * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
