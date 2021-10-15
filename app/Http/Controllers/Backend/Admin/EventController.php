@@ -39,7 +39,7 @@ abstract class EventController extends Controller
         while (Event::where('slug', '=', $slug . $i)->first()) {
             $i = $i === "" ? 1 : $i + 1;
         }
-        if ($i !== "") {
+        if ($i != "") {
             return $slug . $i;
         }
         return $slug;
