@@ -24,28 +24,28 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
                         <a href="{{ route('dashboard') }}" class="nav-link text-muted">
-                            <i class="bi bi-skip-backward me-2" aria-hidden="true"></i>
+                            <i class="fas fa-backward me-2" aria-hidden="true"></i>
                             Zurück zu Träwelling
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                            <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>
                             Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="{{route('admin.events')}}"
                            class="nav-link text-white {{ request()->is('admin/events/*') ? 'active' : '' }}">
-                            <i class="bi bi-calendar2-event me-2" aria-hidden="true"></i>
+                            <i class="fas fa-calendar me-2" aria-hidden="true"></i>
                             Veranstaltungen
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.status') }}"
                            class="nav-link text-white {{ request()->is('admin/status/*') ? 'active' : '' }}">
-                            <i class="bi bi-person-rolodex me-2" aria-hidden="true"></i>
+                            <i class="fas fa-train me-2" aria-hidden="true"></i>
                             Status
                         </a>
                     </li>
