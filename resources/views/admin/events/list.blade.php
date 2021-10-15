@@ -1,16 +1,16 @@
-@extends('layouts.admin')
+@extends('admin.layout')
 
 @section('title', 'Veranstaltungen')
 
 @section('content')
     <div class="card">
         <div class="card-body">
-            @if($events->count() == 0)
+            @if($events->count() === 0)
                 <p class="font-weight-bold text-danger">
                     Es sind aktuell keine Veranstaltungen vorhanden. :(
                 </p>
             @else
-                <table class="table">
+                <table class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>ID</th>

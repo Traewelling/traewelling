@@ -2,9 +2,10 @@
 @import "variables";
 
 body {
-  font-family: "Nunito", sans-serif;
-  font-weight: 300;
+    font-family: "Nunito", sans-serif;
+    font-weight: 300;
 }
 
 // Bootstrap
-@import "~admin-lte";
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons";
