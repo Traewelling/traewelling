@@ -14,16 +14,16 @@ class UserNotificationResource extends JsonResource
      *
      * @param Request $request
      *
-     * @return array|Arrayable|JsonSerializable
+     * @return array
      */
-    public function toArray($request) {
+    public function toArray($request): array {
         return [
             "id"        => (string) $this->id,
             "type"      => (string) $this->type,
             "data"      => $this->data,
             "detail"    => $this->detail ?? $this->type::detail($this->fresh()),
-            "readAt"    => $this?->read_at,
-            "createdAt" => $this->created_at
+            "readAt"    => $this?->read_at?->toIso8601String(),
+            "createdAt" => $this->created_at->toIso8601String()
         ];
     }
 }

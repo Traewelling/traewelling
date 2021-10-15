@@ -15,7 +15,7 @@ use Throwable;
 class NotificationController extends Controller
 {
     /**
-     * @deprecated
+     * @deprecated replaced with Backend/NotificationsController
      */
     public static function latest() {
         return Auth::user()->notifications

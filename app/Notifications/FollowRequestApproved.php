@@ -10,6 +10,7 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
 use stdClass;
@@ -53,12 +54,12 @@ class FollowRequestApproved extends Notification
 
     /**Detail-Handler of notification
      *
-     * @param mixed $notification
+     * @param DatabaseNotification $notification
      *
      * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail(mixed $notification): stdClass {
+    public static function detail(DatabaseNotification $notification): stdClass {
         $data                 = $notification->data;
         $notification->detail = new stdClass();
         try {

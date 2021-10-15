@@ -7,6 +7,7 @@ use App\Http\Resources\UserNotificationMessageResource;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
 use stdClass;
 
@@ -47,9 +48,12 @@ class MastodonNotSent extends Notification
     }
 
     /**
+     * @param DatabaseNotification $notification
+     *
+     * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification) {
+    public static function detail(DatabaseNotification $notification): stdClass {
         $data = $notification->data;
 
         try {
@@ -74,7 +78,7 @@ class MastodonNotSent extends Notification
                  'values' => []
              ]
          ]);
-        return $notification->type;
+        return $notification->detail;
     }
 
     public function via(): array {

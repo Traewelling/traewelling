@@ -12,13 +12,12 @@ use Illuminate\Support\ItemNotFoundException;
 class NotificationController extends Controller
 {
     /**
-     * @param $notificationId
+     * @param string $notificationId
      *
      * @return DatabaseNotification
-     * @throws ItemNotFoundException
      * @api v1
      */
-    public static function toggleReadState($notificationId): DatabaseNotification {
+    public static function toggleReadState(string $notificationId): DatabaseNotification {
         $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
 
         if ($notification->read_at === null) {

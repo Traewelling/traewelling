@@ -50,10 +50,10 @@ class TwitterNotSent extends Notification
     /**
      * @param DatabaseNotification $notification
      *
-     * @return string
+     * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail(DatabaseNotification $notification): string {
+    public static function detail(DatabaseNotification $notification): stdClass {
         $data                 = $notification->data;
         $notification->detail = new stdClass();
 
@@ -79,7 +79,7 @@ class TwitterNotSent extends Notification
                  'values' => []
              ]
          ]);
-        return $notification->type;
+        return $notification->detail;
     }
 
     public function via(): array {

@@ -29,11 +29,11 @@ class NotificationsController extends ResponseController
     }
 
     /**
-     * @param $notificationId
+     * @param string $notificationId
      *
      * @return UserNotificationResource
      */
-    public function update($notificationId): UserNotificationResource {
+    public function update(string $notificationId): UserNotificationResource {
         try {
             return new UserNotificationResource(NotificationBackend::toggleReadState($notificationId));
         } catch (ItemNotFoundException) {
