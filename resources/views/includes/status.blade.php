@@ -108,12 +108,12 @@
     </div>
     <div class="progress">
         <div
-                class="progress-bar progress-time"
-                role="progressbar"
-                style="width: 0"
-                data-valuenow="{{ time() }}"
-                data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
-                data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
+            class="progress-bar progress-time"
+            role="progressbar"
+            style="width: 0"
+            data-valuenow="{{ time() }}"
+            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
+            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
         ></div>
     </div>
     <div class="card-footer text-muted interaction">
@@ -146,8 +146,9 @@
                 </li>
 
                 <li class="list-inline-item like-text">
-                    <span class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                          data-trwl-status-id="{{ $status->id }}"></span>
+                    <span
+                        class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
+                        data-trwl-status-id="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
                           id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
@@ -178,24 +179,20 @@
     @if(Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
-                <div class="col-xs-2">
-                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
-                        <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"
-                             class="profile-image float-left" alt="{{__('settings.picture')}}">
-                    </a>
-                </div>
-                <div class="col-xs-10">
+                <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
+                    <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"
+                         class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
+                </a>
                 <span class="like-text pl-2 d-table-cell">
                     <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
                         {{$like->user->username}}
                     </a>
-                    @if($like->user == $status->user)
+                    @if($like->user->is($status->user))
                         {{ __('user.liked-own-status') }}
                     @else
                         {{ __('user.liked-status') }}
                     @endif
                 </span>
-                </div>
             </div>
         @endforeach
     @endif
