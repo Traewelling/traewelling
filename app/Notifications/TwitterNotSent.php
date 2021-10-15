@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
+use stdClass;
 
 class TwitterNotSent extends Notification
 {
@@ -35,13 +36,14 @@ class TwitterNotSent extends Notification
     }
 
     /**
-     * @param $notification
+     * @param DatabaseNotification $notification
+     *
      * @return string
      * @throws ShouldDeleteNotificationException
      */
     public static function detail(DatabaseNotification $notification): string {
         $data                 = $notification->data;
-        $notification->detail = new \stdClass();
+        $notification->detail = new stdClass();
 
         try {
             $status = Status::findOrFail($data['status_id']);

@@ -11,22 +11,23 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
-use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class StatusController extends Controller
 {
     /**
      * @param int $statusId
+     *
      * @return Status
      * @throws HttpException
      * @throws ModelNotFoundException
@@ -51,7 +52,8 @@ class StatusController extends Controller
      * This Method returns the current active status(es) for all users or a specific user.
      *
      * @param null $userId UserId to get the current active status for a user. Defaults to null.
-     * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
+     * @param bool $array  This parameter is a temporary solution until the frontend is no more dependend on blade.
+     *
      * @return Status|array|Builder|Model|object|null
      * @api v1
      * @frontend
@@ -173,7 +175,8 @@ class StatusController extends Controller
 
     /**
      * @param User $user
-     * @param int $statusId
+     * @param int  $statusId
+     *
      * @return bool|null
      * @throws PermissionException|ModelNotFoundException
      */
@@ -191,21 +194,22 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int $statusId
+     * @param User        $user
+     * @param int         $statusId
      * @param string|null $body
-     * @param int $business
-     * @param int $visibility
+     * @param int         $business
+     * @param int         $visibility
+     *
      * @return Status
      * @throws PermissionException
      * @api v1
      */
     public static function EditStatus(
-        User $user,
-        int $statusId,
+        User   $user,
+        int    $statusId,
         string $body = null,
-        int $business = Business::PRIVATE,
-        int $visibility = StatusVisibility::PUBLIC
+        int    $business = Business::PRIVATE,
+        int    $visibility = StatusVisibility::PUBLIC
     ): Status {
         $status = Status::findOrFail($statusId);
 
@@ -223,8 +227,10 @@ class StatusController extends Controller
 
     /**
      * Create a Statuslike for a given User
-     * @param User $user
+     *
+     * @param User   $user
      * @param Status $status
+     *
      * @return Like
      * @throws StatusAlreadyLikedException|PermissionException
      * @todo refactor this to take status IDs instead of models
@@ -249,7 +255,8 @@ class StatusController extends Controller
 
     /**
      * @param User $user
-     * @param int $statusId
+     * @param int  $statusId
+     *
      * @return void
      * @throws InvalidArgumentException
      */
@@ -273,7 +280,8 @@ class StatusController extends Controller
 
     /**
      * @param string|null $slug
-     * @param int|null $id
+     * @param int|null    $id
+     *
      * @return array
      */
     public static function getStatusesByEvent(?string $slug, ?int $id): array {
@@ -324,11 +332,11 @@ class StatusController extends Controller
     }
 
     public static function createStatus(
-        User $user,
-        bool $business,
-        $visibility,
+        User   $user,
+        bool   $business,
+               $visibility,
         string $body = null,
-        int $eventId = null,
+        int    $eventId = null,
         string $type = "hafas"
     ): Status {
         $event = null;

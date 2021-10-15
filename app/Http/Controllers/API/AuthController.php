@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\ResponseController as ResponseController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @deprecated Will be replaced by APIv1
+ */
 class AuthController extends ResponseController
 {
     //create user
@@ -44,6 +46,7 @@ class AuthController extends ResponseController
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      * @deprecated with apiv1
      */
@@ -72,6 +75,7 @@ class AuthController extends ResponseController
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      * @deprecated with apiv1
      */

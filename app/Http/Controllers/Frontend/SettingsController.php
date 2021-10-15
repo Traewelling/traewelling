@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
+use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
@@ -35,7 +36,7 @@ class SettingsController extends Controller
                                    'email'      => $validated['email'],
                                    'username'   => $validated['username'],
                                    'name'       => $validated['name'],
-                                   'always_dbl' => $request->always_dbl == "on",
+                                   'always_dbl' => $request->always_dbl === "on",
                                ]);
 
         if (!auth()->user()->hasVerifiedEmail()) {
@@ -58,7 +59,7 @@ class SettingsController extends Controller
         auth()->user()->update([
                                    'prevent_index'             => $validated['prevent_index'],
                                    'private_profile'           => isset($validated['private_profile'])
-                                                                  && $validated['private_profile'] == 'on',
+                                                                  && $validated['private_profile'] === 'on',
                                    'default_status_visibility' => $validated['default_status_visibility'],
                                ]);
 
@@ -112,7 +113,7 @@ class SettingsController extends Controller
      *
      * @param Request $request
      * @return RedirectResponse
-     * @throws \App\Exceptions\AlreadyFollowingException
+     * @throws AlreadyFollowingException
      */
     public function approveFollower(Request $request): RedirectResponse {
         $validated = $request->validate([
@@ -139,7 +140,7 @@ class SettingsController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function rejectFollower(Request $request) {
+    public function rejectFollower(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'user_id' => [
                                                 'required',

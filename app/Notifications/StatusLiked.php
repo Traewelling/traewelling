@@ -31,6 +31,7 @@ class StatusLiked extends Notification
      * Get the notification's delivery channels.
      *
      * @param mixed
+     *
      * @return array
      */
     public function via(): array {
@@ -41,6 +42,7 @@ class StatusLiked extends Notification
      * Get the array representation of the notification.
      *
      * @param mixed
+     *
      * @return array
      */
     public function toArray(): array {
@@ -51,6 +53,9 @@ class StatusLiked extends Notification
         ];
     }
 
+    /**
+     * @throws ShouldDeleteNotificationException
+     */
     public static function detail($notification): stdClass {
         $data = $notification->data;
 

@@ -16,12 +16,17 @@ use Illuminate\Support\Collection;
 use PDOException;
 use stdClass;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 abstract class HafasController extends Controller
 {
 
     /**
      * Fetch from HAFAS
+     *
      * @param int $ibnr
+     *
      * @return TrainStation
      * @throws HafasException
      */
@@ -129,17 +134,18 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * @param TrainStation $station
-     * @param Carbon $when
-     * @param int $duration
+     * @param TrainStation           $station
+     * @param Carbon                 $when
+     * @param int                    $duration
      * @param TravelType|string|null $type
+     *
      * @return Collection
      * @throws HafasException
      */
     public static function getDepartures(
-        TrainStation $station,
-        Carbon $when,
-        int $duration = 15,
+        TrainStation      $station,
+        Carbon            $when,
+        int               $duration = 15,
         TravelType|string $type = null
     ): Collection {
         try {
@@ -178,6 +184,7 @@ abstract class HafasController extends Controller
     /**
      * @param string $tripID
      * @param string $lineName
+     *
      * @return HafasTrip
      * @throws HafasException
      */
@@ -193,6 +200,7 @@ abstract class HafasController extends Controller
     /**
      * @param string $tripID
      * @param string $lineName
+     *
      * @return HafasTrip
      * @throws HafasException
      */
@@ -282,7 +290,8 @@ abstract class HafasController extends Controller
                     [
                         'trip_id'          => $tripID,
                         'train_station_id' => $hafasStop->id
-                    ], $updatePayload
+                    ],
+                    $updatePayload
                 );
             } catch (PDOException $exception) {
                 report($exception);
@@ -294,17 +303,19 @@ abstract class HafasController extends Controller
 
     /**
      * Get the TrainStation Model from Database
-     * @param int $ibnr
+     *
+     * @param int         $ibnr
      * @param string|null $name
-     * @param float|null $latitude
-     * @param float|null $longitude
+     * @param float|null  $latitude
+     * @param float|null  $longitude
+     *
      * @return TrainStation
      * @throws HafasException
      */
-    public static function getTrainStation(int $ibnr,
+    public static function getTrainStation(int    $ibnr,
                                            string $name = null,
-                                           float $latitude = null,
-                                           float $longitude = null): TrainStation {
+                                           float  $latitude = null,
+                                           float  $longitude = null): TrainStation {
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
