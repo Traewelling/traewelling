@@ -11,18 +11,22 @@
             <div class="container">
                 <slot/>
             </div>
+            <OffCanvasNavigation/>
         </main>
         <FooterComponent/>
+        <MobileFooterNav/>
     </div>
 </template>
 
 <script>
 import NavbarComponent from "./NavbarComponent";
 import FooterComponent from "./FooterComponent";
+import MobileFooterNav from "./MobileFooterNav";
+import OffCanvasNavigation from "./OffCanvasNavigation";
 
 export default {
     name: "HeroLayout",
-    components: {FooterComponent, NavbarComponent}
+    components: {OffCanvasNavigation, FooterComponent, NavbarComponent, MobileFooterNav}
 };
 </script>
 

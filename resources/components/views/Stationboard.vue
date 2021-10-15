@@ -1,10 +1,10 @@
 <template>
     <LayoutBasic>
-        <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <StationForm :next="times.next" :now="times.now" :prev="times.prev"
+                <StationForm :hideTimepicker="!this.$route.query.station" :next="times.next" :now="times.now"
+                             :prev="times.prev"
                              v-on:refresh="fetchData"></StationForm>
-                <div class="card">
+                <div v-if="this.$route.query.station" class="card">
                     <div class="card-header">
                         <div class="float-end">
                             <a :aria-label="i18n.get('_.modals.setHome-title')" href="#"
@@ -80,15 +80,14 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <ModalConfirm
-            ref="confirmHomeModal"
-            :abort-text="i18n.get('_.menu.abort')"
-            :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
-            :confirm-text="i18n.get('_.modals.edit-confirm')"
-            :title-text="i18n.get('_.modals.setHome-title')"
-            confirm-button-color="btn-success"
-            v-on:confirm="setHome"
+        <ModalConfirm v-if="!loading && station !== null"
+                      ref="confirmHomeModal"
+                      :abort-text="i18n.get('_.menu.abort')"
+                      :body-text="i18n.choice('_.modals.setHome-body', 1, {'stationName': this.station.name})"
+                      :confirm-text="i18n.get('_.modals.edit-confirm')"
+                      :title-text="i18n.get('_.modals.setHome-title')"
+                      confirm-button-color="btn-success"
+                      v-on:confirm="setHome"
         ></ModalConfirm>
     </LayoutBasic>
 </template>
@@ -124,7 +123,9 @@ export default {
         };
     },
     mounted() {
-        this.fetchData();
+        if (this.$route.query.station) {
+            this.fetchData();
+        }
     },
     methods: {
         fetchData() {

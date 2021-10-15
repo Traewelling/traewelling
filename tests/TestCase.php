@@ -87,10 +87,12 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
-     * @param $stationName
-     * @param Carbon $timestamp
+     *
+     * @param           $stationName
+     * @param Carbon    $timestamp
      * @param User|null $user
      * @param bool|null $forEvent
+     *
      * @return array|null
      * @throws HafasException
      */
@@ -148,16 +150,16 @@ abstract class TestCase extends BaseTestCase
         // WHEN: User tries to check-in
         try {
             return TransportController::TrainCheckin(
-                tripId: $trip['train']['trip_id'],
-                start: $trip['stopovers'][0]['stop']['id'],
-                destination: end($trip['stopovers'])['stop']['id'],
-                body: '',
-                user: $user,
+                tripId:        $trip['train']['trip_id'],
+                start:         $trip['stopovers'][0]['stop']['id'],
+                destination:   end($trip['stopovers'])['stop']['id'],
+                body:          '',
+                user:          $user,
                 businessCheck: 0,
-                tweetCheck: 0,
-                tootCheck: 0,
-                visibility: StatusVisibility::PUBLIC,
-                eventId: $eventId
+                tweetCheck:    0,
+                tootCheck:     0,
+                visibility:    StatusVisibility::PUBLIC,
+                eventId:       $eventId
             );
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");

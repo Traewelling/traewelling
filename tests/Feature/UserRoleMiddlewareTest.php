@@ -15,9 +15,15 @@ class UserRoleMiddlewareTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        Route::middleware('userrole:0')->any('/_test/role_user', function () { return 'OK'; });
-        Route::middleware('userrole:5')->any('/_test/role_mod', function () { return 'OK'; });
-        Route::middleware('userrole:10')->any('/_test/role_admin', function () { return 'OK'; });
+        Route::middleware('userrole:0')->any('/_test/role_user', function() {
+            return 'OK';
+        });
+        Route::middleware('userrole:5')->any('/_test/role_mod', function() {
+            return 'OK';
+        });
+        Route::middleware('userrole:10')->any('/_test/role_admin', function() {
+            return 'OK';
+        });
     }
 
     /**
@@ -55,19 +61,19 @@ class UserRoleMiddlewareTest extends TestCase
         // When: Requesting any guest pages
         // Then: We're good!
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_user');
+                         ->get('/_test/role_user');
         $userPage->assertOk();
 
         // When: Requesting any mod-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_mod');
+                         ->get('/_test/role_mod');
         $userPage->assertStatus(401);
 
         // When: Requesting any admin-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_admin');
+                         ->get('/_test/role_admin');
         $userPage->assertStatus(401);
     }
 
@@ -83,19 +89,19 @@ class UserRoleMiddlewareTest extends TestCase
         // When: Requesting any guest pages
         // Then: We're good!
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_user');
+                         ->get('/_test/role_user');
         $userPage->assertOk();
 
         // When: Requesting any mod-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_mod');
+                         ->get('/_test/role_mod');
         $userPage->assertOk();
 
         // When: Requesting any admin-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_admin');
+                         ->get('/_test/role_admin');
         $userPage->assertStatus(401);
     }
 
@@ -111,19 +117,19 @@ class UserRoleMiddlewareTest extends TestCase
         // When: Requesting any guest pages
         // Then: We're good!
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_user');
+                         ->get('/_test/role_user');
         $userPage->assertOk();
 
         // When: Requesting any mod-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_mod');
+                         ->get('/_test/role_mod');
         $userPage->assertOk();
 
         // When: Requesting any admin-restricted page
         // Then: We're redirected to /login
         $userPage = $this->actingAs($user)
-                     ->get('/_test/role_admin');
+                         ->get('/_test/role_admin');
         $userPage->assertOk();
     }
 }

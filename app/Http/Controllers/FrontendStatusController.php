@@ -124,27 +124,6 @@ class FrontendStatusController extends Controller
         }
     }
 
-    public function exportLanding(): Renderable {
-        return view('export')->with([
-                                        'begin_of_month' => Carbon::now()->firstOfMonth()->format('Y-m-d'),
-                                        'end_of_month'   => Carbon::now()->lastOfMonth()->format('Y-m-d')
-                                    ]);
-    }
-
-    public function export(Request $request): JsonResponse|StreamedResponse|Response {
-        $validated = $request->validate([
-                                            'begin'    => ['required', 'date', 'before_or_equal:end'],
-                                            'end'      => ['required', 'date', 'after_or_equal:begin'],
-                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
-                                        ]);
-
-        return StatusBackend::ExportStatuses(
-            startDate: Carbon::parse($validated['begin']),
-            endDate:   Carbon::parse($validated['end']),
-            fileType:  $request->input('filetype')
-        );
-    }
-
     public function getActiveStatuses(): Renderable {
         $activeStatusesResponse = StatusBackend::getActiveStatuses(null, false);
         $activeEvents           = EventBackend::activeEvents();

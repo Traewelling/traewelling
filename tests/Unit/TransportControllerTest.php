@@ -4,12 +4,12 @@ namespace Tests\Unit;
 
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
-use App\Http\Controllers\TransportController;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
-class TransportControllerTest extends TestCase {
+class TransportControllerTest extends TestCase
+{
 
     use RefreshDatabase;
 

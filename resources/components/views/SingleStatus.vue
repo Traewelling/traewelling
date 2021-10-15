@@ -1,7 +1,5 @@
 <template>
     <LayoutBasic>
-        <div class="container">
-            <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-7">
                     <Spinner v-if="loading" class="mt-5"/>
 
@@ -20,8 +18,6 @@
                                 show-date="true"></Status>
                     </div>
                 </div>
-            </div>
-        </div>
     </LayoutBasic>
 </template>
 
