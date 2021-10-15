@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layout')
 
 @section('title', 'Veranstaltung bearbeiten')
 
@@ -43,7 +43,7 @@
                                    value="{{$event->url}}"/>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="begin">{{ __('events.begin') }}:</label>
                             <input id="begin" type="date" class="form-control" name="begin" required
@@ -55,7 +55,7 @@
                                    value="{{$event->end->format('Y-m-d')}}"/>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row mt-4">
                         <label for="nearest_station_name" class="col-md-4 col-form-label text-md-right">
                             {{ __('events.closestStation') }}:
                         </label>
@@ -65,9 +65,7 @@
                                    required value="{{$event->getTrainstation()?->name}}"/>
                         </div>
                     </div>
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary">Speichern</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Speichern</button>
                 </form>
             </div>
         </div>

@@ -7,7 +7,7 @@ window._ = require("lodash");
  */
 document.addEventListener("DOMContentLoaded", function () {
     try {
-        window.Popper = require("popper.js").default;
+        window.Popper = require('@popperjs/core');
         window.$      = window.jQuery = require("jquery");
 
         require("./../../node_modules/bootstrap/js/dist/collapse");
