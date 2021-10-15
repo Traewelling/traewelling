@@ -14,7 +14,7 @@ class UserJoinedConnection extends Notification
 {
     use Queueable;
 
-    private ?int    $statusId;
+    private ?int $statusId;
     private ?string $linename;
     private ?string $origin;
     private ?string $destination;
