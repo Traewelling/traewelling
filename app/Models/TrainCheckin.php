@@ -63,13 +63,16 @@ class TrainCheckin extends Model
                                                   ->where('arrival_planned', $this->arrival)
                                                   ->first();
         if ($stopOver == null) {
-            $stopOver = TrainStopover::updateOrCreate(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "trip_id"          => $this->trip_id,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "train_station_id" => $this->Destination->id
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ], [
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "departure_planned" => $this->arrival,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "arrival_planned"   => $this->arrival,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ]);
+            $stopOver = TrainStopover::updateOrCreate(
+                [
+                    "trip_id"          => $this->trip_id,
+                    "train_station_id" => $this->Destination->id
+                ],
+                [
+                    "departure_planned" => $this->arrival,
+                    "arrival_planned"   => $this->arrival,
+                ]
+            );
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;
@@ -102,9 +105,9 @@ class TrainCheckin extends Model
         }
 
         $features     = $polyline->features;
-        $coords   = [];
-        $origin   = $this->origin;
-        $destination = $this->destination;
+        $coords       = [];
+        $origin       = $this->origin;
+        $destination  = $this->destination;
         $behindOrigin = false;
 
         foreach ($features as $f) {
