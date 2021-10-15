@@ -22,7 +22,13 @@ use Throwable;
 class TransportController extends ResponseController
 {
     public function TrainAutocomplete($station): JsonResponse {
-        $trainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
+        $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)->map(function($station) {
+            return [
+                'id'       => $station['ibnr'],
+                'name'     => $station['name'],
+                'provider' => 'train'
+            ];
+        });
         return $this->sendResponse($trainAutocompleteResponse);
     }
 
