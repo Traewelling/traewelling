@@ -12,9 +12,19 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    /**
+     * @param int         $stationId
+     * @param array       $array
+     * @param Carbon|null $departure
+     * @param Carbon|null $arrival
+     *
+     * @return int|null
+     * @deprecated This function is only used in TransportController::TrainCheckin and ::TrainTrip which is both
+     *             deprecated and replaced with other functions
+     */
     public static function searchForId(
-        int $stationId,
-        array $array,
+        int    $stationId,
+        array  $array,
         Carbon $departure = null,
         Carbon $arrival = null
     ): ?int {

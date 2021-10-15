@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
+use stdClass;
 
 class UserFollowed extends Notification
 {
@@ -27,20 +28,18 @@ class UserFollowed extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed
      * @return array
      */
-    public function via() {
+    public function via(): array {
         return ['database'];
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed
      * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         return [
             'follow_id' => $this->follow->id,
         ];
@@ -51,13 +50,13 @@ class UserFollowed extends Notification
      *
      * @throws ShouldDeleteNotificationException
      */
-    public static function detail($notification) {
+    public static function detail($notification): stdClass {
         $data                 = $notification->data;
-        $notification->detail = new \stdClass();
+        $notification->detail = new stdClass();
         try {
             $follow = Follow::findOrFail($data['follow_id']);
             $sender = User::findOrFail($follow->user_id);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             // The follow doesn't exist anymore or the user following you was deleted. Eitherway,
             // we can delete the notification.
             throw new ShouldDeleteNotificationException();
@@ -68,7 +67,7 @@ class UserFollowed extends Notification
         return $notification->detail;
     }
 
-    public static function render($notification) {
+    public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {

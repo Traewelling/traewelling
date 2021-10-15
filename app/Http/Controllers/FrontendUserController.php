@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class FrontendUserController extends Controller
 {
     public function getProfilePage($username): Renderable {
@@ -46,6 +49,7 @@ class FrontendUserController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      * @deprecated
      */
@@ -69,6 +73,7 @@ class FrontendUserController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function requestFollow(Request $request): JsonResponse {
@@ -91,6 +96,7 @@ class FrontendUserController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      * @deprecated
      */

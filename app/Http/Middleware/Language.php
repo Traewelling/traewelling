@@ -13,12 +13,12 @@ class Language
      *
      * @param Request $request
      * @param Closure $next
+     *
      * @return mixed
      */
     public function handle(Request $request, Closure $next): mixed {
 
         if ($request->has('language')) {
-
             if (!self::isValidLanguageCode($request->get('language'))) {
                 return $next($request);
             }
@@ -36,7 +36,7 @@ class Language
         }
 
         //If the user has set a language use it for the call
-        if (auth()->check() && auth()->user()->language != null) {
+        if (auth()->check() && auth()->user()->language !== null) {
             app()->setLocale(auth()->user()->language);
             return $next($request);
         }

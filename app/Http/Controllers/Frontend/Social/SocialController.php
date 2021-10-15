@@ -31,13 +31,13 @@ class SocialController extends Controller
             return response(__('controller.social.delete-never-connected'), 404);
         }
 
-        if ($validated['provider'] == "twitter") {
+        if ($validated['provider'] === 'twitter') {
             $user->socialProfile->update([
                                              'twitter_id'          => null,
                                              'twitter_token'       => null,
                                              'twitter_tokenSecret' => null
                                          ]);
-        } elseif ($validated['provider'] == "mastodon") {
+        } elseif ($validated['provider'] === 'mastodon') {
             $user->socialProfile->update([
                                              'mastodon_id'     => null,
                                              'mastodon_server' => null,

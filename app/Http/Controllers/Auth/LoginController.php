@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected string $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -38,7 +38,7 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated(Request $request, $user) {
+    protected function authenticated(Request $request, $user): void {
         $user->update(['last_login' => Carbon::now()->toIso8601String()]);
     }
 }

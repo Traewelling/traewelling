@@ -7,6 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * @deprecated Will be replaced by APIv1
+ */
 class NotificationController extends ResponseController
 {
     /**
@@ -23,7 +26,7 @@ class NotificationController extends ResponseController
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $notificationID
+     * @param int     $notificationID
      *
      * @return Response
      */
