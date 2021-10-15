@@ -181,7 +181,6 @@ class ApiUserTest extends ApiTestCase
                                                'departure',
                                                'arrival',
                                                'points',
-                                               'delay',
                                                'hafas_trip'  => [
                                                    'id',
                                                    'trip_id',
@@ -196,7 +195,8 @@ class ApiUserTest extends ApiTestCase
                                                    'delay'
                                                ]
                                            ],
-                                           'event']);
+                                           'event'
+                                       ]);
     }
 
     /**

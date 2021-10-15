@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @property int user_id
+ * @property int    user_id
  * @property string body
- * @property int business
- * @property int visibility
+ * @property int    business
+ * @property int    visibility
  */
 class Status extends Model
 {
@@ -24,7 +24,10 @@ class Status extends Model
     protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
-    protected $casts    = ['visibility' => 'integer'];
+    protected $casts    = [
+        'id'         => 'integer',
+        'visibility' => 'integer',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
@@ -101,7 +104,7 @@ class Status extends Model
      * @return bool
      */
     public function getStatusInvisibleToMeAttribute(): bool {
-        if($this->user->userInvisibleToMe) {
+        if ($this->user->userInvisibleToMe) {
             return true;
         }
         if (Auth::check() && Auth::id() == $this->user_id || $this->visibility == StatusVisibility::PUBLIC) {

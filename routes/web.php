@@ -13,8 +13,12 @@
 
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\EventController;
+use App\Http\Controllers\Frontend\Export\ExportController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
+use App\Http\Controllers\Frontend\Social\MastodonController;
+use App\Http\Controllers\Frontend\Social\SocialController;
+use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -24,7 +28,6 @@ use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -73,8 +76,10 @@ Route::get('/events', [EventController::class, 'renderEventOverview'])
 
 Auth::routes(['verify' => true]);
 
-Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
-Route::get('/callback/{provider}', 'SocialController@callback');
+Route::get('/auth/redirect/twitter', [TwitterController::class, 'redirect']);
+Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
+Route::get('/callback/twitter', [TwitterController::class, 'callback']);
+Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->name('statuses.get');
@@ -177,11 +182,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroylike', [FrontendStatusController::class, 'DestroyLike'])
          ->name('like.destroy');
 
-    Route::get('/export', [FrontendStatusController::class, 'exportLanding'])
-         ->name('export.landing');
-
-    Route::get('/export-generate', [FrontendStatusController::class, 'export'])
-         ->name('export.generate');
+    Route::prefix('export')->group(function() {
+        Route::get('/', [ExportController::class, 'renderForm'])->name('export.landing');
+        Route::get('/generate', [ExportController::class, 'renderExport'])->name('export.generate');
+    });
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create');
