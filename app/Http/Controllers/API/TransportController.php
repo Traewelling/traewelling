@@ -24,8 +24,8 @@ class TransportController extends ResponseController
     public function TrainAutocomplete($station): JsonResponse {
         $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)->map(function($station) {
             return [
-                'id'       => $station->ibnr,
-                'name'     => $station->name,
+                'id'       => $station['ibnr'],
+                'name'     => $station['name'],
                 'provider' => 'train'
             ];
         });
