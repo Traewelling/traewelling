@@ -41,7 +41,7 @@
                 </span>
                                 <span class="ps-2">
                   <i aria-hidden="true" class="fa fa-route d-inline"></i>
-                  &nbsp;{{ statusData.train.distance.toFixed(0) }}<small>km</small>
+                  &nbsp;{{ (statusData.train.distance / 1000).toFixed(1) }}<small>km</small>
                 </span>
                                 <span class="ps-2"><i aria-hidden="true" class="fa fa-stopwatch d-inline"></i>
                   &nbsp;{{ duration }}
