@@ -243,7 +243,6 @@ export default {
             return this.$auth.check() && this.$auth.user().id === this.statusData.user.id;
         },
         shareable() {
-            return true;
             return navigator.share;
         },
         statusData() {
