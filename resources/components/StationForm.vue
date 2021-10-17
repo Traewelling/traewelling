@@ -132,6 +132,7 @@ import autoComplete from "@tarekraafat/autocomplete.js";
 
 export default {
     name: "StationForm",
+    inject: ["notyf"],
     data() {
         return {
             station: null,
@@ -192,7 +193,11 @@ export default {
                         const source = await axios.get(`/trains/station/autocomplete/${query}`);
                         return await source.data.data;
                     } catch (error) {
-                        console.error(error);
+                        if (error.response) {
+                            this.notyf.error(error.response.data.error.message);
+                        } else {
+                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                        }
                     }
                 },
                 keys: ['name'],
@@ -225,8 +230,11 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
-                    console.error(this.error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         submitStation(travelType = null, time = this.when) {
@@ -263,7 +271,11 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         getGeoLocation() {
@@ -273,7 +285,11 @@ export default {
                 navigator.geolocation.getCurrentPosition((position) => {
                     this.fetchNearbyStation(position);
                 }, (error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                     this.loading = false
                 });
             }

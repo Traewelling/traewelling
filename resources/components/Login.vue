@@ -41,6 +41,8 @@
 </template>
 <script>
 export default {
+    name: "Login",
+    inject: ["notyf"],
     data() {
         return {
             email: null,
@@ -63,6 +65,8 @@ export default {
                 fetchUser: true,
             }).then(() => {
                 this.$auth.fetch();
+            }).catch((error) => {
+                this.notyf.error(this.i18n.get("_.messages.exception.general"));
             });
         }
     }
