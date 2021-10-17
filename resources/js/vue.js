@@ -17,6 +17,10 @@ import driverAuthBearer from "@websanova/vue-auth/dist/drivers/auth/bearer.esm.j
 import driverHttpAxios from "@websanova/vue-auth/dist/drivers/http/axios.1.x.esm.js";
 import driverRouterVueRouter from "@websanova/vue-auth/dist/drivers/router/vue-router.2.x.esm.js";
 import VueMeta from "vue-meta";
+import {Notyf} from 'notyf';
+import 'notyf/notyf.min.css';
+
+Vue.config.productionTip = false
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -75,6 +79,13 @@ Vue.use(VueMeta, {
 });
 
 new Vue({
+    provide: () => {
+        return {
+            notyf: new Notyf({
+                duration: 5000 // Set your global Notyf configuration here
+            })
+        }
+    },
     el: "#app",
     components: {App},
     router,
