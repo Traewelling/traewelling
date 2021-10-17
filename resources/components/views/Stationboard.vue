@@ -22,7 +22,7 @@
                 </div>
 
                 <Spinner v-if="loading" class="mt-5"/>
-                <div v-else-if="!departures || departures.length === 0"
+                <div v-else-if="!departures || Object.keys(departures).length === 0"
                      class="card-body text-center text-danger text-bold">
                     {{ i18n.get('_.stationboard.no-departures') }}
                 </div>
@@ -39,7 +39,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="departure in departures" v-on:click="goToTrip(departure)">
+                            <tr v-for="(departure, index) in departures"
+                                v-if="index > 0 && index < Object.keys(departures).length
+                                && moment(departures[index - 1].when).isBefore(requestTime)
+                                && moment(departure.when).isAfter(requestTime)" class="text-center table-primary py-0">
+                                <td class="py-0" colspan="3">
+                                    <small>{{
+                                            i18n.choice('_.request-time', 1, {'time': requestTime.format("LT")})
+                                        }}</small>
+                                </td>
+                            </tr>
+                            <tr v-else v-on:click="goToTrip(departure)">
                                 <td class="ps-2 ps-md-4">
                                     <span v-if="departure.cancelled" class="text-danger">
                                         {{ i18n.get('_.stationboard.stop-cancelled') }}
@@ -110,6 +120,7 @@ export default {
         return {
             station: null,
             departures: null,
+            requestTime: null,
             times: {
                 now: 0,
                 prev: 0,
@@ -124,6 +135,7 @@ export default {
         if (this.$route.query.station) {
             this.fetchData();
         }
+        this.requestTime = moment();
     },
     methods: {
         fetchData() {
