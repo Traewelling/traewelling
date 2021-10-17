@@ -13,6 +13,7 @@ import Trip from "../components/views/Trip";
 import Index from "../components/views/Index";
 import About from "../components/views/About";
 import Charts from "../components/views/Charts";
+import SearchView from "../components/views/SearchView";
 
 Vue.use(VueRouter);
 
@@ -109,6 +110,14 @@ export const router = new VueRouter({
                 path: "/statistics",
                 component: Charts,
                 name: "statistics",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/search",
+                component: SearchView,
+                name: "search",
                 meta: {
                     auth: true
                 }

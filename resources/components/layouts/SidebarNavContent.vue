@@ -34,6 +34,22 @@
             </li>
         </ul>
         <ul v-if="$auth.check()" class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <form autocomplete="off" @submit.prevent="searchRedirect">
+                    <div class="input-group nav-link bg-transparent d-flex py-1">
+                        <div class="form-outline w-75">
+                            <input id="search-focus" type="search" class="form-control border-bottom rounded-0"
+                                   v-model="searchInput">
+                            <label class="form-label" for="search-focus">{{
+                                    i18n.get("_.stationboard.submit-search")
+                                }}</label>
+                        </div>
+                        <button class="btn btn-primary btn-sm" type="submit">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </form>
+            </li>
             <li v-if="desktop && dashboard" class="nav-item">
                 <router-link :to="{ name: 'dashboard.global' }" class="nav-link bg-transparent" role="tab">
                     <i aria-hidden="true" class="fas fa-globe me-2"></i>
@@ -58,12 +74,6 @@
                 <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
                     <i aria-hidden="true" class="fas fa-calendar me-2"></i>
                     {{ i18n.get("_.events") }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
-                    <i aria-hidden="true" class="fas fa-search me-2"></i>
-                    {{ i18n.get("_.stationboard.submit-search") }}
                 </a>
             </li>
             <li class="nav-item">
@@ -126,12 +136,30 @@ import ChangeLanguageButton from "../ChangeLanguageButton";
 
 export default {
     name: "SidebarNavContent",
+    data() {
+        return {
+            searchInput: ""
+        };
+    },
     components: {ChangeLanguageButton},
     props: {desktop: false},
     computed: {
         dashboard() {
             return this.$route.path === "/dashboard";
-
+        }
+    },
+    methods: {
+        searchRedirect() {
+            console.log("hey");
+            if (this.searchInput) {
+                this.$router.push({name: "search", query: {query: this.searchInput}})
+                    .then(() => {
+                        this.$emit("refresh");
+                    })
+                    .catch(() => {
+                        this.$emit("refresh");
+                    });
+            }
         }
     }
 };
