@@ -122,7 +122,7 @@ export default {
         this.fetchData(to.query.query);
         next();
     }
-}
+};
 </script>
 
 <style scoped>
