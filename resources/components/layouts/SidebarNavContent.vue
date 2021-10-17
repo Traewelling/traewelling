@@ -17,6 +17,7 @@
                 <i aria-hidden="true" class="fas fa-clock"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
                 {{ $auth.user().trainDuration.toFixed(0) }}min
+                <!-- ToDo: trainDuration in hours & minutes -->
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-route"/>
@@ -39,7 +40,7 @@
                     <div class="input-group nav-link bg-transparent d-flex py-1">
                         <div class="form-outline w-75">
                             <input id="search-focus" type="search" class="form-control border-bottom rounded-0"
-                                   v-model="searchInput">
+                                   v-model="searchInput" :class="{active: isSearchPage}">
                             <label class="form-label" for="search-focus">{{
                                     i18n.get("_.stationboard.submit-search")
                                 }}</label>
@@ -145,12 +146,14 @@ export default {
     props: {desktop: false},
     computed: {
         dashboard() {
-            return this.$route.path === "/dashboard";
+            return this.$route.name === "dashboard";
+        },
+        isSearchPage() {
+            return this.$route.name === "search";
         }
     },
     methods: {
         searchRedirect() {
-            console.log("hey");
             if (this.searchInput) {
                 this.$router.push({name: "search", query: {query: this.searchInput}})
                     .then(() => {
@@ -160,7 +163,15 @@ export default {
                         this.$emit("refresh");
                     });
             }
+        },
+        searchQuery() {
+            if (this.isSearchPage) {
+                this.searchInput = this.$route.query.query;
+            }
         }
+    },
+    mounted() {
+        this.searchQuery();
     }
 };
 </script>
