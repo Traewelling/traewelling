@@ -1,7 +1,7 @@
 <template>
     <LayoutBasic>
         <div class="col-md-8">
-            <div v-for="user in users" v-bind:key="user.id" class="card status mt-3">
+            <div v-for="user in users" v-if="users" v-bind:key="user.id" class="card status mt-3">
                 <div class="card-body row">
                     <div class="col-2 image-box search-image-box d-lg-flex">
                         <router-link :to="{name: 'profile', params: {username: user.username}}">
@@ -47,6 +47,19 @@
                     </div>
                 </div>
             </div>
+            <Spinner v-if="loading" class="mt-5"/>
+            <div v-else-if="users.length === 0">
+                <div class="alert my-3 alert-danger" role="alert">
+                    {{ i18n.get("_.user.no-user") }}
+                </div>
+            </div>
+            <div v-if="links && links.next" class="text-center">
+                <button aria-label="i18n.get('_.menu.show-more')"
+                        class="btn btn-primary btn-lg btn-floating mt-4"
+                        @click.prevent="fetchMore">
+                    <i aria-hidden="true" class="fas fa-caret-down"></i>
+                </button>
+            </div>
         </div>
     </LayoutBasic>
 </template>
@@ -54,8 +67,8 @@
 <script>
 import LayoutBasic from "../layouts/Basic";
 import axios from "axios";
-import {ProfileModel} from "../../js/APImodels";
 import FollowButton from "../FollowButton";
+import Spinner from "../Spinner";
 
 export default {
     name: "SearchView",
@@ -63,16 +76,19 @@ export default {
         return {
             errors: null,
             loading: false,
-            users: [ProfileModel]
+            links: null,
+            users: null
         };
     },
-    components: {FollowButton, LayoutBasic},
+    components: {Spinner, FollowButton, LayoutBasic},
     methods: {
         fetchData(query = this.$route.query.query) {
+            this.loading = true;
             axios
                 .get("/user/search/" + query)
                 .then((response) => {
                     this.users = response.data.data;
+                    this.links = response.data.links;
                     console.log(this.users);
                     this.loading = false;
                 })
@@ -81,13 +97,30 @@ export default {
                     this.error   = error.data.message || error.message;
                     console.error(this.error);
                 });
-        }
+        },
+        fetchMore() {
+            this.loading = true;
+            this.error   = null;
+            axios
+                .get(this.links.next)
+                .then((response) => {
+                    this.users = this.users.concat(response.data.data);
+                    this.links = response.data.links;
+                    this.fetchStopovers(response.data.data);
+                    this.loading = false;
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    this.error   = error.data.message || error.message;
+                });
+        },
     },
     mounted() {
         this.fetchData();
     },
-    beforeRouteUpdate(to) {
+    beforeRouteUpdate(to, from, next) {
         this.fetchData(to.query.query);
+        next();
     }
 }
 </script>
