@@ -89,7 +89,6 @@ export default {
                 .then((response) => {
                     this.users = response.data.data;
                     this.links = response.data.links;
-                    console.log(this.users);
                     this.loading = false;
                 })
                 .catch((error) => {
