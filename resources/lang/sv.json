@@ -30,7 +30,6 @@
     "controller.status.status-not-found": "Status hittades inte",
     "controller.status.create-success": "Status skapats.",
     "controller.status.delete-ok": "Status raderad.",
-    "controller.status.email-not-verified": "Du har ännu inte verifierat din e-postadress.",
     "controller.status.export-invalid-dates": "Det här är inte giltiga data.",
     "controller.status.export-neither-business": "Du kan inte avmarkera både privata och affärsresor.",
     "controller.status.like-already": "Like finns redan.",

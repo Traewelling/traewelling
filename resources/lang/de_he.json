@@ -41,7 +41,6 @@
     "controller.status.status-not-found": "Status nedd gfunne",
     "controller.status.create-success": "Status erstellt.",
     "controller.status.delete-ok": "Status gelöscht.",
-    "controller.status.email-not-verified": "Du hoaschd Dei Email-Adresse noch nedd verifiziert.",
     "controller.status.email-resend-mail": "Bestätischung erneut sende.",
     "controller.status.export-invalid-dates": "Des sinn koa valide Date.",
     "controller.status.export-neither-business": "Du koannschd nedd sowohl Privat- als aa Business-Trips abwähle.",

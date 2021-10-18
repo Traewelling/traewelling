@@ -68,7 +68,6 @@
     "controller.transport.no-name-given": "Je moet een stationsnaam invullen!",
     "controller.transport.not-in-stopovers": "De start-id is niet in de tussenstops.",
     "controller.transport.also-in-connection": "Ook bij deze verbinding zijn:",
-    "controller.status.email-not-verified": "Je hebt jouw e-mail adress nog niet bevestigt.",
     "controller.status.email-resend-mail": "Bevestiging opnieuw verzenden.",
     "controller.transport.checkin-heading": "Ingecheckt",
     "controller.transport.checkin-ok": "Je heb sucessvol in :lineName ingecheckd!|Je heb sucessvol in lijn :lineName ingecheckd!",
