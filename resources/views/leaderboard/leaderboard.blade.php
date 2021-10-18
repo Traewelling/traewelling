@@ -20,20 +20,21 @@
                     <div class="card-body">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="main-tab" data-toggle="tab" href="#leaderboard-main"
+                                <a class="nav-link active" id="main-tab" data-mdb-toggle="tab" href="#leaderboard-main"
                                    role="tab" aria-controls="home" aria-selected="true">
                                     {{ __('leaderboard.top') }} {{$users->count()}}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="distance-tab" data-toggle="tab" href="#leaderboard-distance"
+                                <a class="nav-link" id="distance-tab" data-mdb-toggle="tab" href="#leaderboard-distance"
                                    role="tab" aria-controls="profile" aria-selected="false">
                                     {{ __('leaderboard.distance') }}
                                 </a>
                             </li>
                             @isset($friends)
                                 <li class="nav-item">
-                                    <a class="nav-link" id="friends-tab" data-toggle="tab" href="#leaderboard-friends"
+                                    <a class="nav-link" id="friends-tab" data-mdb-toggle="tab"
+                                       href="#leaderboard-friends"
                                        role="tab" aria-controls="contact" aria-selected="false">
                                         {{ __('leaderboard.friends') }}
                                     </a>

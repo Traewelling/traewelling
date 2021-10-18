@@ -59,7 +59,7 @@
                                         <td>
                                             <i aria-hidden="true" class="fas fa-route"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
-                                            {{ place.trainDistance.toFixed(0) }}km
+                                            {{ (place.trainDistance / 1000).toFixed(1) }}km
                                         </td>
                                     </tr>
                                 </tbody>
@@ -106,7 +106,7 @@
                                             {{ place.trainDuration }}min
                                         </td>
                                         <td>
-                                            {{ place.trainDistance.toFixed(0) }}km
+                                            {{ (place.trainDistance / 1000).toFixed(1) }}km
                                         </td>
                                         <td>
                                             {{ place.points.toFixed(0) }}

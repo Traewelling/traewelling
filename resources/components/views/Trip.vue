@@ -1,86 +1,102 @@
 <template>
     <LayoutBasic>
-        <div>
-            <transition>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-lg-7">
-                            <Spinner v-if="loading" class="mt-5"/>
-                            <div v-if="hafasTrip != null" id="trip-heading" class="card">
-                                <div class="card-header">
-                                    <div class="float-end">
-                                        <a href="#" @click="showModal(lastStation)">
-                                            <i aria-hidden="true" class="fa fa-fast-forward"></i>
-                                        </a>
-                                    </div>
-                                    <img v-if="images.includes(hafasTrip.category)"
-                                         :alt="hafasTrip.category"
-                                         :src="`/img/${hafasTrip.category}.svg`"
-                                         class="product-icon">
-                                    <i v-else aria-hidden="true" class="fa fa-train"></i>
-                                    {{ this.hafasTrip.lineName }}
-                                    <i aria-hidden="true" class="fas fa-arrow-alt-circle-right"></i>
-                                    {{ this.hafasTrip.destination.name }}
-                                </div>
-
-                                <div class="card-body p-0 table-responsive">
-                                    <table aria-describedby="trip-heading"
-                                           class="table table-dark table-borderless table-hover table-striped m-0">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">{{ i18n.get('_.stationboard.stopover') }}</th>
-                                                <th scope="col"></th>
-                                                <th class="ps-0" scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="stop in stopovers" @click="showModal(stop)">
-                                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}">
-                                                    {{ stop.name }}
-                                                </td>
-                                                <td v-if="!stop.cancelled">
-                      <span v-if="stop.arrivalPlanned">
-                        {{ i18n.get('_.stationboard.arr') }}&nbsp;
-                        <span :class="delay(stop.arrivalPlanned, stop.arrivalReal)">
-                          {{ moment(stop.arrival).format("LT") }}
-                        </span>
-                        <small v-if="stop.isArrivalDelayed" class="text-muted text-decoration-line-through">
-                          {{ moment(stop.arrivalPlanned).format("LT") }}
-                        </small>
-                      </span>
-                                                    <br/>
-                                                    <span v-if="stop.departurePlanned">
-                        {{ i18n.get('_.stationboard.dep') }}&nbsp;
-                        <span :class="delay(stop.departurePlanned, stop.departureReal)">
-                          {{ moment(stop.departure).format("LT") }}
-                        </span>
-                        <small v-if="stop.isDepartureDelayed" class="text-muted text-decoration-line-through">
-                          {{ moment(stop.departurePlanned).format("LT") }}
-                        </small>
-                      </span>
-                                                </td>
-                                                <td v-else class="text-danger">
-                                                    {{ i18n.get('_.stationboard.stop-cancelled') }}
-                                                </td>
-                                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}"
-                                                    class="ps-0">
-                                                    {{ stop.platform }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+        <div class="col-md-8 col-lg-7">
+            <Spinner v-if="loading" class="mt-5"/>
+            <div v-if="hafasTrip != null" id="trip-heading" class="card">
+                <div class="card-header">
+                    <div class="float-end">
+                        <a href="#" @click="showModal(lastStation)">
+                            <i aria-hidden="true" class="fa fa-fast-forward"></i>
+                        </a>
                     </div>
+                    <img v-if="images.includes(hafasTrip.category)"
+                         :alt="hafasTrip.category"
+                         :src="`/img/${hafasTrip.category}.svg`"
+                         class="product-icon">
+                    <i v-else aria-hidden="true" class="fa fa-train"></i>
+                    {{ this.hafasTrip.lineName }}
+                    <i aria-hidden="true" class="fas fa-arrow-alt-circle-right"></i>
+                    {{ this.hafasTrip.destination.name }}
                 </div>
-            </transition>
-            <CheckInModal
-                ref="checkInModal"
-                :destination="destination"
-                :train-data="trainData"
-            ></CheckInModal>
+
+                <div class="card-body p-0 table-responsive">
+                    <table aria-describedby="trip-heading"
+                           class="table table-dark table-borderless table-hover table-striped m-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ i18n.get('_.stationboard.stopover') }}</th>
+                                <th scope="col"></th>
+                                <th class="ps-0" scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="stop in stopovers" @click="showModal(stop)">
+                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}" class="px-2">
+                                    {{ stop.name }}
+                                    <br/>
+                                    <span v-if="stop.arrivalPlanned" class="d-sm-inline d-md-none ms-4">
+                                        {{ i18n.get('_.stationboard.arr') }}&nbsp;
+                                        <span :class="delay(stop.arrivalPlanned, stop.arrivalReal)">
+                                            {{ moment(stop.arrival).format("LT") }}
+                                        </span>
+                                        <small v-if="stop.isArrivalDelayed"
+                                               class="text-muted text-decoration-line-through">
+                                            {{ moment(stop.arrivalPlanned).format("LT") }}
+                                        </small>
+                                    </span>
+                                    <br/>
+                                    <span v-if="stop.departurePlanned" class="d-sm-inline d-md-none ms-4">
+                                        {{ i18n.get('_.stationboard.dep') }}&nbsp;
+                                        <span :class="delay(stop.departurePlanned, stop.departureReal)">
+                                            {{ moment(stop.departure).format("LT") }}
+                                        </span>
+                                        <small v-if="stop.isDepartureDelayed"
+                                               class="text-muted text-decoration-line-through">
+                                            {{ moment(stop.departurePlanned).format("LT") }}
+                                        </small>
+                                    </span>
+                                </td>
+                                <td v-if="!stop.cancelled">
+                                    <span v-if="stop.arrivalPlanned" class="d-none d-md-inline">
+                                        {{ i18n.get('_.stationboard.arr') }}&nbsp;
+                                        <span :class="delay(stop.arrivalPlanned, stop.arrivalReal)">
+                                            {{ moment(stop.arrival).format("LT") }}
+                                        </span>
+                                        <small v-if="stop.isArrivalDelayed"
+                                               class="text-muted text-decoration-line-through">
+                                            {{ moment(stop.arrivalPlanned).format("LT") }}
+                                        </small>
+                                    </span>
+                                    <br/>
+                                    <span v-if="stop.departurePlanned" class="d-none d-md-inline">
+                                        {{ i18n.get('_.stationboard.dep') }}&nbsp;
+                                        <span :class="delay(stop.departurePlanned, stop.departureReal)">
+                                            {{ moment(stop.departure).format("LT") }}
+                                        </span>
+                                        <small v-if="stop.isDepartureDelayed"
+                                               class="text-muted text-decoration-line-through">
+                                            {{ moment(stop.departurePlanned).format("LT") }}
+                                        </small>
+                                    </span>
+                                </td>
+                                <td v-else class="text-danger">
+                                    {{ i18n.get('_.stationboard.stop-cancelled') }}
+                                </td>
+                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}"
+                                    class="ps-0">
+                                    {{ stop.platform }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
+        <CheckInModal
+            ref="checkInModal"
+            :destination="destination"
+            :train-data="trainData"
+        ></CheckInModal>
     </LayoutBasic>
 </template>
 

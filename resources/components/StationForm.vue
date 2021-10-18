@@ -10,7 +10,7 @@
                 </span>
             </div>
             <div class="card-body">
-                <!-- ToDo: Add this to a notification bubble-thingy -->
+                <!-- ToDo: Add this to a notification bubble-thingy console.error() -->
                 <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
                     {{ i18n.get('_.stationboard.position-unavailable') }}
                     <button aria-label="Close" class="close" data-dismiss="alert" type="button">
@@ -19,9 +19,7 @@
                 </div>
                 <form autocomplete="off" v-on:submit.prevent="submitStation">
                     <div id="station-autocomplete-container">
-                        <input id="autoComplete" v-model="station"
-                               class="form-control w-100 mb-3"
-                               type="text"/>
+                        <input id="autoComplete" v-model="station" class="form-control w-100 mb-3" type="text"/>
                     </div>
                     <div class="btn-group float-end">
                         <router-link v-if="$auth.user().home"
@@ -72,9 +70,9 @@
                         </div>
                     </div>
                     <div id="collapseHistory" class="collapse mt-2">
-            <span class="list-group-item title list-group-item-action disabled">
-              {{ i18n.get("_.stationboard.last-stations") }}
-            </span>
+                        <span class="list-group-item title list-group-item-action disabled">
+                            {{ i18n.get("_.stationboard.last-stations") }}
+                        </span>
                         <router-link v-for="station in history"
                                      v-bind:key="station.id"
                                      :to="{name: 'trains.stationboard', query: {station: station.name }}"
@@ -87,23 +85,20 @@
             </div>
         </div>
 
-
         <div v-if="now != null && !hideTimepicker" id="timepicker-wrapper">
             <div class="text-center">
                 <div class="btn-group" role="group">
-                    <a :title="i18n.get('_.stationboard.minus-15')"
-                       class="btn btn-light"
+                    <a :title="i18n.get('_.stationboard.minus-15')" class="btn btn-light" data-mdb-target="tooltip"
                        href="#"
                        @click.prevent="submitStation(currentTravelType, prev)">
                         <i aria-hidden="true" class="fas fa-arrow-circle-left"></i>
                     </a>
-                    <a :title="i18n.get('_.stationboard.dt-picker')"
-                       class="btn btn-light btn-rounded"
-                       href="#">
+                    <a :title="i18n.get('_.stationboard.dt-picker')" class="btn btn-light btn-rounded"
+                       data-mdb-target="#collapseDateTime"
+                       data-mdb-toggle="collapse" href="#">
                         <i aria-hidden="true" class="fas fa-clock"></i>
                     </a>
-                    <a :title="i18n.get('_.stationboard.plus-15')"
-                       class="btn btn-light"
+                    <a :title="i18n.get('_.stationboard.plus-15')" class="btn btn-light" data-mdb-target="tooltip"
                        href="#"
                        @click.prevent="submitStation(currentTravelType, next)">
                         <i aria-hidden="true" class="fas fa-arrow-circle-right"></i>
@@ -111,15 +106,16 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <form v-if="false" class="form-inline">
-                    <div class="input-group mb-3 mx-auto">
-                        <input id="timepicker" aria-describedby="button-addontime" class="form-control" name="when"
-                               type="datetime-local"/>
-                        <button id="button-addontime" class="btn btn-outline-primary" type="submit">
-                            {{ i18n.get('_.stationboard.set-time') }}
-                        </button>
-                    </div>
-                </form>
+                <div id="collapseDateTime" class="input-group mb-3 mx-auto collapse">
+                    <input id="timepicker" v-model="now" aria-describedby="button-addontime"
+                           class="form-control" type="datetime-local"/>
+                    <button id="button-addontime" class="btn btn-outline-primary" data-mdb-target="#collapseDateTime"
+                            data-mdb-toggle="collapse"
+                            type="submit"
+                            @click.prevent="submitStation(currentTravelType, now)">
+                        {{ i18n.get('_.stationboard.set-time') }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -138,7 +134,7 @@ export default {
             station: null,
             errors: null,
             loading: false,
-            history: []
+            history: [],
         };
     },
     props: {
