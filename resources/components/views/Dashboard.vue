@@ -84,6 +84,8 @@ import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 
 export default {
+    name: "dashboard",
+    inject: ["notyf"],
     data() {
         return {
             loading: true,
@@ -126,8 +128,11 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
-                    console.error(this.error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
             axios
                 .get(this.$route.path)
@@ -143,8 +148,11 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
-                    console.error(this.error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         fetchMore() {

@@ -7,6 +7,7 @@ import LayoutBasic from "./layouts/Basic";
 
 export default {
     name: "App",
+    inject: ["notyf"],
     data() {
         return {
             notificationsCount: 1,
@@ -78,7 +79,11 @@ export default {
                     this.notificationsCount = response.data.data;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         }
     }
