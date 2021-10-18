@@ -31,6 +31,7 @@ import Spinner from "../Spinner";
 
 export default {
     name: "SingleStatus",
+    inject: ["notyf"],
     data() {
         return {
             error: false,
@@ -126,7 +127,12 @@ export default {
                     this.polyline = [response.data.data];
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         fetchStopovers() {
@@ -136,7 +142,12 @@ export default {
                     this.stopovers = response.data.data;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         fetchLikes() {
@@ -146,7 +157,12 @@ export default {
                     this.likes = response.data.data;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         updateMetadata() {

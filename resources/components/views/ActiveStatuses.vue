@@ -39,6 +39,7 @@ import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "ActiveStatuses",
+    inject: ["notyf"],
     data() {
         return {
             loading: true,
@@ -103,7 +104,12 @@ export default {
                     this.stopovers = response.data.data;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         fetchPolyline() {
@@ -117,7 +123,12 @@ export default {
                     this.polylines = [response.data.data];
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         startRefresh() {

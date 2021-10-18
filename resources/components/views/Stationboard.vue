@@ -110,6 +110,7 @@ import Spinner from "../Spinner";
 
 export default {
     name: "Stationboard",
+    inject: ["notyf"],
     components: {
         Spinner,
         LayoutBasic,
@@ -153,12 +154,16 @@ export default {
 
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         goToTrip(departure) {
             if (departure.cancelled) {
-                console.error("stop cancelled");
                 return;
             }
             this.$router.push({
@@ -183,7 +188,12 @@ export default {
                     alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         }
     }
