@@ -427,5 +427,15 @@
     "events": "Veranstaltunge",
     "auth.required": "Du muschd oigeloggt soi, um diese Funkzion nutze zu kenne.",
     "menu.show-more": "Mej anzeige",
-    "user.home-not-set": "Du hoaschd noch koan Heimatbahnhof festgelegt."
+    "user.home-not-set": "Du hoaschd noch koan Heimatbahnhof festgelegt.",
+    "menu.share": "Daale",
+    "modals.setHome-body": "Willschde <em>:stationName</em> als Heimatbahnhof festleje?",
+    "search-results": "Suchergebnisse",
+    "error.bad-request": "Die Anfrage is ungültisch.",
+    "menu.loading": "Lade",
+    "modals.setHome-title": "Heimatbahnhof setze",
+    "settings.follower.following-since": "Folgt seit",
+    "export.reason.private": "Private Reis",
+    "export.title.origin.time.real": "Abfahrtszeit (real)",
+    "export.title.destination.time.real": "Ankunftszeit (real)"
 }
