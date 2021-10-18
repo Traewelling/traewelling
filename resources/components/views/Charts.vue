@@ -360,12 +360,15 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.sendNotyfError(error);
                 });
+        },
+        sendNotyfError(error) {
+          if (error.response) {
+            this.notyf.error(error.response.data.message);
+          } else {
+            this.notyf.error(this.i18n.get("_.messages.exception.general"));
+          }
         },
         fetchGlobalData() {
             axios
@@ -377,11 +380,7 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.sendNotyfError(error);
                 });
         },
         updatePurpose() {
