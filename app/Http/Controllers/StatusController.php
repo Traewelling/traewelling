@@ -333,8 +333,8 @@ class StatusController extends Controller
 
     public static function createStatus(
         User   $user,
-        bool   $business,
-               $visibility,
+        int    $business,
+        int    $visibility,
         string $body = null,
         int    $eventId = null,
         string $type = "hafas"
@@ -354,7 +354,6 @@ class StatusController extends Controller
                                   'visibility' => $visibility,
                                   'type'       => $type,
                                   'event'      => $event?->id
-
                               ]);
     }
 }
