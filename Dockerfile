@@ -16,7 +16,7 @@ RUN composer install
 
 FROM php:apache
 RUN apt update && apt install -y zlib1g-dev libpng-dev
-RUN docker-php-ext-install gd exif
+RUN docker-php-ext-install gd exif pdo pdo_mysql
 RUN a2enmod rewrite
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
