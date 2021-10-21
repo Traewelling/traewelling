@@ -29,9 +29,6 @@ class FrontendStatusController extends Controller
         $user     = Auth::user();
         $statuses = StatusBackend::getDashboard($user);
 
-        if (!$user->hasVerifiedEmail() && $user->email != null) {
-            \Session::flash('mail-prompt', __('controller.status.email-not-verified'));
-        }
         if ($statuses->isEmpty() || $user->follows->count() == 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
