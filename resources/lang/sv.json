@@ -448,5 +448,6 @@
     "export.reason.private": "Privat resa",
     "export.title.origin.time.real": "Avgångstid (verklig)",
     "export.title.destination.time.real": "Ankomsttid (verklig)",
-    "request-time": "frågade vid :time"
+    "request-time": "frågade vid :time",
+    "menu.share": "Dela"
 }
