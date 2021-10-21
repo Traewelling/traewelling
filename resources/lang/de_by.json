@@ -48,7 +48,6 @@
     "about.points1": "Dia Punkte setzt sich us dr Produktklassn und dr Entfernung diner Reisen zamme.",
     "controller.status.create-success": "Status erstellt.",
     "controller.status.delete-ok": "Status glöscht.",
-    "controller.status.email-not-verified": "Du hosch dei Email-Adressn no id verifiziert.",
     "controller.status.email-resend-mail": "Bestätigung nomal verschicka.",
     "controller.status.export-invalid-dates": "Des sand koane richtige Data.",
     "controller.status.export-neither-business": "Du kahsch id Privat und Business-Trips gleichzeitig abwähla.",

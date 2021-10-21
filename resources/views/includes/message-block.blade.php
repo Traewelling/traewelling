@@ -19,22 +19,6 @@
                 @endif
             @endforeach
 
-            @if($message = session()->get('mail-prompt'))
-                <div class="alert alert-info alert-dismissible">
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                    <strong>{!! $message !!}</strong>
-                    <button class="btn btn-default" href="{{ route('verification.resend') }}"
-                            onclick="event.preventDefault(); document.getElementById('resend-mail-form').submit();">
-                        {{ __('controller.status.email-resend-mail') }}
-                    </button>
-
-                    <form id="resend-mail-form" action="{{ route('verification.resend') }}" method="POST"
-                          style="display: none;">
-                        @csrf
-                    </form>
-                </div>
-            @endif
-
             @if(session()->has('message'))
                 <div class="alert my-3 alert-info alert-dismissible" role="alert">
                     {!! session()->get('message') !!}
@@ -42,6 +26,7 @@
                 </div>
             @endif
 
+            @include('includes.messages.mail-verification')
             @include('includes.messages.checkin-success')
 
             <div id="alert_placeholder"></div>

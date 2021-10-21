@@ -188,7 +188,6 @@
     "controller.status.status-not-found": "Fant ikke satus",
     "about.block1": "Träwelling er en gratis innsjekkingstjeneste som lar det komme dine venner til kjenne hvor du er, og du kan logge dine kollektivreiser. Sjekk inn på tog og få poeng.",
     "controller.status.create-success": "Status opprettet.",
-    "controller.status.email-not-verified": "Du har ikke bekreftet e-postadressen din enda.",
     "controller.status.like-ok": "Begunstiget.",
     "user.complete-registration": "Fullfør registrering",
     "user.email-verify": "Bekreft din e-postadresse",
