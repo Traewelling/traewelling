@@ -20,12 +20,13 @@ class Kernel extends ConsoleKernel
      * Define the application's command schedule.
      *
      * @param Schedule $schedule
+     *
      * @return void
      */
     protected function schedule(Schedule $schedule): void {
-        $schedule->command('trwl:cleanUpUsers')->daily();
-        $schedule->command('trwl:cleanUpHafasTrips')->daily();
-        $schedule->command('trwl:cleanUpPolylines')->daily();
+        $schedule->command('trwl:cleanUpUsers')->dailyAt("1:30");
+        $schedule->command('trwl:cleanUpHafasTrips')->dailyAt("1:35");
+        $schedule->command('trwl:cleanUpPolylines')->dailyAt("1:40");
         $schedule->command('trwl:refreshTrips')->everyMinute();
     }
 

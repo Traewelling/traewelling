@@ -16,6 +16,7 @@ class UserController extends Controller
     /**
      * @param User $user
      * @param User $userToBeMuted
+     *
      * @return bool
      * @throws UserAlreadyMutedException
      * @throws InvalidArgumentException
@@ -24,7 +25,7 @@ class UserController extends Controller
         if ($user->mutedUsers->contains('id', $userToBeMuted->id)) {
             throw new UserAlreadyMutedException();
         }
-        if ($user->id == $userToBeMuted->id) {
+        if ($user->is($userToBeMuted)) {
             throw new InvalidArgumentException();
         }
         try {
@@ -43,6 +44,7 @@ class UserController extends Controller
     /**
      * @param User $user
      * @param User $userToBeUnmuted
+     *
      * @return bool
      * @throws UserNotMutedException
      */
@@ -53,6 +55,6 @@ class UserController extends Controller
 
         $queryCount = UserMute::where('user_id', $user->id)->where('muted_id', $userToBeUnmuted->id)->delete();
         $user->load('mutedUsers');
-        return $queryCount == 1;
+        return $queryCount === 1;
     }
 }

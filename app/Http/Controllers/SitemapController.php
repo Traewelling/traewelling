@@ -12,6 +12,9 @@ use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\SitemapGenerator;
 use Spatie\Sitemap\Tags\Url;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class SitemapController extends Controller
 {
     public function renderSitemap(Request $request): Response {

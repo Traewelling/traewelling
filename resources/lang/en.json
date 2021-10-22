@@ -71,8 +71,7 @@
     "controller.status.status-not-found": "Status not found",
     "controller.status.create-success": "Status successfully created.",
     "controller.status.delete-ok": "Status successfully deleted.",
-    "controller.status.email-not-verified": "You have not verified your email yet.",
-    "controller.status.email-resend-mail": "Resend link.",
+    "controller.status.email-resend-mail": "Resend link",
     "controller.status.export-invalid-dates": "Those aren't valid dates.",
     "controller.status.export-neither-business": "You can't uncheck both private and business trips.",
     "controller.status.like-already": "Like already exists.",
@@ -205,6 +204,7 @@
     "menu.settings": "Settings",
     "menu.settings.myFollower": "My followers",
     "menu.settings.follower-requests": "Follower requests",
+    "menu.share": "Share",
     "menu.admin": "Admin-Panel",
     "menu.readmore": "Read more",
     "menu.loading": "Loading",
@@ -448,5 +448,10 @@
     "settings.visibility": "Visibility",
     "settings.visibility.disclaimer": "If your profile is private, even statuses marked as public will only be shown to your followers.",
     "settings.visibility.default": "CheckIns: Default visibility",
-    "request-time": "requested at :time"
+    "request-time": "requested at :time",
+    "email.validation": "Confirm email address",
+    "email.verification.btn": "Click on the button to receive your confirmation link.",
+    "email.verification.sent": "To complete the change of your email address you still need to click on the link in the email we just sent you.",
+    "welcome": "Welcome to Träwelling!",
+    "email.verification.required": "To take full advantage of Träwelling, you still need to confirm your email address."
 }

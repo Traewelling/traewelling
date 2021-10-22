@@ -66,7 +66,7 @@ class EventController extends Controller
 
         $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation == null) {
+        if ($trainStation === null) {
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
 
@@ -101,7 +101,7 @@ class EventController extends Controller
 
         $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation == null) {
+        if ($trainStation === null) {
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
 
@@ -133,7 +133,7 @@ class EventController extends Controller
 
         $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation == null) {
+        if ($trainStation === null) {
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
         $validated['trainstation'] = $trainStation->id;

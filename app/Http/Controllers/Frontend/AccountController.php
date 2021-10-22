@@ -17,7 +17,7 @@ class AccountController extends Controller
 
         $user = auth()->user();
 
-        if ($user->avatar != 'user.jpg') {
+        if ($user->avatar !== 'user.jpg') {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
         }
 

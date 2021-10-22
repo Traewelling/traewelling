@@ -95,17 +95,18 @@ import FADropdown from "./FADropdown";
 import {travelReason, visibility} from "../js/APImodels";
 
 export default {
-  name: "CheckInModal",
-  components: {FADropdown},
-  data() {
-    return {
-      modal: null,
-      notifications: null,
-      status: {
-        body: "",
-        business: 0,
-        visibility: 0,
-        event: 0,
+    name: "CheckInModal",
+    inject: ["notyf"],
+    components: {FADropdown},
+    data() {
+        return {
+            modal: null,
+            notifications: null,
+            status: {
+                body: "",
+                business: 0,
+                visibility: 0,
+                event: 0,
         tweet: false,
         toot: false,
       },
@@ -170,7 +171,7 @@ export default {
             alert(result.data.status.train.points + " points");
           })
           .catch((error) => {
-            console.error(error);
+              this.notyf.error(error);
           });
     },
     editCheckin() {
@@ -184,7 +185,11 @@ export default {
             this.hide();
           })
           .catch((error) => {
-            console.error(error);
+              if (error.response) {
+                  this.notyf.error(error.response.data.error.message);
+              } else {
+                  this.notyf.error(this.i18n.get("_.messages.exception.general"));
+              }
           });
 
     }

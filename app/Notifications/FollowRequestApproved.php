@@ -51,6 +51,7 @@ class FollowRequestApproved extends Notification
     /**Detail-Handler of notification
      *
      * @param mixed $notification
+     *
      * @return stdClass
      * @throws ShouldDeleteNotificationException
      */
@@ -80,12 +81,12 @@ class FollowRequestApproved extends Notification
         }
 
         return view("includes.notification", [
-            'color' => 'neutral',
-            'icon' => 'fas fa-user-plus',
-            'lead' => __('notifications.userApprovedFollow.lead',
-                         ['followerRequestUsername' => $detail->sender->username]),
-            'link' => route('account.show', ['username' => $detail->sender->username]),
-            'notice' => '',
+            'color'           => 'neutral',
+            'icon'            => 'fas fa-user-plus',
+            'lead'            => __('notifications.userApprovedFollow.lead',
+                                    ['followerRequestUsername' => $detail->sender->username]),
+            'link'            => route('account.show', ['username' => $detail->sender->username]),
+            'notice'          => '',
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read'            => $notification->read_at != null,
             'notificationId'  => $notification->id

@@ -19,17 +19,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
         $user     = Auth::user();
         $statuses = StatusBackend::getDashboard($user);
 
-        if (!$user->hasVerifiedEmail() && $user->email != null) {
-            \Session::flash('mail-prompt', __('controller.status.email-not-verified'));
-        }
         if ($statuses->isEmpty() || $user->follows->count() == 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
