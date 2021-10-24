@@ -16,6 +16,7 @@
           </button>
         </div>
         <div class="modal-body" id="notifications-list" ref="list">
+            <Notification v-for="data in notifications" v-bind:key="data.id" :data="data"></Notification>
         </div>
         <div id="notifications-empty" class="text-center text-muted" v-if="notifications == null">
           {{ i18n.get('_.notifications.empty') }}
@@ -28,9 +29,11 @@
 
 <script>
 import {Modal} from "bootstrap";
+import Notification from "./Notification";
 
 export default {
     name: "NotificationsModal",
+    components: {Notification},
     inject: ["notyf"],
     data() {
         return {
@@ -50,24 +53,24 @@ export default {
       this.modal.hide();
     },
     fetchNotifications() {
-      // ToDo: make this shit json only
-      // ToDo: interactions are broken
-      axios
-          .get("/notifications?render=true")
-          .then((response) => {
-            this.notifications        = response.data.data;
-            this.$refs.list.innerHTML = null;
-            this.notifications.forEach((notification) => {
-              this.$refs.list.insertAdjacentHTML("beforeend", notification.html);
+        // ToDo: make this shit json only
+        // ToDo: interactions are broken
+        axios
+            .get("/notifications")
+            .then((response) => {
+                this.notifications = response.data.data;
+                // this.$refs.list.innerHTML = null;
+                // this.notifications.forEach((notification) => {
+                //   this.$refs.list.insertAdjacentHTML("beforeend", notification.html);
+                // });
+            })
+            .catch((error) => {
+                if (error.response) {
+                    this.notyf.error(error.response.data.error.message);
+                } else {
+                    this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                }
             });
-          })
-          .catch((error) => {
-              if (error.response) {
-                  this.notyf.error(error.response.data.error.message);
-              } else {
-                  this.notyf.error(this.i18n.get("_.messages.exception.general"));
-              }
-          });
     }
   }
 };

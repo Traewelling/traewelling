@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\UserNotificationMessageResource;
 use App\Http\Resources\UserResource;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -27,25 +28,26 @@ class FollowRequestIssued extends Notification
         $this->followRequest = $followRequest;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
-    }
+    /** @deprecated will be handled in frontend */
+    public static function render(mixed $notification): ?string {
+        try {
+            $detail = self::detail($notification);
+        } catch (ShouldDeleteNotificationException) {
+            $notification->delete();
+            return null;
+        }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array
-     */
-    #[ArrayShape(['follow_id' => "mixed"])]
-    public function toArray(): array {
-        return [
-            'follow_id' => $this->followRequest->id,
-        ];
+        return view("includes.notification", [
+            'color'           => 'neutral',
+            'icon'            => 'fas fa-user-plus',
+            'lead'            => __('notifications.userRequestedFollow.lead',
+                                    ['followerRequestUsername' => $detail->sender->username]),
+            'link'            => route('settings.follower'),
+            'notice'          => __('notifications.userRequestedFollow.notice'),
+            'date_for_humans' => $notification->created_at->diffForHumans(),
+            'read'            => $notification->read_at != null,
+            'notificationId'  => $notification->id
+        ])->render();
     }
 
     /**Detail-Handler of notification
@@ -67,29 +69,42 @@ class FollowRequestIssued extends Notification
         }
         $notification->detail->followRequest = $followRequest;
         $notification->detail->sender        = new UserResource($sender);
+        $notification->detail->message       = new UserNotificationMessageResource
+        ([
+             'icon'   => 'fas fa-user-plus',
+             'lead'   => [
+                 'key'    => 'notifications.userRequestedFollow.lead',
+                 'values' => [
+                     'followerRequestUsername' => $sender->username
+                 ]
+             ],
+             'notice' => [
+                 'key'    => 'notifications.userRequestedFollow.notice',
+                 'values' => []
+             ]
+         ]);
 
         return $notification->detail;
     }
 
-    /** @deprecated will be handled in frontend */
-    public static function render(mixed $notification): ?string {
-        try {
-            $detail = self::detail($notification);
-        } catch (ShouldDeleteNotificationException) {
-            $notification->delete();
-            return null;
-        }
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array
+     */
+    public function via(): array {
+        return ['database'];
+    }
 
-        return view("includes.notification", [
-            'color'           => 'neutral',
-            'icon'            => 'fas fa-user-plus',
-            'lead'            => __('notifications.userRequestedFollow.lead',
-                                    ['followerRequestUsername' => $detail->sender->username]),
-            'link'            => route('settings.follower'),
-            'notice'          => __('notifications.userRequestedFollow.notice'),
-            'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read'            => $notification->read_at != null,
-            'notificationId'  => $notification->id
-        ])->render();
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array
+     */
+    #[ArrayShape(['follow_id' => "mixed"])]
+    public function toArray(): array {
+        return [
+            'follow_id' => $this->followRequest->id,
+        ];
     }
 }

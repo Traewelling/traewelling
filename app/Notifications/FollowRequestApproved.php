@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\UserNotificationMessageResource;
 use App\Http\Resources\UserResource;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -28,51 +29,6 @@ class FollowRequestApproved extends Notification
         $this->follow = $follow;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array
-     */
-    #[ArrayShape(['follow_id' => "mixed"])]
-    public function toArray(): array {
-        return [
-            'follow_id' => $this->follow->id,
-        ];
-    }
-
-    /**Detail-Handler of notification
-     *
-     * @param mixed $notification
-     *
-     * @return stdClass
-     * @throws ShouldDeleteNotificationException
-     */
-    public static function detail(mixed $notification): stdClass {
-        $data                 = $notification->data;
-        $notification->detail = new stdClass();
-        try {
-            $follow = Follow::findOrFail($data['follow_id']);
-            $sender = User::findOrFail($follow->follow_id);
-        } catch (ModelNotFoundException) {
-            // The follow doesn't exist anymore or the user following you was deleted. Eitherway,
-            // we can delete the notification.
-            throw new ShouldDeleteNotificationException();
-        }
-        $notification->detail->follow = $follow;
-        $notification->detail->sender = new UserResource($sender);
-
-        return $notification->detail;
-    }
-
     /** @deprecated will be handled in frontend */
     public static function render(mixed $notification): ?string {
         try {
@@ -93,5 +49,64 @@ class FollowRequestApproved extends Notification
             'read'            => $notification->read_at != null,
             'notificationId'  => $notification->id
         ])->render();
+    }
+
+    /**Detail-Handler of notification
+     *
+     * @param mixed $notification
+     *
+     * @return stdClass
+     * @throws ShouldDeleteNotificationException
+     */
+    public static function detail(mixed $notification): stdClass {
+        $data                 = $notification->data;
+        $notification->detail = new stdClass();
+        try {
+            $follow = Follow::findOrFail($data['follow_id']);
+            $sender = User::findOrFail($follow->follow_id);
+        } catch (ModelNotFoundException) {
+            // The follow doesn't exist anymore or the user following you was deleted. Eitherway,
+            // we can delete the notification.
+            throw new ShouldDeleteNotificationException();
+        }
+        $notification->detail->follow  = $follow;
+        $notification->detail->sender  = new UserResource($sender);
+        $notification->detail->message = new UserNotificationMessageResource
+        ([
+             'icon'   => 'fas fa-user-plus',
+             'lead'   => [
+                 'key'    => 'notifications.userApprovedFollow.lead',
+                 'values' => [
+                     'followerRequestUsername' => $sender->username
+                 ]
+             ],
+             'notice' => [
+                 'key'    => 'notifications.userApprovedFollow.lead',
+                 'values' => []
+             ]
+         ]);
+
+        return $notification->detail;
+    }
+
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array
+     */
+    public function via(): array {
+        return ['database'];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array
+     */
+    #[ArrayShape(['follow_id' => "mixed"])]
+    public function toArray(): array {
+        return [
+            'follow_id' => $this->follow->id,
+        ];
     }
 }
