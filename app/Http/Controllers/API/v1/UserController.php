@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 
 class UserController extends ResponseController
 {
@@ -139,5 +140,13 @@ class UserController extends ResponseController
             return $this->sendv1Response(new UserResource($userToBeUnmuted));
         }
         return $this->sendError(['message' => __('messages.exception.general')], 400);
+    }
+
+    public function search(string $query): AnonymousResourceCollection|JsonResponse {
+        try {
+            return UserResource::collection(BackendUserBackend::searchUser($query));
+        } catch (InvalidArgumentException) {
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        }
     }
 }
