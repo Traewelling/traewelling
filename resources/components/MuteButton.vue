@@ -19,6 +19,7 @@ import {ProfileModel} from "../js/APImodels";
 
 export default {
     name: "MuteButton",
+    inject: ["notyf"],
     data() {
         return {
             userData: ProfileModel
@@ -51,7 +52,11 @@ export default {
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         unmute() {
@@ -62,7 +67,11 @@ export default {
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 })
         }
     }

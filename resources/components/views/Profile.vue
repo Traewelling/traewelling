@@ -15,7 +15,7 @@
                 </h2>
                 <h2>
           <span class="font-weight-bold">
-            <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;{{ user.trainDistance.toFixed(2) }}
+            <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;{{ (user.trainDistance / 1000).toFixed(1) }}
           </span>
                     <span class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2">

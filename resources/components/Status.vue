@@ -212,6 +212,7 @@ import MuteButton from "./MuteButton";
 
 export default {
     name: "Status.vue",
+    inject: ["notyf"],
     data() {
         return {
             isSingleStatus: false,
@@ -309,7 +310,12 @@ export default {
                         this.likes.push(this.$auth.user());
                     })
                     .catch((error) => {
-                        console.error(error);
+                        this.loading = false;
+                        if (error.response) {
+                            this.notyf.error(error.response.data.error.message);
+                        } else {
+                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                        }
                     });
             } else {
                 axios
@@ -323,7 +329,12 @@ export default {
                         }
                     })
                     .catch((error) => {
-                        console.error(error);
+                        this.loading = false;
+                        if (error.response) {
+                            this.notyf.error(error.response.data.error.message);
+                        } else {
+                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                        }
                     });
             }
         },
@@ -334,7 +345,12 @@ export default {
                     this.status = null;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         updateStatus() {

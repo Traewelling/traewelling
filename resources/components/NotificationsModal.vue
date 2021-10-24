@@ -30,17 +30,18 @@
 import {Modal} from "bootstrap";
 
 export default {
-  name: "NotificationsModal",
-  data() {
-    return {
-      modal: null,
-      notifications: null,
-    };
-  },
-  mounted() {
-    this.modal = new Modal(this.$refs.modal);
-  },
-  methods: {
+    name: "NotificationsModal",
+    inject: ["notyf"],
+    data() {
+        return {
+            modal: null,
+            notifications: null,
+        };
+    },
+    mounted() {
+        this.modal = new Modal(this.$refs.modal);
+    },
+    methods: {
     show() {
       this.fetchNotifications();
       this.modal.show();
@@ -61,7 +62,11 @@ export default {
             });
           })
           .catch((error) => {
-            console.error(error);
+              if (error.response) {
+                  this.notyf.error(error.response.data.error.message);
+              } else {
+                  this.notyf.error(this.i18n.get("_.messages.exception.general"));
+              }
           });
     }
   }
