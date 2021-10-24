@@ -104,15 +104,44 @@
                 </ul>
             </div>
         </div>
+        <NotificationsModal ref="notifModal"></NotificationsModal>
     </nav>
 </template>
 
 <script>
 import NotificationsButton from "../NotificationsButton";
+import NotificationsModal from "../NotificationsModal";
 
 export default {
     name: "NavbarComponent",
-    components: {NotificationsButton}
+    components: {NotificationsModal, NotificationsButton},
+    data() {
+        return {
+            notificationsCount: 0,
+        }
+    },
+    methods: {
+        showNotifications() {
+            this.$refs.notifModal.show();
+        },
+        fetchNotificationsCount() {
+            axios
+                .get("/notifications/count")
+                .then((response) => {
+                    this.notificationsCount = response.data.data;
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+        }
+    },
+    mounted() {
+        this.fetchNotificationsCount();
+    }
 };
 </script>
 
