@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\UserResource;
 use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -65,11 +66,12 @@ class FollowRequestIssued extends Notification
             throw new ShouldDeleteNotificationException();
         }
         $notification->detail->followRequest = $followRequest;
-        $notification->detail->sender        = $sender;
+        $notification->detail->sender        = new UserResource($sender);
 
         return $notification->detail;
     }
 
+    /** @deprecated will be handled in frontend */
     public static function render(mixed $notification): ?string {
         try {
             $detail = self::detail($notification);

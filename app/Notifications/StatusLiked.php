@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\StatusResource;
+use App\Http\Resources\UserResource;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -70,12 +72,13 @@ class StatusLiked extends Notification
         }
 
         $notification->detail         = new stdClass();
-        $notification->detail->sender = $sender;
-        $notification->detail->status = $status;
+        $notification->detail->sender = new UserResource($sender);
+        $notification->detail->status = new StatusResource($status);
 
         return $notification->detail;
     }
 
+    /** @deprecated will be handled in frontend */
     public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);

@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -74,10 +75,11 @@ class UserJoinedConnection extends Notification
             throw new ShouldDeleteNotificationException();
         }
 
-        $notification->detail->status = $status;
+        $notification->detail->status = new StatusResource($status);
         return $notification->detail;
     }
 
+    /** @deprecated will be handled in frontend */
     public static function render(DatabaseNotification $notification): ?string {
         try {
             $detail = self::detail($notification);

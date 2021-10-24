@@ -7,6 +7,7 @@ use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\Notification;
+use stdClass;
 
 class MastodonNotSent extends Notification
 {
@@ -42,11 +43,12 @@ class MastodonNotSent extends Notification
         } catch (ModelNotFoundException) {
             throw new ShouldDeleteNotificationException();
         }
-        $notification->detail         = new \stdClass();
+        $notification->detail         = new stdClass();
         $notification->detail->status = $status;
         return $notification->type;
     }
 
+    /** @deprecated will be handled in frontend */
     public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);

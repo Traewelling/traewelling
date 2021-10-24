@@ -55,6 +55,7 @@ class TwitterNotSent extends Notification
         return $notification->type;
     }
 
+    /** @deprecated will be handled in frontend */
     public static function render(DatabaseNotification $notification): ?string {
         try {
             self::detail($notification);
