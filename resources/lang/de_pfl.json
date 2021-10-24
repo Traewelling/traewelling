@@ -41,7 +41,6 @@
     "controller.status.status-not-found": "Status ned gefunn",
     "controller.status.create-success": "Status erstelld.",
     "controller.status.delete-ok": "Status gelöschd.",
-    "controller.status.email-not-verified": "Du hasch dei Email-Adress noch ned verifizierd.",
     "controller.status.email-resend-mail": "Bestätichung erneit senne.",
     "controller.status.export-invalid-dates": "Des sin kää richdische Date.",
     "controller.status.export-neither-business": "Du kannschd ned sowohl Privat- als aach Business-Trips abwähle.",

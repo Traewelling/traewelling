@@ -311,6 +311,11 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @param string|null $searchQuery
+     * @deprecated is now in backend/usercontroller for api v1
+     * @return Paginator
+     */
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
         if ($validator->fails()) {
