@@ -233,7 +233,7 @@
     "notifications.userFollowed.lead": "<b>@:followerUsername</b> is following you.",
     "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> wants to follow you.",
     "notifications.userRequestedFollow.notice": "To accept or decline the follow request, click here or go to your settings.",
-    "notifications.userApprovedFollow.lead": "<b>@:followerRequestusername</b> has approved your follow request",
+    "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> has approved your follow request",
     "notifications.socialNotShared.lead": "Your Check-in has not been shared to :Platform.",
     "notifications.socialNotShared.mastodon.401": "Your instance has sent us an <code>401 Unauthorized</code> error when we tried to toot. Maybe it helps to reconnect Mastodon with Träwelling again?",
     "notifications.socialNotShared.mastodon.429": "It looks like we've been rate-limited by your instance. (<code>429 Too Many Requests</code>)",
