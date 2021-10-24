@@ -109,6 +109,7 @@ import Spinner from "../Spinner";
 
 export default {
     name: "Trip",
+    inject: ["notyf"],
     components: {Spinner, LayoutBasic, CheckInModal},
     data() {
         return {
@@ -148,7 +149,12 @@ export default {
                     this.loading     = false;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 });
         },
         showModal(stop) {

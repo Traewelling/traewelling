@@ -29,7 +29,6 @@
     "controller.status.status-not-found": "Nie znaleziono statusu",
     "controller.status.create-success": "Pomyślnie ustawiono status.",
     "controller.status.delete-ok": "Pomyślnie usunięto status.",
-    "controller.status.email-not-verified": "Jeszcze nie zweryfikowałeś swojego adresu e-mail.",
     "controller.status.email-resend-mail": "Wyślij link ponownie.",
     "controller.status.export-invalid-dates": "Niepoprawne dane.",
     "controller.status.like-already": "Polubienie już istnieje.",

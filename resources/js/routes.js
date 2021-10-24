@@ -47,9 +47,13 @@ export const router = new VueRouter({
                 name: "singleStatus"
             },
             {
-                path: "/profile/:username",
+                path: "/@:username",
                 component: Profile,
                 name: "profile"
+            },
+            {
+                path: "/profile/:username",
+                redirect: "/@:username"
             },
             {
                 path: "/event/:slug",
