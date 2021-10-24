@@ -10,9 +10,9 @@
 
             <div class="card-body row py-1 ps-2 pe-3">
                 <div class="col-2 image-box pe-0 d-none d-lg-flex">
-                    <router-link :to="{ name: 'profile', params: {username: statusData.user.username}}">
-                        <img :alt="statusData.user.username"
-                             :src="`/profile/${statusData.user.username}/profilepicture`">
+                    <router-link :to="{ name: 'profile', params: {username: statusData.username}}">
+                        <img :alt="statusData.username"
+                             :src="`/profile/${statusData.username}/profilepicture`">
                     </router-link>
                 </div>
 
@@ -106,9 +106,9 @@
              class="fas visibility-icon text-small"
              data-mdb-placement="top"
              data-mdb-toggle="tooltip"></i>
-          <router-link :to="{name: 'profile', params: {username: statusData.user.username}}">
-            <span v-if="$auth.check() && $auth.user().id === statusData.user.id">{{ i18n.get("_.user.you") }}</span>
-            <span v-else>{{ statusData.user.username }}</span>
+          <router-link :to="{name: 'profile', params: {username: statusData.username}}">
+            <span v-if="$auth.check() && $auth.user().id === statusData.user">{{ i18n.get("_.user.you") }}</span>
+            <span v-else>{{ statusData.username }}</span>
           </router-link>,
           <router-link :to="{ name: 'singleStatus', params: {id: statusData.id, statusData: this.status } }">
             {{ moment(statusData.createdAt).fromNow() }}
@@ -116,9 +116,9 @@
         </span>
                 <ul class="list-inline">
                     <li class="list-inline-item d-lg-none me-1">
-                        <router-link :to="{name: 'profile', params: {username: statusData.user.username}}">
+                        <router-link :to="{name: 'profile', params: {username: statusData.username}}">
                             <img :alt="i18n.get('_.settings.picture')"
-                                 :src="`/profile/${statusData.user.username}/profilepicture`"
+                                 :src="`/profile/${statusData.username}/profilepicture`"
                                  class="profile-image">
                         </router-link>
                     </li>
@@ -130,8 +130,7 @@
                     </li>
                     <li class="list-inline-item like-text">
                         <a :aria-label="i18n.get('_.menu.show-more')" class="like-text" data-mdb-toggle="dropdown"
-                           role="button"
-                           tabindex="0">
+                           role="button" tabindex="0" @click="fetchUser">
                             <i aria-hidden="true" class="fas fa-ellipsis-h small"></i>
                         </a>
                         <ul class="dropdown-menu">
@@ -140,11 +139,11 @@
                                     <i aria-hidden="true" class="fas fa-share"></i>&nbsp; {{ i18n.get("_.menu.share") }}
                                 </a>
                             </li>
-                            <li v-if="!editable">
-                                <FollowButton :user="status.user" dropdown="true"/>
+                            <li v-if="!editable && user">
+                                <FollowButton :user="user" dropdown="true"/>
                             </li>
-                            <li v-if="!editable">
-                                <MuteButton :user="status.user" dropdown="true"/>
+                            <li v-if="!editable && user">
+                                <MuteButton :user="user" dropdown="true"/>
                             </li>
                             <li v-if="editable">
                                 <a class="dropdown-item" href="#" v-on:click.prevent="toggleEditModal">
@@ -176,14 +175,14 @@
                         <router-link :to="{name: 'profile', params: {username: like.user.username}}">
                             {{ like.user.username }}
                         </router-link>
-                        <span v-if="like.id === statusData.user.id">{{ i18n.get("_.user.liked-own-status") }}</span>
+                        <span v-if="like.id === statusData.user">{{ i18n.get("_.user.liked-own-status") }}</span>
                         <span v-else>{{ i18n.get("_.user.liked-status") }}</span>
                     </li>
                 </ul>
             </div>
         </div>
         <ModalConfirm
-            v-if="$auth.check() && statusData.user.id=== $auth.user().id"
+            v-if="$auth.check() && statusData.user=== $auth.user().id"
             ref="deleteModal"
             :abort-text="i18n.get('_.menu.abort')"
             :confirm-text="i18n.get('_.modals.delete-confirm')"
@@ -192,7 +191,7 @@
             v-on:confirm="deleteStatus"
         ></ModalConfirm>
         <CheckInModal
-            v-if="$auth.check() && statusData.user.id=== $auth.user().id"
+            v-if="$auth.check() && statusData.user=== $auth.user().id"
             ref="editModal"
             :status-data="status"
             v-on:updated="updateStatus"
@@ -221,7 +220,8 @@ export default {
             error: false,
             now: moment(),
             travelReason: travelReason,
-            statusResponse: null
+            statusResponse: null,
+            user: null
         };
     },
     components: {
@@ -241,7 +241,7 @@ export default {
     },
     computed: {
         editable() {
-            return this.$auth.check() && this.$auth.user().id === this.statusData.user.id;
+            return this.$auth.check() && this.$auth.user().id === this.statusData.user;
         },
         shareable() {
             return navigator.share;
@@ -299,6 +299,16 @@ export default {
     methods: {
         startRefresh() {
             setInterval(() => (this.now = moment()), 1000);
+        },
+        fetchUser() {
+            axios
+                .get("/user/" + this.status.username)
+                .then((response) => {
+                    this.user = response.data.data;
+                })
+                .catch((error) => {
+                    this.error = error.data.message || error.message;
+                });
         },
         likeStatus() {
             if (this.statusData.liked === false) {
@@ -367,7 +377,7 @@ export default {
             const shareData = {
                 title: this.i18n.get("_.menu.share"),
                 text: this.i18n.choice("_.description.status", 1, {
-                    "username": this.statusData.user.username,
+                    "username": this.statusData.username,
                     "origin": this.statusData.train.origin.name,
                     "destination": this.statusData.train.destination.name,
                     "date": moment(this.statusData.train.origin.departure).format("LLL"),
