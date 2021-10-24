@@ -44,7 +44,6 @@ export default {
     },
     watch: {
         user(val, oldVal) {
-            console.log("test");
             this.userData = this.$props.user;
         }
     },

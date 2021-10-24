@@ -59,10 +59,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
-        Route::post('user/createFollow', [UserController::class, 'createFollow']);
-        Route::delete('user/destroyFollow', [UserController::class, 'destroyFollow']);
-        Route::post('user/createMute', [UserController::class, 'createMute']);
-        Route::delete('user/destroyMute', [UserController::class, 'destroyMute']);
+        Route::group(['prefix' => 'user'], function () {
+            Route::post('createFollow', [UserController::class, 'createFollow']);
+            Route::delete('destroyFollow', [UserController::class, 'destroyFollow']);
+            Route::post('createMute', [UserController::class, 'createMute']);
+            Route::delete('destroyMute', [UserController::class, 'destroyMute']);
+            Route::get('search/{query}', [UserController::class, 'search']);
+        });
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {
