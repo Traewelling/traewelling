@@ -183,7 +183,7 @@
     "dates.August": "augusti",
     "user.no-user": "Ingen användare hittades.",
     "admin.hafas-entries-by-polylines": "HAFAS-inträde och antal tillhöriga polylinjer",
-    "controller.status.email-resend-mail": "Skicka en ny bekräftelse.",
+    "controller.status.email-resend-mail": "Skicka bekräftelselänk",
     "events.name": "Namn",
     "stationboard.filter-products": "Filter",
     "user.always-dbl": "Twittra med #dbl?",
@@ -449,5 +449,7 @@
     "export.title.destination.time.real": "Ankomsttid (verklig)",
     "request-time": "frågade vid :time",
     "menu.share": "Dela",
-    "welcome": "Välkommen till Träwelling!"
+    "welcome": "Välkommen till Träwelling!",
+    "email.verification.sent": "För att komplettera ändringen av din e-postadress du ännu måste klicka länken i e-posten, som vi har precis skickat till dig.",
+    "email.verification.required": "För att kunna använda Träwelling fullt ut måste du bekräfta din e-postadress."
 }
