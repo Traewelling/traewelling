@@ -451,5 +451,7 @@
     "menu.share": "Dela",
     "welcome": "Välkommen till Träwelling!",
     "email.verification.sent": "För att komplettera ändringen av din e-postadress du ännu måste klicka länken i e-posten, som vi har precis skickat till dig.",
-    "email.verification.required": "För att kunna använda Träwelling fullt ut måste du bekräfta din e-postadress."
+    "email.verification.required": "För att kunna använda Träwelling fullt ut måste du bekräfta din e-postadress.",
+    "email.validation": "Bekräfta e-postadressen",
+    "email.verification.btn": "Klicka på knappen för att få din bekräftelselänk."
 }
