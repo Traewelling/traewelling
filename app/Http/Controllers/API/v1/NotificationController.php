@@ -16,7 +16,7 @@ class NotificationController extends ResponseController
      * @return JsonResponse
      */
     public function count(): JsonResponse {
-        return $this->sendv1Response(oldNotificationBackend::count());
+        return $this->sendv1Response(NotificationBackend::count());
     }
 
     /**
@@ -25,7 +25,6 @@ class NotificationController extends ResponseController
      * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection {
-
         return UserNotificationResource::collection(NotificationBackend::latest());
     }
 
@@ -36,5 +35,10 @@ class NotificationController extends ResponseController
      */
     public function update($notificationId): UserNotificationResource {
         return new UserNotificationResource(NotificationBackend::toggleReadState($notificationId));
+    }
+
+    public function readAll(): AnonymousResourceCollection {
+        NotificationBackend::readAll();
+        return UserNotificationResource::collection(NotificationBackend::latest());
     }
 }

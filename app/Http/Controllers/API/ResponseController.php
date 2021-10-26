@@ -5,11 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 
-/**
- * @deprecated Will be replaced by APIv1
- */
+
 class ResponseController extends Controller
 {
+    /**
+     * @param $response
+     *
+     * @return JsonResponse
+     * @deprecated replaced by sendv1Response()
+     */
     public function sendResponse($response): JsonResponse {
         return response()->json($response);
     }

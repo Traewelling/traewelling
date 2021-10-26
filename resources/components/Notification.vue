@@ -75,6 +75,11 @@ export default {
                 .put("/notifications/" + this.notification.id)
                 .then((response) => {
                     this.notification = response.data;
+                    if (this.read) {
+                        this.$emit("decrease");
+                    } else {
+                        this.$emit("increase");
+                    }
                 })
                 .catch((error) => {
                     if (error.response) {

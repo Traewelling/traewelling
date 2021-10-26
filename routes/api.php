@@ -41,9 +41,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
-        Route::get('notifications', [NotificationController::class, 'index']);
-        Route::get('notifications/count', [NotificationController::class, 'count']);
-        Route::put('notifications/{id}', [NotificationController::class, 'update']);
+        Route::group(['prefix' => 'notifications'], function() {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::get('count', [NotificationController::class, 'count']);
+            Route::put('{id}', [NotificationController::class, 'update']);
+            Route::post('readAll', [NotificationController::class, 'readAll']);
+        });
         Route::group(['prefix' => 'trains'], function() {
             Route::get('trip/', [TransportController::class, 'getTrip']);
             Route::post('checkin', [TransportController::class, 'create']);

@@ -104,7 +104,8 @@
                 </ul>
             </div>
         </div>
-        <NotificationsModal ref="notifModal"></NotificationsModal>
+        <NotificationsModal ref="notifModal" v-on:decrease="notificationsCount--" v-on:increase="notificationsCount++"
+                            v-on:reset="notificationsCount = 0"></NotificationsModal>
     </nav>
 </template>
 
