@@ -18,8 +18,8 @@ class UserNotificationMessageResource extends JsonResource
      */
     public function toArray($request) {
         return [
-            'icon'     => $this['icon'] ?? "",
-            'severity' => $this['severity'] ?? "notice",
+            'icon'     => $this['icon'] ?? '',
+            'severity' => $this['severity'] ?? 'notice',
             'lead'     => $this['lead'] ?? [],
             'notice'   => $this['notice'] ?? []
         ];
