@@ -110,10 +110,14 @@ abstract class TestCase extends BaseTestCase
         if ($user == null) {
             $user = $this->user;
         }
-        $trainStationboard = TransportController::getDepartures($stationName,
-                                                                $timestamp,
-                                                                TravelType::EXPRESS);
-        $countDepartures   = count($trainStationboard['departures']);
+        try {
+            $trainStationboard = TransportController::getDepartures($stationName,
+                                                                    $timestamp,
+                                                                    TravelType::EXPRESS);
+        } catch (HafasException $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
+        $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
@@ -132,11 +136,15 @@ abstract class TestCase extends BaseTestCase
         CheckinTest::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
-        $trip = TransportController::TrainTrip(
-            $departure->tripId,
-            $departure->line->name,
-            $departure->stop->location->id
-        );
+        try {
+            $trip = TransportController::TrainTrip(
+                $departure->tripId,
+                $departure->line->name,
+                $departure->stop->location->id
+            );
+        } catch (HafasException $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
 
         $eventId = 0;
         if ($forEvent != null) {
@@ -165,6 +173,8 @@ abstract class TestCase extends BaseTestCase
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
         } catch (CheckInCollisionException) {
             $this->markTestSkipped("failure for " . $timestamp->format('Y-m-d H:i:s') . ": Collision");
+        } catch (HafasException $e) {
+            $this->markTestSkipped($e->getMessage());
         }
     }
 }

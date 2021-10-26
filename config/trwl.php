@@ -17,8 +17,8 @@ return [
 
     # DB_REST
     'db_rest'           => env('DB_REST'),
-    'db_rest_timeout'   => env('DB_REST_TIMEOUT', 120),
-    'base_points' => [
+    'db_rest_timeout'   => env('DB_REST_TIMEOUT', 30),
+    'base_points'       => [
         'train' => [
             'tram'            => env('BASE_POINTS_TRAIN_TRAM', 2),
             'bus'             => env('BASE_POINTS_TRAIN_BUS', 2),
