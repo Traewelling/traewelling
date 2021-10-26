@@ -70,6 +70,17 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-check-label" for="privateProfileSwitch">
+                                {{ i18n.get('_.settings.visibility.default') }}
+                            </label>
+                        </div>
+                        <div class="col">
+                            <FADropdown :dropdown-content="visibility" :pre-select="0" class="float-end"
+                                        showText="true"></FADropdown>
+                        </div>
+                    </div>
+                    <div class="row border-top mt-3 pt-3">
+                        <div class="col">
+                            <label class="form-check-label" for="privateProfileSwitch">
                                 {{ i18n.get('_.user.private-profile') }}
                             </label>
                         </div>
@@ -99,59 +110,45 @@
                             <input id="dblSwitch" class="form-check-input float-end" type="checkbox"/>
                         </div>
                     </div>
-                    <div class="row border-top mt-3 pt-3">
-                        <div class="col">
-                            <label class="form-check-label" for="privateProfileSwitch">
-                                {{ i18n.get('_.settings.visibility.default') }}
-                            </label>
-                        </div>
-                        <div class="col">
-                            <FADropdown :dropdown-content="visibility" :pre-select="0" class="float-end"
-                                        showText="true"></FADropdown>
-                        </div>
-                    </div>
                 </Card>
             </div>
             <div class="col-lg-6 col-sm-12">
                 <Card :title="i18n.get('_.settings.title-password')">
                     <form>
                         <input autocomplete="username" name="username" type="hidden">
-
                         <div class="row">
-                            <label class="col-md-4 col-form-label text-md-right" for="currentPassword">
+                            <label class="col-4" for="currentPassword">
                                 {{ i18n.get("_.settings.current-password") }}
                             </label>
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <input id="currentPassword" autocomplete="current-password"
                                        class="form-control"
                                        type="password"/>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <label class="col-md-4 col-form-label text-md-right" for="password">
+                        <div class="row mt-4">
+                            <label class="col-4" for="password">
                                 {{ i18n.get("_.settings.new-password") }}
                             </label>
 
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <input id="password" autocomplete="new-password"
                                        class="form-control"
                                        required type="password"/>
                             </div>
                         </div>
-                        <div class="row">
-                            <label class="col-md-4 col-form-label text-md-right" for="password-confirm">
+                        <div class="row mt-4">
+                            <label class="col-4" for="password-confirm">
                                 {{ i18n.get("_.settings.confirm-password") }}
                             </label>
-                            <div class="col-md-6">
+                            <div class="col-6">
                                 <input id="password-confirm" autocomplete="new-password"
                                        class="form-control"
                                        name="password_confirmation" required type="password"/>
                             </div>
                         </div>
-
-                        <div class="row mb-0">
-                            <div class="col-6 offset-4">
+                        <div class="row mt-4">
+                            <div class="col text-end">
                                 <button class="btn btn-primary" type="submit">
                                     {{ i18n.get("_.settings.btn-update") }}
                                 </button>
