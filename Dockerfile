@@ -1,4 +1,4 @@
-FROM node:alpine as NodeBuildContainer
+FROM node as NodeBuildContainer
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm i
