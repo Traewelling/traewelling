@@ -139,3 +139,16 @@ export let visibility = [
         detail: "_.status.visibility.3.detail"
     },
 ];
+
+export let profileNotifications = [
+    "App\\Notifications\\FollowRequestApproved",
+    "App\\Notifications\\FollowRequestIssued",
+    "App\\Notifications\\UserFollowed",
+];
+
+export let statusNotifications = [
+    "App\\Notifications\\MastodonNotSent",
+    "App\\Notifications\\StatusLiked",
+    "App\\Notifications\\TwitterNotSent",
+    "App\\Notifications\\UserJoinedConnection"
+]
