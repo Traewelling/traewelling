@@ -24,8 +24,12 @@ use Throwable;
 class FrontendTransportController extends Controller
 {
     public function TrainAutocomplete(string $station): JsonResponse {
-        $TrainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
-        return response()->json($TrainAutocompleteResponse);
+        try {
+            $TrainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
+            return response()->json($TrainAutocompleteResponse);
+        } catch (HafasException $e) {
+            abort(503, $e->getMessage());
+        }
     }
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {

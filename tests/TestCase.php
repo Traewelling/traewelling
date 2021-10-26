@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
 use Tests\Feature\CheckinTest;
 
@@ -175,6 +176,12 @@ abstract class TestCase extends BaseTestCase
             $this->markTestSkipped("failure for " . $timestamp->format('Y-m-d H:i:s') . ": Collision");
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
+        }
+    }
+
+    public function checkHafasException(TestResponse $response): void {
+        if ($response->getStatusCode() === 503) {
+            $this->markTestIncomplete("HafasException");
         }
     }
 }
