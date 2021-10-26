@@ -26,13 +26,14 @@ class TransportController extends ResponseController
 {
     public function TrainAutocomplete($station): JsonResponse {
         try {
-            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)->map(function($station) {
-                return [
-                    'id'       => $station['ibnr'],
-                    'name'     => $station['name'],
-                    'provider' => 'train'
-                ];
-            });
+            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)
+                                                         ->map(function($station) {
+                                                             return [
+                                                                 'id'       => $station['ibnr'],
+                                                                 'name'     => $station['name'],
+                                                                 'provider' => 'train'
+                                                             ];
+                                                         });
             return $this->sendResponse($trainAutocompleteResponse);
         } catch (HafasException $e) {
             return $this->sendError($e->getMessage(), 503);
