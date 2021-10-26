@@ -84,9 +84,9 @@
                                          class="dropdown-item">
                                 <i aria-hidden="true" class="fas fa-user"></i> {{ i18n.get('_.menu.profile') }}
                             </router-link>
-                            <a class="dropdown-item" href="#">
+                            <router-link :to="{name: 'settings'}" class="dropdown-item">
                                 <i aria-hidden="true" class="fas fa-cog"></i> {{ i18n.get('_.menu.settings') }}
-                            </a>
+                            </router-link>
                             <!--                {{ &#45;&#45;@if(Auth::user()->role >= 5)&#45;&#45; }}-->
                             <!--                {{-->
                             <!--                  &#45;&#45; <a class="dropdown-item" href="#">&#45;&#45;}}-->
