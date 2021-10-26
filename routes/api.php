@@ -14,7 +14,7 @@
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\LikesController;
-use App\Http\Controllers\API\v1\NotificationController;
+use App\Http\Controllers\API\v1\NotificationsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -42,10 +42,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::group(['prefix' => 'notifications'], function() {
-            Route::get('/', [NotificationController::class, 'index']);
-            Route::get('count', [NotificationController::class, 'count']);
-            Route::put('{id}', [NotificationController::class, 'update']);
-            Route::post('readAll', [NotificationController::class, 'readAll']);
+            Route::get('/', [NotificationsController::class, 'index']);
+            Route::get('count', [NotificationsController::class, 'count']);
+            Route::put('{id}', [NotificationsController::class, 'update']);
+            Route::post('readAll', [NotificationsController::class, 'readAll']);
         });
         Route::group(['prefix' => 'trains'], function() {
             Route::get('trip/', [TransportController::class, 'getTrip']);

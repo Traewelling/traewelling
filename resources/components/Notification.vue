@@ -55,7 +55,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$props.data);
         this.notification = this.$props.data;
     },
     watch: {
