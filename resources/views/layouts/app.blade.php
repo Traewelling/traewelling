@@ -47,7 +47,7 @@
             </div>
         </div>
         <div id="app">
-            <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
+            <nav class="navbar navbar-expand-md navbar-dark {{ !config('app.debug') ? 'bg-trwl' : 'bg-black' }}">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name', 'Träwelling') }}
