@@ -113,8 +113,51 @@
                 </Card>
             </div>
             <div class="col-lg-6 col-sm-12">
-                <Card title="Test">
-                    bbb
+                <Card :title="i18n.get('_.settings.title-password')">
+                    <form>
+                        <input autocomplete="username" name="username" type="hidden">
+
+                        <div class="row">
+                            <label class="col-md-4 col-form-label text-md-right" for="currentPassword">
+                                {{ i18n.get("_.settings.current-password") }}
+                            </label>
+                            <div class="col-md-6">
+                                <input id="currentPassword" autocomplete="current-password"
+                                       class="form-control"
+                                       type="password"/>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-md-4 col-form-label text-md-right" for="password">
+                                {{ i18n.get("_.settings.new-password") }}
+                            </label>
+
+                            <div class="col-md-6">
+                                <input id="password" autocomplete="new-password"
+                                       class="form-control"
+                                       required type="password"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 col-form-label text-md-right" for="password-confirm">
+                                {{ i18n.get("_.settings.confirm-password") }}
+                            </label>
+                            <div class="col-md-6">
+                                <input id="password-confirm" autocomplete="new-password"
+                                       class="form-control"
+                                       name="password_confirmation" required type="password"/>
+                            </div>
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-6 offset-4">
+                                <button class="btn btn-primary" type="submit">
+                                    {{ i18n.get("_.settings.btn-update") }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </Card>
             </div>
         </div>
