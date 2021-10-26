@@ -20,12 +20,10 @@ class NotificationController extends Controller
 
         if ($notification->read_at === null) {
             $notification->markAsRead();
-            $notification->fresh();
             return $notification;
         }
 
         $notification->markAsUnread();
-        $notification->fresh();
         return $notification;
     }
 

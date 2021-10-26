@@ -21,7 +21,7 @@ class UserNotificationResource extends JsonResource
             "id"        => (string) $this->id,
             "type"      => (string) $this->type,
             "data"      => $this->data,
-            "detail"    => $this->detail ?? $this->type::detail($this),
+            "detail"    => $this->detail ?? $this->type::detail($this->fresh()),
             "readAt"    => $this->read_at ?? null,
             "createdAt" => $this->created_at
         ];

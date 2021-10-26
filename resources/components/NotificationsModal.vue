@@ -15,10 +15,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="notifications-list" ref="list">
+        <div class="modal-body" id="notifications-list" ref="list" v-if="notifications && notifications.length > 0">
             <Notification v-for="data in notifications" v-bind:key="data.id" :data="data"></Notification>
         </div>
-        <div id="notifications-empty" class="text-center text-muted" v-if="notifications == null">
+        <div id="notifications-empty" class="text-center text-muted" v-else>
           {{ i18n.get('_.notifications.empty') }}
           <br/>¯\_(ツ)_/¯
         </div>
