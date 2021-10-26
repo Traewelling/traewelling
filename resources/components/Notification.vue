@@ -1,12 +1,12 @@
 <template>
-    <div :class="{severity, 'unread': !read}" class="row">
+    <div :class="[severity, {'unread': !read}]" class="row">
         <a class="col-1 col-sm-1 align-left lead" href="#">
             <i :class="icon" aria-hidden="true"></i>
         </a>
         <a class="col-7 col-sm-8 align-middle" href="#">
             <p class="lead"
                v-html="i18n.choice(i18nKey, 1, data.detail.message.lead.values)"></p>
-            <span v-if="data.detail.message.notice"
+            <span v-if="data.detail.message.notice.key"
                   v-html="i18n.choice(i18nNoticeKey, 1, data.detail.message.notice.values)">
             </span>
         </a>
@@ -37,7 +37,7 @@ export default {
             return "_." + this.$props.data.detail.message.notice.key;
         },
         severity() {
-            return this.$props.data.detail.severity;
+            return this.$props.data.detail.message.severity;
         },
         read() {
             return this.$props.data.readAt;
@@ -45,13 +45,19 @@ export default {
         icon() {
             return this.$props.data.detail.message.icon;
         }
-    },
-    mounted() {
-        console.log(this.$props.data.detail.message);
+    }, mounted() {
+        console.log(this.$props.data.detail.message.severity);
     }
 }
 </script>
 
 <style scoped>
+.unread.notice {
+    background-color: #e2effa !important;
+}
+
+.unread.warning {
+    background-color: #f2c9c5 !important;
+}
 
 </style>

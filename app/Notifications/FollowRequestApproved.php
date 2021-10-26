@@ -80,10 +80,6 @@ class FollowRequestApproved extends Notification
                      'followerRequestUsername' => $sender->username
                  ]
              ],
-             'notice' => [
-                 'key'    => 'notifications.userApprovedFollow.lead',
-                 'values' => []
-             ]
          ]);
 
         return $notification->detail;
