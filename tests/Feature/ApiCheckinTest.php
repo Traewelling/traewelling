@@ -140,7 +140,7 @@ class ApiCheckinTest extends ApiTestCase
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
                          ->json('PUT', route('api.v0.checkin.train.home'), ['ibnr' => '8000105']);
-        $this->checkHafasException($response);
+        $this->checkHafasException($response, 404);
         $response->assertOk();
         $this->assertEquals($response->getContent(), '"Frankfurt(Main)Hbf"');
 

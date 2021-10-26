@@ -179,8 +179,8 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    public function checkHafasException(TestResponse $response): void {
-        if ($response->getStatusCode() === 503) {
+    public function checkHafasException(TestResponse $response, int $status = 503): void {
+        if ($response->getStatusCode() === $status) {
             $this->markTestIncomplete("HafasException");
         }
     }

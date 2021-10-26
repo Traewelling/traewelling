@@ -10,7 +10,6 @@ use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
-use Error;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -67,12 +66,7 @@ abstract class HafasController extends Controller
 
             return $stations;
         } catch (GuzzleException $e) {
-            try {
-                $response = $e?->getResponse()->getBody()->getContents();
-                throw new HafasException($response->msg ?? $e->getMessage());
-            } catch (Error) {
-                throw new HafasException($e->getMessage());
-            }
+            throw new HafasException($e->getMessage());
         }
     }
 
@@ -107,12 +101,7 @@ abstract class HafasController extends Controller
 
             return $stations;
         }catch (GuzzleException $e) {
-            try {
-                $response = $e?->getResponse()->getBody()->getContents();
-                throw new HafasException($response->msg ?? $e->getMessage());
-            } catch (Error) {
-                throw new HafasException($e->getMessage());
-            }
+            throw new HafasException($e->getMessage());
         }
     }
 
@@ -159,8 +148,7 @@ abstract class HafasController extends Controller
 
             return $departures;
         } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
-            throw new HafasException($response->msg ?? $e->getMessage());
+            throw new HafasException($e->getMessage());
         }
     }
 
@@ -217,12 +205,8 @@ abstract class HafasController extends Controller
                                                     'longitude' => $data->location->longitude
                                                 ]);
         } catch (GuzzleException $e) {
-            try {
-                $response = $e?->getResponse()->getBody()->getContents();
-                throw new HafasException($response->msg ?? $e->getMessage());
-            } catch (Error) {
-                throw new HafasException($e->getMessage());
-            }
+            throw new HafasException($e->getMessage());
+            throw new HafasException($e->getMessage());
         }
     }
 
