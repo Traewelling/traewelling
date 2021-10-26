@@ -1,5 +1,5 @@
 <template>
-    <div v-if="notification" :class="[severity, {'unread': !read}]" class="row" @click="readMessage">
+    <div v-if="notification" :class="[severity, {'unread': !read}]" class="row" @click="clickMessage">
         <a class="col-1 col-sm-1 align-left lead" href="#">
             <i :class="icon" aria-hidden="true"></i>
         </a>
@@ -11,7 +11,7 @@
             </span>
         </a>
         <div class="col col-sm-3 text-end">
-            <button :aria-label="readLabel" class="interact toggleReadState" type="button">
+            <button :aria-label="readLabel" class="interact toggleReadState" type="button" @click.stop="readMessage">
                 <i :class="{'fa-envelope-open': read, 'fa-envelope': !read}" aria-hidden="true" class="far"></i>
             </button>
             <div class="text-muted">{{ moment(notification.createdAt).format("LLL") }}</div>
@@ -20,11 +20,12 @@
 </template>
 
 <script>
-import {profileNotifications} from "../js/APImodels";
+import {profileNotifications, statusNotifications} from "../js/APImodels";
 
 export default {
     name: "Notification",
     props: ["data"],
+    inject: ["notyf"],
     data() {
         return {
             notification: null
@@ -63,13 +64,17 @@ export default {
         }
     },
     methods: {
+        clickMessage() {
+            if (!this.read) {
+                this.readMessage();
+            }
+            this.goToSender();
+        },
         readMessage() {
             axios
                 .put("/notifications/" + this.notification.id)
                 .then((response) => {
-                    console.log(this.notification);
                     this.notification = response.data;
-                    console.log(this.notification);
                 })
                 .catch((error) => {
                     if (error.response) {
@@ -80,10 +85,13 @@ export default {
                 });
         },
         goToSender() {
-            if (profileNotifications.indexOf(this.notification.type)) {
+            if (profileNotifications.indexOf(this.notification.type) >= 0) {
                 this.$router.push({name: "profile", params: {username: this.notification.detail.sender.username}});
             }
-
+            if (statusNotifications.indexOf(this.notification.type) >= 0) {
+                this.$router.push({name: "singleStatus", params: {id: this.notification.detail.status.id}})
+            }
+            this.$emit("close");
         }
     }
 }

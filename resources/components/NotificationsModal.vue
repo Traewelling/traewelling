@@ -16,7 +16,7 @@
           </button>
         </div>
         <div class="modal-body" id="notifications-list" ref="list" v-if="notifications && notifications.length > 0">
-            <Notification v-for="data in notifications" v-bind:key="data.id" :data="data"></Notification>
+            <Notification v-for="data in notifications" v-bind:key="data.id" :data="data" v-on:close="hide"></Notification>
         </div>
         <div id="notifications-empty" class="text-center text-muted" v-else>
           {{ i18n.get('_.notifications.empty') }}
