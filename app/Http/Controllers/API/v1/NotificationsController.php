@@ -7,7 +7,7 @@ use App\Http\Controllers\Backend\NotificationController as NotificationBackend;
 use App\Http\Resources\UserNotificationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\ItemNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends ResponseController
 {
@@ -34,13 +34,36 @@ class NotificationsController extends ResponseController
      * @return UserNotificationResource
      */
     public function update(string $notificationId): UserNotificationResource {
-        try {
-            return new UserNotificationResource(NotificationBackend::toggleReadState($notificationId));
-        } catch (ItemNotFoundException) {
-            abort(404);
-        }
+        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
+
     }
 
+    /**
+     * @param string $notificationId
+     *
+     * @return UserNotificationResource
+     */
+    public function read(string $notificationId): UserNotificationResource {
+        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
+
+    }
+
+    /**
+     * @param string $notificationId
+     *
+     * @return UserNotificationResource
+     */
+    public function unread(string $notificationId): UserNotificationResource {
+        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
+
+    }
+
+    /**
+     * @return AnonymousResourceCollection
+     */
     public function readAll(): AnonymousResourceCollection {
         NotificationBackend::readAll();
         return UserNotificationResource::collection(NotificationBackend::latest());

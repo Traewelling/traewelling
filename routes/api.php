@@ -45,6 +45,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
             Route::put('{id}', [NotificationsController::class, 'update']);
+            Route::put('read/{id}', [NotificationsController::class, 'read']);
+            Route::put('unread/{id}', [NotificationsController::class, 'unread']);
             Route::post('readAll', [NotificationsController::class, 'readAll']);
         });
         Route::group(['prefix' => 'trains'], function() {
