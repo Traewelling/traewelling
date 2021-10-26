@@ -8,6 +8,7 @@ use App\Http\Controllers\NotificationController as oldNotificationBackend;
 use App\Http\Resources\UserNotificationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\ItemNotFoundException;
 
 class NotificationController extends ResponseController
 {
@@ -34,7 +35,11 @@ class NotificationController extends ResponseController
      * @return UserNotificationResource
      */
     public function update($notificationId): UserNotificationResource {
-        return new UserNotificationResource(NotificationBackend::toggleReadState($notificationId));
+        try {
+            return new UserNotificationResource(NotificationBackend::toggleReadState($notificationId));
+        } catch (ItemNotFoundException) {
+            abort(404);
+        }
     }
 
     public function readAll(): AnonymousResourceCollection {

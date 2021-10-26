@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\ItemNotFoundException;
 
 class NotificationController extends Controller
 {
@@ -14,10 +15,11 @@ class NotificationController extends Controller
      * @param $notificationId
      *
      * @return DatabaseNotification
+     * @throws ItemNotFoundException
      * @api v1
      */
     public static function toggleReadState($notificationId): DatabaseNotification {
-        $notification = Auth::user()->notifications->where('id', $notificationId)->first();
+        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
 
         if ($notification->read_at === null) {
             $notification->markAsRead();

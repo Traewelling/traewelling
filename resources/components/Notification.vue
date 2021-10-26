@@ -83,7 +83,7 @@ export default {
                 })
                 .catch((error) => {
                     if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
+                        this.notyf.error(error.response.data.message);
                     } else {
                         this.notyf.error(this.i18n.get("_.messages.exception.general"));
                     }
