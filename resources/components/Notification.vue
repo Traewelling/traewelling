@@ -93,12 +93,12 @@ export default {
                 this.$router.push({name: "profile", params: {username: this.notification.detail.sender.username}});
             }
             if (statusNotifications.indexOf(this.notification.type) >= 0) {
-                this.$router.push({name: "singleStatus", params: {id: this.notification.detail.status.id}})
+                this.$router.push({name: "singleStatus", params: {id: this.notification.detail.status.id}});
             }
             this.$emit("close");
         }
     }
-}
+};
 </script>
 
 <style scoped>

@@ -144,7 +144,7 @@ export let profileNotifications = [
     "App\\Notifications\\FollowRequestApproved",
     "App\\Notifications\\FollowRequestIssued",
     "App\\Notifications\\UserFollowed",
-]
+];
 
 export let statusNotifications = [
     "App\\Notifications\\MastodonNotSent",

@@ -119,7 +119,7 @@ export default {
     data() {
         return {
             notificationsCount: 0,
-        }
+        };
     },
     methods: {
         showNotifications() {
