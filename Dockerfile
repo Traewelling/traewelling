@@ -1,4 +1,4 @@
-FROM node as NodeBuildContainer
+FROM node:16 as NodeBuildContainer
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm i
@@ -15,7 +15,7 @@ WORKDIR /usr/src/trwl
 RUN composer install
 
 FROM php:apache
-RUN apt update && apt install -y zlib1g-dev libpng-dev
+RUN apt update && apt install -y zlib1g-dev libpng-dev wait-for-it
 RUN docker-php-ext-install gd exif pdo pdo_mysql
 RUN a2enmod rewrite
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
