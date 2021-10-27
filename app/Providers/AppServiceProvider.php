@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Contracts\Factory;
 use Revolution\Socialite\Mastodon\MastodonProvider;
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      * @throws BindingResolutionException
      */
     public function boot(): void {
+        if (env('APP_ENV') === 'prod') {
+            URL::forceScheme('https');
+        }
         $socialite = $this->app->make(Factory::class);
         $socialite->extend(
             'mastodon',
