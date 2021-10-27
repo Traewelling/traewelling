@@ -8,11 +8,6 @@ import LayoutBasic from "./layouts/Basic";
 export default {
     name: "App",
     inject: ["notyf"],
-    data() {
-        return {
-            notificationsCount: 1,
-        };
-    },
     metaInfo() {
         return {
             title: "Träwelling",
@@ -61,30 +56,10 @@ export default {
                     });
             }
         });
-        this.fetchNotificationsCount();
     },
     watch: {
         '$route'() {
             $("#navbarCollapse").collapse("hide");
-        }
-    },
-    methods: {
-        showNotifications() {
-            this.$refs.notifModal.show();
-        },
-        fetchNotificationsCount() {
-            axios
-                .get("/notifications/count")
-                .then((response) => {
-                    this.notificationsCount = response.data.data;
-                })
-                .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
-                });
         }
     }
 };

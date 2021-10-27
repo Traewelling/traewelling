@@ -3,10 +3,13 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\UserNotificationMessageResource;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
+use stdClass;
 
 class MastodonNotSent extends Notification
 {
@@ -20,33 +23,7 @@ class MastodonNotSent extends Notification
         $this->status = $status;
     }
 
-    public function via(): array {
-        return ['database'];
-    }
-
-    public function toArray(): array {
-        return [
-            'error'     => $this->error,
-            'status_id' => $this->status->id,
-        ];
-    }
-
-    /**
-     * @throws ShouldDeleteNotificationException
-     */
-    public static function detail($notification) {
-        $data = $notification->data;
-
-        try {
-            $status = Status::findOrFail($data['status_id']);
-        } catch (ModelNotFoundException) {
-            throw new ShouldDeleteNotificationException();
-        }
-        $notification->detail         = new \stdClass();
-        $notification->detail->status = $status;
-        return $notification->type;
-    }
-
+    /** @deprecated will be handled in frontend */
     public static function render($notification): ?string {
         try {
             $detail = self::detail($notification);
@@ -68,5 +45,50 @@ class MastodonNotSent extends Notification
             'read'            => $notification->read_at != null,
             'notificationId'  => $notification->id
         ])->render();
+    }
+
+    /**
+     * @param DatabaseNotification $notification
+     *
+     * @return stdClass
+     * @throws ShouldDeleteNotificationException
+     */
+    public static function detail(DatabaseNotification $notification): stdClass {
+        $data = $notification->data;
+
+        try {
+            $status = Status::findOrFail($data['status_id']);
+        } catch (ModelNotFoundException) {
+            throw new ShouldDeleteNotificationException();
+        }
+        $notification->detail          = new stdClass();
+        $notification->detail->status  = $status;
+        $notification->detail->message = new UserNotificationMessageResource
+        ([
+             'severity' => 'warning',
+             'icon'     => 'fas fa-exclamation-triangle',
+             'lead'     => [
+                 'key'    => 'notifications.socialNotShared.lead',
+                 'values' => [
+                     'platform' => 'Mastodon'
+                 ]
+             ],
+             'notice'   => [
+                 'key'    => 'notifications.socialNotShared.mastodon.' . $data['error'],
+                 'values' => []
+             ]
+         ]);
+        return $notification->detail;
+    }
+
+    public function via(): array {
+        return ['database'];
+    }
+
+    public function toArray(): array {
+        return [
+            'error'     => $this->error,
+            'status_id' => $this->status->id,
+        ];
     }
 }
