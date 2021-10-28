@@ -9,6 +9,15 @@ WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs
 
 FROM php:8-apache
+LABEL org.opencontainers.image.title="The Traewelling container image"
+LABEL org.opencontainers.image.description="Easy-to-use deployment image of the Traewelling project"
+LABEL org.opencontainers.image.url="https://github.com/Traewelling/traewelling#readme"
+LABEL org.opencontainers.image.source="https://github.com/Traewelling/traewelling.git"
+LABEL org.opencontainers.image.authors="Jonas Möller <jonas@traewelling.de>"
+LABEL org.opencontainers.image.vendor="The Traewelling team <hi@traewelling.de>"
+LABEL org.opencontainers.image.license="AGPL-3.0"
+LABEL org.opencontainers.image.base.name="docker.io/library/php:8-apache"
+
 RUN apt update && apt install -y zlib1g-dev libpng-dev wait-for-it
 RUN docker-php-ext-install gd exif pdo pdo_mysql
 RUN a2enmod rewrite
