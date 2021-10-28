@@ -1,10 +1,11 @@
 <template>
-    <LayoutBasicNoSidebar>
+    <LayoutBasicNoSidebar footerclass="pt-5">
         <h1>{{ i18n.get("_.menu.settings") }}</h1>
         <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
-                    aria-selected="true">
+                <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
+                   aria-controls="ex1-tabs-1"
+                   aria-selected="true">
                     {{ i18n.get("_.settings.tab.profile") }}
                 </a>
             </li>
@@ -37,7 +38,7 @@
         </ul>
         <div class="tab-content" id="ex1-content">
             <div
-                class="tab-pane fade show active"
+                class="tab-pane fade show active col-md-12 col-lg-8"
                 id="ex1-tabs-1"
                 role="tabpanel"
                 aria-labelledby="ex1-tab-1"
@@ -127,11 +128,129 @@
                 </div>
 
             </div>
-            <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                Tab 2 content
+            <div id="ex1-tabs-2" aria-labelledby="ex1-tab-2" class="tab-pane fade  col-md-12 col-lg-8" role="tabpanel">
+                <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
+
+                <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.picture') }}</h6>
+                <div class="row">
+                    <div class="col">
+                        {{ i18n.get("_.user.email") }}<br>
+                        <span class="small text-muted">{{ i18n.get("_.user.email.not-set") }}</span>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outline-primary float-end">{{ i18n.get("_.settings.change") }}</button>
+                        <button class="btn btn-outline-info float-end me-1">{{
+                                i18n.get("_.user.email-verify")
+                            }}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        {{ i18n.get("_.user.password") }}<br>
+                        <span class="small text-muted">{{ i18n.get("_.passwords.password") }}</span>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outline-primary float-end">{{ i18n.get("_.settings.change") }}</button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        {{ i18n.get("_.settings.language.set") }}
+                    </div>
+                    <div class="col">
+                        <ChangeLanguageButton class="float-end"></ChangeLanguageButton>
+                    </div>
+                </div>
+
+                <h6 class="text-capitalize text-muted border-bottom my-5">{{
+                        i18n.get('_.settings.delete-account')
+                    }}</h6>
+                <div class="row">
+                    <div class="col">
+
+                        <button class="btn btn-outline-danger float-end">
+                            <i aria-hidden="true" class="fa fa-trash"></i>
+                            {{ i18n.get("_.settings.delete-account") }}
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                Tab 3 content
+                <h2>{{ i18n.get("_.settings.tab.connectivity") }}</h2>
+
+                <h6 class="text-capitalize text-muted border-bottom my-5">{{
+                        i18n.get('_.settings.title-loginservices')
+                    }}</h6>
+                <div class="row">
+                    <div class="col">
+                        <i aria-hidden="true" class="fab fa-twitter"></i> Twitter<br>
+                        <span class="small text-success">
+                            <i aria-hidden="true" class="fa fa-check"></i>
+                            {{ i18n.get("_.settings.connected") }}
+                        </span>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outline-danger float-end">{{
+                                i18n.get("_.settings.disconnect")
+                            }}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <i aria-hidden="true" class="fab fa-mastodon"></i> Mastodon<br>
+                        <span class="small text-danger">
+                            <i aria-hidden="true" class="fa fa-times"></i>
+                            {{ i18n.get("_.settings.notconnected") }}
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="input-group">
+                            <input :placeholder="i18n.get('_.user.mastodon-instance-url')" class="form-control"
+                                   type="text">
+                            <button class="btn btn-primary float-end">{{ i18n.get("_.settings.connect") }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.title-ics') }}</h6>
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th colspan="2">{{ i18n.get("_.settings.token") }}</th>
+                            <th>{{ i18n.get("settings.created") }}</th>
+                            <th>{{ i18n.get("settings.last-accessed") }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> $name</td>
+                            <td> $token<small>*****</small></td>
+                            <td> DateTime</td>
+                            <td> {{ i18n.get("_.settings.never") }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" type="submit">
+                                    {{ i18n.get("_.settings.revoke-token") }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <form>
+                    <div class="input-group mt-0">
+                        <input :placeholder="i18n.get('_.settings.ics.name-placeholder')" class="form-control"
+                               name="name" required
+                               type="text"/>
+                        <button class="btn btn-sm btn-primary m-0 px-3" type="submit">
+                            <i aria-hidden="true" class="fas fa-plus"></i>
+                            {{ i18n.get("_.settings.create-ics-token") }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </LayoutBasicNoSidebar>
@@ -143,6 +262,7 @@ import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 import Card from "../Card";
 import {visibility} from "../../js/APImodels";
 import FADropdown from "../FADropdown";
+import ChangeLanguageButton from "../ChangeLanguageButton";
 
 export default {
     name: "Settings",
@@ -151,7 +271,7 @@ export default {
             visibility: visibility
         };
     },
-    components: {FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic}
+    components: {ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic}
 }
 </script>
 
