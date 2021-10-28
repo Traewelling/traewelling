@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      * @throws BindingResolutionException
      */
     public function boot(): void {
-        if (env('APP_ENV') === 'prod') {
+        if (config('app.env') === 'prod') {
             URL::forceScheme('https');
         }
         $socialite = $this->app->make(Factory::class);
