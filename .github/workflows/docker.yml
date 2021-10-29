@@ -30,7 +30,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           [ "$VERSION" == "main" ] && VERSION=main
 
-          docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}" \
+          docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${{ github.run_number }}" \
           --label "org.opencontainers.image.title=The Traewelling container image" \
           --label "org.opencontainers.image.version=$VERSION" \
           --label "org.opencontainers.image.description=Easy-to-use deployment image of the Traewelling project" \
@@ -60,3 +60,4 @@ jobs:
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:${{ github.sha }}
