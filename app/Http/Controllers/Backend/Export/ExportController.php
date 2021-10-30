@@ -24,6 +24,7 @@ abstract class ExportController extends Controller
                      ->where('statuses.user_id', $user->id)
                      ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
                      ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
+                     ->select(['statuses.*'])
                      ->get();
     }
 
