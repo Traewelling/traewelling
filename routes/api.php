@@ -76,6 +76,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::group(['prefix' => 'settings'], function() {
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
+            Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
         });
     });
 

@@ -46,15 +46,15 @@
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.picture') }}</h6>
                 <div class="row text-start">
                     <div class="col-3">
-                        <img :alt="i18n.get('_.settings.picture')"
-                             :src="`/profile/${$auth.user().username}/profilepicture`"
+                        <img ref="profilepicture" :alt="i18n.get('_.settings.picture')"
+                             :src="`/profile/${$auth.user().username}/profilepicture?${Date.now()}`"
                              class="rounded-circle w-100 d-block">
                     </div>
                     <div class="col-8 d-flex align-items-center">
                         <button class="btn btn-primary me-1">
                             {{ i18n.get("_.settings.upload-image") }}
                         </button>
-                        <button class="btn btn-outline-danger">
+                        <button class="btn btn-outline-danger" @click="$refs.deleteModal.show()">
                             <i aria-hidden="true" class="fas fa-trash"></i>
                             <span class="sr-only">{{ i18n.get("_.settings.delete-profile-picture-btn") }}</span>
                         </button>
@@ -288,6 +288,15 @@
                 </table>
             </div>
         </div>
+        <ModalConfirm
+            ref="deleteModal"
+            :abort-text="i18n.get('_.settings.delete-profile-picture-no')"
+            :body-text="i18n.get('_.settings.delete-profile-picture-desc')"
+            :confirm-text="i18n.get('_.settings.delete-profile-picture-yes')"
+            :title-text="i18n.get('_.settings.delete-profile-picture')"
+            confirm-button-color="btn-danger"
+            v-on:confirm="deleteProfilePicture"
+        ></ModalConfirm>
     </LayoutBasicNoSidebar>
 </template>
 
@@ -299,6 +308,7 @@ import {userProfileSettings, visibility} from "../../js/APImodels";
 import FADropdown from "../FADropdown";
 import ChangeLanguageButton from "../ChangeLanguageButton";
 import _debounce from 'lodash/debounce'
+import ModalConfirm from "../ModalConfirm";
 
 export default {
     name: "Settings",
@@ -310,7 +320,7 @@ export default {
             userProfileSettings: userProfileSettings
         };
     },
-    components: {ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic},
+    components: {ModalConfirm, ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic},
     watch: {
         userProfileSettings: function (val, oldVal) {
             console.log(val);
@@ -344,6 +354,23 @@ export default {
                     this.userProfileSettings = response.data.data;
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                     this.$auth.fetch();
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+        },
+        deleteProfilePicture() {
+            axios
+                .delete("/settings/profilePicture")
+                .then(() => {
+                    this.notyf.success(this.i18n.get("_.settings.saved"));
+                    //ToDo implement twitter-like profilepicture links
+                    this.$refs.profilepicture.src = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
                 })
                 .catch((error) => {
                     this.loading = false;

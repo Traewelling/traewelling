@@ -83,7 +83,8 @@ new Vue({
         return {
             notyf: new Notyf({
                 duration: 5000,
-                position: {x: "right", y: "top"}
+                position: {x: "center", y: "top"},
+                dismissible: true
             })
         };
     },
