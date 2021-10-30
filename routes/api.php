@@ -15,6 +15,7 @@ use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -65,12 +66,16 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
-        Route::group(['prefix' => 'user'], function () {
+        Route::group(['prefix' => 'user'], function() {
             Route::post('createFollow', [UserController::class, 'createFollow']);
             Route::delete('destroyFollow', [UserController::class, 'destroyFollow']);
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
+        });
+        Route::group(['prefix' => 'settings'], function() {
+            Route::get('profile', [SettingsController::class, 'getProfileSettings']);
+            Route::put('profile', [SettingsController::class, 'updateSettings']);
         });
     });
 

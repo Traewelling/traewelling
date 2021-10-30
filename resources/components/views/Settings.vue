@@ -60,21 +60,21 @@
                         </button>
                     </div>
                 </div>
-                <!-- ToDo -->
+
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.title-profile')
                     }}</h6>
                 <div class="form-floating mb-3">
-                    <input id="username" :value="$auth.user().username" class="form-control" placeholder="@Gertrud"
-                           type="text">
+                    <input id="username" v-model="userProfileSettings.username" class="form-control"
+                           placeholder="@Gertrud" type="text" @change="profileSettingsChange">
                     <label for="username">{{ i18n.get('_.user.username') }}</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input id="displayname" :value="$auth.user().displayName" class="form-control" placeholder="Gertrud"
-                           type="text">
+                    <input id="displayname" v-model="userProfileSettings.name" class="form-control"
+                           placeholder="Gertrud" type="text" @change="profileSettingsChange">
                     <label for="displayname">{{ i18n.get("_.user.displayname") }}</label>
                 </div>
-                <!-- ToDo -->
+
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.title-privacy')
                     }}</h6>
@@ -86,8 +86,10 @@
                         </label>
                     </div>
                     <div class="col">
-                        <FADropdown id="visibilityDropdown" :dropdown-content="visibility" :pre-select="0"
-                                    class="float-end" showText="true"></FADropdown>
+                        <FADropdown id="visibilityDropdown" v-model="userProfileSettings.default_status_visibility"
+                                    :dropdown-content="visibility"
+                                    :pre-select="userProfileSettings.default_status_visibility"
+                                    class="float-end" showText="true" @input="profileSettingsChange"></FADropdown>
                     </div>
                 </div>
                 <div class="row mt-3 pt-3">
@@ -98,20 +100,24 @@
                         </label>
                     </div>
                     <div class="col form-check form-switch">
-                        <input id="privateProfileSwitch" class="form-check-input float-end" type="checkbox"/>
+                        <input id="privateProfileSwitch" v-model="userProfileSettings.private_profile"
+                               class="form-check-input float-end"
+                               type="checkbox" @change="profileSettingsChange"/>
                     </div>
                 </div>
                 <div class="row mt-3 pt-3">
                     <div class="col-9 col-md-11">
                         <label class="form-check-label" for="preventIndexSwitch">
-                            {{ i18n.get('_.settings.hide-search-engines') }}<br>
-                            <span class="text-muted small">{{
-                                    i18n.get('_.settings.search-engines.description')
-                                }}</span>
+                            {{ i18n.get('_.settings.prevent-indexing') }}<br>
+                            <span class="text-muted small">
+                                {{ i18n.get('_.settings.search-engines.description') }}
+                            </span>
                         </label>
                     </div>
                     <div class="col form-check form-switch">
-                        <input id="preventIndexSwitch" class="form-check-input float-end" type="checkbox"/>
+                        <input id="preventIndexSwitch" v-model="userProfileSettings.prevent_index"
+                               class="form-check-input float-end"
+                               type="checkbox" @change="profileSettingsChange"/>
                     </div>
                 </div>
                 <div class="row mt-3 pt-3">
@@ -121,7 +127,9 @@
                         </label>
                     </div>
                     <div class="col form-check form-switch">
-                        <input id="dblSwitch" class="form-check-input float-end" type="checkbox"/>
+                        <input id="dblSwitch" v-model="userProfileSettings.always_dbl"
+                               class="form-check-input float-end"
+                               type="checkbox" @change="profileSettingsChange"/>
                     </div>
                 </div>
 
@@ -160,7 +168,7 @@
                         <ChangeLanguageButton class="float-end"></ChangeLanguageButton>
                     </div>
                 </div>
-                <!-- ToDo -->
+
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.delete-account')
                     }}</h6>
@@ -287,18 +295,69 @@
 import LayoutBasic from "../layouts/Basic";
 import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 import Card from "../Card";
-import {visibility} from "../../js/APImodels";
+import {userProfileSettings, visibility} from "../../js/APImodels";
 import FADropdown from "../FADropdown";
 import ChangeLanguageButton from "../ChangeLanguageButton";
+import _debounce from 'lodash/debounce'
 
 export default {
     name: "Settings",
+    inject: ["notyf"],
     data() {
         return {
-            visibility: visibility
+            visibility: visibility,
+            //Profile Settings
+            userProfileSettings: userProfileSettings
         };
     },
-    components: {ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic}
+    components: {ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic},
+    watch: {
+        userProfileSettings: function (val, oldVal) {
+            console.log(val);
+            console.log(oldVal);
+        }
+    },
+    mounted() {
+        this.fetchProfileSettings();
+    },
+    methods: {
+        fetchProfileSettings() {
+            axios
+                .get("/settings/profile")
+                .then((response) => {
+                    this.userProfileSettings = response.data.data;
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+
+        },
+        updateProfileSettings() {
+            axios
+                .put("/settings/profile", this.userProfileSettings)
+                .then((response) => {
+                    this.userProfileSettings = response.data.data;
+                    this.notyf.success(this.i18n.get("_.settings.saved"));
+                    this.$auth.fetch();
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+        },
+        profileSettingsChange: _debounce(function () {
+            this.updateProfileSettings();
+        }, 300),
+    }
 }
 </script>
 
