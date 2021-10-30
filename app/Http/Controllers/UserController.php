@@ -329,6 +329,9 @@ class UserController extends Controller
         )->simplePaginate(10);
     }
 
+    /**
+     * @deprecated Backend/SettingsController::deleteProfilePicture
+     */
     public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
 

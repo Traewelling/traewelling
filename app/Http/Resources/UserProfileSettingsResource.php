@@ -24,7 +24,8 @@ class UserProfileSettingsResource extends JsonResource
             'prevent_index'             => (bool) $this->prevent_index,
             'always_dbl'                => (bool) $this->always_dbl,
             'default_status_visibility' => (int) $this->default_status_visibility,
-            'email'                     => $this->email
+            'email'                     => $this->email,
+            'profile_picture_set'       => (bool) $this->avatar
         ];
     }
 }

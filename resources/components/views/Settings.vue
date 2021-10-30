@@ -54,7 +54,8 @@
                         <button class="btn btn-primary me-1">
                             {{ i18n.get("_.settings.upload-image") }}
                         </button>
-                        <button class="btn btn-outline-danger" @click="$refs.deleteModal.show()">
+                        <button v-if="userProfileSettings.profile_picture_set" class="btn btn-outline-danger"
+                                @click="$refs.deleteModal.show()">
                             <i aria-hidden="true" class="fas fa-trash"></i>
                             <span class="sr-only">{{ i18n.get("_.settings.delete-profile-picture-btn") }}</span>
                         </button>
