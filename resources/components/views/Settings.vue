@@ -36,9 +36,9 @@
                 </a>
             </li>
         </ul>
-        <div class="tab-content" id="ex1-content">
+        <div id="ex1-content" class="tab-content col-md-12 col-lg-8">
             <div
-                class="tab-pane fade show active col-md-12 col-lg-8"
+                class="tab-pane fade show active"
                 id="ex1-tabs-1"
                 role="tabpanel"
                 aria-labelledby="ex1-tab-1"
@@ -128,7 +128,7 @@
                 </div>
 
             </div>
-            <div id="ex1-tabs-2" aria-labelledby="ex1-tab-2" class="tab-pane fade  col-md-12 col-lg-8" role="tabpanel">
+            <div id="ex1-tabs-2" aria-labelledby="ex1-tab-2" class="tab-pane fade" role="tabpanel">
                 <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
 
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.picture') }}</h6>
@@ -215,13 +215,13 @@
                 </div>
 
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.title-ics') }}</h6>
-                <table class="table table-responsive">
+                <table :aria-label="i18n.get('_.settings.title-ics')" class="table table-responsive">
                     <thead>
                         <tr>
-                            <th colspan="2">{{ i18n.get("_.settings.token") }}</th>
-                            <th>{{ i18n.get("settings.created") }}</th>
-                            <th>{{ i18n.get("settings.last-accessed") }}</th>
-                            <th></th>
+                            <th colspan="2" scope="col">{{ i18n.get("_.settings.token") }}</th>
+                            <th scope="col">{{ i18n.get("_.settings.created") }}</th>
+                            <th scope="col">{{ i18n.get("_.settings.last-accessed") }}</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,10 +238,8 @@
                         </tr>
                     </tbody>
                 </table>
-
-
                 <form>
-                    <div class="input-group mt-0">
+                    <div class="input-group mt-0 w-75">
                         <input :placeholder="i18n.get('_.settings.ics.name-placeholder')" class="form-control"
                                name="name" required
                                type="text"/>
@@ -251,6 +249,36 @@
                         </button>
                     </div>
                 </form>
+
+                <h6 class="text-capitalize text-muted border-bottom my-5">{{
+                        i18n.get("_.settings.title-sessions")
+                    }}</h6>
+                <table aria-label="i18n.get('_.settings.title-sessions')" class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ i18n.get("_.settings.client-name") }}</th>
+                            <th scope="col">{{ i18n.get("_.settings.created") }}</th>
+                            <th scope="col">{{ i18n.get("_.settings.expires") }}</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>$token->client->name</td>
+                            <td>(i18n.get("_.datetime-format"))</td>
+                            <td>$token->expires_at->diffForHumans()</td>
+                            <td>
+                                <form>
+                                    <input name="tokenId" type="hidden" value="$token->id"/>
+                                    <button class="btn btn-block btn-danger mx-0">
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
+                                        <span class="sr-only">{{ i18n.get("_.modals.delete-confirm") }}</span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </LayoutBasicNoSidebar>
