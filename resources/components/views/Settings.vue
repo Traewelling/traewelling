@@ -51,7 +51,7 @@
                              class="rounded-circle w-100 d-block">
                     </div>
                     <div class="col-8 d-flex align-items-center">
-                        <button class="btn btn-primary me-1">
+                        <button class="btn btn-primary me-1" @click="toggleShowUpload">
                             {{ i18n.get("_.settings.upload-image") }}
                         </button>
                         <button v-if="userProfileSettings.profile_picture_set" class="btn btn-outline-danger"
@@ -298,6 +298,14 @@
             confirm-button-color="btn-danger"
             v-on:confirm="deleteProfilePicture"
         ></ModalConfirm>
+        <my-upload v-if="showUpload"
+                   v-model="showUpload"
+                   :height="300"
+                   :langType="i18n.getLocale()"
+                   :width="300"
+                   field="img"
+                   img-format="png"
+                   @crop-success="cropSuccess"></my-upload>
     </LayoutBasicNoSidebar>
 </template>
 
@@ -310,6 +318,7 @@ import FADropdown from "../FADropdown";
 import ChangeLanguageButton from "../ChangeLanguageButton";
 import _debounce from 'lodash/debounce'
 import ModalConfirm from "../ModalConfirm";
+import myUpload from 'vue-image-crop-upload';
 
 export default {
     name: "Settings",
@@ -317,21 +326,36 @@ export default {
     data() {
         return {
             visibility: visibility,
+            showUpload: false,
             //Profile Settings
             userProfileSettings: userProfileSettings
         };
     },
-    components: {ModalConfirm, ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic},
-    watch: {
-        userProfileSettings: function (val, oldVal) {
-            console.log(val);
-            console.log(oldVal);
-        }
-    },
+    components: {ModalConfirm, ChangeLanguageButton, FADropdown, Card, LayoutBasicNoSidebar, LayoutBasic, myUpload},
     mounted() {
         this.fetchProfileSettings();
     },
     methods: {
+        cropSuccess(val) {
+            axios
+                .post("/settings/profilePicture", {image: val})
+                .then(() => {
+                    this.toggleShowUpload();
+                    this.refreshProfilePicture();
+                    this.notyf.success(this.i18n.get("_.settings.saved"));
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    if (error.response) {
+                        this.notyf.error(error.response.data.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+        },
+        toggleShowUpload() {
+            this.showUpload = !this.showUpload;
+        },
         fetchProfileSettings() {
             axios
                 .get("/settings/profile")
@@ -365,13 +389,16 @@ export default {
                     }
                 });
         },
+        refreshProfilePicture() {
+            this.$refs.profilepicture.src = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
+        },
         deleteProfilePicture() {
             axios
                 .delete("/settings/profilePicture")
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                     //ToDo implement twitter-like profilepicture links
-                    this.$refs.profilepicture.src = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
+                    this.refreshProfilePicture();
                 })
                 .catch((error) => {
                     this.loading = false;

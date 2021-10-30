@@ -79,21 +79,7 @@ class UserController extends Controller
 
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
-        $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
-                                                 ':userId' => Auth::user()->id,
-                                                 ':time'   => time()
-        ]);
-        Image::make($avatar)->resize(300, 300)
-             ->save(public_path('/uploads/avatars/' . $filename));
-
-        if (Auth::user()->avatar != null) {
-            File::delete(public_path('/uploads/avatars/' . Auth::user()->avatar));
-        }
-
-        Auth::user()->update([
-                                 'avatar' => $filename
-                             ]);
-
+        \App\Http\Controllers\Backend\SettingsController::updateProfilePicture($avatar);
         return ['status' => ':ok'];
     }
 

@@ -39,4 +39,11 @@ class SettingsController extends ResponseController
 
         return $this->sendError('', 400);
     }
+
+    public function uploadProfilePicture(Request $request): JsonResponse {
+        if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
+            return $this->sendv1Response('', 204);
+        }
+        return $this->sendError('', 400);
+    }
 }

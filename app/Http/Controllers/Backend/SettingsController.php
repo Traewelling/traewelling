@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class SettingsController extends Controller
 {
@@ -26,7 +28,23 @@ class SettingsController extends Controller
             $user->update(['avatar' => null]);
             return true;
         }
-
         return false;
+    }
+
+    public static function updateProfilePicture($avatar): bool {
+        $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
+
+        Image::make($avatar)->resize(300, 300)
+             ->save(public_path('/uploads/avatars/' . $filename));
+
+        if (auth()->user()->avatar) {
+            File::delete(public_path('/uploads/avatars/' . auth()->user()->avatar));
+        }
+
+        auth()->user()->update([
+                                   'avatar' => $filename
+                               ]);
+
+        return true;
     }
 }
