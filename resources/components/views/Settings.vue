@@ -1,10 +1,12 @@
 <template>
     <LayoutBasicNoSidebar footerclass="pt-5">
         <h1>{{ i18n.get("_.menu.settings") }}</h1>
-        <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+        <ul id="settingsTabs" class="nav nav-tabs mb-3" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
-                   aria-controls="ex1-tabs-1"
+                <a id="settingsTab-profile" aria-controls="settingsTabs-profile" class="nav-link active"
+                   data-mdb-toggle="tab"
+                   href="#settingsTabs-profile"
+                   role="tab"
                    aria-selected="true">
                     {{ i18n.get("_.settings.tab.profile") }}
                 </a>
@@ -12,11 +14,11 @@
             <li class="nav-item" role="presentation">
                 <a
                     class="nav-link"
-                    id="ex1-tab-2"
+                    id="settingsTab-account"
                     data-mdb-toggle="tab"
-                    href="#ex1-tabs-2"
+                    aria-controls="settingsTabs-account"
                     role="tab"
-                    aria-controls="ex1-tabs-2"
+                    href="#settingsTabs-account"
                     aria-selected="false"
                 >
                     {{ i18n.get("_.settings.tab.account") }}
@@ -25,26 +27,22 @@
             <li class="nav-item" role="presentation">
                 <a
                     class="nav-link"
-                    id="ex1-tab-3"
+                    id="settingsTab-connectivity"
                     data-mdb-toggle="tab"
-                    href="#ex1-tabs-3"
+                    aria-controls="settingsTabs-connectivity"
                     role="tab"
-                    aria-controls="ex1-tabs-3"
+                    href="#settingsTabs-connectivity"
                     aria-selected="false"
                 >
                     {{ i18n.get("_.settings.tab.connectivity") }}
                 </a>
             </li>
         </ul>
-        <div id="ex1-content" class="tab-content col-md-12 col-lg-8">
-            <div
-                class="tab-pane fade show active"
-                id="ex1-tabs-1"
-                role="tabpanel"
-                aria-labelledby="ex1-tab-1"
-            >
+        <div id="settingsTabs-content" class="tab-content col-md-12 col-lg-8">
+            <div id="settingsTabs-profile" aria-labelledby="settingsTab-profile" class="tab-pane fade show active"
+                 role="tabpanel">
                 <h2>{{ i18n.get("_.settings.heading.profile") }}</h2>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.picture') }}</h6>
                 <div class="row text-start">
                     <div class="col-3">
@@ -62,7 +60,7 @@
                         </button>
                     </div>
                 </div>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.title-profile')
                     }}</h6>
@@ -76,7 +74,7 @@
                            type="text">
                     <label for="displayname">{{ i18n.get("_.user.displayname") }}</label>
                 </div>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.title-privacy')
                     }}</h6>
@@ -128,9 +126,9 @@
                 </div>
 
             </div>
-            <div id="ex1-tabs-2" aria-labelledby="ex1-tab-2" class="tab-pane fade" role="tabpanel">
+            <div id="settingsTabs-account" aria-labelledby="settingsTab-account" class="tab-pane fade" role="tabpanel">
                 <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.picture') }}</h6>
                 <div class="row">
                     <div class="col">
@@ -162,7 +160,7 @@
                         <ChangeLanguageButton class="float-end"></ChangeLanguageButton>
                     </div>
                 </div>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.delete-account')
                     }}</h6>
@@ -176,9 +174,10 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+            <div id="settingsTabs-connectivity" aria-labelledby="settingsTab-connectivity" class="tab-pane fade"
+                 role="tabpanel">
                 <h2>{{ i18n.get("_.settings.tab.connectivity") }}</h2>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get('_.settings.title-loginservices')
                     }}</h6>
@@ -213,7 +212,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.title-ics') }}</h6>
                 <table :aria-label="i18n.get('_.settings.title-ics')" class="table table-responsive">
                     <thead>
@@ -249,7 +248,7 @@
                         </button>
                     </div>
                 </form>
-
+                <!-- ToDo -->
                 <h6 class="text-capitalize text-muted border-bottom my-5">{{
                         i18n.get("_.settings.title-sessions")
                     }}</h6>
