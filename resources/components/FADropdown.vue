@@ -28,8 +28,8 @@ export default {
         };
     },
     model: {
-        prop: 'value',
-        event: 'input'
+        prop: "value",
+        event: "input"
     },
     props: ["btnClass", "dropdownContent", "preSelect", "showText", "value"],
     computed: {

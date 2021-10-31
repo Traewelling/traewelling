@@ -1,0 +1,127 @@
+<template>
+    <div id="settingsTabs-account" aria-labelledby="settingsTab-account" class="tab-pane fade" role="tabpanel">
+        <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
+        <!-- ToDo -->
+        <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.') }}</h6>
+        <div class="row">
+            <div class="col">
+                {{ i18n.get("_.user.email") }}<br>
+                <span v-if="value.email" class="small text-muted">
+                    {{ value.email }}
+                </span>
+                <span v-else class="small text-muted">{{ i18n.get("_.user.email.not-set") }}</span>
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-primary float-end" @click="showMailChangeModal">
+                    {{ i18n.get("_.settings.change") }}
+                </button>
+                <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1">
+                    {{ i18n.get("_.controller.status.email-resend-mail") }}
+                </button>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                {{ i18n.get("_.user.password") }}<br>
+                <span class="small text-muted">{{ i18n.get("_.passwords.password") }}</span>
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-primary float-end">{{ i18n.get("_.settings.change") }}</button>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                {{ i18n.get("_.settings.language.set") }}
+            </div>
+            <div class="col">
+                <ChangeLanguageButton class="float-end"></ChangeLanguageButton>
+            </div>
+        </div>
+
+        <h6 class="text-capitalize text-muted border-bottom my-5">{{
+                i18n.get('_.settings.delete-account')
+            }}</h6>
+        <div class="row">
+            <div class="col">
+
+                <button class="btn btn-outline-danger float-end">
+                    <i aria-hidden="true" class="fa fa-trash"></i>
+                    {{ i18n.get("_.settings.delete-account") }}
+                </button>
+            </div>
+        </div>
+        <ModalConfirm ref="mail" :abort-text="i18n.get('_.menu.abort')" :body-text="i18n.get('_.email.change')"
+                      :confirm-text="i18n.get('_.modals.edit-confirm')" :title-text="i18n.get('_.user.email.change')"
+                      confirm-button-color="btn-primary" v-on:confirm="updateMail">
+            <div class="form-floating mb-3">
+                <input id="mail" v-model="email" class="form-control" placeholder="mail@example.com"
+                       required type="email">
+                <label for="mail">{{ i18n.get("_.user.email.new") }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input id="password" v-model="password" class="form-control" placeholder=""
+                       required type="password">
+                <label for="password">{{ i18n.get("_.settings.current-password") }}</label>
+            </div>
+        </ModalConfirm>
+    </div>
+</template>
+
+<script>
+import ChangeLanguageButton from "../ChangeLanguageButton";
+import ModalConfirm from "../ModalConfirm";
+
+export default {
+    name: "AccountSettings",
+    components: {ModalConfirm, ChangeLanguageButton},
+    props: ["value"],
+    inject: ["notyf"],
+    model: {prop: "value", event: "input"},
+    data() {
+        return {
+            password: null,
+            email: null,
+            setValue: null
+        };
+    },
+    mounted() {
+        this.setValue = this.$props.value;
+    },
+    methods: {
+        showMailChangeModal() {
+            this.$refs.mail.show()
+        },
+        updateMail() {
+            axios
+                .put("/settings/email", {"email": this.email, "password": this.password})
+                .then((response) => {
+                    this.setValue = response.data.data;
+                    this.$emit("input", this.setValue);
+                    this.password = null;
+                    this.email    = null;
+                    this.notyf.success(this.i18n.get("_.email.verification.sent"));
+                })
+                .catch((error) => {
+                    this.password = this.email = null;
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            console.log(error.response.data.errors);
+                            Object.entries(error.response.data.errors).forEach((err) => {
+                                console.log(err)
+                                this.notyf.error(err[1][0]);
+                            })
+                        } else {
+                            this.notyf.error(error.response.data.message);
+                        }
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
+                });
+        }
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

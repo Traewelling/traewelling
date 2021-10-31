@@ -8,7 +8,9 @@ use App\Http\Controllers\Backend\SettingsController as BackendSettingsController
 use App\Http\Resources\UserProfileSettingsResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SettingsController extends ResponseController
 {
@@ -16,9 +18,28 @@ class SettingsController extends ResponseController
         return new UserProfileSettingsResource(auth()->user());
     }
 
+    /**
+     * @throws ValidationException
+     */
+    public function updateMail(Request $request): UserProfileSettingsResource {
+        $validated = $request->validate(['email'    => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
+                                         'password' => ['required', 'string']
+                                        ]);
+        if (!Hash::check($validated['password'], auth()->user()->password)) {
+            throw ValidationException::withMessages([__('auth.password')]);
+        }
+        unset($validated['password']);
+
+        return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+    }
+
+
     public function updateSettings(Request $request): UserProfileSettingsResource {
         $validated = $request->validate([
-                                            'username'                  => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
+                                            'username'                  => ['required',
+                                                                            'string',
+                                                                            'max:25',
+                                                                            'regex:/^[a-zA-Z0-9_]*$/'],
                                             'name'                      => ['required', 'string', 'max:50'],
                                             'private_profile'           => ['boolean', 'nullable'],
                                             'prevent_index'             => ['boolean', 'nullable'],

@@ -160,6 +160,8 @@ export let userProfileSettings = {
     prevent_index: false,
     always_dbl: false,
     default_status_visibility: 0,
+    password: false,
     email: "",
+    email_verified: true,
     profile_picture_set: false
 };
