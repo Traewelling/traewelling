@@ -33,9 +33,26 @@ class SettingsController extends ResponseController
         return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
     }
 
-    public function resendMail() {
+    public function resendMail(): void {
         auth()->user()->sendEmailVerificationNotification();
         $this->sendv1Response('', 204);
+    }
+
+    public function updatePassword(Request $request): UserProfileSettingsResource {
+        $userHasPassword = auth()->user()->password !== null;
+
+        $validated = $request->validate([
+                                            'currentPassword' => [Rule::requiredIf($userHasPassword)],
+                                            'password'        => ['required', 'string', 'min:8', 'confirmed']
+                                        ]);
+
+        if ($userHasPassword && !Hash::check($validated['currentPassword'], auth()->user()->password)) {
+            throw ValidationException::withMessages([__('controller.user.password-wrong')]);
+        }
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
     }
 
     public function updateSettings(Request $request): UserProfileSettingsResource {

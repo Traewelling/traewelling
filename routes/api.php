@@ -80,6 +80,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture']);
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
+            Route::put('password', [SettingsController::class, 'updatePassword']);
         });
     });
 

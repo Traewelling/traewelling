@@ -16,7 +16,7 @@ class SettingsController extends Controller
             $user = auth()->user();
         }
 
-        if ($fields['email'] && $fields['email'] !== $user->email) {
+        if (in_array('email', $fields, true) && $fields['email'] !== $user->email) {
             $fields['email_verified_at'] = null;
             $fields['email']             = strtolower($fields['email']);
             $user->sendEmailVerificationNotification();

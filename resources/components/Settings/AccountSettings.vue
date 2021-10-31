@@ -1,7 +1,7 @@
 <template>
     <div id="settingsTabs-account" aria-labelledby="settingsTab-account" class="tab-pane fade" role="tabpanel">
         <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
-        <!-- ToDo -->
+
         <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.') }}</h6>
         <div class="row">
             <div class="col">
@@ -12,7 +12,7 @@
                 <span v-else class="small text-muted">{{ i18n.get("_.user.email.not-set") }}</span>
             </div>
             <div class="col">
-                <button class="btn btn-outline-primary float-end" @click="showMailChangeModal">
+                <button class="btn btn-outline-primary float-end" @click="$refs.mail.show()">
                     {{ i18n.get("_.settings.change") }}
                 </button>
                 <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1"
@@ -27,7 +27,9 @@
                 <span class="small text-muted">{{ i18n.get("_.passwords.password") }}</span>
             </div>
             <div class="col">
-                <button class="btn btn-outline-primary float-end">{{ i18n.get("_.settings.change") }}</button>
+                <button class="btn btn-outline-primary float-end" @click="$refs.password.show()">
+                    {{ i18n.get("_.settings.change") }}
+                </button>
             </div>
         </div>
         <div class="row mt-2">
@@ -65,6 +67,29 @@
                 <label for="password">{{ i18n.get("_.settings.current-password") }}</label>
             </div>
         </ModalConfirm>
+        <ModalConfirm ref="password" :abort-text="i18n.get('_.menu.abort')"
+                      :confirm-text="i18n.get('_.modals.edit-confirm')"
+                      :title-text="i18n.get('_.settings.title-change-password')"
+                      confirm-button-color="btn-primary" v-on:confirm="updatePassword">
+            <form>
+                <div v-if="value.password" class="form-floating mb-3">
+                    <input id="currentPassword" v-model="password" autocomplete="password" class="form-control"
+                           placeholder="" required type="password">
+                    <label for="currentPassword">{{ i18n.get("_.settings.current-password") }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="newPassword" v-model="newPassword" autocomplete="new-password" class="form-control"
+                           placeholder="" required type="password">
+                    <label for="newPassword">{{ i18n.get("_.settings.new-password") }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="newPassword_confirm" v-model="newPasswordConfirm" autocomplete="new-password"
+                           class="form-control"
+                           placeholder="" required type="password">
+                    <label for="newPassword_confirm">{{ i18n.get("_.settings.confirm-password") }}</label>
+                </div>
+            </form>
+        </ModalConfirm>
     </div>
 </template>
 
@@ -81,6 +106,8 @@ export default {
     data() {
         return {
             password: null,
+            newPassword: null,
+            newPasswordConfirm: null,
             email: null,
             setValue: null
         };
@@ -89,8 +116,23 @@ export default {
         this.setValue = this.$props.value;
     },
     methods: {
-        showMailChangeModal() {
-            this.$refs.mail.show()
+        updatePassword() {
+            axios
+                .put("/settings/password", {
+                    currentPassword: this.password,
+                    password: this.newPassword,
+                    password_confirmation: this.newPasswordConfirm
+                })
+                .then((response) => {
+                    this.setValue = response.data.data;
+                    this.$emit("input", this.setValue);
+                    this.password = this.newPassword = this.newPasswordConfirm = null;
+                    this.notyf.success(this.i18n.get("_.controller.user.password-changed-ok"));
+                })
+                .catch((error) => {
+                    this.password = this.email = null;
+                    this.catchError(error);
+                });
         },
         resendMail() {
             axios
