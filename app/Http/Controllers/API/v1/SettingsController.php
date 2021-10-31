@@ -33,6 +33,10 @@ class SettingsController extends ResponseController
         return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
     }
 
+    public function resendMail() {
+        auth()->user()->sendEmailVerificationNotification();
+        $this->sendv1Response('', 204);
+    }
 
     public function updateSettings(Request $request): UserProfileSettingsResource {
         $validated = $request->validate([

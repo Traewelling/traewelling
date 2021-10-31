@@ -15,7 +15,8 @@
                 <button class="btn btn-outline-primary float-end" @click="showMailChangeModal">
                     {{ i18n.get("_.settings.change") }}
                 </button>
-                <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1">
+                <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1"
+                        @click="resendMail">
                     {{ i18n.get("_.controller.status.email-resend-mail") }}
                 </button>
             </div>
@@ -91,6 +92,17 @@ export default {
         showMailChangeModal() {
             this.$refs.mail.show()
         },
+        resendMail() {
+            axios
+                .post("/settings/email/resend")
+                .then(() => {
+                    this.notyf.success(this.i18n.get("_.email.verification.sent"));
+                })
+                .catch((error) => {
+                    this.password = this.email = null;
+                    this.catchError(error);
+                });
+        },
         updateMail() {
             axios
                 .put("/settings/email", {"email": this.email, "password": this.password})
@@ -103,20 +115,23 @@ export default {
                 })
                 .catch((error) => {
                     this.password = this.email = null;
-                    if (error.response) {
-                        if (error.response.data.errors) {
-                            console.log(error.response.data.errors);
-                            Object.entries(error.response.data.errors).forEach((err) => {
-                                console.log(err)
-                                this.notyf.error(err[1][0]);
-                            })
-                        } else {
-                            this.notyf.error(error.response.data.message);
-                        }
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.catchError(error);
                 });
+        },
+        catchError(error) {
+            if (error.response) {
+                if (error.response.data.errors) {
+                    console.log(error.response.data.errors);
+                    Object.entries(error.response.data.errors).forEach((err) => {
+                        console.log(err)
+                        this.notyf.error(err[1][0]);
+                    })
+                } else {
+                    this.notyf.error(error.response.data.message);
+                }
+            } else {
+                this.notyf.error(this.i18n.get("_.messages.exception.general"));
+            }
         }
     }
 }

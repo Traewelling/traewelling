@@ -79,6 +79,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture']);
             Route::put('email', [SettingsController::class, 'updateMail']);
+            Route::post('email/resend', [SettingsController::class, 'resendMail']);
         });
     });
 
