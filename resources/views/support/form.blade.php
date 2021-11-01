@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 @if($emailAvailable)
-                    <div class="card">
+                    <div class="card mb-4">
                         <div class="card-header">{{__('support.create')}}</div>
                         <div class="card-body">
                             <form method="POST" action="{{route('support.submit')}}">
@@ -31,6 +31,13 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="alert alert-info">
+                        <h5 class="fw-bold"><i class="fas fa-user-shield"></i> {{__('support.privacy')}}</h5>
+                        {{__('support.privacy.description')}}
+                        {{__('support.privacy.description2')}}
+                    </div>
+
                 @else
                     <h4>{{__('support.create')}}</h4>
                     <hr/>

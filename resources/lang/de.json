@@ -462,5 +462,8 @@
     "support.success": "Deine Anfrage ist bei uns eingegangen (Ticket #:ticketNumber). Wir werden dir so schnell wie möglich per E-Mail antworten.",
     "request-time": "abgefragt um :time",
     "settings.request.accept": "Follower akzeptieren",
-    "settings.follower.following-since": "Folgt seit"
+    "settings.follower.following-since": "Folgt seit",
+    "support.privacy": "Datenschutzhinweis",
+    "support.privacy.description": "Deine User-ID, dein Username und deine E-Mail Adresse werden mit deiner Anfrage in unserem Ticketsystem erfasst.",
+    "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht."
 }

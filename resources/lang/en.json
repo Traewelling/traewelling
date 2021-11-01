@@ -462,5 +462,8 @@
     "email.verification.btn": "Click on the button to receive your confirmation link.",
     "email.verification.sent": "To complete the change of your email address you still need to click on the link in the email we just sent you.",
     "welcome": "Welcome to Träwelling!",
-    "email.verification.required": "To take full advantage of Träwelling, you still need to confirm your email address."
+    "email.verification.required": "To take full advantage of Träwelling, you still need to confirm your email address.",
+    "support.privacy": "Privacy notice",
+    "support.privacy.description": "Your user ID, username and email address will be stored with your request in our ticket system.",
+    "support.privacy.description2": "The data will be deleted after one year regardless of your user account with Träwelling."
 }
