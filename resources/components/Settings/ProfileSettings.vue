@@ -157,8 +157,9 @@ export default {
         toggleShowUpload() {
             this.showUpload = !this.showUpload;
         },
-        refreshProfilePicture() {
-            this.$refs.profilepicture.src = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
+        refreshProfilePicture(hasProfilePicture = true) {
+            this.$refs.profilepicture.src  = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
+            this.value.profile_picture_set = hasProfilePicture;
         },
         updateProfileSettings() {
             axios
@@ -183,7 +184,7 @@ export default {
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                     //ToDo implement twitter-like profilepicture links
-                    this.refreshProfilePicture();
+                    this.refreshProfilePicture(false);
                 })
                 .catch((error) => {
                     this.loading = false;
