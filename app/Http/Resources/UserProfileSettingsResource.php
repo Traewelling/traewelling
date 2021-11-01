@@ -27,7 +27,9 @@ class UserProfileSettingsResource extends JsonResource
             'password'                  => (bool) $this->password,
             'email'                     => $this->email,
             'email_verified'            => (bool) $this->email_verified_at,
-            'profile_picture_set'       => (bool) $this->avatar
+            'profile_picture_set'       => (bool) $this->avatar,
+            'twitter'                   => $this->twitter_url,
+            'mastodon'                  => $this->mastodon_url
         ];
     }
 }

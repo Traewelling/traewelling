@@ -3,37 +3,51 @@
          role="tabpanel">
         <h2>{{ i18n.get("_.settings.tab.connectivity") }}</h2>
         <!-- ToDo -->
-        <h6 class="text-capitalize text-muted border-bottom my-5">{{
-                i18n.get('_.settings.title-loginservices')
-            }}</h6>
+        <h6 class="text-capitalize text-muted border-bottom my-5">
+            {{ i18n.get('_.settings.title-loginservices') }}</h6>
         <div class="row">
             <div class="col">
                 <i aria-hidden="true" class="fab fa-twitter"></i> Twitter<br>
-                <span class="small text-success">
-                            <i aria-hidden="true" class="fa fa-check"></i>
-                            {{ i18n.get("_.settings.connected") }}
-                        </span>
+                <span v-if="value.twitter" class="small text-success">
+                    <i aria-hidden="true" class="fa fa-check"></i>
+                    {{ i18n.get("_.settings.connected") }}
+                </span>
+                <span v-else class="small text-danger">
+                    <i aria-hidden="true" class="fa fa-times"></i>
+                    {{ i18n.get("_.settings.notconnected") }}
+                </span>
             </div>
             <div class="col">
-                <button class="btn btn-outline-danger float-end">{{
-                        i18n.get("_.settings.disconnect")
-                    }}
+                <button v-if="value.twitter" class="btn btn-outline-danger float-end" @click="notimplemented">
+                    {{ i18n.get("_.settings.disconnect") }}
+                </button>
+                <button v-else class="btn btn-primary float-end" @click="notimplemented">
+                    {{ i18n.get("_.settings.connect") }}
                 </button>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col">
                 <i aria-hidden="true" class="fab fa-mastodon"></i> Mastodon<br>
-                <span class="small text-danger">
-                            <i aria-hidden="true" class="fa fa-times"></i>
-                            {{ i18n.get("_.settings.notconnected") }}
-                        </span>
+                <span v-if="value.mastodon" class="small text-success">
+                    <i aria-hidden="true" class="fa fa-check"></i>
+                    {{ i18n.get("_.settings.connected") }}
+                </span>
+                <span v-else class="small text-danger">
+                    <i aria-hidden="true" class="fa fa-times"></i>
+                    {{ i18n.get("_.settings.notconnected") }}
+                </span>
             </div>
             <div class="col">
-                <div class="input-group">
+                <button v-if="value.mastodon" class="btn btn-outline-danger float-end" @click="notimplemented">
+                    {{ i18n.get("_.settings.disconnect") }}
+                </button>
+                <div v-else class="input-group">
                     <input :placeholder="i18n.get('_.user.mastodon-instance-url')" class="form-control"
                            type="text">
-                    <button class="btn btn-primary float-end">{{ i18n.get("_.settings.connect") }}</button>
+                    <button class="btn btn-primary float-end" @click="notimplemented">
+                        {{ i18n.get("_.settings.connect") }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -111,6 +125,13 @@
 export default {
     name: "ConnectivitySettings",
     props: ["value"],
+    inject: ["notyf"],
+    model: {prop: "value", event: "input"},
+    methods: {
+        notimplemented() {
+            this.notyf.error("Not yet implemented");
+        }
+    }
 };
 </script>
 

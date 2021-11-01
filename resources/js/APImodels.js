@@ -163,5 +163,7 @@ export let userProfileSettings = {
     password: false,
     email: "",
     email_verified: true,
-    profile_picture_set: false
+    profile_picture_set: false,
+    twitter: null,
+    mastodon: null
 };

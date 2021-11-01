@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Exceptions\NotConnectedException;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -159,21 +157,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * @return string|null
-     * @todo delete after implemented ID-Link in vue Template
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        try {
-            $connection = TwitterController::getApi($this);
-            $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
-            return "https://twitter.com/" . $getInfo->screen_name;
-        } catch (NotConnectedException) {
-            return null;
-        } catch (Exception $exception) {
-            // The big whale time or $user has removed the api rights but has not told us yet.
-            Log::warning($exception);
-            return null;
+        if ($this->socialProfile->twitter_id) {
+            return "https://twitter.com/" . $this->socialProfile->twitter_id;
         }
+        return null;
     }
 
     public function getMastodonUrlAttribute(): ?string {

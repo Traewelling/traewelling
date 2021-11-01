@@ -41,7 +41,7 @@
         <div id="settingsTabs-content" class="tab-content col-md-12 col-lg-8">
             <ProfileSettings v-model="userProfileSettings"></ProfileSettings>
             <AccountSettings v-model="userProfileSettings"></AccountSettings>
-            <ConnectivitySettings :userProfileSettings="userProfileSettings"></ConnectivitySettings>
+            <ConnectivitySettings v-model="userProfileSettings"></ConnectivitySettings>
         </div>
     </LayoutBasicNoSidebar>
 </template>
