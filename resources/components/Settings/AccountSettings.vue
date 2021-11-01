@@ -163,11 +163,9 @@ export default {
         catchError(error) {
             if (error.response) {
                 if (error.response.data.errors) {
-                    console.log(error.response.data.errors);
                     Object.entries(error.response.data.errors).forEach((err) => {
-                        console.log(err)
                         this.notyf.error(err[1][0]);
-                    })
+                    });
                 } else {
                     this.notyf.error(error.response.data.message);
                 }
@@ -176,7 +174,7 @@ export default {
             }
         }
     }
-}
+};
 </script>
 
 <style scoped>

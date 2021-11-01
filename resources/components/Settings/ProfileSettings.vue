@@ -198,7 +198,7 @@ export default {
             this.updateProfileSettings();
         }, 300),
     }
-}
+};
 </script>
 
 <style scoped>

@@ -111,7 +111,7 @@
 export default {
     name: "ConnectivitySettings",
     props: ["value"],
-}
+};
 </script>
 
 <style scoped>

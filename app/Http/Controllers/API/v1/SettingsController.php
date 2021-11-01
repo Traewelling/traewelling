@@ -22,7 +22,11 @@ class SettingsController extends ResponseController
      * @throws ValidationException
      */
     public function updateMail(Request $request): UserProfileSettingsResource {
-        $validated = $request->validate(['email'    => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
+        $validated = $request->validate(['email'    => ['required',
+                                                        'string',
+                                                        'email:rfc,dns',
+                                                        'max:255',
+                                                        'unique:users'],
                                          'password' => ['required', 'string']
                                         ]);
         if (!Hash::check($validated['password'], auth()->user()->password)) {

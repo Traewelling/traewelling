@@ -45,7 +45,7 @@ export default {
     },
     computed: {
         slotPassed() {
-            return !!this.$slots.default
+            return !!this.$slots.default;
         }
     },
     methods: {
