@@ -79,7 +79,7 @@ class SettingsController extends ResponseController
     }
 
     public function deleteProfilePicture(): JsonResponse {
-        if (BackendSettingsController::deleteProfilePicture()) {
+        if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
             return $this->sendv1Response('', 204);
         }
 

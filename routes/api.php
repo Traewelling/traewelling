@@ -81,6 +81,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
+            Route::delete('account', [UserController::class, 'deleteAccount']);
         });
     });
 

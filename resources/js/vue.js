@@ -40,6 +40,7 @@ Vue.prototype.i18n   = new Lang({
 });
 Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
+Vue.prototype.$appName = process.env.MIX_APP_NAME;
 // Set Vue router
 Vue.router = router;
 Vue.use(VueRouter);

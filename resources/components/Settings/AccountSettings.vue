@@ -26,7 +26,7 @@
                 {{ i18n.get("_.user.password") }}<br>
                 <span class="small text-muted">{{ i18n.get("_.passwords.password") }}</span>
             </div>
-            <div class="col">
+            <div class="col-3">
                 <button class="btn btn-outline-primary float-end" @click="$refs.password.show()">
                     {{ i18n.get("_.settings.change") }}
                 </button>
@@ -41,13 +41,15 @@
             </div>
         </div>
 
-        <h6 class="text-capitalize text-muted border-bottom my-5">{{
-                i18n.get('_.settings.delete-account')
-            }}</h6>
+        <h6 class="text-capitalize text-danger border-bottom my-5">
+            {{ i18n.get('_.settings.delete-account') }}
+        </h6>
         <div class="row">
             <div class="col">
-
-                <button class="btn btn-outline-danger float-end">
+                {{ i18n.get("_.settings.delete-account.detail") }}
+            </div>
+            <div class="col-4 col-md-3">
+                <button class="btn btn-outline-danger float-end" @click="$refs.delete.show()">
                     <i aria-hidden="true" class="fa fa-trash"></i>
                     {{ i18n.get("_.settings.delete-account") }}
                 </button>
@@ -90,6 +92,18 @@
                 </div>
             </form>
         </ModalConfirm>
+        <ModalConfirm ref="delete" :abort-text="i18n.get('_.settings.delete-account-btn-back')"
+                      :confirm-text="i18n.get('_.settings.delete-account-btn-confirm')"
+                      :title-text="i18n.get('_.settings.delete-account')"
+                      confirm-button-color="btn-primary" v-on:confirm="deleteAccount">
+            <span v-html="i18n.choice('_.settings.delete-account-verify', 1, {appname: $appName})"></span>
+            <hr>
+            <label v-html="i18n.choice('_.messages.account.please-confirm', 1, {delete: value.username})">
+            </label>
+            <input v-model="confirmDelete" :placeholder="value.username" class="form-control" name="confirmation"
+                   required
+                   type="text" @submit="$refs.delete.confirm()"/>
+        </ModalConfirm>
     </div>
 </template>
 
@@ -109,13 +123,26 @@ export default {
             newPassword: null,
             newPasswordConfirm: null,
             email: null,
-            setValue: null
+            setValue: null,
+            confirmDelete: null
         };
     },
     mounted() {
         this.setValue = this.$props.value;
     },
     methods: {
+        deleteAccount() {
+            axios
+                .delete("/settings/account", {data: {confirmation: this.confirmDelete}})
+                .then(() => {
+                    this.$auth.logout();
+                    this.notyf.success(this.i18n.get("_.settings.delete-account-completed"));
+                })
+                .catch((error) => {
+                    this.confirmDelete = null;
+                    this.catchError(error);
+                });
+        },
         updatePassword() {
             axios
                 .put("/settings/password", {

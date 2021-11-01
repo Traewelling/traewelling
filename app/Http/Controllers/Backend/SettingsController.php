@@ -27,9 +27,7 @@ class SettingsController extends Controller
         return $user;
     }
 
-    public static function deleteProfilePicture(): bool {
-        $user = auth()->user();
-
+    public static function deleteProfilePicture(User $user): bool {
         if ($user?->avatar !== null) {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
             $user->update(['avatar' => null]);

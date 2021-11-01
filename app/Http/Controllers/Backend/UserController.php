@@ -7,13 +7,34 @@ use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserMute;
+use Error;
 use Exception;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
 class UserController extends Controller
 {
+    /**
+     * @param User $user
+     *
+     * @return bool
+     * @throws Error
+     */
+    public static function deleteUserAccount(User $user): bool {
+        SettingsController::deleteProfilePicture(user: $user);
+
+        DatabaseNotification::where([
+                                        'notifiable_id'   => $user->id,
+                                        'notifiable_type' => get_class($user)
+                                    ])->delete();
+
+        if ($user->delete()) {
+            return true;
+        }
+        throw new Error();
+    }
 
     /**
      * @param User $user

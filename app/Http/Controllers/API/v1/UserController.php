@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Error;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -23,6 +24,17 @@ use InvalidArgumentException;
 
 class UserController extends ResponseController
 {
+
+    public function deleteAccount(Request $request): JsonResponse {
+        $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
+
+        try {
+            return $this->sendv1Response(BackendUserBackend::deleteUserAccount(user: auth()->user()));
+        } catch (Error) {
+            return $this->sendError('', 409);
+        }
+    }
+
     /**
      * Returns paginated statuses for user
      *
