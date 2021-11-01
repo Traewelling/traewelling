@@ -3,12 +3,13 @@
 namespace App\Notifications;
 
 use App\Exceptions\ShouldDeleteNotificationException;
+use App\Http\Resources\UserNotificationMessageResource;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use stdClass;
 
 class MastodonNotSent extends Notification
 {
@@ -17,43 +18,15 @@ class MastodonNotSent extends Notification
     public $error;
     public $status;
 
-    public function __construct($error, Status $status)
-    {
+    public function __construct($error, Status $status) {
         $this->error  = $error;
         $this->status = $status;
     }
 
-    public function via()
-    {
-        return ['database'];
-    }
-
-    public function toArray()
-    {
-        return [
-            'error' => $this->error,
-            'status_id' => $this->status->id,
-        ];
-    }
-
-    public static function detail($notification)
-    {
-        $data = $notification->data;
-
+    /** @deprecated will be handled in frontend */
+    public static function render($notification): ?string {
         try {
-            $status = Status::findOrFail($data['status_id']);
-        } catch(ModelNotFoundException $e) {
-            throw new ShouldDeleteNotificationException();
-        }
-        $notification->detail         = new \stdClass();
-        $notification->detail->status = $status;
-        return $notification->type;
-    }
-
-    public static function render($notification)
-    {
-        try {
-            $detail = Self::detail($notification);
+            $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException $e) {
             $notification->delete();
             return null;
@@ -62,15 +35,60 @@ class MastodonNotSent extends Notification
 
 
         return view("includes.notification", [
-            'color' => "warning",
-            'icon' => "fas fa-exclamation-triangle",
-            'lead' => __('notifications.socialNotShared.lead', ['platform' => "Mastodon"]),
-            "link" => route('statuses.get', ['id' => $detail->status->id]),
+            'color'  => "warning",
+            'icon'   => "fas fa-exclamation-triangle",
+            'lead'   => __('notifications.socialNotShared.lead', ['platform' => "Mastodon"]),
+            "link"   => route('statuses.get', ['id' => $detail->status->id]),
             'notice' => __('notifications.socialNotShared.mastodon.' . $data['error']),
 
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read' => $notification->read_at != null,
-            'notificationId' => $notification->id
+            'read'            => $notification->read_at != null,
+            'notificationId'  => $notification->id
         ])->render();
+    }
+
+    /**
+     * @param DatabaseNotification $notification
+     *
+     * @return stdClass
+     * @throws ShouldDeleteNotificationException
+     */
+    public static function detail(DatabaseNotification $notification): stdClass {
+        $data = $notification->data;
+
+        try {
+            $status = Status::findOrFail($data['status_id']);
+        } catch (ModelNotFoundException) {
+            throw new ShouldDeleteNotificationException();
+        }
+        $notification->detail          = new stdClass();
+        $notification->detail->status  = $status;
+        $notification->detail->message = new UserNotificationMessageResource
+        ([
+             'severity' => 'warning',
+             'icon'     => 'fas fa-exclamation-triangle',
+             'lead'     => [
+                 'key'    => 'notifications.socialNotShared.lead',
+                 'values' => [
+                     'platform' => 'Mastodon'
+                 ]
+             ],
+             'notice'   => [
+                 'key'    => 'notifications.socialNotShared.mastodon.' . $data['error'],
+                 'values' => []
+             ]
+         ]);
+        return $notification->detail;
+    }
+
+    public function via(): array {
+        return ['database'];
+    }
+
+    public function toArray(): array {
+        return [
+            'error'     => $this->error,
+            'status_id' => $this->status->id,
+        ];
     }
 }

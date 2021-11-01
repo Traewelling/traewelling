@@ -34,7 +34,6 @@
                 </a>
             </p>
         </div>
-        <NotificationsModal ref="notifModal"></NotificationsModal>
     </footer>
 </template>
 

@@ -1,18 +1,29 @@
 <template>
-        <a v-if="userData.id == $auth.user().id" class="btn btn-sm btn-primary" href="#">{{
-                i18n.get("_.profile.settings")
-            }}</a>
+    <a v-if="userData.id === $auth.user().id" :class="{'btn btn-sm btn-primary': !dropdown, 'dropdown-item': dropdown}"
+       href="#">
+        {{ i18n.get("_.profile.settings") }}
+    </a>
     <a v-else-if="userData.privateProfile && userData.followPending" aria-disabled="true"
-       class="btn btn-sm btn-primary disabled"
-       href="#">{{ i18n.get("_.profile.follow_req.pending") }}</a>
-        <a v-else-if="userData.privateProfile && !userData.following" class="btn btn-sm btn-primary follow"
-           href="#" @click.prevent="follow">{{
-                i18n.get("_.profile.follow_req")
-            }}</a>
-    <a v-else-if="!userData.following" class="btn btn-sm btn-primary follow"
-       href="#" @click.prevent="follow">{{ i18n.get("_.profile.follow") }}</a>
-    <a v-else class="btn btn-sm btn-danger follow" href="#"
-       @click.prevent="unfollow">{{ i18n.get("_.profile.unfollow") }}</a>
+       :class="{'btn btn-sm btn-primary disabled': !dropdown, 'dropdown-item': dropdown}" href="#">
+        <i v-if="dropdown" aria-hidden="true" class="fas fa-user-clock"></i>
+        {{ i18n.get("_.profile.follow_req.pending") }}
+    </a>
+    <a v-else-if="userData.privateProfile && !userData.following"
+       :class="{'btn btn-sm btn-primary': !dropdown, 'dropdown-item': dropdown}"
+       href="#" @click.prevent="follow">
+        <i v-if="dropdown" aria-hidden="true" class="fas fa-user-plus"></i>
+        {{ i18n.get("_.profile.follow_req") }}
+    </a>
+    <a v-else-if="!userData.following" :class="{'btn btn-sm btn-primary': !dropdown, 'dropdown-item': dropdown}"
+       href="#" @click.prevent="follow">
+        <i v-if="dropdown" aria-hidden="true" class="fas fa-user-plus"></i>
+        {{ i18n.get("_.profile.follow") }}
+    </a>
+    <a v-else :class="{'btn btn-sm btn-danger': !dropdown, 'dropdown-item': dropdown}" href="#"
+       @click.prevent="unfollow">
+        <i v-if="dropdown" aria-hidden="true" class="fas fa-user-minus"></i>
+        {{ i18n.get("_.profile.unfollow") }}
+    </a>
 </template>
 
 <script>
@@ -21,18 +32,18 @@ import {ProfileModel} from "../js/APImodels";
 
 export default {
     name: "FollowButton",
+    inject: ["notyf"],
     data() {
         return {
             userData: ProfileModel
         };
     },
-    props: ["user"],
+    props: ["user", "dropdown"],
     mounted() {
         this.userData = this.$props.user;
     },
     watch: {
         user(val, oldVal) {
-            console.log("test");
             this.userData = this.$props.user;
         }
     },
@@ -45,7 +56,11 @@ export default {
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 })
         },
         unfollow() {
@@ -56,7 +71,11 @@ export default {
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    console.error(error);
+                    if (error.response) {
+                        this.notyf.error(error.response.data.error.message);
+                    } else {
+                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                    }
                 })
         }
     }

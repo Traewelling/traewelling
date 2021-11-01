@@ -30,7 +30,7 @@ class TransportController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
 
         $validated = $validator->validate();
@@ -42,9 +42,9 @@ class TransportController extends ResponseController
                 $validated['travelType'] ?? null
             );
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendv1Error("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station", 404);
+            return $this->sendv1Error("Your query matches no station", 404);
         }
 
         return $this->sendv1Response(
@@ -63,7 +63,7 @@ class TransportController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
 
         try {
@@ -73,7 +73,7 @@ class TransportController extends ResponseController
                 $request->start
             );
         } catch (StationNotOnTripException) {
-            return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
+            return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
         }
 
         return $this->sendv1Response(data: $trainTripResponse);
@@ -87,7 +87,7 @@ class TransportController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -98,11 +98,11 @@ class TransportController extends ResponseController
                 results: $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas'), 503);
+            return $this->sendv1Error(__('messages.exception.generalHafas'), 503);
         }
 
         if ($nearestStation === null) {
-            return $this->sendError(__('controller.transport.no-station-found'));
+            return $this->sendv1Error(__('controller.transport.no-station-found'));
         }
 
         return $this->sendv1Response(new TrainStationResource($nearestStation));
@@ -125,7 +125,7 @@ class TransportController extends ResponseController
             'arrival'     => ['required', 'date'],
         ]);
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
 
         try {
@@ -165,17 +165,17 @@ class TransportController extends ResponseController
             return $this->sendv1Response($trainCheckinResponse);
         } catch (CheckInCollisionException $e) {
             $status?->delete();
-            return $this->sendError([
+            return $this->sendv1Error([
                                         'status_id' => $e->getCollision()->status_id,
                                         'lineName'  => $e->getCollision()->HafasTrip->first()->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {
             $status?->delete();
-            return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
+            return $this->sendv1Error('Given stations are not on the trip/have wrong departure/arrival.', 400);
         } catch (HafasException $exception) {
             $status?->delete();
-            return $this->sendError($exception->getMessage(), 400);
+            return $this->sendv1Error($exception->getMessage(), 400);
         }
     }
 
@@ -183,9 +183,9 @@ class TransportController extends ResponseController
         try {
             $station = TransportBackend::setTrainHome(user: auth()->user(), stationName: $stationName);
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendv1Error("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station", 404);
+            return $this->sendv1Error("Your query matches no station", 404);
         }
 
         return $this->sendv1Response(
@@ -198,7 +198,7 @@ class TransportController extends ResponseController
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
             return $this->sendv1Response($trainAutocompleteResponse);
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendv1Error("There has been an error with our data provider", 400);
         }
     }
 

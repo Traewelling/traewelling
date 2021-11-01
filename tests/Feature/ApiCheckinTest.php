@@ -25,6 +25,7 @@ class ApiCheckinTest extends ApiTestCase
     public function autocomplete(): void {
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
                          ->get(route('api.v0.checkin.train.autocomplete', ['station' => 'Hamb']));
+        $this->checkHafasException($response);
         $response->assertOk();
     }
 
@@ -43,6 +44,7 @@ class ApiCheckinTest extends ApiTestCase
                                        'station' => $stationname,
                                        'when'    => $requestDate->toIso8601String()
                                    ]);
+        $this->checkHafasException($response);
         $response->assertOk();
         $jsonResponse = json_decode($response->getContent(), true);
         $station      = $jsonResponse['station'];
@@ -72,6 +74,7 @@ class ApiCheckinTest extends ApiTestCase
                                 'when'    => $timestamp->toIso8601String(),
                             ]);
 
+        $this->checkHafasException($response);
         $trainStationboard = json_decode($response->getContent(), true);
         $countDepartures   = count($trainStationboard['departures']);
         if ($countDepartures == 0) {
@@ -137,6 +140,7 @@ class ApiCheckinTest extends ApiTestCase
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
                          ->json('PUT', route('api.v0.checkin.train.home'), ['ibnr' => '8000105']);
+        $this->checkHafasException($response, 404);
         $response->assertOk();
         $this->assertEquals($response->getContent(), '"Frankfurt(Main)Hbf"');
 

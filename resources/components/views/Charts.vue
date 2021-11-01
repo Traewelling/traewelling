@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ this.globalData.distance }} km
+                                    {{ (this.globalData.distance / 1000).toFixed(1) }} km
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.distance") }}</small>
@@ -189,6 +189,7 @@ import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 
 export default {
     name: "Charts",
+    inject: ["notyf"],
     components: {
         LayoutBasicNoSidebar,
         LayoutBasic,
@@ -358,8 +359,16 @@ export default {
                     this.updateVolume();
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    this.sendNotyfError(error);
                 });
+        },
+        sendNotyfError(error) {
+          if (error.response) {
+            this.notyf.error(error.response.data.message);
+          } else {
+            this.notyf.error(this.i18n.get("_.messages.exception.general"));
+          }
         },
         fetchGlobalData() {
             axios
@@ -370,7 +379,8 @@ export default {
                     this.fromGlobal  = response.data.meta.from;
                 })
                 .catch((error) => {
-                    console.error(error);
+                    this.loading = false;
+                    this.sendNotyfError(error);
                 });
         },
         updatePurpose() {

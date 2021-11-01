@@ -18,11 +18,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Throwable;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class FrontendTransportController extends Controller
 {
-    public function TrainAutocomplete($station): JsonResponse {
-        $TrainAutocompleteResponse = TransportBackend::TrainAutocomplete($station);
-        return response()->json($TrainAutocompleteResponse);
+    public function TrainAutocomplete(string $station): JsonResponse {
+        try {
+            $TrainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
+            return response()->json($TrainAutocompleteResponse);
+        } catch (HafasException $e) {
+            abort(503, $e->getMessage());
+        }
     }
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {

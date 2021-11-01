@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class ExportController extends Controller
@@ -21,8 +22,9 @@ abstract class ExportController extends Controller
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         return Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                      ->where('statuses.user_id', $user->id)
-                     ->where('train_checkins.departure', '>=', $timestampFrom->toIso8601String())
-                     ->where('train_checkins.departure', '<=', $timestampTo->toIso8601String())
+                     ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
+                     ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
+                     ->select(['statuses.*'])
                      ->get();
     }
 
@@ -38,6 +40,8 @@ abstract class ExportController extends Controller
         if ($filetype === 'csv') {
             return self::exportCsv($from, $until);
         }
+
+        throw new InvalidArgumentException('unsupported filetype');
     }
 
     private static function exportJson(Carbon $begin, Carbon $end): JsonResponse {

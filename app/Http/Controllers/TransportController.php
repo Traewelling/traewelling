@@ -34,28 +34,14 @@ use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class TransportController extends Controller
 {
 
     /**
-     * @param $station
-     *
-     * @return Collection
-     * @throws HafasException
-     * @deprecated
-     */
-    public static function TrainAutocomplete($station): Collection {
-        return HafasController::getStations($station)->map(function($station) {
-            return [
-                'id'       => $station->ibnr,
-                'name'     => $station->name,
-                'provider' => 'train'
-            ];
-        });
-    }
-
-    /**
-     * @param $query
+     * @param string $query
      *
      * @return Collection
      * @throws HafasException

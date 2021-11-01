@@ -12,19 +12,19 @@
                         <ul id="myTab" class="nav nav-tabs nav-fill" role="tablist">
                             <li class="nav-item">
                                 <a id="main-tab" aria-controls="home" aria-selected="true" class="nav-link active px-4"
-                                   data-toggle="tab" href="#leaderboard-main" role="tab">
+                                   data-mdb-toggle="tab" href="#leaderboard-main" role="tab">
                                     {{ i18n.get("_.leaderboard.top") }} {{ users.length }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a id="distance-tab" aria-controls="profile" aria-selected="false" class="nav-link px-4"
-                                   data-toggle="tab" href="#leaderboard-distance" role="tab">
+                                   data-mdb-toggle="tab" href="#leaderboard-distance" role="tab">
                                     {{ i18n.get("_.leaderboard.distance") }}
                                 </a>
                             </li>
                             <li v-if="$auth.check() && friends" class="nav-item">
                                 <a id="friends-tab" aria-controls="contact" aria-selected="false" class="nav-link px-4"
-                                   data-toggle="tab" href="#leaderboard-friends" role="tab">
+                                   data-mdb-toggle="tab" href="#leaderboard-friends" role="tab">
                                     {{ i18n.get("_.leaderboard.friends") }}
                                 </a>
                             </li>

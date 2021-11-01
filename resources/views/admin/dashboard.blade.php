@@ -1,13 +1,11 @@
-@extends('layouts.admin')
+@extends('admin.layout')
 
 @section('title', 'Dashboard')
 
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <div class="card-title">{{__('admin.usage-board')}}</div>
-        </div>
         <div class="card-body">
+            <h5 class="card-title mb-4">{{__('admin.usage-board')}}</h5>
             <form class="row">
                 <div class="col-6 col-md-4">
                     <label for="since">{{__('export.begin')}}:</label>
@@ -19,8 +17,8 @@
                 </div>
                 <div class="col-md-4">
                     <label for="btn">&nbsp;</label>
-                    <input type="submit" id="btn btn-primary" value="{{__('admin.select-range')}}"
-                           class="btn-primary form-control"/>
+                    <input type="submit" id="btn-primary" value="{{__('admin.select-range')}}"
+                           class="btn btn-primary form-control"/>
                 </div>
             </form>
 

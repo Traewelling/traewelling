@@ -41,5 +41,4 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.events.edit');
         Route::post('/edit/{id}', [AdminEventController::class, 'edit']);
     });
-
 });

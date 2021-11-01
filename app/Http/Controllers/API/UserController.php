@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @deprecated Will be replaced by APIv1
+ */
 class UserController extends ResponseController
 {
     public function show($username) {

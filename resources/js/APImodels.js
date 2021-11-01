@@ -41,14 +41,32 @@ export let Stopover = {
     isDepartureDelayed: false
 };
 
+export let ProfileModel = {
+    id: 0,
+    displayName: "",
+    username: "",
+    trainDistance: 0,
+    trainDuration: 0,
+    trainSpeed: 0,
+    points: 0,
+    twitterUrl: null,
+    mastodonUrl: null,
+    privateProfile: false,
+    userInvisibleToMe: true,
+    muted: false,
+    following: false,
+    followPending: false,
+    preventIndex: true,
+};
+
 export let StatusModel = {
     id: 0,
     body: "",
     type: "",
     createdAt: "",
     user: 0,
-    preventIndex: true,
     username: "",
+    preventIndex: false,
     business: 0,
     visibility: 0,
     likes: 0,
@@ -70,24 +88,6 @@ export let StatusModel = {
 };
 
 export let PolyLineModel = {};
-
-export let ProfileModel = {
-    id: 0,
-    displayName: "",
-    username: "",
-    trainDistance: 0,
-    trainDuration: 0,
-    trainSpeed: 0,
-    points: 0,
-    twitterUrl: null,
-    mastodonUrl: null,
-    privateProfile: false,
-    userInvisibleToMe: true,
-    muted: false,
-    following: false,
-    followPending: false,
-    preventIndex: true,
-};
 
 export let LeaderboardUserModel = {
     username: "",
@@ -139,3 +139,16 @@ export let visibility = [
         detail: "_.status.visibility.3.detail"
     },
 ];
+
+export let profileNotifications = [
+    "App\\Notifications\\FollowRequestApproved",
+    "App\\Notifications\\FollowRequestIssued",
+    "App\\Notifications\\UserFollowed",
+];
+
+export let statusNotifications = [
+    "App\\Notifications\\MastodonNotSent",
+    "App\\Notifications\\StatusLiked",
+    "App\\Notifications\\TwitterNotSent",
+    "App\\Notifications\\UserJoinedConnection"
+]

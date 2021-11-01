@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserRoleMiddleware
 {
@@ -14,18 +13,18 @@ class UserRoleMiddleware
      *
      * @param Request $request
      * @param Closure $next
-     * @param String $role
+     * @param string  $requiredRoleLevel
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next, string $role) {
-        $u        = Auth::user();
-        $userrole = $u->role ?? 0; // Guests have a 0-user-role, there's another Auth middleware for guest-access.
-        $r        = intval($role);
+    public function handle(Request $request, Closure $next, string $requiredRoleLevel): mixed {
+        // Guests have a 0-user-role, there's another Auth middleware for guest-access.
+        $userRole = auth()->check() ? auth()->user()->role : 0;
 
-        if ($userrole >= $r) {
-            return $next($request);
+        if ($userRole < (int) $requiredRoleLevel) {
+            abort(401); // Unauthorized
         }
 
-        abort(401); // Unauthorized
+        return $next($request);
     }
 }

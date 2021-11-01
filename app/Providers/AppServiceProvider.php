@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Contracts\Factory;
 use Revolution\Socialite\Mastodon\MastodonProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
+    public function register(): void {
         //
     }
 
@@ -21,9 +24,13 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
+     * @throws BindingResolutionException
      */
-    public function boot() {
-        $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+    public function boot(): void {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+        $socialite = $this->app->make(Factory::class);
         $socialite->extend(
             'mastodon',
             function($app) use ($socialite) {
