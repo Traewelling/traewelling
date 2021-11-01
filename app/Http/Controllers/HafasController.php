@@ -16,32 +16,11 @@ use Illuminate\Support\Collection;
 use PDOException;
 use stdClass;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 abstract class HafasController extends Controller
 {
-
-    /**
-     * Fetch from HAFAS
-     * @param int $ibnr
-     * @return TrainStation
-     * @throws HafasException
-     */
-    private static function fetchTrainStation(int $ibnr): TrainStation {
-        try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
-            $response = $client->get("/stops/$ibnr");
-            $data     = json_decode($response->getBody()->getContents());
-            return TrainStation::updateOrCreate([
-                                                    'ibnr' => $data->id
-                                                ], [
-                                                    'name'      => $data->name,
-                                                    'latitude'  => $data->location->latitude,
-                                                    'longitude' => $data->location->longitude
-                                                ]);
-        } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
-            throw new HafasException($response->msg ?? $e->getMessage());
-        }
-    }
 
     public static function getTrainStationByRilIdentifier(string $rilIdentifier): ?TrainStation {
         $trainStation = TrainStation::where('rilIdentifier', $rilIdentifier)->first();
@@ -49,7 +28,7 @@ abstract class HafasController extends Controller
             return $trainStation;
         }
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
+            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
             $response = $client->get("/stations/$rilIdentifier");
             $data     = json_decode($response->getBody()->getContents());
             return TrainStation::updateOrCreate([
@@ -67,7 +46,7 @@ abstract class HafasController extends Controller
 
     public static function getStations(string $query, int $results = 10): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
+            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
             $response = $client->get("/locations", [
                 'query' => [
                     'query'     => $query,
@@ -87,8 +66,7 @@ abstract class HafasController extends Controller
 
             return $stations;
         } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
-            throw new HafasException($response->msg ?? $e->getMessage());
+            throw new HafasException($e->getMessage());
         }
     }
 
@@ -104,7 +82,7 @@ abstract class HafasController extends Controller
 
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
+            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
             $response = $client->get("/stops/nearby", [
                 'query' => [
                     'latitude'  => $latitude,
@@ -122,28 +100,28 @@ abstract class HafasController extends Controller
             }
 
             return $stations;
-        } catch (GuzzleException $e) {
-            $response = $e->getMessage();
-            throw new HafasException($response->msg ?? $e->getMessage());
+        }catch (GuzzleException $e) {
+            throw new HafasException($e->getMessage());
         }
     }
 
     /**
-     * @param TrainStation $station
-     * @param Carbon $when
-     * @param int $duration
+     * @param TrainStation           $station
+     * @param Carbon                 $when
+     * @param int                    $duration
      * @param TravelType|string|null $type
+     *
      * @return Collection
      * @throws HafasException
      */
     public static function getDepartures(
-        TrainStation $station,
-        Carbon $when,
-        int $duration = 15,
+        TrainStation      $station,
+        Carbon            $when,
+        int               $duration = 15,
         TravelType|string $type = null
     ): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest')]);
+            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
                 'query' => [
                     'when'                => $when->toIso8601String(),
@@ -170,14 +148,72 @@ abstract class HafasController extends Controller
 
             return $departures;
         } catch (GuzzleException $e) {
-            $response = $e->getResponse()->getBody()->getContents();
-            throw new HafasException($response->msg ?? $e->getMessage());
+            throw new HafasException($e->getMessage());
+        }
+    }
+
+    /**
+     * Get the TrainStation Model from Database
+     *
+     * @param int         $ibnr
+     * @param string|null $name
+     * @param float|null  $latitude
+     * @param float|null  $longitude
+     *
+     * @return TrainStation
+     * @throws HafasException
+     */
+    public static function getTrainStation(int    $ibnr,
+                                           string $name = null,
+                                           float  $latitude = null,
+                                           float  $longitude = null): TrainStation {
+
+        if ($name === null || $latitude === null || $longitude === null) {
+            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
+            if ($dbTrainStation !== null) {
+                return $dbTrainStation;
+            }
+            return HafasController::fetchTrainStation($ibnr);
+        }
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $ibnr
+                                            ], [
+                                                'name'      => $name,
+                                                'latitude'  => $latitude,
+                                                'longitude' => $longitude
+                                            ]);
+    }
+
+    /**
+     * Fetch from HAFAS
+     *
+     * @param int $ibnr
+     *
+     * @return TrainStation
+     * @throws HafasException
+     */
+    private static function fetchTrainStation(int $ibnr): TrainStation {
+        try {
+            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
+            $response = $client->get("/stops/$ibnr");
+            $data     = json_decode($response->getBody()->getContents());
+            return TrainStation::updateOrCreate([
+                                                    'ibnr' => $data->id
+                                                ], [
+                                                    'name'      => $data->name,
+                                                    'latitude'  => $data->location->latitude,
+                                                    'longitude' => $data->location->longitude
+                                                ]);
+        } catch (GuzzleException $e) {
+            throw new HafasException($e->getMessage());
+            throw new HafasException($e->getMessage());
         }
     }
 
     /**
      * @param string $tripID
      * @param string $lineName
+     *
      * @return HafasTrip
      * @throws HafasException
      */
@@ -193,11 +229,12 @@ abstract class HafasController extends Controller
     /**
      * @param string $tripID
      * @param string $lineName
+     *
      * @return HafasTrip
      * @throws HafasException
      */
     public static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $tripClient = new Client(['base_uri' => config('trwl.db_rest')]);
+        $tripClient = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
         try {
             $tripResponse = $tripClient->get("trips/$tripID", [
                 'query' => [
@@ -282,7 +319,8 @@ abstract class HafasController extends Controller
                     [
                         'trip_id'          => $tripID,
                         'train_station_id' => $hafasStop->id
-                    ], $updatePayload
+                    ],
+                    $updatePayload
                 );
             } catch (PDOException $exception) {
                 report($exception);
@@ -290,35 +328,5 @@ abstract class HafasController extends Controller
         }
 
         return $hafasTrip;
-    }
-
-    /**
-     * Get the TrainStation Model from Database
-     * @param int $ibnr
-     * @param string|null $name
-     * @param float|null $latitude
-     * @param float|null $longitude
-     * @return TrainStation
-     * @throws HafasException
-     */
-    public static function getTrainStation(int $ibnr,
-                                           string $name = null,
-                                           float $latitude = null,
-                                           float $longitude = null): TrainStation {
-
-        if ($name === null || $latitude === null || $longitude === null) {
-            $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if ($dbTrainStation !== null) {
-                return $dbTrainStation;
-            }
-            return HafasController::fetchTrainStation($ibnr);
-        }
-        return TrainStation::updateOrCreate([
-                                                'ibnr' => $ibnr
-                                            ], [
-                                                'name'      => $name,
-                                                'latitude'  => $latitude,
-                                                'longitude' => $longitude
-                                            ]);
     }
 }

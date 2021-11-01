@@ -47,7 +47,7 @@ class AuthController extends ResponseController
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
         }
-        return $this->sendError("Sorry! Registration is not successful.", 401);
+        return $this->sendv1Error("Sorry! Registration is not successful.", 401);
     }
 
     /**
@@ -63,7 +63,7 @@ class AuthController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
 
         $credentials = $request->only('email', 'password');

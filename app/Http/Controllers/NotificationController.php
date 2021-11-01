@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Throwable;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class NotificationController extends Controller
 {
     /**
-     * @api v1
+     * @deprecated replaced with Backend/NotificationsController
      */
     public static function latest() {
         return Auth::user()->notifications
@@ -32,8 +35,8 @@ class NotificationController extends Controller
             ->values();
     }
 
-    /*
-     * @api v1
+    /**
+     * @deprecated replaced with new functionality of latest()
      */
     public static function renderLatest(): Collection {
         return Auth::user()->notifications()
@@ -89,13 +92,12 @@ class NotificationController extends Controller
         return Response::json($notification, 200);
     }
 
-    public function readAll() {
+    public static function readAll(): void {
         Auth::user()->unreadNotifications->markAsRead();
     }
 
     /**
      * @return int
-     * @api v1
      */
     public static function count(): int {
         return Auth::user()->notifications->count();

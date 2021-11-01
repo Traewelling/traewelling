@@ -23,6 +23,12 @@
       <option name="SPACE_BEFORE_CLOSURE_LEFT_PARENTHESIS" value="false" />
       <option name="FORCE_SHORT_DECLARATION_ARRAY_STYLE" value="true" />
     </PHPCodeStyleSettings>
+    <codeStyleSettings language="CSS">
+      <indentOptions>
+        <option name="INDENT_SIZE" value="2" />
+        <option name="TAB_SIZE" value="2" />
+      </indentOptions>
+    </codeStyleSettings>
     <codeStyleSettings language="Markdown">
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />

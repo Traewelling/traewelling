@@ -61,9 +61,11 @@ abstract class GeoController extends Controller
 
     /**
      * Fallback calculation if no polyline is given. Calculates the length using the coordinates of the stations.
-     * @param HafasTrip $hafasTrip
+     *
+     * @param HafasTrip     $hafasTrip
      * @param TrainStopover $origin
      * @param TrainStopover $destination
+     *
      * @return float
      */
     private static function calculateDistanceByStopovers(
@@ -73,10 +75,10 @@ abstract class GeoController extends Controller
     ): int {
         $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
-            return $item->id == $origin->id;
+            return $item->is($origin);
         });
         $destinationStopoverIndex = $stopovers->search(function($item) use ($destination) {
-            return $item->id == $destination->id;
+            return $item->is($destination);
         });
 
         $stopovers = $stopovers->slice($originStopoverIndex, $destinationStopoverIndex - $originStopoverIndex + 1);
@@ -111,11 +113,10 @@ abstract class GeoController extends Controller
 
         $equatorialRadiusInMeters = 6378137;
 
-        $pi       = pi();
-        $latA     = $latitudeA / 180 * $pi;
-        $lonA     = $longitudeA / 180 * $pi;
-        $latB     = $latitudeB / 180 * $pi;
-        $lonB     = $longitudeB / 180 * $pi;
+        $latA     = $latitudeA / 180 * M_PI;
+        $lonA     = $longitudeA / 180 * M_PI;
+        $latB     = $latitudeB / 180 * M_PI;
+        $lonB     = $longitudeB / 180 * M_PI;
         $distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
                     * $equatorialRadiusInMeters;
 

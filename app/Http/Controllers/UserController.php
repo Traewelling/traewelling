@@ -26,6 +26,9 @@ use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\Token;
 use Mastodon;
 
+/**
+ * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ */
 class UserController extends Controller
 {
 
@@ -57,6 +60,7 @@ class UserController extends Controller
 
     /**
      * @param User $user
+     *
      * @return string Encoded PNG Image
      */
     private static function generateDefaultAvatar(User $user): string {
@@ -118,6 +122,7 @@ class UserController extends Controller
 
     /**
      * @param User $user
+     *
      * @return LengthAwarePaginator|null
      * @throws PermissionException
      * @api v1
@@ -151,6 +156,7 @@ class UserController extends Controller
     /**
      * @param User $user
      * @param User $userToFollow
+     *
      * @return User
      * @throws AlreadyFollowingException
      * @throws IdenticalModelException
@@ -190,9 +196,11 @@ class UserController extends Controller
 
     /**
      * Add $userToFollow to $user's Followings
+     *
      * @param User $user
      * @param User $userToFollow
      * @param bool $isApprovedRequest
+     *
      * @return bool
      * @throws AlreadyFollowingException
      * @deprecated
@@ -227,8 +235,10 @@ class UserController extends Controller
 
     /**
      * Returnes whether $user follows $userFollow
+     *
      * @param User $user
      * @param User $userFollow
+     *
      * @return bool
      * @deprecated Following-Attribute
      */
@@ -238,8 +248,10 @@ class UserController extends Controller
 
     /**
      * Add $userToFollow to $user's FollowerRequests
+     *
      * @param User $user
      * @param User $userToFollow The user of the person who is followed
+     *
      * @return bool
      * @throws AlreadyFollowingException
      * @deprecated
@@ -260,8 +272,10 @@ class UserController extends Controller
 
     /**
      * Remove $userToUnfollow from $user's Follower
+     *
      * @param User $user
      * @param User $userToUnfollow The user of the person who was followed and now isn't
+     *
      * @return bool
      */
     public static function destroyFollow(User $user, User $userToUnfollow): bool {
@@ -297,6 +311,11 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @param string|null $searchQuery
+     * @deprecated is now in backend/usercontroller for api v1
+     * @return Paginator
+     */
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
         if ($validator->fails()) {
@@ -332,7 +351,9 @@ class UserController extends Controller
 
     /**
      * delete a specific session for user
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
      */
     public function deleteToken(Request $request): RedirectResponse {

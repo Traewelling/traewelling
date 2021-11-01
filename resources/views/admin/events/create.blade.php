@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layout')
 
 @section('title', 'Veranstaltung erstellen')
 

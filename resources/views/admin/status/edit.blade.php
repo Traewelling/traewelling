@@ -1,15 +1,11 @@
-@extends('layouts.admin')
-
-@section('title', 'Status bearbeiten')
+@extends('admin.layout')
 
 @section('content')
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Status bearbeiten</div>
-                </div>
                 <div class="card-body">
+                    <h5 class="card-title mb-4">Status bearbeiten</h5>
                     <div class="row">
                         <div class="col-4">
                             <label class="form-label" for="form-origin">Benutzer</label>
@@ -95,12 +91,10 @@
             </div>
         </div>
 
-        <div class="col-md-12 MT-2">
+        <div class="col-md-12 mt-2">
             <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Stopovers (roh)</div>
-                </div>
                 <div class="card-body">
+                    <h5 class="card-title mb-4">Stopovers (roh)</h5>
                     <pre style="white-space: pre-wrap;">{{$status->trainCheckin->HafasTrip->stopovers}}</pre>
                 </div>
             </div>

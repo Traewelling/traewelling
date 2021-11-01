@@ -120,7 +120,7 @@ abstract class DashboardController extends Controller
         })->sortBy('date');
     }
 
-    private static function fillDates(Carbon $since, Carbon $until, $data, array $exampleData = []) {
+    private static function fillDates(Carbon $since, Carbon $until, $data, array $exampleData = []): void {
         for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
             if (!$data->contains('date', $date->toDateString())) {
                 $row       = new stdClass();

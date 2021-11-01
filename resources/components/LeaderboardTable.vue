@@ -19,7 +19,7 @@
           </router-link>
         </td>
         <td>{{ duration(row.trainDuration) }}</td>
-        <td>{{ row.trainDistance.toFixed(0) }} <small>km</small></td>
+        <td>{{ (row.trainDistance / 1000).toFixed(1) }} <small>km</small></td>
         <td>{{ row.trainSpeed.toFixed(0) }} <small>km/h</small></td>
         <td>{{ row.points }}</td>
       </tr>
