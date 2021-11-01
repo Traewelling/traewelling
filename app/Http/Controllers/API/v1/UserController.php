@@ -63,7 +63,7 @@ class UserController extends ResponseController
         try {
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
-            return $this->sendError(['message' => __('controller.user.follow-error')], 409);
+            return $this->sendv1Error(['message' => __('controller.user.follow-error')], 409);
         } catch (IdenticalModelException) {
             abort(409);
         }
@@ -77,7 +77,7 @@ class UserController extends ResponseController
 
         $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
         if ($destroyFollowResponse === false) {
-            return $this->sendError(['message' => __('controller.user.follow-404')], 409);
+            return $this->sendv1Error(['message' => __('controller.user.follow-404')], 409);
         }
 
         $userToUnfollow->fresh();
@@ -98,7 +98,7 @@ class UserController extends ResponseController
         try {
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
         } catch (UserAlreadyMutedException) {
-            return $this->sendError([
+            return $this->sendv1Error([
                                         'message' => __(
                                             'user.already-muted',
                                             ['username' => $userToBeMuted->username]
@@ -110,7 +110,7 @@ class UserController extends ResponseController
         if ($muteUserResponse) {
             return $this->sendv1Response(new UserResource($userToBeMuted), 201);
         }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
+        return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
     public function destroyMute(Request $request): JsonResponse {
@@ -127,7 +127,7 @@ class UserController extends ResponseController
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
 
         } catch (UserNotMutedException) {
-            return $this->sendError([
+            return $this->sendv1Error([
                                         'message' => __(
                                             'user.already-unmuted',
                                             ['username' => $userToBeUnmuted->username]
@@ -139,14 +139,14 @@ class UserController extends ResponseController
         if ($unmuteUserResponse) {
             return $this->sendv1Response(new UserResource($userToBeUnmuted));
         }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
+        return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
     public function search(string $query): AnonymousResourceCollection|JsonResponse {
         try {
             return UserResource::collection(BackendUserBackend::searchUser($query));
         } catch (InvalidArgumentException) {
-            return $this->sendError(['message' => __('messages.exception.general')], 400);
+            return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
         }
     }
 }
