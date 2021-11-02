@@ -1,20 +1,23 @@
 <template>
     <div ref="deleteModal" class="modal fade" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div :class="{'modal-lg': large, 'modal-xl': extraLarge}" class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{ this.$props.titleText }}</h4>
-                    <button aria-label="Close" class="close" type="button" v-on:click="abort">
+                    <button :aria-label="i18n.get('_.menu.close')" class="close" type="button" v-on:click="abort">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div v-if="bodyText || slotPassed" class="modal-body">
+                <div v-if="bodyText || slotPassed" :class="bodyClass" class="modal-body">
                     <p v-if="bodyText" v-html="this.$props.bodyText"></p>
                     <slot></slot>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" type="button" v-on:click="abort">{{ this.$props.abortText }}</button>
-                    <button :class="confirmButtonColor" class="btn" type="button" v-on:click="confirm">
+                    <button v-if="$props.abortText" class="btn btn-light" type="button" v-on:click="abort">
+                        {{ this.$props.abortText }}
+                    </button>
+                    <button v-if="$props.confirmText" :class="confirmButtonColor" class="btn" type="button"
+                            v-on:click="confirm">
                         {{ this.$props.confirmText }}
                     </button>
                 </div>
@@ -41,7 +44,10 @@ export default {
         abortText: null,
         confirmText: null,
         confirmButtonColor: null,
-        bodyText: null
+        bodyText: null,
+        large: false,
+        extraLarge: false,
+        bodyClass: null
     },
     computed: {
         slotPassed() {

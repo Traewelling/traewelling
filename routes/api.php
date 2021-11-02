@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
+use App\Http\Controllers\api\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
 use App\Http\Controllers\API\v1\SettingsController;
@@ -82,6 +83,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
             Route::delete('account', [UserController::class, 'deleteAccount']);
+            Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
+            Route::post('ics-token', [IcsController::class, 'createIcsToken']);
+            Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
         });
     });
 
