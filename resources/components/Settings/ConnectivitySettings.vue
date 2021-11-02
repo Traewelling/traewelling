@@ -75,7 +75,7 @@
         <h6 class="text-capitalize text-muted border-bottom my-5">{{
                 i18n.get("_.settings.title-sessions")
             }}</h6>
-        <table aria-label="i18n.get('_.settings.title-sessions')" class="table table-responsive">
+        <table aria-label="i18n.get('_.settings.title-sessions')" class="table table-responsive d-none">
             <thead>
                 <tr>
                     <th scope="col">{{ i18n.get("_.settings.client-name") }}</th>
@@ -107,19 +107,26 @@
                       :abort-text="i18n.get('_.menu.abort')"
                       :confirm-text="i18n.get('_.modals.edit-confirm')"
                       :title-text="i18n.get('_.settings.create-ics-token')"
-                      confirm-button-color="btn-primary">
-            <input :placeholder="i18n.get('_.settings.ics.name-placeholder')" class="form-control"
-                   name="name" required
-                   type="text"/>
+                      confirm-button-color="btn-primary"
+                      v-on:confirm="createIcsToken">
+            <div class="form-floating mb-3">
+                <input id="newIcsName" v-model="newIcsName" :placeholder="i18n.get('_.settings.ics.name-placeholder')"
+                       class="form-control"
+                       required type="text">
+                <label for="newIcsName">{{ i18n.get("_.settings.ics.name-placeholder") }}</label>
+            </div>
         </ModalConfirm>
-        <ModalConfirm ref="allIcs"
-                      :confirm-text="i18n.get('_.menu.close')"
-                      :large="true"
-                      :title-text="i18n.get('_.settings.ics.modal')"
-                      body-class="p-0"
-                      confirm-button-color="btn-primary">
+        <ModalConfirm
+            ref="allIcs"
+            :confirm-text="i18n.get('_.menu.close')"
+            :large="true"
+            :title-text="i18n.get('_.settings.ics.modal')"
+            body-class="p-0"
+            confirm-button-color="btn-primary">
             <Spinner v-if="icsLoading"></Spinner>
-            <p v-else-if="icsTokens == []" class="text-danger">{{ i18n.get("_.settings.no-ics-tokens") }}</p>
+            <p v-else-if="icsTokens.length === 0" class="text-danger text-center pt-3">
+                {{ i18n.get("_.settings.no-ics-tokens") }}
+            </p>
             <div v-else class="table-responsive p-0">
                 <table :aria-label="i18n.get('_.settings.title-ics')" class="table">
                     <thead>
@@ -165,13 +172,27 @@ export default {
     data() {
         return {
             icsLoading: false,
-            icsTokens: null,
+            icsTokens: [],
             newIcsName: null
-        }
+        };
     },
     methods: {
         notimplemented() {
             this.notyf.error("Not yet implemented");
+        },
+        createIcsToken() {
+            axios
+                .post('/settings/ics-token', {name: this.newIcsName})
+                .then((response) => {
+                    this.notyf.success({
+                        message: this.i18n.choice("_.settings.create-ics-token-success", 1, {link: response.data.data}),
+                        duration: 10000
+                    });
+                })
+                .catch((error) => {
+                    this.icsLoading = false;
+                    this.catchError(error);
+                });
         },
         fetchIcsTokens() {
             this.icsLoading = true;
