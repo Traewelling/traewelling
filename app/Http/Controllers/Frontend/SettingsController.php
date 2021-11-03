@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\Backend\SessionController;
+use App\Http\Controllers\Backend\TokenController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
@@ -88,11 +89,9 @@ class SettingsController extends Controller
     }
 
     public function renderSettings(): Renderable {
-        $sessions = SessionController::index(user: auth()->user());
-
         return view('settings.settings', [
-            'sessions' => $sessions,
-            'tokens'   => auth()->user()->tokens->where('revoked', '0')
+            'sessions' => SessionController::index(user: auth()->user()),
+            'tokens'   => TokenController::index(user: auth()->user())
         ]);
     }
 

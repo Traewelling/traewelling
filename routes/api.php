@@ -20,6 +20,7 @@ use App\Http\Controllers\api\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\api\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -89,6 +90,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
             Route::get('sessions', [SessionController::class, 'index']);
             Route::delete('sessions', [SessionController::class, 'deleteAllSessions']);
+            Route::get('tokens', [TokenController::class, 'index']);
+            Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
+            Route::delete('token', [TokenController::class, 'revokeToken']);
         });
     });
 

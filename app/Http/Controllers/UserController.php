@@ -7,6 +7,7 @@ use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\SessionController;
+use App\Http\Controllers\Backend\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -24,7 +25,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use JetBrains\PhpStorm\ArrayShape;
-use Laravel\Passport\Token;
 use Mastodon;
 
 /**
@@ -348,11 +348,13 @@ class UserController extends Controller
         $validated = $request->validate([
                                             'tokenId' => ['required', 'exists:oauth_access_tokens,id']
                                         ]);
-        $token     = Token::find($validated['tokenId']);
-        if ($token->user->id == Auth::user()->id) {
-            $token->revoke();
+
+        try {
+            TokenController::revokeToken(tokenId: $validated['tokenId'], user: auth()->user());
+            return redirect()->route('settings');
+        } catch (PermissionException) {
+            return redirect()->route('settings')->withErrors(__('messages.exception.general'));
         }
-        return redirect()->route('settings');
     }
 
     public function SaveAccount(Request $request): RedirectResponse {
