@@ -78,10 +78,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                <router-link :to="{name: 'settings'}" class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-cog me-2"></i>
                     {{ i18n.get("_.menu.settings") }}
-                </a>
+                </router-link>
             </li>
         </ul>
         <hr>

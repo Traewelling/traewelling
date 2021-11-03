@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Exceptions\NotConnectedException;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'username', 'name', 'avatar', 'email', 'password', 'home_id', 'privacy_ack_at',
+        'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'language', 'last_login',
     ];
     protected $hidden   = [
@@ -159,21 +157,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * @return string|null
-     * @todo delete after implemented ID-Link in vue Template
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        try {
-            $connection = TwitterController::getApi($this);
-            $getInfo    = $connection->get('users/show', ['user_id' => $this->socialProfile->twitter_id]);
-            return "https://twitter.com/" . $getInfo->screen_name;
-        } catch (NotConnectedException) {
-            return null;
-        } catch (Exception $exception) {
-            // The big whale time or $user has removed the api rights but has not told us yet.
-            Log::warning($exception);
-            return null;
+        if ($this->socialProfile->twitter_id) {
+            return "https://twitter.com/i/user/" . $this->socialProfile->twitter_id;
         }
+        return null;
     }
 
     public function getMastodonUrlAttribute(): ?string {
