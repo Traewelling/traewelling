@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\v1;
+namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
