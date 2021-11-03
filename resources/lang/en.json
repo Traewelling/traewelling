@@ -40,6 +40,7 @@
     "user.fresh-link": "A fresh verification link has been sent to your email address.",
     "user.header-reset-pw": "Reset Password",
     "user.login": "Login",
+    "user.login-credentials": "Email address or username",
     "user.mastodon-instance-url": "Instance URL",
     "user.not-received-before": "If you didn't get the email, ",
     "user.not-received-link": "click here to request another",

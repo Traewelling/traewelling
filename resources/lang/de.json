@@ -81,6 +81,7 @@
     "user.fresh-link": "Ein neuer Bestätigungslink wurde an Deine E-Mail-Adresse geschickt.",
     "user.header-reset-pw": "Passwort zurücksetzen",
     "user.login": "Anmelden",
+    "user.login-credentials": "E-Mail-Adresse oder Nutzername",
     "user.mastodon-instance-url": "Instanz",
     "user.not-received-before": "Wenn Du die E-Mail nicht bekommen hast, ",
     "user.not-received-link": "klicke hier für eine neue E-Mail",
