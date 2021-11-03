@@ -54,7 +54,7 @@ import {userProfileSettings, visibility} from "../../js/APImodels";
 import FADropdown from "../FADropdown";
 import ChangeLanguageButton from "../ChangeLanguageButton";
 import ModalConfirm from "../ModalConfirm";
-import myUpload from 'vue-image-crop-upload';
+import myUpload from "vue-image-crop-upload";
 import ProfileSettings from "../Settings/ProfileSettings";
 import AccountSettings from "../Settings/AccountSettings";
 import ConnectivitySettings from "../Settings/ConnectivitySettings";

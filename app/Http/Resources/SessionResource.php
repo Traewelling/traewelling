@@ -16,10 +16,10 @@ class SessionResource extends JsonResource
      * @return array
      */
     public function toArray($request): array {
-        $ip = explode('.', $this->ip_address);
+        $ipAddress = explode('.', $this->ip_address);
         return [
             'id'           => $this->id,
-            'ip'           => $ip[0] . '.' . $ip[1] . '.***.***',
+            'ip'           => $ipAddress[0] . '.' . $ipAddress[1] . '.***.***',
             'userAgent'    => $this->user_agent,
             'platform'     => $this->platform,
             'deviceIcon'   => $this->device_icon,

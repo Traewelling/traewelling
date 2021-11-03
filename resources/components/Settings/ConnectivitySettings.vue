@@ -253,7 +253,7 @@ export default {
         },
         createIcsToken() {
             axios
-                .post('/settings/ics-token', {name: this.newIcsName})
+                .post("/settings/ics-token", {name: this.newIcsName})
                 .then((response) => {
                     this.notyf.success({
                         message: this.i18n.choice("_.settings.create-ics-token-success", 1, {link: response.data.data}),
@@ -267,9 +267,9 @@ export default {
         },
         fetchIcsTokens() {
             this.icsLoading = true;
-            this.$refs.allIcs.show()
+            this.$refs.allIcs.show();
             axios
-                .get('/settings/ics-tokens')
+                .get("/settings/ics-tokens")
                 .then((response) => {
                     this.icsLoading = false;
                     this.icsTokens  = response.data.data;
@@ -281,7 +281,7 @@ export default {
         },
         deleteIcsToken(token) {
             axios
-                .delete('/settings/ics-token', {data: {id: token.id}})
+                .delete("/settings/ics-token", {data: {id: token.id}})
                 .then(() => {
                     const index = this.icsTokens.indexOf(token);
                     if (index > -1) {
@@ -295,14 +295,12 @@ export default {
         },
         fetchSessions() {
             this.sessionLoading = true;
-            this.$refs.sessions.show()
+            this.$refs.sessions.show();
             axios
-                .get('/settings/sessions')
+                .get("/settings/sessions")
                 .then((response) => {
                     this.sessionLoading = false;
                     this.sessions       = response.data.data;
-                    console.log(this.sessions);
-                    console.log(this.sessions.length);
                 })
                 .catch((error) => {
                     this.sessionLoading = false;
@@ -311,7 +309,7 @@ export default {
         },
         deleteSessions() {
             axios
-                .delete('/settings/sessions')
+                .delete("/settings/sessions")
                 .then(() => {
                     this.sessions = [];
                     this.notyf.success(this.i18n.get("_.settings.saved"));
@@ -322,7 +320,7 @@ export default {
         },
         revokeToken(token) {
             axios
-                .delete('/settings/token', {data: {tokenId: token.id}})
+                .delete("/settings/token", {data: {tokenId: token.id}})
                 .then(() => {
                     const index = this.tokens.indexOf(token);
                     if (index > -1) {
@@ -336,9 +334,9 @@ export default {
         },
         fetchTokens() {
             this.tokensLoading = true;
-            this.$refs.tokens.show()
+            this.$refs.tokens.show();
             axios
-                .get('/settings/tokens')
+                .get("/settings/tokens")
                 .then((response) => {
                     this.tokensLoading = false;
                     this.tokens        = response.data.data;
@@ -350,7 +348,7 @@ export default {
         },
         revokeTokens() {
             axios
-                .delete('/settings/tokens')
+                .delete("/settings/tokens")
                 .then(() => {
                     this.sessions = [];
                     this.$auth.logout();

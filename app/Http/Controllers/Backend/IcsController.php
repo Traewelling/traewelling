@@ -72,11 +72,11 @@ class IcsController extends Controller
 
     /**
      * @param User $user
-     * @param int  $id
+     * @param int  $tokenId
      */
-    public static function revokeIcsToken(User $user, int $id): void {
+    public static function revokeIcsToken(User $user, int $tokenId): void {
         $affectedRows = IcsToken::where('user_id', $user->id)
-                                ->where('id', $id)
+                                ->where('id', $tokenId)
                                 ->delete();
 
         if ($affectedRows === 0) {

@@ -63,7 +63,7 @@ class IcsController extends Controller
         $validated = $request->validate(['id' => ['required', 'exists:ics_tokens,id']]);
 
         try {
-            BackendIcsController::revokeIcsToken(user: auth()->user(), id: $validated['id']);
+            BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['id']);
             return back()->with('success', __('settings.revoke-ics-token-success'));
         } catch (ModelNotFoundException) {
             return back()->with('error', __('messages.exception.general'));
