@@ -20,6 +20,7 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -130,6 +131,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/stats', [StatisticController::class, 'renderMainStats'])
          ->name('stats');
+
+    if(config('ticket.host') != null) {
+        Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
+        Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
+    }
 
     Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
          ->name('events.suggest');
