@@ -25,14 +25,19 @@ use Throwable;
 class TransportController extends ResponseController
 {
     public function TrainAutocomplete($station): JsonResponse {
-        $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)->map(function($station) {
-            return [
-                'id'       => $station['ibnr'],
-                'name'     => $station['name'],
-                'provider' => 'train'
-            ];
-        });
-        return $this->sendResponse($trainAutocompleteResponse);
+        try {
+            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)
+                                                         ->map(function($station) {
+                                                             return [
+                                                                 'id'       => $station['ibnr'],
+                                                                 'name'     => $station['name'],
+                                                                 'provider' => 'train'
+                                                             ];
+                                                         });
+            return $this->sendResponse($trainAutocompleteResponse);
+        } catch (HafasException $e) {
+            return $this->sendError($e->getMessage(), 503);
+        }
     }
 
     public function TrainStationboard(Request $request): JsonResponse {
@@ -55,9 +60,9 @@ class TransportController extends ResponseController
                 $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
-            return $this->sendError(400, $exception->getMessage());
+            return $this->sendError($exception->getMessage(), 503);
         } catch (ModelNotFoundException) {
-            return $this->sendError(404, __('controller.transport.no-station-found'));
+            return $this->sendError(__('controller.transport.no-station-found'), 404);
         }
 
         return $this->sendResponse([
