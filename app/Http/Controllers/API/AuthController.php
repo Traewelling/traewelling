@@ -52,7 +52,7 @@ class AuthController extends ResponseController
      * @deprecated with apiv1
      */
     public function login(Request $request) {
-        $validator = $request->validate(['email' => ['required'], 'password' => ['required']]);
+        $validator = $request->validate(['email' => ['required', 'max:255'], 'password' => ['required', 'min:8']]);
 
         if (!LoginController::login($validator['email'], $validator['password'])) {
             $error = "Unauthorized";

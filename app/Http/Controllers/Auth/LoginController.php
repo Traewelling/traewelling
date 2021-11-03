@@ -41,8 +41,8 @@ class LoginController extends Controller
     }
 
     public function login(Request $request): RedirectResponse {
-        $validated = $request->validate(['login'    => 'required',
-                                         'password' => 'required',
+        $validated = $request->validate(['login'    => ['required', 'max:255'],
+                                         'password' => ['required', 'min:8'],
                                          'remember' => ['nullable', 'in:1']]);
 
         if (BackendLoginController::login($validated['login'], $validated['password'], $request->remember)) {

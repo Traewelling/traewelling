@@ -58,7 +58,7 @@ class AuthController extends ResponseController
      * @api v1
      */
     public function login(Request $request): JsonResponse {
-        $validated = $request->validate(['login' => ['required'], 'password' => ['required']]);
+        $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8']]);
 
         if (LoginController::login($validated['login'], $validated['password'])) {
             $token = $request->user()->createToken('token');
