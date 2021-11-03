@@ -156,12 +156,6 @@ class TransportController extends ResponseController
                 TransportBackend::postMastodon($status);
             }
 
-            $trainCheckinResponse['alsoOnThisConnection']->map(function($status) {
-                if ($status?->user) {
-                    return $status->user;
-                }
-            });
-
             return $this->sendv1Response($trainCheckinResponse);
         } catch (CheckInCollisionException $e) {
             $status?->delete();

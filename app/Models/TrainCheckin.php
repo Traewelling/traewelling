@@ -160,6 +160,8 @@ class TrainCheckin extends Model
                    ->get()
                    ->map(function($trainCheckIn) {
                        return $trainCheckIn->status;
-                   });
+                   })->filter(function($status) {
+                return $status !== null;
+            });
     }
 }
