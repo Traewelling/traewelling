@@ -20,9 +20,18 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class TransportController extends ResponseController
 {
+    /**
+     * @param Request $request
+     * @param string  $name
+     *
+     * @return JsonResponse
+     * @throws ValidationException
+     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
+     */
     public function departures(Request $request, string $name): JsonResponse {
         $validator = Validator::make($request->all(), [
             'when'       => ['nullable', 'date'],
@@ -173,6 +182,12 @@ class TransportController extends ResponseController
         }
     }
 
+    /**
+     * @param string $stationName
+     *
+     * @return JsonResponse
+     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
+     */
     public function setHome(string $stationName): JsonResponse {
         try {
             $station = TransportBackend::setTrainHome(user: auth()->user(), stationName: $stationName);
@@ -187,6 +202,12 @@ class TransportController extends ResponseController
         );
     }
 
+    /**
+     * @param string $query
+     *
+     * @return JsonResponse
+     * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a spache (%20)
+     */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);

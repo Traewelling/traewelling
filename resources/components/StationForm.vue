@@ -186,7 +186,7 @@ export default {
                         return popularStations;
                     }
                     try {
-                        const source = await axios.get(`/trains/station/autocomplete/${query}`);
+                        const source = await axios.get(`/trains/station/autocomplete/${query.replace("/", " ")}`);
                         return await source.data.data;
                     } catch (error) {
                         if (error.response) {
