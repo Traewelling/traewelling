@@ -125,6 +125,7 @@
     "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
     "dateformat.month-and-year": "MMMM YYYY",
     "error.bad-request": "Die Anfrage ist ungültig.",
+    "error.login": "Falsche Anmeldedaten",
     "events.header": "Veranstaltung: :name",
     "events.name": "Name",
     "events.hashtag": "Hashtag",

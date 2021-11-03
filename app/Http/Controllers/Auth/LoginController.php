@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Backend\Auth\LoginController as BackendLoginController;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -40,28 +40,23 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated(Request $request, $user): void {
-        $user->update(['last_login' => Carbon::now()->toIso8601String()]);
-    }
-
     public function login(Request $request): RedirectResponse {
-        $validated = $request->validate(['login' => 'required', 'password' => 'required', 'remember' => 'nullable|in:1']);
+        $validated = $request->validate(['login'    => 'required',
+                                         'password' => 'required',
+                                         'remember' => 'nullable|in:1']);
 
-        $email       = $validated['login'];
-        $password    = $validated['password'];
-        $remember_me = $request->remember;
-
-        $login_type = filter_var($email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-
-        if (Auth::attempt([$login_type => $email, 'password' => $password], $remember_me)) {
-            //Auth successful here
+        if (BackendLoginController::login($validated['login'], $validated['password'], $request->remember)) {
             return redirect()->intended($this->redirectPath());
         }
 
         return redirect()->back()
                          ->withInput()
                          ->withErrors([
-                                          'login_error' => 'These credentials do not match our records.',
+                                          'login_error' => __('error.login'),
                                       ]);
+    }
+
+    protected function authenticated(Request $request, $user): void {
+        $user->update(['last_login' => Carbon::now()->toIso8601String()]);
     }
 }

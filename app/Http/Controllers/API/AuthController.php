@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Backend\Auth\LoginController;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -47,12 +48,12 @@ class AuthController extends ResponseController
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @deprecated with apiv1
      */
     public function login(Request $request) {
         $validator = Validator::make($request->all(), [
-            'email'    => 'required|string|email',
+            'email'    => 'required',
             'password' => 'required'
         ]);
 
@@ -60,8 +61,7 @@ class AuthController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $credentials = request(['email', 'password']);
-        if (!Auth::attempt($credentials)) {
+        if (!LoginController::login($validator['email'], $validator['password'])) {
             $error = "Unauthorized";
             return $this->sendError($error, 401);
         }
@@ -76,7 +76,7 @@ class AuthController extends ResponseController
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @deprecated with apiv1
      */
     public function logout(Request $request) {

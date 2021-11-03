@@ -96,6 +96,7 @@
     "controller.user.password-changed-ok": "Password changed.",
     "controller.user.password-wrong": "Password wrong.",
     "error.bad-request": "The request is invalid.",
+    "error.login": "Wrong credentials",
     "dates.-on-": " on ",
     "dates.decimal_point": ".",
     "dates.thousands_sep": ",",
