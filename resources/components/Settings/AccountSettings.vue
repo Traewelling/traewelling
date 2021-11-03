@@ -2,7 +2,7 @@
     <div id="settingsTabs-account" aria-labelledby="settingsTab-account" class="tab-pane fade" role="tabpanel">
         <h2>{{ i18n.get("_.settings.heading.account") }}</h2>
 
-        <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.') }}</h6>
+        <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.tab.account') }}</h6>
         <div class="row">
             <div class="col">
                 {{ i18n.get("_.user.email") }}<br>
