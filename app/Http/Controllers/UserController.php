@@ -80,7 +80,7 @@ class UserController extends Controller
 
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
-        \App\Http\Controllers\Backend\SettingsController::updateProfilePicture($avatar);
+        BackendSettingsController::updateProfilePicture($avatar);
         return ['status' => ':ok'];
     }
 
@@ -317,7 +317,7 @@ class UserController extends Controller
     }
 
     /**
-     * @deprecated Backend/SettingsController::deleteProfilePicture
+     * @deprecated Backend/SettingsController::deleteProfilePicture in vue
      */
     public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();

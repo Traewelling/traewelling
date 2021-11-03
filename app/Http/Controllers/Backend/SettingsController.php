@@ -36,7 +36,7 @@ class SettingsController extends Controller
         return false;
     }
 
-    public static function updateProfilePicture($avatar): bool {
+    public static function updateProfilePicture(string $avatar): bool {
         $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
 
         Image::make($avatar)->resize(300, 300)

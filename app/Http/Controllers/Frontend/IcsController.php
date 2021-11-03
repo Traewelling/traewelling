@@ -31,7 +31,7 @@ class IcsController extends Controller
             $calendar = BackendIcsController::generateIcsCalendar(
                 user:  $user,
                 token: $validated['token'],
-                limit: (int) $validated['limit'],
+                limit: $validated['limit'],
                 from:  $from,
                 until: $until
             );
@@ -39,8 +39,7 @@ class IcsController extends Controller
                 ->header('Content-Type', 'text/calendar')
                 ->header('charset', 'utf-8');
         } catch (ModelNotFoundException) {
-            abort(404);
-            return null; //Because PHPStorm is whining
+            return response(null, 404);
         }
     }
 
@@ -64,7 +63,7 @@ class IcsController extends Controller
         $validated = $request->validate(['id' => ['required', 'exists:ics_tokens,id']]);
 
         try {
-            BackendIcsController::revokeIcsToken(user: auth()->user(), id: (int) $validated['id']);
+            BackendIcsController::revokeIcsToken(user: auth()->user(), id: $validated['id']);
             return back()->with('success', __('settings.revoke-ics-token-success'));
         } catch (ModelNotFoundException) {
             return back()->with('error', __('messages.exception.general'));
