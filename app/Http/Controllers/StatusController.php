@@ -231,7 +231,6 @@ class StatusController extends Controller
      *
      * @return Like
      * @throws StatusAlreadyLikedException|PermissionException
-     * @todo refactor this to take status IDs instead of models
      */
     public static function createLike(User $user, Status $status): Like {
 
