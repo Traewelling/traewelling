@@ -16,7 +16,7 @@ class IcsEntryResource extends JsonResource
      */
     public function toArray($request): array {
         return [
-            'id'           => (int) $this->id,
+            'id'           => $this->id,
             'token'        => substr($this->token, 0, 8),
             'name'         => $this->name,
             'created'      => $this->created_at?->toIso8601String(),

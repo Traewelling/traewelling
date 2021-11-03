@@ -26,8 +26,8 @@ class UserProfileSettingsResource extends JsonResource
             'default_status_visibility' => (int) $this->default_status_visibility,
             'password'                  => (bool) $this->password,
             'email'                     => $this->email,
-            'email_verified'            => (bool) $this->email_verified_at,
-            'profile_picture_set'       => (bool) $this->avatar,
+            'email_verified'            => !empty($this->email_verified_at),
+            'profile_picture_set'       => !empty($this->avatar),
             'twitter'                   => $this->twitter_url,
             'mastodon'                  => $this->mastodon_url
         ];

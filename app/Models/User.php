@@ -161,7 +161,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getTwitterUrlAttribute(): ?string {
         if ($this->socialProfile->twitter_id) {
-            return "https://twitter.com/" . $this->socialProfile->twitter_id;
+            return "https://twitter.com/i/user/" . $this->socialProfile->twitter_id;
         }
         return null;
     }
