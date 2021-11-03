@@ -586,7 +586,7 @@ class TransportController extends Controller
 
         return [
             'status'               => new StatusResource($status),
-            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
+            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
         ];
     }
 
