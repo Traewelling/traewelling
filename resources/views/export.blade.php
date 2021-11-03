@@ -34,7 +34,7 @@
                                         <button id="export_submit" type="submit" class="btn btn-primary" name="filetype"
                                                 value="pdf">{{ __('export.submit') }}</button>
                                         <button type="button" class="btn btn-primary dropdown-toggle px-3"
-                                                data-toggle="dropdown" aria-haspopup="true"
+                                                data-bs-toggle="dropdown" aria-haspopup="true"
                                                 aria-expanded="false">
                                             <span class="sr-only">Toggle Dropdown</span>
                                         </button>

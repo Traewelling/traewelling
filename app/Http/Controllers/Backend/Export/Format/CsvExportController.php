@@ -42,7 +42,7 @@ abstract class CsvExportController extends Controller
                 $row = [
                     $status->id,
                     $status->trainCheckin->HafasTrip->category,
-                    $status->trainCheckin->HafasTrip->lineName,
+                    $status->trainCheckin->HafasTrip->linename,
                     $status->trainCheckin->Origin->name,
                     $status->trainCheckin->Origin->latitude . ', ' . $status->trainCheckin->Origin->longitude,
                     $status->trainCheckin->origin_stopover->departure_planned?->toIso8601String(),
@@ -52,7 +52,7 @@ abstract class CsvExportController extends Controller
                     $status->trainCheckin->destination_stopover->arrival_planned?->toIso8601String(),
                     $status->trainCheckin->destination_stopover->arrival?->toIso8601String(),
                     $status->trainCheckin->duration,
-                    $status->trainCheckin->distance,
+                    number($status->trainCheckin->distance / 1000),
                     $status->points,
                     $status->body,
                     $status->business,

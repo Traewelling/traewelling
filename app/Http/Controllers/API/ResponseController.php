@@ -27,6 +27,13 @@ class ResponseController extends Controller
         return response()->json($response, $code);
     }
 
+    public function sendv1Error(array|string $error, int $code = 404): JsonResponse {
+        $response = [
+            'message' => $error,
+        ];
+        return response()->json($response, $code);
+    }
+
     public function sendError(array|string $error, int $code = 404): JsonResponse {
         $response = [
             'error' => $error,

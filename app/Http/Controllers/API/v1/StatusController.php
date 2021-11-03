@@ -80,7 +80,7 @@ class StatusController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -120,7 +120,7 @@ class StatusController extends ResponseController
                           ->mapWithKeys(function($status) {
                               return [$status->id => $status->trainCheckin->getMapLines()];
                           });
-        return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
+        return $ids ? $this->sendv1Response($mapLines) : $this->sendv1Error("");
     }
 
     /**
