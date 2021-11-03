@@ -10,7 +10,6 @@ use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\HafasTripResource;
-use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\MastodonServer;
@@ -20,7 +19,6 @@ use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\MastodonNotSent;
-use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Exception;
@@ -29,7 +27,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
@@ -382,7 +379,7 @@ class TransportController extends Controller
             self::postMastodon($status);
         }
         if (isset($tweetCheck) && $tweetCheck) {
-            self::postTwitter($status);
+            TwitterController::postStatus($status);
         }
 
         // check for other people on this train
@@ -470,46 +467,6 @@ class TransportController extends Controller
             Log::error($e);
         }
     }
-
-    /**
-     * @param Status $status
-     */
-    public static function postTwitter(Status $status): void {
-        if (config('trwl.post_social') !== true) {
-            return;
-        }
-        if ($status->user->socialProfile->twitter_id === null) {
-            return;
-        }
-
-        try {
-            $connection = TwitterController::getApi($status->user);
-            #dbl only works on Twitter.
-            $socialText = $status->socialText;
-            if ($status->user->always_dbl) {
-                $socialText .= "#dbl ";
-            }
-            $socialText .= ' ' . url("/status/{$status->id}");
-            $connection->post(
-                "statuses/update",
-                [
-                    "status" => $socialText,
-                    'lat'    => $status->trainCheckin->Origin->latitude,
-                    'lon'    => $status->trainCheckin->Origin->longitude
-                ]
-            );
-
-            if ($connection->getLastHttpCode() != 200) {
-                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
-            }
-        } catch (Exception $exception) {
-            Log::error($exception);
-            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
-            // However, we still want to continue if it explodes, thus why not catch exceptions here.
-        }
-    }
-
-
 
     /**
      * Get the PolyLine Model from Database
