@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use InvalidArgumentException;
 
 abstract class TicketController extends Controller
 {
@@ -20,8 +21,8 @@ abstract class TicketController extends Controller
      * @throws GuzzleException
      */
     public static function createTicket(User $user, $subject, $message): int {
-        if ($user->email === null) {
-            throw new \InvalidArgumentException('E-Mail address is missing.');
+        if ($user->email === null || $user->email_verified_at === null) {
+            throw new InvalidArgumentException('E-Mail address is missing.');
         }
 
         $client = new Client(['base_uri' => config('ticket.host')]);
