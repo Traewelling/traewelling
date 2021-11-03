@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Backend\User;
 
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;

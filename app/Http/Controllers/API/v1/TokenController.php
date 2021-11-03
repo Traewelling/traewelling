@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
-use App\Http\Controllers\Backend\TokenController as BackendTokenController;
+use App\Http\Controllers\Backend\User\TokenController as BackendTokenController;
 use App\Http\Resources\TokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
