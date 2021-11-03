@@ -27,7 +27,7 @@ use Illuminate\Validation\ValidationException;
 class StatusController extends ResponseController
 {
     public static function getDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
+        return StatusResource::collection(DashboardController::getPrivateDashboard(Auth::user()));
     }
 
     public static function getGlobalDashboard(): AnonymousResourceCollection {

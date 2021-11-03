@@ -28,7 +28,7 @@ class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
         $user     = Auth::user();
-        $statuses = StatusBackend::getDashboard($user);
+        $statuses = DashboardController::getPrivateDashboard($user);
 
         if ($statuses->isEmpty() || $user->follows->count() == 0) {
             if (Session::has('checkin-success')) {

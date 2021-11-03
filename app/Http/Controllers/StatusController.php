@@ -16,7 +16,6 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -111,26 +110,6 @@ class StatusController extends Controller
         }
 
         return ['statuses' => $statuses, 'polylines' => $polylines];
-    }
-
-    public static function getDashboard(User $user): Paginator {
-        $followingIDs   = $user->follows->pluck('id');
-        $followingIDs[] = $user->id;
-        return Status::with([
-                                'event', 'likes', 'user', 'trainCheckin',
-                                'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
-                            ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('statuses.user_id', $followingIDs)
-                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
-                     ->orWhere('statuses.user_id', $user->id)
-                     ->withCount('likes')
-                     ->latest()
-                     ->simplePaginate(15);
     }
 
     /**
