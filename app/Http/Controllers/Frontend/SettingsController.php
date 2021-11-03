@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Http\Controllers\Backend\SessionController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
@@ -12,7 +13,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Jenssegers\Agent\Agent;
 
 class SettingsController extends Controller
 {
@@ -88,21 +88,7 @@ class SettingsController extends Controller
     }
 
     public function renderSettings(): Renderable {
-        $sessions = auth()->user()->sessions->map(function($session) {
-            $result = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $session->platform = $result->platform();
-
-            if ($result->isphone()) {
-                $session->device_icon = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $session->device_icon = 'tablet';
-            } else {
-                $session->device_icon = 'desktop';
-            }
-
-            return $session;
-        });
+        $sessions = SessionController::index(user: auth()->user());
 
         return view('settings.settings', [
             'sessions' => $sessions,

@@ -16,6 +16,7 @@ use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\api\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\api\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
@@ -86,6 +87,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
+            Route::get('sessions', [SessionController::class, 'index']);
+            Route::delete('sessions', [SessionController::class, 'deleteAllSessions']);
         });
     });
 

@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
+use App\Http\Controllers\Backend\SessionController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -332,9 +333,7 @@ class UserController extends Controller
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
-        foreach ($user->sessions as $session) {
-            $session->delete();
-        }
+        SessionController::deleteAllSessionsFor(user: $user);
         return redirect()->route('static.welcome');
     }
 
