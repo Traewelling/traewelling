@@ -6,7 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\SessionController;
+use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Controllers\Backend\TokenController;
 use App\Models\Follow;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
-use App\Http\Controllers\Backend\SessionController;
+use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\TokenController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;

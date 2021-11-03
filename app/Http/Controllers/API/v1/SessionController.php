@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController;
-use App\Http\Controllers\Backend\SessionController as SessionBackend;
+use App\Http\Controllers\Backend\User\SessionController as SessionBackend;
 use App\Http\Resources\SessionResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
