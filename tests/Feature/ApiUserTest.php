@@ -288,7 +288,7 @@ class ApiUserTest extends ApiTestCase
         $this->assertTrue(json_decode($response->getContent())->statuses !== null);
 
         //test global dashboard. User Gertrud should not be seen, because it is a private profile
-        $globalDashboard = DashboardController::getGlobalDashboard();
+        $globalDashboard = DashboardController::getGlobalDashboard($gertrud);
         $userIds         = [];
         foreach ($globalDashboard as $dashboard) {
             $userIds[] = $dashboard->user_id;

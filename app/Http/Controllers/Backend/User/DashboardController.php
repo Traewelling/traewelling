@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\Backend\User;
 
 use App\Enum\StatusVisibility;
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Token;
 
 abstract class DashboardController extends Controller
 {
-    public static function getGlobalDashboard(): Paginator {
+    public static function getGlobalDashboard(User $user): Paginator {
         return Status::with([
                                 'event', 'likes', 'user', 'trainCheckin',
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
@@ -24,7 +20,7 @@ abstract class DashboardController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->where(function(Builder $query) {
+                     ->where(function(Builder $query) use ($user) {
                          //Visibility checks: One of the following options must be true
 
                          //Option 1: User is public AND status is public
@@ -34,19 +30,16 @@ abstract class DashboardController extends Controller
                          });
 
                          //Option 2: Status is from oneself
-                         if (auth()->check()) {
-                             $query->orWhere('users.id', auth()->user()->id);
-                         }
+                         $query->orWhere('users.id', $user->id);
 
                          //Option 3: Status is from a followed BUT not unlisted or private
-                         $query->orWhere(function(Builder $query) {
-                             $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                             $query->whereIn('users.id', $followings)
+                         $query->orWhere(function(Builder $query) use ($user) {
+                             $query->whereIn('users.id', $user->follows()->select('follow_id'))
                                    ->whereNotIn('visibility', [StatusVisibility::UNLISTED, StatusVisibility::PRIVATE]);
                          });
                      })
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')
                      ->withCount('likes')

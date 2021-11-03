@@ -31,7 +31,7 @@ class StatusController extends ResponseController
     }
 
     public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(DashboardController::getGlobalDashboard());
+        return StatusResource::collection(DashboardController::getGlobalDashboard(Auth::user()));
     }
 
     public static function getFutureCheckins(): AnonymousResourceCollection {

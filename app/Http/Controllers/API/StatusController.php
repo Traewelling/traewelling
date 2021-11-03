@@ -55,7 +55,7 @@ class StatusController extends ResponseController
         }
         $statuses = ['statuses' => ''];
         if ($view === 'global') {
-            $statuses['statuses'] = DashboardController::getGlobalDashboard();
+            $statuses['statuses'] = DashboardController::getGlobalDashboard(Auth::user());
         }
         if ($view === 'personal') {
             $statuses['statuses'] = StatusBackend::getDashboard(Auth::user());

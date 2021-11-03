@@ -51,7 +51,7 @@ class FrontendStatusController extends Controller
 
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
-            'statuses'    => DashboardController::getGlobalDashboard(),
+            'statuses'    => DashboardController::getGlobalDashboard(Auth::user()),
             'currentUser' => Auth::user(),
             'latest'      => TransportController::getLatestArrivals(Auth::user()),
             'future'      => StatusBackend::getFutureCheckins()
