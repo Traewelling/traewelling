@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -287,7 +288,7 @@ class ApiUserTest extends ApiTestCase
         $this->assertTrue(json_decode($response->getContent())->statuses !== null);
 
         //test global dashboard. User Gertrud should not be seen, because it is a private profile
-        $globalDashboard = StatusController::getGlobalDashboard();
+        $globalDashboard = DashboardController::getGlobalDashboard();
         $userIds         = [];
         foreach ($globalDashboard as $dashboard) {
             $userIds[] = $dashboard->user_id;

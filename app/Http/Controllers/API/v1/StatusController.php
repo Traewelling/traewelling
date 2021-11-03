@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
@@ -30,7 +31,7 @@ class StatusController extends ResponseController
     }
 
     public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getGlobalDashboard());
+        return StatusResource::collection(DashboardController::getGlobalDashboard());
     }
 
     public static function getFutureCheckins(): AnonymousResourceCollection {

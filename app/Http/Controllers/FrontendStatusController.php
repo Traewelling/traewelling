@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Carbon\Carbon;
@@ -50,7 +51,7 @@ class FrontendStatusController extends Controller
 
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
-            'statuses'    => StatusBackend::getGlobalDashboard(),
+            'statuses'    => DashboardController::getGlobalDashboard(),
             'currentUser' => Auth::user(),
             'latest'      => TransportController::getLatestArrivals(Auth::user()),
             'future'      => StatusBackend::getFutureCheckins()
