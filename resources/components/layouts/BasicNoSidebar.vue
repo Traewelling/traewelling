@@ -7,7 +7,7 @@
                 <OffCanvasNavigation/>
             </div>
         </main>
-        <FooterComponent/>
+        <FooterComponent :class="footerclass"/>
         <MobileFooterNav/>
     </div>
 </template>
@@ -21,6 +21,7 @@ import SidebarNav from "./SidebarNav";
 
 export default {
     name: "LayoutBasicNoSidebar",
+    props: ["footerclass"],
     components: {
         SidebarNav,
         OffCanvasNavigation,

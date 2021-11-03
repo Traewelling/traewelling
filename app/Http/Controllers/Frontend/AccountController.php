@@ -2,34 +2,23 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Backend\UserController as BackendUserController;
 use App\Http\Controllers\Controller;
+use Error;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
     public function deleteUserAccount(Request $request): RedirectResponse {
-        $request->validate([
-                               'confirmation' => ['required', 'regex:(' . auth()->user()->username . ')']
-                           ]);
+        $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
-        $user = auth()->user();
-
-        if ($user->avatar !== 'user.jpg') {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-        }
-
-        DatabaseNotification::where([
-                                        'notifiable_id'   => $user->id,
-                                        'notifiable_type' => get_class($user)
-                                    ])->delete();
-
-
-        if ($user->delete()) {
+        try {
+            BackendUserController::deleteUserAccount(user: auth()->user());
             return redirect()->route('static.welcome');
+        } catch (Error) {
+            return back()->with('error', __('messages.exception.general'));
         }
-        return back()->with('error', __('messages.exception.general'));
     }
 }
