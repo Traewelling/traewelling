@@ -116,9 +116,6 @@ abstract class MastodonController extends Controller
                                      ]);
     }
 
-    /**
-     * @param Status $status
-     */
     public static function postStatus(Status $status): void {
         if ($status?->user?->socialProfile?->mastodon_server === null || config('trwl.post_social') !== true) {
             return;

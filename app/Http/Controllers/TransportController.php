@@ -16,7 +16,6 @@ use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -477,25 +476,5 @@ class TransportController extends Controller
             ->map(function($trainStations) {
                 return $trainStations->first();
             })->take($maxCount);
-    }
-
-    /**
-     * @param User   $user
-     * @param string $stationName
-     *
-     * @return TrainStation
-     * @throws HafasException
-     * @api v1
-     */
-    public static function setTrainHome(User $user, string $stationName): TrainStation {
-        $trainStation = HafasController::getStations(query: $stationName)->first();
-        if ($trainStation == null) {
-            throw new ModelNotFoundException;
-        }
-
-        $user->update([
-                          'home_id' => $trainStation->id
-                      ]);
-        return $trainStation;
     }
 }
