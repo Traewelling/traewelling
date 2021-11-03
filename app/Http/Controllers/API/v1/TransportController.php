@@ -184,7 +184,7 @@ class TransportController extends ResponseController
                 return $this->sendv1Error("Your query matches no station", 404);
             }
 
-            $station = HomeController::setTrainHome(user: auth()->user(), trainStation: $trainStation);
+            $station = HomeController::setHome(user: auth()->user(), trainStation: $trainStation);
 
             return $this->sendv1Response(
                 data: new TrainStationResource($station),

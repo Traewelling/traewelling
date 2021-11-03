@@ -15,7 +15,7 @@ abstract class HomeController extends Controller
      * @return TrainStation
      * @api v1
      */
-    public static function setTrainHome(User $user, TrainStation $trainStation): TrainStation {
+    public static function setHome(User $user, TrainStation $trainStation): TrainStation {
         $user->update([
                           'home_id' => $trainStation->id
                       ]);

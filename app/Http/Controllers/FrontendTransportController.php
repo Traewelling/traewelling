@@ -198,7 +198,7 @@ class FrontendTransportController extends Controller
             if ($trainStation === null) {
                 return redirect()->back()->with(['error' => __('messages.exception.general')]);
             }
-            $trainStation = HomeController::setTrainHome(auth()->user(), $trainStation);
+            $trainStation = HomeController::setHome(auth()->user(), $trainStation);
 
             return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
         } catch (HafasException) {

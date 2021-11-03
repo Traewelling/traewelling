@@ -215,7 +215,7 @@ class TransportController extends ResponseController
 
         try {
             $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
-            $trainStation = HomeController::setTrainHome(Auth::user(), $station);
+            $trainStation = HomeController::setHome(Auth::user(), $station);
             return $this->sendResponse($trainStation->name);
         } catch (HafasException $e) {
             return $this->sendError([
