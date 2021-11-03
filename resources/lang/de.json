@@ -472,7 +472,19 @@
     "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage.",
     "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung.",
     "minutes": "Minuten",
+    "support": "Support",
+    "support.create": "Support-Anfrage erstellen",
+    "support.submit": "Support-Anfrage abschicken",
+    "support.email-required": "Du benötigst eine verifizierte E-Mail Adresse, um eine Support-Anfrage stellen zu können. Nur so können wir dir auch antworten.",
+    "go-to-settings": "Zu den Einstellungen",
+    "subject": "Betreff",
+    "how-can-we-help": "Wie können wir helfen?",
+    "support.answer": "Wir werden dir so schnell wie möglich antworten. Die Antwort erhältst du an deine E-Mail Adresse :address.",
+    "support.success": "Deine Anfrage ist bei uns eingegangen (Ticket #:ticketNumber). Wir werden dir so schnell wie möglich per E-Mail antworten.",
     "request-time": "abgefragt um :time",
     "settings.request.accept": "Follower akzeptieren",
-    "settings.follower.following-since": "Folgt seit"
+    "settings.follower.following-since": "Folgt seit",
+    "support.privacy": "Datenschutzhinweis",
+    "support.privacy.description": "Deine User-ID, dein Username und deine E-Mail Adresse werden mit deiner Anfrage in unserem Ticketsystem erfasst.",
+    "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht."
 }
