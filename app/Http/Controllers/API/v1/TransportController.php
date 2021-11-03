@@ -9,6 +9,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -139,7 +140,7 @@ class TransportController extends ResponseController
 
             $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
 
-            $trainCheckinResponse = TransportBackend::createTrainCheckin(
+            $trainCheckinResponse = TrainCheckinController::createTrainCheckin(
                 status: $status,
                 trip: $hafasTrip,
                 entryStop: $request->input('start'),
