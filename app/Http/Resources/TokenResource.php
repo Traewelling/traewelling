@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,8 +20,8 @@ class TokenResource extends JsonResource
             'id'        => $this->id,
             'client'    => $this->client->name,
             'scopes'    => $this->scopes,
-            'createdAt' => $this->created_at->toIso8601String(),
-            'expiresAt' => $this->expires_at?->toIso8601String()
+            'createdAt' => Carbon::parse($this->created_at)?->toIso8601String(),
+            'expiresAt' => Carbon::parse($this->expires_at)?->toIso8601String()
         ];
     }
 }

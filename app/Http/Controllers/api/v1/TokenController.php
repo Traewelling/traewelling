@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class TokenController extends ResponseController
 {
     public function index() {
-        return TokenResource::collection(BackendTokenController::index(user: auth()->user));
+        return TokenResource::collection(BackendTokenController::index(user: auth()->user()));
     }
 
     public function revokeToken(Request $request) {
