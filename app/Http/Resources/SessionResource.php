@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\Helper\PrivacyHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,10 +17,9 @@ class SessionResource extends JsonResource
      * @return array
      */
     public function toArray($request): array {
-        $ipAddress = explode('.', $this->ip_address);
         return [
             'id'           => $this->id,
-            'ip'           => $ipAddress[0] . '.' . $ipAddress[1] . '.***.***',
+            'ip'           => PrivacyHelper::maskIpAddress($this->ip_address),
             'userAgent'    => $this->user_agent,
             'platform'     => $this->platform,
             'deviceIcon'   => $this->device_icon,
