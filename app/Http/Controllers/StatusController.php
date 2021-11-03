@@ -114,8 +114,6 @@ class StatusController extends Controller
     }
 
     public static function getDashboard(User $user): Paginator {
-        $userIds        = $user->follows->pluck('id');
-        $userIds[]      = $user->id;
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
