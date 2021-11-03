@@ -9,6 +9,11 @@ class Follow extends Model
 {
 
     protected $fillable = ['user_id', 'follow_id'];
+    protected $casts    = [
+        'id'        => 'integer',
+        'user_id'   => 'integer',
+        'follow_id' => 'integer',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
