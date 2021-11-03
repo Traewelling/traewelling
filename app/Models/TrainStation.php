@@ -14,9 +14,9 @@ class TrainStation extends Model
     protected $fillable = ['ibnr', 'rilIdentifier', 'name', 'latitude', 'longitude'];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
-        'latitude'  => 'double',
-        'longitude' => 'double',
         'ibnr'      => 'integer',
+        'latitude'  => 'decimal:6',
+        'longitude' => 'decimal:6',
     ];
 
     public function events(): HasMany {

@@ -11,8 +11,13 @@ class Event extends Model
 
     protected $fillable = ['name', 'hashtag', 'trainstation', 'slug', 'host', 'url', 'begin', 'end'];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $dates    = ['begin', 'end'];
     protected $appends  = ['trainDistance', 'trainDuration'];
+    protected $casts    = [
+        'id'           => 'integer',
+        'trainstation' => 'integer',
+        'begin'        => 'datetime',
+        'end'          => 'datetime',
+    ];
 
     public function station(): HasOne {
         return $this->hasOne(TrainStation::class, 'id', 'trainstation');

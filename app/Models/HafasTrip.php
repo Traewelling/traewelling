@@ -18,7 +18,15 @@ class HafasTrip extends Model
         'stopovers', 'polyline_id', 'departure', 'arrival', 'delay'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
+    protected $casts    = [
+        'id'          => 'integer',
+        'operator_id' => 'integer',
+        'origin'      => 'integer',
+        'destination' => 'integer',
+        'polyline_id' => 'integer',
+        'departure'   => 'datetime',
+        'arrival'     => 'datetime',
+    ];
 
     public function polyline(): HasOne {
         return $this->hasOne(PolyLine::class, 'id', 'polyline_id');
