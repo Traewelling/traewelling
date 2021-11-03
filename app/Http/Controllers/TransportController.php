@@ -7,27 +7,23 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\HafasTripResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
-use App\Models\MastodonServer;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
-use App\Notifications\MastodonNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
@@ -376,7 +372,7 @@ class TransportController extends Controller
         }
 
         if (isset($tootCheck) && $tootCheck) {
-            self::postMastodon($status);
+            MastodonController::postStatus($status);
         }
         if (isset($tweetCheck) && $tweetCheck) {
             TwitterController::postStatus($status);
@@ -443,29 +439,6 @@ class TransportController extends Controller
                        $arrival->isBefore($start)
                    );
         });
-    }
-
-    /**
-     * @param Status $status
-     */
-    public static function postMastodon(Status $status): void {
-        if (config('trwl.post_social') !== true) {
-            return;
-        }
-        if ($status->user->socialProfile->mastodon_server === null) {
-            return;
-        }
-
-        try {
-            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
-            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
-            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
-            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
-        } catch (RequestException $e) {
-            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
-        } catch (Exception $e) {
-            Log::error($e);
-        }
     }
 
     /**

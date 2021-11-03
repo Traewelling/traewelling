@@ -9,6 +9,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
@@ -151,11 +152,11 @@ class TransportController extends ResponseController
                 ibnr: $request->input('ibnr') ?? false
             );
 
-            if ($request->input('tweet') && auth()->user()?->socialProfile?->twitter_id != null) {
+            if ($request->input('tweet') && auth()->user()?->socialProfile?->twitter_id !== null) {
                 TwitterController::postStatus($status);
             }
-            if ($request->input('toot') && auth()->user()?->socialProfile?->mastodon_id != null) {
-                TransportBackend::postMastodon($status);
+            if ($request->input('toot') && auth()->user()?->socialProfile?->mastodon_id !== null) {
+                MastodonController::postStatus($status);
             }
 
             return $this->sendv1Response($trainCheckinResponse);
