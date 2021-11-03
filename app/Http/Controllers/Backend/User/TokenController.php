@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Passport\Token;
 
-class TokenController extends Controller
+abstract class TokenController extends Controller
 {
     public static function index(User $user): object {
         return $user->tokens->where('revoked', '0');
