@@ -14,7 +14,7 @@ class SessionController extends Controller
             $result->setUserAgent($session->user_agent);
             $session->platform = $result->platform();
 
-            if ($result->isphone()) {
+            if ($result->isPhone()) {
                 $session->device_icon = 'mobile-alt';
             } elseif ($result->isTablet()) {
                 $session->device_icon = 'tablet';
@@ -26,8 +26,6 @@ class SessionController extends Controller
     }
 
     public static function deleteAllSessionsFor(User $user): void {
-        foreach ($user->sessions as $session) {
-            $session->delete();
-        }
+        $user->sessions()->delete();
     }
 }

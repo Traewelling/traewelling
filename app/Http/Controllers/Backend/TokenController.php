@@ -10,7 +10,7 @@ use Laravel\Passport\Token;
 
 class TokenController extends Controller
 {
-    public static function index(User $user) {
+    public static function index(User $user): object {
         return $user->tokens->where('revoked', '0');
     }
 

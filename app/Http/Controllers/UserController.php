@@ -352,7 +352,7 @@ class UserController extends Controller
 
         try {
             TokenController::revokeToken(tokenId: $validated['tokenId'], user: auth()->user());
-            return redirect()->route('settings');
+            return redirect()->route('settings')->with('alert-success', __('settings.revoke-token.success'));
         } catch (PermissionException) {
             return redirect()->route('settings')->withErrors(__('messages.exception.general'));
         }
