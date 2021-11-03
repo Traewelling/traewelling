@@ -66,7 +66,7 @@ class AuthController extends ResponseController
                                           'expires_at' => $token->token->expires_at->toIso8601String()])
                         ->header('Authorization', $token->accessToken);
         }
-        return $this->sendError('Not matching credentials', 401);
+        return $this->sendError('Non-matching credentials', 401);
     }
 
     /**
