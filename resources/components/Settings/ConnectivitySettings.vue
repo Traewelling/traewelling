@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <!-- ToDo -->
+
         <h6 class="text-capitalize text-muted border-bottom my-5">{{ i18n.get('_.settings.title-ics') }}</h6>
         <div class="row">
             <div class="col">
@@ -71,7 +71,7 @@
                 </button>
             </div>
         </div>
-        <!-- ToDo -->
+
         <h6 class="text-capitalize text-muted border-bottom my-5">{{
                 i18n.get("_.settings.title-sessions")
             }}</h6>
