@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Status from "../Status";
 import Map from "../Map";
 import {StatusModel} from "../../js/APImodels";
@@ -101,9 +100,7 @@ export default {
             });
             ApiStatus
                 .fetchStopovers(tripIds)
-                .then((data) => {
-                    this.stopovers = data;
-                })
+                .then((this.stopovers))
                 .catch((error) => {
                     this.loading = false;
                     this.apiErrorHandler(error);
@@ -114,18 +111,12 @@ export default {
             this.statuses.forEach((status) => {
                 tripIds += (status.id + ",");
             });
-            axios
-                .get("/polyline/" + tripIds)
-                .then((response) => {
-                    this.polylines = [response.data.data];
-                })
+            ApiStatus
+                .fetchPolyLine(tripIds)
+                .then((this.polylines))
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         startRefresh() {
