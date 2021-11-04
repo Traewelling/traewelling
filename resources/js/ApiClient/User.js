@@ -15,6 +15,19 @@ export default class User {
         });
     }
 
+    static getStatusesForUser(username) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .get(`/user/${username}/statuses`)
+                .then((response) => {
+                    resolve(response.data);
+                })
+                .catch((error) => {
+                    reject(catchError(error));
+                });
+        });
+    }
+
     static follow(userId) {
         return new Promise(function (resolve, reject) {
             axios
