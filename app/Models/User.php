@@ -31,14 +31,21 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
         'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
-    protected $casts    = [
-        'private_profile' => 'boolean',
-        'prevent_index'   => 'boolean',
-    ];
-    protected $dates    = ['email_verified_at', 'privacy_ack_at', 'last_login'];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
         'following', 'followPending', 'muted'
+    ];
+    protected $casts    = [
+        'id'                        => 'integer',
+        'email_verified_at'         => 'datetime',
+        'privacy_ack_at'            => 'datetime',
+        'always_dbl'                => 'boolean',
+        'home_id'                   => 'integer',
+        'private_profile'           => 'boolean',
+        'default_status_visibility' => 'integer',//TODO: Change to Enum Cast with Laravel 9
+        'prevent_index'             => 'boolean',
+        'role'                      => 'integer',
+        'last_login'                => 'datetime',
     ];
 
     public function getTrainDistanceAttribute(): float {
