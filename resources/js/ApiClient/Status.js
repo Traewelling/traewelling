@@ -2,6 +2,19 @@ import axios from "axios";
 import {catchError} from "./Helpers";
 
 export default class Status {
+    static get() {
+        return new Promise(function (resolve, reject) {
+            axios
+                .get(`/statuses`)
+                .then((response) => {
+                    resolve(response.data.data);
+                })
+                .catch((errors) => {
+                    reject(catchError(errors));
+                });
+        });
+    }
+
     static getById(id) {
         return new Promise(function (resolve, reject) {
             axios
@@ -28,10 +41,15 @@ export default class Status {
         });
     }
 
-    static fetchStopovers(tripId) {
+    /**
+     * for multiple tripIds separate the Ids with ,
+     * @param tripIds
+     * @returns {Promise<unknown>}
+     */
+    static fetchStopovers(tripIds) {
         return new Promise(function (resolve, reject) {
             axios
-                .get(`/stopovers/${tripId}`)
+                .get(`/stopovers/${tripIds}`)
                 .then((response) => {
                     resolve(response.data.data);
                 })

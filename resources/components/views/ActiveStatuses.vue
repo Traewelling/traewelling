@@ -36,6 +36,7 @@ import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
+import ApiStatus from "../../js/ApiClient/Status"
 
 export default {
     name: "ActiveStatuses",
@@ -75,13 +76,13 @@ export default {
         fetchData() {
             const oldStatuses = this.statuses;
             this.error        = this.statuses = null;
-            axios
-                .get("/statuses")
-                .then((response) => {
+            ApiStatus
+                .get()
+                .then((data) => {
                     this.loading = false;
                     // FixMe: Why is this comparison not working correctly?
-                    if (oldStatuses != response.data.data) {
-                        this.statuses = response.data.data;
+                    if (oldStatuses != data) {
+                        this.statuses = data;
                         if (this.statuses.length) {
                             this.fetchPolyline();
                             this.fetchStopovers();
@@ -90,7 +91,7 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.apiErrorHandler(error);
                 });
         },
         fetchStopovers() {
@@ -98,18 +99,14 @@ export default {
             this.statuses.forEach((status) => {
                 tripIds += (status.train.trip + ",");
             });
-            axios
-                .get("/stopovers/" + tripIds)
-                .then((response) => {
-                    this.stopovers = response.data.data;
+            ApiStatus
+                .fetchStopovers(tripIds)
+                .then((data) => {
+                    this.stopovers = data;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         fetchPolyline() {
