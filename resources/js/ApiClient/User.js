@@ -14,4 +14,56 @@ export default class User {
                 });
         });
     }
+
+    static follow(userId) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .post("/user/createFollow", {userId: userId})
+                .then((result) => {
+                    resolve(result.data.data);
+                })
+                .catch((error) => {
+                    reject(catchError(error));
+                });
+        });
+    }
+
+    static unfollow(userId) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .delete("/user/destroyFollow", {data: {userId: userId}})
+                .then((result) => {
+                    resolve(result.data.data);
+                })
+                .catch((error) => {
+                    reject(catchError(error));
+                });
+        });
+    }
+
+    static mute(userId) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .post("/user/createMute", {userId: userId})
+                .then((result) => {
+                    resolve(result.data.data);
+                })
+                .catch((error) => {
+                    reject(catchError(error));
+                });
+        });
+    }
+
+    static unmute(userId) {
+        return new Promise(function (resolve, reject) {
+            axios
+                .delete("/user/destroyMute", {data: {userId: userId}})
+                .then((result) => {
+                    resolve(result.data.data);
+                })
+                .catch((error) => {
+                    reject(catchError(error));
+                });
+        });
+    }
 }
