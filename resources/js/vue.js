@@ -42,7 +42,7 @@ Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
 Vue.prototype.$appName = process.env.MIX_APP_NAME;
 // Set Vue router
-Vue.router = router;
+Vue.router             = router;
 Vue.use(VueRouter);
 
 axios.defaults.baseURL = "/api/v1";
@@ -82,9 +82,13 @@ Vue.use(VueMeta, {
 Vue.mixin({
     methods: {
         apiErrorHandler: function (response) {
-            response.errors.forEach((error) => {
-                this.notyf.error(error);
-            })
+            if (response.errors.length > 0) {
+                response.errors.forEach((error) => {
+                    this.notyf.error(error);
+                })
+            } else {
+                this.notyf.error(this.i18n.get("_.messages.exception.general"))
+            }
         },
     },
 })
