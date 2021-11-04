@@ -140,12 +140,15 @@ export default {
     },
     methods: {
         fetchData() {
-            this.loading     = true;
-            this.station     = null;
-            const when       = this.$route.query.when ?? "";
-            const travelType = this.$route.query.travelType ?? "";
+            this.loading         = true;
+            this.station         = null;
+            const encodedStation = this.$route.query.station.replace("/", " ");
+            let query            = new URLSearchParams({
+                when: this.$route.query.when ?? "",
+                travelType: this.$route.query.travelType ?? ""
+            });
             axios
-                .get("/trains/station/" + this.$route.query.station + "/departures?when=" + when + "&travelType=" + travelType)
+                .get(`/trains/station/${encodedStation}/departures?${query.toString()}`)
                 .then((result) => {
                     this.station    = result.data.meta.station;
                     this.times      = result.data.meta.times;
@@ -180,12 +183,11 @@ export default {
         },
         setHome() {
             axios
-                .put("/trains/station/" + this.station.name + "/home")
+                .put(`/trains/station/${this.station.name.replace("/", " ")}/home`)
                 .then((result) => {
                     this.result = result.data.data;
-                    //ToDo add a confirm popup or sth
                     this.$auth.fetch();
-                    alert(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
+                    this.notyf.success(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
                 })
                 .catch((error) => {
                     this.loading = false;
