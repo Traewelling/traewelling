@@ -28,6 +28,7 @@ import moment from "moment";
 import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import {Status as AAA} from "../../js/ApiClient/Status";
 
 export default {
     name: "SingleStatus",
@@ -105,19 +106,19 @@ export default {
         fetchData() {
             this.error   = null;
             this.loading = true;
-            axios
-                .get("/statuses/" + this.$route.params.id)
+            AAA
+                .getById(this.$route.params.id)
                 .then((response) => {
                     this.loading = false;
-                    this.status  = response.data.data;
+                    this.status  = response;
                     this.updateMetadata();
                     this.fetchPolyline();
                     this.fetchStopovers();
                     this.fetchLikes();
                 })
-                .catch((error) => {
+                .catch((errors) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.apiErrorHandler(errors);
                 });
         },
         fetchPolyline() {
