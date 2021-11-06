@@ -27,12 +27,12 @@
                                         <tr>
                                             <td>
                                                 {{$event->name}}
-                                                @if($event->getTrainstation() != null)
+                                                @isset($event->station)
                                                     <br/>
                                                     <small class="text-muted">
                                                         {{__('events.closestStation')}}:
-                                                        <a href="{{route('trains.stationboard', ['station' => $event->getTrainstation()->name])}}">
-                                                            {{$event->getTrainstation()->name}}
+                                                        <a href="{{route('trains.stationboard', ['station' => $event->station->name])}}">
+                                                            {{$event->station->name}}
                                                         </a>
                                                     </small>
                                                 @endif
