@@ -44,10 +44,10 @@ abstract class LeaderboardController extends Controller
                    ->where('train_checkins.departure', '<=', $until->toIso8601String())
                    ->where(function(Builder $query) {
                        $query->where('users.private_profile', 0);
-                       if (auth()->check()) {
+                    if (auth()->check()) {
                            $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
                                  ->orWhere('users.id', auth()->user()->id);
-                       }
+                    }
                    })
                    ->groupBy('statuses.user_id')
                    ->select([
