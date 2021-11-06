@@ -67,11 +67,15 @@ class TransportController extends Controller
      * @api v1
      */
     #[ArrayShape([
-        'station'    => "\App\Models\TrainStation|mixed|null",
-        'departures' => "\Illuminate\Support\Collection",
+        'station'    => TrainStation::class,
+        'departures' => Collection::class,
         'times'      => "array"
     ])]
-    public static function getDepartures(string|int $stationQuery, Carbon $when = null, string $travelType = null): array {
+    public static function getDepartures(
+        string|int $stationQuery,
+        Carbon     $when = null,
+        string     $travelType = null
+    ): array {
         $station = StationController::lookupStation($stationQuery);
 
         $when  = $when ?? Carbon::now()->subMinutes(5);

@@ -40,5 +40,4 @@ abstract class StationController extends Controller
 
         throw new ModelNotFoundException;
     }
-
 }
