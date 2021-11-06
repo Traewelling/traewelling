@@ -94,10 +94,10 @@ abstract class LeaderboardController extends Controller
                   )
                   ->where(function(Builder $query) {
                       $query->where('users.private_profile', 0);
-                      if (auth()->check()) {
+                   if (auth()->check()) {
                           $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
                                 ->orWhere('users.id', auth()->user()->id);
-                      }
+                   }
                   })
                   ->select([
                                'statuses.user_id',
