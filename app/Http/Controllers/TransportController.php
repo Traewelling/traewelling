@@ -90,7 +90,7 @@ class TransportController extends Controller
             return $departure->when ?? $departure->plannedWhen;
         });
 
-        return ['station' => $station, 'departures' => $departures, 'times' => $times];
+        return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
     }
 
     /**

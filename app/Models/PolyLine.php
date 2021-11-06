@@ -9,6 +9,9 @@ class PolyLine extends Model
 {
 
     protected $fillable = ['hash', 'polyline'];
+    protected $casts    = [
+        'id' => 'integer',
+    ];
 
     public function trips(): HasMany {
         return $this->hasMany(HafasTrip::class, 'polyline_id', 'id');

@@ -26,7 +26,10 @@ class Status extends Model
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
     protected $casts    = [
         'id'         => 'integer',
-        'visibility' => 'integer',
+        'user_id'    => 'integer',
+        'business'   => 'integer', //TODO: Change to Enum Cast with Laravel 9
+        'visibility' => 'integer', //TODO: Change to Enum Cast with Laravel 9
+        'event_id'   => 'integer',
     ];
 
     public function user(): BelongsTo {
