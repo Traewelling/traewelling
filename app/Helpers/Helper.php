@@ -32,6 +32,7 @@ function number($number, $decimals = 2) {
  * Calculate hours and minutes from a given duration in seconds.
  *
  * @param int $seconds How long in seconds?
+ *
  * @return array with `hours`, `minutes` and `showHours`.
  * @deprecated as soon as vue is implemented
  */
@@ -47,6 +48,7 @@ function secondsToDuration($seconds): array {
 
 /**
  * @param array $duration from the secondsToDuration
+ *
  * @return string
  * @deprecated as soon as vue is implemented
  */
@@ -61,8 +63,9 @@ function durationToSpan($duration): string {
 }
 
 /**
- * @param $name
+ * @param        $name
  * @param string $classes
+ *
  * @return string
  * @deprecated as soon as vue is implemented
  */

@@ -38,7 +38,12 @@
                     </h2>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold"><i class="fa fa-train"></i></span>
-                        <span class="font-weight-bold">{!! stationLink($event->getTrainstation()->name, "text-white") !!}</span>
+                        <span class="font-weight-bold">
+                             <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->getTrainstation()->id])}}"
+                                class="text-white">
+                                {{$event->getTrainstation()->name}}
+                             </a>
+                        </span>
                     </h2>
                 </div>
             </div>

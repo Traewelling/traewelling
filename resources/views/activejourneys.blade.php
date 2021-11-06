@@ -244,7 +244,7 @@
                                 "end": "{{ $event->end->format('Y-m-d') }}",
                                 "ts": {!! $event->getTrainStation() !!},
                                 "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
-                                "closestLink": `{!! stationLink($event->getTrainstation()->name) !!}`
+                                "closestLink": `<a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->getTrainstation()->id])}}" class="text-trwl clearfix">{{$event->getTrainstation()->name}}</a>`
                             },
                             @endforeach
                         ];
