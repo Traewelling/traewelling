@@ -16,7 +16,7 @@
                             <div class="input-group mb-2 mr-sm-2">
                                 <input type="text" id="station-autocomplete" name="station" class="form-control"
                                        placeholder="{{ __('stationboard.station-placeholder') }} / DS100"
-                                       @isset(request()->station) value="{{request()->station}}" @endisset
+                                       @isset($station) value="{{$station->name}}" @endisset
                                 />
 
                                 @if($latest->count() > 0 || Auth::user()->home)

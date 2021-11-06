@@ -46,9 +46,9 @@ class TransportController extends ResponseController
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
-                $name,
-                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                $validated['travelType'] ?? null
+                stationQuery: $name,
+                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:   $validated['travelType'] ?? null
             );
         } catch (HafasException) {
             return $this->sendv1Error("There has been an error with our data provider", 400);
@@ -57,10 +57,10 @@ class TransportController extends ResponseController
         }
 
         return $this->sendv1Response(
-            data: $trainStationboardResponse['departures'],
+            data:       $trainStationboardResponse['departures'],
             additional: ["meta" => ['station' => $trainStationboardResponse['station'],
                                     'times'   => $trainStationboardResponse['times'],
-                ]]
+                        ]]
         );
     }
 
@@ -102,9 +102,9 @@ class TransportController extends ResponseController
 
         try {
             $nearestStation = HafasController::getNearbyStations(
-                latitude: $validated['latitude'],
+                latitude:  $validated['latitude'],
                 longitude: $validated['longitude'],
-                results: $validated['limit'] ?? 1
+                results:   $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
             return $this->sendv1Error(__('messages.exception.generalHafas'), 503);
@@ -139,23 +139,23 @@ class TransportController extends ResponseController
 
         try {
             $status = StatusBackend::createStatus(
-                user: auth()->user(),
-                business: $request->input('business') ?? 0,
+                user:       auth()->user(),
+                business:   $request->input('business') ?? 0,
                 visibility: $request->input('visibility') ?? StatusVisibility::PUBLIC,
-                body: $request->input('body'),
-                eventId: $request->input('eventID')
+                body:       $request->input('body'),
+                eventId:    $request->input('eventID')
             );
 
             $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
 
             $trainCheckinResponse = TransportBackend::createTrainCheckin(
-                status: $status,
-                trip: $hafasTrip,
+                status:    $status,
+                trip:      $hafasTrip,
                 entryStop: $request->input('start'),
-                exitStop: $request->input('destination'),
+                exitStop:  $request->input('destination'),
                 departure: Carbon::parse($request->input('departure')),
-                arrival: Carbon::parse($request->input('arrival')),
-                ibnr: $request->input('ibnr') ?? false
+                arrival:   Carbon::parse($request->input('arrival')),
+                ibnr:      $request->input('ibnr') ?? false
             );
 
             if ($request->input('tweet') && auth()->user()?->socialProfile?->twitter_id != null) {
@@ -169,9 +169,9 @@ class TransportController extends ResponseController
         } catch (CheckInCollisionException $e) {
             $status?->delete();
             return $this->sendv1Error([
-                                        'status_id' => $e->getCollision()->status_id,
-                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
-                                    ], 409);
+                                          'status_id' => $e->getCollision()->status_id,
+                                          'lineName'  => $e->getCollision()->HafasTrip->first()->linename
+                                      ], 409);
 
         } catch (StationNotOnTripException) {
             $status?->delete();

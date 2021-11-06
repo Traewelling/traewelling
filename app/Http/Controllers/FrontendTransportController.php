@@ -35,7 +35,7 @@ class FrontendTransportController extends Controller
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
 
         $validated = $request->validate([
-                                            'station'    => ['required', 'string'],
+                                            'station'    => ['required'],
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', Rule::in(TravelType::getList())]
                                         ]);
@@ -44,9 +44,9 @@ class FrontendTransportController extends Controller
 
         try {
             $TrainStationboardResponse = TransportBackend::getDepartures(
-                $validated['station'],
-                $when,
-                $validated['travelType'] ?? null
+                stationQuery: $validated['station'],
+                when:         $when,
+                travelType:   $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());

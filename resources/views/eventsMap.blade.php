@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title'){{ $event->name }}@endsection
+@section('title', $event->name)
 
 @section('content')
     <div class="px-4 py-5 mt-n4"
@@ -9,8 +9,10 @@
             <div class="row justify-content-center">
                 <div class="text-white col-md-8 col-lg-7">
                     <h1 class="card-title font-bold">
-                        <strong>{{ __('events.header', ['name' => $event->name]) }} <code
-                                    class="text-white">#{{ $event->hashtag }}</code></strong>
+                        <strong>
+                            {{ __('events.header', ['name' => $event->name]) }}
+                            <code class="text-white">#{{ $event->hashtag }}</code>
+                        </strong>
                     </h1>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{
@@ -45,7 +47,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7" id="activeJourneys">
-                <!-- The status cards -->
                 @foreach($statuses as $status)
                     @include('includes.status')
                 @endforeach
@@ -55,7 +56,7 @@
         <div class="row justify-content-center mt-5">
             {{ $statuses->links() }}
         </div>
-    </div><!--- /container -->
+    </div>
 
     @include('includes.edit-modal')
     @include('includes.delete-modal')
