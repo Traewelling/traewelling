@@ -88,8 +88,8 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)->id])}}" class="text-trwl clearfix">
-                                {{\App\Http\Controllers\FrontendStatusController::nextStation($status)->name}}
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->id])}}" class="text-trwl clearfix">
+                                {{\App\Http\Controllers\FrontendStatusController::nextStation($status)?->name}}
                             </a>
                         </p>
                     @endif
