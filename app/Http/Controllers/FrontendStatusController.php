@@ -169,7 +169,7 @@ class FrontendStatusController extends Controller
     /**
      * @param $status
      *
-     * @return mixed
+     * @return TrainStation|null
      * @deprecated when vue is implemented
      */
     public static function nextStation(&$status): ?TrainStation {
