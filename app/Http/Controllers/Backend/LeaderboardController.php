@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -39,8 +40,16 @@ abstract class LeaderboardController extends Controller
 
         $query = DB::table('statuses')
                    ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                   ->join('users', 'statuses.user_id', '=', 'users.id')
                    ->where('train_checkins.departure', '>=', $since->toIso8601String())
                    ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                   ->where(function(Builder $query) {
+                       $query->where('users.private_profile', 0);
+                       if (auth()->check()) {
+                           $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
+                                 ->orWhere('users.id', auth()->user()->id);
+                       }
+                   })
                    ->groupBy('statuses.user_id')
                    ->select([
                                 'statuses.user_id',
