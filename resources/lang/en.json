@@ -352,7 +352,7 @@
     "settings.request.accept-success": "Successfully accepted follow request.",
     "settings.request.reject-success": "Successfully rejected follow request.",
     "settings.language.set": "Change language",
-    "settings.change": "Change",
+    "generic.change": "Change",
     "sr.dropdown.toggle": "Toggle dropdown",
     "stationboard.arr": "arr",
     "stationboard.btn-checkin": "Check in!",

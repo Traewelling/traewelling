@@ -13,7 +13,7 @@
             </div>
             <div class="col">
                 <button class="btn btn-outline-primary float-end" @click="$refs.mail.show()">
-                    {{ i18n.get("_.settings.change") }}
+                    {{ i18n.get("_.generic.change") }}
                 </button>
                 <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1"
                         @click="resendMail">
@@ -28,7 +28,7 @@
             </div>
             <div class="col-3">
                 <button class="btn btn-outline-primary float-end" @click="$refs.password.show()">
-                    {{ i18n.get("_.settings.change") }}
+                    {{ i18n.get("_.generic.change") }}
                 </button>
             </div>
         </div>
