@@ -42,7 +42,6 @@ class FrontendStatusController extends Controller
         }
         return view('dashboard', [
             'statuses'    => $statuses,
-            'currentUser' => auth()->user(),
             'latest'      => TransportController::getLatestArrivals(auth()->user()),
             'future'      => StatusBackend::getFutureCheckins()
         ]);
