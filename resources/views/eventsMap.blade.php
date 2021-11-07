@@ -28,23 +28,31 @@
                             )
                         ) !!}</span>
                         <br class="d-block d-sm-none">
-                        <span class="font-weight-bold ps-sm-2">
-                            <i class="fa fa-user"></i>&nbsp;{{ $event->host }}
-                        </span>
-                        <span class="font-weight-bold ps-sm-2">
-                            <i class="fa fa-link text-white"></i>&nbsp;<a href="{{ $event->url }}"
-                                                                          class="text-white">{{ parse_url($event->url)['host'] }}</a>
-                        </span>
+                        @isset($event->host)
+                            <span class="font-weight-bold ps-sm-2">
+                                <i class="fa fa-user"></i>&nbsp;{{ $event->host }}
+                            </span>
+                        @endisset
+                        @isset($event->url)
+                            <span class="font-weight-bold ps-sm-2">
+                                <i class="fa fa-link text-white"></i>&nbsp;
+                                <a href="{{ $event->url }}" class="text-white">
+                                    {{ parse_url($event->url)['host'] }}
+                                </a>
+                            </span>
+                        @endisset
                     </h2>
-                    <h2 class="h2-responsive">
-                        <span class="font-weight-bold"><i class="fa fa-train"></i></span>
-                        <span class="font-weight-bold">
-                             <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->getTrainstation()->id])}}"
-                                class="text-white">
-                                {{$event->getTrainstation()->name}}
-                             </a>
-                        </span>
-                    </h2>
+                    @isset($event->station)
+                        <h2 class="h2-responsive">
+                            <span class="font-weight-bold"><i class="fa fa-train"></i></span>
+                            <span class="font-weight-bold">
+                                 <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->id])}}"
+                                    class="text-white">
+                                    {{$event->station->name}}
+                                 </a>
+                            </span>
+                        </h2>
+                    @endisset
                 </div>
             </div>
         </div>
