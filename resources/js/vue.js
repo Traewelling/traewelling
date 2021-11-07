@@ -40,8 +40,9 @@ Vue.prototype.i18n   = new Lang({
 });
 Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
+Vue.prototype.$appName = process.env.MIX_APP_NAME;
 // Set Vue router
-Vue.router = router;
+Vue.router             = router;
 Vue.use(VueRouter);
 
 axios.defaults.baseURL = "/api/v1";
@@ -78,12 +79,41 @@ Vue.use(VueMeta, {
     refreshOnceOnNavigation: true
 });
 
+Vue.mixin({
+    methods: {
+        apiErrorHandler: (response) => {
+            if (response.errors.length > 0) {
+                response.errors.forEach((error) => {
+                    this.notyf.error(error);
+                });
+            } else {
+                this.notyf.error(this.i18n.get("_.messages.exception.general"));
+            }
+        },
+        fetchMoreData(next) {
+            return new Promise(function (resolve) {
+                let returnObject = {};
+                axios.get(next)
+                    .then((response) => {
+                        returnObject.data  = response.data.data;
+                        returnObject.links = response.data.links;
+                        resolve(returnObject);
+                    })
+                    .catch((error) => {
+                        this.apiErrorHandler(error);
+                    });
+            });
+        }
+    },
+});
+
 new Vue({
     provide: () => {
         return {
             notyf: new Notyf({
                 duration: 5000,
-                position: {x: "right", y: "top"}
+                position: {x: "center", y: "top"},
+                dismissible: true
             })
         };
     },

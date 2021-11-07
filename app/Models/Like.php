@@ -9,6 +9,11 @@ class Like extends Model
 {
 
     protected $fillable = ['user_id', 'status_id'];
+    protected $casts    = [
+        'id'        => 'integer',
+        'user_id'   => 'integer',
+        'status_id' => 'integer',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

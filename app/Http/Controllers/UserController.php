@@ -6,6 +6,9 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
+use App\Http\Controllers\Backend\User\SessionController;
+use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -23,7 +26,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use JetBrains\PhpStorm\ArrayShape;
-use Laravel\Passport\Token;
 use Mastodon;
 
 /**
@@ -79,21 +81,7 @@ class UserController extends Controller
 
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
-        $filename = strtr(':userId_:time.png', [ // Croppie always uploads a png
-                                                 ':userId' => Auth::user()->id,
-                                                 ':time'   => time()
-        ]);
-        Image::make($avatar)->resize(300, 300)
-             ->save(public_path('/uploads/avatars/' . $filename));
-
-        if (Auth::user()->avatar != null) {
-            File::delete(public_path('/uploads/avatars/' . Auth::user()->avatar));
-        }
-
-        Auth::user()->update([
-                                 'avatar' => $filename
-                             ]);
-
+        BackendSettingsController::updateProfilePicture($avatar);
         return ['status' => ':ok'];
     }
 
@@ -329,6 +317,9 @@ class UserController extends Controller
         )->simplePaginate(10);
     }
 
+    /**
+     * @deprecated Backend/SettingsController::deleteProfilePicture in vue
+     */
     public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
 
@@ -343,9 +334,7 @@ class UserController extends Controller
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();
-        foreach ($user->sessions as $session) {
-            $session->delete();
-        }
+        SessionController::deleteAllSessionsFor(user: $user);
         return redirect()->route('static.welcome');
     }
 
@@ -360,11 +349,13 @@ class UserController extends Controller
         $validated = $request->validate([
                                             'tokenId' => ['required', 'exists:oauth_access_tokens,id']
                                         ]);
-        $token     = Token::find($validated['tokenId']);
-        if ($token->user->id == Auth::user()->id) {
-            $token->revoke();
+
+        try {
+            TokenController::revokeToken(tokenId: $validated['tokenId'], user: auth()->user());
+            return redirect()->route('settings')->with('alert-success', __('settings.revoke-token.success'));
+        } catch (PermissionException) {
+            return redirect()->route('settings')->withErrors(__('messages.exception.general'));
         }
-        return redirect()->route('settings');
     }
 
     public function SaveAccount(Request $request): RedirectResponse {

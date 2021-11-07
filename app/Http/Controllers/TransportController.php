@@ -6,6 +6,7 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
@@ -28,6 +29,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -98,7 +100,7 @@ class TransportController extends Controller
             return $departure->when ?? $departure->plannedWhen;
         });
 
-        return ['station' => $station, 'departures' => $departures, 'times' => $times];
+        return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
     }
 
     /**
@@ -251,6 +253,7 @@ class TransportController extends Controller
      * @throws CheckInCollisionException
      * @throws HafasException
      * @throws StationNotOnTripException
+     * @throws TrainCheckinAlreadyExistException
      * @deprecated replaced by createTrainCheckin()
      */
     #[ArrayShape([
@@ -350,18 +353,26 @@ class TransportController extends Controller
             $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
         );
 
-        $trainCheckin = TrainCheckin::create([
-                                                 'status_id'   => $status->id,
-                                                 'user_id'     => $user->id,
-                                                 'trip_id'     => $tripId,
-                                                 'origin'      => $originStation->ibnr,
-                                                 'destination' => $destinationStation->ibnr,
-                                                 'distance'    => $distanceInMeters,
-                                                 'points'      => $points,
-                                                 'departure'   => $plannedDeparture,
-                                                 'arrival'     => $plannedArrival
-                                             ]);
-
+        try {
+            $trainCheckin = TrainCheckin::create([
+                                                     'status_id'   => $status->id,
+                                                     'user_id'     => $user->id,
+                                                     'trip_id'     => $tripId,
+                                                     'origin'      => $originStation->ibnr,
+                                                     'destination' => $destinationStation->ibnr,
+                                                     'distance'    => $distanceInMeters,
+                                                     'points'      => $points,
+                                                     'departure'   => $plannedDeparture,
+                                                     'arrival'     => $plannedArrival
+                                                 ]);
+        } catch (QueryException $exception) {
+            $errorCode = $exception->errorInfo[1];
+            if ($errorCode == 1062) {
+                //duplicate entry
+                $status->delete();
+                throw new TrainCheckinAlreadyExistException();
+            }
+        }
         $user->load(['statuses']);
 
         // Let's connect our statuses and the events
@@ -513,6 +524,7 @@ class TransportController extends Controller
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws ModelNotFoundException
+     * @throws TrainCheckinAlreadyExistException
      * @api v1
      */
     public static function createTrainCheckin(
@@ -561,18 +573,27 @@ class TransportController extends Controller
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival
         );
+        try {
+            $trainCheckin = TrainCheckin::create([
+                                                     'status_id'   => $status->id,
+                                                     'user_id'     => auth()->user()->id,
+                                                     'trip_id'     => $trip->trip_id,
+                                                     'origin'      => $firstStop->trainStation->ibnr,
+                                                     'destination' => $lastStop->trainStation->ibnr,
+                                                     'distance'    => $distance,
+                                                     'points'      => $points,
+                                                     'departure'   => $firstStop->departure_planned,
+                                                     'arrival'     => $lastStop->arrival_planned
+                                                 ]);
+        } catch (QueryException $exception) {
+            $errorCode = $exception->errorInfo[1];
+            if ($errorCode == 1062) {
+                //duplicate entry
+                $status->delete();
+                throw new TrainCheckinAlreadyExistException();
+            }
+        }
 
-        $trainCheckin = TrainCheckin::create([
-                                                 'status_id'   => $status->id,
-                                                 'user_id'     => auth()->user()->id,
-                                                 'trip_id'     => $trip->trip_id,
-                                                 'origin'      => $firstStop->trainStation->ibnr,
-                                                 'destination' => $lastStop->trainStation->ibnr,
-                                                 'distance'    => $distance,
-                                                 'points'      => $points,
-                                                 'departure'   => $firstStop->departure_planned,
-                                                 'arrival'     => $lastStop->arrival_planned
-                                             ]);
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             if ($otherStatus?->user) {
                 $otherStatus->user->notify(new UserJoinedConnection(
@@ -586,7 +607,7 @@ class TransportController extends Controller
 
         return [
             'status'               => new StatusResource($status),
-            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
+            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
         ];
     }
 

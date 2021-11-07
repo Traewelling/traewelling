@@ -14,17 +14,18 @@
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
+use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
-use App\Http\Controllers\IcsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
@@ -56,8 +57,9 @@ Route::prefix('legal')->group(function() {
          ->name('legal.privacy');
 });
 
-Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
-     ->name('account.show');
+Route::redirect('/profile/{username}', '/@{username}');
+Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
+     ->name('profile');
 
 Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
@@ -130,6 +132,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/stats', [StatisticController::class, 'renderMainStats'])
          ->name('stats');
+
+    if (config('ticket.host') != null) {
+        Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
+        Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
+    }
 
     Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
          ->name('events.suggest');

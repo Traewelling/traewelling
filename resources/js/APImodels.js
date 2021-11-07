@@ -151,4 +151,19 @@ export let statusNotifications = [
     "App\\Notifications\\StatusLiked",
     "App\\Notifications\\TwitterNotSent",
     "App\\Notifications\\UserJoinedConnection"
-]
+];
+
+export let userProfileSettings = {
+    username: "",
+    name: "",
+    private_profile: false,
+    prevent_index: false,
+    always_dbl: false,
+    default_status_visibility: 0,
+    password: false,
+    email: "",
+    email_verified: true,
+    profile_picture_set: false,
+    twitter: null,
+    mastodon: null
+};

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Http\Controllers\Backend\User\SessionController;
+use App\Http\Controllers\Backend\User\TokenController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
@@ -12,11 +14,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Jenssegers\Agent\Agent;
 
 class SettingsController extends Controller
 {
 
+    /** @deprecated replaced by Backend/SettingsController::updateSettings in vue */
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'username'   => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
@@ -46,6 +48,7 @@ class SettingsController extends Controller
         return back();
     }
 
+    /** @deprecated replaced by Backend/SettingsController::updateSettings in vue */
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'private_profile'           => ['nullable'],
@@ -97,25 +100,9 @@ class SettingsController extends Controller
     }
 
     public function renderSettings(): Renderable {
-        $sessions = auth()->user()->sessions->map(function($session) {
-            $result = new Agent();
-            $result->setUserAgent($session->user_agent);
-            $session->platform = $result->platform();
-
-            if ($result->isphone()) {
-                $session->device_icon = 'mobile-alt';
-            } elseif ($result->isTablet()) {
-                $session->device_icon = 'tablet';
-            } else {
-                $session->device_icon = 'desktop';
-            }
-
-            return $session;
-        });
-
         return view('settings.settings', [
-            'sessions' => $sessions,
-            'tokens'   => auth()->user()->tokens->where('revoked', '0')
+            'sessions' => SessionController::index(user: auth()->user()),
+            'tokens'   => TokenController::index(user: auth()->user())
         ]);
     }
 
