@@ -8,6 +8,7 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -160,6 +161,8 @@ class TransportController extends ResponseController
         } catch (HafasException $exception) {
             $status?->delete();
             return $this->sendv1Error($exception->getMessage(), 400);
+        } catch (TrainCheckinAlreadyExistException) {
+            return $this->sendv1Error('CheckIn already exists', 409);
         }
     }
 

@@ -57,8 +57,9 @@ Route::prefix('legal')->group(function() {
          ->name('legal.privacy');
 });
 
-Route::get('/profile/{username}', [FrontendUserController::class, 'getProfilePage'])
-     ->name('account.show');
+Route::redirect('/profile/{username}', '/@{username}');
+Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
+     ->name('profile');
 
 Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
      ->name('leaderboard');
@@ -132,7 +133,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/stats', [StatisticController::class, 'renderMainStats'])
          ->name('stats');
 
-    if(config('ticket.host') != null) {
+    if (config('ticket.host') != null) {
         Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
         Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
     }

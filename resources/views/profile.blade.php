@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $user->name)
-@section('canonical', route('account.show', ['username' => $user->username]))
+@section('canonical', route('profile', ['username' => $user->username]))
 
 @if($user->prevent_index)
     @section('meta-robots', 'noindex')

@@ -15,8 +15,12 @@
                     {{config('app.legal.address2')}}</p>
 
                 <h2>Kontakt</h2>
-                <p>E-Mail: {{config('app.legal.email')}}</p>
-                <p>Tel.: {{config('app.legal.tel')}}</p>
+                @if(config('app.legal.email'))
+                    <p>E-Mail: {{config('app.legal.email')}}</p>
+                @endif
+                @if(config('app.legal.tel'))
+                    <p>Tel.: {{config('app.legal.tel')}}</p>
+                @endif
 
                 <h3>Haftung f&uuml;r Inhalte</h3>
                 <p>Als Diensteanbieter sind wir gem&auml;&szlig; &sect; 7 Abs.1 TMG f&uuml;r eigene Inhalte auf diesen
