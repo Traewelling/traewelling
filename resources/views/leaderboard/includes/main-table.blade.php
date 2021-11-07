@@ -14,7 +14,7 @@
             <tr>
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
-                    <a href="{{ route('account.show', ['username' => $row->user->username]) }}">
+                    <a href="{{ route('profile', ['username' => $row->user->username]) }}">
                         {{ $row->user->username }}
                     </a>
                 </td>

@@ -43,7 +43,7 @@ class UserFollowed extends Notification
             'lead'            => __('notifications.userFollowed.lead', [
                 'followerUsername' => $detail->sender->username
             ]),
-            "link"            => route('account.show', ['username' => $detail->sender->username]),
+            "link"            => route('profile', ['username' => $detail->sender->username]),
             'notice'          => "",
             'date_for_humans' => $notification->created_at->diffForHumans(),
             'read'            => $notification->read_at != null,

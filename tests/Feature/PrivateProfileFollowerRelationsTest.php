@@ -105,7 +105,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
         // Alice cannot see Bob
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
 
         // When: Alice follows Bob
@@ -116,7 +116,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
 
         // Alice can see Bob
         $alice->refresh();
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertDontSee(__('profile.private-profile-text'));
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertFalse($invisible);
@@ -133,7 +133,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
         // Alice cannot see Bob
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
 
         // When: Alice follows Bob
@@ -144,7 +144,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
 
         // Alice can see Bob
         $alice->refresh();
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
@@ -161,7 +161,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
         $alice->refresh();
 
         // Alice can see Bob
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
@@ -174,7 +174,7 @@ class PrivateProfileFollowerRelationsTest extends TestCase
         $alice->refresh();
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
-        $guest = $this->actingAs($alice)->get(route('account.show', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
     }
 }
