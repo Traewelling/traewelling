@@ -11,8 +11,8 @@ export function catchError(error) {
         errors.push(error.response.data.message);
     }
 
-    response['status'] = error.response.status;
-    response['errors'] = errors;
+    response["status"] = error.response.status;
+    response["errors"] = errors;
 
     return response;
 }

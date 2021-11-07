@@ -35,7 +35,7 @@ import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
-import ApiStatus from "../../js/ApiClient/Status"
+import ApiStatus from "../../js/ApiClient/Status";
 
 export default {
     name: "ActiveStatuses",

@@ -2,7 +2,7 @@ import {getBody, getContent} from "./Helpers";
 
 export default class Dashboard {
     static getFuture() {
-        return getContent('/dashboard/future');
+        return getContent("/dashboard/future");
     }
 
     static get(global) {
@@ -10,10 +10,10 @@ export default class Dashboard {
     }
 
     static getDashboard() {
-        return getBody('/dashboard');
+        return getBody("/dashboard");
     }
 
     static getGlobalDashboard() {
-        return getContent('/dashboard/global');
+        return getContent("/dashboard/global");
     }
 }

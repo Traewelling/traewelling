@@ -81,13 +81,13 @@ Vue.use(VueMeta, {
 
 Vue.mixin({
     methods: {
-        apiErrorHandler: function (response) {
+        apiErrorHandler: (response) => {
             if (response.errors.length > 0) {
                 response.errors.forEach((error) => {
                     this.notyf.error(error);
-                })
+                });
             } else {
-                this.notyf.error(this.i18n.get("_.messages.exception.general"))
+                this.notyf.error(this.i18n.get("_.messages.exception.general"));
             }
         },
         fetchMoreData(next) {

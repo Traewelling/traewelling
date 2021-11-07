@@ -207,7 +207,7 @@ import ModalConfirm from "./ModalConfirm";
 import CheckInModal from "./CheckInModal";
 import FollowButton from "./FollowButton";
 import MuteButton from "./MuteButton";
-import User from "../js/ApiClient/User"
+import User from "../js/ApiClient/User";
 import Status from "../js/ApiClient/Status";
 
 export default {

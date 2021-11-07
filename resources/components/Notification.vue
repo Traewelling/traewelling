@@ -72,8 +72,8 @@ export default {
         },
         readMessage() {
             Notifications.toggleRead(this.notification.id)
-                .then((response) => {
-                    this.notification = response.data;
+                .then((data) => {
+                    this.notification = data;
                     if (this.read) {
                         this.$emit("decrease");
                     } else {

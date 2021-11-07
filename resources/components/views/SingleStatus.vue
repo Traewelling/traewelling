@@ -107,9 +107,9 @@ export default {
             this.loading = true;
             StatusApi
                 .getById(this.$route.params.id)
-                .then((response) => {
+                .then((data) => {
                     this.loading = false;
-                    this.status  = response;
+                    this.status  = data;
                     this.updateMetadata();
                     this.fetchPolyline();
                     this.fetchStopovers();

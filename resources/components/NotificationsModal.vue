@@ -66,8 +66,8 @@ export default {
         },
         readAll() {
             Notifications.readAll()
-                .then((response) => {
-                    this.notifications = response.data.data;
+                .then((data) => {
+                    this.notifications = data;
                     this.$emit("reset");
                 })
                 .catch((error) => {

@@ -10,18 +10,22 @@ export default class User {
     }
 
     static follow(userId) {
-        return postToApi("/user/createFollow", {userId: userId});
+        return postToApi("/user/createFollow", {userId});
     }
 
     static unfollow(userId) {
-        return deleteFromApi("/user/destroyFollow", {userId: userId});
+        return deleteFromApi("/user/destroyFollow", {userId});
     }
 
     static mute(userId) {
-        return postToApi("/user/createMute", {userId: userId});
+        return postToApi("/user/createMute", {userId});
     }
 
     static unmute(userId) {
-        return deleteFromApi("/user/destroyMute", {userId: userId});
+        return deleteFromApi("/user/destroyMute", {userId});
+    }
+
+    static search(query) {
+        return getBody(`/user/search/${query}`);
     }
 }

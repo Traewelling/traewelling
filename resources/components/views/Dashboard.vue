@@ -81,7 +81,7 @@ export default {
     data() {
         return {
             loading: true,
-            statuses: [StatusModel],
+            statuses: [],
             futureStatuses: [StatusModel],
             stopovers: [], //ToDo Typedef
             moment: moment,
@@ -114,8 +114,8 @@ export default {
             this.statuses = this.futureStatuses = [];
             Dashboard
                 .getFuture()
-                .then((response) => {
-                    this.futureStatuses = response.data.data;
+                .then((data) => {
+                    this.futureStatuses = data;
                 })
                 .catch((error) => {
                     this.loading = false;
@@ -155,8 +155,8 @@ export default {
             });
             ApiStatus
                 .fetchStopovers(tripIds)
-                .then((response) => {
-                    this.stopovers = this.stopovers.concat(response.data.data);
+                .then((data) => {
+                    this.stopovers = this.stopovers.concat(data);
                 })
                 .catch((error) => {
                     this.loading = false;
@@ -173,5 +173,7 @@ export default {
 </script>
 
 <style scoped>
-
+.accordion-button {
+    background: none;
+}
 </style>
