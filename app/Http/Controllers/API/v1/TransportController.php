@@ -123,8 +123,8 @@ class TransportController extends ResponseController
                 user:       auth()->user(),
                 business:   $validated['business'] ?? 0,
                 visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
-                body:       $validated['body'],
-                eventId:    $validated['eventId']
+                body:       $validated['body'] ?? null,
+                eventId:    $validated['eventId'] ?? null
             );
 
             $hafasTrip = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
