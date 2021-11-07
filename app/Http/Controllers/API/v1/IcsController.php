@@ -28,10 +28,10 @@ class IcsController extends ResponseController
     }
 
     public function revokeIcsToken(Request $request): JsonResponse {
-        $validated = $request->validate(['id' => ['required', 'exists:ics_tokens,id']]);
+        $validated = $request->validate(['tokenId' => ['required', 'exists:ics_tokens,id']]);
 
         try {
-            BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['id']);
+            BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['tokenId']);
             return $this->sendv1Response(null, 204);
         } catch (ModelNotFoundException) {
             return $this->sendError(null);
