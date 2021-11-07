@@ -146,7 +146,7 @@ export default {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                 })
                 .catch((error) => {
-                    this.apiErrorHandler(error)
+                    this.apiErrorHandler(error);
                 });
         },
         toggleShowUpload() {

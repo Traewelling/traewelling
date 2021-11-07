@@ -123,7 +123,7 @@ export default {
                 })
                 .catch((error) => {
                     this.statusesLoading = false;
-                    this.apiErrorHandler(error)
+                    this.apiErrorHandler(error);
                 });
         },
         fetchMore() {

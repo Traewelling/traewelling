@@ -334,7 +334,7 @@ export default {
                     window.URL.revokeObjectURL(url);
                 })
                 .catch((error) => {
-                    this.apiErrorHandler(error)
+                    this.apiErrorHandler(error);
                 });
         },
         fetchRecentDays(delta) {
@@ -379,7 +379,7 @@ export default {
         updatePurpose() {
             this.$refs.purpose.updateOptions({
                 labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
-                series: this.travelPurpose.map(x => x.count)
+                series: this.travelPurpose.map((x) => x.count)
             }, true);
         },
         updateCategories() {
@@ -420,7 +420,7 @@ export default {
                         return {
                             x: x.date,
                             y: x.duration
-                        }
+                        };
                     })
                 }, {
                     name: this.i18n.get("_.stats.trips"),

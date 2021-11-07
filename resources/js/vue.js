@@ -105,7 +105,7 @@ Vue.mixin({
             });
         }
     },
-})
+});
 
 new Vue({
     provide: () => {

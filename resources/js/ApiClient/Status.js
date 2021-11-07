@@ -2,7 +2,7 @@ import {deleteFromApi, getContent, postToApi, returnDataAsArray} from "./Helpers
 
 export default class Status {
     static get() {
-        return getContent(`/statuses`);
+        return getContent("/statuses");
     }
 
     static getById(id) {

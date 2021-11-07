@@ -111,7 +111,7 @@ export function putToApi(url, data) {
 export function deleteFromApi(url, data = null) {
     return new Promise(function (resolve, reject) {
         axios
-            .delete(url, {data: data})
+            .delete(url, {data})
             .then((result) => {
                 resolve(result.data.data);
             })

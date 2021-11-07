@@ -46,7 +46,7 @@ export default class Settings {
     }
 
     static revokeApiToken(tokenId) {
-        return deleteFromApi("/settings/token", {tokenId})
+        return deleteFromApi("/settings/token", {tokenId});
     }
 
     static revokeAllApiTokens() {

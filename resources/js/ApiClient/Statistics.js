@@ -26,6 +26,6 @@ export default class Statistics {
     }
 
     static getLeaderBoardMonth(month) {
-        return getContent(`/leaderboard/${month}`)
+        return getContent(`/leaderboard/${month}`);
     }
 }

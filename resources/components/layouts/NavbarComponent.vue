@@ -129,7 +129,7 @@ export default {
         fetchNotificationsCount() {
             Notifications.getCount()
                 .then((count) => {
-                    this.notificationsCount = count
+                    this.notificationsCount = count;
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
