@@ -107,14 +107,14 @@ export default {
                 body: "",
                 business: 0,
                 visibility: 0,
-                event: 0,
-        tweet: false,
-        toot: false,
-      },
-      travelReason: travelReason,
-      visibility: visibility,
-      result: null
-    };
+                eventId: null,
+                tweet: false,
+                toot: false,
+            },
+            travelReason: travelReason,
+            visibility: visibility,
+            result: null
+        };
   },
   props: {
     destination: null,

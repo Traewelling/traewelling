@@ -1,18 +1,8 @@
-import axios from "axios";
-import {catchError} from "./Helpers";
+import {getBody, getContent} from "./Helpers";
 
 export default class Dashboard {
     static getFuture() {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get('/dashboard/future')
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return getContent('/dashboard/future');
     }
 
     static get(global) {
@@ -20,28 +10,10 @@ export default class Dashboard {
     }
 
     static getDashboard() {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get('/dashboard')
-                .then((response) => {
-                    resolve(response.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return getBody('/dashboard');
     }
 
     static getGlobalDashboard() {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get('/dashboard/global')
-                .then((response) => {
-                    resolve(response.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return getContent('/dashboard/global');
     }
 }

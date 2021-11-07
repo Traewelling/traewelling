@@ -30,10 +30,10 @@ export function getContent(url, config = null) {
     });
 }
 
-export function getBody(url) {
+export function getBody(url, config = null) {
     return new Promise(function (resolve, reject) {
         axios
-            .get(url)
+            .get(url, config)
             .then((response) => {
                 resolve(response.data);
             })
@@ -75,6 +75,19 @@ export function postToApi(url, data) {
             .post(url, data)
             .then((result) => {
                 resolve(result.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
+export function postReturnRequest(url, data, config = null) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .post(url, data, config)
+            .then((result) => {
+                resolve(result);
             })
             .catch((error) => {
                 reject(catchError(error));
