@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -34,16 +33,10 @@ class TransportController extends ResponseController
      * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
      */
     public function departures(Request $request, string $name): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'when'       => ['nullable', 'date'],
-            'travelType' => ['nullable', Rule::in(TravelType::getList())]
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
-        }
-
-        $validated = $validator->validate();
+        $validated = $request->validate([
+                                            'when'       => ['nullable', 'date'],
+                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+                                        ]);
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
@@ -66,21 +59,17 @@ class TransportController extends ResponseController
     }
 
     public function getTrip(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'tripID'   => 'required',
-            'lineName' => 'required',
-            'start'    => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
-        }
+        $validated = $request->validate([
+                                            'tripId'   => 'required',
+                                            'lineName' => 'required',
+                                            'start'    => 'required'
+                                        ]);
 
         try {
             $trainTripResponse = TransportBackend::getTrainTrip(
-                $request->tripID,
-                $request->lineName,
-                $request->start
+                $validated['tripId'],
+                $validated['lineName'],
+                $validated['start']
             );
         } catch (StationNotOnTripException) {
             return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
@@ -90,22 +79,17 @@ class TransportController extends ResponseController
     }
 
     public function getNextStationByCoordinates(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
-            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
-            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
-        }
-        $validated = $validator->validate();
+        $validated = $request->validate([
+                                            'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
+                                            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
+                                            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
+                                        ]);
 
         try {
             $nearestStation = HafasController::getNearbyStations(
-                latitude: $validated['latitude'],
+                latitude:  $validated['latitude'],
                 longitude: $validated['longitude'],
-                results: $validated['limit'] ?? 1
+                results:   $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
             return $this->sendv1Error(__('messages.exception.generalHafas'), 503);
@@ -119,50 +103,47 @@ class TransportController extends ResponseController
     }
 
     public function create(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'body'        => ['nullable', 'max:280'],
-            'business'    => ['nullable', Rule::in(Business::getList())],
-            'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
-            'eventID'     => ['nullable', 'integer', 'exists:events,id'],
-            'tweet'       => ['nullable', 'boolean'],
-            'toot'        => ['nullable', 'boolean'],
-            'ibnr'        => ['nullable', 'boolean'],
-            'tripID'      => 'required',
-            'lineName'    => 'required',
-            'start'       => ['required', 'numeric'],
-            'destination' => ['required', 'numeric'],
-            'departure'   => ['required', 'date'],
-            'arrival'     => ['required', 'date'],
-        ]);
-        if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
-        }
+        $validated = $request->validate([
+                                            'body'        => ['nullable', 'max:280'],
+                                            'business'    => ['nullable', Rule::in(Business::getList())],
+                                            'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
+                                            'eventId'     => ['nullable', 'integer', 'exists:events,id'],
+                                            'tweet'       => ['nullable', 'boolean'],
+                                            'toot'        => ['nullable', 'boolean'],
+                                            'ibnr'        => ['nullable', 'boolean'],
+                                            'tripId'      => 'required',
+                                            'lineName'    => 'required',
+                                            'start'       => ['required', 'numeric'],
+                                            'destination' => ['required', 'numeric'],
+                                            'departure'   => ['required', 'date'],
+                                            'arrival'     => ['required', 'date'],
+                                        ]);
 
         try {
             $status = StatusBackend::createStatus(
-                user: auth()->user(),
-                business: $request->input('business') ?? 0,
-                visibility: $request->input('visibility') ?? StatusVisibility::PUBLIC,
-                body: $request->input('body'),
-                eventId: $request->input('eventID')
+                user:       auth()->user(),
+                business:   $validated['business'] ?? 0,
+                visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
+                body:       $validated['body'] ?? null,
+                eventId:    $validated['eventId'] ?? null
             );
 
-            $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
+            $hafasTrip = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
 
             $trainCheckinResponse = TransportBackend::createTrainCheckin(
-                status: $status,
-                trip: $hafasTrip,
-                entryStop: $request->input('start'),
-                exitStop: $request->input('destination'),
-                departure: Carbon::parse($request->input('departure')),
-                arrival: Carbon::parse($request->input('arrival')),
-                ibnr: $request->input('ibnr') ?? false
+                status:    $status,
+                trip:      $hafasTrip,
+                entryStop: $validated['start'],
+                exitStop:  $validated['destination'],
+                departure: Carbon::parse($validated['departure']),
+                arrival:   Carbon::parse($validated['arrival']),
+                ibnr:      $validated['ibnr'] ?? false
             );
 
-            if ($request->input('tweet') && auth()->user()?->socialProfile?->twitter_id != null) {
+            if ($validated['tweet'] && auth()->user()?->socialProfile?->twitter_id != null) {
                 TransportBackend::postTwitter($status);
             }
-            if ($request->input('toot') && auth()->user()?->socialProfile?->mastodon_id != null) {
+            if ($validated['toot'] && auth()->user()?->socialProfile?->mastodon_id != null) {
                 TransportBackend::postMastodon($status);
             }
 
