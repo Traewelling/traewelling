@@ -27,10 +27,9 @@ use InvalidArgumentException;
 class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
-        $user     = Auth::user();
-        $statuses = DashboardController::getPrivateDashboard($user);
+        $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || $user->follows->count() == 0) {
+        if ($statuses->isEmpty() || auth()->user()->follows->count() == 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                                  ->with('checkin-success', Session::get('checkin-success'));
@@ -43,8 +42,8 @@ class FrontendStatusController extends Controller
         }
         return view('dashboard', [
             'statuses'    => $statuses,
-            'currentUser' => $user,
-            'latest'      => TransportController::getLatestArrivals($user),
+            'currentUser' => auth()->user(),
+            'latest'      => TransportController::getLatestArrivals(auth()->user()),
             'future'      => StatusBackend::getFutureCheckins()
         ]);
     }
