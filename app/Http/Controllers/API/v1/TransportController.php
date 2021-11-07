@@ -180,7 +180,7 @@ class TransportController extends ResponseController
         try {
             $trainStation = HafasController::getStations(query: $stationName, results: 1)->first();
             if ($trainStation === null) {
-                return $this->sendv1Error("Your query matches no station", 404);
+                return $this->sendv1Error("Your query matches no station");
             }
 
             $station = HomeController::setHome(user: auth()->user(), trainStation: $trainStation);
