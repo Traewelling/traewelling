@@ -90,6 +90,20 @@ Vue.mixin({
                 this.notyf.error(this.i18n.get("_.messages.exception.general"))
             }
         },
+        fetchMoreData(next) {
+            return new Promise(function (resolve) {
+                let returnObject = {};
+                axios.get(next)
+                    .then((response) => {
+                        returnObject.data  = response.data.data;
+                        returnObject.links = response.data.links;
+                        resolve(returnObject);
+                    })
+                    .catch((error) => {
+                        this.apiErrorHandler(error);
+                    });
+            });
+        }
     },
 })
 

@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Status from "../Status";
 import moment from "moment";
 import {StatusModel} from "../../js/APImodels";
@@ -140,15 +139,11 @@ export default {
                 });
         },
         fetchMore() {
-            axios
-                .get(this.links.next)
-                .then((response) => {
-                    this.statuses = this.statuses.concat(response.data.data);
-                    this.links    = response.data.links;
-                    this.fetchStopovers(response.data.data);
-                })
-                .catch((error) => {
-                    this.apiErrorHandler(error);
+            this.fetchMoreData(this.links.next)
+                .then((data) => {
+                    this.statuses = this.statuses.concat(data.data);
+                    this.links    = data.links;
+                    this.fetchStopovers(data.data);
                 });
         },
         fetchStopovers(statuses) {
