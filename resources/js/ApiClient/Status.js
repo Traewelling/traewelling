@@ -1,44 +1,16 @@
-import axios from "axios";
-import {catchError} from "./Helpers";
+import {returnDataAsArray, returnDataData, returnVoid} from "./Helpers";
 
 export default class Status {
     static get() {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/statuses`)
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((errors) => {
-                    reject(catchError(errors));
-                });
-        });
+        return returnDataData(`/statuses`);
     }
 
     static getById(id) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/statuses/${id}`)
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((errors) => {
-                    reject(catchError(errors));
-                });
-        });
+        return returnDataData(`/statuses/${id}`);
     }
 
     static fetchPolyLine(id) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/polyline/${id}`)
-                .then((response) => {
-                    resolve([response.data.data]);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnDataAsArray(`/polyline/${id}`);
     }
 
     /**
@@ -47,80 +19,22 @@ export default class Status {
      * @returns {Promise<unknown>}
      */
     static fetchStopovers(tripIds) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/stopovers/${tripIds}`)
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnDataData(`/stopovers/${tripIds}`);
     }
 
     static fetchLikes(statusId) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/statuses/${statusId}/likedby`)
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnDataData(`/statuses/${statusId}/likedby`);
     }
 
     static like(statusId) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .post(`/like/${statusId}`)
-                .then(() => {
-                    resolve();
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnVoid(`/like/${statusId}`);
     }
 
     static dislike(statusId) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .delete(`/like/${statusId}`)
-                .then(() => {
-                    resolve();
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnVoid(`/like/${statusId}`);
     }
 
     static delete(statusId) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .delete(`/statuses/${statusId}`)
-                .then(() => {
-                    resolve()
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
-    }
-
-    static dummy(statusId) {
-        return new Promise(function (resolve, reject) {
-            axios
-                .get(`/statuses/${statusId}/likedby`)
-                .then((response) => {
-                    resolve(response.data.data);
-                })
-                .catch((error) => {
-                    reject(catchError(error));
-                });
-        });
+        return returnVoid(`/statuses/${statusId}`);
     }
 }

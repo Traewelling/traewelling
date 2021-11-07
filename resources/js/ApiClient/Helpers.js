@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export function catchError(error) {
     let errors   = [];
     let response = {};
@@ -13,4 +15,44 @@ export function catchError(error) {
     response['errors'] = errors;
 
     return response;
+}
+
+export function returnDataData(url) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .get(url)
+            .then((response) => {
+                resolve(response.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
+export function returnDataAsArray(url) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .get(url)
+            .then((response) => {
+                resolve([response.data.data]);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
+export function returnVoid(url) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .post(url)
+            .then(() => {
+                resolve();
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+
 }
