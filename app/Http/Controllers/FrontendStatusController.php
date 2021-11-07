@@ -41,18 +41,17 @@ class FrontendStatusController extends Controller
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', [
-            'statuses'    => $statuses,
-            'latest'      => TransportController::getLatestArrivals(auth()->user()),
-            'future'      => StatusBackend::getFutureCheckins()
+            'statuses' => $statuses,
+            'latest'   => TransportController::getLatestArrivals(auth()->user()),
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
-            'statuses'    => DashboardController::getGlobalDashboard(Auth::user()),
-            'currentUser' => Auth::user(),
-            'latest'      => TransportController::getLatestArrivals(Auth::user()),
-            'future'      => StatusBackend::getFutureCheckins()
+            'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
+            'latest'   => TransportController::getLatestArrivals(Auth::user()),
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 
