@@ -1,4 +1,4 @@
-import {returnDataAsArray, returnDataData, returnVoid} from "./Helpers";
+import {postToApi, returnDataAsArray, returnDataData} from "./Helpers";
 
 export default class Status {
     static get() {
@@ -27,14 +27,14 @@ export default class Status {
     }
 
     static like(statusId) {
-        return returnVoid(`/like/${statusId}`);
+        return postToApi(`/like/${statusId}`);
     }
 
     static dislike(statusId) {
-        return returnVoid(`/like/${statusId}`);
+        return deleteFromApi(`/like/${statusId}`);
     }
 
     static delete(statusId) {
-        return returnVoid(`/statuses/${statusId}`);
+        return deleteFromApi(`/statuses/${statusId}`);
     }
 }

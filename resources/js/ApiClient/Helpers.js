@@ -17,12 +17,25 @@ export function catchError(error) {
     return response;
 }
 
-export function returnDataData(url) {
+export function returnDataData(url, config = null) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .get(url, config)
+            .then((response) => {
+                resolve(response.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
+export function returnData(url) {
     return new Promise(function (resolve, reject) {
         axios
             .get(url)
             .then((response) => {
-                resolve(response.data.data);
+                resolve(response.data);
             })
             .catch((error) => {
                 reject(catchError(error));
@@ -54,5 +67,30 @@ export function returnVoid(url) {
                 reject(catchError(error));
             });
     });
+}
 
+export function postToApi(url, data) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .post(url, data)
+            .then((result) => {
+                resolve(result.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
+export function deleteFromApi(url, data) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .delete(url, {data: data})
+            .then((result) => {
+                resolve(result.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
 }
