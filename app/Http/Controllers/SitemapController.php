@@ -88,7 +88,7 @@ class SitemapController extends Controller
                       ->get();
 
         foreach ($profiles as $profile) {
-            $url = Url::create(route('account.show', ['username' => $profile->username]))
+            $url = Url::create(route('profile', ['username' => $profile->username]))
                       ->setPriority(0.5)
                       ->setLastModificationDate(Carbon::parse($profile->last_mod))
                       ->setChangeFrequency('weekly');
