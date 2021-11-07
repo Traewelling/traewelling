@@ -1,12 +1,12 @@
-import {deleteFromApi, postToApi, returnData, returnDataData} from "./Helpers";
+import {deleteFromApi, getBody, getContent, postToApi} from "./Helpers";
 
 export default class User {
     static getByUsername(username) {
-        return returnDataData(`/user/${username}`);
+        return getContent(`/user/${username}`);
     }
 
     static getStatusesForUser(username) {
-        return returnData(`/user/${username}/statuses`);
+        return getBody(`/user/${username}/statuses`);
     }
 
     static follow(userId) {

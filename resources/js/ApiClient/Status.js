@@ -1,12 +1,12 @@
-import {deleteFromApi, postToApi, returnDataAsArray, returnDataData} from "./Helpers";
+import {deleteFromApi, getContent, postToApi, returnDataAsArray} from "./Helpers";
 
 export default class Status {
     static get() {
-        return returnDataData(`/statuses`);
+        return getContent(`/statuses`);
     }
 
     static getById(id) {
-        return returnDataData(`/statuses/${id}`);
+        return getContent(`/statuses/${id}`);
     }
 
     static fetchPolyLine(id) {
@@ -19,11 +19,11 @@ export default class Status {
      * @returns {Promise<unknown>}
      */
     static fetchStopovers(tripIds) {
-        return returnDataData(`/stopovers/${tripIds}`);
+        return getContent(`/stopovers/${tripIds}`);
     }
 
     static fetchLikes(statusId) {
-        return returnDataData(`/statuses/${statusId}/likedby`);
+        return getContent(`/statuses/${statusId}/likedby`);
     }
 
     static like(statusId) {

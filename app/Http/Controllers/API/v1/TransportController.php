@@ -66,7 +66,7 @@ class TransportController extends ResponseController
 
     public function getTrip(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'tripID'   => 'required',
+            'tripId'   => 'required',
             'lineName' => 'required',
             'start'    => 'required'
         ]);
@@ -77,7 +77,7 @@ class TransportController extends ResponseController
 
         try {
             $trainTripResponse = TransportBackend::getTrainTrip(
-                $request->tripID,
+                $request->tripId,
                 $request->lineName,
                 $request->start
             );

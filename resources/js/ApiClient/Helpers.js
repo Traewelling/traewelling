@@ -17,7 +17,7 @@ export function catchError(error) {
     return response;
 }
 
-export function returnDataData(url, config = null) {
+export function getContent(url, config = null) {
     return new Promise(function (resolve, reject) {
         axios
             .get(url, config)
@@ -30,7 +30,7 @@ export function returnDataData(url, config = null) {
     });
 }
 
-export function returnData(url) {
+export function getBody(url) {
     return new Promise(function (resolve, reject) {
         axios
             .get(url)
