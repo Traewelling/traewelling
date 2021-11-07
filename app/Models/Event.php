@@ -19,6 +19,10 @@ class Event extends Model
         'end'          => 'datetime',
     ];
 
+    /**
+     * @return HasOne
+     * @todo rename to ->trainStation when variable is renamed in database to train_station_id
+     */
     public function station(): HasOne {
         return $this->hasOne(TrainStation::class, 'id', 'trainstation');
     }
@@ -42,7 +46,7 @@ class Event extends Model
 
     /**
      * @return TrainStation
-     * @deprecated Use ->trainstation relationship instead
+     * @deprecated Use ->station relationship instead
      */
     public function getTrainstation(): TrainStation {
         return TrainStation::where("id", "=", $this->trainstation)->first() ?? new TrainStation();
