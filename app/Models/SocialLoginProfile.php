@@ -15,16 +15,14 @@ class SocialLoginProfile extends Model
     ];
     protected $hidden   = ['twitter_token', 'twitter_tokenSecret', 'mastodon_server', 'mastodon_token'];
     protected $casts    = [
+        'id'                  => 'integer',
+        'user_id'             => 'integer',
+        'twitter_id'          => 'integer',
+        'mastodon_id'         => 'integer',
+        'mastodon_server'     => 'integer',
         'twitter_token'       => 'encrypted',
         'twitter_tokenSecret' => 'encrypted',
         'mastodon_token'      => 'encrypted',
-    ];
-    protected       $casts       = [
-        'id'              => 'integer',
-        'user_id'         => 'integer',
-        'twitter_id'      => 'integer',
-        'mastodon_id'     => 'integer',
-        'mastodon_server' => 'integer',
     ];
 
     public function user(): BelongsTo {
