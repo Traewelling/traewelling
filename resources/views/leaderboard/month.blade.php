@@ -46,12 +46,12 @@
                         <div class="card-header">{{ __('leaderboard.rank') }} {{$loop->index + 1}}</div>
                         <div class="card-body text-center">
                             <div class="image-box pe-0 d-lg-flex">
-                                <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                <a href="{{ route('profile', ['username' => $place->user->username]) }}">
                                     <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
                                          alt="{{$place->user->username}}" style="width: 50%;">
                                 </a>
                             </div>
-                            <a href="{{ route('account.show', ['username' => $place->user->username]) }}"
+                            <a href="{{ route('profile', ['username' => $place->user->username]) }}"
                                style="font-size: 1.3em;">
                                 {{$place->user->username}}
                             </a>
@@ -100,14 +100,14 @@
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>
                                             <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                                <a href="{{ route('profile', ['username' => $place->user->username]) }}">
                                                     <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
                                                          alt="{{$place->user->username}}">
                                                 </a>
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('account.show', ['username' => $place->user->username]) }}">
+                                            <a href="{{ route('profile', ['username' => $place->user->username]) }}">
                                                 {{ $place->user->username }}
                                             </a>
                                         </td>

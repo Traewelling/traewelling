@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -39,8 +39,16 @@ abstract class LeaderboardController extends Controller
 
         $query = DB::table('statuses')
                    ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                   ->join('users', 'statuses.user_id', '=', 'users.id')
                    ->where('train_checkins.departure', '>=', $since->toIso8601String())
                    ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                   ->where(function(Builder $query) {
+                       $query->where('users.private_profile', 0);
+                       if (auth()->check()) {
+                           $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
+                                 ->orWhere('users.id', auth()->user()->id);
+                       }
+                   })
                    ->groupBy('statuses.user_id')
                    ->select([
                                 'statuses.user_id',
@@ -64,8 +72,6 @@ abstract class LeaderboardController extends Controller
         //Fetch user models in ONE query and map it to the collection
         $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
 
-        // ToDo: Levin, das Leaderboard gibt jetzt Schnelligkeit und Distance in meter aus. Bitte in vue anpassen.
-        // ToDo: Probably re-sort for new distance-calculation, etc.
         return $data->map(function($row) use ($userCache) {
             $row->user = $userCache->where('id', $row->user_id)->first();
             return $row;
@@ -73,33 +79,40 @@ abstract class LeaderboardController extends Controller
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        $data = Status::with(['trainCheckin', 'user'])
-                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                      ->where(
-                          'train_checkins.departure',
-                          '>=',
-                          $date->clone()->firstOfMonth()->toIso8601String()
-                      )
-                      ->where(
-                          'train_checkins.departure',
-                          '<=',
-                          $date->clone()->lastOfMonth()->endOfDay()->toIso8601String()
-                      )
-                      ->select([
-                                   'statuses.user_id',
-                                   DB::raw('SUM(train_checkins.points) AS points'),
-                                   DB::raw('SUM(train_checkins.distance) AS distance'),
-                                   DB::raw(self::getDurationSelector() . ' AS duration'),
-                                   DB::raw('SUM(train_checkins.distance) / (' . self::getDurationSelector() . ' / 60) AS speed'),
-                               ])
-                      ->groupBy('user_id')
-                      ->orderByDesc('points')
-                      ->get();
+        $data = DB::table('statuses')
+                  ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                  ->join('users', 'statuses.user_id', '=', 'users.id')
+                  ->where(
+                      'train_checkins.departure',
+                      '>=',
+                      $date->clone()->firstOfMonth()->toIso8601String()
+                  )
+                  ->where(
+                      'train_checkins.departure',
+                      '<=',
+                      $date->clone()->lastOfMonth()->endOfDay()->toIso8601String()
+                  )
+                  ->where(function(Builder $query) {
+                      $query->where('users.private_profile', 0);
+                      if (auth()->check()) {
+                          $query->orWhereIn('users.id', auth()->user()->follows->pluck('id'))
+                                ->orWhere('users.id', auth()->user()->id);
+                      }
+                  })
+                  ->select([
+                               'statuses.user_id',
+                               DB::raw('SUM(train_checkins.points) AS points'),
+                               DB::raw('SUM(train_checkins.distance) AS distance'),
+                               DB::raw(self::getDurationSelector() . ' AS duration'),
+                               DB::raw('SUM(train_checkins.distance) / (' . self::getDurationSelector() . ' / 60) AS speed'),
+                           ])
+                  ->groupBy('user_id')
+                  ->orderByDesc('points')
+                  ->get();
 
         //Fetch user models in ONE query and map it to the collection
         $userCache = User::whereIn('id', $data->pluck('user_id'))->get();
 
-        // ToDo: Levin, das Leaderboard gibt jetzt Schnelligkeit und Distance in meter aus. Bitte in vue anpassen.
         return $data->map(function($row) use ($userCache) {
             $row->user = $userCache->where('id', $row->user_id)->first();
             return $row;
