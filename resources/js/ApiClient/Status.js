@@ -1,4 +1,4 @@
-import {postToApi, returnDataAsArray, returnDataData} from "./Helpers";
+import {deleteFromApi, postToApi, returnDataAsArray, returnDataData} from "./Helpers";
 
 export default class Status {
     static get() {

@@ -148,7 +148,7 @@ export default {
                     this.fetchStopovers(response.data.data);
                 })
                 .catch((error) => {
-                    this.loading = false;
+                    this.apiErrorHandler(error);
                 });
         },
         fetchStopovers(statuses) {

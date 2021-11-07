@@ -82,6 +82,19 @@ export function postToApi(url, data) {
     });
 }
 
+export function putToApi(url, data) {
+    return new Promise(function (resolve, reject) {
+        axios
+            .put(url, data)
+            .then((result) => {
+                resolve(result.data.data);
+            })
+            .catch((error) => {
+                reject(catchError(error));
+            });
+    });
+}
+
 export function deleteFromApi(url, data) {
     return new Promise(function (resolve, reject) {
         axios
