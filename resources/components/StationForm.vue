@@ -10,13 +10,6 @@
                 </span>
             </div>
             <div class="card-body">
-                <!-- ToDo: Add this to a notification bubble-thingy console.error() -->
-                <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
-                    {{ i18n.get('_.stationboard.position-unavailable') }}
-                    <button aria-label="Close" class="close" data-dismiss="alert" type="button">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <form autocomplete="off" v-on:submit.prevent="submitStation">
                     <div id="station-autocomplete-container">
                         <input id="autoComplete" v-model="station" class="form-control w-100 mb-3" type="text"/>
@@ -125,6 +118,7 @@
 import moment from "moment";
 import axios from "axios";
 import autoComplete from "@tarekraafat/autocomplete.js";
+import Checkin from "../js/ApiClient/Checkin";
 
 export default {
     name: "StationForm",
@@ -189,11 +183,7 @@ export default {
                         const source = await axios.get(`/trains/station/autocomplete/${query.replace("/", " ")}`);
                         return await source.data.data;
                     } catch (error) {
-                        if (error.response) {
-                            this.notyf.error(error.response.data.error.message);
-                        } else {
-                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                        }
+                        this.apiErrorHandler(error);
                     }
                 },
                 keys: ['name'],
@@ -219,18 +209,13 @@ export default {
     },
     methods: {
         fetchData() {
-            axios
-                .get("/trains/station/history")
-                .then((response) => {
-                    this.history = response.data.data;
+            Checkin
+                .getHistory()
+                .then((data) => {
+                    this.history = data;
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         submitStation(travelType = null, time = this.when) {
@@ -254,39 +239,22 @@ export default {
             }
         },
         fetchNearbyStation(position) {
-            axios
-                .get("/trains/station/nearby", {
-                    params: {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    }
-                })
-                .then((response) => {
-                    this.station = response.data.data.name;
+            Checkin
+                .getNearbyStations(position.coords.latitude, position.coords.longitude)
+                .then((data) => {
+                    this.station = data.name;
                     this.submitStation();
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         getGeoLocation() {
             if (navigator.geolocation) {
-                this.error   = null;
-                this.loading = true;
                 navigator.geolocation.getCurrentPosition((position) => {
                     this.fetchNearbyStation(position);
-                }, (error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
-                    this.loading = false
+                }, () => {
+                    this.notyf.error(this.i18n.get("_.stationboard.position-unavailable"));
                 });
             }
         }

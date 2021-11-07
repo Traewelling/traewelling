@@ -12,7 +12,7 @@ import Stationboard from "../components/views/Stationboard";
 import Trip from "../components/views/Trip";
 import Index from "../components/views/Index";
 import About from "../components/views/About";
-import Charts from "../components/views/Charts";
+import Charts from "../components/views/Statistics";
 import SearchView from "../components/views/SearchView";
 import SettingsView from "../components/views/Settings";
 
