@@ -10,6 +10,10 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\Social\MastodonController;
+use App\Http\Controllers\Backend\Social\TwitterController;
+use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -51,10 +55,10 @@ class TransportController extends ResponseController
         }
 
         return $this->sendv1Response(
-            data: $trainStationboardResponse['departures'],
+            data:       $trainStationboardResponse['departures'],
             additional: ["meta" => ['station' => $trainStationboardResponse['station'],
                                     'times'   => $trainStationboardResponse['times'],
-                ]]
+                        ]]
         );
     }
 
@@ -130,7 +134,7 @@ class TransportController extends ResponseController
 
             $hafasTrip = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
 
-            $trainCheckinResponse = TransportBackend::createTrainCheckin(
+            $trainCheckinResponse = TrainCheckinController::createTrainCheckin(
                 status:    $status,
                 trip:      $hafasTrip,
                 entryStop: $validated['start'],
@@ -141,19 +145,19 @@ class TransportController extends ResponseController
             );
 
             if ($validated['tweet'] && auth()->user()?->socialProfile?->twitter_id != null) {
-                TransportBackend::postTwitter($status);
+                TwitterController::postStatus($status);
             }
             if ($validated['toot'] && auth()->user()?->socialProfile?->mastodon_id != null) {
-                TransportBackend::postMastodon($status);
+                MastodonController::postStatus($status);
             }
 
             return $this->sendv1Response($trainCheckinResponse);
         } catch (CheckInCollisionException $e) {
             $status?->delete();
             return $this->sendv1Error([
-                                        'status_id' => $e->getCollision()->status_id,
-                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
-                                    ], 409);
+                                          'status_id' => $e->getCollision()->status_id,
+                                          'lineName'  => $e->getCollision()->HafasTrip->first()->linename
+                                      ], 409);
 
         } catch (StationNotOnTripException) {
             $status?->delete();
@@ -174,16 +178,21 @@ class TransportController extends ResponseController
      */
     public function setHome(string $stationName): JsonResponse {
         try {
-            $station = TransportBackend::setTrainHome(user: auth()->user(), stationName: $stationName);
+            $trainStation = HafasController::getStations(query: $stationName, results: 1)->first();
+            if ($trainStation === null) {
+                return $this->sendv1Error("Your query matches no station", 404);
+            }
+
+            $station = HomeController::setHome(user: auth()->user(), trainStation: $trainStation);
+
+            return $this->sendv1Response(
+                data: new TrainStationResource($station),
+            );
         } catch (HafasException) {
             return $this->sendv1Error("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
             return $this->sendv1Error("Your query matches no station", 404);
         }
-
-        return $this->sendv1Response(
-            data: new TrainStationResource($station),
-        );
     }
 
     /**

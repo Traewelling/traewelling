@@ -204,7 +204,7 @@ class TransportController extends ResponseController
         return $this->sendResponse($home);
     }
 
-    public function setHome(Request $request) {
+    public function setHome(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'ibnr' => 'required'
         ]);
