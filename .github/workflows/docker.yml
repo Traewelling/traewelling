@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - develop
-      - main
+      - release
     tags:
       - v*
 
@@ -54,10 +54,8 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
+          [ "$VERSION" == "release" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-          docker tag $IMAGE_ID:$VERSION $IMAGE_ID:${{ github.sha }}
-          docker push $IMAGE_ID:${{ github.sha }}

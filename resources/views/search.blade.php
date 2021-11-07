@@ -17,7 +17,7 @@
                     <div class="card status mt-3">
                         <div class="card-body row">
                             <div class="col-2 image-box search-image-box d-lg-flex">
-                                <a href="{{ route('account.show', ['username' => $user->username]) }}">
+                                <a href="{{ route('profile', ['username' => $user->username]) }}">
                                     <img src="{{route('account.showProfilePicture', ['username' => $user->username])}}"
                                          alt="Profile picture"/>
                                 </a>
@@ -27,7 +27,7 @@
                                 <span class="float-end mt-3">
                                     @include('includes.follow-button')
                                 </span>
-                                <a href="{{ route('account.show', ['username' => $user->username]) }}"
+                                <a href="{{ route('profile', ['username' => $user->username]) }}"
                                    style="font-size: calc(1.26rem + .12vw)">
                                     {{ $user->name }}
                                     @if($user->private_profile)

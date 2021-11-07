@@ -6,23 +6,33 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
+use App\Models\MastodonServer;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
+use App\Models\TrainStation;
 use App\Models\User;
+use App\Notifications\MastodonNotSent;
+use App\Notifications\TwitterNotSent;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
@@ -243,6 +253,7 @@ class TransportController extends Controller
      * @throws CheckInCollisionException
      * @throws HafasException
      * @throws StationNotOnTripException
+     * @throws TrainCheckinAlreadyExistException
      * @deprecated replaced by createTrainCheckin()
      */
     #[ArrayShape([
@@ -342,18 +353,26 @@ class TransportController extends Controller
             $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
         );
 
-        $trainCheckin = TrainCheckin::create([
-                                                 'status_id'   => $status->id,
-                                                 'user_id'     => $user->id,
-                                                 'trip_id'     => $tripId,
-                                                 'origin'      => $originStation->ibnr,
-                                                 'destination' => $destinationStation->ibnr,
-                                                 'distance'    => $distanceInMeters,
-                                                 'points'      => $points,
-                                                 'departure'   => $plannedDeparture,
-                                                 'arrival'     => $plannedArrival
-                                             ]);
-
+        try {
+            $trainCheckin = TrainCheckin::create([
+                                                     'status_id'   => $status->id,
+                                                     'user_id'     => $user->id,
+                                                     'trip_id'     => $tripId,
+                                                     'origin'      => $originStation->ibnr,
+                                                     'destination' => $destinationStation->ibnr,
+                                                     'distance'    => $distanceInMeters,
+                                                     'points'      => $points,
+                                                     'departure'   => $plannedDeparture,
+                                                     'arrival'     => $plannedArrival
+                                                 ]);
+        } catch (QueryException $exception) {
+            $errorCode = $exception->errorInfo[1];
+            if ($errorCode == 1062) {
+                //duplicate entry
+                $status->delete();
+                throw new TrainCheckinAlreadyExistException();
+            }
+        }
         $user->load(['statuses']);
 
         // Let's connect our statuses and the events
@@ -371,10 +390,10 @@ class TransportController extends Controller
         }
 
         if (isset($tootCheck) && $tootCheck) {
-            MastodonController::postStatus($status);
+            self::postMastodon($status);
         }
         if (isset($tweetCheck) && $tweetCheck) {
-            TwitterController::postStatus($status);
+            self::postTwitter($status);
         }
 
         // check for other people on this train
@@ -407,7 +426,7 @@ class TransportController extends Controller
      * @return Collection
      * @see https://stackoverflow.com/questions/53697172/laravel-eloquent-query-to-check-overlapping-start-and-end-datetime-fields/53697498
      */
-    public static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
+    private static function getOverlappingCheckIns(User $user, Carbon $start, Carbon $end): Collection {
         //increase the tolerance for start and end of collisions
         $start = $start->clone()->addMinutes(10);
         $end   = $end->clone()->subMinutes(10);
@@ -438,6 +457,158 @@ class TransportController extends Controller
                        $arrival->isBefore($start)
                    );
         });
+    }
+
+    /**
+     * @param Status $status
+     */
+    public static function postMastodon(Status $status): void {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->mastodon_server === null) {
+            return;
+        }
+
+        try {
+            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
+            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
+            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+        } catch (RequestException $e) {
+            $status->user->notify(new MastodonNotSent($e->getResponse()->getStatusCode(), $status));
+        } catch (Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    /**
+     * @param Status $status
+     */
+    public static function postTwitter(Status $status): void {
+        if (config('trwl.post_social') !== true) {
+            return;
+        }
+        if ($status->user->socialProfile->twitter_id === null) {
+            return;
+        }
+
+        try {
+            $connection = TwitterController::getApi($status->user);
+            #dbl only works on Twitter.
+            $socialText = $status->socialText;
+            if ($status->user->always_dbl) {
+                $socialText .= "#dbl ";
+            }
+            $socialText .= ' ' . url("/status/{$status->id}");
+            $connection->post(
+                "statuses/update",
+                [
+                    "status" => $socialText,
+                    'lat'    => $status->trainCheckin->Origin->latitude,
+                    'lon'    => $status->trainCheckin->Origin->longitude
+                ]
+            );
+
+            if ($connection->getLastHttpCode() != 200) {
+                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
+            }
+        } catch (Exception $exception) {
+            Log::error($exception);
+            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+            // However, we still want to continue if it explodes, thus why not catch exceptions here.
+        }
+    }
+
+    /**
+     * @throws StationNotOnTripException
+     * @throws CheckInCollisionException
+     * @throws ModelNotFoundException
+     * @throws TrainCheckinAlreadyExistException
+     * @api v1
+     */
+    public static function createTrainCheckin(
+        Status    $status,
+        HafasTrip $trip,
+        int       $entryStop,
+        int       $exitStop,
+        Carbon    $departure = null,
+        Carbon    $arrival = null,
+        bool      $ibnr = false
+    ): array {
+        $trip->load('stopoversNEW');
+
+        if (!$ibnr) {
+            $firstStop = $trip->stopoversNEW->where('train_station_id', $entryStop)
+                                            ->where('departure_planned', $departure)->first();
+
+            $lastStop = $trip->stopoversNEW->where('train_station_id', $exitStop)
+                                           ->where('arrival_planned', $arrival)->first();
+        } else {
+            $firstStop = $trip->stopoversNEW->where('trainStation.ibnr', $entryStop)
+                                            ->where('departure_planned', $departure)->first();
+
+            $lastStop = $trip->stopoversNEW->where('trainStation.ibnr', $exitStop)
+                                           ->where('arrival_planned', $arrival)->first();
+        }
+
+        if (empty($firstStop) || empty($lastStop)) {
+            throw new StationNotOnTripException();
+        }
+
+        $overlapping = self::getOverlappingCheckIns(
+            user:  Auth::user(),
+            start: $firstStop->departure,
+            end:   $lastStop->arrival
+        );
+        if ($overlapping->count() > 0) {
+            throw new CheckInCollisionException($overlapping->first());
+        }
+
+        $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
+
+        $points = PointsCalculationController::calculatePoints(
+            distanceInMeter: $distance,
+            category:        $trip->category,
+            departure:       $firstStop->departure,
+            arrival:         $lastStop->arrival
+        );
+        try {
+            $trainCheckin = TrainCheckin::create([
+                                                     'status_id'   => $status->id,
+                                                     'user_id'     => auth()->user()->id,
+                                                     'trip_id'     => $trip->trip_id,
+                                                     'origin'      => $firstStop->trainStation->ibnr,
+                                                     'destination' => $lastStop->trainStation->ibnr,
+                                                     'distance'    => $distance,
+                                                     'points'      => $points,
+                                                     'departure'   => $firstStop->departure_planned,
+                                                     'arrival'     => $lastStop->arrival_planned
+                                                 ]);
+        } catch (QueryException $exception) {
+            $errorCode = $exception->errorInfo[1];
+            if ($errorCode == 1062) {
+                //duplicate entry
+                $status->delete();
+                throw new TrainCheckinAlreadyExistException();
+            }
+        }
+
+        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+            if ($otherStatus?->user) {
+                $otherStatus->user->notify(new UserJoinedConnection(
+                                               statusId:    $status->id,
+                                               linename:    $trip->linename,
+                                               origin:      $firstStop->name,
+                                               destination: $lastStop->name
+                                           ));
+            }
+        }
+
+        return [
+            'status'               => new StatusResource($status),
+            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
+        ];
     }
 
     /**
@@ -476,5 +647,25 @@ class TransportController extends Controller
             ->map(function($trainStations) {
                 return $trainStations->first();
             })->take($maxCount);
+    }
+
+    /**
+     * @param User   $user
+     * @param string $stationName
+     *
+     * @return TrainStation
+     * @throws HafasException
+     * @api v1
+     */
+    public static function setTrainHome(User $user, string $stationName): TrainStation {
+        $trainStation = HafasController::getStations(query: $stationName)->first();
+        if ($trainStation == null) {
+            throw new ModelNotFoundException;
+        }
+
+        $user->update([
+                          'home_id' => $trainStation->id
+                      ]);
+        return $trainStation;
     }
 }

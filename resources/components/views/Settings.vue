@@ -58,6 +58,7 @@ import myUpload from "vue-image-crop-upload";
 import ProfileSettings from "../Settings/ProfileSettings";
 import AccountSettings from "../Settings/AccountSettings";
 import ConnectivitySettings from "../Settings/ConnectivitySettings";
+import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "Settings",
@@ -81,18 +82,12 @@ export default {
     },
     methods: {
         fetchProfileSettings() {
-            axios
-                .get("/settings/profile")
-                .then((response) => {
-                    this.userProfileSettings = response.data.data;
+            Settings.getProfileSettings()
+                .then((data) => {
+                    this.userProfileSettings = data;
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
 
         },

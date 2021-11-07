@@ -107,6 +107,7 @@ import moment from "moment";
 import {travelImages} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import Checkin from "../../js/ApiClient/Checkin";
 
 export default {
     name: "Stationboard",
@@ -140,29 +141,20 @@ export default {
     },
     methods: {
         fetchData() {
-            this.loading         = true;
-            this.station         = null;
-            const encodedStation = this.$route.query.station.replace("/", " ");
-            let query            = new URLSearchParams({
-                when: this.$route.query.when ?? "",
-                travelType: this.$route.query.travelType ?? ""
-            });
-            axios
-                .get(`/trains/station/${encodedStation}/departures?${query.toString()}`)
-                .then((result) => {
-                    this.station    = result.data.meta.station;
-                    this.times      = result.data.meta.times;
-                    this.departures = result.data.data;
-                    this.loading    = false;
+            this.loading = true;
+            this.station = null;
 
+            Checkin
+                .getDepartures(this.$route.query.station, this.$route.query.when, this.$route.query.travelType)
+                .then((data) => {
+                    this.station    = data.meta.station;
+                    this.times      = data.meta.times;
+                    this.departures = data.data;
+                    this.loading    = false;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         goToTrip(departure) {
@@ -171,7 +163,7 @@ export default {
             }
             this.$router.push({
                 name: "trains.trip", query: {
-                    tripID: departure.tripId,
+                    tripId: departure.tripId,
                     lineName: departure.line.name ?? departure.line.fahrtNr,
                     start: departure.station.id,
                     departure: departure.plannedWhen
@@ -182,20 +174,13 @@ export default {
             this.$refs.confirmHomeModal.show();
         },
         setHome() {
-            axios
-                .put(`/trains/station/${this.station.name.replace("/", " ")}/home`)
-                .then((result) => {
-                    this.result = result.data.data;
-                    this.$auth.fetch();
-                    this.notyf.success(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
-                })
+            Checkin.saveHome((data) => {
+                this.result = data;
+                this.$auth.fetch();
+                this.notyf.success(this.i18n.choice("_.user.home-set", 1, {"station": this.result.name}));
+            })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         }
     }

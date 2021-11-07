@@ -372,7 +372,7 @@
     "settings.request.accept-success": "Folgen-Anfrage erfolgreich akzeptiert.",
     "settings.request.reject-success": "Folgen-Anfrage erfolgreich abgelehnt.",
     "settings.language.set": "Sprache ändern",
-    "settings.change": "Ändern",
+    "generic.change": "Ändern",
     "sr.dropdown.toggle": "Dropdown ein- und ausblenden",
     "settings.visibility": "Sichtbarkeit",
     "settings.visibility.default": "CheckIns: Standardsichtbarkeit",

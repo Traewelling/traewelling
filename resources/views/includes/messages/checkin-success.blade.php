@@ -19,7 +19,7 @@
                             <tr>
                                 <td>
                                     <i class="fas fa-user" aria-hidden="true"></i>
-                                    <a href="{{ route('account.show', ['username' => $otherStatus->user->username]) }}">
+                                    <a href="{{ route('profile', ['username' => $otherStatus->user->username]) }}">
                                         {{ '@' . $otherStatus->user->username }}
                                     </a>
                                 </td>

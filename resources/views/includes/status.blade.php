@@ -13,7 +13,7 @@
 
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
-            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+            <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                 <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                      alt="{{ $status->user->username }}">
             </a>
@@ -122,7 +122,7 @@
 {{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility]}} visibility-icon text-small"
                aria-hidden="true" title="{{__('status.visibility.'.$status->visibility)}}" data-mdb-toggle="tooltip"
                data-mdb-placement="top"></i>
-            <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+            <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                 @if(auth()?->user()?->id == $status->user_id)
                     {{__('user.you')}}
                 @else
@@ -139,7 +139,7 @@
                 @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
                     id="avatar-small-{{ $status->id }}"
                     data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
-                    <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
@@ -167,7 +167,7 @@
                 @endif
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
-                    <a href="{{ route('account.show', ['username' => $status->user->username]) }}">
+                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
@@ -179,12 +179,12 @@
     @if(Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
-                <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
+                <a href="{{ route('profile', ['username' => $like->user->username]) }}">
                     <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"
                          class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
                 </a>
                 <span class="like-text pl-2 d-table-cell">
-                    <a href="{{ route('account.show', ['username' => $like->user->username]) }}">
+                    <a href="{{ route('profile', ['username' => $like->user->username]) }}">
                         {{$like->user->username}}
                     </a>
                     @if($like->user->is($status->user))
