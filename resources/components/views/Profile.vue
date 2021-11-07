@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import moment from "moment";
 import Status from "../Status";
 import {ProfileModel, StatusModel} from "../../js/APImodels";
@@ -97,6 +96,7 @@ import HeroLayout from "../layouts/HeroLayout";
 import Spinner from "../Spinner";
 import FollowButton from "../FollowButton";
 import MuteButton from "../MuteButton";
+import User from "../../js/ApiClient/User";
 
 export default {
     name: "ProfilePage",
@@ -170,13 +170,12 @@ export default {
             }
         },
         fetchData() {
-            this.error   = null;
             this.loading = true;
-            axios
-                .get("/user/" + this.$route.params.username)
-                .then((response) => {
+            User
+                .getByUsername(this.$route.params.username)
+                .then((data) => {
                     this.loading = false;
-                    this.user    = response.data.data;
+                    this.user    = data;
                     this.updateMetadata();
                     if (!this.user.userInvisibleToMe) {
                         this.fetchStatuses();
@@ -184,36 +183,28 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.apiErrorHandler(error);
                 });
         },
         fetchStatuses() {
-            this.error           = null;
             this.statusesLoading = true;
-            axios
-                .get("/user/" + this.$route.params.username + "/statuses")
-                .then((response) => {
+            User
+                .getStatusesForUser(this.$route.params.username)
+                .then((data) => {
                     this.statusesLoading = false;
-                    this.statuses        = response.data.data;
-                    this.links           = response.data.links;
+                    this.statuses        = data.data;
+                    this.links           = data.links;
                 })
                 .catch((error) => {
                     this.statusesLoading = false;
-                    this.error           = error.data.message || error.message;
+                    this.apiErrorHandler(error);
                 });
         },
         fetchMore() {
-            this.error = null;
-            axios
-                .get(this.links.next)
-                .then((response) => {
-                    this.statuses = this.statuses.concat(response.data.data);
-                    this.links    = response.data.links;
-                    // this.fetchStopovers(response.data.data)
-                })
-                .catch((error) => {
-                    this.loading = false;
-                    this.error   = error.data.message || error.message;
+            this.fetchMoreData(this.links.next)
+                .then((data) => {
+                    this.statuses = this.statuses.concat(data.data);
+                    this.links    = data.links;
                 });
         }
     }

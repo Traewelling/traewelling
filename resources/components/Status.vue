@@ -165,15 +165,15 @@
             <div v-for="like in likes" v-bind:key="likes.id" class="card-footer text-muted clearfix">
                 <ul class="list-inline">
                     <li class="list-inline-item">
-                        <router-link :to="{name: 'profile', params: {username: like.user.username}}">
+                        <router-link :to="{name: 'profile', params: {username: like.username}}">
                             <img :alt="i18n.get('_.settings.picture')"
-                                 :src="`/profile/${like.user.username}/profilepicture`"
+                                 :src="`/profile/${like.username}/profilepicture`"
                                  class="profile-image">
                         </router-link>
                     </li>
                     <li class="list-inline-item like-text">
-                        <router-link :to="{name: 'profile', params: {username: like.user.username}}">
-                            {{ like.user.username }}
+                        <router-link :to="{name: 'profile', params: {username: like.username}}">
+                            {{ like.username }}
                         </router-link>
                         <span v-if="like.id === statusData.user">{{ i18n.get("_.user.liked-own-status") }}</span>
                         <span v-else>{{ i18n.get("_.user.liked-status") }}</span>
@@ -203,11 +203,12 @@
 import moment from "moment";
 import Map from "../components/Map";
 import {StatusModel, travelReason, visibility} from "../js/APImodels";
-import axios from "axios";
 import ModalConfirm from "./ModalConfirm";
 import CheckInModal from "./CheckInModal";
 import FollowButton from "./FollowButton";
 import MuteButton from "./MuteButton";
+import User from "../js/ApiClient/User";
+import Status from "../js/ApiClient/Status";
 
 export default {
     name: "Status.vue",
@@ -301,35 +302,30 @@ export default {
             setInterval(() => (this.now = moment()), 1000);
         },
         fetchUser() {
-            axios
-                .get("/user/" + this.status.username)
-                .then((response) => {
-                    this.user = response.data.data;
+            User
+                .getByUsername(this.status.username)
+                .then((data) => {
+                    this.user = data;
                 })
                 .catch((error) => {
-                    this.error = error.data.message || error.message;
+                    this.apiErrorHandler(error);
                 });
         },
         likeStatus() {
             if (this.statusData.liked === false) {
-                axios
-                    .post("/like/" + this.statusData.id)
+                Status
+                    .like(this.statusData.id)
                     .then(() => {
                         this.statusData.liked = true;
                         this.statusData.likes += 1;
                         this.likes.push(this.$auth.user());
                     })
                     .catch((error) => {
-                        this.loading = false;
-                        if (error.response) {
-                            this.notyf.error(error.response.data.error.message);
-                        } else {
-                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                        }
+                        this.apiErrorHandler(error);
                     });
             } else {
-                axios
-                    .delete("/like/" + this.statusData.id)
+                Status
+                    .dislike(this.statusData.id)
                     .then(() => {
                         this.statusData.liked = false;
                         this.statusData.likes -= 1;
@@ -339,28 +335,18 @@ export default {
                         }
                     })
                     .catch((error) => {
-                        this.loading = false;
-                        if (error.response) {
-                            this.notyf.error(error.response.data.error.message);
-                        } else {
-                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                        }
+                        this.apiErrorHandler(error);
                     });
             }
         },
         deleteStatus() {
-            axios
-                .delete("/statuses/" + this.statusData.id)
+            Status
+                .delete(this.statusData.id)
                 .then(() => {
                     this.status = null;
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         updateStatus() {

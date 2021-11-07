@@ -106,6 +106,7 @@ import moment from "moment";
 import CheckInModal from "../CheckInModal";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import Checkin from "../../js/ApiClient/Checkin";
 
 export default {
     name: "Trip",
@@ -121,7 +122,7 @@ export default {
             moment: moment,
             destination: null,
             trainData: {
-                tripID: 0,
+                tripId: 0,
                 lineName: "",
                 start: 0,
                 destination: 0,
@@ -138,10 +139,10 @@ export default {
             this.loading = true;
             this.station = null;
             const query  = this.$route.query;
-            axios
-                .get("/trains/trip?tripID=" + query.tripID + "&lineName=" + query.lineName + "&start=" + query.start)
-                .then((result) => {
-                    this.hafasTrip   = result.data.data;
+            Checkin
+                .getTrip(query.tripId, query.lineName, query.start)
+                .then((data) => {
+                    this.hafasTrip   = data;
                     this.stopovers   = this.hafasTrip.stopovers.filter((item) => {
                         return moment(item.arrivalPlanned).isAfter(moment(this.$route.query.departure));
                     });
@@ -150,16 +151,12 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         showModal(stop) {
             this.trainData   = {
-                tripID: this.$route.query.tripID,
+                tripId: this.$route.query.tripId,
                 lineName: this.$route.query.lineName,
                 start: this.$route.query.start,
                 destination: stop.id,

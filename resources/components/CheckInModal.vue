@@ -93,6 +93,7 @@ import {Modal} from "bootstrap";
 import {Modal} from "bootstrap";
 import FADropdown from "./FADropdown";
 import {travelReason, visibility} from "../js/APImodels";
+import Checkin from "../js/ApiClient/Checkin";
 
 export default {
     name: "CheckInModal",
@@ -106,14 +107,14 @@ export default {
                 body: "",
                 business: 0,
                 visibility: 0,
-                event: 0,
-        tweet: false,
-        toot: false,
-      },
-      travelReason: travelReason,
-      visibility: visibility,
-      result: null
-    };
+                eventId: null,
+                tweet: false,
+                toot: false,
+            },
+            travelReason: travelReason,
+            visibility: visibility,
+            result: null
+        };
   },
   props: {
     destination: null,
@@ -160,37 +161,35 @@ export default {
       this.modal.hide();
     },
     submitCheckin() {
-      const formData = {};
-      Object.assign(formData, this.status);
-      Object.assign(formData, this.$props.trainData);
-      axios
-          .post("/trains/checkin", formData)
-          .then((result) => {
-            this.$router.push({name: "dashboard"});
-            this.hide();
-            alert(result.data.status.train.points + " points");
-          })
-          .catch((error) => {
-              this.notyf.error(error);
-          });
+        const formData = {};
+        Object.assign(formData, this.status);
+        Object.assign(formData, this.$props.trainData);
+        Checkin
+            .checkIn(formData)
+            .then((data) => {
+                this.$router.push({name: "dashboard"});
+                this.hide();
+                //ToDo Better success modal
+                this.notyf.success(data.status.train.points + " points");
+            })
+            .catch((error) => {
+                this.apiErrorHandler(error);
+            });
     },
     editCheckin() {
-      const formData = {};
-      Object.assign(formData, this.status);
-      axios
-          .put("/statuses/" + this.statusData.id, formData)
-          .then((result) => {
-            this.result = result.data.data;
-            this.$emit("updated");
-            this.hide();
-          })
-          .catch((error) => {
-              if (error.response) {
-                  this.notyf.error(error.response.data.error.message);
-              } else {
-                  this.notyf.error(this.i18n.get("_.messages.exception.general"));
-              }
-          });
+        const formData = {};
+        Object.assign(formData, this.status);
+        Checkin
+            .editCheckin(this.statusData.id, formData)
+            .then((data) => {
+                this.result = data;
+                this.notyf.success(this.i18n.get("_.settings.saved"));
+                this.$emit("updated");
+                this.hide();
+            })
+            .catch((error) => {
+                this.apiErrorHandler(error);
+            });
 
     }
   }

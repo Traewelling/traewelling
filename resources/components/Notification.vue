@@ -21,6 +21,7 @@
 
 <script>
 import {profileNotifications, statusNotifications} from "../js/APImodels";
+import Notifications from "../js/ApiClient/Notifications";
 
 export default {
     name: "Notification",
@@ -70,10 +71,9 @@ export default {
             this.goToSender();
         },
         readMessage() {
-            axios
-                .put("/notifications/" + this.notification.id)
-                .then((response) => {
-                    this.notification = response.data;
+            Notifications.toggleRead(this.notification.id)
+                .then((data) => {
+                    this.notification = data;
                     if (this.read) {
                         this.$emit("decrease");
                     } else {
@@ -81,11 +81,7 @@ export default {
                     }
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         goToSender() {

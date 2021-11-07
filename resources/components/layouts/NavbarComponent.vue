@@ -112,6 +112,7 @@
 <script>
 import NotificationsButton from "../NotificationsButton";
 import NotificationsModal from "../NotificationsModal";
+import Notifications from "../../js/ApiClient/Notifications";
 
 export default {
     name: "NavbarComponent",
@@ -126,17 +127,12 @@ export default {
             this.$refs.notifModal.show();
         },
         fetchNotificationsCount() {
-            axios
-                .get("/notifications/count")
-                .then((response) => {
-                    this.notificationsCount = response.data.data;
+            Notifications.getCount()
+                .then((count) => {
+                    this.notificationsCount = count;
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         }
     },
