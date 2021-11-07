@@ -35,7 +35,7 @@
                                                             {{$event->station->name}}
                                                         </a>
                                                     </small>
-                                                @endif
+                                                @endisset
                                             </td>
                                             <td>
                                                 @if($event->begin->isSameDay($event->end))
