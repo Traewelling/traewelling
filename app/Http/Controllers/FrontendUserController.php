@@ -124,7 +124,7 @@ class FrontendUserController extends Controller
             $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
 
             if ($userSearchResponse->count() === 1) {
-                return redirect()->route('account.show', ['username' => $userSearchResponse->first()->username]);
+                return redirect()->route('profile', ['username' => $userSearchResponse->first()->username]);
             }
         } catch (HttpException) {
             return redirect()->back();

@@ -19,8 +19,19 @@ class SocialLoginProfile extends Model
         'twitter_tokenSecret' => 'encrypted',
         'mastodon_token'      => 'encrypted',
     ];
+    protected       $casts       = [
+        'id'              => 'integer',
+        'user_id'         => 'integer',
+        'twitter_id'      => 'integer',
+        'mastodon_id'     => 'integer',
+        'mastodon_server' => 'integer',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function mastodonServer(): BelongsTo {
+        return $this->belongsTo(MastodonServer::class, 'mastodon_server', 'id');
     }
 }

@@ -129,11 +129,11 @@
 <script>
 import moment from "moment";
 import LeaderboardTable from "../LeaderboardTable";
-import axios from "axios";
 import {LeaderboardUserModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
+import Statistics from "../../js/ApiClient/Statistics";
 
 export default {
     name: "LeaderboardMonth",
@@ -177,15 +177,14 @@ export default {
         fetchData() {
             this.error   = null;
             this.loading = true;
-            axios
-                .get("/leaderboard/" + this.$route.params.month)
-                .then((response) => {
+            Statistics.getLeaderBoardMonth(this.$route.params.month)
+                .then((data) => {
                     this.loading = false;
-                    this.users   = response.data.data;
+                    this.users   = data;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.apiErrorHandler(error);
                 });
         },
         updateMetadata() {
