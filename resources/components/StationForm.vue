@@ -183,11 +183,7 @@ export default {
                         const source = await axios.get(`/trains/station/autocomplete/${query.replace("/", " ")}`);
                         return await source.data.data;
                     } catch (error) {
-                        if (error.response) {
-                            this.notyf.error(error.response.data.error.message);
-                        } else {
-                            this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                        }
+                        this.apiErrorHandler(error);
                     }
                 },
                 keys: ['name'],
