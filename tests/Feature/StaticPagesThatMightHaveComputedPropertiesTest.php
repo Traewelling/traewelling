@@ -57,7 +57,7 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
         $user = $this->createGDPRAckedUser();
 
         // WHEN: Someone visits the user's profile page
-        $response = $this->get(route('account.show', ["username" => $user->username]));
+        $response = $this->get(route('profile', ["username" => $user->username]));
 
         // THEN: The page is rendered and shows the user's name and username
         $response->assertOk();
