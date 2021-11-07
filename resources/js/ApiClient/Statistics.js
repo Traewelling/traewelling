@@ -1,4 +1,4 @@
-import {getBody, postReturnRequest} from "./Helpers";
+import {getBody, getContent, postReturnRequest} from "./Helpers";
 
 export default class Statistics {
     static export(from, until, filetype) {
@@ -11,5 +11,21 @@ export default class Statistics {
 
     static fetchGlobalData() {
         return getBody("/statistics/global");
+    }
+
+    static getLeaderBoard() {
+        return getContent("/leaderboard");
+    }
+
+    static getLeaderBoardDistance() {
+        return getContent("/leaderboard/distance");
+    }
+
+    static getLeaderBoardFriends() {
+        return getContent("/leaderboard/friends");
+    }
+
+    static getLeaderBoardMonth(month) {
+        return getContent(`/leaderboard/${month}`)
     }
 }

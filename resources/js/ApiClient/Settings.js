@@ -1,6 +1,10 @@
 import {deleteFromApi, getContent, postToApi, putToApi} from "./Helpers";
 
 export default class Settings {
+    static getProfileSettings() {
+        return getContent("/settings/profile");
+    }
+
     static deleteAccount(confirmation) {
         return deleteFromApi("/settings/account", {confirmation});
     }
