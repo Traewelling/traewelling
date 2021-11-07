@@ -16,6 +16,7 @@
 <script>
 
 import {ProfileModel} from "../js/APImodels";
+import User from "../js/ApiClient/User";
 
 export default {
     name: "MuteButton",
@@ -28,7 +29,6 @@ export default {
     props: ["user", "bigButton", "dropdown"],
     mounted() {
         this.userData = this.$props.user;
-        console.log(this.userData);
     },
     watch: {
         user(val, oldVal) {
@@ -45,34 +45,26 @@ export default {
     },
     methods: {
         mute() {
-            axios
-                .post("/user/createMute", {userId: this.user.id})
-                .then((result) => {
-                    this.userData = result.data.data;
+            User
+                .mute(this.user.id)
+                .then((data) => {
+                    this.userData = data;
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         unmute() {
-            axios
-                .delete("/user/destroyMute", {data: {userId: this.user.id}})
-                .then((result) => {
-                    this.userData = result.data.data;
+            User
+                .unmute(this.user.id)
+                .then((data) => {
+                    this.userData = data;
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
-                })
+                    this.apiErrorHandler(error);
+                });
         }
     }
 };

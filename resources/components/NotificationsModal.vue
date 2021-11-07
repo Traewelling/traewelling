@@ -7,7 +7,8 @@
                     <h4 id="notifications-board-title" class="modal-title">
                         {{ i18n.get('_.notifications.title') }}
                     </h4>
-                    <button :aria-label="i18n.get('_.notifications.mark-all-read')" type="button" role="close" class="close" id="mark-all-read" @click="readAll">
+                    <button id="mark-all-read" :aria-label="i18n.get('_.notifications.mark-all-read')" class="close"
+                            role="close" type="button" @click="readAll">
                         <span aria-hidden="true"><i aria-hidden="true" class="fas fa-check-double"></i></span>
                     </button>
                     <button aria-label="Close" class="close" type="button" v-on:click="hide">
@@ -31,6 +32,7 @@
 <script>
 import {Modal} from "bootstrap";
 import Notification from "./Notification";
+import Notifications from "../js/ApiClient/Notifications";
 
 export default {
     name: "NotificationsModal",
@@ -54,32 +56,22 @@ export default {
             this.modal.hide();
         },
         fetchNotifications() {
-            axios
-                .get("/notifications")
-                .then((response) => {
-                    this.notifications = response.data.data;
+            Notifications.fetchNotifications()
+                .then((data) => {
+                    this.notifications = data;
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         readAll() {
-            axios
-                .post("/notifications/readAll")
-                .then((response) => {
-                    this.notifications = response.data.data;
+            Notifications.readAll()
+                .then((data) => {
+                    this.notifications = data;
                     this.$emit("reset");
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
     }

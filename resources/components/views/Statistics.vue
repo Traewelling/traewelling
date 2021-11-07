@@ -186,9 +186,10 @@ import VueApexCharts from "vue-apexcharts";
 import moment from "moment";
 import Litepicker from "litepicker";
 import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
+import Statistics from "../../js/ApiClient/Statistics";
 
 export default {
-    name: "Charts",
+    name: "Statistics",
     inject: ["notyf"],
     components: {
         LayoutBasicNoSidebar,
@@ -316,12 +317,8 @@ export default {
     },
     methods: {
         generateExport(type) {
-            axios
-                .post("/statistics/export", {
-                    from: this.from,
-                    until: this.until,
-                    filetype: type
-                }, {responseType: "blob"})
+            Statistics
+                .export(this.from, this.until, type)
                 .then((res) => {
                     const {data, headers} = res;
                     const fileName        = headers["content-disposition"].replace(/\w+; filename="(.*)"/, "$1");
@@ -335,6 +332,9 @@ export default {
                     dom.click();
                     dom.parentNode.removeChild(dom);
                     window.URL.revokeObjectURL(url);
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
                 });
         },
         fetchRecentDays(delta) {
@@ -343,15 +343,15 @@ export default {
             this.fetchPersonalData();
         },
         fetchPersonalData() {
-            axios
-                .get("/statistics?from=" + this.from + "&until=" + this.until)
-                .then((response) => {
-                    this.travelPurpose    = response.data.data.purpose;
-                    this.trainProviders   = response.data.data.operators;
-                    this.travelCategories = response.data.data.categories;
-                    this.travelTime       = response.data.data.time;
-                    this.from             = response.data.meta.from;
-                    this.until            = response.data.meta.until;
+            Statistics
+                .fetchPersonalData(this.from, this.until)
+                .then((data) => {
+                    this.travelPurpose    = data.data.purpose;
+                    this.trainProviders   = data.data.operators;
+                    this.travelCategories = data.data.categories;
+                    this.travelTime       = data.data.time;
+                    this.from             = data.meta.from;
+                    this.until            = data.meta.until;
                     this.loading          = false;
                     this.updatePurpose();
                     this.updateCategories();
@@ -360,33 +360,26 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.sendNotyfError(error);
+                    this.apiErrorHandler(error);
                 });
         },
-        sendNotyfError(error) {
-          if (error.response) {
-            this.notyf.error(error.response.data.message);
-          } else {
-            this.notyf.error(this.i18n.get("_.messages.exception.general"));
-          }
-        },
         fetchGlobalData() {
-            axios
-                .get("/statistics/global")
-                .then((response) => {
-                    this.globalData  = response.data.data;
-                    this.untilGlobal = response.data.meta.until;
-                    this.fromGlobal  = response.data.meta.from;
+            Statistics
+                .fetchGlobalData()
+                .then((data) => {
+                    this.globalData  = data.data;
+                    this.untilGlobal = data.meta.until;
+                    this.fromGlobal  = data.meta.from;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.sendNotyfError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         updatePurpose() {
             this.$refs.purpose.updateOptions({
                 labels: this.travelPurpose.map((x) => this.i18n.get("_.stationboard.business." + x.name)),
-                series: this.travelPurpose.map(x => x.count)
+                series: this.travelPurpose.map((x) => x.count)
             }, true);
         },
         updateCategories() {
@@ -427,7 +420,7 @@ export default {
                         return {
                             x: x.date,
                             y: x.duration
-                        }
+                        };
                     })
                 }, {
                     name: this.i18n.get("_.stats.trips"),

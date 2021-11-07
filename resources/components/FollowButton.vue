@@ -29,6 +29,7 @@
 <script>
 
 import {ProfileModel} from "../js/APImodels";
+import User from "../js/ApiClient/User";
 
 export default {
     name: "FollowButton",
@@ -49,34 +50,26 @@ export default {
     },
     methods: {
         follow() {
-            axios
-                .post("/user/createFollow", {userId: this.user.id})
-                .then((result) => {
-                    this.userData = result.data.data;
+            User
+                .follow(this.user.id)
+                .then((data) => {
+                    this.userData = data;
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
-                })
+                    this.apiErrorHandler(error);
+                });
         },
         unfollow() {
-            axios
-                .delete("/user/destroyFollow", {data: {userId: this.user.id}})
-                .then((result) => {
-                    this.userData = result.data.data;
+            User
+                .unfollow(this.user.id)
+                .then((data) => {
+                    this.userData = data;
                     this.$emit("updateUser", this.userData);
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
-                })
+                    this.apiErrorHandler(error);
+                });
         }
     }
 };
