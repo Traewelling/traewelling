@@ -36,7 +36,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the profile of bob? => no
         Auth::logout();
-        $guest = $this->get(route('account.show', ['username' => $this->users->bob->user->username]));
+        $guest = $this->get(route('profile', ['username' => $this->users->bob->user->username]));
         $guest->assertSuccessful();
         $this->assertGuest();
         $guest->assertSee(__('profile.private-profile-text'));

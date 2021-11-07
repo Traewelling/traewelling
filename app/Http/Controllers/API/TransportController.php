@@ -167,7 +167,7 @@ class TransportController extends ResponseController
             return $this->sendError('Given stations are not on the trip.', 400);
         } catch (Throwable $exception) {
             report($exception);
-            return $this->sendError('Unknown Error occured', 500);
+            return $this->sendError('Unknown Error occurred', 500);
         }
 
     }
