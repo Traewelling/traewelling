@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Status;
@@ -54,10 +55,10 @@ class StatusController extends ResponseController
         }
         $statuses = ['statuses' => ''];
         if ($view === 'global') {
-            $statuses['statuses'] = StatusBackend::getGlobalDashboard();
+            $statuses['statuses'] = DashboardController::getGlobalDashboard(Auth::user());
         }
         if ($view === 'personal') {
-            $statuses['statuses'] = StatusBackend::getDashboard(Auth::user());
+            $statuses['statuses'] = DashboardController::getPrivateDashboard(Auth::user());
         }
         if ($view === 'user') {
             $statuses = UserBackend::getProfilePage($request->username);

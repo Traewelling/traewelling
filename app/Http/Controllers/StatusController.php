@@ -16,7 +16,6 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -113,66 +112,6 @@ class StatusController extends Controller
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
-    public static function getDashboard(User $user): Paginator {
-        $userIds        = $user->follows->pluck('id');
-        $userIds[]      = $user->id;
-        $followingIDs   = $user->follows->pluck('id');
-        $followingIDs[] = $user->id;
-        return Status::with([
-                                'event', 'likes', 'user', 'trainCheckin',
-                                'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
-                            ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('statuses.user_id', $followingIDs)
-                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
-                     ->orWhere('statuses.user_id', $user->id)
-                     ->withCount('likes')
-                     ->latest()
-                     ->simplePaginate(15);
-    }
-
-
-    public static function getGlobalDashboard(): Paginator {
-        return Status::with([
-                                'event', 'likes', 'user', 'trainCheckin',
-                                'trainCheckin.Origin', 'trainCheckin.Destination',
-                                'trainCheckin.HafasTrip.stopoversNEW.trainStation'
-                            ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->where(function(Builder $query) {
-                         //Visibility checks: One of the following options must be true
-
-                         //Option 1: User is public AND status is public
-                         $query->where(function(Builder $query) {
-                             $query->where('users.private_profile', 0)
-                                   ->where('visibility', StatusVisibility::PUBLIC);
-                         });
-
-                         //Option 2: Status is from oneself
-                         if (auth()->check()) {
-                             $query->orWhere('users.id', auth()->user()->id);
-                         }
-
-                         //Option 3: Status is from a followed BUT not unlisted or private
-                         $query->orWhere(function(Builder $query) {
-                             $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                             $query->whereIn('users.id', $followings)
-                                   ->whereNotIn('visibility', [StatusVisibility::UNLISTED, StatusVisibility::PRIVATE]);
-                         });
-                     })
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'))
-                     ->select('statuses.*')
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->withCount('likes')
-                     ->simplePaginate(15);
-    }
-
     /**
      * @param User $user
      * @param int  $statusId
@@ -233,7 +172,6 @@ class StatusController extends Controller
      *
      * @return Like
      * @throws StatusAlreadyLikedException|PermissionException
-     * @todo refactor this to take status IDs instead of models
      */
     public static function createLike(User $user, Status $status): Like {
 
