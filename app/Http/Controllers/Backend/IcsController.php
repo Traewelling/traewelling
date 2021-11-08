@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
 
-class IcsController extends Controller
+abstract class IcsController extends Controller
 {
     public static function generateIcsCalendar(
         User    $user,
