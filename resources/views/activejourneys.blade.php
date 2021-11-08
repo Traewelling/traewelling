@@ -242,9 +242,9 @@
                                 "url": "{{$event->url}}",
                                 "begin": "{{ $event->begin->format('Y-m-d') }}",
                                 "end": "{{ $event->end->format('Y-m-d') }}",
-                                "ts": {!! $event->getTrainStation() !!},
+                                "ts": {!! $event->station !!},
                                 "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
-                                "closestLink": `<a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->getTrainstation()->id])}}" class="text-trwl clearfix">{{$event->getTrainstation()->name}}</a>`
+                                "closestLink": "@isset($event->station) <a href=\"{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}\" class=\"text-trwl clearfix\">{{$event->station->name}}</a> @endisset"
                             },
                             @endforeach
                         ];
@@ -264,7 +264,6 @@ ${event.closestLink}`);
                     });
                 </script>
 
-                <!-- The status cards -->
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => false])
             </div>
         </div>
