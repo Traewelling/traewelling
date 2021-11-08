@@ -17,14 +17,14 @@ class PointsCalculationResource extends JsonResource
      */
     public function toArray($request): array {
         return [
-            'points'      => $this->point,
+            'points'      => $this['points'],
             'calculation' => [
-                'base'     => $this->base,
-                'distance' => $this->distance,
-                'factor'   => $this->factor ?? 1,
-                'reason'   => $this->reason ?? PointReasons::IN_TIME
+                'base'     => $this['calculation']['base'],
+                'distance' => $this['calculation']['distance'],
+                'factor'   => $this['calculation']['factor'] ?? 1,
+                'reason'   => $this['calculation']['reason'] ?? PointReasons::IN_TIME
             ],
-            'additional'  => AdditionalPointsResource::collection($this->additional)
+            'additional'  => AdditionalPointsResource::collection($this['additional'])
         ];
     }
 }

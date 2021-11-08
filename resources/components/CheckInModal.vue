@@ -15,7 +15,7 @@
               <label for="message-text" class="col-form-label">
                 {{ i18n.get('_.stationboard.label-message') }}
               </label>
-              <textarea name="body" class="form-control" v-model="status.body"></textarea>
+              <textarea id="message-text" class="form-control" v-model="status.body"></textarea>
             </div>
 
             <div class="mt-2">
@@ -87,7 +87,6 @@
     </div>
   </div>
 </template>
-import {Modal} from "bootstrap";
 
 <script>
 import {Modal} from "bootstrap";
@@ -135,10 +134,8 @@ export default {
   },
   computed: {
     edit() {
-      if (this.$props.statusData) {
-        return true;
-      }
-      return false;
+      return !!this.$props.statusData;
+
     },
     dest() {
       if (this.edit) {
@@ -167,7 +164,7 @@ export default {
         Checkin
             .checkIn(formData)
             .then((data) => {
-                this.$router.push({name: "dashboard"});
+                this.$router.push({name: "dashboard", params: {checkin: data}});
                 this.hide();
                 //ToDo Better success modal
                 this.notyf.success(data.status.train.points + " points");

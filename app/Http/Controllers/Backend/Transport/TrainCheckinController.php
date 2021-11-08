@@ -7,6 +7,7 @@ use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransportController;
+use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -15,6 +16,7 @@ use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class TrainCheckinController extends Controller
@@ -26,6 +28,7 @@ abstract class TrainCheckinController extends Controller
      */
     #[ArrayShape([
         'status'               => StatusResource::class,
+        'points'               => PointsCalculationResource::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
     public static function createTrainCheckin(
@@ -35,6 +38,7 @@ abstract class TrainCheckinController extends Controller
         int       $exitStop,
         Carbon    $departure = null,
         Carbon    $arrival = null,
+        bool      $force = false,
         bool      $ibnr = false
     ): array {
         $trip->load('stopoversNEW');
@@ -62,7 +66,7 @@ abstract class TrainCheckinController extends Controller
             start: $firstStop->departure,
             end:   $lastStop->arrival
         );
-        if ($overlapping->count() > 0) {
+        if (!$force && $overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
         }
 
@@ -72,7 +76,8 @@ abstract class TrainCheckinController extends Controller
             distanceInMeter: $distance,
             category:        $trip->category,
             departure:       $firstStop->departure,
-            arrival:         $lastStop->arrival
+            arrival:         $lastStop->arrival,
+            forceCheckin:    $force
         );
 
         $trainCheckin = TrainCheckin::create([
@@ -82,7 +87,7 @@ abstract class TrainCheckinController extends Controller
                                                  'origin'      => $firstStop->trainStation->ibnr,
                                                  'destination' => $lastStop->trainStation->ibnr,
                                                  'distance'    => $distance,
-                                                 'points'      => $points,
+                                                 'points'      => $points['points'],
                                                  'departure'   => $firstStop->departure_planned,
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
@@ -99,7 +104,8 @@ abstract class TrainCheckinController extends Controller
 
         return [
             'status'               => new StatusResource($status),
-            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
+            'points'               => $points,
+            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
         ];
     }
 }

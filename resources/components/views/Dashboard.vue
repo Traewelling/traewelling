@@ -62,6 +62,14 @@
                 </div>
             </div>
         </div>
+        <ModalConfirm
+            ref="successModal"
+            :title-text="i18n.get('_.controller.transport.checkin-heading')"
+        >
+            <div class="p-0 m-0" v-if="$props.checkin">
+                <p>{{ i18n.choice("_.controller.transport.checkin-ok", checkin.status.train.lineName.match(/\s/), {lineName: checkin.status.train.lineName}) }}</p>
+            </div>
+        </ModalConfirm>
     </LayoutBasic>
 </template>
 
@@ -74,6 +82,7 @@ import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import Dashboard from "../../js/ApiClient/Dashboard";
 import ApiStatus from "../../js/ApiClient/Status";
+import ModalConfirm from "../ModalConfirm";
 
 export default {
     name: "dashboard",
@@ -88,12 +97,14 @@ export default {
             links: null,
         };
     },
+    props: ["checkin"],
     metaInfo() {
         return {
             title: this.i18n.get("_.menu.dashboard")
         };
     },
     components: {
+        ModalConfirm,
         Spinner,
         LayoutBasic,
         StationForm,
@@ -101,6 +112,10 @@ export default {
     },
     mounted() {
         this.fetchData();
+        if (this.$props.checkin) {
+            this.$refs.successModal.show();
+        }
+        console.log(this.$props.checkin);
     },
     methods: {
         showDate(item, statuses) {

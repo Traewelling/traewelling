@@ -19,7 +19,6 @@ import driverRouterVueRouter from "@websanova/vue-auth/dist/drivers/router/vue-r
 import VueMeta from "vue-meta";
 import {Notyf} from "notyf";
 import "notyf/notyf.min.css";
-import Fragment from "vue-fragment";
 
 Vue.config.productionTip = false;
 
@@ -79,7 +78,7 @@ Vue.use(VueMeta, {
     tagIDKeyName: "vmid",
     refreshOnceOnNavigation: true
 });
-Vue.use(Fragment.Plugin)
+
 
 Vue.mixin({
     methods: {
