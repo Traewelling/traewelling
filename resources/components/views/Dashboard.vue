@@ -211,7 +211,6 @@ export default {
         if (this.$props.checkin) {
             this.$refs.successModal.show();
         }
-        console.log(this.$props.checkin);
     },
     methods: {
         showDate(item, statuses) {
@@ -223,7 +222,7 @@ export default {
         },
         duration(inDuration) {
             // ToDo: This needs localization, currently handled in `durationToSpan`
-            const duration = moment.duration(inDuration, 'minutes').asMinutes();
+            const duration = moment.duration(inDuration, "minutes").asMinutes();
             let minutes    = duration % 60;
             let hours      = Math.floor(duration / 60);
 

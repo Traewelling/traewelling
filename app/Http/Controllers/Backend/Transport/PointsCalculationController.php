@@ -37,9 +37,7 @@ abstract class PointsCalculationController extends Controller
          */
         if ($timestampOfView->isBetween($departure->clone()->subMinutes(20), $arrival)) {
             $reason = PointReasons::IN_TIME;
-        }
-
-        /**
+        } /**
          * Reduced points, one hour before departure and after arrival
          *
          *   D-60         D          A          A+60
@@ -47,7 +45,7 @@ abstract class PointsCalculationController extends Controller
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        else if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
+        elseif ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
             $reason = PointReasons::GOOD_ENOUGH;
         }
 
