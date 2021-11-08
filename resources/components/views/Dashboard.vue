@@ -72,8 +72,11 @@
             <div class="p-0 m-0" v-if="$props.checkin">
                 <p class="text-center">
                     {{
-                        i18n.choice("_.controller.transport.checkin-ok",
-                            checkin.status.train.lineName.match(/\s/), {lineName: checkin.status.train.lineName})
+                        i18n.choice(
+                            "_.controller.transport.checkin-ok",
+                            /\s/.test(checkin.status.train.lineName),
+                            {lineName: checkin.status.train.lineName}
+                        )
                     }}
                 </p>
 

@@ -90,7 +90,11 @@ abstract class TrainCheckinController extends Controller
                                                  'departure'   => $firstStop->departure_planned,
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
-        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
+        $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection->reject(function($status) {
+            return $status->statusInvisibleToMe;
+        });
+
+        foreach ($alsoOnThisConnection as $otherStatus) {
             if ($otherStatus?->user) {
                 $otherStatus->user->notify(new UserJoinedConnection(
                                                statusId:    $status->id,
@@ -104,7 +108,7 @@ abstract class TrainCheckinController extends Controller
         return [
             'status'               => new StatusResource($status),
             'points'               => $points,
-            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
+            'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
         ];
     }
 }
