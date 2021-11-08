@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Helper;
 use App\Http\Controllers\Controller;
 use InvalidArgumentException;
 
-class PrivacyHelper extends Controller
+abstract class PrivacyHelper extends Controller
 {
     /**
      * @param string $ipAddress

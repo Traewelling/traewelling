@@ -18,6 +18,7 @@ use stdClass;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
+ * @deprecated Will be replaced by https://github.com/Traewelling/hafas-client-php
  */
 abstract class HafasController extends Controller
 {

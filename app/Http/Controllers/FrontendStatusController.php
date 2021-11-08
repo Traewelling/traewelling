@@ -6,6 +6,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -27,10 +28,9 @@ use InvalidArgumentException;
 class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
-        $user     = Auth::user();
-        $statuses = StatusBackend::getDashboard($user);
+        $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || $user->follows->count() == 0) {
+        if ($statuses->isEmpty() || auth()->user()->follows->count() == 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                                  ->with('checkin-success', Session::get('checkin-success'));
@@ -42,19 +42,17 @@ class FrontendStatusController extends Controller
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', [
-            'statuses'    => $statuses,
-            'currentUser' => $user,
-            'latest'      => TransportController::getLatestArrivals($user),
-            'future'      => StatusBackend::getFutureCheckins()
+            'statuses' => $statuses,
+            'latest'   => TransportController::getLatestArrivals(auth()->user()),
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
-            'statuses'    => StatusBackend::getGlobalDashboard(),
-            'currentUser' => Auth::user(),
-            'latest'      => TransportController::getLatestArrivals(Auth::user()),
-            'future'      => StatusBackend::getFutureCheckins()
+            'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
+            'latest'   => TransportController::getLatestArrivals(Auth::user()),
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 

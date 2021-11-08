@@ -9,7 +9,7 @@ use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ItemNotFoundException;
 
-class NotificationController extends Controller
+abstract class NotificationController extends Controller
 {
     /**
      * @param DatabaseNotification $notification
