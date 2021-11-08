@@ -353,6 +353,7 @@
     "settings.request.reject-success": "Successfully rejected follow request.",
     "settings.language.set": "Change language",
     "generic.change": "Change",
+    "generic.why": "Why?",
     "sr.dropdown.toggle": "Toggle dropdown",
     "stationboard.arr": "arr",
     "stationboard.btn-checkin": "Check in!",
@@ -487,5 +488,7 @@
     "email.verification.required": "To take full advantage of Träwelling, you still need to confirm your email address.",
     "support.privacy": "Privacy notice",
     "support.privacy.description": "Your user ID, username and email address will be stored with your request in our ticket system.",
-    "support.privacy.description2": "The data will be deleted after one year regardless of your user account with Träwelling."
+    "support.privacy.description2": "The data will be deleted after one year regardless of your user account with Träwelling.",
+    "checkin.points.earned": "You earned",
+    "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!"
 }

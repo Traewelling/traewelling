@@ -65,9 +65,61 @@
         <ModalConfirm
             ref="successModal"
             :title-text="i18n.get('_.controller.transport.checkin-heading')"
+            :confirm-text="i18n.get('_.messages.cookie-notice-button')"
+            confirm-button-color="btn-success"
+            header-class="bg-success text-white"
         >
             <div class="p-0 m-0" v-if="$props.checkin">
-                <p>{{ i18n.choice("_.controller.transport.checkin-ok", checkin.status.train.lineName.match(/\s/), {lineName: checkin.status.train.lineName}) }}</p>
+                <p class="text-center">
+                    {{
+                        i18n.choice("_.controller.transport.checkin-ok",
+                            checkin.status.train.lineName.match(/\s/), {lineName: checkin.status.train.lineName})
+                    }}
+                </p>
+
+                <div class="row py-2">
+                    <div class="col-1"><i aria-hidden="true" class="fa fa-subway d-inline"></i></div>
+                    <div class="col"><span>{{ i18n.get("_.export.title.train-type") }}</span></div>
+                    <div class="col-4 text-end">
+                        <small v-if="checkin.points.calculation.factor !== 1"
+                               class="text-danger text-decoration-line-through">
+                            {{ originalPoints(checkin.points.calculation.base) }}
+                        </small>
+                        <strong v-if="checkin.points.calculation.factor === 0">
+                            &nbsp;{{ checkin.points.calculation.base }}
+                        </strong>
+                    </div>
+                </div>
+                <div class="row py-2 border-top">
+                    <div class="col-1"><i aria-hidden="true" class="fa fa-route d-inline"></i></div>
+                    <div class="col">
+                        {{ i18n.get("_.leaderboard.distance") }}:
+                        {{ (checkin.status.train.distance / 1000).toFixed(2) }}<small>km</small>
+                    </div>
+                    <div class="col-4 text-end">
+                        <small v-if="checkin.points.calculation.factor !== 1"
+                               class="text-danger text-decoration-line-through">
+                            {{ originalPoints(checkin.points.calculation.distance) }}
+                        </small>
+                        <strong v-if="checkin.points.calculation.factor === 0">
+                            &nbsp;{{ checkin.points.calculation.distance }}
+                        </strong>
+                    </div>
+                </div>
+                <div class="row py-2 text-bold border-top border-black">
+                    <div class="col-1"><i aria-hidden="true" class="fa fa-dice-d20 d-inline"></i></div>
+                    <div class="col">{{ i18n.get("_.checkin.points.earned") }}</div>
+                    <div class="col-4 text-end">{{ checkin.points.points }}</div>
+                </div>
+
+
+                <div class="alert alert-danger" role="alert">
+                    <i aria-hidden="true" class="fas fa-minus d-inline"></i> &nbsp;
+                    {{ i18n.get("_.checkin.points.could-have") }}
+                    <router-link class="alert-link" to="/about#points-calculation" @click="$refs.successModal.hide()">
+                        {{ i18n.get("_.generic.why") }}
+                    </router-link>
+                </div>
             </div>
         </ModalConfirm>
     </LayoutBasic>
@@ -124,6 +176,18 @@ export default {
                 return true;
             }
             return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
+        },
+        duration(inDuration) {
+            // ToDo: This needs localization, currently handled in `durationToSpan`
+            const duration = moment.duration(inDuration, 'minutes').asMinutes();
+            let minutes    = duration % 60;
+            let hours      = Math.floor(duration / 60);
+
+            return hours + "h " + minutes + "m";
+        },
+        originalPoints(points) {
+            let factor = this.checkin.points.calculation.factor;
+            return points / (factor !== 0 ? factor : 1);
         },
         fetchData() {
             this.statuses = this.futureStatuses = [];

@@ -373,6 +373,7 @@
     "settings.request.reject-success": "Folgen-Anfrage erfolgreich abgelehnt.",
     "settings.language.set": "Sprache ändern",
     "generic.change": "Ändern",
+    "generic.why": "Warum?",
     "sr.dropdown.toggle": "Dropdown ein- und ausblenden",
     "settings.visibility": "Sichtbarkeit",
     "settings.visibility.default": "CheckIns: Standardsichtbarkeit",
@@ -488,5 +489,7 @@
     "settings.follower.following-since": "Folgt seit",
     "support.privacy": "Datenschutzhinweis",
     "support.privacy.description": "Deine User-ID, dein Username und deine E-Mail Adresse werden mit deiner Anfrage in unserem Ticketsystem erfasst.",
-    "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht."
+    "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht.",
+    "checkin.points.earned": "Du bekommst",
+    "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!"
 }
