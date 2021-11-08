@@ -13,7 +13,7 @@
                 </router-link>
             </li>
         </ul>
-        <div class="col-md-9 col-lg-7">
+        <div class="col-sm-12 col-md-7">
             <StationForm class="d-none d-md-block"/>
             <Spinner v-if="loading" class="mt-5"/>
 
@@ -77,6 +77,43 @@
                     }}
                 </p>
 
+                <h4 v-if="checkin.alsoOnThisConnection !== []">
+                    {{ i18n.choice("_.controller.transport.also-in-connection", checkin.alsoOnThisConnection.length) }}
+                </h4>
+                <div v-if="checkin.alsoOnThisConnection !== []" class="list-group">
+                    <router-link v-for="status in checkin.alsoOnThisConnection"
+                                 v-bind:key="status.id"
+                                 :to="{ name: 'singleStatus', params: {id: status.id, statusData: status }}"
+                                 class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-2">
+                                <img :alt="status.username"
+                                     :src="`/profile/${status.username}/profilepicture`"
+                                     class="img-fluid rounded-circle">
+                            </div>
+                            <div aria-hidden="true" class="col">
+                                <h5 class="mb-1 w-100">
+                                    {{ status.displayName }}
+                                    <small class="text-muted">@{{ status.username }}</small>
+                                </h5>
+                                {{ status.train.origin.name }}
+                                <i aria-hidden="true" class="fas fa-arrow-right"></i>
+                                {{ status.train.destination.name }}
+                            </div>
+                            <span class="sr-only">
+                            {{
+                                    i18n.choice("_.export.journey-from-to", 1, {
+                                        origin: status.train.origin.name,
+                                        destination: status.train.destination.name
+                                    })
+                                }}
+                        </span>
+                        </div>
+                    </router-link>
+                </div>
+                <hr v-if="checkin.alsoOnThisConnection !== []">
+
+                <h4 class="mt-3">{{ i18n.get("_.leaderboard.points") }}</h4>
                 <div class="row py-2">
                     <div class="col-1"><i aria-hidden="true" class="fa fa-subway d-inline"></i></div>
                     <div class="col"><span>{{ i18n.get("_.export.title.train-type") }}</span></div>
@@ -111,7 +148,6 @@
                     <div class="col">{{ i18n.get("_.checkin.points.earned") }}</div>
                     <div class="col-4 text-end">{{ checkin.points.points }}</div>
                 </div>
-
 
                 <div class="alert alert-danger" role="alert">
                     <i aria-hidden="true" class="fas fa-minus d-inline"></i> &nbsp;

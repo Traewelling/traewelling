@@ -16,7 +16,6 @@ use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class TrainCheckinController extends Controller
@@ -105,7 +104,7 @@ abstract class TrainCheckinController extends Controller
         return [
             'status'               => new StatusResource($status),
             'points'               => $points,
-            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection
+            'alsoOnThisConnection' => StatusResource::collection($trainCheckin->alsoOnThisConnection)
         ];
     }
 }
