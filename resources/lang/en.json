@@ -65,7 +65,7 @@
     "controller.transport.checkin-ok": "You've successfully checked into :lineName!|You've successfully checked into line :lineName!",
     "controller.transport.no-name-given": "You need to provide a station name!",
     "controller.transport.not-in-stopovers": "Start-ID is not in stopovers.",
-    "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename: ",
     "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
@@ -490,5 +490,7 @@
     "support.privacy.description": "Your user ID, username and email address will be stored with your request in our ticket system.",
     "support.privacy.description2": "The data will be deleted after one year regardless of your user account with Träwelling.",
     "checkin.points.earned": "You earned",
-    "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!"
+    "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!",
+    "checkin.conflict.question": "Do you still want to check in? You will not earn any points for this, but your personal statistic will still be updated.",
+    "generic.error": "Error"
 }

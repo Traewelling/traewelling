@@ -59,7 +59,7 @@
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
     "controller.transport.not-in-stopovers": "Die Start-ID ist nicht in den Zwischenstops.",
-    "controller.transport.overlapping-checkin": "Du hast bereits einen Check-In in Verbindung :linename: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "Du hast bereits einen Check-In in Verbindung :linename:",
     "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
     "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
@@ -491,5 +491,7 @@
     "support.privacy.description": "Deine User-ID, dein Username und deine E-Mail Adresse werden mit deiner Anfrage in unserem Ticketsystem erfasst.",
     "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht.",
     "checkin.points.earned": "Du bekommst",
-    "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!"
+    "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!",
+    "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
+    "generic.error": "Fehler"
 }
