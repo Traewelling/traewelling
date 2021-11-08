@@ -55,7 +55,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        }, true));
+        },                             true));
     }
 
     /**
@@ -76,10 +76,10 @@ class CheckinTest extends TestCase
                 "longitude" => 7.4592
             ], */
             [
-                "name"      => "FRA",
-                "station"   => "Frankfurt(M) Flughafen Fernbf",
-                "latitude"  => 50.052926,
-                "longitude" => 8.569776
+                'name'      => 'FRA',
+                'station'   => 8070003,
+                'latitude'  => 50.052926,
+                'longitude' => 8.569776
             ]
             /*, [
                 "name"      => "Moskau",
@@ -92,16 +92,16 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                             ->get(route("trains.nearby", [
-                                 "latitude"  => $testcase["latitude"],
-                                 "longitude" => $testcase["longitude"]
+                             ->get(route('trains.nearby', [
+                                 'latitude'  => $testcase['latitude'],
+                                 'longitude' => $testcase['longitude']
                              ]));
 
             // THEN: Expect the redirect to another stationboard
             $response->assertStatus(302);
-            $response->assertRedirect(route("trains.stationboard", [
-                'station'  => $testcase["station"],
-                'provider' => 'train'
+            $response->assertRedirect(route('trains.stationboard', [
+                'station'  => $testcase['station'],
+                'provider' => 'train',
             ]));
         }
     }
