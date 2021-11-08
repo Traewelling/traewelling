@@ -21,41 +21,43 @@
                                 {{__('events.request-question')}}
                             </p>
                         @else
-                            <table class="table" aria-describedby="heading-live-upcoming">
-                                <tbody>
-                                    @foreach($liveAndUpcomingEvents as $event)
-                                        <tr>
-                                            <td>
-                                                {{$event->name}}
-                                                @if($event->getTrainstation() != null)
-                                                    <br/>
-                                                    <small class="text-muted">
-                                                        {{__('events.closestStation')}}:
-                                                        <a href="{{route('trains.stationboard', ['station' => $event->getTrainstation()->name])}}">
-                                                            {{$event->getTrainstation()->name}}
-                                                        </a>
-                                                    </small>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($event->begin->isSameDay($event->end))
-                                                    {{$event->begin->format('d.m.Y')}}
-                                                @else
-                                                    {{$event->begin->format('d.m.Y')}}
-                                                    - {{$event->end->format('d.m.Y')}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-primary btn-sm"
-                                                   href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}">
-                                                    {{__('menu.show-more')}}
-                                                    <em class="fas fa-angle-double-right"></em>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table" aria-describedby="heading-live-upcoming">
+                                    <tbody>
+                                        @foreach($liveAndUpcomingEvents as $event)
+                                            <tr>
+                                                <td>
+                                                    {{$event->name}}
+                                                    @isset($event->station)
+                                                        <br/>
+                                                        <small class="text-muted">
+                                                            {{__('events.closestStation')}}:
+                                                            <a href="{{route('trains.stationboard', ['station' => $event->station->name])}}">
+                                                                {{$event->station->name}}
+                                                            </a>
+                                                        </small>
+                                                    @endisset
+                                                </td>
+                                                <td>
+                                                    @if($event->begin->isSameDay($event->end))
+                                                        {{$event->begin->format('d.m.Y')}}
+                                                    @else
+                                                        {{$event->begin->format('d.m.Y')}}
+                                                        - {{$event->end->format('d.m.Y')}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-sm"
+                                                       href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}">
+                                                        {{__('menu.show-more')}}
+                                                        <em class="fas fa-angle-double-right"></em>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                             {{$liveAndUpcomingEvents->links()}}
                         @endif
                     </div>

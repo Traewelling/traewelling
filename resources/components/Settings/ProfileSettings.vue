@@ -120,6 +120,7 @@ import FADropdown from "../FADropdown";
 import myUpload from "vue-image-crop-upload";
 import {visibility} from "../../js/APImodels";
 import _debounce from "lodash/debounce";
+import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "ProfileSettings",
@@ -138,20 +139,14 @@ export default {
     },
     methods: {
         cropSuccess(val) {
-            axios
-                .post("/settings/profilePicture", {image: val})
+            Settings.updateProfilePicture(val)
                 .then(() => {
                     this.toggleShowUpload();
                     this.refreshProfilePicture();
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         toggleShowUpload() {
@@ -162,37 +157,25 @@ export default {
             this.value.profile_picture_set = hasProfilePicture;
         },
         updateProfileSettings() {
-            axios
-                .put("/settings/profile", this.value)
-                .then((response) => {
-                    this.value = response.data.data;
+            Settings.updateProfileSettings(this.value)
+                .then((data) => {
+                    this.value = data;
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                     this.$auth.fetch();
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         deleteProfilePicture() {
-            axios
-                .delete("/settings/profilePicture")
+            Settings.deleteProfilePicture()
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                     //ToDo implement twitter-like profilepicture links
                     this.refreshProfilePicture(false);
                 })
                 .catch((error) => {
-                    this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         profileSettingsChange: _debounce(function () {

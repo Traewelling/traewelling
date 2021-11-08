@@ -1,121 +1,121 @@
 <template>
-    <div class="spinner-container">
-        <div class="spinner">
-            <div aria-hidden="true" class="track"></div>
-            <div aria-hidden="true" class="train"></div>
+    <div class="row my-5">
+        <div class="spinner-container">
+            <div class="spinner">
+                <i v-for="icon in loadingIcons" v-bind:key="icon" :class="icon" aria-hidden="true" class="fas"></i>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "Spinner"
+    name: "Spinner",
+    data() {
+        return {
+            icons: [
+                "fa-taxi",
+                "fa-bus-alt",
+                "fa-subway",
+                "fa-tram",
+                "fa-bicycle",
+                "fa-ship"],
+            funIcons: [
+                "fa-space-shuttle",
+                "fa-walking",
+                "fa-car-crash",
+                "fa-fighter-jet",
+                "fa-ambulance",
+                "fa-tractor",
+                "fa-rocket",
+                "fa-paper-plane",
+                "fa-baby-carriage",
+                "fa-sleigh"
+            ]
+        };
+    },
+    computed: {
+        loadingIcons() {
+            let availableIcons = this.shuffle(this.icons);
+            //Randomly add fun icon
+            if (Math.random() < 0.1) {
+                availableIcons = this.shuffle(this.funIcons);
+            }
+
+            return availableIcons.slice(0, 6);
+        }
+    },
+    methods: {
+        shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j    = Math.floor(Math.random() * (i + 1));
+                const temp = array[i];
+                array[i]   = array[j];
+                array[j]   = temp;
+            }
+            return array;
+        }
+    }
 };
 </script>
 
 <style scoped>
-.spinner {
-    position: relative;
-    width: 60px;
-    height: 100px;
-}
-
 .spinner-container {
-    margin-left: 50%;
-}
-
-.track {
+    font-size: 8em;
     position: relative;
-    overflow: hidden;
-    width: 50px;
-    height: 100px;
-    left: -1px;
-    border-left: 5px solid #333;
-    transform: skew(-10deg) rotateX(45deg);
+    height: 1em;
 }
 
-.track:before {
-    content: "";
-    position: absolute;
-    height: 7px;
-    width: 50px;
-    background-color: #333;
-    top: 90px;
-    box-shadow: 0 0 #333, 0 -14px #333, 0 -28px #333, 0 -42px #333, 0 -56px #333, 0 -70px #333, 0 -84px #333, 0 -98px #333, 0 -112px #333, 0 -126px #333, 0 -140px #333;
-    animation: track 1s linear infinite;
-}
-
-@keyframes track {
+@keyframes Burst {
     0% {
-        transform: translateY(70px) rotateX(45deg);
+        opacity: 0;
+    }
+    5% {
+        opacity: 0.6;
+    }
+    20% {
+        opacity: 0;
+        transform: scale(1.8);
+    }
+    60% {
+        opacity: 0;
     }
     100% {
-        transform: translateY(0px) rotateX(45deg);
+        opacity: 0;
     }
 }
 
-.track:after {
-    content: "";
+.spinner i {
+    text-align: center;
+    animation: Burst 6s infinite linear;
+    animation-fill-mode: both;
     position: absolute;
-    transform: rotate(-15deg);
-    width: 50px;
-    height: 120px;
-    background-color: #fff;
-    border-left: 5px solid #333;
-    left: 28px;
-    top: -10px;
-}
-
-.train {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background-color: #333;
-    border-radius: 15px;
     top: 0;
-    left: -13px;
-    transform-origin: bottom;
-    animation: rotate 1s linear infinite;
+    left: 0;
+    width: 100%;
 }
 
-.train:before {
-    content: "";
-    position: absolute;
-    background-color: #ced4da;
-    border-radius: 15%;
-    width: 42px;
-    height: 20px;
-    left: 9px;
-    top: 12px;
+.spinner i:nth-child(1) {
+    animation-delay: 1s
 }
 
-.train:after {
-    content: "";
-    position: absolute;
-    background-color: #ced4da;
-    border-radius: 50%;
-    height: 10px;
-    width: 10px;
-    top: 40px;
-    left: 10px;
-    box-shadow: 30px 0px #ced4da;
+.spinner i:nth-child(2) {
+    animation-delay: 2s
 }
 
-@keyframes rotate {
-    0% {
-        transform: rotate(0);
-    }
-    25% {
-        transform: rotate(2deg);
-    }
-    50% {
-        transform: rotate(0);
-    }
-    75% {
-        transform: rotate(-2deg);
-    }
-    100% {
-        transform: rotate(0);
-    }
+.spinner i:nth-child(3) {
+    animation-delay: 3s
+}
+
+.spinner i:nth-child(4) {
+    animation-delay: 4s
+}
+
+.spinner i:nth-child(5) {
+    animation-delay: 5s
+}
+
+.spinner i:nth-child(6) {
+    animation-delay: 6s
 }
 </style>

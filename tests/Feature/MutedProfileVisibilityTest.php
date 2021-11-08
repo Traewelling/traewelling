@@ -36,14 +36,14 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the profile of bob? => yes
         Auth::logout();
-        $guest = $this->get(route('account.show', ['username' => $this->users->bob->user->username]));
+        $guest = $this->get(route('profile', ['username' => $this->users->bob->user->username]));
         $guest->assertSuccessful();
         $this->assertGuest();
         $guest->assertDontSee(__('user.muted.heading'));
 
         // Can alice see the profile of bob? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
-                      ->get(route('account.show', ['username' => $this->users->bob->user->username]));
+                      ->get(route('profile', ['username' => $this->users->bob->user->username]));
         $alice->assertSuccessful();
         $alice->assertSee(__('user.muted.heading'));
     }

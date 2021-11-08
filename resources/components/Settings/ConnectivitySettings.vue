@@ -229,6 +229,7 @@
 
 import ModalConfirm from "../ModalConfirm";
 import Spinner from "../Spinner";
+import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "ConnectivitySettings",
@@ -252,36 +253,33 @@ export default {
             this.notyf.error("Not yet implemented");
         },
         createIcsToken() {
-            axios
-                .post("/settings/ics-token", {name: this.newIcsName})
-                .then((response) => {
+            Settings.createIcsToken(this.newIcsName)
+                .then((data) => {
                     this.notyf.success({
-                        message: this.i18n.choice("_.settings.create-ics-token-success", 1, {link: response.data.data}),
+                        message: this.i18n.choice("_.settings.create-ics-token-success", 1, {link: data}),
                         duration: 10000
                     });
                 })
                 .catch((error) => {
                     this.icsLoading = false;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         fetchIcsTokens() {
             this.icsLoading = true;
             this.$refs.allIcs.show();
-            axios
-                .get("/settings/ics-tokens")
-                .then((response) => {
+            Settings.fetchIcsTokens()
+                .then((data) => {
                     this.icsLoading = false;
-                    this.icsTokens  = response.data.data;
+                    this.icsTokens  = data;
                 })
                 .catch((error) => {
                     this.icsLoading = false;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         deleteIcsToken(token) {
-            axios
-                .delete("/settings/ics-token", {data: {id: token.id}})
+            Settings.deleteIcsToken(token.id)
                 .then(() => {
                     const index = this.icsTokens.indexOf(token);
                     if (index > -1) {
@@ -290,26 +288,24 @@ export default {
                     this.notyf.success(this.i18n.get("_.settings.revoke-ics-token-success"));
                 })
                 .catch((error) => {
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         fetchSessions() {
             this.sessionLoading = true;
             this.$refs.sessions.show();
-            axios
-                .get("/settings/sessions")
-                .then((response) => {
+            Settings.fetchSessions()
+                .then((data) => {
                     this.sessionLoading = false;
-                    this.sessions       = response.data.data;
+                    this.sessions       = data;
                 })
                 .catch((error) => {
                     this.sessionLoading = false;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         deleteSessions() {
-            axios
-                .delete("/settings/sessions")
+            Settings.deleteSessions()
                 .then(() => {
                     this.sessions = [];
                     this.notyf.success(this.i18n.get("_.settings.saved"));
@@ -319,8 +315,7 @@ export default {
                 });
         },
         revokeToken(token) {
-            axios
-                .delete("/settings/token", {data: {tokenId: token.id}})
+            Settings.revokeApiToken(token.id)
                 .then(() => {
                     const index = this.tokens.indexOf(token);
                     if (index > -1) {
@@ -329,47 +324,32 @@ export default {
                     this.notyf.success(this.i18n.get("_.settings.revoke-token.success"));
                 })
                 .catch((error) => {
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         fetchTokens() {
             this.tokensLoading = true;
             this.$refs.tokens.show();
-            axios
-                .get("/settings/tokens")
-                .then((response) => {
+            Settings.fetchApiTokens()
+                .then((data) => {
                     this.tokensLoading = false;
-                    this.tokens        = response.data.data;
+                    this.tokens        = data;
                 })
                 .catch((error) => {
                     this.tokensLoading = false;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         revokeTokens() {
-            axios
-                .delete("/settings/tokens")
+            Settings.revokeAllApiTokens()
                 .then(() => {
                     this.sessions = [];
                     this.$auth.logout();
                     this.notyf.success(this.i18n.get("_.settings.revoke-token.success"));
                 })
                 .catch((error) => {
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
-        },
-        catchError(error) {
-            if (error.response) {
-                if (error.response.data.errors) {
-                    Object.entries(error.response.data.errors).forEach((err) => {
-                        this.notyf.error(err[1][0]);
-                    });
-                } else {
-                    this.notyf.error(error.response.data.message);
-                }
-            } else {
-                this.notyf.error(this.i18n.get("_.messages.exception.general"));
-            }
         }
     }
 };

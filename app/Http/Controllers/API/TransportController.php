@@ -7,6 +7,7 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
@@ -167,7 +168,7 @@ class TransportController extends ResponseController
             return $this->sendError('Given stations are not on the trip.', 400);
         } catch (Throwable $exception) {
             report($exception);
-            return $this->sendError('Unknown Error occured', 500);
+            return $this->sendError('Unknown Error occurred', 500);
         }
 
     }
@@ -203,7 +204,7 @@ class TransportController extends ResponseController
         return $this->sendResponse($home);
     }
 
-    public function setHome(Request $request) {
+    public function setHome(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'ibnr' => 'required'
         ]);
@@ -214,7 +215,7 @@ class TransportController extends ResponseController
 
         try {
             $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
-            $trainStation = TransportBackend::setTrainHome(Auth::user(), $station->name);
+            $trainStation = HomeController::setHome(Auth::user(), $station);
             return $this->sendResponse($trainStation->name);
         } catch (HafasException $e) {
             return $this->sendError([

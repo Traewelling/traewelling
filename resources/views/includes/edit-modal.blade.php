@@ -23,6 +23,6 @@
                 <button type="button" class="btn btn-primary"
                         id="modal-trwl-edit-save">{{__('modals.edit-confirm')}}</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+</div>

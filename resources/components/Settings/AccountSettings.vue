@@ -13,7 +13,7 @@
             </div>
             <div class="col">
                 <button class="btn btn-outline-primary float-end" @click="$refs.mail.show()">
-                    {{ i18n.get("_.settings.change") }}
+                    {{ i18n.get("_.generic.change") }}
                 </button>
                 <button v-if="value.email && !value.email_verified" class="btn btn-outline-info float-end me-1"
                         @click="resendMail">
@@ -28,7 +28,7 @@
             </div>
             <div class="col-3">
                 <button class="btn btn-outline-primary float-end" @click="$refs.password.show()">
-                    {{ i18n.get("_.settings.change") }}
+                    {{ i18n.get("_.generic.change") }}
                 </button>
             </div>
         </div>
@@ -110,6 +110,7 @@
 <script>
 import ChangeLanguageButton from "../ChangeLanguageButton";
 import ModalConfirm from "../ModalConfirm";
+import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "AccountSettings",
@@ -132,8 +133,7 @@ export default {
     },
     methods: {
         deleteAccount() {
-            axios
-                .delete("/settings/account", {data: {confirmation: this.confirmDelete}})
+            Settings.deleteAccount(this.confirmDelete)
                 .then(() => {
                     this.confirmDelete = null;
                     this.$auth.logout();
@@ -141,43 +141,36 @@ export default {
                 })
                 .catch((error) => {
                     this.confirmDelete = null;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         updatePassword() {
-            axios
-                .put("/settings/password", {
-                    currentPassword: this.password,
-                    password: this.newPassword,
-                    password_confirmation: this.newPasswordConfirm
-                })
-                .then((response) => {
-                    this.setValue = response.data.data;
+            Settings.updatePassword(this.password, this.newPassword, this.newPasswordConfirm)
+                .then((data) => {
+                    this.setValue = data.data;
                     this.$emit("input", this.setValue);
                     this.password = this.newPassword = this.newPasswordConfirm = null;
                     this.notyf.success(this.i18n.get("_.controller.user.password-changed-ok"));
                 })
                 .catch((error) => {
                     this.password = this.email = null;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         resendMail() {
-            axios
-                .post("/settings/email/resend")
+            Settings.resendMail()
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.email.verification.sent"));
                 })
                 .catch((error) => {
                     this.password = this.email = null;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
         },
         updateMail() {
-            axios
-                .put("/settings/email", {"email": this.email, "password": this.password})
-                .then((response) => {
-                    this.setValue = response.data.data;
+            Settings.updateMail(this.email, this.password)
+                .then((data) => {
+                    this.setValue = data.data;
                     this.$emit("input", this.setValue);
                     this.password = null;
                     this.email    = null;
@@ -185,21 +178,8 @@ export default {
                 })
                 .catch((error) => {
                     this.password = this.email = null;
-                    this.catchError(error);
+                    this.apiErrorHandler(error);
                 });
-        },
-        catchError(error) {
-            if (error.response) {
-                if (error.response.data.errors) {
-                    Object.entries(error.response.data.errors).forEach((err) => {
-                        this.notyf.error(err[1][0]);
-                    });
-                } else {
-                    this.notyf.error(error.response.data.message);
-                }
-            } else {
-                this.notyf.error(this.i18n.get("_.messages.exception.general"));
-            }
         }
     }
 };

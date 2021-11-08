@@ -6,7 +6,11 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Exceptions\NotConnectedException;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
+use App\Models\Status;
 use App\Models\User;
+use App\Notifications\TwitterNotSent;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -71,5 +75,43 @@ abstract class TwitterController extends Controller
                                          'twitter_token'       => $socialiteUser->token,
                                          'twitter_tokenSecret' => $socialiteUser->tokenSecret,
                                      ]);
+    }
+
+    /**
+     * @param Status $status
+     *
+     * @throws NotConnectedException
+     */
+    public static function postStatus(Status $status): void {
+        if ($status?->user?->socialProfile?->twitter_id === null || config('trwl.post_social') !== true) {
+            return;
+        }
+
+        try {
+            $connection = self::getApi($status->user);
+            #dbl only works on Twitter.
+            $socialText = $status->socialText;
+            if ($status->user->always_dbl) {
+                $socialText .= "#dbl ";
+            }
+            $socialText .= ' ' . url("/status/{$status->id}");
+            $connection->post("statuses/update",
+                              [
+                                  "status" => $socialText,
+                                  'lat'    => $status->trainCheckin->Origin->latitude,
+                                  'lon'    => $status->trainCheckin->Origin->longitude
+                              ]
+            );
+
+            if ($connection->getLastHttpCode() !== 200) {
+                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
+            }
+        } catch (NotConnectedException $exception) {
+            throw $exception;
+        } catch (Exception $exception) {
+            Log::error($exception);
+            // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
+            // However, we still want to continue if it explodes, thus why not catch exceptions here.
+        }
     }
 }
