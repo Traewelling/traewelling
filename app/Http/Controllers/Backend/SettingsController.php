@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
 
-class SettingsController extends Controller
+abstract class SettingsController extends Controller
 {
     public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
         if ($user === null) {

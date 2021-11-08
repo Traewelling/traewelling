@@ -14,7 +14,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
 
-class UserController extends Controller
+abstract class UserController extends Controller
 {
     /**
      * @param User $user
