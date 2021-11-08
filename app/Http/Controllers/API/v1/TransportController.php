@@ -117,8 +117,8 @@ class TransportController extends ResponseController
             'tweet'       => ['nullable', 'boolean'],
             'toot'        => ['nullable', 'boolean'],
             'ibnr'        => ['nullable', 'boolean'],
-            'tripID'      => 'required',
-            'lineName'    => 'required',
+            'tripID'      => ['required'],
+            'lineName'    => ['required'],
             'start'       => ['required', 'numeric'],
             'destination' => ['required', 'numeric'],
             'departure'   => ['required', 'date'],
@@ -146,6 +146,7 @@ class TransportController extends ResponseController
                 exitStop: $request->input('destination'),
                 departure: Carbon::parse($request->input('departure')),
                 arrival: Carbon::parse($request->input('arrival')),
+                force: $request->input('force') ?? false,
                 ibnr: $request->input('ibnr') ?? false
             );
 

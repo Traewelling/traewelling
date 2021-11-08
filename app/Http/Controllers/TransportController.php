@@ -318,7 +318,7 @@ class TransportController extends Controller
             $hafasTrip->category,
             Carbon::parse($stopovers[$offset1]['departure']),
             Carbon::parse($stopovers[$offset2]['arrival']),
-        );
+        )['points'];
 
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
@@ -522,6 +522,8 @@ class TransportController extends Controller
         int       $exitStop,
         Carbon    $departure = null,
         Carbon    $arrival = null,
+        bool      $force = false,
+        bool      $forcePoints = false,
         bool      $ibnr = false
     ): array {
         $trip->load('stopoversNEW');
@@ -549,7 +551,7 @@ class TransportController extends Controller
             start: $firstStop->departure,
             end:   $lastStop->arrival
         );
-        if ($overlapping->count() > 0) {
+        if (!$force && $overlapping->count() > 0) {
             throw new CheckInCollisionException($overlapping->first());
         }
 
@@ -560,7 +562,7 @@ class TransportController extends Controller
             category:        $trip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival
-        );
+        )['points'];
 
         $trainCheckin = TrainCheckin::create([
                                                  'status_id'   => $status->id,
