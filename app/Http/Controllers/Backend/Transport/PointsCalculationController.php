@@ -47,7 +47,7 @@ abstract class PointsCalculationController extends Controller
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
+        else if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
             $reason = PointReasons::GOOD_ENOUGH;
         }
 
@@ -83,13 +83,10 @@ abstract class PointsCalculationController extends Controller
         if ($reason === PointReasons::GOOD_ENOUGH) {
             $factor = 0.25;
         }
-        dump($reason);
+
         $base     *= $factor;
-        dump($base);
         $distance *= $factor;
-        dump($distance);
         $result   = $base + $distance;
-        dd($result);
 
         foreach ($additions as $additional) {
             $factorA = 1;
