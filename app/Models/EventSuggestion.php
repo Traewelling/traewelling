@@ -11,8 +11,14 @@ class EventSuggestion extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'name', 'host', 'url', 'train_station_id', 'begin', 'end', 'processed'];
-    protected $dates    = ['begin', 'end'];
-    protected $casts    = ['processed' => 'boolean'];
+    protected $casts    = [
+        'id'               => 'integer',
+        'user_id'          => 'integer',
+        'train_station_id' => 'integer',
+        'begin'            => 'datetime',
+        'end'              => 'datetime',
+        'processed'        => 'boolean',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');

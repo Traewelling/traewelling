@@ -66,9 +66,9 @@
 
 <script>
 import LayoutBasic from "../layouts/Basic";
-import axios from "axios";
 import FollowButton from "../FollowButton";
 import Spinner from "../Spinner";
+import User from "../../js/ApiClient/User";
 
 export default {
     name: "SearchView",
@@ -84,33 +84,25 @@ export default {
     methods: {
         fetchData(query = this.$route.query.query) {
             this.loading = true;
-            axios
-                .get("/user/search/" + query)
-                .then((response) => {
-                    this.users = response.data.data;
-                    this.links = response.data.links;
+            User.search(query)
+                .then((data) => {
+                    this.users   = data.data;
+                    this.links   = data.links;
                     this.loading = false;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
-                    console.error(this.error);
+                    this.apiErrorHandler(error);
                 });
         },
         fetchMore() {
             this.loading = true;
             this.error   = null;
-            axios
-                .get(this.links.next)
-                .then((response) => {
-                    this.users = this.users.concat(response.data.data);
-                    this.links = response.data.links;
-                    this.fetchStopovers(response.data.data);
+            this.fetchMoreData(this.links.next)
+                .then((data) => {
                     this.loading = false;
-                })
-                .catch((error) => {
-                    this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.users   = this.users.concat(data.data);
+                    this.links   = data.links;
                 });
         },
     },

@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
             <router-link :to="{ name: 'base' }" class="navbar-brand d-none d-md-block">
-                Träwelling <!-- ToDo: get name from config -->
+                {{ $appName }}
             </router-link>
 
             <button :aria-label="i18n.get('_.Toggle navigation')"
@@ -112,13 +112,14 @@
 <script>
 import NotificationsButton from "../NotificationsButton";
 import NotificationsModal from "../NotificationsModal";
+import Notifications from "../../js/ApiClient/Notifications";
 
 export default {
     name: "NavbarComponent",
     components: {NotificationsModal, NotificationsButton},
     data() {
         return {
-            notificationsCount: 0,
+            notificationsCount: 0
         };
     },
     methods: {
@@ -126,17 +127,12 @@ export default {
             this.$refs.notifModal.show();
         },
         fetchNotificationsCount() {
-            axios
-                .get("/notifications/count")
-                .then((response) => {
-                    this.notificationsCount = response.data.data;
+            Notifications.getCount()
+                .then((count) => {
+                    this.notificationsCount = count;
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        this.notyf.error(error.response.data.error.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         }
     },

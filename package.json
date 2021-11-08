@@ -46,6 +46,7 @@
         "vue-apexcharts": "^1.6.2",
         "vue-axios": "^3.2.4",
         "vue-i18n": "^8.24.4",
+        "vue-image-crop-upload": "^3.0.3",
         "vue-localstorage": "^0.6.2",
         "vue-meta": "^2.4.0",
         "vue-router": "^3.5.1"

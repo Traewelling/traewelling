@@ -12,11 +12,21 @@ class TrainCheckin extends Model
 {
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
-        'distance', 'points', 'departure', 'arrival'
+        'distance', 'departure', 'arrival', 'points',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $dates    = ['departure', 'arrival', 'created_at', 'updated_at'];
     protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
+    protected $casts    = [
+        'id'          => 'integer',
+        'status_id'   => 'integer',
+        'user_id'     => 'integer',
+        'origin'      => 'integer',
+        'destination' => 'integer',
+        'distance'    => 'integer',
+        'departure'   => 'datetime',
+        'arrival'     => 'datetime',
+        'points'      => 'integer',
+    ];
 
     public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
@@ -160,6 +170,9 @@ class TrainCheckin extends Model
                    ->get()
                    ->map(function($trainCheckIn) {
                        return $trainCheckIn->status;
+                   })
+                   ->filter(function($status) {
+                       return $status !== null;
                    });
     }
 }

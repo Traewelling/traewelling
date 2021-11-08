@@ -16,7 +16,7 @@
                                         <tr style="vertical-align: middle">
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                    <a href="{{ route('account.show', ['username' => $request->user->username]) }}">
+                                                    <a href="{{ route('profile', ['username' => $request->user->username]) }}">
                                                         <img src="{{ route('account.showProfilePicture', ['username' => $request->user->username]) }}"
                                                              style="height: 3em;"
                                                         />
@@ -24,7 +24,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{{route('account.show', ['username' => $request->user->username])}}">
+                                                <a href="{{route('profile', ['username' => $request->user->username])}}">
                                                     {{$request->user->name}}
                                                     @if($request->user->name != $request->user->username)
                                                         <br/>
@@ -84,7 +84,7 @@
                                         <tr style="vertical-align: middle">
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                    <a href="{{ route('account.show', ['username' => $follower->user->username]) }}">
+                                                    <a href="{{ route('profile', ['username' => $follower->user->username]) }}">
                                                         <img
                                                             src="{{ route('account.showProfilePicture', ['username' => $follower->user->username]) }}"
                                                             style="height: 4em;"
@@ -93,7 +93,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{{route('account.show', ['username' => $follower->user->username])}}">
+                                                <a href="{{route('profile', ['username' => $follower->user->username])}}">
                                                     {{$follower->user->name}}
                                                     @if($follower->user->name != $follower->user->username)
                                                         <br/>
@@ -132,7 +132,7 @@
                                         <tr style="vertical-align: middle">
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                    <a href="{{ route('account.show', ['username' => $user->username]) }}">
+                                                    <a href="{{ route('profile', ['username' => $user->username]) }}">
                                                         <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}"
                                                              style="height: 3em;"
                                                         />
@@ -140,7 +140,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{{route('account.show', ['username' => $user->username])}}">
+                                                <a href="{{route('profile', ['username' => $user->username])}}">
                                                     {{$user->name}}
                                                     @if($user->name != $user->username)
                                                         <br/>

@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
@@ -26,11 +27,11 @@ use Illuminate\Validation\ValidationException;
 class StatusController extends ResponseController
 {
     public static function getDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
+        return StatusResource::collection(DashboardController::getPrivateDashboard(Auth::user()));
     }
 
     public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getGlobalDashboard());
+        return StatusResource::collection(DashboardController::getGlobalDashboard(Auth::user()));
     }
 
     public static function getFutureCheckins(): AnonymousResourceCollection {
@@ -80,7 +81,7 @@ class StatusController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
+            return $this->sendv1Error($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -120,7 +121,7 @@ class StatusController extends ResponseController
                           ->mapWithKeys(function($status) {
                               return [$status->id => $status->trainCheckin->getMapLines()];
                           });
-        return $ids ? $this->sendv1Response($mapLines) : $this->sendError("");
+        return $ids ? $this->sendv1Response($mapLines) : $this->sendv1Error("");
     }
 
     /**

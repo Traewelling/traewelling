@@ -11,6 +11,11 @@ class UserMute extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'muted_id'];
+    protected $casts    = [
+        'id'       => 'integer',
+        'user_id'  => 'integer',
+        'muted_id' => 'integer',
+    ];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');

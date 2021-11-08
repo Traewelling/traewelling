@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\ResponseController as ResponseController;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Controllers\Backend\Auth\LoginController;
 use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -12,14 +11,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Psy\Util\Json;
 
 class AuthController extends ResponseController
 {
     /**
      * @param Request $request
+     *
      * @return JsonResponse
-     * @api v1
+     * @api  v1
      * @todo refactor this
      */
     public function register(Request $request): JsonResponse {
@@ -47,39 +46,32 @@ class AuthController extends ResponseController
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
         }
-        return $this->sendError("Sorry! Registration is not successful.", 401);
+        return $this->sendv1Error("Sorry! Registration is not successful.", 401);
     }
 
     /**
      * Login
+     *
      * @param Request $request
+     *
      * @return JsonResponse
      * @api v1
      */
     public function login(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'email'    => ['required', 'email'],
-            'password' => ['required']
-        ]);
+        $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8']]);
 
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        if (LoginController::login($validated['login'], $validated['password'])) {
             $token = $request->user()->createToken('token');
-            return response()->json([
-                                        'token'      => $token->accessToken,
-                                        'expires_at' => $token->token->expires_at->toIso8601String()
-                                    ], 200)
-                             ->header('Authorization', $token->accessToken);
+            return $this->sendv1Response(['token'      => $token->accessToken,
+                                          'expires_at' => $token->token->expires_at->toIso8601String()])
+                        ->header('Authorization', $token->accessToken);
         }
-        return response()->json(['error' => 'login_error'], 401);
+        return $this->sendError('Non-matching credentials', 401);
     }
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      * @api v1
      */
@@ -95,6 +87,7 @@ class AuthController extends ResponseController
     /**
      *
      * @param Request $request
+     *
      * @return JsonResponse
      * @api v1
      */

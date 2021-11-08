@@ -18,13 +18,21 @@ class TrainStopover extends Model
         'departure_planned', 'departure_real',
         'departure_platform_planned', 'departure_platform_real',
     ];
-    protected $dates    = [
-        'arrival_planned', 'arrival_real',
-        'departure_planned', 'departure_real',
-    ];
     protected $appends  = [
         'arrival', 'departure', 'platform',
         'isArrivalDelayed', 'isDepartureDelayed'
+    ];
+    protected $casts    = [
+        'id'                         => 'integer',
+        'train_station_id'           => 'integer',
+        'arrival_planned'            => 'datetime',
+        'arrival_real'               => 'datetime',
+        'arrival_platform_planned'   => 'integer',
+        'arrival_platform_real'      => 'integer',
+        'departure_planned'          => 'datetime',
+        'departure_real'             => 'datetime',
+        'departure_platform_planned' => 'integer',
+        'departure_platform_real'    => 'integer',
     ];
 
     public function trip(): BelongsTo {

@@ -6,8 +6,13 @@ use App\Exceptions\SocialAuth\InvalidMastodonException;
 use App\Http\Controllers\Controller;
 use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
+use App\Models\Status;
 use App\Models\User;
+use App\Notifications\MastodonNotSent;
+use Exception;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Revolution\Mastodon\Facades\Mastodon;
 
@@ -109,5 +114,22 @@ abstract class MastodonController extends Controller
                                          'mastodon_token'  => $socialiteUser->token,
                                          'mastodon_server' => $server->id,
                                      ]);
+    }
+
+    public static function postStatus(Status $status): void {
+        if ($status?->user?->socialProfile?->mastodon_server === null || config('trwl.post_social') !== true) {
+            return;
+        }
+
+        try {
+            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
+            Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
+            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+        } catch (RequestException $e) {
+            $status->user->notify(new MastodonNotSent($e->getResponse()?->getStatusCode(), $status));
+        } catch (Exception $e) {
+            Log::error($e);
+        }
     }
 }

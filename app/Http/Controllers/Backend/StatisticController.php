@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use stdClass;
 
-class StatisticController extends Controller
+abstract class StatisticController extends Controller
 {
 
     /**

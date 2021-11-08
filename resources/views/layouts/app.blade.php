@@ -3,9 +3,9 @@
     <head>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
-        @include('layouts.includes.meta')
+    @include('layouts.includes.meta')
 
-        <!-- Scripts -->
+    <!-- Scripts -->
         <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->
@@ -132,7 +132,8 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">
+                                        <a class="dropdown-item"
+                                           href="{{ route('profile', ['username' => auth()->user()->username]) }}">
                                             <i class="fas fa-user"></i> {{ __('menu.profile') }}
                                         </a>
                                         <a class="dropdown-item" href="{{ route('export.landing') }}">
@@ -141,6 +142,12 @@
                                         <a class="dropdown-item" href="{{ route('settings') }}">
                                             <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                         </a>
+                                        @if(config('ticket.host') !== null)
+                                            <a class="dropdown-item" href="{{ route('support') }}">
+                                                <i class="fas fa-headset" aria-hidden="true"></i>
+                                                {{ __('support') }}
+                                            </a>
+                                        @endif
                                         @if(Auth::user()->role >= 5)
                                             <a class="dropdown-item" href="{{route('admin.dashboard')}}">
                                                 <i class="fas fa-tools"></i> {{__('menu.admin')}}

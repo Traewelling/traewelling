@@ -1,33 +1,33 @@
 <template>
     <LayoutBasic>
-                <div class="col-md-8 col-lg-7">
-                    <Spinner v-if="loading" class="mt-5"/>
+        <div class="col-md-8 col-lg-7">
+            <Spinner v-if="loading" class="mt-5"/>
 
-                    <div v-if="error" class="error">
-                        <p>{{ error }}</p>
+            <div v-if="error" class="error">
+                <p>{{ error }}</p>
 
-                        <p>
-                            <button @click.prevent="fetchData">
-                                {{ i18n.get("_.vue.tryAgain") }}
-                            </button>
-                        </p>
-                    </div>
+                <p>
+                    <button @click.prevent="fetchData">
+                        {{ i18n.get("_.vue.tryAgain") }}
+                    </button>
+                </p>
+            </div>
 
-                    <div v-if="status">
-                        <Status :likes="likes" :polyline="polyline" :status="status" :stopovers="stopovers"
-                                show-date="true"></Status>
-                    </div>
-                </div>
+            <div v-if="status">
+                <Status :likes="likes" :polyline="polyline" :status="status" :stopovers="stopovers"
+                        show-date="true"></Status>
+            </div>
+        </div>
     </LayoutBasic>
 </template>
 
 <script>
-import axios from "axios";
 import Status from "../Status";
 import moment from "moment";
 import {StatusModel} from "../../js/APImodels";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
+import StatusApi from "../../js/ApiClient/Status";
 
 export default {
     name: "SingleStatus",
@@ -105,64 +105,52 @@ export default {
         fetchData() {
             this.error   = null;
             this.loading = true;
-            axios
-                .get("/statuses/" + this.$route.params.id)
-                .then((response) => {
+            StatusApi
+                .getById(this.$route.params.id)
+                .then((data) => {
                     this.loading = false;
-                    this.status  = response.data.data;
+                    this.status  = data;
                     this.updateMetadata();
                     this.fetchPolyline();
                     this.fetchStopovers();
                     this.fetchLikes();
                 })
-                .catch((error) => {
+                .catch((errors) => {
                     this.loading = false;
-                    this.error   = error.data.message || error.message;
+                    this.apiErrorHandler(errors);
                 });
         },
         fetchPolyline() {
-            axios
-                .get("/polyline/" + this.status.id)
-                .then((response) => {
-                    this.polyline = [response.data.data];
+            StatusApi
+                .fetchPolyLine(this.status.id)
+                .then((data) => {
+                    this.polyline = data;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         fetchStopovers() {
-            axios
-                .get("/stopovers/" + this.status.train.trip)
-                .then((response) => {
-                    this.stopovers = response.data.data;
+            StatusApi
+                .fetchStopovers(this.status.train.trip)
+                .then((data) => {
+                    this.stopovers = data;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         fetchLikes() {
-            axios
-                .get("/statuses/" + this.status.id + "/likedby")
-                .then((response) => {
-                    this.likes = response.data.data;
+            StatusApi
+                .fetchLikes(this.status.id)
+                .then((data) => {
+                    this.likes = data;
                 })
                 .catch((error) => {
                     this.loading = false;
-                    if (error.response) {
-                        this.notyf.error(error.response.data.message);
-                    } else {
-                        this.notyf.error(this.i18n.get("_.messages.exception.general"));
-                    }
+                    this.apiErrorHandler(error);
                 });
         },
         updateMetadata() {

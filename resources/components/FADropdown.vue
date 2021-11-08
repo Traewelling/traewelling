@@ -27,7 +27,11 @@ export default {
             selectedValue: null
         };
     },
-    props: ["btnClass", "dropdownContent", "preSelect", "showText"],
+    model: {
+        prop: "value",
+        event: "input"
+    },
+    props: ["btnClass", "dropdownContent", "preSelect", "showText", "value"],
     computed: {
         buttonClass() {
             if (this.$props.btnClass) {
@@ -51,6 +55,7 @@ export default {
     methods: {
         selectItem(key) {
             this.selectedValue = key;
+
             this.$emit("input", this.selectedValue);
         }
     }

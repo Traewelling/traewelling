@@ -11,7 +11,7 @@
 export default {
     name: "Card",
     props: ["title"]
-}
+};
 </script>
 
 <style scoped>
