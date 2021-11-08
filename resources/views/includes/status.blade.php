@@ -35,7 +35,7 @@
                         @endif
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->id])}}" class="text-trwl clearfix">
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}" class="text-trwl clearfix">
                         {{$status->trainCheckin->Origin->name}}
                     </a>
 
@@ -88,7 +88,7 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->id])}}" class="text-trwl clearfix">
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->ibnr])}}" class="text-trwl clearfix">
                                 {{\App\Http\Controllers\FrontendStatusController::nextStation($status)?->name}}
                             </a>
                         </p>
@@ -107,7 +107,7 @@
                             {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->id])}}" class="text-trwl clearfix">
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}" class="text-trwl clearfix">
                         {{$status->trainCheckin->Destination->name}}
                     </a>
                 </li>

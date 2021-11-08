@@ -16,9 +16,9 @@ abstract class StationController extends Controller
      * @throws ModelNotFoundException
      */
     public static function lookupStation(string|int $query): TrainStation {
-        //Lookup by station id
+        //Lookup by station ibnr
         if (is_numeric($query)) {
-            $station = TrainStation::find($query);
+            $station = TrainStation::where('ibnr', $query)->first();
             if ($station !== null) {
                 return $station;
             }

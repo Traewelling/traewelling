@@ -84,7 +84,7 @@ class FrontendTransportController extends Controller
         }
 
         return redirect()->route('trains.stationboard', [
-            'station'  => $nearestStation->name,
+            'station'  => $nearestStation->ibnr,
             'provider' => 'train'
         ]);
     }
