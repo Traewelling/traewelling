@@ -84,7 +84,7 @@ abstract class PointsCalculationController extends Controller
 
         $base     *= $factor;
         $distance *= $factor;
-        $result   = $base + $distance;
+        $result    = $base + $distance;
 
         foreach ($additions as $additional) {
             $factorA = 1;

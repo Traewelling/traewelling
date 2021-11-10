@@ -18,7 +18,7 @@ class AdditionalPointsResource extends JsonResource
         return [
             'identifier' => $this->name,
             'points'     => $this->points,
-            'divisible'  => $this->factorial ?? false
+            'divisible'  => $this->divisible ?? false
         ];
     }
 }
