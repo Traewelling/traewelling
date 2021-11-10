@@ -62,110 +62,13 @@
                 </div>
             </div>
         </div>
-        <ModalConfirm
-            ref="successModal"
-            :title-text="i18n.get('_.controller.transport.checkin-heading')"
-            :confirm-text="i18n.get('_.messages.cookie-notice-button')"
-            confirm-button-color="btn-success"
-            header-class="bg-success text-white"
-        >
-            <div class="p-0 m-0" v-if="$props.checkin">
-                <p class="text-center">
-                    {{
-                        i18n.choice(
-                            "_.controller.transport.checkin-ok",
-                            /\s/.test(checkin.status.train.lineName),
-                            {lineName: checkin.status.train.lineName}
-                        )
-                    }}
-                </p>
-
-                <h4 v-if="checkin.alsoOnThisConnection.length > 0">
-                    {{ i18n.choice("_.controller.transport.also-in-connection", checkin.alsoOnThisConnection.length) }}
-                </h4>
-                <div v-if="checkin.alsoOnThisConnection.length > 0" class="list-group">
-                    <router-link v-for="status in checkin.alsoOnThisConnection"
-                                 v-bind:key="status.id"
-                                 :to="{ name: 'singleStatus', params: {id: status.id, statusData: status }}"
-                                 class="list-group-item list-group-item-action">
-                        <div class="row">
-                            <div class="col-2">
-                                <img :alt="status.username"
-                                     :src="`/profile/${status.username}/profilepicture`"
-                                     class="img-fluid rounded-circle">
-                            </div>
-                            <div aria-hidden="true" class="col">
-                                <h5 class="mb-1 w-100">
-                                    {{ status.displayName }}
-                                    <small class="text-muted">@{{ status.username }}</small>
-                                </h5>
-                                {{ status.train.origin.name }}
-                                <i aria-hidden="true" class="fas fa-arrow-right"></i>
-                                {{ status.train.destination.name }}
-                            </div>
-                            <span class="sr-only">
-                            {{
-                                    i18n.choice("_.export.journey-from-to", 1, {
-                                        origin: status.train.origin.name,
-                                        destination: status.train.destination.name
-                                    })
-                                }}
-                        </span>
-                        </div>
-                    </router-link>
-                </div>
-                <hr v-if="checkin.alsoOnThisConnection.length > 0">
-
-                <h4 class="mt-3">{{ i18n.get("_.leaderboard.points") }}</h4>
-                <div class="row py-2">
-                    <div class="col-1"><i aria-hidden="true" class="fa fa-subway d-inline"></i></div>
-                    <div class="col"><span>{{ i18n.get("_.export.title.train-type") }}</span></div>
-                    <div class="col-4 text-end">
-                        <small v-if="checkin.points.calculation.reason > 0"
-                               class="text-danger text-decoration-line-through">
-                            {{ originalPoints(checkin.points.calculation.base) }}
-                        </small>
-                        <strong v-if="checkin.points.calculation.reason <= 1">
-                            &nbsp;{{ checkin.points.calculation.base }}
-                        </strong>
-                    </div>
-                </div>
-                <div class="row py-2 border-top">
-                    <div class="col-1"><i aria-hidden="true" class="fa fa-route d-inline"></i></div>
-                    <div class="col">
-                        {{ i18n.get("_.leaderboard.distance") }}:
-                        {{ (checkin.status.train.distance / 1000).toFixed(2) }}<small>km</small>
-                    </div>
-                    <div class="col-4 text-end">
-                        <small v-if="checkin.points.calculation.reason > 0"
-                               class="text-danger text-decoration-line-through">
-                            {{ originalPoints(checkin.points.calculation.distance) }}
-                        </small>
-                        <strong v-if="checkin.points.calculation.reason <= 1">
-                            &nbsp;{{ checkin.points.calculation.distance }}
-                        </strong>
-                    </div>
-                </div>
-                <div class="row py-2 text-bold border-top border-black">
-                    <div class="col-1"><i aria-hidden="true" class="fa fa-dice-d20 d-inline"></i></div>
-                    <div class="col">{{ i18n.get("_.checkin.points.earned") }}</div>
-                    <div class="col-4 text-end">{{ checkin.points.points }}</div>
-                </div>
-
-                <div v-if="checkin.points.calculation.reason === 2" class="alert alert-danger mt-3 mb-0" role="alert">
-                    <i aria-hidden="true" class="fas fa-exclamation-triangle d-inline"></i> &nbsp;
-                    {{ i18n.get("_.checkin.points.could-have") }}
-                    <router-link class="alert-link" to="/about#points-calculation" @click="$refs.successModal.hide()">
-                        {{ i18n.get("_.generic.why") }}
-                    </router-link>
-                </div>
-
-                <div v-if="checkin.points.calculation.reason === 3" class="alert alert-info mt-3 mb-0" role="alert">
-                    <i aria-hidden="true" class="fas fa-info-circle d-inline"></i> &nbsp;
-                    {{ i18n.get("_.checkin.points.forced") }}
-                </div>
-            </div>
-        </ModalConfirm>
+        <CheckinSuccessModal
+            v-if="checkin"
+            :points="checkin.points.points"
+            :calculation="checkin.points.calculation"
+            :status="checkin.status"
+            :alsoOnThisConnection="checkin.alsoOnThisConnection"
+        ></CheckinSuccessModal>
     </LayoutBasic>
 </template>
 
@@ -179,6 +82,7 @@ import Spinner from "../Spinner";
 import Dashboard from "../../js/ApiClient/Dashboard";
 import ApiStatus from "../../js/ApiClient/Status";
 import ModalConfirm from "../ModalConfirm";
+import CheckinSuccessModal from "../CheckinSuccessModal";
 
 export default {
     name: "dashboard",
@@ -200,6 +104,7 @@ export default {
         };
     },
     components: {
+        CheckinSuccessModal,
         ModalConfirm,
         Spinner,
         LayoutBasic,
@@ -208,9 +113,6 @@ export default {
     },
     mounted() {
         this.fetchData();
-        if (this.$props.checkin) {
-            this.$refs.successModal.show();
-        }
     },
     methods: {
         showDate(item, statuses) {
