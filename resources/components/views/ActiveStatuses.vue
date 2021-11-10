@@ -46,8 +46,8 @@ export default {
             error: null,
             interval: null,
             statuses: [StatusModel],
-            stopovers: null, //ToDo Typedef
-            polylines: null //ToDo Typedef
+            stopovers: null,
+            polylines: null
         };
     },
     metaInfo() {
@@ -100,7 +100,9 @@ export default {
             });
             ApiStatus
                 .fetchStopovers(tripIds)
-                .then((this.stopovers))
+                .then((data) => {
+                    this.stopovers = data;
+                })
                 .catch((error) => {
                     this.loading = false;
                     this.apiErrorHandler(error);
@@ -113,7 +115,9 @@ export default {
             });
             ApiStatus
                 .fetchPolyLine(tripIds)
-                .then((this.polylines))
+                .then((data) => {
+                    this.polylines = data;
+                })
                 .catch((error) => {
                     this.loading = false;
                     this.apiErrorHandler(error);
