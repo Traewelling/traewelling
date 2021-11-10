@@ -290,7 +290,7 @@
     "about.tram": "Trikk / bybane, buss, t -bane",
     "admin.select-range": "velg område",
     "controller.transport.not-in-stopovers": "Start-ID:en er ikke i mellomstoppene.",
-    "controller.transport.overlapping-checkin": "Du har allerede en innsjekkingsforbindelse: linename: ",
+    "controller.transport.overlapping-checkin": "Du har allerede en innsjekkingsforbindelse :linename: ",
     "events.no-upcoming": "Vi kjenner for øyeblikket ikke til hendelser.",
     "export.begin": "Fra",
     "export.origin": "Avreise",
