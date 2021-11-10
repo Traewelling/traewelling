@@ -119,9 +119,5 @@ export default {
     mounted() {
         this.$refs.successModal.show();
     }
-}
+};
 </script>
-
-<style scoped>
-
-</style>
