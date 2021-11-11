@@ -19,7 +19,7 @@ class StatusPolicy
      * @param Status    $status
      *
      * @return Response|bool
-     * @todo test
+     * @todo test unauthenticated
      */
     public function view(?User $user, Status $status): Response|bool {
         // Case 1: User is unauthenticated
