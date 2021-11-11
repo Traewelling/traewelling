@@ -6,8 +6,8 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -117,7 +117,7 @@ class UserController extends Controller
      * @frontend
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
-        if ($user->userInvisibleToMe) {
+        if (!\request()?->can('view', $user)) {
             throw new PermissionException();
         }
         return $user->statuses()
@@ -301,8 +301,9 @@ class UserController extends Controller
 
     /**
      * @param string|null $searchQuery
-     * @deprecated is now in backend/usercontroller for api v1
+     *
      * @return Paginator
+     * @deprecated is now in backend/usercontroller for api v1
      */
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);

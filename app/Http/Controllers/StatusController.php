@@ -176,7 +176,7 @@ class StatusController extends Controller
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if ($user->cannot('view', $status) || $status->user->UserInvisibleToMe) {
+        if ($user->cannot('view', $status)) {
             throw new PermissionException();
         }
 

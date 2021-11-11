@@ -26,7 +26,7 @@ class UserResource extends JsonResource
             'twitterUrl'        => $this->twitterUrl ?? null,
             'mastodonUrl'       => $this->mastodonUrl ?? null,
             'privateProfile'    => (bool) $this->private_profile,
-            'userInvisibleToMe' => (bool) $this->userInvisibleToMe,
+            'userInvisibleToMe' => (bool) \request()->cannot('view', $this), //TODO: Is $this working here?
             'muted'             => (bool) $this->muted,
             'following'         => (bool) $this->following,
             'followPending'     => (bool) $this->followPending,
