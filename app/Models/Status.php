@@ -101,11 +101,9 @@ class Status extends Model
     }
 
     /**
-     * When is a status invisible?
-     * 0=public, 1=unlisted, 2=Followers, 3=Private
-     * @return bool
+     * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->can(...) / request()->cannot(...)
      */
     public function getStatusInvisibleToMeAttribute(): bool {
-        return request()->user()->cannot('view', $this); //TODO: temporary. remove this method later.
+        return !request()?->user()?->can('view', $this);
     }
 }

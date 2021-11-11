@@ -40,7 +40,8 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == StatusVisibility::UNLISTED)) {
+
+        if (request()?->can('view', $status)) {
             return $status;
         }
 
@@ -73,10 +74,10 @@ class StatusController extends Controller
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
                               ->get()
-                              ->filter(function($status) {
-                                  return (!$status->user->userInvisibleToMe && !$status->statusInvisibleToMe);
+                              ->filter(function(Status $status) {
+                                  return request()?->can('view', $status);
                               })
-                              ->sortByDesc(function($status) {
+                              ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
                               })->values();
         } else {
@@ -93,7 +94,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if ($status?->user?->userInvisibleToMe || $status?->statusInvisibleToMe) {
+            if (!request()?->can('view', $status)) {
                 return null;
             }
             return $status;
@@ -175,7 +176,7 @@ class StatusController extends Controller
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if (($status->StatusInvisibleToMe && $status->visibility != StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
+        if ($user->cannot('view', $status) || $status->user->UserInvisibleToMe) {
             throw new PermissionException();
         }
 

@@ -112,11 +112,8 @@ class StatusController extends ResponseController
         $geoJsonFeatures = Status::whereIn('id', $ids)
                           ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
-                          ->reject(function($status) {
-                              return ($status->user->userInvisibleToMe
-                                      || ($status->statusInvisibleToMe
-                                          && $status->visibility !== StatusVisibility::UNLISTED
-                                      ));
+                          ->filter(function(Status $status) {
+                              return \request()?->can('view', $status);
                           })
                           ->map(function($status) {
                               return [

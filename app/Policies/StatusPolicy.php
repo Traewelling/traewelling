@@ -20,12 +20,18 @@ class StatusPolicy
      *
      * @return Response|bool
      * @todo test unauthenticated
+     * @todo implement blocked and muted
      */
     public function view(?User $user, Status $status): Response|bool {
         // Case 1: User is unauthenticated
         if ($user === null) {
             // true, if user is not private and visibility is UNLISTED or PUBLIC.
             return !$status->user->private_profile && $status->visibility <= StatusVisibility::UNLISTED;
+        }
+
+        // Case 1½: User is already invisible
+        if ($user->cannot('view', $status->user)) {
+            return Response::deny();
         }
 
         // Case 2: Status belongs to the user

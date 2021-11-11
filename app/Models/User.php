@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
@@ -120,34 +119,10 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Checks if this user is invisible to "me".
-     * +---------+---------------+-----------+--------+
-     * | Private | authenticated | following | result |
-     * +---------+---------------+-----------+--------+
-     * |       0 |             0 |         0 | 0      |
-     * |       0 |             0 |         1 | 0      |
-     * |       0 |             1 |         0 | 0      |
-     * |       0 |             1 |         1 | 0      |
-     * |       1 |             0 |         0 | 1      |
-     * |       1 |             0 |         1 | ?      |
-     * |       1 |             1 |         0 | 1      |
-     * |       1 |             1 |         1 | 0      |
-     * +---------+---------------+-----------+--------+
-     *
-     * @return bool
+     * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->can(...) / request()->cannot(...)
      */
     public function getUserInvisibleToMeAttribute(): bool {
-        if (auth()->check()
-            && $this->id != auth()->user()->id
-            && auth()->user()->mutedUsers->contains('id', $this->id)) {
-            return true;
-        }
-        return $this->private_profile
-               && (!Auth::check()
-                   || (Auth::check()
-                       && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
-                   )
-               );
+        return request()->user()->cannot('view', $this);
     }
 
     public function getFollowingAttribute(): bool {
