@@ -109,7 +109,7 @@ class StatusController extends ResponseController
      */
     public function getPolyline(string $parameters): JsonResponse {
         $ids      = explode(',', $parameters, 50);
-        $mapLines = Status::whereIn('id', $ids)
+        $geoJsonFeatures = Status::whereIn('id', $ids)
                           ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
                           ->reject(function($status) {
@@ -118,10 +118,23 @@ class StatusController extends ResponseController
                                           && $status->visibility !== StatusVisibility::UNLISTED
                                       ));
                           })
-                          ->mapWithKeys(function($status) {
-                              return [$status->id => $status->trainCheckin->getMapLines()];
+                          ->map(function($status) {
+                              return [
+                                  'type' => 'Feature',
+                                  'geometry' => [
+                                      'type' => 'LineString',
+                                      'coordinates' => $status->trainCheckin->getMapLines()
+                                  ],
+                                  'properties' => [
+                                      'statusId' => $status->id
+                                  ]
+                                ];
                           });
-        return $ids ? $this->sendv1Response($mapLines) : $this->sendv1Error("");
+        $geoJson = [
+            'type' => 'FeatureCollection',
+            'features' => $geoJsonFeatures
+        ];
+        return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
     }
 
     /**
