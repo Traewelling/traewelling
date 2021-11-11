@@ -6,6 +6,7 @@
 - [ ] Login/Register via Mastodon should be possible
 - [ ] When you check in and the modal for conflicts appears and you click on the status ID you are trapped in the page
 - [ ] Include a loading animation when the location button is used to find the next station. This sometimes takes a long time.
+- [ ] Implement current version in the footer (maybe we can save the version within the docker building to a file?)
 
 ## Routes
 This issues is mainly to keep track of which routes need to be adapted for the api
