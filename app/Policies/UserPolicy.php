@@ -10,7 +10,6 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-
     /**
      * Determine whether the user can view the model.
      *
@@ -32,16 +31,21 @@ class UserPolicy
      *
      * @return Response
      * @test check table above and test
-     * @todo implement blocked and muted
      */
     public function view(?User $user, User $model): Response {
+        if ($user === null) {
+            return $model->private_profile ? Response::deny(__('profile.private-profile-text')) : Response::allow();
+        }
         if ($user->is($model)) {
             return Response::allow();
         }
-        if ($model->private_profile && $user !== null && $model->followers->contains('id', $user->id)) {
-            return Response::allow();
+        if ($model->private_profile && !$model->followers->contains('id', $user->id)) {
+            return Response::deny(__('profile.private-profile-text'));
         }
-        return Response::deny();
+        if ($user->mutedUsers->contains('id', $model->id)) {
+            return Response::deny(__('user.muted.heading'));
+        }
+        return Response::allow();
     }
 
     /**

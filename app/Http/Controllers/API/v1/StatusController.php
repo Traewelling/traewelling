@@ -113,7 +113,7 @@ class StatusController extends ResponseController
                           ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
                           ->filter(function(Status $status) {
-                              return \request()?->can('view', $status);
+                              return \request()?->user()->can('view', $status);
                           })
                           ->map(function($status) {
                               return [

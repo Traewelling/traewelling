@@ -8,7 +8,7 @@
             <table style="margin-left: auto;margin-right: auto;">
                 <tbody>
                     @foreach(session()->get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
-                        @if(request()->cannot('view', $otherStatus))
+                        @if(request()->user()->cannot('view', $otherStatus))
                             <tr>
                                 <td colspan="5">
                                     <i class="fas fa-user-secret" aria-hidden="true"></i>

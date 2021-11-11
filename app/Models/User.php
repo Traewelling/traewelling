@@ -119,7 +119,8 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->can(...) / request()->cannot(...)
+     * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->user()->can(...) /
+     *             request()->user()->cannot(...)
      */
     public function getUserInvisibleToMeAttribute(): bool {
         return !request()?->user()?->can('view', $this);

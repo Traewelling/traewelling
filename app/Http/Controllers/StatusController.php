@@ -41,7 +41,7 @@ class StatusController extends Controller
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
 
-        if (request()?->can('view', $status)) {
+        if (request()?->user()->can('view', $status)) {
             return $status;
         }
 
@@ -75,7 +75,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function(Status $status) {
-                                  return request()?->can('view', $status);
+                                  return request()?->user()->can('view', $status);
                               })
                               ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
@@ -94,7 +94,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if (!request()?->can('view', $status)) {
+            if (!request()?->user()->can('view', $status)) {
                 return null;
             }
             return $status;
