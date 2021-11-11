@@ -14,7 +14,7 @@ class ViewTest extends TestCase
 
     use RefreshDatabase;
 
-    public function testViewOnStatus(): void {
+    public function testViewOwnStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id])->create();
         $this->assertTrue($user->can('view', $status));
