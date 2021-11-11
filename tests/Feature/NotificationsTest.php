@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Enum\StatusVisibility;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
 use App\Models\User;
+use App\Notifications\StatusLiked;
+use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
@@ -23,7 +26,7 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function likes_appear_in_notifications() {
+    public function likes_appear_in_notifications(): void {
         // Given: There is a likable status
         $timestamp = Carbon::parse("+2 day 7:45");
         $this->checkin("Hamburg Hbf", $timestamp);
@@ -41,14 +44,14 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one like
         $notifications->assertJsonFragment([
-                                               'type'            => "App\\Notifications\\StatusLiked",
-                                               'notifiable_type' => "App\\Models\\User",
+                                               'type'            => StatusLiked::class,
+                                               'notifiable_type' => User::class,
                                                'notifiable_id'   => (string) $this->user->id
                                            ]);
     }
 
     /** @test */
-    public function removed_likes_dont_appear_in_notifications() {
+    public function removed_likes_dont_appear_in_notifications(): void {
         // Given: There is a likable status
         $timestamp = Carbon::parse("+2 day 7:45");
         $this->checkin("Hamburg Hbf", $timestamp);
@@ -69,7 +72,7 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function following_a_user_should_spawn_a_notification() {
+    public function following_a_user_should_spawn_a_notification(): void {
         // Given: Users Alice and Bob
         $alice = $this->user;
         $bob   = $this->createGDPRAckedUser();
@@ -110,15 +113,23 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function bob_joining_on_alices_connection_should_spawn_a_notification() {
+    public function bob_joining_on_alices_connection_should_spawn_a_notification(): void {
         // GIVEN: Alice checked-into a train.
         $alice     = $this->createGDPRAckedUser();
-        $timestamp = Carbon::parse("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $timestamp, $alice);
+        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $alice,
+        );
 
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
-        $this->checkin("Hamburg Hbf", $timestamp, $bob);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $bob
+        );
 
         // THEN: Alice should see that in their notification
         $notifications = $this->actingAs($alice)
@@ -126,8 +137,8 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // One other user on that train
         $notifications->assertJsonFragment([
-                                               'type'            => "App\\Notifications\\UserJoinedConnection",
-                                               'notifiable_type' => "App\\Models\\User",
+                                               'type'            => UserJoinedConnection::class,
+                                               'notifiable_type' => User::class,
                                                'notifiable_id'   => (string) $alice->id
                                            ]);
 
@@ -141,6 +152,32 @@ class NotificationsTest extends TestCase
                               ->get(route('notifications.latest'));
         $notifications->assertOk();
         $notifications->assertJsonCount(0); // no other user no more
+    }
+
+    public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void {
+        // GIVEN: Alice checked-into a train.
+        $alice     = $this->createGDPRAckedUser();
+        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $alice,
+        );
+
+        // WHEN: Bob also checks into the train
+        $bob = $this->createGDPRAckedUser();
+        $this->checkin(
+            stationName:      "Hamburg Hbf",
+            timestamp:        $timestamp,
+            user:             $bob,
+            statusVisibility: StatusVisibility::PRIVATE,
+        );
+
+        // THEN: Alice should NOT see that in their notification, because the Status is Private
+        $notifications = $this->actingAs($alice)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(0); // One other user on that train
     }
 
     /** @test */

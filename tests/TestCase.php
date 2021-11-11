@@ -107,19 +107,27 @@ abstract class TestCase extends BaseTestCase
         'duration'             => "float",
         'event'                => "mixed"
     ])]
-    protected function checkin($stationName, Carbon $timestamp, User $user = null, bool $forEvent = null): ?array {
-        if ($user == null) {
+    protected function checkin(
+        string $stationName,
+        Carbon $timestamp,
+        User   $user = null,
+        bool   $forEvent = null,
+        int    $statusVisibility = StatusVisibility::PUBLIC
+    ): ?array {
+        if ($user === null) {
             $user = $this->user;
         }
         try {
-            $trainStationboard = TransportController::getDepartures($stationName,
-                                                                    $timestamp,
-                                                                    TravelType::EXPRESS);
+            $trainStationboard = TransportController::getDepartures(
+                stationName: $stationName,
+                when:        $timestamp,
+                travelType:  TravelType::EXPRESS
+            );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
         $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
+        if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
 
@@ -148,7 +156,7 @@ abstract class TestCase extends BaseTestCase
         }
 
         $eventId = 0;
-        if ($forEvent != null) {
+        if ($forEvent !== null) {
             try {
                 $eventId = Event::firstOrFail()->id;
             } catch (ModelNotFoundException) {
@@ -167,7 +175,7 @@ abstract class TestCase extends BaseTestCase
                 businessCheck: 0,
                 tweetCheck:    0,
                 tootCheck:     0,
-                visibility:    StatusVisibility::PUBLIC,
+                visibility:    $statusVisibility,
                 eventId:       $eventId
             );
         } catch (StationNotOnTripException) {
