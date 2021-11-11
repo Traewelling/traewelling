@@ -43,23 +43,15 @@ export default {
           try {
             this.map.removeLayer(this.map._layers[i]);
           } catch (e) {
-            console.error("problem with " + e + this.map._layers[i]);
+              console.error("problem with " + e + this.map._layers[i]);
           }
         }
       }
-
-      let lines = L.featureGroup();
       if (this.$props.polyLines) {
-        this.$props.polyLines.forEach((polyline) => {
-          Object.values(polyline).forEach((coordinates) => {
-            let line = L.polyline(coordinates).setStyle({color: "rgb(192, 57, 43)", weight: 5});
-            lines.addLayer(line);
-            //ToDo make the line more like the original
-          });
-        });
-
-        lines.addTo(this.map);
-        this.map.fitBounds(lines.getBounds());
+          let layer = L.geoJSON(this.$props.polyLines, {
+              style: {color: "rgb(192, 57, 43)", weight: 5}
+          }).addTo(this.map);
+          this.map.fitBounds(layer.getBounds());
       }
     }
   },

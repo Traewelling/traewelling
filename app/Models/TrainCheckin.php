@@ -124,7 +124,7 @@ class TrainCheckin extends Model
             // Check if this point is the trips origin => Include this point!
             if ($behindOrigin || (isset($f->properties->id) && $f->properties->id == $origin)) {
                 $behindOrigin = true;
-                $coords[]     = [$f->geometry->coordinates[1], $f->geometry->coordinates[0]];
+                $coords[]     = [$f->geometry->coordinates[0], $f->geometry->coordinates[1]];
             }
 
             // If this was the destination, don't loop any further.
