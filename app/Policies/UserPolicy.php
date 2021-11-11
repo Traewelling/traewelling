@@ -39,7 +39,7 @@ class UserPolicy
         if ($user->is($model)) {
             return Response::allow();
         }
-        if ($model->private_profile && !$model->followers->contains('id', $user->id)) {
+        if ($model->private_profile && !$model->followers->contains('user_id', $user->id)) {
             return Response::deny(__('profile.private-profile-text'));
         }
         if ($user->mutedUsers->contains('id', $model->id)) {
