@@ -24,6 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
 class TransportController extends ResponseController
@@ -109,7 +110,7 @@ class TransportController extends ResponseController
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
-                                            'business'    => ['nullable', Rule::in(Business::getList())],
+                                            'business'    => ['nullable', new Enum(Business::class)],
                                             'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
                                             'tweet'       => ['nullable', 'boolean'],
@@ -126,7 +127,7 @@ class TransportController extends ResponseController
         try {
             $status = StatusBackend::createStatus(
                 user:       auth()->user(),
-                business:   $validated['business'] ?? 0,
+                business:   $validated['business'] ?? Business::PRIVATE->value,
                 visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
                 body:       $validated['body'] ?? null,
                 eventId:    $validated['eventId'] ?? null

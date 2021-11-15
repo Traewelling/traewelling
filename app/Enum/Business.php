@@ -3,9 +3,9 @@ declare(strict_types=0);
 
 namespace App\Enum;
 
-final class Business extends BasicEnum
+enum Business: int
 {
-    public const PRIVATE  = 0;
-    public const BUSINESS = 1;
-    public const COMMUTE  = 2;
+    case PRIVATE = 0;
+    case BUSINESS = 1;
+    case COMMUTE = 2;
 }

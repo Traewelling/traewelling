@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Enum;
 
 class StatusController extends ResponseController
 {
@@ -76,7 +77,7 @@ class StatusController extends ResponseController
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
             'body'       => ['nullable', 'max:280', 'nullable'],
-            'business'   => ['required', Rule::in(Business::getList())],
+            'business'   => ['required', new Enum(Business::class)],
             'visibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
 

@@ -136,7 +136,7 @@ class StatusController extends Controller
      * @param User        $user
      * @param int         $statusId
      * @param string|null $body
-     * @param int         $business
+     * @param Business    $business
      * @param int         $visibility
      *
      * @return Status
@@ -144,11 +144,11 @@ class StatusController extends Controller
      * @api v1
      */
     public static function EditStatus(
-        User   $user,
-        int    $statusId,
-        string $body = null,
-        int    $business = Business::PRIVATE,
-        int    $visibility = StatusVisibility::PUBLIC
+        User     $user,
+        int      $statusId,
+        string   $body = null,
+        Business $business = Business::PRIVATE,
+        int      $visibility = StatusVisibility::PUBLIC
     ): Status {
         $status = Status::findOrFail($statusId);
 
@@ -158,7 +158,7 @@ class StatusController extends Controller
 
         $status->update([
                             'body'       => $body,
-                            'business'   => $business,
+                            'business'   => $business->value,
                             'visibility' => $visibility,
                         ]);
         return $status;

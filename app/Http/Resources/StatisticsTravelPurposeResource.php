@@ -15,11 +15,11 @@ class StatisticsTravelPurposeResource extends JsonResource
      * @return array
      */
     public function toArray($request): array {
-        if ($this->reason == Business::PRIVATE) {
+        if ($this->reason == Business::PRIVATE->value) {
             $this->reason = 'private';
-        } elseif ($this->reason == Business::BUSINESS) {
+        } elseif ($this->reason == Business::BUSINESS->value) {
             $this->reason = 'business';
-        } elseif ($this->reason == Business::COMMUTE) {
+        } elseif ($this->reason == Business::COMMUTE->value) {
             $this->reason = 'commute';
         }
 
