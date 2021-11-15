@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94541ebd36c187c9d99c9a077c8125ba",
+    "content-hash": "873366ca77974da8f1950ca06b2077fc",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -7174,21 +7174,21 @@
         },
         {
             "name": "spatie/crawler",
-            "version": "7.0.4",
+            "version": "7.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/crawler.git",
-                "reference": "cffb081a2a9eb732eed292545aa384c263b053d9"
+                "reference": "2ede57d72963e6c45405a37712515b9367f0b688"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/crawler/zipball/cffb081a2a9eb732eed292545aa384c263b053d9",
-                "reference": "cffb081a2a9eb732eed292545aa384c263b053d9",
+                "url": "https://api.github.com/repos/spatie/crawler/zipball/2ede57d72963e6c45405a37712515b9367f0b688",
+                "reference": "2ede57d72963e6c45405a37712515b9367f0b688",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.3",
-                "guzzlehttp/psr7": "^1.8|^2.0",
+                "guzzlehttp/psr7": "^2.0",
                 "illuminate/collections": "^8.38",
                 "nicmart/tree": "^0.3.0",
                 "php": "^8.0",
@@ -7225,7 +7225,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/crawler/issues",
-                "source": "https://github.com/spatie/crawler/tree/7.0.4"
+                "source": "https://github.com/spatie/crawler/tree/7.0.5"
             },
             "funding": [
                 {
@@ -7237,7 +7237,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-11-12T21:48:29+00:00"
+            "time": "2021-11-15T14:24:05+00:00"
         },
         {
             "name": "spatie/enum",
@@ -11870,7 +11870,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-gd": "*",
         "ext-json": "*"
     },
