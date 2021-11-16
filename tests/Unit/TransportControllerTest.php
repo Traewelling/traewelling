@@ -45,19 +45,6 @@ class TransportControllerTest extends TestCase
     }
 
     /**
-     * Unknown transport product, gives 1 point blanco.
-     * 50km in an unknown mode of transport => 50/10 + 1 = 6 points
-     */
-    public function testCalculateTrainPoints_unknown_product() {
-        $this->assertEquals(6, PointsCalculationController::calculatePoints(
-            distanceInMeter: 50000,
-            category:        'unknown_mode_of_transport',
-            departure:       Carbon::now()->subMinutes(2),
-            arrival:         Carbon::now()->addMinutes(10),
-        ));
-    }
-
-    /**
      * I'm trying to check-into trains that depart in the future.
      */
     public function testCalculateTrainPoints_early_checkins() {
