@@ -36,10 +36,10 @@
                     {!! stationLink($status->trainCheckin->Origin->name) !!}
                     <p class="train-status text-muted">
                         <span>
-                            @if (file_exists(public_path('img/'.$status->trainCheckin->HafasTrip->category.'.svg')))
+                            @if (file_exists(public_path('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg')))
                                 <img class="product-icon"
-                                     src="{{ asset('img/'.$status->trainCheckin->HafasTrip->category.'.svg') }}"
-                                     alt="{{$status->trainCheckin->HafasTrip->category}}">
+                                     src="{{ asset('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg') }}"
+                                     alt="{{$status->trainCheckin->HafasTrip->category->value}}">
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}

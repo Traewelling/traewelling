@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class HafasTravelType extends BasicEnum
+enum HafasTravelType: string
 {
-    public const NATIONAL_EXPRESS = 'nationalExpress';
-    public const NATIONAL         = 'national';
-    public const REGIONAL_EXP     = 'regionalExp';
-    public const REGIONAL         = 'regional';
-    public const SUBURBAN         = 'suburban';
-    public const BUS              = 'bus';
-    public const FERRY            = 'ferry';
-    public const SUBWAY           = 'subway';
-    public const TRAM             = 'tram';
-    public const TAXI             = 'taxi';
+    case NATIONAL_EXPRESS = 'nationalExpress';
+    case NATIONAL         = 'national';
+    case REGIONAL_EXP     = 'regionalExp';
+    case REGIONAL         = 'regional';
+    case SUBURBAN         = 'suburban';
+    case BUS              = 'bus';
+    case FERRY            = 'ferry';
+    case SUBWAY           = 'subway';
+    case TRAM             = 'tram';
+    case TAXI             = 'taxi';
 }

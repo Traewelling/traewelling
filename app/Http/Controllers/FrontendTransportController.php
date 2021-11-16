@@ -18,7 +18,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
@@ -41,16 +40,16 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'station'    => ['required', 'string'],
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+                                            'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
         try {
             $TrainStationboardResponse = TransportBackend::getDepartures(
-                $validated['station'],
-                $when,
-                $validated['travelType'] ?? null
+                stationName: $validated['station'],
+                when:        $when,
+                travelType:  TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());

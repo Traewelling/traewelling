@@ -28,7 +28,7 @@ class StatusResource extends JsonResource
             "createdAt"    => $this->created_at->toIso8601String(),
             "train"        => [
                 "trip"        => (int) $this->trainCheckin->HafasTrip->id,
-                "category"    => (string) $this->trainCheckin->HafasTrip->category,
+                "category"    => $this->trainCheckin->HafasTrip->category->value,
                 "number"      => (string) $this->trainCheckin->HafasTrip->number,
                 "lineName"    => (string) $this->trainCheckin->HafasTrip->linename,
                 "distance"    => (int) $this->trainCheckin->distance, //TODO: Levin, das hier sind jetzt Meter (vorher km). Das muss in Vue angepasst werden.

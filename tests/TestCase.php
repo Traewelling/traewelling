@@ -113,9 +113,11 @@ abstract class TestCase extends BaseTestCase
             $user = $this->user;
         }
         try {
-            $trainStationboard = TransportController::getDepartures($stationName,
-                                                                    $timestamp,
-                                                                    TravelType::EXPRESS);
+            $trainStationboard = TransportController::getDepartures(
+                stationName: $stationName,
+                when:        $timestamp,
+                travelType:  TravelType::EXPRESS
+            );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }

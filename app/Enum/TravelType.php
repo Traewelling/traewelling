@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class TravelType extends BasicEnum
+enum TravelType: string
 {
-    public const EXPRESS  = 'express';
-    public const REGIONAL = 'regional';
-    public const SUBURBAN = 'suburban';
-    public const BUS      = 'bus';
-    public const FERRY    = 'ferry';
-    public const SUBWAY   = 'subway';
-    public const TRAM     = 'tram';
-    public const TAXI     = 'taxi';
+    case EXPRESS  = 'express';
+    case REGIONAL = 'regional';
+    case SUBURBAN = 'suburban';
+    case BUS      = 'bus';
+    case FERRY    = 'ferry';
+    case SUBWAY   = 'subway';
+    case TRAM     = 'tram';
+    case TAXI     = 'taxi';
 }

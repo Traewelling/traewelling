@@ -41,7 +41,7 @@ abstract class CsvExportController extends Controller
             foreach ($data as $status) {
                 $row = [
                     $status->id,
-                    $status->trainCheckin->HafasTrip->category,
+                    $status->trainCheckin->HafasTrip->category->value,
                     $status->trainCheckin->HafasTrip->linename,
                     $status->trainCheckin->Origin->name,
                     $status->trainCheckin->Origin->latitude . ', ' . $status->trainCheckin->Origin->longitude,

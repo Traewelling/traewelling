@@ -158,9 +158,9 @@ class CheckinTest extends TestCase
         $ibnr        = "8070003";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                $timestamp,
-                TravelType::EXPRESS
+                stationName: $stationname,
+                when:        $timestamp,
+                travelType:  TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -435,9 +435,9 @@ class CheckinTest extends TestCase
         $stationname = "Schloss Cecilienhof, Potsdam";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                $timestamp,
-                'bus'
+                stationName: $stationname,
+                when:        $timestamp,
+                travelType:  TravelType::BUS,
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -509,9 +509,9 @@ class CheckinTest extends TestCase
         $stationname = "Messe Nord / ICC, Berlin";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                Carbon::parse('+1 days 10:00'),
-                'suburban'
+                stationName: $stationname,
+                when:        Carbon::parse('+1 days 10:00'),
+                travelType:  TravelType::SUBURBAN,
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());

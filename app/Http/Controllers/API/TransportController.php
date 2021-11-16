@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
@@ -46,7 +47,7 @@ class TransportController extends ResponseController
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
-            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+            'travelType' => ['nullable', new Enum(TravelType::class)],
         ]);
 
         if ($validator->fails()) {
@@ -57,9 +58,9 @@ class TransportController extends ResponseController
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
-                $validated['station'],
-                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                $validated['travelType'] ?? null
+                stationName: $validated['station'],
+                when:        isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:  TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException $exception) {
             return $this->sendError($exception->getMessage(), 503);

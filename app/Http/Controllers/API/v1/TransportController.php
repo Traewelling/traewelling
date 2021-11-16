@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
@@ -40,14 +39,14 @@ class TransportController extends ResponseController
     public function departures(Request $request, string $name): JsonResponse {
         $validated = $request->validate([
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+                                            'travelType' => ['nullable', new Enum(TravelType::class)],
                                         ]);
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
-                $name,
-                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                $validated['travelType'] ?? null
+                stationName: $name,
+                when:        isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:  TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
             return $this->sendv1Error("There has been an error with our data provider", 400);

@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Enum\HafasTravelType;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 abstract class PointsCalculationController extends Controller
 {
 
-    public static function getBasePoints(int $distanceInMeter, string $category): int {
-        $factor = config('trwl.base_points.train.' . $category, 1);
+    public static function getBasePoints(int $distanceInMeter, HafasTravelType $category): int {
+        $factor = config('trwl.base_points.train.' . $category->value, 1);
         return $factor + ceil($distanceInMeter / 10000);
     }
 
-    public static function getReducedPoints(int $distanceInMeter, string $category): int {
+    public static function getReducedPoints(int $distanceInMeter, HafasTravelType $category): int {
         return ceil(self::getBasePoints($distanceInMeter, $category) * 0.25);
     }
 
     public static function calculatePoints(
-        int    $distanceInMeter,
-        string $category,
-        Carbon $departure,
-        Carbon $arrival,
-        Carbon $timestampOfView = null
+        int             $distanceInMeter,
+        HafasTravelType $category,
+        Carbon          $departure,
+        Carbon          $arrival,
+        Carbon          $timestampOfView = null
     ): int {
         if ($timestampOfView == null) {
             $timestampOfView = Carbon::now();

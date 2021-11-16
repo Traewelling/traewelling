@@ -8,7 +8,6 @@ use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
 
 class HafasTripFactory extends Factory
 {
@@ -42,6 +41,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
+                    //TODO: How to use Enum here? array_fill_keys won't work. Define explicit values?
                     'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
                 ],
                 'geometry'   => [
@@ -63,6 +63,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
+                    //TODO: How to use Enum here? array_fill_keys won't work. Define explicit values?
                     'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
                 ],
                 'arrival'                  => $time->toIso8601String(),
@@ -79,12 +80,14 @@ class HafasTripFactory extends Factory
             $time->addMinutes(30);
         }
 
-        $polyline = json_encode(['type'     => 'FeatureCollection',
-                                 'features' => $features]);
+        $polyline = json_encode([
+                                    'type'     => 'FeatureCollection',
+                                    'features' => $features,
+                                ]);
         $polyline = TransportController::getPolylineHash($polyline);
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
-            'category'    => $this->faker->randomElement(HafasTravelType::getList()),
+            'category'    => $this->faker->randomElement(HafasTravelType::cases())->value,
             'number'      => $this->faker->bothify('??-##'),
             'linename'    => $this->faker->bothify('?? ##'),
             'origin'      => $stops[0]->ibnr,

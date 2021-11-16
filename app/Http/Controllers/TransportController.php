@@ -64,10 +64,10 @@ class TransportController extends Controller
      */
     #[ArrayShape([
         'station'    => "\App\Models\TrainStation|mixed|null",
-        'departures' => "\Illuminate\Support\Collection",
+        'departures' => Collection::class,
         'times'      => "array"
     ])]
-    public static function getDepartures(string $stationName, Carbon $when = null, string $travelType = null): array {
+    public static function getDepartures(string $stationName, Carbon $when = null, TravelType $travelType = null): array {
         //first check if the query is a valid DS100 identifier
         if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
@@ -127,16 +127,16 @@ class TransportController extends Controller
      * @throws GuzzleException
      * @deprecated replaced by getDepartures()
      */
-    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
+    private static function getTrainDepartures($ibnr, string $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
         $trainTypes = [
-            TravelType::SUBURBAN => 'false',
-            TravelType::SUBWAY   => 'false',
-            TravelType::TRAM     => 'false',
-            TravelType::BUS      => 'false',
-            TravelType::FERRY    => 'false',
-            TravelType::EXPRESS  => 'false',
-            TravelType::REGIONAL => 'false',
+            TravelType::SUBURBAN->value => 'false',
+            TravelType::SUBWAY->value   => 'false',
+            TravelType::TRAM->value     => 'false',
+            TravelType::BUS->value      => 'false',
+            TravelType::FERRY->value    => 'false',
+            TravelType::EXPRESS->value  => 'false',
+            TravelType::REGIONAL->value => 'false',
         ];
         $appendix   = '';
 
@@ -148,7 +148,7 @@ class TransportController extends Controller
         $json     = json_decode($response->getBody()->getContents());
 
         //remove express trains in filtered results
-        if ($trainType != null && $trainType != TravelType::EXPRESS) {
+        if ($trainType != null && $trainType != TravelType::EXPRESS->value) { //TODO: Check if $trainType is string or enum
             foreach ($json as $key => $item) {
                 if ($item->line->product != $trainType) {
                     unset($json[$key]);
