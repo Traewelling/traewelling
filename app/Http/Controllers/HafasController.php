@@ -122,7 +122,10 @@ abstract class HafasController extends Controller
         TravelType   $type = null
     ): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
+            $client   = new Client([
+                                       'base_uri' => config('trwl.db_rest'),
+                                       'timeout'  => config('trwl.db_rest_timeout'),
+                                   ]);
             $query    = [
                 'when'                       => $when->toIso8601String(),
                 'duration'                   => $duration,
