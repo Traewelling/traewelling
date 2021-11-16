@@ -24,9 +24,84 @@ abstract class PointsCalculationController extends Controller
             $timestampOfView = Carbon::now();
         }
 
-        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
-        $reason = PointReasons::NOT_SUFFICIENT;
+        $base     = config('trwl.base_points.train.' . $category, 1);
+        $distance = ceil($distanceInMeter / 10000);
 
+        return self::calculatePointsWithReason(
+            basePoints:       $base,
+            distancePoints:   $distance,
+            additionalPoints: $additional,
+            reason:           self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
+        );
+    }
+
+    #[Pure]
+    private static function calculatePointsWithReason(
+        float     $basePoints,
+        float     $distancePoints,
+        ?array    $additionalPoints,
+        float|int $reason
+    ): PointsCalculationResource {
+        if ($reason === PointReasons::NOT_SUFFICIENT || $reason === PointReasons::FORCED) {
+            return new PointsCalculationResource([
+                                                     'points'      => 1,
+                                                     'calculation' => [
+                                                         'base'     => $basePoints,
+                                                         'distance' => $distancePoints,
+                                                         'reason'   => $reason,
+                                                         'factor'   => 0,
+                                                     ],
+                                                     'additional'  => $additionalPoints,
+                                                 ]);
+        }
+        $factor = self::getFactorByReason($reason);
+
+        $basePoints     *= $factor;
+        $distancePoints *= $factor;
+
+        $result = $basePoints + $distancePoints;
+
+        foreach ($additionalPoints as $additional) {
+            $factorA = 1;
+            if ($additional->divisible) {
+                $factorA = $factor;
+            }
+            $result += $additional->points * $factorA;
+        }
+
+        return new PointsCalculationResource([
+                                                 'points'      => ceil($result),
+                                                 'calculation' => [
+                                                     'base'     => $basePoints,
+                                                     'distance' => $distancePoints,
+                                                     'factor'   => $factor,
+                                                     'reason'   => $reason,
+                                                 ],
+                                                 'additional'  => $additionalPoints,
+                                             ]);
+    }
+
+    #[Pure]
+    public static function getFactorByReason(int $pointReason): float|int {
+        if ($pointReason === PointReasons::NOT_SUFFICIENT || $pointReason === PointReasons::FORCED) {
+            return 0;
+        }
+        if ($pointReason === PointReasons::GOOD_ENOUGH) {
+            return 0.25;
+        }
+        return 1;
+    }
+
+    #[Pure]
+    public static function getReason(
+        Carbon $departure,
+        Carbon $arrival,
+        bool   $forceCheckin,
+        Carbon $timestampOfView
+    ): int {
+        if ($forceCheckin) {
+            return PointReasons::FORCED;
+        }
 
         /**
          * Full points, 20min before the departure time or during the ride
@@ -36,72 +111,22 @@ abstract class PointsCalculationController extends Controller
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
         if ($timestampOfView->isBetween($departure->clone()->subMinutes(20), $arrival)) {
-            $reason = PointReasons::IN_TIME;
-        } /**
-         * Reduced points, one hour before departure and after arrival
+            return PointReasons::IN_TIME;
+        }
+
+        /**
+         * Reduced points, one hour before departure and one hour after arrival
          *
          *   D-60         D          A          A+60
          *    |           |          |           |
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        elseif ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
-            $reason = PointReasons::GOOD_ENOUGH;
+        if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
+            return PointReasons::GOOD_ENOUGH;
         }
 
-        if ($forceCheckin) {
-            $reason = PointReasons::FORCED;
-        }
-
-        $base     = config('trwl.base_points.train.' . $category, 1);
-        $distance = ceil($distanceInMeter / 10000);
-
-        return self::calculatePointsWithReason(
-            base:      $base,
-            distance:  $distance,
-            additions: $additional,
-            reason:    $reason);
+        // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
+        return PointReasons::NOT_SUFFICIENT;
     }
-
-    #[Pure] private static function calculatePointsWithReason(
-        float     $base,
-        float     $distance,
-        ?array    $additions,
-        float|int $reason
-    ): PointsCalculationResource {
-        if ($reason === PointReasons::NOT_SUFFICIENT || $reason === PointReasons::FORCED) {
-            return new PointsCalculationResource(['points'      => 1,
-                                                  'calculation' => ['base'     => $base,
-                                                                    'distance' => $distance,
-                                                                    'reason'   => $reason,
-                                                                    'factor'   => 0],
-                                                  'additional'  => $additions]);
-        }
-        $factor = 1;
-        if ($reason === PointReasons::GOOD_ENOUGH) {
-            $factor = 0.25;
-        }
-
-        $base     *= $factor;
-        $distance *= $factor;
-        $result    = $base + $distance;
-
-        foreach ($additions as $additional) {
-            $factorA = 1;
-            if ($additional->divisible) {
-                $factorA = $factor;
-            }
-            $result += $additional->points * $factorA;
-        }
-
-        return new PointsCalculationResource(['points'      => ceil($result),
-                                              'calculation' => [
-                                                  'base'     => $base,
-                                                  'distance' => $distance,
-                                                  'factor'   => $factor,
-                                                  'reason'   => $reason,
-                                              ],
-                                              'additional'  => $additions]);
-    }
-
 }
