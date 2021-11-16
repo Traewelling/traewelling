@@ -67,7 +67,11 @@ class TransportController extends Controller
         'departures' => Collection::class,
         'times'      => "array"
     ])]
-    public static function getDepartures(string $stationName, Carbon $when = null, TravelType $travelType = null): array {
+    public static function getDepartures(
+        string     $stationName,
+        Carbon     $when = null,
+        TravelType $travelType = null
+    ): array {
         //first check if the query is a valid DS100 identifier
         if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
             $station = HafasController::getTrainStationByRilIdentifier($stationName);
@@ -148,7 +152,8 @@ class TransportController extends Controller
         $json     = json_decode($response->getBody()->getContents());
 
         //remove express trains in filtered results
-        if ($trainType != null && $trainType != TravelType::EXPRESS->value) { //TODO: Check if $trainType is string or enum
+        //TODO: Check if $trainType is string or enum
+        if ($trainType != null && $trainType != TravelType::EXPRESS->value) {
             foreach ($json as $key => $item) {
                 if ($item->line->product != $trainType) {
                     unset($json[$key]);

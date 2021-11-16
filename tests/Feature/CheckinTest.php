@@ -56,7 +56,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        },                             true));
+        }, true));
     }
 
     /**
