@@ -207,8 +207,8 @@ class CheckinTest extends TestCase
                              'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
                              'departure'         => Carbon::parse($departure->plannedWhen),
                              'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
-                             'checkinVisibility' => StatusVisibility::PUBLIC,
-                             'business_check'    => 0
+                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
+                             'business_check'    => Business::PRIVATE->value,
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.

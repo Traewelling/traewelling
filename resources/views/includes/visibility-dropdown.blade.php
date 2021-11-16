@@ -10,7 +10,7 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
         @foreach(\App\Enum\StatusVisibility::cases() as $visibility)
-            @if(auth()->check() && auth()->user()->default_status_visibility->value <= $visibility->value)
+            @if(auth()->check() && auth()->user()->default_status_visibility?->value <= $visibility->value)
                 <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="{{$visibility->value}}">
                     <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock'][$visibility->value]}}"
                        aria-hidden="true"></i> {{ __('status.visibility.' . $visibility->value) }}

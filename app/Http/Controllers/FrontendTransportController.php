@@ -136,27 +136,28 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
-                                            'checkinVisibility' => [new Enum(StatusVisibility::class)],
+                                            'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
                                             'tweet_check'       => 'max:2',
                                             'toot_check'        => 'max:2',
                                             'event'             => 'integer',
                                             'departure'         => ['required', 'date'],
                                             'arrival'           => ['required', 'date'],
                                         ]);
+
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
-                $request->tripID,
-                $request->start,
-                $request->destination,
-                $request->body,
-                Auth::user(),
-                Business::from($validated['business_check']),
-                $request->tweet_check,
-                $request->toot_check,
-                StatusVisibility::from($validated['checkinVisibility']),
-                $request->event,
-                Carbon::parse($request->departure),
-                Carbon::parse($request->arrival),
+                tripId:      $request->tripID,
+                start:       $request->start,
+                destination: $request->destination,
+                body:        $request->body,
+                user:        Auth::user(),
+                business:    Business::from($validated['business_check']),
+                tweetCheck:  $request->tweet_check,
+                tootCheck:   $request->toot_check,
+                visibility:  StatusVisibility::from($validated['checkinVisibility']),
+                eventId:     $request->event,
+                departure:   Carbon::parse($request->departure),
+                arrival:     Carbon::parse($request->arrival),
             );
 
             return redirect()->route('dashboard')->with('checkin-success', [
