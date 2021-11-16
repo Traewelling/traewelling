@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +28,7 @@ class Status extends Model
     protected $casts    = [
         'id'         => 'integer',
         'user_id'    => 'integer',
-        'business'   => 'integer', //TODO: Change to Enum Cast with Laravel 9
+        'business'   => Business::class,
         'visibility' => 'integer', //TODO: Change to Enum Cast with Laravel 9
         'event_id'   => 'integer',
     ];

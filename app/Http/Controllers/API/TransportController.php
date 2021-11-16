@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -136,7 +137,7 @@ class TransportController extends ResponseController
                 $request->input('destination'),
                 $request->input('body'),
                 auth()->user(),
-                0,
+                Business::PRIVATE,
                 $request->input('tweet'),
                 $request->input('toot'),
                 StatusVisibility::PUBLIC,

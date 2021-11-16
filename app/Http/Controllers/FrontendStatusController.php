@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
@@ -19,6 +20,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 
 /**
@@ -75,19 +77,20 @@ class FrontendStatusController extends Controller
     }
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
-        $this->validate($request, [
+        $validated = $this->validate($request, [
+            'statusId'          => ['required', 'exists:statuses,id'],
             'body'              => ['nullable', 'max:280'],
-            'business_check'    => ['required', 'digits_between:0,2'],
+            'business_check'    => ['required', new Enum(Business::class)],
             'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
         ]);
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
                 user:       Auth::user(),
-                statusId:   $request['statusId'],
-                body:       $request['body'] ?? null,
-                business:   $request['business_check'],
-                visibility: $request['checkinVisibility']
+                statusId:   $validated['statusId'],
+                body:       $validated['body'] ?? null,
+                business:   Business::from($validated['business_check']),
+                visibility: $validated['checkinVisibility']
             );
         } catch (ModelNotFoundException | PermissionException) {
             return redirect()->back();

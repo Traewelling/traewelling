@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -263,7 +264,7 @@ class TransportController extends Controller
         $destination,
         $body,
         $user,
-        $businessCheck,
+        Business $business,
         $tweetCheck,
         $tootCheck,
         $visibility,
@@ -334,7 +335,7 @@ class TransportController extends Controller
         $status = Status::create([
                                      'user_id'    => $user->id,
                                      'body'       => $body,
-                                     'business'   => $businessCheck,
+                                     'business'   => $business,
                                      'visibility' => $visibility
                                  ]);
 

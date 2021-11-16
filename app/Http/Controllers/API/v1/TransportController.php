@@ -127,7 +127,7 @@ class TransportController extends ResponseController
         try {
             $status = StatusBackend::createStatus(
                 user:       auth()->user(),
-                business:   $validated['business'] ?? Business::PRIVATE->value,
+                business:   isset($validated['business']) ? Business::from($validated['business']) : Business::PRIVATE,
                 visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
                 body:       $validated['body'] ?? null,
                 eventId:    $validated['eventId'] ?? null

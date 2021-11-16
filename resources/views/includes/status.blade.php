@@ -1,6 +1,6 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business }}" data-trwl-visibility="{{ $status->visibility }}"
+     data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility }}"
 >
     @if (Route::current()->uri == "status/{id}")
         @if($status->trainCheckin->HafasTrip->polyline)

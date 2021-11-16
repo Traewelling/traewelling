@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -18,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
@@ -131,16 +133,16 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainCheckin(Request $request): RedirectResponse {
-        $this->validate($request, [
-            'body'              => 'max:280',
-            'business_check'    => 'digits_between:0,2',
-            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
-            'tweet_check'       => 'max:2',
-            'toot_check'        => 'max:2',
-            'event'             => 'integer',
-            'departure'         => ['required', 'date'],
-            'arrival'           => ['required', 'date'],
-        ]);
+        $validated = $request->validate([
+                                            'body'              => ['nullable', 'max:280'],
+                                            'business_check'    => ['required', new Enum(Business::class)],
+                                            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
+                                            'tweet_check'       => 'max:2',
+                                            'toot_check'        => 'max:2',
+                                            'event'             => 'integer',
+                                            'departure'         => ['required', 'date'],
+                                            'arrival'           => ['required', 'date'],
+                                        ]);
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
                 $request->tripID,
@@ -148,7 +150,7 @@ class FrontendTransportController extends Controller
                 $request->destination,
                 $request->body,
                 Auth::user(),
-                $request->business_check,
+                Business::from($validated['business_check']),
                 $request->tweet_check,
                 $request->toot_check,
                 $request->checkinVisibility,

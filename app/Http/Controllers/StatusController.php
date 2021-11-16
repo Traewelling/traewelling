@@ -270,12 +270,12 @@ class StatusController extends Controller
     }
 
     public static function createStatus(
-        User   $user,
-        int    $business,
-        int    $visibility,
-        string $body = null,
-        int    $eventId = null,
-        string $type = "hafas"
+        User     $user,
+        Business $business,
+        int      $visibility,
+        string   $body = null,
+        int      $eventId = null,
+        string   $type = "hafas"
     ): Status {
         $event = null;
         if ($eventId !== null) {
