@@ -21,7 +21,7 @@ class StatusResource extends JsonResource
             "user"         => (int) $this->user->id,
             "username"     => (string) $this->user->username,
             "preventIndex" => (bool) $this->user->prevent_index,
-            "business"     => (int) $this->business->value,
+            "business"     => $this->business->value,
             "visibility"   => $this->visibility->value,
             "likes"        => (int) $this->likes->count(),
             "liked"        => (bool) $this->favorited,
