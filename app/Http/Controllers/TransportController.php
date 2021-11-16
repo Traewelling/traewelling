@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
@@ -229,24 +231,25 @@ class TransportController extends Controller
     }
 
     /**
-     * @param             $tripId
-     * @param             $start
-     * @param             $destination
-     * @param             $body
-     * @param             $user
-     * @param             $businessCheck
-     * @param             $tweetCheck
-     * @param             $tootCheck
-     * @param             $visibility
-     * @param int         $eventId
-     * @param Carbon|null $departure
-     * @param Carbon|null $arrival
+     * @param                  $tripId
+     * @param                  $start
+     * @param                  $destination
+     * @param                  $body
+     * @param                  $user
+     * @param Business         $business
+     * @param                  $tweetCheck
+     * @param                  $tootCheck
+     * @param StatusVisibility $visibility
+     * @param int              $eventId
+     * @param Carbon|null      $departure
+     * @param Carbon|null      $arrival
      *
      * @return array
      * @throws CheckInCollisionException
      * @throws HafasException
      * @throws StationNotOnTripException
      * @throws TrainCheckinAlreadyExistException
+     * @throws NotConnectedException
      * @deprecated replaced by createTrainCheckin()
      */
     #[ArrayShape([
@@ -259,7 +262,8 @@ class TransportController extends Controller
         'duration'             => "float",
         'event'                => "mixed"
     ])]
-    public static function TrainCheckin($tripId,
+    public static function TrainCheckin(
+        $tripId,
         $start,
         $destination,
         $body,
@@ -267,11 +271,11 @@ class TransportController extends Controller
         Business $business,
         $tweetCheck,
         $tootCheck,
-        $visibility,
+        StatusVisibility $visibility,
         $eventId = 0,
-                                        Carbon $departure = null,
-                                        Carbon $arrival = null): array {
-
+        Carbon $departure = null,
+        Carbon $arrival = null
+    ): array {
         $hafasTrip = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset1   = self::searchForId($start, $stopovers, $departure);

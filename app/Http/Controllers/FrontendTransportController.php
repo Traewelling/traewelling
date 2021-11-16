@@ -136,7 +136,7 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
-                                            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
+                                            'checkinVisibility' => [new Enum(StatusVisibility::class)],
                                             'tweet_check'       => 'max:2',
                                             'toot_check'        => 'max:2',
                                             'event'             => 'integer',
@@ -153,7 +153,7 @@ class FrontendTransportController extends Controller
                 Business::from($validated['business_check']),
                 $request->tweet_check,
                 $request->toot_check,
-                $request->checkinVisibility,
+                StatusVisibility::from($validated['checkinVisibility']),
                 $request->event,
                 Carbon::parse($request->departure),
                 Carbon::parse($request->arrival),

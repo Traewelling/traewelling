@@ -19,7 +19,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 
@@ -81,7 +80,7 @@ class FrontendStatusController extends Controller
             'statusId'          => ['required', 'exists:statuses,id'],
             'body'              => ['nullable', 'max:280'],
             'business_check'    => ['required', new Enum(Business::class)],
-            'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
+            'checkinVisibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
         try {
@@ -90,7 +89,7 @@ class FrontendStatusController extends Controller
                 statusId:   $validated['statusId'],
                 body:       $validated['body'] ?? null,
                 business:   Business::from($validated['business_check']),
-                visibility: $validated['checkinVisibility']
+                visibility: StatusVisibility::from($validated['checkinVisibility']),
             );
         } catch (ModelNotFoundException | PermissionException) {
             return redirect()->back();

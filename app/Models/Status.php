@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @property int    user_id
- * @property string body
- * @property int    business
- * @property int    visibility
+ * @property int              user_id
+ * @property string           body
+ * @property Business         business
+ * @property StatusVisibility visibility
  */
 class Status extends Model
 {
@@ -29,7 +29,7 @@ class Status extends Model
         'id'         => 'integer',
         'user_id'    => 'integer',
         'business'   => Business::class,
-        'visibility' => 'integer', //TODO: Change to Enum Cast with Laravel 9
+        'visibility' => StatusVisibility::class,
         'event_id'   => 'integer',
     ];
 
@@ -111,11 +111,11 @@ class Status extends Model
         if ($this->user->userInvisibleToMe) {
             return true;
         }
-        if ((Auth::check() && Auth::id() == $this->user_id) || $this->visibility == StatusVisibility::PUBLIC) {
+        if ((Auth::check() && Auth::id() == $this->user_id) || $this->visibility === StatusVisibility::PUBLIC) {
             return false;
         }
         $visible = false;
-        if ($this->visibility == StatusVisibility::FOLLOWERS) {
+        if ($this->visibility === StatusVisibility::FOLLOWERS) {
             $visible = (Auth::check() && Auth::user()->follows->contains('id', $this->user_id));
         }
         return !$visible;

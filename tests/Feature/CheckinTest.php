@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -55,7 +56,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        }, true));
+        },                             true));
     }
 
     /**
@@ -315,7 +316,7 @@ class CheckinTest extends TestCase
                 $baseTrip->destination,
                 '',
                 $user,
-                0,
+                Business::PRIVATE,
                 0,
                 0,
                 StatusVisibility::PUBLIC,
@@ -336,10 +337,10 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    Business::PRIVATE,
                     0,
                     0,
                     StatusVisibility::PUBLIC,
-                    0,
                     0,
                     Carbon::parse($trip->departure),
                     Carbon::parse($trip->arrival)
@@ -362,10 +363,10 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    Business::PRIVATE,
                     0,
                     0,
-                    0,
-                    0,
+                    StatusVisibility::PUBLIC,
                     0,
                     Carbon::parse($trip->departure),
                     Carbon::parse($trip->arrival)

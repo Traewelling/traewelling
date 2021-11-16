@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class SettingsController extends Controller
 {
@@ -55,7 +56,7 @@ class SettingsController extends Controller
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
                                             'default_status_visibility' => [
                                                 'required',
-                                                Rule::in(StatusVisibility::getList())
+                                                new Enum(StatusVisibility::class),
                                             ]
                                         ]);
 

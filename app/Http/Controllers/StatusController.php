@@ -40,7 +40,7 @@ class StatusController extends Controller
                                                        'trainCheckin.Destination',
                                                        'trainCheckin.HafasTrip',
                                                        'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility == StatusVisibility::UNLISTED)) {
+        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility === StatusVisibility::UNLISTED)) {
             return $status;
         }
 
@@ -133,22 +133,22 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User        $user
-     * @param int         $statusId
-     * @param string|null $body
-     * @param Business    $business
-     * @param int         $visibility
+     * @param User             $user
+     * @param int              $statusId
+     * @param string|null      $body
+     * @param Business         $business
+     * @param StatusVisibility $visibility
      *
      * @return Status
      * @throws PermissionException
      * @api v1
      */
     public static function EditStatus(
-        User     $user,
-        int      $statusId,
-        string   $body = null,
-        Business $business = Business::PRIVATE,
-        int      $visibility = StatusVisibility::PUBLIC
+        User             $user,
+        int              $statusId,
+        string           $body = null,
+        Business         $business = Business::PRIVATE,
+        StatusVisibility $visibility = StatusVisibility::PUBLIC
     ): Status {
         $status = Status::findOrFail($statusId);
 
@@ -158,7 +158,7 @@ class StatusController extends Controller
 
         $status->update([
                             'body'       => $body,
-                            'business'   => $business->value,
+                            'business'   => $business,
                             'visibility' => $visibility,
                         ]);
         return $status;
@@ -175,7 +175,7 @@ class StatusController extends Controller
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if (($status->StatusInvisibleToMe && $status->visibility != StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
+        if (($status->StatusInvisibleToMe && $status->visibility !== StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
             throw new PermissionException();
         }
 
@@ -270,12 +270,12 @@ class StatusController extends Controller
     }
 
     public static function createStatus(
-        User     $user,
-        Business $business,
-        int      $visibility,
-        string   $body = null,
-        int      $eventId = null,
-        string   $type = "hafas"
+        User             $user,
+        Business         $business,
+        StatusVisibility $visibility,
+        string           $body = null,
+        int              $eventId = null,
+        string           $type = "hafas"
     ): Status {
         $event = null;
         if ($eventId !== null) {

@@ -21,9 +21,8 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
 {
@@ -45,7 +44,9 @@ class StatusController extends ResponseController
 
     /**
      * Show single status
+     *
      * @param int $id
+     *
      * @return StatusResource|Response
      */
     public function show(int $id): StatusResource|Response {
@@ -54,6 +55,7 @@ class StatusController extends ResponseController
 
     /**
      * @param int $id
+     *
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse {
@@ -70,7 +72,8 @@ class StatusController extends ResponseController
 
     /**
      * @param Request $request
-     * @param int $statusId
+     * @param int     $statusId
+     *
      * @return JsonResponse
      * @throws ValidationException
      */
@@ -78,7 +81,7 @@ class StatusController extends ResponseController
         $validator = Validator::make($request->all(), [
             'body'       => ['nullable', 'max:280', 'nullable'],
             'business'   => ['required', new Enum(Business::class)],
-            'visibility' => ['required', Rule::in(StatusVisibility::getList())],
+            'visibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
         if ($validator->fails()) {
@@ -88,11 +91,11 @@ class StatusController extends ResponseController
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                user: Auth::user(),
-                statusId: $statusId,
-                body: $validated['body'],
-                business: $validated['business'],
-                visibility: $validated['visibility']
+                user:       Auth::user(),
+                statusId:   $statusId,
+                body:       $validated['body'],
+                business:   Business::from($validated['business']),
+                visibility: StatusVisibility::from($validated['visibility']),
             );
             return $this->sendv1Response(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
@@ -104,35 +107,36 @@ class StatusController extends ResponseController
 
     /**
      * @param string $parameters
+     *
      * @return JsonResponse
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
     public function getPolyline(string $parameters): JsonResponse {
-        $ids      = explode(',', $parameters, 50);
+        $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
-                          ->with('trainCheckin.HafasTrip.polyline')
-                          ->get()
-                          ->reject(function($status) {
-                              return ($status->user->userInvisibleToMe
-                                      || ($status->statusInvisibleToMe
-                                          && $status->visibility !== StatusVisibility::UNLISTED
-                                      ));
-                          })
-                          ->map(function($status) {
-                              return [
-                                  'type' => 'Feature',
-                                  'geometry' => [
-                                      'type' => 'LineString',
-                                      'coordinates' => $status->trainCheckin->getMapLines()
-                                  ],
-                                  'properties' => [
-                                      'statusId' => $status->id
-                                  ]
-                                ];
-                          });
-        $geoJson = [
-            'type' => 'FeatureCollection',
+                                 ->with('trainCheckin.HafasTrip.polyline')
+                                 ->get()
+                                 ->reject(function($status) {
+                                     return ($status->user->userInvisibleToMe
+                                             || ($status->statusInvisibleToMe
+                                                 && $status->visibility !== StatusVisibility::UNLISTED
+                                             ));
+                                 })
+                                 ->map(function($status) {
+                                     return [
+                                         'type'       => 'Feature',
+                                         'geometry'   => [
+                                             'type'        => 'LineString',
+                                             'coordinates' => $status->trainCheckin->getMapLines()
+                                         ],
+                                         'properties' => [
+                                             'statusId' => $status->id
+                                         ]
+                                     ];
+                                 });
+        $geoJson         = [
+            'type'     => 'FeatureCollection',
             'features' => $geoJsonFeatures
         ];
         return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
@@ -140,6 +144,7 @@ class StatusController extends ResponseController
 
     /**
      * @param string $parameters
+     *
      * @return JsonResponse
      */
     public function getStopovers(string $parameters): JsonResponse {

@@ -111,7 +111,7 @@ class TransportController extends ResponseController
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
                                             'business'    => ['nullable', new Enum(Business::class)],
-                                            'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
+                                            'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
                                             'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
@@ -128,7 +128,7 @@ class TransportController extends ResponseController
             $status = StatusBackend::createStatus(
                 user:       auth()->user(),
                 business:   isset($validated['business']) ? Business::from($validated['business']) : Business::PRIVATE,
-                visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
+                visibility: isset($validated['visibility']) ? StatusVisibility::from($validated['visibility']) : StatusVisibility::PUBLIC,
                 body:       $validated['body'] ?? null,
                 eventId:    $validated['eventId'] ?? null
             );
