@@ -48,6 +48,9 @@ class ReasonTest extends TestCase
         $this->assertEquals(PointReasons::NOT_SUFFICIENT, $pointReason);
     }
 
+    /**
+     * Test if the reason IN_TIME is issued if the checkin is created in between departure and arrival
+     */
     public function testEnRoute(): void {
         $pointReason = PointsCalculationController::getReason(
             departure:       Carbon::now()->subHour(),
