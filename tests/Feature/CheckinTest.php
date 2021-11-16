@@ -563,8 +563,8 @@ class CheckinTest extends TestCase
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination'       => $trip['stopovers'][8]['stop']['id'], // Tempelhof
                              'arrival'           => $trip['stopovers'][8]['arrival'],
-                             'checkinVisibility' => StatusVisibility::PUBLIC,
-                             'business_check'    => 0
+                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
+                             'business_check'    => Business::PRIVATE->value,
                          ]);
 
         $response->assertStatus(302);
