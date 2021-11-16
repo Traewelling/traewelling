@@ -237,13 +237,13 @@ class StatusController extends Controller
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('visibility', StatusVisibility::PUBLIC);
+                                    ->where('visibility', StatusVisibility::PUBLIC->value);
                               if (auth()->check()) {
                                   $query->orWhere('users.id', auth()->user()->id)
                                         ->orWhere(function($query) {
-                                            $query->where('visibility', StatusVisibility::FOLLOWERS)
+                                            $query->where('visibility', StatusVisibility::FOLLOWERS->value)
                                                   ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
-                                                  ->orWhere('visibility', StatusVisibility::PUBLIC);
+                                                  ->orWhere('visibility', StatusVisibility::PUBLIC->value);
                                         });
                               }
                           });

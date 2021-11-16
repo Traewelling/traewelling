@@ -26,7 +26,10 @@ abstract class DashboardController extends Controller
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
-                     ->whereIn('visibility', [StatusVisibility::PUBLIC, StatusVisibility::FOLLOWERS])
+                     ->whereIn('visibility', [
+                         StatusVisibility::PUBLIC->value,
+                         StatusVisibility::FOLLOWERS->value,
+                     ])
                      ->orWhere('statuses.user_id', $user->id)
                      ->withCount('likes')
                      ->latest()
@@ -47,7 +50,7 @@ abstract class DashboardController extends Controller
                          //Option 1: User is public AND status is public
                          $query->where(function(Builder $query) {
                              $query->where('users.private_profile', 0)
-                                   ->where('visibility', StatusVisibility::PUBLIC);
+                                   ->where('visibility', StatusVisibility::PUBLIC->value);
                          });
 
                          //Option 2: Status is from oneself
@@ -56,7 +59,10 @@ abstract class DashboardController extends Controller
                          //Option 3: Status is from a followed BUT not unlisted or private
                          $query->orWhere(function(Builder $query) use ($user) {
                              $query->whereIn('users.id', $user->follows()->select('follow_id'))
-                                   ->whereNotIn('visibility', [StatusVisibility::UNLISTED, StatusVisibility::PRIVATE]);
+                                   ->whereNotIn('visibility', [
+                                       StatusVisibility::UNLISTED->value,
+                                       StatusVisibility::PRIVATE->value,
+                                   ]);
                          });
                      })
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())

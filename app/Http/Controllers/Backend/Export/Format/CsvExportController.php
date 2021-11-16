@@ -55,7 +55,7 @@ abstract class CsvExportController extends Controller
                     number($status->trainCheckin->distance / 1000),
                     $status->points,
                     $status->body,
-                    $status->business,
+                    $status->business->value,
                 ];
 
                 fputcsv($fileStream, $row, "\t");

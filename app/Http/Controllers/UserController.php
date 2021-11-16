@@ -6,8 +6,8 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -128,11 +128,14 @@ class UserController extends Controller
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user()->id : null;
-                        $query->whereIn('statuses.visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
+                        $query->whereIn('statuses.visibility', [
+                            StatusVisibility::PUBLIC->value,
+                            StatusVisibility::UNLISTED->value,
+                        ])
                               ->orWhere('statuses.user_id', $user)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                  $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
+                                  $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
                                         ->whereIn('statuses.user_id', $followings);
                               });
                     })
@@ -301,8 +304,9 @@ class UserController extends Controller
 
     /**
      * @param string|null $searchQuery
-     * @deprecated is now in backend/usercontroller for api v1
+     *
      * @return Paginator
+     * @deprecated is now in backend/usercontroller for api v1
      */
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
