@@ -29,7 +29,11 @@ class HafasTripFactory extends Factory
         $stopOvers = [];
         $time      = Carbon::now()->subMinutes(15);
         foreach ($stops as $stop) {
-            array_push($features, [
+            $products = [];
+            foreach (HafasTravelType::cases() as $hafasTravelType) {
+                $products[$hafasTravelType->value] = $this->faker->boolean();
+            }
+            $features[]  = [
                 'type'       => 'Feature',
                 'properties' => [
                     'type'     => 'stop',
@@ -41,8 +45,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    //TODO: How to use Enum here? array_fill_keys won't work. Define explicit values?
-                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
+                    'products' => $products,
                 ],
                 'geometry'   => [
                     'type'        => 'Point',
@@ -51,8 +54,8 @@ class HafasTripFactory extends Factory
                         $stop->latitude,
                     ]
                 ]
-            ]);
-            array_push($stopOvers, [
+            ];
+            $stopOvers[] = [
                 'stop'                     => [
                     'type'     => 'stop',
                     'id'       => $stop->ibnr,
@@ -63,8 +66,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    //TODO: How to use Enum here? array_fill_keys won't work. Define explicit values?
-                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
+                    'products' => $products,
                 ],
                 'arrival'                  => $time->toIso8601String(),
                 'plannedArrival'           => $time->toIso8601String(),
@@ -76,7 +78,7 @@ class HafasTripFactory extends Factory
                 'departureDelay'           => null,
                 'departurePlatform'        => null,
                 'plannedDeparturePlatform' => null,
-            ]);
+            ];
             $time->addMinutes(30);
         }
 
