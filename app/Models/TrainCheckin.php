@@ -88,11 +88,6 @@ class TrainCheckin extends Model
         return $stopOver;
     }
 
-    /**
-     * @return array
-     * @deprecated I have not found any use. It can be removed in my opinion.
-     *             ~ kr
-     */
     public function getMapLines(): array {
         $hafas = $this->HafasTrip->polyline;
         if ($hafas === null) {
@@ -105,7 +100,6 @@ class TrainCheckin extends Model
 
             return $route;
         }
-
 
         $polyline = json_decode($hafas->polyline);
 
