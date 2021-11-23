@@ -457,7 +457,7 @@
     "email.change": "Vänligen uppdatera din e-post genom att ange den nya adressen och det aktuella lösenordet. En e-post skickas sedan till dig för att bekräfta ändringen.",
     "user.email.not-set": "Det finns ingen e-postadress ännu",
     "user.login-credentials": "E-postadress eller användernamn",
-    "error.login": "Fel e-postadress/användernamn eller lösenord",
+    "error.login": "Felaktiga inloggningsuppgifter",
     "user.email.new": "Ny e-postadress",
     "user.email.change": "Ändra e-postadress",
     "menu.close": "Stäng",
