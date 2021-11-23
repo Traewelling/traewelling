@@ -468,5 +468,10 @@
     "settings.tab.account": "Konto",
     "settings.tab.profile": "Profil & integritet",
     "settings.delete-account.detail": "När du har tagit bort ditt konto, finns det ingen möjlighet att gå tillbaka. Vänligen var säker.",
-    "settings.delete-account-completed": "Ditt konto har lyckats ta bort! Ha en trevlig resa!"
+    "settings.delete-account-completed": "Ditt konto har lyckats ta bort! Ha en trevlig resa!",
+    "settings.delete-all-tokens": "Ta bort alla token",
+    "settings.saved": "Ändringar sparades",
+    "settings.prevent-indexing": "Förhindra indexering av sökmotorer",
+    "settings.title-change-password": "Ändra lösenord",
+    "settings.ics.descriptor": "Här kan du hantera dina ICS-länkar. På så sätt kan du visa dina tidigare resor i en kalender som stöder det."
 }
