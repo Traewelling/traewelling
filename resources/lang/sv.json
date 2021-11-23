@@ -453,5 +453,6 @@
     "email.verification.sent": "För att komplettera ändringen av din e-postadress du ännu måste klicka länken i e-posten, som vi har precis skickat till dig.",
     "email.verification.required": "För att kunna använda Träwelling fullt ut måste du bekräfta din e-postadress.",
     "email.validation": "Bekräfta e-postadressen",
-    "email.verification.btn": "Klicka på knappen för att få din bekräftelselänk."
+    "email.verification.btn": "Klicka på knappen för att få din bekräftelselänk.",
+    "email.change": "Vänligen aktualisera din e-post genom att ange den nya adressen och det aktuella lösenordet. En e-post skickas sedan till dig för att bekräfta ändringen."
 }
