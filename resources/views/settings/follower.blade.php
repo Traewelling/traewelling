@@ -105,7 +105,7 @@
                                                 <form method="POST" action="{{route('settings.follower.remove')}}">
                                                     @csrf
                                                     <input type="hidden" name="user_id"
-                                                           value="{{$follower->user->id}}"/>
+                                                           value="{{$follower->user_id}}"/>
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-user-minus"></i>
                                                         {{__('settings.follower.delete')}}
