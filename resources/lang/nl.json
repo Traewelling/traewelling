@@ -71,7 +71,7 @@
     "controller.status.email-resend-mail": "Bevestiging opnieuw verzenden.",
     "controller.transport.checkin-heading": "Ingecheckt",
     "controller.transport.checkin-ok": "Je heb sucessvol in :lineName ingecheckd!|Je heb sucessvol in lijn :lineName ingecheckd!",
-    "controller.transport.overlapping-checkin": "Je hebt al een check in bij verbindung :linename: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "Je hebt al een check in bij verbindung :linename: ",
     "controller.transport.social-post": "Ik ben nu in :lineName naar :Destination! #NowTräwelling |Ik ben nu in lijn :lineName naar :Destination! #NowTräwelling ",
     "controller.social.deleted": "Deze verbinding is geannuleerd.",
     "user.login": "Inloggen",
