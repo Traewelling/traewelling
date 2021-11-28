@@ -3,12 +3,12 @@
      data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
 >
     @if (Route::current()->uri == "status/{id}")
-        @if($status->trainCheckin->HafasTrip->polyline)
+        @isset($polyline)
             <div class="card-img-top">
                 <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                     data-polygon="{{ json_encode($status->trainCheckin->getMapLines()) }}"></div>
+                     data-polygon="{{ $polyline }}"></div>
             </div>
-        @endif
+        @endisset
     @endif
 
     <div class="card-body row">
