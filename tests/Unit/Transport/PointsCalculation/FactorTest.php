@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Transport\PointsCalculation;
+namespace Tests\Unit\Transport\PointsCalculation;
 
 use App\Enum\PointReasons;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
@@ -8,11 +8,6 @@ use Tests\TestCase;
 
 class FactorTest extends TestCase
 {
-
-    protected function setUp(): void {
-        // Don't include parent, because TestCase needs a database.
-        // parent::setUp();
-    }
 
     public function testInTimeFactor(): void {
         $this->assertEquals(1, PointsCalculationController::getFactorByReason(PointReasons::IN_TIME));
