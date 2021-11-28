@@ -149,6 +149,16 @@ class FrontendStatusController extends Controller
     public function getStatus($statusId): Renderable {
         $statusResponse = StatusBackend::getStatus($statusId);
 
+        //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
+        if ($statusResponse->trainCheckin->HafasTrip->polyline) {
+            $polyline = $statusResponse->trainCheckin->getMapLines();
+            foreach ($polyline as $element => $elementValue) {
+                $polyline[$element] = [
+                    $elementValue[1], $elementValue[0]
+                ];
+            }
+        }
+
         return view('status', [
             'status'      => $statusResponse,
             'time'        => time(),
@@ -159,7 +169,8 @@ class FrontendStatusController extends Controller
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
+            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
+            'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }
 
