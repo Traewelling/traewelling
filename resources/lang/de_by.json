@@ -34,7 +34,7 @@
     "about.calculation": "Die Entfernung werd uf dia nächste 10km grundet und dann dura 10 toilt. Danach werat die Basispunkte dazua greachnet.<br />A 143km lange Fahrt mit am ICE bringt dr also <code>10 + aufrunda(143/10) = 10 + 15 = 25</code>&nbsp;Punkte, für a S-Bahn-Farht vo 8km gaits <code>2 + aufrunda(8/10) = 2 + 1 = 3</code>&nbsp;Punkte.<br />Mir mechtat, dass de recht zeitig eichecksch, damit dia Plattform immer an aktuella Stand vo deiner Reisa hot. Desweaga gaits dia volla Punkte bloß, wenn de während deiner Reisen oder zwanzg Minuta vor Live-Abfahrt (Plan-Abfahrt + Verspätung) eichecksch. Wer a Stund vor oder nachm Reisezeitraum eicheckt, kriagt immerhin no a viartele der Punkte. Wenn da no frianer eichecksch, kriagst zwar die volla Kilometer und Stunda aufgrechnat, aber bloß an Mitleidspunkt.",
     "controller.transport.no-station-found": "Fiar dia Suach isch koa Haltestelln gfunda wora.",
     "about.name": "Dr Name is a Anspielung af des allseits bekannte <i>\"Senk ju for träwelling wis Deutsche Bahn\"</i>, woas ma jo oigetlich in so guat wie jedem Fernvekehrszüagli dr Deitscha Bahn ghert ham sutt.",
-    "controller.transport.overlapping-checkin": "Du hosch schu an Check-In in dr Verbindung :linename: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "Du hosch schu an Check-In in dr Verbindung :linename: ",
     "controller.user.follow-404": "Dean Follow hots gar id gea.",
     "controller.transport.not-in-stopovers": "Dia Start-ID isch id in deane Zwischastops.",
     "controller.status.not-permitted": "Des derfsch du id.",
