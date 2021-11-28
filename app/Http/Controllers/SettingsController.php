@@ -25,7 +25,10 @@ class SettingsController extends Controller
 
     public function removeFollower(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'user_id' => ['required', Rule::in(auth()->user()->followers->pluck('id'))]
+                                            'user_id' => [
+                                                'required',
+                                                Rule::in(auth()->user()->followers->pluck('user_id')),
+                                            ]
                                         ]);
 
         $follow = Follow::where('user_id', $validated['user_id'])

@@ -53,7 +53,7 @@
     "controller.transport.checkin-ok": "Du hasch erfolgreich in :lineName ingecheckt!|Du hasch erfoglreich in Linje :lineName ingecheckt!",
     "controller.transport.no-name-given": "Du musch e Stationsname angewwe!",
     "controller.transport.not-in-stopovers": "Die Start-ID is ned in de Zwischestops.",
-    "controller.transport.overlapping-checkin": "Du hasch bereits e Check-In in Verbinnung :linename: <a href=\":url\">#:id</a>",
+    "controller.transport.overlapping-checkin": "Du hasch bereits e Check-In in Verbinnung :linename: ",
     "controller.transport.also-in-connection": "In dere Verbinnung is aach:|In dere Verbinnung sinn aach:",
     "controller.transport.social-post": "Ich bin grad in :lineName nooch :Destination! #NowTräwelling |Ich bin grad in de Linje :lineName nooch :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin grad in :lineName nooch :destination fer #:hashtag! #NowTräwelling | Ich bin grad in de Linje :lineName nooch :destination fer #:hashtag! #NowTräwelling ",
