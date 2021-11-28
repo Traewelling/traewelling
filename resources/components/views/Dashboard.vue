@@ -13,7 +13,7 @@
                 </router-link>
             </li>
         </ul>
-        <div class="col-md-9 col-lg-7">
+        <div class="col-sm-12 col-md-7">
             <StationForm class="d-none d-md-block"/>
             <Spinner v-if="loading" class="mt-5"/>
 
@@ -62,6 +62,13 @@
                 </div>
             </div>
         </div>
+        <CheckinSuccessModal
+            v-if="checkin"
+            :points="checkin.points.points"
+            :calculation="checkin.points.calculation"
+            :status="checkin.status"
+            :alsoOnThisConnection="checkin.alsoOnThisConnection"
+        ></CheckinSuccessModal>
     </LayoutBasic>
 </template>
 
@@ -74,6 +81,8 @@ import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import Dashboard from "../../js/ApiClient/Dashboard";
 import ApiStatus from "../../js/ApiClient/Status";
+import ModalConfirm from "../ModalConfirm";
+import CheckinSuccessModal from "../CheckinSuccessModal";
 
 export default {
     name: "dashboard",
@@ -88,12 +97,15 @@ export default {
             links: null,
         };
     },
+    props: ["checkin"],
     metaInfo() {
         return {
             title: this.i18n.get("_.menu.dashboard")
         };
     },
     components: {
+        CheckinSuccessModal,
+        ModalConfirm,
         Spinner,
         LayoutBasic,
         StationForm,
@@ -109,6 +121,18 @@ export default {
                 return true;
             }
             return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
+        },
+        duration(inDuration) {
+            // ToDo: This needs localization, currently handled in `durationToSpan`
+            const duration = moment.duration(inDuration, "minutes").asMinutes();
+            let minutes    = duration % 60;
+            let hours      = Math.floor(duration / 60);
+
+            return hours + "h " + minutes + "m";
+        },
+        originalPoints(points) {
+            let factor = this.checkin.points.calculation.factor;
+            return points / (factor !== 0 ? factor : 1);
         },
         fetchData() {
             this.statuses = this.futureStatuses = [];

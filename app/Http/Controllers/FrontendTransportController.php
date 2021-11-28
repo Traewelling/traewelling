@@ -171,13 +171,16 @@ class FrontendTransportController extends Controller
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
-                    'controller.transport.overlapping-checkin',
-                    [
-                        'url'      => url('/status/' . $exception->getCollision()->status->id),
-                        'id'       => $exception->getCollision()->status->id,
-                        'linename' => $exception->getCollision()->HafasTrip->linename
-                    ]
-                ));
+                                    'controller.transport.overlapping-checkin',
+                                    [
+                                        'linename' => $exception->getCollision()->HafasTrip->linename
+                                    ]
+                                ) . strtr(' <a href=":url">#:id</a>',
+                                          [
+                                              ':url' => url('/status/' . $exception->getCollision()->status->id),
+                                              ':id'  => $exception->getCollision()->status->id,
+                                          ]
+                                ));
 
         } catch (TrainCheckinAlreadyExistException) {
             return redirect()->route('dashboard')->with('error', __('messages.exception.general'));

@@ -27,21 +27,21 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
-        ));
+        )['points']);
         // 50km in an RB => 50/10 + 5 = 10 points
         $this->assertEquals(10, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
             category:        HafasTravelType::REGIONAL,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
-        ));
+        )['points']);
         // 18km in a Bus => 20/10 + 2 = 4 points
         $this->assertEquals(4, PointsCalculationController::calculatePoints(
             distanceInMeter: 18000,
             category:        HafasTravelType::BUS,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
-        ));
+        )['points']);
     }
 
     /**
@@ -54,7 +54,7 @@ class TransportControllerTest extends TestCase
             category:        'unknown_mode_of_transport',
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
-        ));
+        )['points']);
     }
 
     /**
@@ -68,7 +68,7 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(18),
             arrival:         Carbon::now()->addMinutes(40),
-        ));
+        )['points']);
 
         // < 60min before, but > 20min
         // (50/10 + 10) * 0.25 = 4
@@ -77,7 +77,7 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(40),
             arrival:         Carbon::now()->addMinutes(100),
-        ));
+        )['points']);
 
         // > 60min before
         // Only returns one fun-point
@@ -87,7 +87,7 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(62),
             arrival:         Carbon::now()->addMinutes(100),
-        ));
+        )['points']);
     }
 
     /**
@@ -101,7 +101,7 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->addMinute(),
-        ));
+        )['points']);
 
         // upto 60min after the Arrival
         // (50/10 + 10) * 0.25 = 4
@@ -110,7 +110,7 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(92),
             arrival:         Carbon::now()->subMinutes(35),
-        ));
+        )['points']);
 
         // longer in the past
         // Only returns one fun-point
@@ -120,6 +120,6 @@ class TransportControllerTest extends TestCase
             category:        HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->subMinutes(61),
-        ));
+        )['points']);
     }
 }
