@@ -18,7 +18,7 @@
         "abraham/twitteroauth": "^3.0",
         "barryvdh/laravel-dompdf": "^0.9",
         "brianium/paratest": "^6.3",
-        "doctrine/dbal": "^3.0",
+        "doctrine/dbal": "^3.1.4",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.1",

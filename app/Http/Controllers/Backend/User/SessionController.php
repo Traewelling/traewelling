@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Jenssegers\Agent\Agent;
 
-class SessionController extends Controller
+abstract class SessionController extends Controller
 {
     public static function index(User $user): object {
         return $user->sessions->map(function($session) {

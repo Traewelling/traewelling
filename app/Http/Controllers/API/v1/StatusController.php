@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
@@ -26,11 +27,11 @@ use Illuminate\Validation\ValidationException;
 class StatusController extends ResponseController
 {
     public static function getDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getDashboard(Auth::user()));
+        return StatusResource::collection(DashboardController::getPrivateDashboard(Auth::user()));
     }
 
     public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getGlobalDashboard());
+        return StatusResource::collection(DashboardController::getGlobalDashboard(Auth::user()));
     }
 
     public static function getFutureCheckins(): AnonymousResourceCollection {
@@ -108,7 +109,7 @@ class StatusController extends ResponseController
      */
     public function getPolyline(string $parameters): JsonResponse {
         $ids      = explode(',', $parameters, 50);
-        $mapLines = Status::whereIn('id', $ids)
+        $geoJsonFeatures = Status::whereIn('id', $ids)
                           ->with('trainCheckin.HafasTrip.polyline')
                           ->get()
                           ->reject(function($status) {
@@ -117,10 +118,23 @@ class StatusController extends ResponseController
                                           && $status->visibility !== StatusVisibility::UNLISTED
                                       ));
                           })
-                          ->mapWithKeys(function($status) {
-                              return [$status->id => $status->trainCheckin->getMapLines()];
+                          ->map(function($status) {
+                              return [
+                                  'type' => 'Feature',
+                                  'geometry' => [
+                                      'type' => 'LineString',
+                                      'coordinates' => $status->trainCheckin->getMapLines()
+                                  ],
+                                  'properties' => [
+                                      'statusId' => $status->id
+                                  ]
+                                ];
                           });
-        return $ids ? $this->sendv1Response($mapLines) : $this->sendv1Error("");
+        $geoJson = [
+            'type' => 'FeatureCollection',
+            'features' => $geoJsonFeatures
+        ];
+        return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -170,13 +171,16 @@ class FrontendTransportController extends Controller
             return redirect()
                 ->route('dashboard')
                 ->with('error', __(
-                    'controller.transport.overlapping-checkin',
-                    [
-                        'url'      => url('/status/' . $exception->getCollision()->status->id),
-                        'id'       => $exception->getCollision()->status->id,
-                        'linename' => $exception->getCollision()->HafasTrip->linename
-                    ]
-                ));
+                                    'controller.transport.overlapping-checkin',
+                                    [
+                                        'linename' => $exception->getCollision()->HafasTrip->linename
+                                    ]
+                                ) . strtr(' <a href=":url">#:id</a>',
+                                          [
+                                              ':url' => url('/status/' . $exception->getCollision()->status->id),
+                                              ':id'  => $exception->getCollision()->status->id,
+                                          ]
+                                ));
 
         } catch (TrainCheckinAlreadyExistException) {
             return redirect()->route('dashboard')->with('error', __('messages.exception.general'));
@@ -196,7 +200,11 @@ class FrontendTransportController extends Controller
                                         ]);
 
         try {
-            $trainStation = TransportBackend::setTrainHome(auth()->user(), $validated['stationName']);
+            $trainStation = HafasController::getStations(query: $validated['stationName'], results: 1)->first();
+            if ($trainStation === null) {
+                return redirect()->back()->with(['error' => __('messages.exception.general')]);
+            }
+            $trainStation = HomeController::setHome(auth()->user(), $trainStation);
 
             return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
         } catch (HafasException) {
