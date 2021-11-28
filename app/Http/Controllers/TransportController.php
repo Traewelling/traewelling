@@ -390,10 +390,7 @@ class TransportController extends Controller
 
         // check for other people on this train
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            $otherStatus->user->notify(new UserJoinedConnection($status->id,
-                                                                $status->trainCheckin->HafasTrip->linename,
-                                                                $status->trainCheckin->Origin->name,
-                                                                $status->trainCheckin->Destination->name));
+            $otherStatus->user->notify(new UserJoinedConnection($status));
         }
 
         return [
