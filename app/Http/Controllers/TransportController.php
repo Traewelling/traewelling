@@ -323,7 +323,7 @@ class TransportController extends Controller
             $hafasTrip->category,
             Carbon::parse($stopovers[$offset1]['departure']),
             Carbon::parse($stopovers[$offset2]['arrival']),
-        );
+        )['points'];
 
         $departure = Carbon::parse($stopovers[$offset1]['departure']);
         $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);

@@ -85,7 +85,8 @@ export const router = new VueRouter({
                 name: "dashboard",
                 meta: {
                     auth: true
-                }
+                },
+                props: true
             },
             {
                 path: "/dashboard/global",

@@ -121,6 +121,7 @@ class TransportController extends ResponseController
                                             'destination' => ['required', 'numeric'],
                                             'departure'   => ['required', 'date'],
                                             'arrival'     => ['required', 'date'],
+                                            'force'       => ['nullable', 'boolean']
                                         ]);
 
         try {
@@ -141,6 +142,7 @@ class TransportController extends ResponseController
                 exitStop:  $validated['destination'],
                 departure: Carbon::parse($validated['departure']),
                 arrival:   Carbon::parse($validated['arrival']),
+                force:     $validated['force'] ?? false,
                 ibnr:      $validated['ibnr'] ?? false
             );
 

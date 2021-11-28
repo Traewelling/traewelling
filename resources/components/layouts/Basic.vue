@@ -3,7 +3,7 @@
         <NavbarComponent/>
         <main class="py-4">
             <div class="container">
-                <div class="row mb-3">
+                <div class="row mb-3  justify-content-around">
                     <div class="col-md-3 d-none d-md-block">
                         <SidebarNav/>
                     </div>
