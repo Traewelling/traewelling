@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\HafasTravelType;
-use App\Enum\PointReasons;
+use App\Enum\PointReason;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PointsCalculationResource;
 use Carbon\Carbon;
@@ -41,9 +41,9 @@ abstract class PointsCalculationController extends Controller
         float        $basePoints,
         float        $distancePoints,
         ?array       $additionalPoints,
-        PointReasons $pointReason
+        PointReason $pointReason
     ): PointsCalculationResource {
-        if ($pointReason === PointReasons::NOT_SUFFICIENT || $pointReason === PointReasons::FORCED) {
+        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
             return new PointsCalculationResource([
                                                      'points'      => 1,
                                                      'calculation' => [
@@ -83,11 +83,11 @@ abstract class PointsCalculationController extends Controller
     }
 
     #[Pure]
-    public static function getFactorByReason(PointReasons $pointReason): float|int {
-        if ($pointReason === PointReasons::NOT_SUFFICIENT || $pointReason === PointReasons::FORCED) {
+    public static function getFactorByReason(PointReason $pointReason): float|int {
+        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
             return 0;
         }
-        if ($pointReason === PointReasons::GOOD_ENOUGH) {
+        if ($pointReason === PointReason::GOOD_ENOUGH) {
             return 0.25;
         }
         return 1;
@@ -99,9 +99,9 @@ abstract class PointsCalculationController extends Controller
         Carbon $arrival,
         bool   $forceCheckin,
         Carbon $timestampOfView
-    ): PointReasons {
+    ): PointReason {
         if ($forceCheckin) {
-            return PointReasons::FORCED;
+            return PointReason::FORCED;
         }
 
         /**
@@ -112,7 +112,7 @@ abstract class PointsCalculationController extends Controller
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
         if ($timestampOfView->isBetween($departure->clone()->subMinutes(20), $arrival)) {
-            return PointReasons::IN_TIME;
+            return PointReason::IN_TIME;
         }
 
         /**
@@ -124,10 +124,10 @@ abstract class PointsCalculationController extends Controller
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
         if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
-            return PointReasons::GOOD_ENOUGH;
+            return PointReason::GOOD_ENOUGH;
         }
 
         // Else: Just give me one. It's a point for funsies and the minimal amount of points that you can get.
-        return PointReasons::NOT_SUFFICIENT;
+        return PointReason::NOT_SUFFICIENT;
     }
 }
