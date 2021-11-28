@@ -79,6 +79,7 @@ Vue.use(VueMeta, {
     refreshOnceOnNavigation: true
 });
 
+
 Vue.mixin({
     methods: {
         apiErrorHandler: (response) => {
