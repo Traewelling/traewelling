@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Enum\HafasTravelType;
 use App\Enum\PointReasons;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PointsCalculationResource;
@@ -12,49 +13,49 @@ abstract class PointsCalculationController extends Controller
 {
 
     public static function calculatePoints(
-        int    $distanceInMeter,
-        string $category,
-        Carbon $departure,
-        Carbon $arrival,
-        bool   $forceCheckin = false,
-        array  $additional = [],
-        Carbon $timestampOfView = null
+        int             $distanceInMeter,
+        HafasTravelType $hafasTravelType,
+        Carbon          $departure,
+        Carbon          $arrival,
+        bool            $forceCheckin = false,
+        array           $additional = [],
+        Carbon          $timestampOfView = null
     ): PointsCalculationResource {
         if ($timestampOfView == null) {
             $timestampOfView = Carbon::now();
         }
 
-        $base     = config('trwl.base_points.train.' . $category, 1);
+        $base     = config('trwl.base_points.train.' . $hafasTravelType->value, 1);
         $distance = ceil($distanceInMeter / 10000);
 
         return self::calculatePointsWithReason(
             basePoints:       $base,
             distancePoints:   $distance,
             additionalPoints: $additional,
-            reason:           self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
+            pointReason:      self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
         );
     }
 
     #[Pure]
     private static function calculatePointsWithReason(
-        float     $basePoints,
-        float     $distancePoints,
-        ?array    $additionalPoints,
-        float|int $reason
+        float        $basePoints,
+        float        $distancePoints,
+        ?array       $additionalPoints,
+        PointReasons $pointReason
     ): PointsCalculationResource {
-        if ($reason === PointReasons::NOT_SUFFICIENT || $reason === PointReasons::FORCED) {
+        if ($pointReason === PointReasons::NOT_SUFFICIENT || $pointReason === PointReasons::FORCED) {
             return new PointsCalculationResource([
                                                      'points'      => 1,
                                                      'calculation' => [
                                                          'base'     => $basePoints,
                                                          'distance' => $distancePoints,
-                                                         'reason'   => $reason,
+                                                         'reason'   => $pointReason->value,
                                                          'factor'   => 0,
                                                      ],
                                                      'additional'  => $additionalPoints,
                                                  ]);
         }
-        $factor = self::getFactorByReason($reason);
+        $factor = self::getFactorByReason($pointReason);
 
         $basePoints     *= $factor;
         $distancePoints *= $factor;
@@ -75,14 +76,14 @@ abstract class PointsCalculationController extends Controller
                                                      'base'     => $basePoints,
                                                      'distance' => $distancePoints,
                                                      'factor'   => $factor,
-                                                     'reason'   => $reason,
+                                                     'reason'   => $pointReason->value,
                                                  ],
                                                  'additional'  => $additionalPoints,
                                              ]);
     }
 
     #[Pure]
-    public static function getFactorByReason(int $pointReason): float|int {
+    public static function getFactorByReason(PointReasons $pointReason): float|int {
         if ($pointReason === PointReasons::NOT_SUFFICIENT || $pointReason === PointReasons::FORCED) {
             return 0;
         }
@@ -98,7 +99,7 @@ abstract class PointsCalculationController extends Controller
         Carbon $arrival,
         bool   $forceCheckin,
         Carbon $timestampOfView
-    ): int {
+    ): PointReasons {
         if ($forceCheckin) {
             return PointReasons::FORCED;
         }

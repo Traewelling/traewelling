@@ -73,7 +73,7 @@ abstract class TrainCheckinController extends Controller
 
         $points = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
-            category:        $trip->category,
+            hafasTravelType: $trip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival,
             forceCheckin:    $force
@@ -90,6 +90,7 @@ abstract class TrainCheckinController extends Controller
                                                  'departure'   => $firstStop->departure_planned,
                                                  'arrival'     => $lastStop->arrival_planned
                                              ]);
+
         $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection->reject(function($status) {
             return $status->statusInvisibleToMe;
         });
