@@ -80,7 +80,7 @@ class TransportControllerTest extends TestCase
     /**
      * I'm trying to check-into trains that have depart in the past.
      */
-    public function testCalculateTrainPoints_late_checkins() {
+    public function testCalculateTrainPoints_late_checkins(): void {
         // just before the Arrival
         // 50/10 + 10 = 15
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
@@ -88,7 +88,7 @@ class TransportControllerTest extends TestCase
             hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->addMinute(),
-        ));
+        )['points']);
 
         // upto 60min after the Arrival
         // (50/10 + 10) * 0.25 = 4
@@ -97,7 +97,7 @@ class TransportControllerTest extends TestCase
             hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(92),
             arrival:         Carbon::now()->subMinutes(35),
-        ));
+        )['points']);
 
         // longer in the past
         // Only returns one fun-point
@@ -107,6 +107,6 @@ class TransportControllerTest extends TestCase
             hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->subMinutes(61),
-        ));
+        )['points']);
     }
 }
