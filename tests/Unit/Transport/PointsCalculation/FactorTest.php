@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Transport\PointsCalculation;
+namespace Tests\Unit\Transport\PointsCalculation;
 
 use App\Enum\PointReason;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
