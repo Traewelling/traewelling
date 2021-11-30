@@ -487,5 +487,6 @@
     "support.privacy.description2": "Uppgifterna raderas efter ett år oavsett ditt användarkonto hos Träwelling.",
     "settings.revoke-token.success": "Åtkomsten har återkallats",
     "support.email-required": "Du behöver en verifierad e-postadress för att skicka en supportförfrågan. Detta är det enda sättet vi kan svara dig på.",
-    "support.answer": "Vi svarar dig så snart som möjligt. Du får svaret till din e-postadress: adress."
+    "support.answer": "Vi svarar dig så snart som möjligt. Du får svaret till din e-postadress: adress.",
+    "support": "Support"
 }
