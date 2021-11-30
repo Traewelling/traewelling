@@ -56,9 +56,9 @@ class TransportController extends ResponseController
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
-                $validated['station'],
-                isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                $validated['travelType'] ?? null
+                stationQuery: $validated['station'],
+                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:   $validated['travelType'] ?? null
             );
         } catch (HafasException $exception) {
             return $this->sendError($exception->getMessage(), 503);
