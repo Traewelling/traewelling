@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -263,7 +265,7 @@ class TransportController extends Controller
         $tweetCheck,
         $tootCheck,
         StatusVisibility $visibility,
-        $eventId = 0,
+        int $eventId = 0,
         Carbon $departure = null,
         Carbon $arrival = null
     ): array {
