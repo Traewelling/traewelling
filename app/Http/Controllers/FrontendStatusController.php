@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -149,6 +150,16 @@ class FrontendStatusController extends Controller
     public function getStatus($statusId): Renderable {
         $statusResponse = StatusBackend::getStatus($statusId);
 
+        //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
+        if ($statusResponse->trainCheckin->HafasTrip->polyline) {
+            $polyline = $statusResponse->trainCheckin->getMapLines();
+            foreach ($polyline as $element => $elementValue) {
+                $polyline[$element] = [
+                    $elementValue[1], $elementValue[0]
+                ];
+            }
+        }
+
         return view('status', [
             'status'      => $statusResponse,
             'time'        => time(),
@@ -159,23 +170,24 @@ class FrontendStatusController extends Controller
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username])
+            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
+            'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }
 
     /**
      * @param $status
      *
-     * @return mixed
+     * @return TrainStation|null
      * @deprecated when vue is implemented
      */
-    public static function nextStation(&$status) {
+    public static function nextStation(&$status): ?TrainStation {
         if ($status->trainCheckin->HafasTrip->stopoversNEW->count() > 0) {
             return $status->trainCheckin->HafasTrip->stopoversNEW
                 ->filter(function($stopover) {
                     return $stopover->arrival->isFuture();
                 })->sortBy('arrival')
-                ->first()?->trainStation?->name;
+                ->first()?->trainStation;
         }
 
         $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
@@ -190,6 +202,6 @@ class FrontendStatusController extends Controller
             }
             break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
         }
-        return $stops[$nextStopIndex]->stop->name;
+        return $stops[$nextStopIndex]->stop;
     }
 }
