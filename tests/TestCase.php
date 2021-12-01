@@ -7,6 +7,7 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
+use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\TransportController;
 use App\Models\Event;
 use App\Models\User;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
 use Tests\Feature\CheckinTest;
@@ -89,19 +91,20 @@ abstract class TestCase extends BaseTestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      *
-     * @param           $stationName
+     * @param string    $stationName
      * @param Carbon    $timestamp
      * @param User|null $user
      * @param bool|null $forEvent
+     * @param int       $statusVisibility
      *
      * @return array|null
-     * @throws HafasException
+     * @throws TrainCheckinAlreadyExistException
      */
     #[ArrayShape([
         'success'              => "bool",
         'statusId'             => "int",
         'points'               => "int",
-        'alsoOnThisConnection' => "\Illuminate\Support\Collection",
+        'alsoOnThisConnection' => Collection::class,
         'lineName'             => "string",
         'distance'             => "float",
         'duration'             => "float",
