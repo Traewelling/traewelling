@@ -18,7 +18,7 @@
                             </a>
                         </div>
                         @if (file_exists(public_path('img/' . $hafasTrip->category->value . '.svg')))
-                            <img class="product-icon" src="{{ asset('img/' . $hafasTrip->category . '.svg') }}"/>
+                            <img class="product-icon" src="{{ asset('img/' . $hafasTrip->category->value . '.svg') }}"/>
                         @else
                             <i class="fa fa-train"></i>
                         @endif
