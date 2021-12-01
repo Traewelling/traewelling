@@ -25,15 +25,20 @@
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
-                            <small style="text-decoration: line-through;"
-                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}</small>
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
+                            </small>
                             &nbsp;
                             {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
                         @else
                             {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    {!! stationLink($status->trainCheckin->Origin->name) !!}
+
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}" class="text-trwl clearfix">
+                        {{$status->trainCheckin->Origin->name}}
+                    </a>
+
                     <p class="train-status text-muted">
                         <span>
                             @if (file_exists(public_path('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg')))
@@ -84,7 +89,9 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->ibnr])}}" class="text-trwl clearfix">
+                                {{\App\Http\Controllers\FrontendStatusController::nextStation($status)?->name}}
+                            </a>
                         </p>
                     @endif
                 </li>
@@ -101,7 +108,9 @@
                             {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    {!! stationLink($status->trainCheckin->Destination->name) !!}
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}" class="text-trwl clearfix">
+                        {{$status->trainCheckin->Destination->name}}
+                    </a>
                 </li>
             </ul>
         </div>

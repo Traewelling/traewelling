@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -179,16 +180,16 @@ class FrontendStatusController extends Controller
     /**
      * @param $status
      *
-     * @return mixed
+     * @return TrainStation|null
      * @deprecated when vue is implemented
      */
-    public static function nextStation(&$status) {
+    public static function nextStation(&$status): ?TrainStation {
         if ($status->trainCheckin->HafasTrip->stopoversNEW->count() > 0) {
             return $status->trainCheckin->HafasTrip->stopoversNEW
                 ->filter(function($stopover) {
                     return $stopover->arrival->isFuture();
                 })->sortBy('arrival')
-                ->first()?->trainStation?->name;
+                ->first()?->trainStation;
         }
 
         $stops         = json_decode($status->trainCheckin->HafasTrip->stopovers);
@@ -203,6 +204,6 @@ class FrontendStatusController extends Controller
             }
             break; // Wenn wir diesen Teil der Loop erreichen, kann die Loop beendert werden.
         }
-        return $stops[$nextStopIndex]->stop->name;
+        return $stops[$nextStopIndex]->stop;
     }
 }

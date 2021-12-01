@@ -24,7 +24,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\ValidationException;
 
 class TransportController extends ResponseController
 {
@@ -33,7 +32,6 @@ class TransportController extends ResponseController
      * @param string  $name
      *
      * @return JsonResponse
-     * @throws ValidationException
      * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
      */
     public function departures(Request $request, string $name): JsonResponse {
@@ -44,7 +42,7 @@ class TransportController extends ResponseController
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
-                stationName: $name,
+                stationQuery: $name,
                 when:        isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 travelType:  TravelType::tryFrom($validated['travelType'] ?? null),
             );
@@ -115,8 +113,8 @@ class TransportController extends ResponseController
                                             'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
                                             'ibnr'        => ['nullable', 'boolean'],
-                                            'tripId'      => 'required',
-                                            'lineName'    => 'required',
+                                            'tripId'      => ['required'],
+                                            'lineName'    => ['required'],
                                             'start'       => ['required', 'numeric'],
                                             'destination' => ['required', 'numeric'],
                                             'departure'   => ['required', 'date'],

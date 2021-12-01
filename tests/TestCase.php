@@ -109,20 +109,20 @@ abstract class TestCase extends BaseTestCase
         'event'                => "mixed"
     ])]
     protected function checkin($stationName, Carbon $timestamp, User $user = null, bool $forEvent = null): ?array {
-        if ($user == null) {
+        if ($user === null) {
             $user = $this->user;
         }
         try {
             $trainStationboard = TransportController::getDepartures(
-                stationName: $stationName,
-                when:        $timestamp,
-                travelType:  TravelType::EXPRESS
+                stationQuery: $stationName,
+                when:         $timestamp,
+                travelType:   TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
-        $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures == 0) {
+        $countDepartures = $trainStationboard['departures']->count();
+        if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
 

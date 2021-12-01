@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Resources\HafasTripResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -25,7 +23,6 @@ use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -54,7 +51,7 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string      $stationName
+     * @param string|int  $stationQuery
      * @param Carbon|null $when
      * @param string|null $travelType
      *
@@ -63,26 +60,16 @@ class TransportController extends Controller
      * @api v1
      */
     #[ArrayShape([
-        'station'    => "\App\Models\TrainStation|mixed|null",
+        'station'    => TrainStation::class,
         'departures' => Collection::class,
         'times'      => "array"
     ])]
     public static function getDepartures(
-        string     $stationName,
+        string|int $stationQuery,
         Carbon     $when = null,
         TravelType $travelType = null
     ): array {
-        //first check if the query is a valid DS100 identifier
-        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
-            $station = HafasController::getTrainStationByRilIdentifier($stationName);
-        }
-        //if we cannot find any station by DS100 identifier continue to search normal
-        if (empty($station)) {
-            $station = HafasController::getStations($stationName)->first();
-            if ($station == null) {
-                throw new ModelNotFoundException;
-            }
-        }
+        $station = StationController::lookupStation($stationQuery);
 
         $when  = $when ?? Carbon::now()->subMinutes(5);
         $times = [
@@ -131,7 +118,7 @@ class TransportController extends Controller
      * @throws GuzzleException
      * @deprecated replaced by getDepartures()
      */
-    private static function getTrainDepartures($ibnr, string $when = 'now', $trainType = null) {
+    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
         $client     = new Client(['base_uri' => config('trwl.db_rest')]);
         $trainTypes = [
             TravelType::SUBURBAN->value => 'false',
@@ -254,7 +241,6 @@ class TransportController extends Controller
      * @throws HafasException
      * @throws StationNotOnTripException
      * @throws TrainCheckinAlreadyExistException
-     * @throws NotConnectedException
      * @deprecated replaced by createTrainCheckin()
      */
     #[ArrayShape([
@@ -400,10 +386,7 @@ class TransportController extends Controller
 
         // check for other people on this train
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            $otherStatus->user->notify(new UserJoinedConnection($status->id,
-                                                                $status->trainCheckin->HafasTrip->linename,
-                                                                $status->trainCheckin->Origin->name,
-                                                                $status->trainCheckin->Destination->name));
+            $otherStatus->user->notify(new UserJoinedConnection($status));
         }
 
         return [
