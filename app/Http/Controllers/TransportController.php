@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Resources\HafasTripResource;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -51,7 +52,7 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string      $stationName
+     * @param string|int  $stationQuery
      * @param Carbon|null $when
      * @param string|null $travelType
      *
@@ -60,22 +61,16 @@ class TransportController extends Controller
      * @api v1
      */
     #[ArrayShape([
-        'station'    => "\App\Models\TrainStation|mixed|null",
-        'departures' => "\Illuminate\Support\Collection",
+        'station'    => TrainStation::class,
+        'departures' => Collection::class,
         'times'      => "array"
     ])]
-    public static function getDepartures(string $stationName, Carbon $when = null, string $travelType = null): array {
-        //first check if the query is a valid DS100 identifier
-        if (strlen($stationName) <= 5 && ctype_upper($stationName)) {
-            $station = HafasController::getTrainStationByRilIdentifier($stationName);
-        }
-        //if we cannot find any station by DS100 identifier continue to search normal
-        if (empty($station)) {
-            $station = HafasController::getStations($stationName)->first();
-            if ($station == null) {
-                throw new ModelNotFoundException;
-            }
-        }
+    public static function getDepartures(
+        string|int $stationQuery,
+        Carbon     $when = null,
+        string     $travelType = null
+    ): array {
+        $station = StationController::lookupStation($stationQuery);
 
         $when  = $when ?? Carbon::now()->subMinutes(5);
         $times = [
@@ -391,12 +386,7 @@ class TransportController extends Controller
         // check for other people on this train
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             if ($otherStatus->user->can('view', $status)) {
-                $otherStatus->user->notify(new UserJoinedConnection(
-                                               statusId:    $status->id,
-                                               linename:    $status->trainCheckin->HafasTrip->linename,
-                                               origin:      $status->trainCheckin->Origin->name,
-                                               destination: $status->trainCheckin->Destination->name
-                                           ));
+                $otherStatus->user->notify(new UserJoinedConnection($status));
             }
         }
 

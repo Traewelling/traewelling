@@ -3,12 +3,12 @@
      data-trwl-business-id="{{ $status->business }}" data-trwl-visibility="{{ $status->visibility }}"
 >
     @if (Route::current()->uri == "status/{id}")
-        @if($status->trainCheckin->HafasTrip->polyline)
+        @isset($polyline)
             <div class="card-img-top">
                 <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                     data-polygon="{{ json_encode($status->trainCheckin->getMapLines()) }}"></div>
+                     data-polygon="{{ $polyline }}"></div>
             </div>
-        @endif
+        @endisset
     @endif
 
     <div class="card-body row">
@@ -25,15 +25,20 @@
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
-                            <small style="text-decoration: line-through;"
-                                   class="text-muted">{{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}</small>
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
+                            </small>
                             &nbsp;
                             {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
                         @else
                             {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    {!! stationLink($status->trainCheckin->Origin->name) !!}
+
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}" class="text-trwl clearfix">
+                        {{$status->trainCheckin->Origin->name}}
+                    </a>
+
                     <p class="train-status text-muted">
                         <span>
                             @if (file_exists(public_path('img/'.$status->trainCheckin->HafasTrip->category.'.svg')))
@@ -53,13 +58,12 @@
                             {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
                         </span>
 
-                        @if($status->business == 1)
+                        @if($status->business == \App\Enum\Business::BUSINESS)
                             <span class="pl-sm-2">
                                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.business') }}" aria-hidden="true"></i>
                             </span>
-                        @endif
-                        @if($status->business == 2)
+                        @elseif($status->business == \App\Enum\Business::COMMUTE)
                             <span class="pl-sm-2">
                                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.commute') }}" aria-hidden="true"></i>
@@ -84,7 +88,9 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            {!! stationLink(\App\Http\Controllers\FrontendStatusController::nextStation($status)) !!}
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->ibnr])}}" class="text-trwl clearfix">
+                                {{\App\Http\Controllers\FrontendStatusController::nextStation($status)?->name}}
+                            </a>
                         </p>
                     @endif
                 </li>
@@ -101,7 +107,9 @@
                             {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    {!! stationLink($status->trainCheckin->Destination->name) !!}
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}" class="text-trwl clearfix">
+                        {{$status->trainCheckin->Destination->name}}
+                    </a>
                 </li>
             </ul>
         </div>

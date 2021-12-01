@@ -96,12 +96,7 @@ abstract class TrainCheckinController extends Controller
 
         foreach ($alsoOnThisConnection as $otherStatus) {
             if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
-                $otherStatus->user->notify(new UserJoinedConnection(
-                                               statusId:    $status->id,
-                                               linename:    $trip->linename,
-                                               origin:      $firstStop->name,
-                                               destination: $lastStop->name
-                                           ));
+                $otherStatus->user->notify(new UserJoinedConnection($status));
             }
         }
 

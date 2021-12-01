@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
 use App\Models\User;
 use App\Notifications\StatusLiked;
+use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -87,14 +88,14 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
-                                               'type'            => "App\\Notifications\\UserFollowed",
-                                               'notifiable_type' => "App\\Models\\User",
+                                               'type'            => UserFollowed::class,
+                                               'notifiable_type' => User::class,
                                                'notifiable_id'   => (string) $bob->id
                                            ]);
     }
 
     /** @test */
-    public function unfollowing_bob_should_remove_the_notification() {
+    public function unfollowing_bob_should_remove_the_notification(): void {
         // Given: Users Alice and Bob and Alice follows Bob
         $alice  = $this->user;
         $bob    = $this->createGDPRAckedUser();
@@ -181,7 +182,7 @@ class NotificationsTest extends TestCase
     }
 
     /** @test */
-    public function mark_notification_as_read() {
+    public function mark_notification_as_read(): void {
         // GIVEN: Alice has a notification
         $userToFollow = $this->createGDPRAckedUser();
         UserBackend::createFollow($this->user, $userToFollow);
@@ -226,16 +227,16 @@ class NotificationsTest extends TestCase
         $notifications->assertOk();
         $notifications->assertJsonCount(1); // one follow
         $notifications->assertJsonFragment([
-                                               'type'            => "App\\Notifications\\UserFollowed",
-                                               'notifiable_type' => "App\\Models\\User",
+                                               'type'            => UserFollowed::class,
+                                               'notifiable_type' => User::class,
                                                'notifiable_id'   => (string) $bob->id
                                            ]);
 
         // When: Bob deletes its account
-        $delete = $delete = $this->actingAs($bob)
-                                 ->post(route('account.destroy'), [
-                                     'confirmation' => $bob->username
-                                 ]);
+        $delete = $this->actingAs($bob)
+                       ->post(route('account.destroy'), [
+                           'confirmation' => $bob->username
+                       ]);
         $delete->assertStatus(302);
         $delete->assertRedirect('/');
 

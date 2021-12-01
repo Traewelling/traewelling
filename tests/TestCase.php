@@ -119,14 +119,14 @@ abstract class TestCase extends BaseTestCase
         }
         try {
             $trainStationboard = TransportController::getDepartures(
-                stationName: $stationName,
-                when:        $timestamp,
-                travelType:  TravelType::EXPRESS
+                stationQuery: $stationName,
+                when:         $timestamp,
+                travelType:   TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
-        $countDepartures = count($trainStationboard['departures']);
+        $countDepartures = $trainStationboard['departures']->count();
         if ($countDepartures === 0) {
             $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
