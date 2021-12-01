@@ -16,26 +16,15 @@ class UserJoinedConnection extends Notification
 {
     use Queueable;
 
-    private ?int $statusId;
-    private ?string $linename;
-    private ?string $origin;
-    private ?string $destination;
+    private Status $status;
 
     /**
      * Create a new notification instance
      *
      * @return void
      */
-    public function __construct(
-        int    $statusId = null,
-        string $linename = null,
-        string $origin = null,
-        string $destination = null
-    ) {
-        $this->statusId    = $statusId;
-        $this->linename    = $linename;
-        $this->origin      = $origin;
-        $this->destination = $destination;
+    public function __construct(Status $status) {
+        $this->status = $status;
     }
 
     /** @deprecated will be handled in frontend */
@@ -46,24 +35,25 @@ class UserJoinedConnection extends Notification
             $notification->delete();
             return null;
         }
-        $data = $notification->data;
 
         return view("includes.notification", [
             'color'           => "neutral",
             'icon'            => "fa fa-train",
-            'lead'            => __('notifications.userJoinedConnection.lead',
-                                    ['username' => $detail->status->user->username
-                                    ]),
+            'lead'            => __('notifications.userJoinedConnection.lead', [
+                'username' => $detail->status->user->username
+            ]),
             "link"            => route('statuses.get', ['id' => $detail->status->id]),
-            'notice'          => trans_choice('notifications.userJoinedConnection.notice',
-                                              preg_match('/\s/', $data['linename']), [
-                                                  'username'    => $detail->status->user->username,
-                                                  'linename'    => $data['linename'],
-                                                  'origin'      => $data['origin'],
-                                                  'destination' => $data['destination']
-                                              ]),
+            'notice'          => trans_choice(
+                'notifications.userJoinedConnection.notice',
+                preg_match('/\s/', $detail->status->trainCheckin->HafasTrip->linename), [
+                    'username'    => $detail->status->user->username,
+                    'linename'    => $detail->status->trainCheckin->HafasTrip->linename,
+                    'origin'      => $detail->status->trainCheckin->Origin->name,
+                    'destination' => $detail->status->trainCheckin->Destination->name,
+                ]
+            ),
             'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read'            => $notification->read_at != null,
+            'read'            => $notification->read_at !== null,
             'notificationId'  => $notification->id
         ])->render();
     }
@@ -75,34 +65,34 @@ class UserJoinedConnection extends Notification
      * @throws ShouldDeleteNotificationException
      */
     public static function detail(DatabaseNotification $notification): stdClass {
-        $data                 = $notification->data;
         $notification->detail = new stdClass();
         try {
-            $status = Status::findOrFail($data['status_id']);
+            $status = Status::findOrFail($notification->data['status_id'] ?? null);
         } catch (ModelNotFoundException) {
             throw new ShouldDeleteNotificationException();
         }
 
         $notification->detail->status  = new StatusResource($status);
-        $notification->detail->message = new UserNotificationMessageResource
-        ([
-             'icon'   => 'fa fa-train',
-             'lead'   => [
-                 'key'    => 'notifications.userJoinedConnection.lead',
-                 'values' => [
-                     'username' => $status->user->username
-                 ]
-             ],
-             'notice' => [
-                 'key'    => 'notifications.userJoinedConnection.notice',
-                 'values' => [
-                     'username'    => $status->user->username,
-                     'linename'    => $data['linename'],
-                     'origin'      => $data['origin'],
-                     'destination' => $data['destination']
-                 ]
-             ]
-         ]);
+        $notification->detail->message = new UserNotificationMessageResource(
+            [
+                'icon'   => 'fa fa-train',
+                'lead'   => [
+                    'key'    => 'notifications.userJoinedConnection.lead',
+                    'values' => [
+                        'username' => $status->user->username
+                    ]
+                ],
+                'notice' => [
+                    'key'    => 'notifications.userJoinedConnection.notice',
+                    'values' => [
+                        'username'    => $status->user->username,
+                        'linename'    => $status->trainCheckin->HafasTrip->linename,
+                        'origin'      => $status->trainCheckin->Origin->name,
+                        'destination' => $status->trainCheckin->Destination->name,
+                    ]
+                ]
+            ]
+        );
         return $notification->detail;
     }
 
@@ -117,15 +107,16 @@ class UserJoinedConnection extends Notification
 
     /**
      * Get the array representation of the notification.
+     * This array is saved as `data` in the database
      *
      * @return array
      */
     public function toArray(): array {
         return [
-            'status_id'   => $this->statusId,
-            'linename'    => $this->linename,
-            'origin'      => $this->origin,
-            'destination' => $this->destination
+            'status_id'   => $this->status->id,
+            'linename'    => $this->status->trainCheckin->HafasTrip->linename,
+            'origin'      => $this->status->trainCheckin->Origin->name,
+            'destination' => $this->status->trainCheckin->Destination->name,
         ];
     }
 }
