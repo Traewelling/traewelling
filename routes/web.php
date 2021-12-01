@@ -215,9 +215,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/trains/trip', [FrontendTransportController::class, 'TrainTrip'])
          ->name('trains.trip');
 
-    Route::get('/trains/fast', [FrontendTransportController::class, 'FastTripAccess'])
-         ->name('trains.fast');
-
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
          ->name('trains.checkin');
 

@@ -20,11 +20,10 @@ use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
+use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -53,9 +52,9 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string|int  $stationQuery
-     * @param Carbon|null $when
-     * @param string|null $travelType
+     * @param string|int      $stationQuery
+     * @param Carbon|null     $when
+     * @param TravelType|null $travelType
      *
      * @return array
      * @throws HafasException
@@ -89,67 +88,6 @@ class TransportController extends Controller
         });
 
         return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
-    }
-
-    /**
-     * @param $departure
-     * @param $lineName
-     * @param $number
-     * @param $when
-     *
-     * @return mixed|null
-     * @throws GuzzleException
-     * @deprecated with vue, replaced by frontend logic
-     */
-    public static function FastTripAccess($departure, $lineName, $number, $when) {
-        $departuresArray = self::getTrainDepartures($departure, $when);
-        foreach ($departuresArray as $departure) {
-            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
-                return $departure;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param        $ibnr
-     * @param string $when
-     * @param null   $trainType
-     *
-     * @return array
-     * @throws GuzzleException
-     * @deprecated replaced by getDepartures()
-     */
-    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
-        $client     = new Client(['base_uri' => config('trwl.db_rest')]);
-        $trainTypes = [
-            TravelType::SUBURBAN->value => 'false',
-            TravelType::SUBWAY->value   => 'false',
-            TravelType::TRAM->value     => 'false',
-            TravelType::BUS->value      => 'false',
-            TravelType::FERRY->value    => 'false',
-            TravelType::EXPRESS->value  => 'false',
-            TravelType::REGIONAL->value => 'false',
-        ];
-        $appendix   = '';
-
-        if ($trainType != null) {
-            $trainTypes[$trainType] = 'true';
-            $appendix               = '&' . http_build_query($trainTypes);
-        }
-        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
-        $json     = json_decode($response->getBody()->getContents());
-
-        //remove express trains in filtered results
-        //TODO: Check if $trainType is string or enum
-        if ($trainType != null && $trainType != TravelType::EXPRESS->value) {
-            foreach ($json as $key => $item) {
-                if ($item->line->product != $trainType) {
-                    unset($json[$key]);
-                }
-            }
-        }
-        return self::sortByWhenOrScheduledWhen($json);
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
