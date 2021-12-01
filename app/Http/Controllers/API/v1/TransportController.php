@@ -43,8 +43,8 @@ class TransportController extends ResponseController
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
                 stationQuery: $name,
-                when:        isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:  TravelType::tryFrom($validated['travelType'] ?? null),
+                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
             return $this->sendv1Error("There has been an error with our data provider", 400);
