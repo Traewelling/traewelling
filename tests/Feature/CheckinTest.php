@@ -32,12 +32,12 @@ class CheckinTest extends TestCase
      */
     public function stationboardTest(): void {
         $requestDate = Carbon::parse($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(Main)Hbf";
+        $stationName = "Frankfurt(Main)Hbf";
         $ibnr        = 8000105; // This station has departures throughout the night.
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                $requestDate
+                stationQuery: $stationName,
+                when:         $requestDate
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -46,7 +46,7 @@ class CheckinTest extends TestCase
         $departures = $trainStationboard['departures'];
 
         // Ensure its the same station
-        $this->assertEquals($stationname, $station['name']);
+        $this->assertEquals($stationName, $station['name']);
         $this->assertEquals($ibnr, $station['ibnr']);
 
         // Analyse the stationboard departures
@@ -76,10 +76,10 @@ class CheckinTest extends TestCase
                 "longitude" => 7.4592
             ], */
             [
-                "name"      => "FRA",
-                "station"   => "Frankfurt(M) Flughafen Fernbf",
-                "latitude"  => 50.052926,
-                "longitude" => 8.569776
+                'name'      => 'FRA',
+                'station'   => 8070003,
+                'latitude'  => 50.052926,
+                'longitude' => 8.569776
             ]
             /*, [
                 "name"      => "Moskau",
@@ -92,16 +92,16 @@ class CheckinTest extends TestCase
         foreach ($locations as $testcase) {
             // WHEN: Requesting the stationboard based on Coordinates
             $response = $this->actingAs($user)
-                             ->get(route("trains.nearby", [
-                                 "latitude"  => $testcase["latitude"],
-                                 "longitude" => $testcase["longitude"]
+                             ->get(route('trains.nearby', [
+                                 'latitude'  => $testcase['latitude'],
+                                 'longitude' => $testcase['longitude']
                              ]));
 
             // THEN: Expect the redirect to another stationboard
             $response->assertStatus(302);
-            $response->assertRedirect(route("trains.stationboard", [
-                'station'  => $testcase["station"],
-                'provider' => 'train'
+            $response->assertRedirect(route('trains.stationboard', [
+                'station'  => $testcase['station'],
+                'provider' => 'train',
             ]));
         }
     }
@@ -153,13 +153,13 @@ class CheckinTest extends TestCase
     public function testCheckin(): void {
         // First: Get a train that's fine for our stuff
         $timestamp   = Carbon::parse($this->plus_one_day_then_8pm);
-        $stationname = "Frankfurt(M) Flughafen Fernbf";
+        $stationName = "Frankfurt(M) Flughafen Fernbf";
         $ibnr        = "8070003";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                $timestamp,
-                TravelType::EXPRESS
+                stationQuery: $stationName,
+                when:         $timestamp,
+                travelType:   TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -167,7 +167,7 @@ class CheckinTest extends TestCase
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures === 0) {
-            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationname?");
+            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
         }
 
         // Second: We don't like broken or cancelled trains.
@@ -177,7 +177,7 @@ class CheckinTest extends TestCase
                || count($trainStationboard['departures'][$i]->remarks) != 0) {
             $i++;
             if ($i == $countDepartures) {
-                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationname?");
+                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
             }
         }
         $departure = $trainStationboard['departures'][$i];
@@ -221,7 +221,7 @@ class CheckinTest extends TestCase
         // THEN: You can get the status page and see its information
         $response = $this->get(url('/status/' . $status->id));
         $response->assertOk();
-        $response->assertSee($stationname, false);                          // Departure Station
+        $response->assertSee($stationName, false);                          // Departure Station
         $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
         $response->assertSee("Example Body");
 
@@ -431,12 +431,12 @@ class CheckinTest extends TestCase
     public function testCheckinAtBus603Potsdam(): void {
         // First: Get a train that's fine for our stuff
         $timestamp   = Carbon::parse("+1 days 10:00");
-        $stationname = "Schloss Cecilienhof, Potsdam";
+        $stationName = "Schloss Cecilienhof, Potsdam";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                $timestamp,
-                'bus'
+                stationQuery: $stationName,
+                when:         $timestamp,
+                travelType:   TravelType::BUS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -444,8 +444,7 @@ class CheckinTest extends TestCase
 
         $countDepartures = count($trainStationboard['departures']);
         if ($countDepartures === 0) {
-            $this->markTestSkipped("Unable to find matching bus. Is it night in $stationname?");
-            return;
+            $this->markTestSkipped("Unable to find matching bus. Is it night in $stationName?");
         }
 
         // The bus runs in a 20min interval
@@ -505,12 +504,12 @@ class CheckinTest extends TestCase
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
         $timestamp   = Carbon::parse("+1 days 10:03");
-        $stationname = "Messe Nord / ICC, Berlin";
+        $stationName = "Messe Nord / ICC, Berlin";
         try {
             $trainStationboard = TransportController::getDepartures(
-                $stationname,
-                Carbon::parse('+1 days 10:00'),
-                'suburban'
+                stationQuery: $stationName,
+                when:         Carbon::parse('+1 days 10:00'),
+                travelType:   TravelType::SUBURBAN,
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
