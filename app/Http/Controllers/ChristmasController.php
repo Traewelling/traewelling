@@ -14,6 +14,6 @@ class ChristmasController extends Controller
     public static function toggleChristmasMode(Request $request): RedirectResponse {
         $validated = $request->validate(['christmas-mode' => ['required', 'boolean']]);
         session()->put('christmas-mode', $validated['christmas-mode'] === "1");
-        return back()->with('alert-info', __('merry-christmas'));
+        return back()->with('info', __('merry-christmas'));
     }
 }
