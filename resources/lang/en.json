@@ -493,5 +493,9 @@
     "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!",
     "checkin.points.forced": "You did not receive any points for this check-in because you forced it.",
     "checkin.conflict.question": "Do you still want to check in? You will not earn any points for this, but your personal statistic will still be updated.",
-    "generic.error": "Error"
+    "generic.error": "Error",
+    "christmas-mode": "Christmas mode",
+    "christmas-mode.enable": "Enable Christmas mode for this session",
+    "christmas-mode.disable": "Disable Christmas mode for this session",
+    "merry-christmas": "We wish you a Merry Christmas!"
 }

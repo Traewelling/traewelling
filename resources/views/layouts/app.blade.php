@@ -20,6 +20,10 @@
         <link rel="author" href="/humans.txt">
 
         @yield('head')
+
+        @if(session()->get('christmas-mode') === true)
+            <script src="{{ mix('js/snow.js') }}"></script>
+        @endif
     </head>
     <body>
         <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
@@ -50,6 +54,11 @@
             <nav class="navbar navbar-expand-md navbar-dark {{ !config('app.debug') ? 'bg-trwl' : 'bg-black' }}">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
+                        @if(\Carbon\Carbon::now()->isBetween(\Carbon\Carbon::parse('2021-12-24 00:00'), \Carbon\Carbon::parse('2021-12-27 23:59')))
+                            🎁
+                        @elseif(\Carbon\Carbon::now()->isBefore('2022-01-06'))
+                            🎄
+                        @endif
                         {{ config('app.name', 'Träwelling') }}
                     </a>
                     <div class="navbar-toggler">
@@ -250,6 +259,10 @@
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
         </script>
+
+        @if(session()->get('christmas-mode') === true)
+            <div id="snow"></div>
+        @endif
     </body>
     @yield('footer')
 </html>
