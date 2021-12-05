@@ -494,5 +494,9 @@
     "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!",
     "checkin.points.forced": "Du hast für diesen Check-In keine Punkte erhalten, da du ihn forciert hast.",
     "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
-    "generic.error": "Fehler"
+    "generic.error": "Fehler",
+    "christmas-mode": "Weihnachtsmodus",
+    "christmas-mode.enable": "Weihnachtsmodus für diese Session aktivieren",
+    "christmas-mode.disable": "Weihnachtsmodus für diese Session deaktivieren",
+    "merry-christmas": "Wir wünschen eine frohe Weihnachtszeit!"
 }
