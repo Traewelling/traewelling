@@ -41,7 +41,7 @@
     "transport_types.ferry": "ferry",
     "leaderboard.distance": "Distance",
     "controller.user.follow-404": "Cet abonnement n’existe pas.",
-    "controller.transport.social-post-for": " pour #:hashtag",
+    "controller.transport.social-post-for": "pour #:hashtag",
     "menu.admin": "Panneau admin",
     "profile.statistics-for": "Statistiques pour",
     "export.end": "Jusqu’à",

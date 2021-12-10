@@ -57,7 +57,7 @@
     "controller.transport.also-in-connection": "In dere Verbinnung is aach:|In dere Verbinnung sinn aach:",
     "controller.transport.social-post": "Ich bin grad in :lineName nooch :Destination! #NowTräwelling |Ich bin grad in de Linje :lineName nooch :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin grad in :lineName nooch :destination fer #:hashtag! #NowTräwelling | Ich bin grad in de Linje :lineName nooch :destination fer #:hashtag! #NowTräwelling ",
-    "controller.transport.social-post-for": " fer #:hashtag",
+    "controller.transport.social-post-for": "fer #:hashtag",
     "controller.transport.no-station-found": "Fer die Such sinn kää Haltestelle gefunne worre.",
     "controller.user.follow-404": "Der Follow exischtiert gar ned.",
     "controller.user.follow-delete-not-permitted": "Die Aktion is ned erlaubt.",
