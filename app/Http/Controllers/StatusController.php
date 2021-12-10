@@ -242,8 +242,9 @@ class StatusController extends Controller
                               if (auth()->check()) {
                                   $query->orWhere('statuses.user_id', auth()->user()->id)
                                         ->orWhere(function($query) {
+                                            $followIds = auth()->user()->follows()->select('follow_id');
                                             $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
-                                                  ->whereIn('statuses.user_id', auth()->user()->follows()->select('follow_id'))
+                                                  ->whereIn('statuses.user_id', $followIds)
                                                   ->orWhere('statuses.visibility', StatusVisibility::PUBLIC);
                                         });
                               }
