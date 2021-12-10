@@ -23,7 +23,6 @@ use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -387,7 +386,7 @@ class TransportController extends Controller
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             $otherStatus->user->notify(new UserJoinedConnection($status));
         }
-
+        dd($status->socialText);
         return [
             'success'              => true,
             'statusId'             => $status->id,

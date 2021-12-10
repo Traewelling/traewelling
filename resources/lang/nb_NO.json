@@ -242,7 +242,7 @@
     "controller.status.export-neither-business": "Du kan ikke velge både privat- og forretningsreise.",
     "controller.status.like-deleted": "Gunst slettet.",
     "controller.transport.no-name-given": "Du må angi et stasjonsnavn.",
-    "controller.transport.social-post-for": " for #:emneknagg",
+    "controller.transport.social-post-for": "for #:emneknagg",
     "controller.user.follow-ok": "Bruker fulgt.",
     "user.liked-own-status": "liker sin egen status.",
     "user.invalid-mastodon": ":domain ser ikke ut til å være en Mastodon-instans.",
