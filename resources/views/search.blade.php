@@ -18,7 +18,7 @@
                         <div class="card-body row">
                             <div class="col-2 image-box search-image-box d-lg-flex">
                                 <a href="{{ route('profile', ['username' => $user->username]) }}">
-                                    <img src="{{route('account.showProfilePicture', ['username' => $user->username])}}"
+                                    <img src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user)}}"
                                          alt="Profile picture"/>
                                 </a>
                             </div>

@@ -7,6 +7,7 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\User\DashboardController;
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -172,7 +173,7 @@ class FrontendStatusController extends Controller
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
+            'image'       => ProfilePictureController::getUrl($statusResponse->user),
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }

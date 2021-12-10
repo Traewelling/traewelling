@@ -17,8 +17,8 @@
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $request->user->username]) }}">
-                                                        <img src="{{ route('account.showProfilePicture', ['username' => $request->user->username]) }}"
-                                                             style="height: 3em;"
+                                                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($request->user) }}"
+                                                             style="height: 3em;" alt="{{ $request->user->username }}">
                                                         />
                                                     </a>
                                                 </div>
@@ -86,7 +86,7 @@
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $follower->user->username]) }}">
                                                         <img
-                                                            src="{{ route('account.showProfilePicture', ['username' => $follower->user->username]) }}"
+                                                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($follower->user) }}"
                                                             style="height: 4em;"
                                                         />
                                                     </a>
@@ -133,8 +133,8 @@
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $user->username]) }}">
-                                                        <img src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}"
-                                                             style="height: 3em;"
+                                                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
+                                                             style="height: 3em;" alt="{{$user->username}}"
                                                         />
                                                     </a>
                                                 </div>
