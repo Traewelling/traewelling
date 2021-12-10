@@ -55,7 +55,7 @@
     "about.no-train": "Mir verwendat a Schnittstelln vo dr Deitscha Bahn, bei der id alle Angebote direkt dargstellt werad. Leider könnet mir da aber au id vui doa, wenn dei Ziagla id mit dabei is.",
     "controller.transport.checkin-ok": "Du hosch erfolgreich ind :lineName oicheckt!|Du hosch erfolgreich ind Linie :lineName oicheckt!",
     "controller.transport.no-name-given": "Du muasch an Stationsnoma ageah!",
-    "controller.transport.social-post-for": " fiar #:hashtag",
+    "controller.transport.social-post-for": "fiar #:hashtag",
     "controller.user.follow-destroyed": "Du folgsch dera Person nimme.",
     "controller.status.like-not-found": "Dean Like gaits id.",
     "controller.user.follow-delete-not-permitted": "Dia Aktion isch id erlaubt.",
