@@ -386,7 +386,7 @@ class TransportController extends Controller
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
             $otherStatus->user->notify(new UserJoinedConnection($status));
         }
-        dd($status->socialText);
+
         return [
             'success'              => true,
             'statusId'             => $status->id,
