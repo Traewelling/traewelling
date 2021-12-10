@@ -69,7 +69,7 @@ class FrontendStatusController extends Controller
                 return redirect()->back()->with('error', __('error.bad-request'));
             }
             StatusBackend::DeleteStatus(Auth::user(), (int) $request['statusId']);
-        } catch (PermissionException | ModelNotFoundException) {
+        } catch (PermissionException|ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
 
@@ -91,7 +91,7 @@ class FrontendStatusController extends Controller
                 business:   $request['business_check'],
                 visibility: $request['checkinVisibility']
             );
-        } catch (ModelNotFoundException | PermissionException) {
+        } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back();
         }
 
@@ -138,12 +138,14 @@ class FrontendStatusController extends Controller
     public function statusesByEvent(string $event): Renderable {
         $response = StatusController::getStatusesByEvent($event, null);
 
-        if ($response['event']->end->isPast() && $response['statuses']->count() == 0) {
+        if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
             abort(404);
         }
 
         return view('eventsMap', [
-            'statuses' => $response['statuses'],
+            'statuses' => $response['statuses']->simplePaginate(15),
+            'distance' => $response['distance'],
+            'duration' => $response['duration'],
             'event'    => $response['event']
         ]);
     }
