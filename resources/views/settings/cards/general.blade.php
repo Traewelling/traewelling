@@ -11,7 +11,7 @@
                 <div class="col-md-6 text-center">
                     <div class="image-box">
                         <img
-                                src="{{ route('account.showProfilePicture', ['username' => auth()->user()->username]) }}"
+                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
                                 style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
                                 id="theProfilePicture"
                         />

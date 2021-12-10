@@ -69,7 +69,7 @@
     "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
-    "controller.transport.social-post-for": " for #:hashtag",
+    "controller.transport.social-post-for": "for #:hashtag",
     "controller.transport.no-station-found": "No station has been found for this search.",
     "controller.status.status-not-found": "Status not found",
     "controller.status.create-success": "Status successfully created.",

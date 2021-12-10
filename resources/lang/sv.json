@@ -45,7 +45,7 @@
     "controller.transport.also-in-connection": "Också i detta tågförbindelse är:",
     "controller.transport.social-post": "Jag är för närvarande i :lineName till :Destination! #NowTräwelling |Jag är för närvarande i tågförbindelsen :lineName till :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Jag är för närvarande i :lineName till :destination för #:hashtag! #NowTräwelling | Jag är för närvarande i tågförbindelsen :lineName till #destination för #:hashtag! #NowTräwelling ",
-    "controller.transport.social-post-for": " åt #:hashtag",
+    "controller.transport.social-post-for": "åt #:hashtag",
     "controller.transport.no-station-found": "Inget stopp hittades för denna sökning.",
     "controller.user.follow-404": "Denna follow existerar inte.",
     "controller.user.follow-delete-not-permitted": "Denna aktion är inte tillåten.",

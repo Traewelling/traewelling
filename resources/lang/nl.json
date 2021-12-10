@@ -30,7 +30,7 @@
     "admin.new-users": "nieuwe gebruikers",
     "admin.statuses": "Status",
     "controller.social.delete-never-connected": "Je hebt geen sociale login provider.",
-    "controller.transport.social-post-for": " voor #:hashtag",
+    "controller.transport.social-post-for": "voor #:hashtag",
     "controller.user.follow-404": "Deze Follow bestond helemaal niet.",
     "controller.user.follow-delete-not-permitted": "Deze actie is niet toegestaan.",
     "controller.user.follow-destroyed": "Je volgt die persoon niet meer.",

@@ -41,7 +41,7 @@
     "controller.transport.overlapping-checkin": "Meldunek nakłada się na połączenie :linename: ",
     "controller.social.deleted": "Usunięto powiązanie konta.",
     "controller.status.export-neither-business": "Nie możesz odznaczyć prywatnych, ani biznesowych podróży.",
-    "controller.transport.social-post-for": " dla #:hashtag",
+    "controller.transport.social-post-for": "dla #:hashtag",
     "controller.transport.no-station-found": "Nie znaleziono przystanku/stacji.",
     "controller.user.follow-delete-not-permitted": "Akcja niedozwolona.",
     "controller.user.follow-destroyed": "Już nie obserwujesz tej osoby.",
