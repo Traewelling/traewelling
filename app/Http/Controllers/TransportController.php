@@ -458,27 +458,9 @@ class TransportController extends Controller
     }
 
     /**
-     * Get the latest TrainStations the user is arrived.
-     *
-     * @param User $user
-     * @param int  $maxCount
-     *
-     * @return Collection
+     * @deprecated use StationController:getLatestArrivals(...) instead.
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
-        $user->loadMissing(['statuses.trainCheckIn.destinationStation']);
-        return $user->statuses
-            ->map(function(Status $status) {
-                return $status->trainCheckIn;
-            })
-            ->sortByDesc('arrival')
-            ->map(function(TrainCheckin $checkIn) {
-                return $checkIn->destinationStation;
-            })
-            ->groupBy('ibnr')
-            ->map(function(\Illuminate\Database\Eloquent\Collection $trainStations) {
-                return $trainStations->first();
-            })
-            ->take($maxCount);
+        return StationController::getLatestArrivals($user, $maxCount);
     }
 }
