@@ -494,5 +494,9 @@
     "checkin.points.could-have": "Du kunde ha fått fler poäng om du checkade in närmare den verkliga avgångstiden!",
     "checkin.points.forced": "Du fick inga poäng för denna incheckning eftersom du tvingade fram den.",
     "checkin.conflict.question": "Vill du checka in ändå? Du får inga poäng för detta, men din personliga statistik kommer fortfarande att uppdateras.",
-    "generic.error": "fel"
+    "generic.error": "fel",
+    "christmas-mode.disable": "Deaktivera julläge för den här sessionen",
+    "merry-christmas": "Vi önskar god jul!",
+    "christmas-mode": "Julläge",
+    "christmas-mode.enable": "Aktivera julläge för den här sessionen"
 }
