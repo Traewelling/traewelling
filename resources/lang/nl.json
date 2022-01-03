@@ -328,7 +328,7 @@
     "settings.btn-update": "actualiseren",
     "settings.current-password": "Actueeles wachtwoord",
     "settings.delete-profile-picture": "Profiel foto verwijdern",
-    "user.home-set": "Je thuisstation is nu: Station.",
+    "user.home-set": "Je thuisstation is nu :Station.",
     "notifications.userJoinedConnection.notice": "@:username reist met <b>:linename</b> van <b>:origin</b> naar <b>:destination</b>.|@:username reist met lijn <b>:linename</b> van <b>:origin</b> naar <b>:destination</b>.",
     "pagination.next": "Volgende pagina &raquo;",
     "pagination.previous": "&laquo; Vorige pagina",
