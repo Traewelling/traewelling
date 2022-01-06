@@ -70,7 +70,7 @@
     "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
-    "controller.transport.social-post-for": " for #:hashtag",
+    "controller.transport.social-post-for": "for #:hashtag",
     "controller.transport.no-station-found": "No station has been found for this search.",
     "controller.status.status-not-found": "Status not found",
     "controller.status.create-success": "Status successfully created.",
@@ -272,7 +272,7 @@
     "profile.statistics-for": "Statistics for",
     "profile.unfollow": "Unfollow",
     "profile.private-profile-text": "This profile is private.",
-    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click \":request\".",
+    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click on Request.",
     "search-results": "Search results",
     "settings.tab.account": "Account",
     "settings.tab.profile": "Profile & Privacy",
@@ -494,5 +494,10 @@
     "checkin.points.could-have": "You could have gotten more points if you had checked in closer to the real departure time!",
     "checkin.points.forced": "You did not receive any points for this check-in because you forced it.",
     "checkin.conflict.question": "Do you still want to check in? You will not earn any points for this, but your personal statistic will still be updated.",
-    "generic.error": "Error"
+    "generic.error": "Error",
+    "christmas-mode": "Christmas mode",
+    "christmas-mode.enable": "Enable Christmas mode for this session",
+    "christmas-mode.disable": "Disable Christmas mode for this session",
+    "merry-christmas": "We wish you a Merry Christmas!",
+    "user.email.not-set": "There is no email address saved yet"
 }

@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Support\SupportController;
+use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -35,8 +36,8 @@ use Illuminate\Support\Facades\Route;
 
 require_once realpath(__DIR__) . '/web/admin.php';
 
-Route::get('/profile/{username}/profilepicture', [FrontendUserController::class, 'getProfilePicture'])
-     ->name('account.showProfilePicture');
+Route::get('/@{username}/picture', [ProfilePictureController::class, 'generateProfilePicture'])
+     ->name('profile.picture');
 
 //This is responsible to make vue available as a subdomain at vue.traewelling.de
 Route::domain('beta.' . parse_url(url('/'), PHP_URL_HOST))->group(function() {

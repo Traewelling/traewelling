@@ -63,7 +63,7 @@
     "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
     "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
-    "controller.transport.social-post-for": " für #:hashtag",
+    "controller.transport.social-post-for": "für #:hashtag",
     "controller.transport.no-station-found": "Für diese Suche wurde keine Haltestelle gefunden.",
     "controller.user.follow-404": "Dieser Follow existierte gar nicht.",
     "controller.user.follow-delete-not-permitted": "Diese Aktion ist nicht erlaubt.",
@@ -495,5 +495,9 @@
     "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!",
     "checkin.points.forced": "Du hast für diesen Check-In keine Punkte erhalten, da du ihn forciert hast.",
     "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
-    "generic.error": "Fehler"
+    "generic.error": "Fehler",
+    "christmas-mode": "Weihnachtsmodus",
+    "christmas-mode.enable": "Weihnachtsmodus für diese Session aktivieren",
+    "christmas-mode.disable": "Weihnachtsmodus für diese Session deaktivieren",
+    "merry-christmas": "Wir wünschen eine frohe Weihnachtszeit!"
 }
