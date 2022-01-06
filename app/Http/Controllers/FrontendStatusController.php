@@ -7,6 +7,7 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\User\DashboardController;
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -68,7 +69,7 @@ class FrontendStatusController extends Controller
                 return redirect()->back()->with('error', __('error.bad-request'));
             }
             StatusBackend::DeleteStatus(Auth::user(), (int) $request['statusId']);
-        } catch (PermissionException | ModelNotFoundException) {
+        } catch (PermissionException|ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.status.not-permitted'));
         }
 
@@ -90,7 +91,7 @@ class FrontendStatusController extends Controller
                 business:   $request['business_check'],
                 visibility: $request['checkinVisibility']
             );
-        } catch (ModelNotFoundException | PermissionException) {
+        } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back();
         }
 
@@ -137,12 +138,14 @@ class FrontendStatusController extends Controller
     public function statusesByEvent(string $event): Renderable {
         $response = StatusController::getStatusesByEvent($event, null);
 
-        if ($response['event']->end->isPast() && $response['statuses']->count() == 0) {
+        if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
             abort(404);
         }
 
         return view('eventsMap', [
-            'statuses' => $response['statuses'],
+            'statuses' => $response['statuses']->simplePaginate(15),
+            'distance' => $response['distance'],
+            'duration' => $response['duration'],
             'event'    => $response['event']
         ]);
     }
@@ -170,7 +173,7 @@ class FrontendStatusController extends Controller
                 'destination' => $statusResponse->trainCheckin->Destination->name,
                 'origin'      => $statusResponse->trainCheckin->Origin->name
             ]),
-            'image'       => route('account.showProfilePicture', ['username' => $statusResponse->user->username]),
+            'image'       => ProfilePictureController::getUrl($statusResponse->user),
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }

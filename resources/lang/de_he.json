@@ -57,7 +57,7 @@
     "controller.transport.also-in-connection": "Aa in der Verbindung is:|Aa in der Verbindung sinn:",
     "controller.transport.social-post": "Isch bin groad in :lineName noach :Destination! #NowTräwelling |Isch bin groad in Linie :lineName noach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Isch bin groad in :lineName noach :destination für #:hashtag! #NowTräwelling | Isch bin groad in Linie :lineName noach #destination für #:hashtag! #NowTräwelling ",
-    "controller.transport.social-post-for": " für #:hashtag",
+    "controller.transport.social-post-for": "für #:hashtag",
     "controller.transport.no-station-found": "Für diese Such wurd koa Hoaldestell gfunne.",
     "controller.user.follow-404": "Dieser Follow existierte gar nedd.",
     "controller.user.follow-delete-not-permitted": "Diese Akzion is nedd erlaubt.",

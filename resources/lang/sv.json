@@ -41,11 +41,11 @@
     "controller.transport.checkin-ok": "Du har lyckats checka in på :lineName!|Du har lyckats checka in på tågförbindelsen :lineName!",
     "controller.transport.no-name-given": "Du måste ange ett stationsnamn!",
     "controller.transport.not-in-stopovers": "Start-ID är inte bland tågstoppen.",
-    "controller.transport.overlapping-checkin": "Du har redan en incheckning i anslutningen :linename: ",
+    "controller.transport.overlapping-checkin": "Du har redan en incheckning i anslutningen :linename:",
     "controller.transport.also-in-connection": "Också i detta tågförbindelse är:",
     "controller.transport.social-post": "Jag är för närvarande i :lineName till :Destination! #NowTräwelling |Jag är för närvarande i tågförbindelsen :lineName till :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Jag är för närvarande i :lineName till :destination för #:hashtag! #NowTräwelling | Jag är för närvarande i tågförbindelsen :lineName till #destination för #:hashtag! #NowTräwelling ",
-    "controller.transport.social-post-for": " åt #:hashtag",
+    "controller.transport.social-post-for": "åt #:hashtag",
     "controller.transport.no-station-found": "Inget stopp hittades för denna sökning.",
     "controller.user.follow-404": "Denna follow existerar inte.",
     "controller.user.follow-delete-not-permitted": "Denna aktion är inte tillåten.",
@@ -494,5 +494,9 @@
     "checkin.points.could-have": "Du kunde ha fått fler poäng om du checkade in närmare den verkliga avgångstiden!",
     "checkin.points.forced": "Du fick inga poäng för denna incheckning eftersom du tvingade fram den.",
     "checkin.conflict.question": "Vill du checka in ändå? Du får inga poäng för detta, men din personliga statistik kommer fortfarande att uppdateras.",
-    "generic.error": "fel"
+    "generic.error": "fel",
+    "christmas-mode.disable": "Deaktivera julläge för den här sessionen",
+    "merry-christmas": "Vi önskar god jul!",
+    "christmas-mode": "Julläge",
+    "christmas-mode.enable": "Aktivera julläge för den här sessionen"
 }
