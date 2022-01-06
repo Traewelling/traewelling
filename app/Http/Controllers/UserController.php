@@ -6,8 +6,8 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -24,7 +24,6 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-use Intervention\Image\ImageManagerStatic as Image;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
@@ -33,51 +32,6 @@ use Mastodon;
  */
 class UserController extends Controller
 {
-
-    public static function getProfilePicture(User $user): array {
-        $publicPath = public_path('/uploads/avatars/' . $user->avatar);
-
-        if ($user->avatar == null || !file_exists($publicPath)) {
-            return [
-                'picture'   => self::generateDefaultAvatar($user),
-                'extension' => 'png'
-            ];
-        }
-
-        try {
-            $ext     = pathinfo($publicPath, PATHINFO_EXTENSION);
-            $picture = File::get($publicPath);
-            return [
-                'picture'   => $picture,
-                'extension' => $ext
-            ];
-        } catch (Exception $e) {
-            report($e);
-            return [
-                'picture'   => self::generateDefaultAvatar($user),
-                'extension' => 'png'
-            ];
-        }
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return string Encoded PNG Image
-     */
-    private static function generateDefaultAvatar(User $user): string {
-        $hash           = 0;
-        $usernameLength = strlen($user->username);
-        for ($i = 0; $i < $usernameLength; $i++) {
-            $hash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
-        }
-
-        $hex = dechex($hash & 0x00FFFFFF);
-
-        return Image::canvas(512, 512, $hex)
-                    ->insert(public_path('/img/user.png'))
-                    ->encode('png')->getEncoded();
-    }
 
     #[ArrayShape(['status' => "string"])]
     public static function updateProfilePicture($avatar): array {
@@ -301,8 +255,9 @@ class UserController extends Controller
 
     /**
      * @param string|null $searchQuery
-     * @deprecated is now in backend/usercontroller for api v1
+     *
      * @return Paginator
+     * @deprecated is now in backend/usercontroller for api v1
      */
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);

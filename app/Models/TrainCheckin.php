@@ -36,11 +36,25 @@ class TrainCheckin extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    /**
+     * @deprecated Conflicts with the variable 'origin'. Use ->originStation instead.
+     */
     public function Origin(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
     }
 
+    /**
+     * @deprecated Conflicts with the variable 'destination'. Use ->destinationStation instead.
+     */
     public function Destination(): HasOne {
+        return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
+    }
+
+    public function originStation(): HasOne {
+        return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
+    }
+
+    public function destinationStation(): HasOne {
         return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
     }
 

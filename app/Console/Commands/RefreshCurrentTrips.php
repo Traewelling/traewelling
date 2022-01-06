@@ -15,7 +15,6 @@ class RefreshCurrentTrips extends Command
     protected $description = 'Refresh delay data from current active trips';
 
     public function handle(): int {
-
         $qStops = TrainStopover::where('arrival_planned', '<=', Carbon::now()->addHours(2)->toIso8601String())
                                ->where(function($query) {
                                    $query->where('arrival_planned', '>=', Carbon::now()->toIso8601String())
@@ -23,9 +22,12 @@ class RefreshCurrentTrips extends Command
                                })
                                ->select('trip_id')
                                ->distinct();
-        $trips  = HafasTrip::whereIn('trip_id', $qStops)->get();
 
-        if ($trips->count() == 0) {
+        $trips  = HafasTrip::whereIn('trip_id', $qStops)
+                           ->where('created_at', Carbon::now()->subDays(2)->toIso8601String())
+                           ->get();
+
+        if ($trips->count() === 0) {
             echo "There are currently no trips to refresh.\r\n";
             return 0;
         }

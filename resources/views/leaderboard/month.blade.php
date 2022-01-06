@@ -47,7 +47,7 @@
                         <div class="card-body text-center">
                             <div class="image-box pe-0 d-lg-flex">
                                 <a href="{{ route('profile', ['username' => $place->user->username]) }}">
-                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
+                                    <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($place->user) }}"
                                          alt="{{$place->user->username}}" style="width: 50%;">
                                 </a>
                             </div>
@@ -101,7 +101,7 @@
                                         <td>
                                             <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                 <a href="{{ route('profile', ['username' => $place->user->username]) }}">
-                                                    <img src="{{ route('account.showProfilePicture', ['username' => $place->user->username]) }}"
+                                                    <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($place->user) }}"
                                                          alt="{{$place->user->username}}">
                                                 </a>
                                             </div>

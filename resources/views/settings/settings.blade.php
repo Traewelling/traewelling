@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title'){{ __('menu.settings') }}@endsection
+@section('title', __('menu.settings'))
 
 @section('content')
     <div class="container">

@@ -235,24 +235,41 @@ class StatusController extends Controller
                           ->with('user')
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
+                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('visibility', StatusVisibility::PUBLIC);
+                                    ->where('statuses.visibility', StatusVisibility::PUBLIC);
                               if (auth()->check()) {
-                                  $query->orWhere('users.id', auth()->user()->id)
+                                  $query->orWhere('statuses.user_id', auth()->user()->id)
                                         ->orWhere(function($query) {
-                                            $query->where('visibility', StatusVisibility::FOLLOWERS)
-                                                  ->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
-                                                  ->orWhere('visibility', StatusVisibility::PUBLIC);
+                                            $followIds = auth()->user()->follows()->select('follow_id');
+                                            $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
+                                                  ->whereIn('statuses.user_id', $followIds)
+                                                  ->orWhere('statuses.visibility', StatusVisibility::PUBLIC);
                                         });
                               }
                           });
 
         if (auth()->check()) {
-            $statuses->whereNotIn('user_id', auth()->user()->mutedUsers()->select('muted_id'));
+            $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
         }
 
-        return ['event' => $event, 'statuses' => $statuses->simplePaginate(15)];
+        $distance = $statuses->sum('train_checkins.distance');
+        $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
+                                     ->get()
+                                     ->map(function($row) {
+                                         $arrival   = Carbon::parse($row->arrival);
+                                         $departure = Carbon::parse($row->departure);
+                                         return $arrival->diffInMinutes($departure);
+                                     })
+                                     ->sum();
+
+        return [
+            'event'    => $event,
+            'distance' => $distance,
+            'duration' => $duration,
+            'statuses' => $statuses,
+        ];
     }
 
     public static function getFutureCheckins(): Paginator {
