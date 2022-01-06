@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\ChristmasController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
@@ -124,9 +123,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
-    Route::post('/christmas-mode', [ChristmasController::class, 'toggleChristmasMode'])
-         ->name('christmas-mode');
-
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken');
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])

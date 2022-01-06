@@ -271,7 +271,7 @@
     "profile.statistics-for": "Statistics for",
     "profile.unfollow": "Unfollow",
     "profile.private-profile-text": "This profile is private.",
-    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click \":request\".",
+    "profile.private-profile-information-text": "Only approved followers can see the check-ins of @:username. To request access, click on Request.",
     "search-results": "Search results",
     "settings.tab.account": "Account",
     "settings.tab.profile": "Profile & Privacy",
@@ -497,5 +497,6 @@
     "christmas-mode": "Christmas mode",
     "christmas-mode.enable": "Enable Christmas mode for this session",
     "christmas-mode.disable": "Disable Christmas mode for this session",
-    "merry-christmas": "We wish you a Merry Christmas!"
+    "merry-christmas": "We wish you a Merry Christmas!",
+    "user.email.not-set": "There is no email address saved yet"
 }
