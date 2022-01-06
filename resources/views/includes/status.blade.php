@@ -14,7 +14,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
+                <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
                      alt="{{ $status->user->username }}">
             </a>
         </div>
@@ -149,7 +149,7 @@
                     id="avatar-small-{{ $status->id }}"
                     data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
+                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
@@ -177,7 +177,7 @@
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img src="{{ route('account.showProfilePicture', ['username' => $status->user->username]) }}"
+                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
                              class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
@@ -189,7 +189,7 @@
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
                 <a href="{{ route('profile', ['username' => $like->user->username]) }}">
-                    <img src="{{ route('account.showProfilePicture', ['username' => $like->user->username]) }}"
+                    <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($like->user) }}"
                          class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
                 </a>
                 <span class="like-text pl-2 d-table-cell">

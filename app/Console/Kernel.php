@@ -24,11 +24,11 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected function schedule(Schedule $schedule): void {
-        $schedule->command('trwl:cleanUpUsers')->dailyAt("1:30");
-        $schedule->command('trwl:cleanUpHafasTrips')->dailyAt("1:35");
-        $schedule->command('trwl:cleanUpPolylines')->dailyAt("1:40");
+        $schedule->command('trwl:cleanUpUsers')->dailyAt('1:30');
+        $schedule->command('trwl:cleanUpHafasTrips')->dailyAt('1:35');
+        $schedule->command('trwl:cleanUpPolylines')->dailyAt('1:40');
         $schedule->command('trwl:cleanUpPasswordResets')->dailyAt('1:45');
-        $schedule->command('trwl:refreshTrips')->everyMinute();
+        $schedule->command('trwl:refreshTrips')->withoutOverlapping()->everyTwoMinutes();
     }
 
     /**

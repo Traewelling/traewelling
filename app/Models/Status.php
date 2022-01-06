@@ -58,22 +58,22 @@ class Status extends Model
 
     public function getSocialTextAttribute(): string {
         $postText = trans_choice(
-            'controller.transport.social-post',
-            preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-            [
-                'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                'destination' => $this->trainCheckin->Destination->name
-            ]
+            key:     'controller.transport.social-post',
+            number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
+            replace: [
+                         'lineName'    => $this->trainCheckin->HafasTrip->linename,
+                         'destination' => $this->trainCheckin->Destination->name
+                     ]
         );
         if ($this->event !== null) {
             $postText = trans_choice(
-                'controller.transport.social-post-with-event',
-                preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-                [
-                    'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                    'destination' => $this->trainCheckin->Destination->name,
-                    'hashtag'     => $this->event->hashtag
-                ]
+                key:     'controller.transport.social-post-with-event',
+                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
+                replace: [
+                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
+                             'destination' => $this->trainCheckin->Destination->name,
+                             'hashtag'     => $this->event->hashtag
+                         ]
             );
         }
 
@@ -81,11 +81,11 @@ class Status extends Model
         if (isset($this->body)) {
             if ($this->event !== null) {
                 $eventIntercept = __('controller.transport.social-post-for', [
-                    ':hashtag' => $this->event->hashtag
+                    'hashtag' => $this->event->hashtag
                 ]);
             }
 
-            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling ', [
+            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
                 ':linename'       => $this->trainCheckin->HafasTrip->linename,
                 ':destination'    => $this->trainCheckin->Destination->name,
                 ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
@@ -93,7 +93,7 @@ class Status extends Model
 
             $appendixLength = strlen($appendix) + 30;
             $postText       = substr($this->body, 0, 280 - $appendixLength);
-            if (strlen($postText) != strlen($this->body)) {
+            if (strlen($postText) !== strlen($this->body)) {
                 $postText .= '...';
             }
             $postText .= $appendix;

@@ -48,14 +48,14 @@
     "about.points1": "Dia Punkte setzt sich us dr Produktklassn und dr Entfernung diner Reisen zamme.",
     "controller.status.create-success": "Status erstellt.",
     "controller.status.delete-ok": "Status glöscht.",
-    "controller.status.email-resend-mail": "Bestätigung nomal verschicka.",
+    "controller.status.email-resend-mail": "Bestätigungslink schicka",
     "controller.status.export-invalid-dates": "Des sand koane richtige Data.",
     "controller.status.export-neither-business": "Du kahsch id Privat und Business-Trips gleichzeitig abwähla.",
     "controller.status.like-deleted": "Like isch glöscht wora.",
     "about.no-train": "Mir verwendat a Schnittstelln vo dr Deitscha Bahn, bei der id alle Angebote direkt dargstellt werad. Leider könnet mir da aber au id vui doa, wenn dei Ziagla id mit dabei is.",
     "controller.transport.checkin-ok": "Du hosch erfolgreich ind :lineName oicheckt!|Du hosch erfolgreich ind Linie :lineName oicheckt!",
     "controller.transport.no-name-given": "Du muasch an Stationsnoma ageah!",
-    "controller.transport.social-post-for": " fiar #:hashtag",
+    "controller.transport.social-post-for": "fiar #:hashtag",
     "controller.user.follow-destroyed": "Du folgsch dera Person nimme.",
     "controller.status.like-not-found": "Dean Like gaits id.",
     "controller.user.follow-delete-not-permitted": "Dia Aktion isch id erlaubt.",
@@ -437,5 +437,8 @@
     "settings.notconnected": "Id verbunda",
     "description.profile": ":username isch schu :kmAmount Killomettr in :hourAmount Schdunda in öffatliche Verkeahrsmittl unterweags gweah.",
     "settings.create-ics-token-success": "Dia Kalendrfreigabn isch erschdelld wora. Du kasch folgnda Link in an Kalendr eibinda, ders ICS-Format unterschtütza duat: <a href=\":link\">:link</a>",
-    "stationboard.arr": "an"
+    "stationboard.arr": "an",
+    "email.change": "Dua dei E-Mail-Adressn aktualisiera, indemd dia nuie Adress und dei aktuells Passwort eigibsch. Dir werd dann a Bschdädigungsmail zuagschickt, mit der'd dia Ändrung bschdädiga kahsch.",
+    "email.validation": "E-Mail-Adressn bschdädiga",
+    "welcome": "Griaß di bei Träwelling!"
 }

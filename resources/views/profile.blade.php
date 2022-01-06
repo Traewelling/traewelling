@@ -17,8 +17,9 @@
     <div class="px-4 py-5 mt-n4"
          style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
         <div class="container">
-            <img alt="{{ __('settings.picture') }}" src="{{ route('account.showProfilePicture', ['username' => $user->username]) }}" height="20%"
-                 width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
+            <img alt="{{ __('settings.picture') }}"
+                 src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
+                 height="20%" width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
             <div class="text-white px-4">
                 <h2 class="card-title h1-responsive font-bold">
                     <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
@@ -31,10 +32,10 @@
                 </h2>
                 <h2>
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
-                            class="small font-weight-lighter">km</span>
+                        class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
                     <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
-                            class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
+                        class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
                     @isset($user?->socialProfile?->twitter_id)
                         <span class="font-weight-bold ps-sm-2">
                             <a href="https://twitter.com/i/user/{{ $user->socialProfile->twitter_id }}" rel="me"
