@@ -43,7 +43,6 @@
         "moment": "^2.29.1",
         "momentjs": "^2.0.0",
         "notyf": "^3.10.0",
-        "snowfall.js": "^1.0.2",
         "vue-apexcharts": "^1.6.2",
         "vue-axios": "^3.2.4",
         "vue-i18n": "^8.24.4",
