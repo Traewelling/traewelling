@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
@@ -28,10 +29,10 @@ class UserController extends ResponseController
 
     public function avatar(string $username): JsonResponse {
         $user = User::where('username', $username)->first();
-        if ($user == null) {
+        if ($user === null) {
             return $this->sendResponse(null);
         }
-        $profilePictureResponse = UserBackend::getProfilePicture($user);
+        $profilePictureResponse = ProfilePictureController::generateProfilePicture($user);
         return $this->sendResponse($profilePictureResponse);
     }
 
