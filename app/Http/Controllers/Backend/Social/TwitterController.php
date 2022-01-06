@@ -92,7 +92,7 @@ abstract class TwitterController extends Controller
             #dbl only works on Twitter.
             $socialText = $status->socialText;
             if ($status->user->always_dbl) {
-                $socialText .= "#dbl ";
+                $socialText .= " #dbl";
             }
             $socialText .= ' ' . url("/status/{$status->id}");
             $connection->post("statuses/update",
