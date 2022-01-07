@@ -425,5 +425,5 @@
     "transport_types.regionalExp": "Regionalexpress/TLK",
     "status.visibility.1.detail": "Widoczny dla wszystkich, tylko w profilu",
     "status.visibility.2.detail": "Tylko zatwierdzeni obserwujący",
-    "date-format": "DD.MM.RRRR"
+    "date-format": "DD.MM.YYYY"
 }
