@@ -296,7 +296,7 @@
     "menu.settings.myFollower": "Obserwujący",
     "menu.discard": "Odrzuć",
     "menu.globaldashboard": "Globalny panel główny",
-    "events.on-your-way": "Jesteś na drodze z powodu <a href=\":url\">:nazwa</a>.",
+    "events.on-your-way": "Jesteś na drodze z powodu <a href=\":url\">:name</a>.",
     "messages.cookie-notice": "Używamy cookies dla systemu logowania.",
     "messages.cookie-notice-button": "Ok",
     "messages.cookie-notice-learn": "Dowiedz się więcej",
