@@ -142,7 +142,7 @@ export default {
             Settings.updateProfilePicture(val)
                 .then(() => {
                     this.toggleShowUpload();
-                    this.refreshProfilePicture();
+                    this.$auth.fetch();
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                 })
                 .catch((error) => {
@@ -151,10 +151,6 @@ export default {
         },
         toggleShowUpload() {
             this.showUpload = !this.showUpload;
-        },
-        refreshProfilePicture(hasProfilePicture = true) {
-            this.$refs.profilepicture.src  = this.$auth.user().profilePicture;
-            this.value.profile_picture_set = hasProfilePicture;
         },
         updateProfileSettings() {
             Settings.updateProfileSettings(this.value)
@@ -171,8 +167,7 @@ export default {
             Settings.deleteProfilePicture()
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
-                    //ToDo implement twitter-like profilepicture links
-                    this.refreshProfilePicture(false);
+                    this.$auth.fetch();
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
