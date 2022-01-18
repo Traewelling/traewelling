@@ -6,7 +6,7 @@
                     <div class="col-2 image-box search-image-box d-lg-flex">
                         <router-link :to="{name: 'profile', params: {username: user.username}}">
                             <img :alt="i18n.get('_.settings.picture')"
-                                 :src="`/profile/${user.username}/profilepicture`">
+                                 :src="user.profilePicture">
                         </router-link>
                     </div>
 

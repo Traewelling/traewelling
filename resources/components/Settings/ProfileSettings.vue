@@ -8,7 +8,7 @@
         <div class="row text-start">
             <div class="col-3">
                 <img ref="profilepicture" :alt="i18n.get('_.settings.picture')"
-                     :src="`/profile/${$auth.user().username}/profilepicture?${Date.now()}`"
+                     :src="$auth.user().profilePicture"
                      class="rounded-circle w-100 d-block">
             </div>
             <div class="col-8 d-flex align-items-center">
@@ -153,7 +153,7 @@ export default {
             this.showUpload = !this.showUpload;
         },
         refreshProfilePicture(hasProfilePicture = true) {
-            this.$refs.profilepicture.src  = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
+            this.$refs.profilepicture.src  = this.$auth.user().profilePicture;
             this.value.profile_picture_set = hasProfilePicture;
         },
         updateProfileSettings() {

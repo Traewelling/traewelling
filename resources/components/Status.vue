@@ -12,7 +12,7 @@
                 <div class="col-2 image-box pe-0 d-none d-lg-flex">
                     <router-link :to="{ name: 'profile', params: {username: statusData.username}}">
                         <img :alt="statusData.username"
-                             :src="`/profile/${statusData.username}/profilepicture`">
+                             :src="statusData.profilePicture">
                     </router-link>
                 </div>
 
@@ -118,7 +118,7 @@
                     <li class="list-inline-item d-lg-none me-1">
                         <router-link :to="{name: 'profile', params: {username: statusData.username}}">
                             <img :alt="i18n.get('_.settings.picture')"
-                                 :src="`/profile/${statusData.username}/profilepicture`"
+                                 :src="statusData.profilePicture"
                                  class="profile-image">
                         </router-link>
                     </li>
@@ -167,7 +167,7 @@
                     <li class="list-inline-item">
                         <router-link :to="{name: 'profile', params: {username: like.username}}">
                             <img :alt="i18n.get('_.settings.picture')"
-                                 :src="`/profile/${like.username}/profilepicture`"
+                                 :src="like.profilePicture"
                                  class="profile-image">
                         </router-link>
                     </li>
