@@ -59,7 +59,8 @@ jobs:
         run: php artisan test --parallel
 
       - name: Run codacy-coverage-reporter
-        if: ${{github.repository == 'Traewelling/traewelling' && github.actor != 'dependabot'}}
+        if: ${{github.repository == 'Traewelling/traewelling'}}
+        continue-on-error: true
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
