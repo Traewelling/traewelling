@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\API\v1;
 
 
-use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotMutedException;
@@ -66,35 +64,6 @@ class UserController extends ResponseController
      */
     public function show(string $username): UserResource {
         return new UserResource(User::where('username', 'like', $username)->firstOrFail());
-    }
-
-    public function createFollow(Request $request): JsonResponse {
-        $validated    = $request->validate(['userId' => ['required', 'exists:users,id']]);
-        $userToFollow = User::find($validated['userId']);
-
-        try {
-            $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
-        } catch (AlreadyFollowingException) {
-            return $this->sendv1Error(['message' => __('controller.user.follow-error')], 409);
-        } catch (IdenticalModelException) {
-            abort(409);
-        }
-
-        return $this->sendv1Response(new UserResource($createFollowResponse), 201);
-    }
-
-    public function destroyFollow(Request $request): JsonResponse {
-        $validated      = $request->validate(['userId' => ['required', 'exists:users,id']]);
-        $userToUnfollow = User::find($validated['userId']);
-
-        $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
-        if ($destroyFollowResponse === false) {
-            return $this->sendv1Error(['message' => __('controller.user.follow-404')], 409);
-        }
-
-        $userToUnfollow->fresh();
-        return $this->sendv1Response(new UserResource($userToUnfollow));
-
     }
 
     public function createMute(Request $request): JsonResponse {
