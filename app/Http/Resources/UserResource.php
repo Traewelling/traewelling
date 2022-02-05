@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,7 +29,7 @@ class UserResource extends JsonResource
             'twitterUrl'        => $this->twitterUrl ?? null,
             'mastodonUrl'       => $this->mastodonUrl ?? null,
             'privateProfile'    => (bool) $this->private_profile,
-            'userInvisibleToMe' => (bool) \request()->user()->cannot('view', $this), //TODO: Is $this working here?
+            'userInvisibleToMe' => (bool) \request()?->user()?->cannot('view', User::find($this->id)),
             'muted'             => (bool) $this->muted,
             'following'         => (bool) $this->following,
             'followPending'     => (bool) $this->followPending,
