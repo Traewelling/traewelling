@@ -18,8 +18,9 @@ class StatusFactory extends Factory
             'body'       => $this->faker->paragraph,
             'user_id'    => User::factory(),
             'business'   => $this->faker->randomElement(Business::getList()),
-            'event_id'   => null,
             'visibility' => $this->faker->randomElement(StatusVisibility::getList()),
+            'type'       => 'hafas',
+            'event_id'   => null,
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Privacy\Status;
 use App\Enum\StatusVisibility;
 use App\Models\Follow;
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -13,6 +14,50 @@ class ViewTest extends TestCase
 {
 
     use RefreshDatabase;
+
+    public function testUnauthenticatedViewPublicStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PUBLIC])
+                        ->has(TrainCheckin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest->assertStatus(200);
+    }
+
+    public function testUnauthenticatedViewPrivateStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PRIVATE])
+                        ->has(TrainCheckin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest->assertStatus(403);
+    }
+
+    public function testUnauthenticatedViewUnlistedStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::UNLISTED])
+                        ->has(TrainCheckin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest->assertStatus(200);
+    }
+
+    public function testUnauthenticatedViewFollowersOnlyStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::FOLLOWERS])
+                        ->has(TrainCheckin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest->assertStatus(403);
+    }
 
     public function testViewOwnStatus(): void {
         $user   = User::factory()->create();

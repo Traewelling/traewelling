@@ -17,6 +17,23 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
+/**
+ * @property int     id
+ * @property string  username
+ * @property string  name
+ * @property string  avatar
+ * @property string  email
+ * @property Carbon  email_verified_at
+ * @property string  password
+ * @property int     home_id
+ * @property Carbon  privacy_ack_at
+ * @property boolean always_dbl
+ * @property integer default_status_visibility
+ * @property boolean private_profile
+ * @property boolean prevent_index
+ * @property string  language
+ * @property Carbon  last_login
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
 

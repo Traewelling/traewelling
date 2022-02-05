@@ -19,7 +19,6 @@ class StatusPolicy
      * @param Status    $status
      *
      * @return Response|bool
-     * @todo test unauthenticated
      * @todo implement blocked and muted
      */
     public function view(?User $user, Status $status): Response|bool {

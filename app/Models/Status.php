@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int    user_id
  * @property string body
  * @property int    business
+ * @property int    event_id
  * @property int    visibility
  */
 class Status extends Model

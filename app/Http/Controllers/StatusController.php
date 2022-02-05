@@ -25,6 +25,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class StatusController extends Controller
 {
     /**
+     * Authorization in Frontend required! $this->authorize('view', $status);
+     *
      * @param int $statusId
      *
      * @return Status
@@ -34,18 +36,12 @@ class StatusController extends Controller
      * @frontend
      */
     public static function getStatus(int $statusId): Status {
-        $status = Status::where('id', $statusId)->with('user',
-                                                       'trainCheckin',
-                                                       'trainCheckin.Origin',
-                                                       'trainCheckin.Destination',
-                                                       'trainCheckin.HafasTrip',
-                                                       'event')->withCount('likes')->firstOrFail();
-
-        if (request()?->user()->can('view', $status)) {
-            return $status;
-        }
-
-        abort(403, "Status invisible to you.");
+        return Status::where('id', $statusId)->with('user',
+                                                    'trainCheckin',
+                                                    'trainCheckin.Origin',
+                                                    'trainCheckin.Destination',
+                                                    'trainCheckin.HafasTrip',
+                                                    'event')->withCount('likes')->firstOrFail();
     }
 
     /**
