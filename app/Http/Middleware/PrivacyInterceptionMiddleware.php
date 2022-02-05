@@ -30,7 +30,7 @@ class PrivacyInterceptionMiddleware
 
         // If the last execution is newer than the ack, please redirect me.
         $user = auth()->user();
-        if ($agreement->valid_at->isAfter($user->privacy_ack_at)) {
+        if (is_null($user->privacy_ack_at) || $agreement->valid_at->isAfter($user->privacy_ack_at)) {
             if ($request->is('api*')) {
                 $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
                                              ->orderByDesc('valid_at')

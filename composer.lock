@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a68b2d79b9f4fd3ff24c58b64e2fca0",
+    "content-hash": "05704b0a5b1f4e70dd6ead4452621870",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -125,34 +125,40 @@
         },
         {
             "name": "barryvdh/laravel-dompdf",
-            "version": "v0.9.0",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-dompdf.git",
-                "reference": "5b99e1f94157d74e450f4c97e8444fcaffa2144b"
+                "reference": "e3f429e97087b2ef19b83e5ed313f080f2477685"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/5b99e1f94157d74e450f4c97e8444fcaffa2144b",
-                "reference": "5b99e1f94157d74e450f4c97e8444fcaffa2144b",
+                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/e3f429e97087b2ef19b83e5ed313f080f2477685",
+                "reference": "e3f429e97087b2ef19b83e5ed313f080f2477685",
                 "shasum": ""
             },
             "require": {
                 "dompdf/dompdf": "^1",
-                "illuminate/support": "^5.5|^6|^7|^8",
-                "php": "^7.1 || ^8.0"
+                "illuminate/support": "^6|^7|^8|^9",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "nunomaduro/larastan": "^1|^2",
+                "orchestra/testbench": "^4|^5|^6|^7",
+                "phpro/grumphp": "^1",
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.9-dev"
+                    "dev-master": "1.0-dev"
                 },
                 "laravel": {
                     "providers": [
                         "Barryvdh\\DomPDF\\ServiceProvider"
                     ],
                     "aliases": {
-                        "PDF": "Barryvdh\\DomPDF\\Facade"
+                        "PDF": "Barryvdh\\DomPDF\\Facade\\Pdf"
                     }
                 }
             },
@@ -179,15 +185,19 @@
             ],
             "support": {
                 "issues": "https://github.com/barryvdh/laravel-dompdf/issues",
-                "source": "https://github.com/barryvdh/laravel-dompdf/tree/v0.9.0"
+                "source": "https://github.com/barryvdh/laravel-dompdf/tree/v1.0.0"
             },
             "funding": [
+                {
+                    "url": "https://fruitcake.nl",
+                    "type": "custom"
+                },
                 {
                     "url": "https://github.com/barryvdh",
                     "type": "github"
                 }
             ],
-            "time": "2020-12-27T12:05:53+00:00"
+            "time": "2022-01-29T08:02:59+00:00"
         },
         {
             "name": "brianium/paratest",
