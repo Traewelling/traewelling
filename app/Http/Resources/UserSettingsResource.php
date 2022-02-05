@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -11,6 +12,7 @@ class UserSettingsResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array
      * @todo remove twitterUrl after replaced url in vue profile template (it's unused)
      */
@@ -19,6 +21,7 @@ class UserSettingsResource extends JsonResource
             'id'             => (int) $this->id,
             'displayName'    => (string) $this->name,
             'username'       => (string) $this->username,
+            'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
             'trainDistance'  => (float) $this->train_distance,
             'trainDuration'  => (int) $this->train_duration,
             'trainSpeed'     => (float) $this->averageSpeed,

@@ -11,6 +11,11 @@ use Intervention\Image\ImageManagerStatic as Image;
 abstract class ProfilePictureController extends Controller
 {
 
+    public static function getUrlForUserId(int $userId): string {
+        $user = User::where('id', $userId)->first();
+        return self::getUrl(user: $user);
+    }
+
     public static function getUrl(User $user): string {
         if ($user->avatar === null) {
             //Return default route to generate users avatar with matching color

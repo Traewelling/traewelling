@@ -16,7 +16,7 @@
         "ext-gd": "*",
         "ext-json": "*",
         "abraham/twitteroauth": "^3.0",
-        "barryvdh/laravel-dompdf": "^0.9",
+        "barryvdh/laravel-dompdf": "^1.0",
         "brianium/paratest": "^6.3",
         "doctrine/dbal": "^3.1.4",
         "fideloper/proxy": "^4.4",

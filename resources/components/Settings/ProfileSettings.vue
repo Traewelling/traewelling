@@ -8,7 +8,7 @@
         <div class="row text-start">
             <div class="col-3">
                 <img ref="profilepicture" :alt="i18n.get('_.settings.picture')"
-                     :src="`/profile/${$auth.user().username}/profilepicture?${Date.now()}`"
+                     :src="$auth.user().profilePicture"
                      class="rounded-circle w-100 d-block">
             </div>
             <div class="col-8 d-flex align-items-center">
@@ -142,7 +142,7 @@ export default {
             Settings.updateProfilePicture(val)
                 .then(() => {
                     this.toggleShowUpload();
-                    this.refreshProfilePicture();
+                    this.$auth.fetch();
                     this.notyf.success(this.i18n.get("_.settings.saved"));
                 })
                 .catch((error) => {
@@ -151,10 +151,6 @@ export default {
         },
         toggleShowUpload() {
             this.showUpload = !this.showUpload;
-        },
-        refreshProfilePicture(hasProfilePicture = true) {
-            this.$refs.profilepicture.src  = "/profile/" + this.$auth.user().username + "/profilepicture?" + Date.now();
-            this.value.profile_picture_set = hasProfilePicture;
         },
         updateProfileSettings() {
             Settings.updateProfileSettings(this.value)
@@ -171,8 +167,7 @@ export default {
             Settings.deleteProfilePicture()
                 .then(() => {
                     this.notyf.success(this.i18n.get("_.settings.saved"));
-                    //ToDo implement twitter-like profilepicture links
-                    this.refreshProfilePicture(false);
+                    this.$auth.fetch();
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
