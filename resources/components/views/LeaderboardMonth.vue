@@ -35,7 +35,7 @@
                         <div class="card-body text-center">
                             <div class="image-box pe-0 d-lg-flex">
                                 <router-link :to="{ name: 'profile', params: {username: place.username}}">
-                                    <img :alt="place.username" :src="`/profile/${place.username}/profilepicture`"
+                                    <img :alt="place.username" :src="place.profilePicture"
                                          style="width: 50%;">
                                 </router-link>
                             </div>
@@ -91,7 +91,7 @@
                                                 <router-link
                                                     :to="{ name: 'profile', params: {username: place.username}}">
                                                     <img :alt="place.username"
-                                                         :src="`/profile/${place.username}/profilepicture`"
+                                                         :src="place.profilePicture"
                                                          style="width: 50%;">
                                                 </router-link>
                                             </div>

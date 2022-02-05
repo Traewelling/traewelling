@@ -45,6 +45,7 @@ export let ProfileModel = {
     id: 0,
     displayName: "",
     username: "",
+    profilePicture: "",
     trainDistance: 0,
     trainDuration: 0,
     trainSpeed: 0,
@@ -66,6 +67,7 @@ export let StatusModel = {
     createdAt: "",
     user: 0,
     username: "",
+    profilePicture: "",
     preventIndex: false,
     business: 0,
     visibility: 0,
@@ -91,6 +93,7 @@ export let PolyLineModel = {};
 
 export let LeaderboardUserModel = {
     username: "",
+    profilePicture: "",
     trainDuration: 0.0,
     trainDistance: 0.0,
     trainSpeed: 0.0,
@@ -156,6 +159,7 @@ export let statusNotifications = [
 export let userProfileSettings = {
     username: "",
     name: "",
+    profilePicture: "",
     private_profile: false,
     prevent_index: false,
     always_dbl: false,
