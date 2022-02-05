@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,6 +20,7 @@ class UserResource extends JsonResource
             'id'                => (int) $this->id,
             'displayName'       => (string) $this->name,
             'username'          => (string) $this->username,
+            'profilePicture'    => ProfilePictureController::getUrlForUserId($this->id),
             'trainDistance'     => (float) $this->train_distance,
             'trainDuration'     => (int) $this->train_duration,
             'trainSpeed'        => (float) $this->averageSpeed,
