@@ -28,7 +28,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.2",
         "@tarekraafat/autocomplete.js": "^10.2.6",
-        "@websanova/vue-auth": "^4.1.9",
+        "@websanova/vue-auth": "^4.1.11",
         "apexcharts": "^3.33.0",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
