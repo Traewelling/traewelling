@@ -1,7 +1,7 @@
 <template>
     <table class="table table-striped table-hover table-sm mb-0" aria-describedby="describedBy">
         <tbody>
-            <tr v-for="row in users" style="vertical-align: middle">
+            <tr v-for="row in users" v-bind:key="row.id" style="vertical-align: middle">
                 <td>
                     <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                         <router-link :to="{name: 'profile', params: {username: row.username}}">
@@ -44,7 +44,7 @@
                 </td>
                 <td class="pe-0 text-end" v-if="followers">
                     <button type="submit" class="btn btn-sm btn-danger" data-mdb-toggle="tooltip"
-                            :title="i18n.get('_.settings.follower.delete')">
+                            :title="i18n.get('_.settings.follower.delete')" @click="removeFollower(row)">
                         <i class="fas fa-user-minus" aria-hidden="true"></i>
 
                     </button>
@@ -53,7 +53,8 @@
                         <button type="submit" class="btn btn-danger btn-sm"
                                 data-mdb-toggle="tooltip"
                                 data-mdb-placement="top"
-                                :title="i18n.get('_.settings.request.delete')">
+                                :title="i18n.get('_.settings.request.delete')"
+                                @click="rejectFollowRequest(row)">
                             <i class="fas fa-user-times" aria-hidden="true"></i>
                         </button>
                 </td>
@@ -61,7 +62,8 @@
                         <button type="submit" class="btn btn-success btn-sm"
                                 data-mdb-toggle="tooltip"
                                 data-mdb-placement="top"
-                                :title="i18n.get('_.settings.request.accept')">
+                                :title="i18n.get('_.settings.request.accept')"
+                                @click="approveFollowRequest(row)">
                             <i class="fas fa-user-check" aria-hidden="true"></i>
                         </button>
                 </td>
@@ -80,9 +82,11 @@
 
 import MuteButton from "./MuteButton";
 import FollowButton from "./FollowButton";
+import User from "../js/ApiClient/User";
 
 export default {
     name: "FollowTable",
+    inject: ["notyf"],
     components: {FollowButton, MuteButton},
     props: {
         describedBy: null,
@@ -90,7 +94,41 @@ export default {
         followers: false,
         request: false
     },
-    methods: {}
+    methods: {
+        removeFollower(user) {
+            User.removeFollower(user.id)
+                .then(() => {
+                    const index = this.users.indexOf(user);
+                    this.users.splice(index, 1);
+                    this.notyf.success(this.i18n.get('_.settings.follower.delete-success'));
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                });
+        },
+        rejectFollowRequest(user) {
+            User.rejectFollowRequest(user.id)
+                .then(() => {
+                    const index = this.users.indexOf(user);
+                    this.users.splice(index, 1);
+                    this.notyf.success(this.i18n.get('_.settings.request.reject-success'));
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                });
+        },
+        approveFollowRequest(user) {
+            User.approveFollowRequest(user.id)
+                .then(() => {
+                    const index = this.users.indexOf(user);
+                    this.users.splice(index, 1);
+                    this.notyf.success(this.i18n.get('_.settings.request.accept-success'));
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                });
+        }
+    }
 };
 </script>
 

@@ -44,7 +44,8 @@
                         </div>
                         <div id="requests" class="tab-pane fade table-responsive" role="tabpanel">
                             <FollowTable v-if="followRequests" :users="followRequests" request="true"></FollowTable>
-                            <div v-if="followRequestsLinks && followRequestsLinks.next && !followRequestsLoading" class="text-center">
+                            <div v-if="followRequestsLinks && followRequestsLinks.next && !followRequestsLoading"
+                                 class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
                                         class="btn btn-primary btn-lg btn-floating my-1"
                                         @click.prevent="fetchMoreFollowRequests">
@@ -56,7 +57,8 @@
                         <div v-if="" id="followings"
                              class="tab-pane fade table-responsive" role="tabpanel">
                             <FollowTable v-if="followRequests" :users="followings"></FollowTable>
-                            <div v-if="followingsLinks && followingsLinks.next && !followingsLoading" class="text-center">
+                            <div v-if="followingsLinks && followingsLinks.next && !followingsLoading"
+                                 class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
                                         class="btn btn-primary btn-lg btn-floating my-1"
                                         @click.prevent="fetchMoreFollowings">
@@ -150,8 +152,8 @@ export default {
             this.followersLoading = true;
             this.fetchMoreData(this.followersLinks.next)
                 .then((data) => {
-                    this.followers      = this.followers.concat(data.data);
-                    this.followersLinks = data.links;
+                    this.followers        = this.followers.concat(data.data);
+                    this.followersLinks   = data.links;
                     this.followersLoading = false;
                 })
                 .catch((error) => {
@@ -163,8 +165,8 @@ export default {
             this.followingsLoading = true;
             this.fetchMoreData(this.followingsLinks.next)
                 .then((data) => {
-                    this.followings      = this.followings.concat(data.data);
-                    this.followingsLinks = data.links;
+                    this.followings        = this.followings.concat(data.data);
+                    this.followingsLinks   = data.links;
                     this.followingsLoading = false;
                 })
                 .catch((error) => {
@@ -176,15 +178,15 @@ export default {
             this.followRequestsLoading = true;
             this.fetchMoreData(this.followRequestsLinks.next)
                 .then((data) => {
-                    this.followRequests      = this.followRequests.concat(data.data);
-                    this.followRequestsLinks = data.links;
+                    this.followRequests        = this.followRequests.concat(data.data);
+                    this.followRequestsLinks   = data.links;
                     this.followRequestsLoading = false;
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
                     this.followRequestsLoading = false;
                 });
-        },
+        }
     },
     created() {
         this.fetchData();

@@ -73,6 +73,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::group(['prefix' => 'user'], function() {
             Route::post('createFollow', [FollowController::class, 'createFollow']);
             Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
+            Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
+            Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
+            Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
