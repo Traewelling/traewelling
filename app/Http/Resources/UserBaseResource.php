@@ -41,7 +41,7 @@ class UserBaseResource extends JsonResource
                 ]),
             $this->mergeWhen(isset($this->UserResource),
                 [
-                    'userInvisibleToMe' => (bool) \request()?->user()?->cannot('view', User::find($this->id)),
+                    'userInvisibleToMe' => (bool) $request->user()?->cannot('view', User::find($this->id)),
                     'muted'             => (bool) $this->muted,
                     'following'         => (bool) $this->following,
                     'followPending'     => (bool) $this->followPending,
