@@ -124,7 +124,7 @@ class StatusController extends ResponseController
         $geoJsonFeatures = Status::whereIn('id', $ids)
                                  ->with('trainCheckin.HafasTrip.polyline')
                                  ->get()
-                                 ->filter(function(Status$status) {
+                                 ->filter(function(Status $status) {
                                      return \request()?->user()->can('view', $status);
                                  })
                                  ->map(function($status) {
