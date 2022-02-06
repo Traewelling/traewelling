@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int              user_id
  * @property string           body
  * @property Business         business
+ * @property int              event_id
  * @property StatusVisibility visibility
  */
 class Status extends Model
@@ -103,21 +104,10 @@ class Status extends Model
     }
 
     /**
-     * When is a status invisible?
-     * 0=public, 1=unlisted, 2=Followers, 3=Private
-     * @return bool
+     * @deprecated ->   replaced by $user->can(...) / $user->cannot(...) /
+     *                  request()->user()->can(...) / request()->user()->cannot(...)
      */
     public function getStatusInvisibleToMeAttribute(): bool {
-        if ($this->user->userInvisibleToMe) {
-            return true;
-        }
-        if ((Auth::check() && Auth::id() == $this->user_id) || $this->visibility === StatusVisibility::PUBLIC) {
-            return false;
-        }
-        $visible = false;
-        if ($this->visibility === StatusVisibility::FOLLOWERS) {
-            $visible = (Auth::check() && Auth::user()->follows->contains('id', $this->user_id));
-        }
-        return !$visible;
+        return !request()?->user()?->can('view', $this);
     }
 }

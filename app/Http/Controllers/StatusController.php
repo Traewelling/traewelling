@@ -25,6 +25,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class StatusController extends Controller
 {
     /**
+     * Authorization in Frontend required! $this->authorize('view', $status);
+     *
      * @param int $statusId
      *
      * @return Status
@@ -34,17 +36,13 @@ class StatusController extends Controller
      * @frontend
      */
     public static function getStatus(int $statusId): Status {
-        $status = Status::where('id', $statusId)->with('user',
-                                                       'trainCheckin',
-                                                       'trainCheckin.Origin',
-                                                       'trainCheckin.Destination',
-                                                       'trainCheckin.HafasTrip',
-                                                       'event')->withCount('likes')->firstOrFail();
-        if (!$status->user->userInvisibleToMe && (!$status->statusInvisibleToMe || $status->visibility === StatusVisibility::UNLISTED)) {
-            return $status;
-        }
-
-        abort(403, "Status invisible to you.");
+        return Status::where('id', $statusId)
+                     ->with([
+                                'user', 'trainCheckin', 'trainCheckin.Origin',
+                                'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event',
+                            ])
+                     ->withCount('likes')
+                     ->firstOrFail();
     }
 
     /**
@@ -73,10 +71,10 @@ class StatusController extends Controller
                                         ->where('arrival', '>', date('Y-m-d H:i:s'));
                               })
                               ->get()
-                              ->filter(function($status) {
-                                  return (!$status->user->userInvisibleToMe && !$status->statusInvisibleToMe);
+                              ->filter(function(Status $status) {
+                                  return request()?->user()->can('view', $status);
                               })
-                              ->sortByDesc(function($status) {
+                              ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
                               })->values();
         } else {
@@ -93,7 +91,7 @@ class StatusController extends Controller
                             })
                             ->where('user_id', $userId)
                             ->first();
-            if ($status?->user?->userInvisibleToMe || $status?->statusInvisibleToMe) {
+            if (!request()?->user()->can('view', $status)) {
                 return null;
             }
             return $status;
@@ -175,7 +173,7 @@ class StatusController extends Controller
      */
     public static function createLike(User $user, Status $status): Like {
 
-        if (($status->StatusInvisibleToMe && $status->visibility !== StatusVisibility::UNLISTED) || $status->user->UserInvisibleToMe) {
+        if ($user->cannot('view', $status)) {
             throw new PermissionException();
         }
 
@@ -238,7 +236,7 @@ class StatusController extends Controller
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('statusesvisibility', StatusVisibility::PUBLIC->value);
+                                    ->where('statuses.visibility', StatusVisibility::PUBLIC->value);
                               if (auth()->check()) {
                                   $query->orWhere('statuses.user_id', auth()->user()->id)
                                         ->orWhere(function($query) {

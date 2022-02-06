@@ -79,24 +79,23 @@ abstract class TrainCheckinController extends Controller
             forceCheckin:    $force
         );
 
-        $trainCheckin = TrainCheckin::create([
-                                                 'status_id'   => $status->id,
-                                                 'user_id'     => auth()->user()->id,
-                                                 'trip_id'     => $trip->trip_id,
-                                                 'origin'      => $firstStop->trainStation->ibnr,
-                                                 'destination' => $lastStop->trainStation->ibnr,
-                                                 'distance'    => $distance,
-                                                 'points'      => $pointsResource['points'],
-                                                 'departure'   => $firstStop->departure_planned,
-                                                 'arrival'     => $lastStop->arrival_planned
-                                             ]);
-
+        $trainCheckin         = TrainCheckin::create([
+                                                         'status_id'   => $status->id,
+                                                         'user_id'     => auth()->user()->id,
+                                                         'trip_id'     => $trip->trip_id,
+                                                         'origin'      => $firstStop->trainStation->ibnr,
+                                                         'destination' => $lastStop->trainStation->ibnr,
+                                                         'distance'    => $distance,
+                                                         'points'      => $pointsResource['points'],
+                                                         'departure'   => $firstStop->departure_planned,
+                                                         'arrival'     => $lastStop->arrival_planned
+                                                     ]);
         $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection->reject(function($status) {
             return $status->statusInvisibleToMe;
         });
 
         foreach ($alsoOnThisConnection as $otherStatus) {
-            if ($otherStatus?->user) {
+            if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
                 $otherStatus->user->notify(new UserJoinedConnection($status));
             }
         }

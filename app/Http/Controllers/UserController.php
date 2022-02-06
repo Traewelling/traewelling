@@ -71,7 +71,7 @@ class UserController extends Controller
      * @frontend
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
-        if ($user->userInvisibleToMe) {
+        if (!\request()?->user()->can('view', $user)) {
             throw new PermissionException();
         }
         return $user->statuses()

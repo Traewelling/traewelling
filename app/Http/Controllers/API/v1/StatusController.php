@@ -14,6 +14,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -50,7 +51,13 @@ class StatusController extends ResponseController
      * @return StatusResource|Response
      */
     public function show(int $id): StatusResource|Response {
-        return new StatusResource(StatusBackend::getStatus($id));
+        $status = StatusBackend::getStatus($id);
+        try {
+            $this->authorize('view', $status);
+        } catch (AuthorizationException) {
+            abort(403, 'Status invisible to you.');
+        }
+        return new StatusResource($status);
     }
 
     /**
@@ -117,11 +124,8 @@ class StatusController extends ResponseController
         $geoJsonFeatures = Status::whereIn('id', $ids)
                                  ->with('trainCheckin.HafasTrip.polyline')
                                  ->get()
-                                 ->reject(function($status) {
-                                     return ($status->user->userInvisibleToMe
-                                             || ($status->statusInvisibleToMe
-                                                 && $status->visibility !== StatusVisibility::UNLISTED
-                                             ));
+                                 ->filter(function(Status$status) {
+                                     return \request()?->user()->can('view', $status);
                                  })
                                  ->map(function($status) {
                                      return [
