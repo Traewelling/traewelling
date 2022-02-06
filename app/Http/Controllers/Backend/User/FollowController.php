@@ -51,7 +51,6 @@ abstract class FollowController extends Controller
 
         $request->delete();
         return $request;
-
     }
 
     /**
