@@ -32,7 +32,13 @@
                     <div class="tab-content">
                         <div id="followers" class="tab-pane fade show active table-responsive"
                              role="tabpanel">
-                            <FollowTable v-if="followers" :users="followers" followers="true"></FollowTable>
+                            <FollowTable v-if="followers.length > 0" :users="followers" followers="true"></FollowTable>
+                            <p v-else class="m-3">
+                                <strong class="text-danger">
+                                    <i class="fas fa-users-slash" aria-hidden="true"></i>
+                                    {{ i18n.get("_.settings.follower.no-follower") }}
+                                </strong>
+                            </p>
                             <div v-if="followersLinks && followersLinks.next && !followersLoading" class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
                                         class="btn btn-primary btn-lg btn-floating my-1"
@@ -43,7 +49,13 @@
                             <spinner v-if="followersLoading"></spinner>
                         </div>
                         <div id="requests" class="tab-pane fade table-responsive" role="tabpanel">
-                            <FollowTable v-if="followRequests" :users="followRequests" request="true"></FollowTable>
+                            <FollowTable v-if="followRequests.length > 0" :users="followRequests" request="true"></FollowTable>
+                            <p v-else class="m-3">
+                                <strong class="text-danger">
+                                    <i class="fas fa-users-slash" aria-hidden="true"></i>
+                                    {{ i18n.get("_.settings.follower.no-requests") }}
+                                </strong>
+                            </p>
                             <div v-if="followRequestsLinks && followRequestsLinks.next && !followRequestsLoading"
                                  class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
@@ -56,7 +68,13 @@
                         </div>
                         <div v-if="" id="followings"
                              class="tab-pane fade table-responsive" role="tabpanel">
-                            <FollowTable v-if="followRequests" :users="followings"></FollowTable>
+                            <FollowTable v-if="followings.length > 0" :users="followings"></FollowTable>
+                            <p v-else class="m-3">
+                                <strong class="text-danger">
+                                    <i class="fas fa-users-slash" aria-hidden="true"></i>
+                                    {{ i18n.get("_.settings.follower.no-followings") }}
+                                </strong>
+                            </p>
                             <div v-if="followingsLinks && followingsLinks.next && !followingsLoading"
                                  class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
@@ -88,9 +106,9 @@ export default {
     name: "Followers",
     data() {
         return {
-            followers: [null],
-            followRequests: [null],
-            followings: [null],
+            followers: [],
+            followRequests: [],
+            followings: [],
             followersLoading: true,
             followRequestsLoading: true,
             followingsLoading: true,

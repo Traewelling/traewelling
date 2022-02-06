@@ -345,6 +345,8 @@
     "settings.create-ics-token-success": "The calendar token has been created. You can embed it with the following link to every software which support ICS files: <a href=\":link\">:link</a>",
     "settings.revoke-ics-token-success": "The calendar token has been revoked.",
     "settings.follower.no-follower": "You don't have any followers.",
+    "settings.follower.no-requests": "You don't have any follow requests.",
+    "settings.follower.no-followings": "You don't follow anybody.",
     "settings.follower.manage": "Manage followers",
     "settings.follower.following-since": "Following since",
     "settings.follower.delete-success": "You successfully removed the follower.",
