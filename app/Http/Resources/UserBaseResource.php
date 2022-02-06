@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -40,7 +41,7 @@ class UserBaseResource extends JsonResource
                 ]),
             $this->mergeWhen(isset($this->UserResource),
                 [
-                    'userInvisibleToMe' => (bool) $this->userInvisibleToMe,
+                    'userInvisibleToMe' => (bool) $request->user()?->cannot('view', User::find($this->id)),
                     'muted'             => (bool) $this->muted,
                     'following'         => (bool) $this->following,
                     'followPending'     => (bool) $this->followPending,

@@ -18,6 +18,7 @@ use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\TrainCheckin;
+use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -384,7 +385,9 @@ class TransportController extends Controller
 
         // check for other people on this train
         foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            $otherStatus->user->notify(new UserJoinedConnection($status));
+            if ($otherStatus->user->can('view', $status)) {
+                $otherStatus->user->notify(new UserJoinedConnection($status));
+            }
         }
 
         return [
