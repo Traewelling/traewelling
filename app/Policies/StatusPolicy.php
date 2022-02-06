@@ -25,7 +25,10 @@ class StatusPolicy
         // Case 1: User is unauthenticated
         if ($user === null) {
             // true, if user is not private and visibility is UNLISTED or PUBLIC.
-            return !$status->user->private_profile && $status->visibility <= StatusVisibility::UNLISTED;
+            return !$status->user->private_profile && (
+                    $status->visibility === StatusVisibility::UNLISTED ||
+                    $status->visibility === StatusVisibility::PUBLIC
+                );
         }
 
         // Case 1½: User is already invisible

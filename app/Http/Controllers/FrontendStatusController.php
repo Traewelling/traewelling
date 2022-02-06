@@ -158,8 +158,8 @@ class FrontendStatusController extends Controller
 
         try {
             $this->authorize('view', $status);
-        } catch (AuthorizationException) {
-            abort(403, "Status invisible to you.");
+        } catch (AuthorizationException $exception) {
+            abort(403, $exception->getMessage());
         }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)

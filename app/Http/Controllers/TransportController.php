@@ -205,7 +205,7 @@ class TransportController extends Controller
         $tweetCheck,
         $tootCheck,
         StatusVisibility $visibility,
-        int $eventId = 0,
+        int $eventId = null,
         Carbon $departure = null,
         Carbon $arrival = null
     ): array {
@@ -307,7 +307,7 @@ class TransportController extends Controller
 
         // Let's connect our statuses and the events
         $event = null;
-        if ($eventId != 0) {
+        if ($eventId !== null) {
             $event = Event::find($eventId);
             if ($event === null) {
                 abort(404);
