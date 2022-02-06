@@ -1,4 +1,4 @@
-import {deleteFromApi, getContent, postToApi, putToApi} from "./Helpers";
+import {deleteFromApi, getBody, getContent, postToApi, putToApi} from "./Helpers";
 
 export default class Settings {
     static getProfileSettings() {
@@ -63,5 +63,17 @@ export default class Settings {
 
     static deleteProfilePicture() {
         return deleteFromApi("/settings/profilePicture");
+    }
+
+    static getFollowers() {
+        return getBody("/settings/followers");
+    }
+
+    static getFollowings() {
+        return getBody("/settings/followings");
+    }
+
+    static getFollowRequests() {
+        return getBody("/settings/follow-requests");
     }
 }
