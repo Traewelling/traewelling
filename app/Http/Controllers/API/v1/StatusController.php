@@ -14,6 +14,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,15 +45,24 @@ class StatusController extends ResponseController
 
     /**
      * Show single status
+     *
      * @param int $id
+     *
      * @return StatusResource|Response
      */
     public function show(int $id): StatusResource|Response {
-        return new StatusResource(StatusBackend::getStatus($id));
+        $status = StatusBackend::getStatus($id);
+        try {
+            $this->authorize('view', $status);
+        } catch (AuthorizationException) {
+            abort(403, 'Status invisible to you.');
+        }
+        return new StatusResource($status);
     }
 
     /**
      * @param int $id
+     *
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse {
@@ -69,7 +79,8 @@ class StatusController extends ResponseController
 
     /**
      * @param Request $request
-     * @param int $statusId
+     * @param int     $statusId
+     *
      * @return JsonResponse
      * @throws ValidationException
      */
@@ -87,10 +98,10 @@ class StatusController extends ResponseController
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
-                user: Auth::user(),
-                statusId: $statusId,
-                body: $validated['body'],
-                business: $validated['business'],
+                user:       Auth::user(),
+                statusId:   $statusId,
+                body:       $validated['body'],
+                business:   $validated['business'],
                 visibility: $validated['visibility']
             );
             return $this->sendv1Response(new StatusResource($editStatusResponse));
@@ -103,35 +114,33 @@ class StatusController extends ResponseController
 
     /**
      * @param string $parameters
+     *
      * @return JsonResponse
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
     public function getPolyline(string $parameters): JsonResponse {
-        $ids      = explode(',', $parameters, 50);
+        $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
-                          ->with('trainCheckin.HafasTrip.polyline')
-                          ->get()
-                          ->reject(function($status) {
-                              return ($status->user->userInvisibleToMe
-                                      || ($status->statusInvisibleToMe
-                                          && $status->visibility !== StatusVisibility::UNLISTED
-                                      ));
-                          })
-                          ->map(function($status) {
-                              return [
-                                  'type' => 'Feature',
-                                  'geometry' => [
-                                      'type' => 'LineString',
-                                      'coordinates' => $status->trainCheckin->getMapLines()
-                                  ],
-                                  'properties' => [
-                                      'statusId' => $status->id
-                                  ]
-                                ];
-                          });
-        $geoJson = [
-            'type' => 'FeatureCollection',
+                                 ->with('trainCheckin.HafasTrip.polyline')
+                                 ->get()
+                                 ->filter(function(Status $status) {
+                                     return \request()?->user()->can('view', $status);
+                                 })
+                                 ->map(function($status) {
+                                     return [
+                                         'type'       => 'Feature',
+                                         'geometry'   => [
+                                             'type'        => 'LineString',
+                                             'coordinates' => $status->trainCheckin->getMapLines()
+                                         ],
+                                         'properties' => [
+                                             'statusId' => $status->id
+                                         ]
+                                     ];
+                                 });
+        $geoJson         = [
+            'type'     => 'FeatureCollection',
             'features' => $geoJsonFeatures
         ];
         return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
@@ -139,6 +148,7 @@ class StatusController extends ResponseController
 
     /**
      * @param string $parameters
+     *
      * @return JsonResponse
      */
     public function getStopovers(string $parameters): JsonResponse {
