@@ -14,6 +14,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
+use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
@@ -71,8 +72,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
         Route::group(['prefix' => 'user'], function() {
-            Route::post('createFollow', [UserController::class, 'createFollow']);
-            Route::delete('destroyFollow', [UserController::class, 'destroyFollow']);
+            Route::post('createFollow', [FollowController::class, 'createFollow']);
+            Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
+            Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
+            Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
+            Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
@@ -94,6 +98,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::get('tokens', [TokenController::class, 'index']);
             Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
             Route::delete('token', [TokenController::class, 'revokeToken']);
+            Route::get('followers', [FollowController::class, 'getFollowers']);
+            Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
+            Route::get('followings', [FollowController::class, 'getFollowings']);
         });
     });
 

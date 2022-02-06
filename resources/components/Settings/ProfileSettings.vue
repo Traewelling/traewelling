@@ -41,7 +41,21 @@
                 i18n.get('_.settings.title-privacy')
             }}</h6>
 
+
         <div class="row">
+            <div class="col">
+                <label aria-label="visibilityDropdown" class="form-check-label">
+                    {{ i18n.get('_.menu.settings.myFollower') }}
+                </label>
+            </div>
+            <div class="col">
+                <router-link :to="{name: 'followers'}" class="btn btn-primary float-end">
+                    {{i18n.get('_.settings.follower.manage')}}
+                </router-link>
+            </div>
+        </div>
+
+        <div class="row mt-3 pt-3">
             <div class="col">
                 <label aria-label="visibilityDropdown" class="form-check-label">
                     {{ i18n.get('_.settings.visibility.default') }}
