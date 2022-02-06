@@ -1,5 +1,11 @@
+Contact: mailto:security@traewelling.de
+Encryption: not available
+
 Contact: mailto:levin@herrlev.in
-Encryption: https://herrlev.in/pgp_key.asc
+Encryption: not available
+
+Contact: mailto:kristian.stoeckel@k118.de
+Encryption: https://pgp.k118.de/
 
 Contact: mailto:jannik@outlook.com
 Encryption: https://blog.iamjannik.me/2017/pgp/

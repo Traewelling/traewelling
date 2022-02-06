@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,6 +11,9 @@ use Illuminate\Support\Collection;
 
 class TrainCheckin extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
         'distance', 'departure', 'arrival', 'points',

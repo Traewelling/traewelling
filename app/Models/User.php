@@ -13,11 +13,27 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
+/**
+ * @property int     id
+ * @property string  username
+ * @property string  name
+ * @property string  avatar
+ * @property string  email
+ * @property Carbon  email_verified_at
+ * @property string  password
+ * @property int     home_id
+ * @property Carbon  privacy_ack_at
+ * @property boolean always_dbl
+ * @property integer default_status_visibility
+ * @property boolean private_profile
+ * @property boolean prevent_index
+ * @property string  language
+ * @property Carbon  last_login
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
 
@@ -100,8 +116,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
 
+    /**
+     * @deprecated
+     */
     public function followers(): HasMany {
         return $this->hasMany(Follow::class, 'follow_id', 'id');
+    }
+
+    /**
+     * @deprecated
+     */
+    public function followings(): HasMany {
+        return $this->hasMany(Follow::class, 'user_id', 'id');
     }
 
     public function sessions(): HasMany {
@@ -120,34 +146,35 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Checks if this user is invisible to "me".
-     * +---------+---------------+-----------+--------+
-     * | Private | authenticated | following | result |
-     * +---------+---------------+-----------+--------+
-     * |       0 |             0 |         0 | 0      |
-     * |       0 |             0 |         1 | 0      |
-     * |       0 |             1 |         0 | 0      |
-     * |       0 |             1 |         1 | 0      |
-     * |       1 |             0 |         0 | 1      |
-     * |       1 |             0 |         1 | ?      |
-     * |       1 |             1 |         0 | 1      |
-     * |       1 |             1 |         1 | 0      |
-     * +---------+---------------+-----------+--------+
-     *
-     * @return bool
+     * @untested
+     * @todo test
+     */
+    public function userFollowings(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'follow_id', 'user_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowRequests(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follow_requests', 'follow_id', 'user_id');
+    }
+
+    /**
+     * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->user()->can(...) /
+     *             request()->user()->cannot(...)
      */
     public function getUserInvisibleToMeAttribute(): bool {
-        if (auth()->check()
-            && $this->id != auth()->user()->id
-            && auth()->user()->mutedUsers->contains('id', $this->id)) {
-            return true;
-        }
-        return $this->private_profile
-               && (!Auth::check()
-                   || (Auth::check()
-                       && ($this->id != Auth::id() && !Auth::user()->follows->contains('id', $this->id))
-                   )
-               );
+        return !request()?->user()?->can('view', $this);
     }
 
     public function getFollowingAttribute(): bool {

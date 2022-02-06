@@ -2,7 +2,7 @@
     <div>
         <router-link v-if="$auth.check()" :to="{ name: 'profile', params: {username: $auth.user().username}}"
                      class="d-flex align-items-center link-dark text-decoration-none">
-            <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${$auth.user().username}/profilepicture`"
+            <img :alt="i18n.get('_.settings.picture')" :src="$auth.user().profilePicture"
                  class="rounded-circle me-2" height="32" width="32">
             <strong>{{ $auth.user().displayName }}</strong>&nbsp;
             <small class="text-muted">@{{ $auth.user().username }}</small>

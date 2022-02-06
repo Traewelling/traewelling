@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -15,7 +16,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        OAuthServerException::class
     ];
 
     /**
@@ -32,6 +33,7 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * @param Throwable $exception
+     *
      * @return void
      * @throws Throwable
      */
@@ -42,8 +44,9 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param Request $request
+     * @param Request   $request
      * @param Throwable $exception
+     *
      * @return Response
      * @throws Throwable
      */
