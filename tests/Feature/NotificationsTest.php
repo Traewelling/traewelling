@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\StatusVisibility;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
 use App\Models\User;
@@ -116,12 +117,20 @@ class NotificationsTest extends TestCase
     public function bob_joining_on_alices_connection_should_spawn_a_notification(): void {
         // GIVEN: Alice checked-into a train.
         $alice     = $this->createGDPRAckedUser();
-        $timestamp = Carbon::parse("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $timestamp, $alice);
+        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $alice,
+        );
 
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
-        $this->checkin("Hamburg Hbf", $timestamp, $bob);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $bob
+        );
 
         // THEN: Alice should see that in their notification
         $notifications = $this->actingAs($alice)
@@ -144,6 +153,32 @@ class NotificationsTest extends TestCase
                               ->get(route('notifications.latest'));
         $notifications->assertOk();
         $notifications->assertJsonCount(0); // no other user no more
+    }
+
+    public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void {
+        // GIVEN: Alice checked-into a train.
+        $alice     = $this->createGDPRAckedUser();
+        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
+        $this->checkin(
+            stationName: "Hamburg Hbf",
+            timestamp:   $timestamp,
+            user:        $alice,
+        );
+
+        // WHEN: Bob also checks into the train
+        $bob = $this->createGDPRAckedUser();
+        $this->checkin(
+            stationName:      "Hamburg Hbf",
+            timestamp:        $timestamp,
+            user:             $bob,
+            statusVisibility: StatusVisibility::PRIVATE,
+        );
+
+        // THEN: Alice should NOT see that in their notification, because the Status is Private
+        $notifications = $this->actingAs($alice)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(0); // One other user on that train
     }
 
     /** @test */
