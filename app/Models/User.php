@@ -114,18 +114,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Follow::class, 'user_id', 'id');
     }
 
-    /**
-     * @untested
-     */
-    public function userFollowers(): BelongsToMany {
-        return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
-    }
-
-    public function userFollowings(): BelongsToMany {
-        return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
-    }
-
-
     public function sessions(): HasMany {
         return $this->hasMany(Session::class);
     }
@@ -139,6 +127,30 @@ class User extends Authenticatable implements MustVerifyEmail
                            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                            ->select('points')
                            ->sum('points');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowings(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'follow_id', 'user_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowRequests(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follow_requests', 'follow_id', 'user_id');
     }
 
     /**
