@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
@@ -24,8 +25,6 @@ use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -174,13 +173,14 @@ class TransportController extends Controller
      * @param                  $tweetCheck
      * @param                  $tootCheck
      * @param StatusVisibility $visibility
-     * @param int              $eventId
+     * @param int|null         $eventId
      * @param Carbon|null      $departure
      * @param Carbon|null      $arrival
      *
      * @return array
      * @throws CheckInCollisionException
      * @throws HafasException
+     * @throws NotConnectedException
      * @throws StationNotOnTripException
      * @throws TrainCheckinAlreadyExistException
      * @deprecated replaced by createTrainCheckin()
@@ -309,10 +309,7 @@ class TransportController extends Controller
         $event = null;
         if ($eventId !== null) {
             $event = Event::find($eventId);
-            if ($event === null) {
-                abort(404);
-            }
-            if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
+            if ($event !== null && Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
                 $status->update([
                                     'event_id' => $event->id
                                 ]);
