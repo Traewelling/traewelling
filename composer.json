@@ -15,6 +15,9 @@
         "php": "^8.0",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-sodium": "*",
+        "ext-exif": "*",
+        "ext-pdo_mysql": "*",
         "abraham/twitteroauth": "^3.0",
         "barryvdh/laravel-dompdf": "^1.0",
         "brianium/paratest": "^6.3",
@@ -35,6 +38,7 @@
         "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "roave/security-advisories": "dev-latest",
         "barryvdh/laravel-debugbar": "^3.5",
         "beyondcode/laravel-dump-server": "^1.3",
