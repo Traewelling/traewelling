@@ -92,11 +92,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      *
-     * @param string    $stationName
-     * @param Carbon    $timestamp
-     * @param User|null $user
-     * @param bool|null $forEvent
-     * @param int       $statusVisibility
+     * @param string           $stationName
+     * @param Carbon           $timestamp
+     * @param User|null        $user
+     * @param bool|null        $forEvent
+     * @param StatusVisibility $statusVisibility
      *
      * @return array|null
      * @throws TrainCheckinAlreadyExistException
@@ -112,11 +112,11 @@ abstract class TestCase extends BaseTestCase
         'event'                => "mixed"
     ])]
     protected function checkin(
-        string $stationName,
-        Carbon $timestamp,
-        User   $user = null,
-        bool   $forEvent = null,
-        int    $statusVisibility = StatusVisibility::PUBLIC
+        string           $stationName,
+        Carbon           $timestamp,
+        User             $user = null,
+        bool             $forEvent = null,
+        StatusVisibility $statusVisibility = StatusVisibility::PUBLIC
     ): ?array {
         if ($user === null) {
             $user = $this->user;
