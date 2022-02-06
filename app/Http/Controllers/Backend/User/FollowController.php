@@ -16,7 +16,7 @@ abstract class FollowController extends Controller
         return $user->followRequests()->with('user')->simplePaginate(perPage: 15)->pluck('user');
     }
 
-    public static function getFollowings(User $user): Collection {
-        return $user->followings()->with('following')->simplePaginate(perPage: 15)->pluck('following');
+    public static function getFollowings(User $user) {
+        return $user->userFollowings()->simplePaginate(perPage: 15);
     }
 }
