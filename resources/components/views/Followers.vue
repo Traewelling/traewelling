@@ -1,7 +1,7 @@
 <template>
     <LayoutBasicNoSidebar>
         <div class="col-md-9 col-lg-9">
-            <div id="leaderboard" class="card">
+            <div class="card">
                 <div class="card-header">
                     <router-link :to="{name: 'settings'}" class="text-black-50">
                         <i class="fas fa-arrow-left" aria-hidden="true"></i> &nbsp;
@@ -33,16 +33,37 @@
                         <div id="followers" class="tab-pane fade show active table-responsive"
                              role="tabpanel">
                             <FollowTable v-if="followers" :users="followers"></FollowTable>
+                            <div v-if="followersLinks && followersLinks.next && !followersLoading" class="text-center">
+                                <button aria-label="i18n.get('_.menu.show-more')"
+                                        class="btn btn-primary btn-lg btn-floating my-1"
+                                        @click.prevent="fetchMoreFollowers">
+                                    <i aria-hidden="true" class="fas fa-caret-down"></i>
+                                </button>
+                            </div>
                             <spinner v-if="followersLoading"></spinner>
                         </div>
                         <div id="requests" class="tab-pane fade table-responsive" role="tabpanel">
                             <FollowTable v-if="followRequests" :users="followRequests"></FollowTable>
+                            <div v-if="followRequestsLinks && followRequestsLinks.next && !followRequestsLoading" class="text-center">
+                                <button aria-label="i18n.get('_.menu.show-more')"
+                                        class="btn btn-primary btn-lg btn-floating my-1"
+                                        @click.prevent="fetchMoreFollowRequests">
+                                    <i aria-hidden="true" class="fas fa-caret-down"></i>
+                                </button>
+                            </div>
                             <spinner v-if="followRequestsLoading"></spinner>
                         </div>
                         <div v-if="" id="followings"
                              class="tab-pane fade table-responsive" role="tabpanel">
                             <FollowTable v-if="followRequests" :users="followings"></FollowTable>
-                            <spinner v-if="followRequestsLoading"></spinner>
+                            <div v-if="followingsLinks && followingsLinks.next && !followingsLoading" class="text-center">
+                                <button aria-label="i18n.get('_.menu.show-more')"
+                                        class="btn btn-primary btn-lg btn-floating my-1"
+                                        @click.prevent="fetchMoreFollowings">
+                                    <i aria-hidden="true" class="fas fa-caret-down"></i>
+                                </button>
+                            </div>
+                            <spinner v-if="followingsLoading"></spinner>
                         </div>
                     </div>
                 </div>
@@ -113,13 +134,51 @@ export default {
                     this.followingsLoading = false;
                 });
 
-
             Settings
                 .getFollowRequests()
                 .then((data) => {
                     this.followRequestsLoading = false;
                     this.followRequests        = data.data;
                     this.followRequestsLinks   = data.links;
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                    this.followRequestsLoading = false;
+                });
+        },
+        fetchMoreFollowers() {
+            this.followersLoading = true;
+            this.fetchMoreData(this.followersLinks.next)
+                .then((data) => {
+                    this.followers      = this.followers.concat(data.data);
+                    this.followersLinks = data.links;
+                    this.followersLoading = false;
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                    this.followersLoading = false;
+                });
+        },
+        fetchMoreFollowings() {
+            this.followingsLoading = true;
+            this.fetchMoreData(this.followingsLinks.next)
+                .then((data) => {
+                    this.followings      = this.followings.concat(data.data);
+                    this.followingsLinks = data.links;
+                    this.followingsLoading = false;
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                    this.followingsLoading = false;
+                });
+        },
+        fetchMoreFollowRequests() {
+            this.followRequestsLoading = true;
+            this.fetchMoreData(this.followRequestsLinks.next)
+                .then((data) => {
+                    this.followRequests      = this.followRequests.concat(data.data);
+                    this.followRequestsLinks = data.links;
+                    this.followRequestsLoading = false;
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
