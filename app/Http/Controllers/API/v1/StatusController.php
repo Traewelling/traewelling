@@ -22,7 +22,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
@@ -87,8 +87,8 @@ class StatusController extends ResponseController
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
             'body'       => ['nullable', 'max:280', 'nullable'],
-            'business'   => ['required', Rule::in(Business::getList())],
-            'visibility' => ['required', Rule::in(StatusVisibility::getList())],
+            'business'   => ['required', new Enum(Business::class)],
+            'visibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
         if ($validator->fails()) {
@@ -101,8 +101,8 @@ class StatusController extends ResponseController
                 user:       Auth::user(),
                 statusId:   $statusId,
                 body:       $validated['body'],
-                business:   $validated['business'],
-                visibility: $validated['visibility']
+                business:   Business::from($validated['business']),
+                visibility: StatusVisibility::from($validated['visibility']),
             );
             return $this->sendv1Response(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {

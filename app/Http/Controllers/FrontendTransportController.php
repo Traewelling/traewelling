@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -17,7 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
@@ -39,7 +40,7 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'station'    => ['required'],
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+                                            'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
@@ -48,7 +49,7 @@ class FrontendTransportController extends Controller
             $TrainStationboardResponse = TransportBackend::getDepartures(
                 stationQuery: $validated['station'],
                 when:         $when,
-                travelType:   $validated['travelType'] ?? null
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
@@ -131,30 +132,31 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainCheckin(Request $request): RedirectResponse {
-        $this->validate($request, [
-            'body'              => 'max:280',
-            'business_check'    => 'digits_between:0,2',
-            'checkinVisibility' => Rule::in(StatusVisibility::getList()),
-            'tweet_check'       => 'max:2',
-            'toot_check'        => 'max:2',
-            'event'             => 'integer',
-            'departure'         => ['required', 'date'],
-            'arrival'           => ['required', 'date'],
-        ]);
+        $validated = $request->validate([
+                                            'body'              => ['nullable', 'max:280'],
+                                            'business_check'    => ['required', new Enum(Business::class)],
+                                            'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
+                                            'tweet_check'       => 'max:2',
+                                            'toot_check'        => 'max:2',
+                                            'event'             => 'integer',
+                                            'departure'         => ['required', 'date'],
+                                            'arrival'           => ['required', 'date'],
+                                        ]);
+
         try {
             $trainCheckin = TransportBackend::TrainCheckin(
-                $request->tripID,
-                $request->start,
-                $request->destination,
-                $request->body,
-                Auth::user(),
-                $request->business_check,
-                $request->tweet_check,
-                $request->toot_check,
-                $request->checkinVisibility,
-                $request->event,
-                Carbon::parse($request->departure),
-                Carbon::parse($request->arrival),
+                tripId:      $request->tripID,
+                start:       $request->start,
+                destination: $request->destination,
+                body:        $request->body,
+                user:        Auth::user(),
+                business:    Business::from($validated['business_check']),
+                tweetCheck:  $request->tweet_check,
+                tootCheck:   $request->toot_check,
+                visibility:  StatusVisibility::from($validated['checkinVisibility']),
+                eventId:     $request->event,
+                departure:   Carbon::parse($request->departure),
+                arrival:     Carbon::parse($request->arrival),
             );
 
             return redirect()->route('dashboard')->with('checkin-success', [
@@ -210,20 +212,5 @@ class FrontendTransportController extends Controller
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-    }
-
-    public function FastTripAccess(Request $request): RedirectResponse {
-        $fastTripResponse = TransportBackend::FastTripAccess($request->start,
-                                                             $request->lineName,
-                                                             $request->number,
-                                                             $request->when);
-        if ($fastTripResponse === null) {
-            abort(404);
-        }
-        return redirect()->route('trains.trip', [
-            'tripID'   => $fastTripResponse->tripId,
-            'lineName' => $fastTripResponse->line->name,
-            'start'    => $request->start
-        ]);
     }
 }

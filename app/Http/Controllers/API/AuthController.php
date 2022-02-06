@@ -72,28 +72,21 @@ class AuthController extends ResponseController
      * @return JsonResponse
      * @deprecated with apiv1
      */
-    public function logout(Request $request) {
+    public function logout(Request $request): JsonResponse {
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
             $success['message'] = "Successfully logged out.";
             return $this->sendResponse($success);
-        } else {
-            $error = "Something went wrong.";
-            return $this->sendResponse($error);
         }
-
-
+        return $this->sendResponse('Something went wrong.');
     }
 
-    //getuser
-    public function getUser(Request $request) {
-        //$id = $request->user()->id;
+    public function getUser(Request $request): JsonResponse {
         $user = $request->user();
         if ($user) {
             return $this->sendResponse($user);
-        } else {
-            $error = "user not found";
-            return $this->sendResponse($error);
         }
+        return $this->sendResponse('user not found');
+
     }
 }

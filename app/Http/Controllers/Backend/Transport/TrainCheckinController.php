@@ -71,9 +71,9 @@ abstract class TrainCheckinController extends Controller
 
         $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
 
-        $points = PointsCalculationController::calculatePoints(
+        $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
-            category:        $trip->category,
+            hafasTravelType: $trip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival,
             forceCheckin:    $force
@@ -86,7 +86,7 @@ abstract class TrainCheckinController extends Controller
                                                          'origin'      => $firstStop->trainStation->ibnr,
                                                          'destination' => $lastStop->trainStation->ibnr,
                                                          'distance'    => $distance,
-                                                         'points'      => $points['points'],
+                                                         'points'      => $pointsResource['points'],
                                                          'departure'   => $firstStop->departure_planned,
                                                          'arrival'     => $lastStop->arrival_planned
                                                      ]);
@@ -102,7 +102,7 @@ abstract class TrainCheckinController extends Controller
 
         return [
             'status'               => new StatusResource($status),
-            'points'               => $points,
+            'points'               => $pointsResource,
             'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
         ];
     }

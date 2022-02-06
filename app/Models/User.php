@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\StatusVisibility;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -58,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'always_dbl'                => 'boolean',
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
-        'default_status_visibility' => 'integer',//TODO: Change to Enum Cast with Laravel 9
+        'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'role'                      => 'integer',
         'last_login'                => 'datetime',
