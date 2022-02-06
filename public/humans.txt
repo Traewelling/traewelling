@@ -4,7 +4,7 @@
 	Twitter: @HerrLevin_
 	Mastodon: HerrLevin_@uelfte.club
 	Location: Karlsruhe, Germany
-	
+
 	Name: Jannik Volkland
 	Site: https://iamjannik.me
 	Twitter: @confuzd_
@@ -14,13 +14,13 @@
 	Name: Matthias Kahlow
 	Site: http://derkarl.de
 	Mastodon: der_Karl@uelfte.club
-	
+
 /* THANKS */
     Name: Jan Hassel
     Site: https://janhassel.de
     Great contributor of the alpha version.
 
 /* SITE */
-	Language: German, English
+	Language: German, English, Dutch, French, Norwegian Bokmål, Polish and Swedish
 	Components: Bootstrap, JQuery, Leaflet, Laravel
 	Software: Gitlab, Mattermost, Visual Studio Code

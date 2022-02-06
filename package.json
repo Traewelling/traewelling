@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.11",
-        "axios": "^0.21",
+        "axios": "^0.25",
         "bootstrap": "^5.1",
         "cross-env": "^7.0",
         "jquery": "^3.5.1",
@@ -28,7 +28,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.2",
         "@tarekraafat/autocomplete.js": "^10.2.6",
-        "@websanova/vue-auth": "^4.1.9",
+        "@websanova/vue-auth": "^4.1.11",
         "apexcharts": "^3.33.0",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
@@ -45,7 +45,7 @@
         "notyf": "^3.10.0",
         "vue-apexcharts": "^1.6.2",
         "vue-axios": "^3.2.4",
-        "vue-i18n": "^8.24.4",
+        "vue-i18n": "^8.27.0",
         "vue-image-crop-upload": "^3.0.3",
         "vue-localstorage": "^0.6.2",
         "vue-meta": "^2.4.0",
