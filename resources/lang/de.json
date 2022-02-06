@@ -95,6 +95,7 @@
     "user.remember-me": "Angemeldet bleiben",
     "user.reset-pw-link": "Wiederherstellungs-Link schicken",
     "user.username": "Nutzername",
+    "user.profile-picture": "Profilbild von @:username",
     "user.you": "Du",
     "user.home-set": "Dein Heimatbahnhof ist nun :Station.",
     "user.home-not-set": "Du hast noch keinen Heimatbahnhof festgelegt.",

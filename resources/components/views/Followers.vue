@@ -32,7 +32,7 @@
                     <div class="tab-content">
                         <div id="followers" class="tab-pane fade show active table-responsive"
                              role="tabpanel">
-                            <FollowTable v-if="followers" :users="followers"></FollowTable>
+                            <FollowTable v-if="followers" :users="followers" followers="true"></FollowTable>
                             <div v-if="followersLinks && followersLinks.next && !followersLoading" class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
                                         class="btn btn-primary btn-lg btn-floating my-1"
@@ -43,7 +43,7 @@
                             <spinner v-if="followersLoading"></spinner>
                         </div>
                         <div id="requests" class="tab-pane fade table-responsive" role="tabpanel">
-                            <FollowTable v-if="followRequests" :users="followRequests"></FollowTable>
+                            <FollowTable v-if="followRequests" :users="followRequests" request="true"></FollowTable>
                             <div v-if="followRequestsLinks && followRequestsLinks.next && !followRequestsLoading" class="text-center">
                                 <button aria-label="i18n.get('_.menu.show-more')"
                                         class="btn btn-primary btn-lg btn-floating my-1"
