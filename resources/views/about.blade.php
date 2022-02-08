@@ -41,10 +41,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(\App\Enum\HafasTravelType::getList() as $category)
+                        @foreach(\App\Enum\HafasTravelType::cases() as $category)
                             <tr>
-                                <th scope="row">{{ __('transport_types.' . $category) }}</th>
-                                <td>{{config('trwl.base_points.train.' . $category, 1)}}</td>
+                                <th scope="row">{{ __('transport_types.' . $category->value) }}</th>
+                                <td>{{config('trwl.base_points.train.' . $category->value, 1)}}</td>
                             </tr>
                         @endforeach
                     </tbody>

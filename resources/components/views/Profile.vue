@@ -1,7 +1,7 @@
 <template>
     <HeroLayout>
         <template v-if="!loading" v-slot:hero>
-            <img :alt="i18n.get('_.settings.picture')" :src="`/profile/${user.username}/profilepicture`"
+            <img :alt="i18n.get('_.settings.picture')" :src="user.profilePicture"
                  class="float-end img-thumbnail rounded-circle img-fluid"
                  height="20%" width="20%"/>
             <div class="text-white px-4">

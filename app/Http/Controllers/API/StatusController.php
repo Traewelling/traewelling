@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\Business;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Status;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -66,9 +68,14 @@ class StatusController extends ResponseController
         return response()->json($statuses['statuses']);
     }
 
-    public function show($statusId) {
-        $statusResponse = StatusBackend::getStatus($statusId);
-        return $this->sendResponse($statusResponse);
+    public function show($statusId): JsonResponse {
+        $status = StatusBackend::getStatus($statusId);
+        try {
+            $this->authorize('view', $status);
+        } catch (AuthorizationException) {
+            abort(403, 'Status invisible to you.');
+        }
+        return $this->sendResponse($status);
     }
 
     public function update(Request $request): JsonResponse {
@@ -84,7 +91,7 @@ class StatusController extends ResponseController
                 user:       Auth::user(),
                 statusId:   $request['statusId'],
                 body:       $request['body'],
-                business:   $request['businessCheck'],
+                business:   Business::tryFrom($request['businessCheck']),
                 visibility: null
             );
         } catch (ModelNotFoundException) {

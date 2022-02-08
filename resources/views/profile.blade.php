@@ -77,7 +77,7 @@
                         </button>
                     </form>
                 </div>
-            @elseif($user->userInvisibleToMe)
+            @elseif(request()->user()->cannot('view', $user))
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('profile.private-profile-text')}}</h3></header>
                     <h5>{{__('profile.private-profile-information-text', ["username" => $user->username, "request" => __('profile.follow_req')])}}</h5>

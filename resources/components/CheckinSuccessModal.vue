@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-2">
                             <img :alt="otherStatus.username"
-                                 :src="`/profile/${otherStatus.username}/profilepicture`"
+                                 :src="otherStatus.profilePicture"
                                  class="img-fluid rounded-circle">
                         </div>
                         <div aria-hidden="true" class="col">

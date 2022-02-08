@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
@@ -12,6 +13,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use App\Models\TrainStation;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 
 /**
@@ -77,19 +79,20 @@ class FrontendStatusController extends Controller
     }
 
     public function EditStatus(Request $request): JsonResponse|RedirectResponse {
-        $this->validate($request, [
+        $validated = $this->validate($request, [
+            'statusId'          => ['required', 'exists:statuses,id'],
             'body'              => ['nullable', 'max:280'],
-            'business_check'    => ['required', 'digits_between:0,2'],
-            'checkinVisibility' => ['required', Rule::in(StatusVisibility::getList())],
+            'business_check'    => ['required', new Enum(Business::class)],
+            'checkinVisibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
         try {
             $editStatusResponse = StatusBackend::EditStatus(
                 user:       Auth::user(),
-                statusId:   $request['statusId'],
-                body:       $request['body'] ?? null,
-                business:   $request['business_check'],
-                visibility: $request['checkinVisibility']
+                statusId:   $validated['statusId'],
+                body:       $validated['body'] ?? null,
+                business:   Business::from($validated['business_check']),
+                visibility: StatusVisibility::from($validated['checkinVisibility']),
             );
         } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back();
@@ -151,11 +154,17 @@ class FrontendStatusController extends Controller
     }
 
     public function getStatus($statusId): Renderable {
-        $statusResponse = StatusBackend::getStatus($statusId);
+        $status = StatusBackend::getStatus($statusId);
+
+        try {
+            $this->authorize('view', $status);
+        } catch (AuthorizationException) {
+            abort(403, 'Status invisible to you.');
+        }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($statusResponse->trainCheckin->HafasTrip->polyline) {
-            $polyline = $statusResponse->trainCheckin->getMapLines();
+        if ($status?->trainCheckin?->HafasTrip?->polyline) {
+            $polyline = $status->trainCheckin->getMapLines();
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [
                     $elementValue[1], $elementValue[0]
@@ -164,16 +173,16 @@ class FrontendStatusController extends Controller
         }
 
         return view('status', [
-            'status'      => $statusResponse,
+            'status'      => $status,
             'time'        => time(),
-            'title'       => __('status.ogp-title', ['name' => $statusResponse->user->username]),
-            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $statusResponse->trainCheckin->HafasTrip->linename), [
-                'linename'    => $statusResponse->trainCheckin->HafasTrip->linename,
-                'distance'    => number($statusResponse->trainCheckin->distance / 1000, 1),
-                'destination' => $statusResponse->trainCheckin->Destination->name,
-                'origin'      => $statusResponse->trainCheckin->Origin->name
+            'title'       => __('status.ogp-title', ['name' => $status->user->username]),
+            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
+                'linename'    => $status->trainCheckin->HafasTrip->linename,
+                'distance'    => number($status->trainCheckin->distance / 1000, 1),
+                'destination' => $status->trainCheckin->Destination->name,
+                'origin'      => $status->trainCheckin->Origin->name
             ]),
-            'image'       => ProfilePictureController::getUrl($statusResponse->user),
+            'image'       => ProfilePictureController::getUrl($status->user),
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }

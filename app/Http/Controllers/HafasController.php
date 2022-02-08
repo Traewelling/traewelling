@@ -101,43 +101,47 @@ abstract class HafasController extends Controller
             }
 
             return $stations;
-        }catch (GuzzleException $e) {
+        } catch (GuzzleException $e) {
             throw new HafasException($e->getMessage());
         }
     }
 
     /**
-     * @param TrainStation           $station
-     * @param Carbon                 $when
-     * @param int                    $duration
-     * @param TravelType|string|null $type
+     * @param TrainStation    $station
+     * @param Carbon          $when
+     * @param int             $duration
+     * @param TravelType|null $type
      *
      * @return Collection
      * @throws HafasException
      */
     public static function getDepartures(
-        TrainStation      $station,
-        Carbon            $when,
-        int               $duration = 15,
-        TravelType|string $type = null
+        TrainStation $station,
+        Carbon       $when,
+        int          $duration = 15,
+        TravelType   $type = null
     ): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
+            $client   = new Client([
+                                       'base_uri' => config('trwl.db_rest'),
+                                       'timeout'  => config('trwl.db_rest_timeout'),
+                                   ]);
+            $query    = [
+                'when'                       => $when->toIso8601String(),
+                'duration'                   => $duration,
+                HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
+                HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
+                HTT::REGIONAL_EXP->value     => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
+                HTT::REGIONAL->value         => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
+                HTT::SUBURBAN->value         => (is_null($type) || $type === TravelType::SUBURBAN) ? 'true' : 'false',
+                HTT::BUS->value              => (is_null($type) || $type === TravelType::BUS) ? 'true' : 'false',
+                HTT::FERRY->value            => (is_null($type) || $type === TravelType::FERRY) ? 'true' : 'false',
+                HTT::SUBWAY->value           => (is_null($type) || $type === TravelType::SUBWAY) ? 'true' : 'false',
+                HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
+                HTT::TAXI->value             => 'false',
+            ];
             $response = $client->get('/stops/' . $station->ibnr . '/departures', [
-                'query' => [
-                    'when'                => $when->toIso8601String(),
-                    'duration'            => $duration,
-                    HTT::NATIONAL_EXPRESS => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
-                    HTT::NATIONAL         => ($type == null || $type == TravelType::EXPRESS) ? 'true' : 'false',
-                    HTT::REGIONAL_EXP     => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
-                    HTT::REGIONAL         => ($type == null || $type == TravelType::REGIONAL) ? 'true' : 'false',
-                    HTT::SUBURBAN         => ($type == null || $type == TravelType::SUBURBAN) ? 'true' : 'false',
-                    HTT::BUS              => ($type == null || $type == TravelType::BUS) ? 'true' : 'false',
-                    HTT::FERRY            => ($type == null || $type == TravelType::FERRY) ? 'true' : 'false',
-                    HTT::SUBWAY           => ($type == null || $type == TravelType::SUBWAY) ? 'true' : 'false',
-                    HTT::TRAM             => ($type == null || $type == TravelType::TRAM) ? 'true' : 'false',
-                    HTT::TAXI             => 'false',
-                ]
+                'query' => $query,
             ]);
 
             $data       = json_decode($response->getBody()->getContents());

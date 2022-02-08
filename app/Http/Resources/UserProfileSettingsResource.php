@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,7 @@ class UserProfileSettingsResource extends JsonResource
         return [
             'username'                  => $this->username,
             'name'                      => $this->name,
+            'profilePicture'            => ProfilePictureController::getUrlForUserId($this->id),
             'private_profile'           => (bool) $this->private_profile,
             'prevent_index'             => (bool) $this->prevent_index,
             'always_dbl'                => (bool) $this->always_dbl,

@@ -30,12 +30,7 @@ To set up a Träwelling instance you'll need:
 * [MariaDB](https://mariadb.org/download) (SQLite is used for running tests)
 * A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 * [Composer](https://getcomposer.org/download/)
-* PHP 8.0 and the following extensions:
-    * gd
-    * sodium
-    * exif
-    * pdo_mysql
-    * pdo_sqlite
+* PHP 8.1 and the dependencies mentioned in composer.json
 
 After setting up these, you can clone the repository and install the project's dependencies:
 
@@ -76,13 +71,10 @@ feature - great; if you don't want to, that's fine, too.
 
 If you add code:
 
-* If you edit the language files, please check if your change is applicable at least in german.
-  
+* If you edit the language files, please check if your change is applicable at least in english.
+
 * If you work on the front page (see screenshot above), please consider updating the screenshot.
-  
-* Unless you really want to work on Träwelling for a long time, we cannot support more languages. It would be sad to
-  have half-baked languages that have missing strings after a while.
-  
+
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
 ### Translations
@@ -92,6 +84,13 @@ international and for this we need you and your language skills.
 
 We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add
 new translations and correct mistakes.
+
+### Security
+
+If you have identified a security issue, please refrain from directly creating an issue or PullRequest so that the
+vulnerability is not exploited.
+
+Instead, please contact security@traewelling.de or use other [contact methods](https://traewelling.de/security.txt).
 
 ## License
 

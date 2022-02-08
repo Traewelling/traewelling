@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Enum\PointReasons;
+use App\Enum\PointReason;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +22,7 @@ class PointsCalculationResource extends JsonResource
                 'base'     => $this['calculation']['base'],
                 'distance' => $this['calculation']['distance'], //TODO: This isn't the distance! Should be renamed.
                 'factor'   => $this['calculation']['factor'] ?? 1,
-                'reason'   => $this['calculation']['reason'] ?? PointReasons::IN_TIME
+                'reason'   => $this['calculation']['reason'] ?? PointReason::IN_TIME
             ],
             'additional'  => AdditionalPointsResource::collection($this['additional'])
         ];

@@ -2,28 +2,25 @@
 
 namespace Database\Factories;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StatusFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
+
     protected $model = Status::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition() {
+    public function definition(): array {
         return [
-            'body'    => $this->faker->paragraph,
-            'user_id' => User::factory()
+            'body'       => $this->faker->paragraph,
+            'user_id'    => User::factory(),
+            'business'   => $this->faker->randomElement(Business::cases())->value,
+            'visibility' => $this->faker->randomElement(StatusVisibility::cases())->value,
+            'type'       => 'hafas',
+            'event_id'   => null,
         ];
     }
 }

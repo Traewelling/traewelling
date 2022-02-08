@@ -15,6 +15,7 @@ import About from "../components/views/About";
 import Charts from "../components/views/Statistics";
 import SearchView from "../components/views/SearchView";
 import SettingsView from "../components/views/Settings";
+import Followers from "../components/views/Followers";
 
 Vue.use(VueRouter);
 
@@ -132,6 +133,14 @@ export const router = new VueRouter({
                 path: "/settings",
                 component: SettingsView,
                 name: "settings",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/settings/followers",
+                component: Followers,
+                name: "followers",
                 meta: {
                     auth: true
                 }
