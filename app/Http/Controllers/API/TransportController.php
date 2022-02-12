@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -17,7 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
@@ -45,7 +46,7 @@ class TransportController extends ResponseController
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
-            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+            'travelType' => ['nullable', new Enum(TravelType::class)],
         ]);
 
         if ($validator->fails()) {
@@ -58,7 +59,7 @@ class TransportController extends ResponseController
             $trainStationboardResponse = TransportBackend::getDepartures(
                 stationQuery: $validated['station'],
                 when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   $validated['travelType'] ?? null
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException $exception) {
             return $this->sendError($exception->getMessage(), 503);
@@ -136,7 +137,7 @@ class TransportController extends ResponseController
                 $request->input('destination'),
                 $request->input('body'),
                 auth()->user(),
-                0,
+                Business::PRIVATE,
                 $request->input('tweet'),
                 $request->input('toot'),
                 StatusVisibility::PUBLIC,

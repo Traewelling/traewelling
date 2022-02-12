@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -206,8 +207,8 @@ class CheckinTest extends TestCase
                              'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
                              'departure'         => Carbon::parse($departure->plannedWhen),
                              'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
-                             'checkinVisibility' => StatusVisibility::PUBLIC,
-                             'business_check'    => 0
+                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
+                             'business_check'    => Business::PRIVATE->value,
                          ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
@@ -315,7 +316,7 @@ class CheckinTest extends TestCase
                 $baseTrip->destination,
                 '',
                 $user,
-                0,
+                Business::PRIVATE,
                 0,
                 0,
                 StatusVisibility::PUBLIC,
@@ -336,10 +337,10 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    Business::PRIVATE,
                     0,
                     0,
                     StatusVisibility::PUBLIC,
-                    0,
                     0,
                     Carbon::parse($trip->departure),
                     Carbon::parse($trip->arrival)
@@ -362,10 +363,10 @@ class CheckinTest extends TestCase
                     $trip->destination,
                     '',
                     $user,
+                    Business::PRIVATE,
                     0,
                     0,
-                    0,
-                    0,
+                    StatusVisibility::PUBLIC,
                     0,
                     Carbon::parse($trip->departure),
                     Carbon::parse($trip->arrival)
@@ -561,8 +562,8 @@ class CheckinTest extends TestCase
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination'       => $trip['stopovers'][8]['stop']['id'], // Tempelhof
                              'arrival'           => $trip['stopovers'][8]['arrival'],
-                             'checkinVisibility' => StatusVisibility::PUBLIC,
-                             'business_check'    => 0
+                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
+                             'business_check'    => Business::PRIVATE->value,
                          ]);
 
         $response->assertStatus(302);

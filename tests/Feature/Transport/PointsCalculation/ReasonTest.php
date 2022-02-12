@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Transport\PointsCalculation;
 
-use App\Enum\PointReasons;
+use App\Enum\PointReason;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -23,7 +23,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::IN_TIME, $pointReason);
+        $this->assertEquals(PointReason::IN_TIME, $pointReason);
     }
 
     public function test25MinutesBeforeTrip(): void {
@@ -34,7 +34,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::GOOD_ENOUGH, $pointReason);
+        $this->assertEquals(PointReason::GOOD_ENOUGH, $pointReason);
     }
 
     public function test65MinutesBeforeTrip(): void {
@@ -45,7 +45,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::NOT_SUFFICIENT, $pointReason);
+        $this->assertEquals(PointReason::NOT_SUFFICIENT, $pointReason);
     }
 
     /**
@@ -59,7 +59,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::IN_TIME, $pointReason);
+        $this->assertEquals(PointReason::IN_TIME, $pointReason);
     }
 
     public function test1MinuteAfterTrip(): void {
@@ -70,7 +70,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::GOOD_ENOUGH, $pointReason);
+        $this->assertEquals(PointReason::GOOD_ENOUGH, $pointReason);
     }
 
     public function test61MinuteAfterTrip(): void {
@@ -81,7 +81,7 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::NOT_SUFFICIENT, $pointReason);
+        $this->assertEquals(PointReason::NOT_SUFFICIENT, $pointReason);
     }
 
     public function testForced(): void {
@@ -92,6 +92,6 @@ class ReasonTest extends TestCase
             timestampOfView: Carbon::now(),
         );
 
-        $this->assertEquals(PointReasons::FORCED, $pointReason);
+        $this->assertEquals(PointReason::FORCED, $pointReason);
     }
 }

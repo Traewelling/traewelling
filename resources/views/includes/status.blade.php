@@ -1,6 +1,6 @@
 <div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business }}" data-trwl-visibility="{{ $status->visibility }}"
+     data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
 >
     @if (Route::current()->uri == "status/{id}")
         @isset($polyline)
@@ -41,10 +41,10 @@
 
                     <p class="train-status text-muted">
                         <span>
-                            @if (file_exists(public_path('img/'.$status->trainCheckin->HafasTrip->category.'.svg')))
+                            @if (file_exists(public_path('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg')))
                                 <img class="product-icon"
-                                     src="{{ asset('img/'.$status->trainCheckin->HafasTrip->category.'.svg') }}"
-                                     alt="{{$status->trainCheckin->HafasTrip->category}}">
+                                     src="{{ asset('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg') }}"
+                                     alt="{{$status->trainCheckin->HafasTrip->category->value}}">
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
@@ -58,12 +58,13 @@
                             {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
                         </span>
 
-                        @if($status->business == \App\Enum\Business::BUSINESS)
+                        @if($status->business === \App\Enum\Business::BUSINESS)
                             <span class="pl-sm-2">
                                 <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.business') }}" aria-hidden="true"></i>
                             </span>
-                        @elseif($status->business == \App\Enum\Business::COMMUTE)
+                        @endif
+                        @if($status->business === \App\Enum\Business::COMMUTE)
                             <span class="pl-sm-2">
                                 <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
                                    title="{{ __('stationboard.business.commute') }}" aria-hidden="true"></i>
@@ -127,8 +128,8 @@
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
             <i class="fas
-{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility]}} visibility-icon text-small"
-               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility)}}" data-mdb-toggle="tooltip"
+{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility->value]}} visibility-icon text-small"
+               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility->value)}}" data-mdb-toggle="tooltip"
                data-mdb-placement="top"></i>
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                 @if(auth()?->user()?->id == $status->user_id)

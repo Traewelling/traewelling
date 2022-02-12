@@ -17,8 +17,8 @@
                                 <i class="fa fa-fast-forward"></i>
                             </a>
                         </div>
-                        @if (file_exists(public_path('img/'.$hafasTrip->category.'.svg')))
-                            <img class="product-icon" src="{{ asset('img/'.$hafasTrip->category.'.svg') }}"/>
+                        @if (file_exists(public_path('img/' . $hafasTrip->category->value . '.svg')))
+                            <img class="product-icon" src="{{ asset('img/' . $hafasTrip->category->value . '.svg') }}"/>
                         @else
                             <i class="fa fa-train"></i>
                         @endif
@@ -66,7 +66,7 @@
                                                     {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['arrivalDelay']))
                                                         <small>(<span
-                                                                    class="traindelay">+{{ $stop['arrivalDelay'] / 60 }}</span>)</small>
+                                                                class="traindelay">+{{ $stop['arrivalDelay'] / 60 }}</span>)</small>
                                                     @endif
                                                 @endif
                                                 <br/>
@@ -75,7 +75,7 @@
                                                     {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['departureDelay']))
                                                         <small>(<span
-                                                                    class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>
+                                                                class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>
                                                     @endif
                                                 @endif
                                             </td>
@@ -118,7 +118,8 @@
                                                name="tweet_check"/>
                                         <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
                                             <i class="fab fa-twitter"></i>
-                                            <span class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
+                                            <span
+                                                class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
                                         </label>
                                     </div>
                                 @endif
@@ -129,7 +130,8 @@
                                                name="toot_check"/>
                                         <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
                                             <i class="fab fa-mastodon"></i>
-                                            <span class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
+                                            <span
+                                                class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
                                         </label>
                                     </div>
                                 @endif

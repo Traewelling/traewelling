@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -91,11 +92,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      *
-     * @param string    $stationName
-     * @param Carbon    $timestamp
-     * @param User|null $user
-     * @param bool|null $forEvent
-     * @param int       $statusVisibility
+     * @param string           $stationName
+     * @param Carbon           $timestamp
+     * @param User|null        $user
+     * @param bool|null        $forEvent
+     * @param StatusVisibility $statusVisibility
      *
      * @return array|null
      * @throws TrainCheckinAlreadyExistException
@@ -111,11 +112,11 @@ abstract class TestCase extends BaseTestCase
         'event'                => "mixed"
     ])]
     protected function checkin(
-        string $stationName,
-        Carbon $timestamp,
-        User   $user = null,
-        bool   $forEvent = null,
-        int    $statusVisibility = StatusVisibility::PUBLIC
+        string           $stationName,
+        Carbon           $timestamp,
+        User             $user = null,
+        bool             $forEvent = null,
+        StatusVisibility $statusVisibility = StatusVisibility::PUBLIC
     ): ?array {
         if ($user === null) {
             $user = $this->user;
@@ -170,16 +171,16 @@ abstract class TestCase extends BaseTestCase
         // WHEN: User tries to check-in
         try {
             return TransportController::TrainCheckin(
-                tripId:        $trip['train']['trip_id'],
-                start:         $trip['stopovers'][0]['stop']['id'],
-                destination:   end($trip['stopovers'])['stop']['id'],
-                body:          '',
-                user:          $user,
-                businessCheck: 0,
-                tweetCheck:    0,
-                tootCheck:     0,
-                visibility:    $statusVisibility,
-                eventId:       $eventId
+                tripId:      $trip['train']['trip_id'],
+                start:       $trip['stopovers'][0]['stop']['id'],
+                destination: end($trip['stopovers'])['stop']['id'],
+                body:        '',
+                user:        $user,
+                business:    Business::PRIVATE,
+                tweetCheck:  0,
+                tootCheck:   0,
+                visibility:  $statusVisibility,
+                eventId:     $eventId
             );
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");

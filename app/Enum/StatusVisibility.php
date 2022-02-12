@@ -1,12 +1,12 @@
 <?php
-declare(strict_types=0);
+declare(strict_types=1);
 
 namespace App\Enum;
 
-final class StatusVisibility extends BasicEnum
+enum StatusVisibility: int
 {
-    public const PUBLIC    = 0;
-    public const UNLISTED  = 1;
-    public const FOLLOWERS = 2;
-    public const PRIVATE   = 3;
+    case PUBLIC = 0;
+    case UNLISTED = 1;
+    case FOLLOWERS = 2;
+    case PRIVATE = 3;
 }

@@ -82,11 +82,14 @@ class UserController extends Controller
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user()->id : null;
-                        $query->whereIn('statuses.visibility', [StatusVisibility::PUBLIC, StatusVisibility::UNLISTED])
+                        $query->whereIn('statuses.visibility', [
+                            StatusVisibility::PUBLIC->value,
+                            StatusVisibility::UNLISTED->value,
+                        ])
                               ->orWhere('statuses.user_id', $user)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
-                                  $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
+                                  $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
                                         ->whereIn('statuses.user_id', $followings);
                               });
                     })

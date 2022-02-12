@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\StatusVisibility;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -58,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'always_dbl'                => 'boolean',
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
-        'default_status_visibility' => 'integer',//TODO: Change to Enum Cast with Laravel 9
+        'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'role'                      => 'integer',
         'last_login'                => 'datetime',
@@ -116,8 +117,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
 
+    /**
+     * @deprecated
+     */
     public function followers(): HasMany {
         return $this->hasMany(Follow::class, 'follow_id', 'id');
+    }
+
+    /**
+     * @deprecated
+     */
+    public function followings(): HasMany {
+        return $this->hasMany(Follow::class, 'user_id', 'id');
     }
 
     public function sessions(): HasMany {
@@ -133,6 +144,30 @@ class User extends Authenticatable implements MustVerifyEmail
                            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                            ->select('points')
                            ->sum('points');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowings(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follows', 'follow_id', 'user_id');
+    }
+
+    /**
+     * @untested
+     * @todo test
+     */
+    public function userFollowRequests(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'follow_requests', 'follow_id', 'user_id');
     }
 
     /**
