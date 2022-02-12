@@ -33,10 +33,10 @@
                 </label>
                 <div class="col-md-6">
                     <select class="form-control" name="default_status_visibility">
-                        @foreach(\App\Enum\StatusVisibility::getList() as $visibility)
-                            <option value="{{$visibility}}"
-                                    @if(auth()->user()->default_status_visibility == $visibility) selected @endif>
-                                {{__('status.visibility.' . $visibility)}}
+                        @foreach(\App\Enum\StatusVisibility::cases() as $visibility)
+                            <option value="{{$visibility->value}}"
+                                    @if(auth()->user()->default_status_visibility === $visibility) selected @endif>
+                                {{__('status.visibility.' . $visibility->value)}}
                             </option>
                         @endforeach
                     </select>

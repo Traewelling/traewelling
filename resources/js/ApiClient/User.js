@@ -1,4 +1,4 @@
-import {deleteFromApi, getBody, getContent, postToApi} from "./Helpers";
+import {deleteFromApi, getBody, getContent, postToApi, putToApi} from "./Helpers";
 
 export default class User {
     static getByUsername(username) {
@@ -15,6 +15,18 @@ export default class User {
 
     static unfollow(userId) {
         return deleteFromApi("/user/destroyFollow", {userId});
+    }
+
+    static removeFollower(userId) {
+        return deleteFromApi("/user/removeFollower", {userId});
+    }
+
+    static rejectFollowRequest(userId) {
+        return deleteFromApi("/user/rejectFollowRequest", {userId});
+    }
+
+    static approveFollowRequest(userId) {
+        return putToApi("/user/approveFollowRequest", {userId});
     }
 
     static mute(userId) {

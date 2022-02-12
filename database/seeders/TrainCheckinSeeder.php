@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -28,7 +29,7 @@ class TrainCheckinSeeder extends Seeder
                     $trip->destination,
                     '',
                     $user,
-                    0,
+                    Business::PRIVATE,
                     0,
                     0,
                     StatusVisibility::PUBLIC,

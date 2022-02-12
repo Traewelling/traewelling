@@ -11,7 +11,7 @@ class CreateDefaultVisibilityOnUsers extends Migration
     public function up(): void {
         Schema::table('users', function(Blueprint $table) {
             $table->unsignedTinyInteger('default_status_visibility')
-                  ->default(StatusVisibility::PUBLIC)
+                  ->default(StatusVisibility::PUBLIC->value)
                   ->after('private_profile');
         });
     }

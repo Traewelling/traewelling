@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enum\Business;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\User\DashboardController;
@@ -90,7 +91,7 @@ class StatusController extends ResponseController
                 user:       Auth::user(),
                 statusId:   $request['statusId'],
                 body:       $request['body'],
-                business:   $request['businessCheck'],
+                business:   Business::tryFrom($request['businessCheck']),
                 visibility: null
             );
         } catch (ModelNotFoundException) {

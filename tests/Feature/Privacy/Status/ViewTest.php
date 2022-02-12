@@ -17,7 +17,7 @@ class ViewTest extends TestCase
 
     public function testUnauthenticatedViewPublicStatus(): void {
         $user   = User::factory()->create();
-        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PUBLIC])
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PUBLIC->value])
                         ->has(TrainCheckin::factory())
                         ->create();
 

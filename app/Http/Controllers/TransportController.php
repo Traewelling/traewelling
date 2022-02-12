@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\GeoController;
@@ -22,8 +25,6 @@ use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -52,9 +53,9 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string|int  $stationQuery
-     * @param Carbon|null $when
-     * @param string|null $travelType
+     * @param string|int      $stationQuery
+     * @param Carbon|null     $when
+     * @param TravelType|null $travelType
      *
      * @return array
      * @throws HafasException
@@ -68,7 +69,7 @@ class TransportController extends Controller
     public static function getDepartures(
         string|int $stationQuery,
         Carbon     $when = null,
-        string     $travelType = null
+        TravelType $travelType = null
     ): array {
         $station = StationController::lookupStation($stationQuery);
 
@@ -88,66 +89,6 @@ class TransportController extends Controller
         });
 
         return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
-    }
-
-    /**
-     * @param $departure
-     * @param $lineName
-     * @param $number
-     * @param $when
-     *
-     * @return mixed|null
-     * @throws GuzzleException
-     * @deprecated with vue, replaced by frontend logic
-     */
-    public static function FastTripAccess($departure, $lineName, $number, $when) {
-        $departuresArray = self::getTrainDepartures($departure, $when);
-        foreach ($departuresArray as $departure) {
-            if ($departure->line->name === $lineName && $departure->line->fahrtNr == $number) {
-                return $departure;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param        $ibnr
-     * @param string $when
-     * @param null   $trainType
-     *
-     * @return array
-     * @throws GuzzleException
-     * @deprecated replaced by getDepartures()
-     */
-    private static function getTrainDepartures($ibnr, $when = 'now', $trainType = null) {
-        $client     = new Client(['base_uri' => config('trwl.db_rest')]);
-        $trainTypes = [
-            TravelType::SUBURBAN => 'false',
-            TravelType::SUBWAY   => 'false',
-            TravelType::TRAM     => 'false',
-            TravelType::BUS      => 'false',
-            TravelType::FERRY    => 'false',
-            TravelType::EXPRESS  => 'false',
-            TravelType::REGIONAL => 'false',
-        ];
-        $appendix   = '';
-
-        if ($trainType != null) {
-            $trainTypes[$trainType] = 'true';
-            $appendix               = '&' . http_build_query($trainTypes);
-        }
-        $response = $client->request('GET', "stations/$ibnr/departures?when=$when&duration=15" . $appendix);
-        $json     = json_decode($response->getBody()->getContents());
-
-        //remove express trains in filtered results
-        if ($trainType != null && $trainType != TravelType::EXPRESS) {
-            foreach ($json as $key => $item) {
-                if ($item->line->product != $trainType) {
-                    unset($json[$key]);
-                }
-            }
-        }
-        return self::sortByWhenOrScheduledWhen($json);
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
@@ -223,22 +164,23 @@ class TransportController extends Controller
     }
 
     /**
-     * @param             $tripId
-     * @param             $start
-     * @param             $destination
-     * @param             $body
-     * @param             $user
-     * @param             $businessCheck
-     * @param             $tweetCheck
-     * @param             $tootCheck
-     * @param             $visibility
-     * @param int         $eventId
-     * @param Carbon|null $departure
-     * @param Carbon|null $arrival
+     * @param                  $tripId
+     * @param                  $start
+     * @param                  $destination
+     * @param                  $body
+     * @param                  $user
+     * @param Business         $business
+     * @param                  $tweetCheck
+     * @param                  $tootCheck
+     * @param StatusVisibility $visibility
+     * @param int|null         $eventId
+     * @param Carbon|null      $departure
+     * @param Carbon|null      $arrival
      *
      * @return array
      * @throws CheckInCollisionException
      * @throws HafasException
+     * @throws NotConnectedException
      * @throws StationNotOnTripException
      * @throws TrainCheckinAlreadyExistException
      * @deprecated replaced by createTrainCheckin()
@@ -253,19 +195,20 @@ class TransportController extends Controller
         'duration'             => "float",
         'event'                => "mixed"
     ])]
-    public static function TrainCheckin($tripId,
+    public static function TrainCheckin(
+        $tripId,
         $start,
         $destination,
         $body,
         $user,
-        $businessCheck,
+        Business $business,
         $tweetCheck,
         $tootCheck,
-        $visibility,
-        $eventId = 0,
-                                        Carbon $departure = null,
-                                        Carbon $arrival = null): array {
-
+        StatusVisibility $visibility,
+        int $eventId = null,
+        Carbon $departure = null,
+        Carbon $arrival = null
+    ): array {
         $hafasTrip = HafasTrip::where('trip_id', $tripId)->first();
         $stopovers = json_decode($hafasTrip->stopovers, true);
         $offset1   = self::searchForId($start, $stopovers, $departure);
@@ -329,7 +272,7 @@ class TransportController extends Controller
         $status = Status::create([
                                      'user_id'    => $user->id,
                                      'body'       => $body,
-                                     'business'   => $businessCheck,
+                                     'business'   => $business,
                                      'visibility' => $visibility
                                  ]);
 
@@ -364,12 +307,9 @@ class TransportController extends Controller
 
         // Let's connect our statuses and the events
         $event = null;
-        if ($eventId != 0) {
+        if ($eventId !== null) {
             $event = Event::find($eventId);
-            if ($event === null) {
-                abort(404);
-            }
-            if (Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
+            if ($event !== null && Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
                 $status->update([
                                     'event_id' => $event->id
                                 ]);

@@ -149,7 +149,7 @@
                 <tbody>
                     @foreach($statuses as $status)
                         <tr>
-                            <td>{{ __('transport_types.'. $status->trainCheckin->HafasTrip->category) }}</td>
+                            <td>{{ __('transport_types.' . $status->trainCheckin->HafasTrip->category->value) }}</td>
                             <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
                             <td>{{ $status->trainCheckin->Origin->name }}</td>
                             <td>{{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}</td>
@@ -157,7 +157,7 @@
                             <td>{{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}</td>
                             <td>{{ $status->trainCheckin->duration }} min</td>
                             <td>{{ number($status->trainCheckin->distance / 1000) }} km</td>
-                            <td><i>{{ $status->business }}</i></td>
+                            <td><i>{{ $status->business->value }}</i></td>
                         </tr>
                     @endforeach
                 </tbody>

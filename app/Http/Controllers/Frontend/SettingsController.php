@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Http\Controllers\Backend\User\FollowController;
+use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\SettingsController as SettingsBackend;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class SettingsController extends Controller
 {
@@ -56,7 +58,7 @@ class SettingsController extends Controller
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
                                             'default_status_visibility' => [
                                                 'required',
-                                                Rule::in(StatusVisibility::getList())
+                                                new Enum(StatusVisibility::class),
                                             ]
                                         ]);
 
@@ -149,7 +151,7 @@ class SettingsController extends Controller
                                             ]
                                         ]);
         try {
-            $approval = SettingsBackend::rejectFollower(auth()->user()->id, $validated['user_id']);
+            $approval = FollowController::rejectFollower(auth()->user()->id, $validated['user_id']);
         } catch (ModelNotFoundException) {
             abort(404);
         }

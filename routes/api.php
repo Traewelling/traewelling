@@ -11,8 +11,10 @@
 |
 */
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
+use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
@@ -25,7 +27,7 @@ use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [v1Auth::class, 'login']);
         Route::post('signup', [v1Auth::class, 'register']);
@@ -70,8 +72,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
         Route::group(['prefix' => 'user'], function() {
-            Route::post('createFollow', [UserController::class, 'createFollow']);
-            Route::delete('destroyFollow', [UserController::class, 'destroyFollow']);
+            Route::post('createFollow', [FollowController::class, 'createFollow']);
+            Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
+            Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
+            Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
+            Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
@@ -93,6 +98,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('tokens', [TokenController::class, 'index']);
             Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
             Route::delete('token', [TokenController::class, 'revokeToken']);
+            Route::get('followers', [FollowController::class, 'getFollowers']);
+            Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
+            Route::get('followings', [FollowController::class, 'getFollowings']);
         });
     });
 
@@ -112,9 +120,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     });
 });
 
-Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
-    Route::group(['middleware' => ['guest:api']], function() {
-        Route::group(['prefix' => 'auth'], function() {
+Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], static function() {
+    Route::group(['middleware' => ['guest:api']], static function() {
+        Route::group(['prefix' => 'auth'], static function() {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
             Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
@@ -122,11 +130,11 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
          ->name('api.v0.user.accept_privacy');
     // All protected routes
-    Route::group(['middleware' => ['auth:api', 'privacy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
-        Route::get('getuser', 'API\AuthController@getUser')->name('api.v0.getUser');
+        Route::get('getuser', [AuthController::class, 'getUser'])->name('api.v0.getUser');
 
-        Route::group(['prefix' => 'user'], function() {
+        Route::group(['prefix' => 'user'], static function() {
             Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
             Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
@@ -136,7 +144,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
         });
 
         // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], function() {
+        Route::group(['prefix' => 'statuses'], static function() {
             Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
             Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
             Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
@@ -148,7 +156,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
         Route::resource('notifications', 'API\NotificationController');
 
         // Controller for complete Train-Transport-Stuff
-        Route::group(['prefix' => 'trains'], function() {
+        Route::group(['prefix' => 'trains'], static function() {
             Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
                  ->name('api.v0.checkin.train.autocomplete');
             Route::get('stationboard', 'API\TransportController@TrainStationboard')
