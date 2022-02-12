@@ -30,7 +30,7 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "php": "^8.0",
+        "php": "^8.1",
         "revolution/laravel-mastodon-api": "^2.0",
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-sitemap": "^6.0",
