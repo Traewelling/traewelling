@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd9c22a23d2d86bdb7b832c2a2c4221d",
+    "content-hash": "5be8dd2043d78e7b5955ee428d20f45f",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -11684,18 +11684,18 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "roave/security-advisories": 20,
-        "beyondcode/laravel-dump-server": 20
+        "beyondcode/laravel-dump-server": 20,
+        "roave/security-advisories": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo_mysql": "*",
         "ext-sodium": "*",
-        "ext-exif": "*",
-        "ext-pdo_mysql": "*"
+        "php": "^8.0"
     },
     "platform-dev": {
         "ext-pdo_sqlite": "*"
