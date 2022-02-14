@@ -1,6 +1,6 @@
 import {getBody, getContent, postToApi, putToApi} from "./Helpers";
 
-export default class User {
+export default class Checkin {
     static getHistory() {
         return getContent("/trains/station/history");
     }
