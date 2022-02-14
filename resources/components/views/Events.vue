@@ -65,22 +65,23 @@
                             {{ i18n.get('_.events.request') }}
                         </h2>
                         <hr/>
-                        <form v-if="$auth.check()" method="POST">
+                        <form v-if="$auth.check()" @submit.prevent="submitProposal">
                             <div class="form-outline mb-4">
-                                <input type="text" id="event-requester-name" name="name" class="form-control"
+                                <input type="text" id="event-requester-name" v-model="suggest.name" class="form-control"
                                        required/>
                                 <label class="form-label"
                                        for="event-requester-name">{{ i18n.get('_.events.name') }}</label>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="text" id="event-requester-host" name="host" class="form-control"/>
+                                <input type="text" id="event-requester-host" v-model="suggest.host"
+                                       class="form-control"/>
                                 <label class="form-label"
                                        for="event-requester-host">{{ i18n.get('_.events.host') }}</label>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-outline mb-4 datepicker">
-                                        <input type="date" id="event-requester-begin" name="begin"
+                                    <div class="form-outline mb-4">
+                                        <input type="date" id="event-requester-begin" v-model="suggest.begin"
                                                class="form-control" required/>
                                         <label class="form-label" for="event-requester-begin">
                                             {{ i18n.get('_.events.begin') }}
@@ -88,8 +89,9 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-outline mb-4 datepicker">
-                                        <input type="date" id="event-requester-end" name="end" class="form-control"
+                                    <div class="form-outline mb-4">
+                                        <input type="date" id="event-requester-end" v-model="suggest.end"
+                                               class="form-control"
                                                required/>
                                         <label class="form-label" for="event-requester-end">
                                             {{ i18n.get('_.events.end') }}
@@ -98,11 +100,17 @@
                                 </div>
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="string" id="event-requester-url" name="url" class="form-control"/>
+                                <input type="string" id="event-requester-url" v-model="suggest.url"
+                                       class="form-control"/>
                                 <label class="form-label"
                                        for="event-requester-url">{{ i18n.get('_.events.url') }}</label>
                             </div>
-                            <button type="submit" class="btn btn-primary">{{ i18n.get('_.events.request-button') }}
+                            <button class="btn btn-primary" :class="{'disabled':suggestLoading}">
+                                {{ i18n.get('_.events.request-button') }}
+                                <span v-if="suggestLoading" class="spinner-border spinner-border-sm" role="status"
+                                      aria-hidden="true"></span>
+                                <span v-if="suggestLoading"
+                                      class="visually-hidden">{{ i18n.get("_.menu.loading") }}</span>
                             </button>
                             <hr/>
                             <small class="text-muted">{{ i18n.get('_.events.notice') }}</small>
@@ -124,6 +132,7 @@ import moment from "moment";
 export default {
     name: "Events",
     components: {Spinner, LayoutBasicNoSidebar, moment},
+    inject: ["notyf"],
     metaInfo() {
         return {
             title: this.i18n.get("_.events.live"),
@@ -136,7 +145,9 @@ export default {
         return {
             upcomingEvents: [],
             loading: true,
-            links: null
+            links: null,
+            suggestLoading: false,
+            suggest: {}
         };
     },
     created() {
@@ -160,11 +171,25 @@ export default {
                     this.links          = data.links;
                     this.loading        = false;
                 })
+        },
+        submitProposal() {
+            this.suggestLoading = true;
+            const formData      = {};
+            Object.assign(formData, this.suggest);
+            Event
+                .suggest(formData)
+                .then(() => {
+                    this.suggestLoading = false;
+                    this.notyf.success(this.i18n.get("_.settings.saved"));
+                    this.suggest = {};
+                })
+                .catch((error) => {
+                    this.suggestLoading = false;
+                    console.error("error?");
+                    this.apiErrorHandler(error);
+                });
+
         }
     }
 };
 </script>
-
-<style scoped>
-
-</style>
