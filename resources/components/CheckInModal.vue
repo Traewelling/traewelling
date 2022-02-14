@@ -157,7 +157,8 @@ export default {
         },
         trainData: {
             type: Object
-        }
+        },
+        events: []
     },
     mounted() {
         this.modal = new Modal(this.$refs.checkinModal);

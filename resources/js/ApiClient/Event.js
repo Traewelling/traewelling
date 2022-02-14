@@ -8,4 +8,8 @@ export default class Event {
     static fetchStatuses(slug) {
         return getBody(`/event/${slug}/statuses`);
     }
+
+    static activeEvents() {
+        return getContent(`/events`)
+    }
 }
