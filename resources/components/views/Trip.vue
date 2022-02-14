@@ -157,7 +157,7 @@ export default {
                     this.apiErrorHandler(error);
                 });
             Event
-                .activeEvents()
+                .active()
                 .then((data) => {
                     this.events = data;
                 })

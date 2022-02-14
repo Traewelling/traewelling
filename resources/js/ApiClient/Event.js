@@ -1,4 +1,4 @@
-import {getBody, getContent} from "./Helpers";
+import {getBody, getContent, postToApi} from "./Helpers";
 
 export default class Event {
     static fetchData(slug) {
@@ -9,7 +9,15 @@ export default class Event {
         return getBody(`/event/${slug}/statuses`);
     }
 
-    static activeEvents() {
-        return getContent(`/events`)
+    static active() {
+        return getContent(`/activeEvents`);
+    }
+
+    static upcoming() {
+        return getBody(`/events`);
+    }
+
+    static suggest(data) {
+        return postToApi(`/event`, data);
     }
 }
