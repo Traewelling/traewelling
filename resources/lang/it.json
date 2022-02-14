@@ -52,7 +52,7 @@
     "about.name": "Il nome è un'allusione alla nota frase <i>\"Senk ju for träwelling wis Deutsche Bahn\"</i>, che dovresti aver sentito su quasi tutti i treni a lunga percorrenza della Deutsche Bahn.",
     "controller.social.delete-set-email": "Prima di eliminare un provider SSO, devi impostare un indirizzo email in modo da non essere escluso.",
     "about.points1": "I punti sono composti dalla classe del prodotto e dalla distanza del tuo viaggio.",
-    "controller.social.delete-set-password": "Prima di eliminare un provider SSO, devi impostare un indirizzo email in modo da non essere escluso.",
+    "controller.social.delete-set-password": "",
     "email.change": "Per favore, aggiorna la tua email inserendo il nuovo indirizzo e la tua password attuale. Un'e-mail di conferma ti sarà inviata per confermare questo cambiamento.",
     "email.verification.sent": "Per completare il cambiamento del tuo indirizzo e-mail devi ancora cliccare sul link nell'e-mail che ti abbiamo appena inviato.",
     "controller.transport.checkin-heading": "Check-in effettuato"
