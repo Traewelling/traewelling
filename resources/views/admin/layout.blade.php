@@ -37,7 +37,7 @@
                     </li>
                     <li>
                         <a href="{{route('admin.events')}}"
-                           class="nav-link text-white {{ request()->is('admin/events/*') ? 'active' : '' }}">
+                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
                             <i class="fas fa-calendar me-2" aria-hidden="true"></i>
                             Veranstaltungen
                         </a>
