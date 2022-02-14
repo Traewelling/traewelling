@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     });
 
     Route::group(['middleware' => 'auth:api'], function() {
+        Route::post('event', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
