@@ -34,4 +34,12 @@ class EventController extends Controller
         $event = EventBackend::getBySlug($slug);
         return StatusResource::collection($event->statuses()->paginate(15));
     }
+
+    /**
+     * Returns upcoming events
+     */
+    public static function upcoming() {
+        $events = EventBackend::getUpcomingEvents();
+        return EventResource::collection($events);
+    }
 }
