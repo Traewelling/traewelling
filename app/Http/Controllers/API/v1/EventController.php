@@ -11,6 +11,7 @@ use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -41,7 +42,7 @@ class EventController extends ResponseController
     /**
      * Returns upcoming events
      */
-    public function upcoming() {
+    public function upcoming(): AnonymousResourceCollection {
         $events = EventBackend::getUpcomingEvents();
         return EventResource::collection($events);
     }
@@ -49,9 +50,9 @@ class EventController extends ResponseController
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function suggest(Request $request) {
+    public function suggest(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'name'  => ['required', 'max:255'],
                                             'host'  => ['nullable', 'max:255'],
@@ -73,5 +74,10 @@ class EventController extends ResponseController
             return $this->sendv1Response(data: null, code: 201);
         }
         return $this->sendError(error: null, code: 500);
+    }
+
+    public function activeEvents(): AnonymousResourceCollection {
+        $events = EventBackend::activeEvents();
+        return EventResource::collection($events);
     }
 }
