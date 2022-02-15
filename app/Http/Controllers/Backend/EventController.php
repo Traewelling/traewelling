@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 
 abstract class EventController extends Controller
@@ -60,6 +61,12 @@ abstract class EventController extends Controller
 
     public static function getBySlug(string $slug): ?Event {
         return Event::where('slug', '=', $slug)->firstOrFail();
+    }
+
+    public static function getUpcomingEvents(): Paginator {
+        return Event::where('end', '>=', Carbon::now()->toIso8601String())
+                                      ->orderBy('begin')
+                                      ->simplepaginate(15);
     }
 
 }

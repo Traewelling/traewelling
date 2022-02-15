@@ -28,10 +28,11 @@
         <hr>
         <ul v-if="!$auth.check()" class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                <router-link :to="{ name: 'events' }" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-calendar me-2"></i>
                     {{ i18n.get("_.events") }}
-                </a>
+                </router-link>
             </li>
         </ul>
         <ul v-if="$auth.check()" class="nav nav-pills flex-column mb-auto">
@@ -72,13 +73,15 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                <router-link :to="{ name: 'events' }" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-calendar me-2"></i>
                     {{ i18n.get("_.events") }}
-                </a>
+                </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{name: 'settings'}" class="nav-link bg-transparent">
+                <router-link :to="{name: 'settings'}" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-cog me-2"></i>
                     {{ i18n.get("_.menu.settings") }}
                 </router-link>

@@ -16,6 +16,8 @@ import Charts from "../components/views/Statistics";
 import SearchView from "../components/views/SearchView";
 import SettingsView from "../components/views/Settings";
 import Followers from "../components/views/Followers";
+import Support from "../components/views/Support";
+import Events from "../components/views/Events";
 
 Vue.use(VueRouter);
 
@@ -144,6 +146,19 @@ export const router = new VueRouter({
                 meta: {
                     auth: true
                 }
+            },
+            {
+                path: "/support",
+                component: Support,
+                name: "support",
+                meta: {
+                    auth: true
+                }
+            },
+            {
+                path: "/events",
+                component: Events,
+                name: "events"
             }
         ],
     base: "/",

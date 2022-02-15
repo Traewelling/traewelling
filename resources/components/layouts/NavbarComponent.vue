@@ -87,6 +87,9 @@
                             <router-link :to="{name: 'settings'}" class="dropdown-item">
                                 <i aria-hidden="true" class="fas fa-cog"></i> {{ i18n.get('_.menu.settings') }}
                             </router-link>
+                            <router-link class="dropdown-item" :to="{name: 'support'}">
+                                <i class="fas fa-headset" aria-hidden="true"></i> {{ i18n.get('_.support') }}
+                            </router-link>
                             <!--                {{ &#45;&#45;@if(Auth::user()->role >= 5)&#45;&#45; }}-->
                             <!--                {{-->
                             <!--                  &#45;&#45; <a class="dropdown-item" href="#">&#45;&#45;}}-->

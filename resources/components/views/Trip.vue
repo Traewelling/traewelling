@@ -96,6 +96,7 @@
             ref="checkInModal"
             :destination="destination"
             :train-data="trainData"
+            :events="events"
         ></CheckInModal>
     </LayoutBasic>
 </template>
@@ -107,6 +108,7 @@ import CheckInModal from "../CheckInModal";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import Checkin from "../../js/ApiClient/Checkin";
+import Event from "../../js/ApiClient/Event";
 
 export default {
     name: "Trip",
@@ -121,6 +123,7 @@ export default {
             lastStation: null,
             moment: moment,
             destination: null,
+            events: [],
             trainData: {
                 tripId: 0,
                 lineName: "",
@@ -151,6 +154,14 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
+                    this.apiErrorHandler(error);
+                });
+            Event
+                .active()
+                .then((data) => {
+                    this.events = data;
+                })
+                .catch((error) => {
                     this.apiErrorHandler(error);
                 });
         },
