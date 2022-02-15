@@ -170,7 +170,7 @@ export default {
                     this.upcomingEvents = data.data;
                     this.links          = data.links;
                     this.loading        = false;
-                })
+                });
         },
         submitProposal() {
             this.suggestLoading = true;
@@ -185,7 +185,6 @@ export default {
                 })
                 .catch((error) => {
                     this.suggestLoading = false;
-                    console.error("error?");
                     this.apiErrorHandler(error);
                 });
 
