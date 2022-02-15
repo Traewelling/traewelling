@@ -86,7 +86,6 @@ import CheckinSuccessModal from "../CheckinSuccessModal";
 
 export default {
     name: "dashboard",
-    inject: ["notyf"],
     data() {
         return {
             loading: true,

@@ -20,7 +20,6 @@ import User from "../js/ApiClient/User";
 
 export default {
     name: "MuteButton",
-    inject: ["notyf"],
     data() {
         return {
             userData: ProfileModel

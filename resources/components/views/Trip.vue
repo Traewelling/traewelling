@@ -112,7 +112,6 @@ import Event from "../../js/ApiClient/Event";
 
 export default {
     name: "Trip",
-    inject: ["notyf"],
     components: {Spinner, LayoutBasic, CheckInModal},
     data() {
         return {

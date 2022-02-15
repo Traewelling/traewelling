@@ -212,7 +212,6 @@ import Status from "../js/ApiClient/Status";
 
 export default {
     name: "Status.vue",
-    inject: ["notyf"],
     data() {
         return {
             isSingleStatus: false,

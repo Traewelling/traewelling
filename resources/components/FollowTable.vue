@@ -86,7 +86,6 @@ import User from "../js/ApiClient/User";
 
 export default {
     name: "FollowTable",
-    inject: ["notyf"],
     components: {FollowButton, MuteButton},
     props: {
         describedBy: null,

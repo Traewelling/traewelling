@@ -113,7 +113,6 @@ import ModalConfirm from "./ModalConfirm";
 
 export default {
     name: "CheckInModal",
-    inject: ["notyf"],
     components: {ModalConfirm, FADropdown},
     data() {
         return {

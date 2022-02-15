@@ -41,6 +41,12 @@ Vue.prototype.i18n   = new Lang({
 Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
 Vue.prototype.$appName = process.env.MIX_APP_NAME;
+
+Vue.prototype.notyf = new Notyf({
+    duration: 5000,
+    position: {x: "center", y: "top"},
+    dismissible: true
+});
 // Set Vue router
 Vue.router             = router;
 Vue.use(VueRouter);
@@ -85,10 +91,10 @@ Vue.mixin({
         apiErrorHandler: (response) => {
             if (response.errors.length > 0) {
                 response.errors.forEach((error) => {
-                    this.notyf.error(error);
+                    Vue.prototype.notyf.error(error);
                 });
             } else {
-                this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                Vue.prototype.notyf.error(this.i18n.get("_.messages.exception.general"));
             }
         },
         fetchMoreData(next) {
@@ -109,15 +115,6 @@ Vue.mixin({
 });
 
 new Vue({
-    provide: () => {
-        return {
-            notyf: new Notyf({
-                duration: 5000,
-                position: {x: "center", y: "top"},
-                dismissible: true
-            })
-        };
-    },
     el: "#app",
     components: {App},
     router,

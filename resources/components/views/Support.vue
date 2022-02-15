@@ -66,7 +66,6 @@ import Settings from "../../js/ApiClient/Settings";
 export default {
     name: "Support",
     components: {Spinner, LayoutBasicNoSidebar, moment},
-    inject: ["notyf"],
     metaInfo() {
         return {
             title: this.i18n.get("_.support.create"),

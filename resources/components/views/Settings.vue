@@ -62,7 +62,6 @@ import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "Settings",
-    inject: ["notyf"],
     data() {
         return {
             visibility: visibility,

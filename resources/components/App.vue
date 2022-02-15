@@ -7,7 +7,6 @@ import LayoutBasic from "./layouts/Basic";
 
 export default {
     name: "App",
-    inject: ["notyf"],
     metaInfo() {
         return {
             title: "Träwelling",

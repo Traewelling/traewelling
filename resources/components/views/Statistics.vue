@@ -190,7 +190,6 @@ import Statistics from "../../js/ApiClient/Statistics";
 
 export default {
     name: "Statistics",
-    inject: ["notyf"],
     components: {
         LayoutBasicNoSidebar,
         LayoutBasic,

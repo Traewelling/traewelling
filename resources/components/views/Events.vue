@@ -132,7 +132,6 @@ import moment from "moment";
 export default {
     name: "Events",
     components: {Spinner, LayoutBasicNoSidebar, moment},
-    inject: ["notyf"],
     metaInfo() {
         return {
             title: this.i18n.get("_.events.live"),

@@ -35,7 +35,6 @@
 <script>
 export default {
     name: "Login",
-    inject: ["notyf"],
     data() {
         return {
             login: null,
