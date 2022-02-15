@@ -5,6 +5,9 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            <a href="{{route('admin.events.suggestions')}}" class="btn btn-sm btn-info">
+                Vorschläge
+            </a>
             <a href="{{route('admin.events.create')}}" class="btn btn-sm btn-success float-end">
                 <i class="fas fa-plus" aria-hidden="true"></i>
                 Neu
