@@ -27,19 +27,24 @@
             <label class="form-label text-dark" for="password"> {{ i18n.get("_.user.password") }} </label>
         </div>
         <div class="d-flex align-items-center justify-content-between">
-            <button class="btn btn-white" type="submit">{{ i18n.get("_.user.login") }}</button>
+            <LoadingButton class="btn btn-white" type="submit" :disabled="loginLoading">
+                {{ i18n.get("_.user.login") }}
+            </LoadingButton>
             <a class="text-dark" href="#">{{ i18n.get("_.user.forgot-password") }}</a>
         </div>
     </form>
 </template>
 <script>
+import LoadingButton from "./LoadingButton";
 export default {
     name: "Login",
+    components: {LoadingButton},
     data() {
         return {
             login: null,
             password: null,
-            hasError: false
+            hasError: false,
+            loginLoading: false
         };
     }, mounted() {
         //
@@ -47,6 +52,7 @@ export default {
         authenticate() {
             // get the redirect object
             let redirect = this.$auth.redirect();
+            this.loginLoading = true;
             this.$auth.login({
                 data: {
                     login: this.login,
@@ -57,8 +63,10 @@ export default {
                 fetchUser: true,
             }).then(() => {
                 this.$auth.fetch();
+                this.loginLoading = false;
             }).catch((error) => {
                 this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                this.loginLoading = false;
             });
         }
     }

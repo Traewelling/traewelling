@@ -105,13 +105,9 @@
                                 <label class="form-label"
                                        for="event-requester-url">{{ i18n.get('_.events.url') }}</label>
                             </div>
-                            <button class="btn btn-primary" :class="{'disabled':suggestLoading}">
+                            <LoadingButton class="btn btn-primary" :disabled="suggestLoading">
                                 {{ i18n.get('_.events.request-button') }}
-                                <span v-if="suggestLoading" class="spinner-border spinner-border-sm" role="status"
-                                      aria-hidden="true"></span>
-                                <span v-if="suggestLoading"
-                                      class="visually-hidden">{{ i18n.get("_.menu.loading") }}</span>
-                            </button>
+                            </LoadingButton>
                             <hr/>
                             <small class="text-muted">{{ i18n.get('_.events.notice') }}</small>
                         </form>
@@ -128,10 +124,11 @@ import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 import Event from "../../js/ApiClient/Event";
 import Spinner from "../Spinner";
 import moment from "moment";
+import LoadingButton from "../LoadingButton";
 
 export default {
     name: "Events",
-    components: {Spinner, LayoutBasicNoSidebar, moment},
+    components: {LoadingButton, Spinner, LayoutBasicNoSidebar, moment},
     metaInfo() {
         return {
             title: this.i18n.get("_.events.live"),
