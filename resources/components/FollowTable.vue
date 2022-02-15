@@ -36,7 +36,7 @@
                     <span class="font-weight-bold ps-sm-2">
                                         <i aria-hidden="true" class="fa fa-dice-d20 d-inline"></i>
                                         <span class="sr-only-focusable">{{ i18n.get("_.leaderboard.points") }}</span>
-                                        {{ row.points }}
+                                        {{ localizeThousands(row.points) }}
                                     </span>
                     <span
                         class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>

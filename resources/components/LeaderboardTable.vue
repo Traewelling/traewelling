@@ -18,12 +18,12 @@
             {{ row.username }}
           </router-link>
         </td>
-        <td data-mdb-toggle="tooltip" :title="fulleTime(row.trainDuration)">
+        <td data-mdb-toggle="tooltip" :title="fullTime(row.trainDuration)">
             {{ hoursAndMinutes(row.trainDuration) }}
         </td>
         <td>{{ localizeDistance(row.trainDistance) }} <small>km</small></td>
         <td>{{ localizeDistance(row.trainSpeed.toFixed(0)) }} <small>km/h</small></td>
-        <td>{{ row.points }}</td>
+        <td>{{ localizeThousands(row.points) }}</td>
       </tr>
     </tbody>
   </table>

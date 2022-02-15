@@ -49,9 +49,9 @@
                                         <td>
                                             <i aria-hidden="true" class="fas fa-dice-d20"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
-                                            {{ place.points.toFixed(0) }}
+                                            {{ localizeThousands(place.points) }}
                                         </td>
-                                        <td data-mdb-toggle="tooltip" :title="fulleTime(place.trainDuration)">
+                                        <td data-mdb-toggle="tooltip" :title="fullTime(place.trainDuration)">
                                             <i aria-hidden="true" class="fas fa-clock"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
                                             {{ hoursAndMinutes(place.trainDuration) }}
@@ -102,14 +102,14 @@
                                                 {{ place.username }}
                                             </router-link>
                                         </td>
-                                        <td data-mdb-toggle="tooltip" :title="fulleTime(place.trainDuration)">
+                                        <td data-mdb-toggle="tooltip" :title="fullTime(place.trainDuration)">
                                             {{ hoursAndMinutes(place.trainDuration) }}
                                         </td>
                                         <td>
                                             {{ this.localizeDistance(place.trainDistance) }}km
                                         </td>
                                         <td>
-                                            {{ place.points.toFixed(0) }}
+                                            {{ localizeThousands(place.points) }}
                                         </td>
                                     </tr>
                                 </tbody>

@@ -11,7 +11,7 @@
             <div class="col">
                 <i aria-hidden="true" class="fas fa-dice-d20"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
-                {{ $auth.user().points.toFixed(0) }}
+                {{ localizeThousands($auth.user().points) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-clock"/>

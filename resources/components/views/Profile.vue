@@ -20,12 +20,12 @@
                     </span>
                     <span class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2" data-mdb-toggle="tooltip"
-                          :title="fulleTime(user.trainDuration)">
+                          :title="fullTime(user.trainDuration)">
                         <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;
-                        {{ fulleTime(user.trainDuration, true) }}
+                        {{ fullTime(user.trainDuration, true) }}
                     </span>
                     <span class="font-weight-bold ps-sm-2">
-                        <i aria-hidden="true" class="fa fa-dice-d20 d-inline"/>&nbsp;{{ user.points }}
+                        <i aria-hidden="true" class="fa fa-dice-d20 d-inline"/>&nbsp;{{ localizeThousands(user.points) }}
                     </span>
                     <span class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
                     <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
@@ -155,7 +155,7 @@ export default {
             this.description = this.i18n.choice("_.description.profile", 1, {
                 "username": this.user.username,
                 "kmAmount": this.localizeDistance(this.user.trainDistance),
-                "hourAmount": this.fulleTime(this.duration)
+                "hourAmount": this.fullTime(this.duration)
             });
             if (this.user.preventIndex) {
                 this.robots = "noindex";

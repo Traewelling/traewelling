@@ -141,7 +141,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ fulleTime(globalData.duration, true) }}
+                                    {{ fullTime(globalData.duration, true) }}
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.duration") }}</small>

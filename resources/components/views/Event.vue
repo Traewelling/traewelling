@@ -15,9 +15,9 @@
                         </span>
                         <span class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2" data-mdb-toggle="tooltip"
-                              :title="fulleTime(event.trainDuration)">
+                              :title="fullTime(event.trainDuration)">
                             <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;
-                            {{ fulleTime(event.trainDuration, true) }}
+                            {{ fullTime(event.trainDuration, true) }}
                         </span>
                         <br class="d-block d-sm-none">
                         <span class="font-weight-bold ps-sm-2">
