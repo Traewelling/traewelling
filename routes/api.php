@@ -39,6 +39,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     });
 
     Route::group(['middleware' => 'auth:api'], function() {
+        Route::post('event', [EventController::class, 'suggest']);
+        Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
@@ -112,6 +114,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);
         Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+        Route::get('events', [EventController::class, 'upcoming']);
         Route::get('user/{username}', [UserController::class, 'show']);
         Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
