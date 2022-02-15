@@ -22,6 +22,7 @@ use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
@@ -49,6 +50,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
+        Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
