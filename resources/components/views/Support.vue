@@ -17,8 +17,13 @@
                                 <label class="form-label" for="form-message">{{ i18n.get('_.how-can-we-help') }}</label>
                             </div>
 
-                            <button class="btn btn-primary btn-block mb-4" type="submit">
+                            <button class="btn btn-primary btn-block mb-4" type="submit"
+                                    :class="{'disabled':formLoading}">
                                 {{ i18n.get('_.support.submit') }}
+                                <span v-if="formLoading" class="spinner-border spinner-border-sm" role="status"
+                                      aria-hidden="true"></span>
+                                <span v-if="formLoading"
+                                      class="visually-hidden">{{ i18n.get("_.menu.loading") }}</span>
                             </button>
                             <hr/>
                             <small>
@@ -87,25 +92,25 @@ export default {
             Settings.getProfileSettings()
                 .then((data) => {
                     this.userProfileSettings = data;
-                    this.loading = false;
+                    this.loading             = false;
                 })
                 .catch((error) => {
                     this.apiErrorHandler(error);
                 });
         },
         submitForm() {
-            this.suggestLoading = true;
+            this.formLoading = true;
             const formData      = {};
             Object.assign(formData, this.form);
             Support
                 .createTicket(formData)
                 .then((data) => {
-                    this.suggestLoading = false;
+                    this.formLoading = false;
                     this.notyf.success(this.i18n.choice("_.support.success", 1, {'ticketNumber': data.ticket}));
                     this.form = {};
                 })
                 .catch((error) => {
-                    this.suggestLoading = false;
+                    this.formLoading = false;
                     this.apiErrorHandler(error);
                 });
         }
