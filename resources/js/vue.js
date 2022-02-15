@@ -48,7 +48,7 @@ Vue.prototype.notyf = new Notyf({
     dismissible: true
 });
 // Set Vue router
-Vue.router             = router;
+Vue.router          = router;
 Vue.use(VueRouter);
 
 axios.defaults.baseURL = "/api/v1";
@@ -113,6 +113,45 @@ Vue.mixin({
         },
         localizeDistance(distance) {
             return parseFloat((distance / 1000).toFixed(1)).toLocaleString(Vue.prototype.i18n.getLocale());
+        },
+        hoursAndMinutes(duration) {
+            const dur = moment.duration(duration, 'minutes').asMinutes();
+            let minutes    = dur % 60;
+            let hours      = Math.floor(dur / 60);
+
+            return "".concat(
+                hours.toString(),
+                this.i18n.get("_.time.hours.short"),
+                " ",
+                minutes.toString(),
+                this.i18n.get("_.time.minutes.short")
+            );
+        },
+        fulleTime(minutes, short=false) {
+            const duration = moment.duration(minutes, 'minutes');
+            let append = "";
+            if (short) {
+                append = ".short";
+            }
+
+            let output = "";
+            if (duration.years()) {
+                output = output.concat(duration.years().toString(), this.i18n.get("_.time.years" + append), " ");
+            }
+            if (duration.months()) {
+                output = output.concat(duration.months().toString(), this.i18n.get("_.time.months" + append), " ");
+            }
+            if (duration.days()) {
+                output = output.concat(duration.days().toString(), this.i18n.get("_.time.days" + append), " ");
+            }
+            if (duration.hours()) {
+                output = output.concat(duration.hours().toString(), this.i18n.get("_.time.hours" + append), " ");
+            }
+            if (duration.minutes()) {
+                output = output.concat(duration.minutes().toString(), this.i18n.get("_.time.minutes" + append), " ");
+            }
+
+            return output;
         }
     },
 });

@@ -51,10 +51,10 @@
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
                                             {{ place.points.toFixed(0) }}
                                         </td>
-                                        <td>
+                                        <td data-mdb-toggle="tooltip" :title="fulleTime(place.trainDuration)">
                                             <i aria-hidden="true" class="fas fa-clock"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
-                                            {{ place.trainDuration.toFixed(0) }}min
+                                            {{ hoursAndMinutes(place.trainDuration) }}
                                         </td>
                                         <td>
                                             <i aria-hidden="true" class="fas fa-route"/>
@@ -102,8 +102,8 @@
                                                 {{ place.username }}
                                             </router-link>
                                         </td>
-                                        <td>
-                                            {{ place.trainDuration }}min
+                                        <td data-mdb-toggle="tooltip" :title="fulleTime(place.trainDuration)">
+                                            {{ hoursAndMinutes(place.trainDuration) }}
                                         </td>
                                         <td>
                                             {{ this.localizeDistance(place.trainDistance) }}km

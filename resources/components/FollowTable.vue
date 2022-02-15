@@ -28,8 +28,7 @@
                     <span class="font-weight-bold ps-sm-2">
                                         <i aria-hidden="true" class="fa fa-stopwatch d-inline"></i>
                                         <span class="sr-only-focusable">{{ i18n.get("_.leaderboard.duration") }}</span>
-                                        {{ row.trainDuration.toFixed(0) }}
-                        <!-- ToDo: trainDuration in hours & minutes -->
+                                        {{ hoursAndMinutes(row.trainDuration) }}
                                     </span>
                     <span class="small font-weight-ligheer">min</span>
                 </td>

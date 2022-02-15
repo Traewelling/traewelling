@@ -16,8 +16,7 @@
             <div class="col">
                 <i aria-hidden="true" class="fas fa-clock"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
-                {{ $auth.user().trainDuration.toFixed(0) }}min
-                <!-- ToDo: trainDuration in hours & minutes -->
+                {{ hoursAndMinutes($auth.user().trainDuration) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-route"/>
@@ -137,6 +136,7 @@
 
 <script>
 import ChangeLanguageButton from "../ChangeLanguageButton";
+import moment from "moment";
 
 export default {
     name: "SidebarNavContent",

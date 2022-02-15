@@ -141,7 +141,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ this.globalDuration }}
+                                    {{ fulleTime(globalData.duration, true) }}
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.duration") }}</small>
@@ -298,14 +298,6 @@ export default {
         });
     },
     computed: {
-        globalDuration() {
-            //ToDo this needs localization, also this is code duplication...
-            const duration = moment.duration(this.globalData.duration, "minutes").asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
-        },
         dateRange() {
             let from  = moment(this.from);
             let until = moment(this.until);
