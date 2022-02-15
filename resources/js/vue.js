@@ -118,7 +118,7 @@ Vue.mixin({
             return this.localizeThousands(distance / 1000, 1);
         },
         hoursAndMinutes(duration) {
-            const dur = moment.duration(duration, 'minutes').asMinutes();
+            const dur = moment.duration(duration, "minutes").asMinutes();
             let minutes    = dur % 60;
             let hours      = Math.floor(dur / 60);
 
@@ -131,7 +131,7 @@ Vue.mixin({
             );
         },
         fullTime(minutes, short =false) {
-            const duration = moment.duration(minutes, 'minutes');
+            const duration = moment.duration(minutes, "minutes");
             let append = "";
             if (short) {
                 append = ".short";

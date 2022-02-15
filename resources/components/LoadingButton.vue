@@ -13,7 +13,7 @@ export default {
         type: "button",
         disabled: false,
     }
-}
+};
 </script>
 
 <style scoped>
