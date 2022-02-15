@@ -106,7 +106,7 @@ export default {
                 .createTicket(formData)
                 .then((data) => {
                     this.formLoading = false;
-                    this.notyf.success(this.i18n.choice("_.support.success", 1, {'ticketNumber': data.ticket}));
+                    this.notyf.success(this.i18n.choice("_.support.success", 1, {"ticketNumber": data.ticket}));
                     this.form = {};
                 })
                 .catch((error) => {
