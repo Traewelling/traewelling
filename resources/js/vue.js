@@ -110,6 +110,9 @@ Vue.mixin({
                         this.apiErrorHandler(error);
                     });
             });
+        },
+        localizeDistance(distance) {
+            return parseFloat((distance / 1000).toFixed(1)).toLocaleString(Vue.prototype.i18n.getLocale());
         }
     },
 });

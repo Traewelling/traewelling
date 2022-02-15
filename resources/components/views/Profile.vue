@@ -15,7 +15,7 @@
                 </h2>
                 <h2>
           <span class="font-weight-bold">
-            <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;{{ (user.trainDistance / 1000).toFixed(1) }}
+            <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;{{ this.localizeDistance(user.trainDistance) }}
           </span>
                     <span class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2">
@@ -25,7 +25,6 @@
             <i aria-hidden="true" class="fa fa-dice-d20 d-inline"/>&nbsp;{{ user.points }}
           </span>
                     <span class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
-                    <!-- ToDo: Adapt twitterUrl to ID Link (as in blade template) and remove the getTwitterUrl method afterwards! -->
                     <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
             <a :href="user.twitterUrl" class="text-white" rel="me" target="_blank">
               <i aria-hidden="true" class="fab fa-twitter d-inline"/>
@@ -162,7 +161,7 @@ export default {
         updateMetadata() {
             this.description = this.i18n.choice("_.description.profile", 1, {
                 "username": this.user.username,
-                "kmAmount": this.user.trainDistance.toFixed(2),
+                "kmAmount": this.localizeDistance(this.user.trainDistance),
                 "hourAmount": this.duration
             });
             if (this.user.preventIndex) {

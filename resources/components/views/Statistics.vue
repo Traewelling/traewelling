@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ (this.globalData.distance / 1000).toFixed(1) }} km
+                                    {{ this.localizeDistance(this.globalData.distance) }} km
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.distance") }}</small>

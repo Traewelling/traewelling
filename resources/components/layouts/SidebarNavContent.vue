@@ -22,7 +22,7 @@
             <div class="col">
                 <i aria-hidden="true" class="fas fa-route"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
-                {{ ($auth.user().trainDistance / 1000).toFixed(1) }}km
+                {{ this.localizeDistance($auth.user().trainDistance) }}km
             </div>
         </div>
         <hr>
