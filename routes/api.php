@@ -87,6 +87,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::get('search/{query}', [UserController::class, 'search']);
         });
         Route::group(['prefix' => 'settings'], function() {
+            Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy']);
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
