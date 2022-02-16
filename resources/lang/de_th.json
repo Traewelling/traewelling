@@ -74,7 +74,7 @@
     "about.who": "An Träwelling wird seit 2013 von immer annern Leuten entwickeld. Teils nur Bugfixes, teils größere Ännerungen. Genauere Infos findeste in der",
     "auth.failed": "Dieses Konto exisdiert nich oder de Daten wurn falsch einjejeben.",
     "controller.social.delete-set-email": "Bevor du ä SSO-Provider löschst, musste ne E-Mail Adresse festlechen, um dich nich auszusperren.",
-    "email.change": "Bitte Aktualisiere deine E-Mail indem de de neue Adresse und dein aktuelles Passwort einjibst. Dir wird dann ne Bestätchungsmail zujesandt mit der de de Änderung bestätchen kannst.",
+    "email.change": "Bitte Aktualisiere deine E-Mail indem de, de neue Adresse und dein aktuelles Passwort einjibst. Dir wird dann ne Bestätchungsmail zujesandt mit der de de Änderung bestätchen kannst.",
     "email.verification.sent": "Um de Änderung deiner E-Mail Adresse abzuschließen musste noch offn Link in der E-Mail klicken, welche wir dir jerade jeschickt ham.",
     "controller.status.like-not-found": "Like nich jefunden.",
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName einjecheckt!|Du hast erfolgreich Linie :lineName einjecheckt!",
