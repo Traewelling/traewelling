@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'can'           => \Illuminate\Auth\Middleware\Authorize::class,
         'guest'         => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'privacy'       => \App\Http\Middleware\PrivacyInterceptionMiddleware::class,
+        'privacypolicy' => \App\Http\Middleware\PrivacyPolicyInterceptionMiddleware::class,
         'signed'        => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'userrole'      => \App\Http\Middleware\UserRoleMiddleware::class,

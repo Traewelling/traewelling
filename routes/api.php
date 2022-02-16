@@ -40,7 +40,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
@@ -110,8 +110,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'semiguest:api'], function() {
-        Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']);
+    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
+        Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
+             ->name('api.v1.getPrivacyPolicy');
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);

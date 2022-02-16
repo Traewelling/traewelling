@@ -26,6 +26,6 @@ class PrivacyPolicyController extends ResponseController
             return $this->sendv1Error(error: $error);
         }
 
-        return $this->sendv1Response(data: null, code: 204);
+        return $this->sendv1Response(code: 204);
     }
 }
