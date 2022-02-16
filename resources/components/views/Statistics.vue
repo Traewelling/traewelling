@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ (this.globalData.distance / 1000).toFixed(1) }} km
+                                    {{ this.localizeDistance(this.globalData.distance) }} km
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.distance") }}</small>
@@ -141,7 +141,7 @@
                             </div>
                             <div class="col-8 text-center">
                                 <span class="font-weight-bold color-main fs-2">
-                                    {{ this.globalDuration }}
+                                    {{ fullTime(globalData.duration, true) }}
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ i18n.get("_.stats.global.duration") }}</small>
@@ -190,7 +190,6 @@ import Statistics from "../../js/ApiClient/Statistics";
 
 export default {
     name: "Statistics",
-    inject: ["notyf"],
     components: {
         LayoutBasicNoSidebar,
         LayoutBasic,
@@ -299,14 +298,6 @@ export default {
         });
     },
     computed: {
-        globalDuration() {
-            //ToDo this needs localization, also this is code duplication...
-            const duration = moment.duration(this.globalData.duration, "minutes").asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
-        },
         dateRange() {
             let from  = moment(this.from);
             let until = moment(this.until);

@@ -235,7 +235,6 @@ export default {
     name: "ConnectivitySettings",
     components: {Spinner, ModalConfirm},
     props: ["value"],
-    inject: ["notyf"],
     model: {prop: "value", event: "input"},
     data() {
         return {

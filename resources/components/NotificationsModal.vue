@@ -37,7 +37,6 @@ import Notifications from "../js/ApiClient/Notifications";
 export default {
     name: "NotificationsModal",
     components: {Notification},
-    inject: ["notyf"],
     data() {
         return {
             modal: null,

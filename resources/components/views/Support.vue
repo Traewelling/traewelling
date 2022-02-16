@@ -17,14 +17,9 @@
                                 <label class="form-label" for="form-message">{{ i18n.get('_.how-can-we-help') }}</label>
                             </div>
 
-                            <button class="btn btn-primary btn-block mb-4" type="submit"
-                                    :class="{'disabled':formLoading}">
+                            <LoadingButton type="submit" :disabled="formLoading" class="btn btn-primary btn-block mb-4">
                                 {{ i18n.get('_.support.submit') }}
-                                <span v-if="formLoading" class="spinner-border spinner-border-sm" role="status"
-                                      aria-hidden="true"></span>
-                                <span v-if="formLoading"
-                                      class="visually-hidden">{{ i18n.get("_.menu.loading") }}</span>
-                            </button>
+                            </LoadingButton>
                             <hr/>
                             <small>
                                 {{ i18n.choice('_.support.answer', 1, {'address': userProfileSettings.email}) }}
@@ -62,11 +57,11 @@ import Spinner from "../Spinner";
 import moment from "moment";
 import Support from "../../js/ApiClient/Support";
 import Settings from "../../js/ApiClient/Settings";
+import LoadingButton from "../LoadingButton";
 
 export default {
     name: "Support",
-    components: {Spinner, LayoutBasicNoSidebar, moment},
-    inject: ["notyf"],
+    components: {LoadingButton, Spinner, LayoutBasicNoSidebar, moment},
     metaInfo() {
         return {
             title: this.i18n.get("_.support.create"),

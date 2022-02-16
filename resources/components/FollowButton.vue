@@ -33,7 +33,6 @@ import User from "../js/ApiClient/User";
 
 export default {
     name: "FollowButton",
-    inject: ["notyf"],
     data() {
         return {
             userData: ProfileModel

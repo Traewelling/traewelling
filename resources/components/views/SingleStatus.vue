@@ -31,7 +31,6 @@ import StatusApi from "../../js/ApiClient/Status";
 
 export default {
     name: "SingleStatus",
-    inject: ["notyf"],
     data() {
         return {
             error: false,

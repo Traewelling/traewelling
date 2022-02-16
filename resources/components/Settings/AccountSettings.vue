@@ -116,7 +116,6 @@ export default {
     name: "AccountSettings",
     components: {ModalConfirm, ChangeLanguageButton},
     props: ["value"],
-    inject: ["notyf"],
     model: {prop: "value", event: "input"},
     data() {
         return {

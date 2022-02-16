@@ -86,7 +86,6 @@ import CheckinSuccessModal from "../CheckinSuccessModal";
 
 export default {
     name: "dashboard",
-    inject: ["notyf"],
     data() {
         return {
             loading: true,
@@ -121,14 +120,6 @@ export default {
                 return true;
             }
             return moment(item.train.origin.departure).date() !== moment(statuses[index - 1].train.origin.departure).date();
-        },
-        duration(inDuration) {
-            // ToDo: This needs localization, currently handled in `durationToSpan`
-            const duration = moment.duration(inDuration, "minutes").asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
         },
         originalPoints(points) {
             let factor = this.checkin.points.calculation.factor;

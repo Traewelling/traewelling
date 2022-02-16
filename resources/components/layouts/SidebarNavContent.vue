@@ -11,18 +11,17 @@
             <div class="col">
                 <i aria-hidden="true" class="fas fa-dice-d20"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
-                {{ $auth.user().points.toFixed(0) }}
+                {{ localizeThousands($auth.user().points) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-clock"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
-                {{ $auth.user().trainDuration.toFixed(0) }}min
-                <!-- ToDo: trainDuration in hours & minutes -->
+                {{ hoursAndMinutes($auth.user().trainDuration) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-route"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
-                {{ ($auth.user().trainDistance / 1000).toFixed(1) }}km
+                {{ this.localizeDistance($auth.user().trainDistance) }}km
             </div>
         </div>
         <hr>
@@ -137,6 +136,7 @@
 
 <script>
 import ChangeLanguageButton from "../ChangeLanguageButton";
+import moment from "moment";
 
 export default {
     name: "SidebarNavContent",

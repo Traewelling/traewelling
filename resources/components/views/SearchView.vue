@@ -32,14 +32,13 @@
                                     <span class="font-weight-bold ps-sm-2">
                                         <i aria-hidden="true" class="fa fa-stopwatch d-inline"></i>
                                         <span class="sr-only-focusable">{{ i18n.get("_.leaderboard.duration") }}</span>
-                                        {{ user.trainDuration.toFixed(0) }}
-                                        <!-- ToDo: trainDuration in hours & minutes -->
+                                        {{ hoursAndMinutes(user.trainDuration) }}
                                     </span>
                                     <span class="small font-weight-ligheer">min</span>
                                     <span class="font-weight-bold ps-sm-2">
                                         <i aria-hidden="true" class="fa fa-dice-d20 d-inline"></i>
                                         <span class="sr-only-focusable">{{ i18n.get("_.leaderboard.points") }}</span>
-                                        {{ user.points }}
+                                        {{ localizeThousands(user.points) }}
                                     </span>
                                     <span
                                         class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
