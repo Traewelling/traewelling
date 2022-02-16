@@ -252,11 +252,11 @@ return [
     ],
 
     'legal' => [
-        'name'     => env('LEGAL_NAME'),
-        'address1' => env('LEGAL_ADDRESS1'),
-        'address2' => env('LEGAL_ADDRESS2'),
-        'tel'      => env('LEGAL_TEL'),
-        'email'    => env('LEGAL_EMAIL')
+        'name'     => env('MIX_LEGAL_NAME'),
+        'address1' => env('MIX_LEGAL_ADDRESS1'),
+        'address2' => env('MIX_LEGAL_ADDRESS2'),
+        'tel'      => env('MIX_LEGAL_TEL'),
+        'email'    => env('MIX_LEGAL_EMAIL')
     ],
 
     'telegram' => [
