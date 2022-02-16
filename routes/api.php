@@ -18,6 +18,7 @@ use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
@@ -109,6 +110,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     });
 
     Route::group(['middleware' => 'semiguest:api'], function() {
+        Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy']);
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
