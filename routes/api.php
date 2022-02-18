@@ -18,6 +18,7 @@ use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
@@ -39,7 +40,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
+         ->name('api.v1.getPrivacyPolicy');
+
+    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
@@ -86,6 +90,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::get('search/{query}', [UserController::class, 'search']);
         });
         Route::group(['prefix' => 'settings'], function() {
+            Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
@@ -93,7 +99,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
-            Route::delete('account', [UserController::class, 'deleteAccount']);
+            Route::delete('account', [UserController::class, 'deleteAccount'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -108,7 +115,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'semiguest:api'], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);

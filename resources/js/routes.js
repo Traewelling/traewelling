@@ -18,6 +18,7 @@ import SettingsView from "../components/views/Settings";
 import Followers from "../components/views/Followers";
 import Support from "../components/views/Support";
 import Events from "../components/views/Events";
+import PrivacyPolicy from "../components/views/PrivacyPolicy";
 import LegalNotice from "../components/views/LegalNotice";
 
 Vue.use(VueRouter);
@@ -160,6 +161,11 @@ export const router = new VueRouter({
                 path: "/events",
                 component: Events,
                 name: "events"
+            },
+            {
+                path: "/legal/privacy",
+                component: PrivacyPolicy,
+                name: "privacy"
             },
             {
                 path: "/legal",

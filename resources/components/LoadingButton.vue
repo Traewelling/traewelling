@@ -1,5 +1,5 @@
 <template>
-    <button :type="type" :class="{'disabled': disabled}">
+    <button :type="buttonType" :class="{'disabled': disabled}">
         <slot></slot>
         <span v-if="disabled" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         <span v-if="disabled" class="visually-hidden">{{ i18n.get("_.menu.loading") }}</span>
@@ -10,8 +10,13 @@
 export default {
     name: "LoadingButton",
     props: {
-        type: "button",
+        type: "",
         disabled: false,
+    },
+    computed: {
+        buttonType() {
+            return this.$props.type ?? "button";
+        }
     }
 };
 </script>
