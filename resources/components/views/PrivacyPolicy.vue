@@ -72,7 +72,7 @@ export default {
             PrivacyPolicy
                 .getPolicy()
                 .then((data) => {
-                    if (this.i18n.getLocale().startsWith("DE")) {
+                    if (this.i18n.getLocale().startsWith("de")) {
                         this.policy = marked(data.de);
                     } else {
                         this.policy = marked(data.en);
