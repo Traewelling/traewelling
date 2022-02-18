@@ -34,15 +34,19 @@ class PrivacyPolicyInterceptionMiddleware extends ResponseController
         }
 
         if (is_null($user->privacy_ack_at) || $agreement->valid_at->isAfter($user->privacy_ack_at)) {
-                $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
-                                             ->orderByDesc('valid_at')
-                                             ->take(1)
-                                             ->first();
-                return $this->sendv1Error(
-                    error: 'Privacy agreement not yet accepted!',
-                    code: 406,
-                    additional: ['policy' => route(name: 'api.v1.getPrivacyPolicy')]
-                );
+            $agreement = PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
+                                         ->orderByDesc('valid_at')
+                                         ->take(1)
+                                         ->first();
+            return $this->sendv1Error(
+                error:      'Privacy agreement not yet accepted!',
+                code:       406,
+                additional: [
+                                'policy'     => route(name: 'api.v1.getPrivacyPolicy'),
+                                'validFrom'  => $agreement->valid_at,
+                                'acceptedAt' => $user->privacy_ack_at
+                            ]
+            );
         }
 
         // Otherwise, just keep going.

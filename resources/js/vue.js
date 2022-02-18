@@ -85,17 +85,36 @@ Vue.use(VueMeta, {
     refreshOnceOnNavigation: true
 });
 
+new Vue({
+    el: "#app",
+    components: {App},
+    router,
+});
 
 Vue.mixin({
     methods: {
         apiErrorHandler: (response) => {
-            if (response.errors.length > 0) {
-                response.errors.forEach((error) => {
-                    Vue.prototype.notyf.error(error);
-                });
+            console.log(response.meta);
+            if (response.status === 406) {
+                if (router.currentRoute.name !== "privacy") {
+                    //we do not need any "privacy policy not accepted" errors on the privacy policy
+                    router.push({
+                        name: "privacy", query: {
+                            validFrom: response.meta.validFrom,
+                            acceptedAt: response.meta.acceptedAt
+                        }
+                    });
+                }
             } else {
-                Vue.prototype.notyf.error(this.i18n.get("_.messages.exception.general"));
+                if (response.errors.length > 0) {
+                    response.errors.forEach((error) => {
+                        Vue.prototype.notyf.error(error);
+                    });
+                } else {
+                    Vue.prototype.notyf.error(this.i18n.get("_.messages.exception.general"));
+                }
             }
+
         },
         fetchMoreData(next) {
             return new Promise(function (resolve) {
@@ -111,16 +130,16 @@ Vue.mixin({
                     });
             });
         },
-        localizeThousands(number, fixed=0) {
+        localizeThousands(number, fixed = 0) {
             return parseFloat(number.toFixed(fixed)).toLocaleString(Vue.prototype.i18n.getLocale());
         },
         localizeDistance(distance) {
             return this.localizeThousands(distance / 1000, 1);
         },
         hoursAndMinutes(duration) {
-            const dur = moment.duration(duration, "minutes").asMinutes();
-            let minutes    = dur % 60;
-            let hours      = Math.floor(dur / 60);
+            const dur   = moment.duration(duration, "minutes").asMinutes();
+            let minutes = dur % 60;
+            let hours   = Math.floor(dur / 60);
 
             return "".concat(
                 hours.toString(),
@@ -130,9 +149,9 @@ Vue.mixin({
                 this.i18n.get("_.time.minutes.short")
             );
         },
-        fullTime(minutes, short =false) {
+        fullTime(minutes, short = false) {
             const duration = moment.duration(minutes, "minutes");
-            let append = "";
+            let append     = "";
             if (short) {
                 append = ".short";
             }
@@ -157,12 +176,6 @@ Vue.mixin({
             return output;
         }
     },
-});
-
-new Vue({
-    el: "#app",
-    components: {App},
-    router,
 });
 
 /**

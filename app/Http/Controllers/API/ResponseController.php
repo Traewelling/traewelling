@@ -31,7 +31,7 @@ class ResponseController extends Controller
         $response = [
             'message' => $error,
         ];
-        $response = $additional ? array_merge($response, $additional) : $response;
+        $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
         return response()->json($response, $code);
     }
 
