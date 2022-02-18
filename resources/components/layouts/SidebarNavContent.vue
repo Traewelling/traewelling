@@ -99,9 +99,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-black-50" href="#"><!-- ToDo: Link -->
+                <router-link class="nav-link text-black-50" :to="{name: 'privacy'}">
                     {{ i18n.get("_.menu.privacy") }}
-                </a>
+                </router-link>
             </li>
             <li class="nav-item">
                 <router-link :to="{name: 'legal'}" class="nav-link text-black-50">

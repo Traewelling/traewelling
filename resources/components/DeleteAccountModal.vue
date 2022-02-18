@@ -42,7 +42,7 @@ export default {
             this.$refs.delete.show();
         }
     }
-}
+};
 </script>
 
 <style scoped>

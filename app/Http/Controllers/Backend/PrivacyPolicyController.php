@@ -29,5 +29,4 @@ abstract class PrivacyPolicyController extends Controller
 
         $user->update(['privacy_ack_at' => Carbon::now()->toIso8601String()]);
     }
-
 }

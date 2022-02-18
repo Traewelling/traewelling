@@ -44,6 +44,7 @@ import PrivacyPolicy from "../../js/ApiClient/PrivacyPolicy";
 import DeleteAccountModal from "../DeleteAccountModal";
 import Spinner from "../Spinner";
 import LoadingButton from "../LoadingButton";
+import {marked} from "marked";
 
 export default {
     name: "PrivacyPolicy",
@@ -72,12 +73,12 @@ export default {
                 .getPolicy()
                 .then((data) => {
                     if (this.i18n.getLocale().startsWith("DE")) {
-                        this.policy = data.de;
+                        this.policy = marked(data.de);
                     } else {
-                        this.policy = data.en;
+                        this.policy = marked(data.en);
                     }
                     this.loading = false;
-                })
+                });
         },
         acceptPrivacyPolicy() {
             this.loadingSubmit = true;

@@ -13,9 +13,9 @@
                 <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name:'events'}">
                     {{ i18n.get("_.events") }}
                 </router-link>
-                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.privacy) ">
+                <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name: 'privacy'}">
                     {{ i18n.get("_.menu.privacy") }}
-                </a>
+                </router-link>
                 <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name: 'legal'}">
                     {{ i18n.get("_.menu.legal-notice") }}
                 </router-link>
