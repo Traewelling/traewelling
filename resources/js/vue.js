@@ -94,7 +94,6 @@ new Vue({
 Vue.mixin({
     methods: {
         apiErrorHandler: (response) => {
-            console.log(response.meta);
             if (response.status === 406) {
                 if (router.currentRoute.name !== "privacy") {
                     //we do not need any "privacy policy not accepted" errors on the privacy policy

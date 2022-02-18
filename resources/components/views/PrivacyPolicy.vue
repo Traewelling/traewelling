@@ -2,23 +2,27 @@
     <LayoutBasicNoSidebar>
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <div class="card mb-3" v-if="$route.query.validFrom && !$route.query.acceptedAt">
+                <div v-if="$route.query.validFrom && !$route.query.acceptedAt" class="card mb-3">
                     <p class="card-body mb-0" v-html="i18n.get('_.privacy.not-signed-yet')">
                     </p>
                 </div>
-                <div class="card mb-3" v-else-if="$route.query.acceptedAt">
+                <div v-else-if="$route.query.acceptedAt" class="card mb-3">
                     <p class="card-body mb-0" v-html="i18n.get('_.privacy.we-changed')">
                     </p>
                 </div>
 
-                <form v-if="$route.query.validFrom" class="fixed-bottom text-end" style="background-color: hsl(216, 25%, 95.1%);">
+                <form v-if="$route.query.validFrom" class="fixed-bottom text-end"
+                     style="background-color: hsl(216, 25%, 95.1%);" @submit.prevent="acceptPrivacyPolicy">
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-md-8 col-lg-7 my-2">
-                                <a class="btn btn-link pr-0" @click.prevent="$refs.delete.show()" role="button">
+                                <a class="btn btn-link pr-0" role="button" @click.prevent="$refs.delete.show()">
                                     {{ i18n.get('_.settings.delete-account') }}
                                 </a>
-                                <input class="btn btn-success" type="submit" :value="i18n.get('_.privacy.sign')"/>
+                                <LoadingButton :disabled="loadingSubmit" class="btn btn-success"
+                                               type="submit">
+                                    {{ i18n.get('_.privacy.sign') }}
+                                </LoadingButton>
                             </div>
                         </div>
                     </div>
@@ -29,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <DeleteAccountModal :username="$auth.user().username" ref="delete"></DeleteAccountModal>
+        <DeleteAccountModal ref="delete" :username="$auth.user().username"></DeleteAccountModal>
     </LayoutBasicNoSidebar>
 </template>
 
@@ -39,10 +43,11 @@ import LayoutBasicNoSidebar from "../layouts/BasicNoSidebar";
 import PrivacyPolicy from "../../js/ApiClient/PrivacyPolicy";
 import DeleteAccountModal from "../DeleteAccountModal";
 import Spinner from "../Spinner";
+import LoadingButton from "../LoadingButton";
 
 export default {
     name: "PrivacyPolicy",
-    components: {Spinner, DeleteAccountModal, LayoutBasicNoSidebar, LayoutBasic},
+    components: {LoadingButton, Spinner, DeleteAccountModal, LayoutBasicNoSidebar, LayoutBasic},
     metaInfo() {
         return {
             title: this.i18n.get("_.privacy.title"),
@@ -55,11 +60,11 @@ export default {
         return {
             policy: null,
             loading: true,
+            loadingSubmit: false,
         };
     },
     created() {
         this.fetchData();
-        console.log(this.intercepted)
     },
     methods: {
         fetchData() {
@@ -72,6 +77,19 @@ export default {
                         this.policy = data.en;
                     }
                     this.loading = false;
+                })
+        },
+        acceptPrivacyPolicy() {
+            this.loadingSubmit = true;
+            PrivacyPolicy
+                .acceptPolicy()
+                .then(() => {
+                    this.$router.back();
+                    this.loadingSubmit = false;
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                    this.loadingSubmit = false;
                 })
         }
     }

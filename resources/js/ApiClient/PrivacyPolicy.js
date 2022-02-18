@@ -6,6 +6,6 @@ export default class PrivacyPolicy {
     }
 
     static acceptPolicy() {
-        return putToApi("acceptPrivacy");
+        return putToApi("settings/acceptPrivacy");
     }
 }

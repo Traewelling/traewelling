@@ -22,7 +22,8 @@ abstract class PrivacyPolicyController extends Controller
      */
     public static function acceptPrivacyPolicy(User $user): void {
         $privacyPolicy = self::getCurrentPrivacyPolicy();
-        if ($privacyPolicy->valid_at->isBefore($user->privacy_ack_at)) {
+
+        if ($user->privacy_ack_at && $privacyPolicy->valid_at->isBefore($user->privacy_ack_at)) {
             throw new AlreadyAcceptedException(agreement: $privacyPolicy, user: $user);
         }
 
