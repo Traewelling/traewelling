@@ -98,7 +98,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
-            Route::delete('account', [UserController::class, 'deleteAccount']);
+            Route::delete('account', [UserController::class, 'deleteAccount'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
