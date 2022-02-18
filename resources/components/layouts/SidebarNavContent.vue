@@ -104,9 +104,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-black-50" href="#"><!-- ToDo: Link -->
+                <router-link :to="{name: 'legal'}" class="nav-link text-black-50">
                     {{ i18n.get("_.menu.legal-notice") }}
-                </a>
+                </router-link>
             </li>
         </ul>
         <hr>

@@ -502,5 +502,15 @@
     "settings.hide-search-engines": "Indicizzazione dei siti di ricerca",
     "settings.search-engines.description": "Abbiamo impostato un tag noindex sul tuo profilo per dire ai siti di ricerca che il tuo profilo non deve essere indicizzato. Non abbiamo alcuna influenza sul fatto se il sito di ricerca prende in considerazione questo desiderio.",
     "settings.ics.descriptor": "Qui puoi gestire i tuoi collegamenti ICS. Questo ti permette di visualizzare i tuoi viaggi precedenti in un calendario che lo supporta.",
-    "settings.create-ics-token-success": "La condivisione del calendario è stata creata. Puoi includere il seguente link in un calendario che supporta il formato ICS: <a href=\":link\">:link</a>"
+    "settings.create-ics-token-success": "La condivisione del calendario è stata creata. Puoi includere il seguente link in un calendario che supporta il formato ICS: <a href=\":link\">:link</a>",
+    "time.months.short": "mes.",
+    "time.years.short": "a.",
+    "time.minutes": "minuti",
+    "time.hours": "ore",
+    "time.days": "giorni",
+    "time.years": "anni",
+    "time.minutes.short": "min.",
+    "time.hours.short": "h.",
+    "time.days.short": "d.",
+    "time.months": "mesi"
 }

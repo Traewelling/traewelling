@@ -19,6 +19,7 @@ import Followers from "../components/views/Followers";
 import Support from "../components/views/Support";
 import Events from "../components/views/Events";
 import PrivacyPolicy from "../components/views/PrivacyPolicy";
+import LegalNotice from "../components/views/LegalNotice";
 
 Vue.use(VueRouter);
 
@@ -165,6 +166,11 @@ export const router = new VueRouter({
                 path: "/legal/privacy",
                 component: PrivacyPolicy,
                 name: "privacy"
+            },
+            {
+                path: "/legal",
+                component: LegalNotice,
+                name: "legal"
             }
         ],
     base: "/",
