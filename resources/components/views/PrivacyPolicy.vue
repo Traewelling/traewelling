@@ -91,7 +91,7 @@ export default {
                 .catch((error) => {
                     this.apiErrorHandler(error);
                     this.loadingSubmit = false;
-                })
+                });
         }
     }
 };
