@@ -510,5 +510,7 @@
     "time.years": "år",
     "settings.follower.no-requests": "Du har inga följningsförfrågningar.",
     "settings.follower.no-followings": "Du följer inte någon.",
-    "time.years.short": "år"
+    "time.years.short": "år",
+    "time.months.short": "mån.",
+    "time.minutes.short": "min"
 }
