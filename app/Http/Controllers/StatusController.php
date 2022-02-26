@@ -11,6 +11,7 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -306,7 +307,7 @@ class StatusController extends Controller
                                   'business'   => $business,
                                   'visibility' => $visibility,
                                   'type'       => $type,
-                                  'event'      => $event?->id
+                                  'event_id'   => $event?->id
                               ]);
     }
 }

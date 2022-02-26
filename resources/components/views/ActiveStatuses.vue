@@ -39,7 +39,6 @@ import ApiStatus from "../../js/ApiClient/Status";
 
 export default {
     name: "ActiveStatuses",
-    inject: ["notyf"],
     data() {
         return {
             loading: true,

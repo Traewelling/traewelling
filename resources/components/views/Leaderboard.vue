@@ -63,7 +63,6 @@ import Spinner from "../Spinner";
 import Statistics from "../../js/ApiClient/Statistics";
 
 export default {
-    //ToDo format numbers correctly for languages, etc.
     name: "Leaderboard",
     data() {
         return {

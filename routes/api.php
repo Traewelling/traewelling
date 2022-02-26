@@ -18,10 +18,12 @@ use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
@@ -38,7 +40,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
+         ->name('api.v1.getPrivacyPolicy');
+
+    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
+        Route::post('event', [EventController::class, 'suggest']);
+        Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
@@ -47,6 +54,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
+        Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
@@ -82,6 +90,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::get('search/{query}', [UserController::class, 'search']);
         });
         Route::group(['prefix' => 'settings'], function() {
+            Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
@@ -89,7 +99,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
-            Route::delete('account', [UserController::class, 'deleteAccount']);
+            Route::delete('account', [UserController::class, 'deleteAccount'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -104,7 +115,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => 'semiguest:api'], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
@@ -112,6 +123,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);
         Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+        Route::get('events', [EventController::class, 'upcoming']);
         Route::get('user/{username}', [UserController::class, 'show']);
         Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);

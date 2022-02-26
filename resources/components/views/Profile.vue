@@ -14,28 +14,30 @@
                     <MuteButton v-if="!user.privateProfile" :user="user" v-on:updateUser="updateUser"></MuteButton>
                 </h2>
                 <h2>
-          <span class="font-weight-bold">
-            <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;{{ (user.trainDistance / 1000).toFixed(1) }}
-          </span>
+                    <span class="font-weight-bold">
+                        <i aria-hidden="true" class="fa fa-route d-inline"/>&nbsp;
+                        {{ localizeDistance(user.trainDistance) }}
+                    </span>
                     <span class="small font-weight-lighter">km</span>
+                    <span class="font-weight-bold ps-sm-2" data-mdb-toggle="tooltip"
+                          :title="fullTime(user.trainDuration)">
+                        <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;
+                        {{ fullTime(user.trainDuration, true) }}
+                    </span>
                     <span class="font-weight-bold ps-sm-2">
-            <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;{{ duration }}
-          </span>
-                    <span class="font-weight-bold ps-sm-2">
-            <i aria-hidden="true" class="fa fa-dice-d20 d-inline"/>&nbsp;{{ user.points }}
-          </span>
+                        <i aria-hidden="true" class="fa fa-dice-d20 d-inline"/>&nbsp;{{ localizeThousands(user.points) }}
+                    </span>
                     <span class="small font-weight-lighter">{{ i18n.get("_.profile.points-abbr") }}</span>
-                    <!-- ToDo: Adapt twitterUrl to ID Link (as in blade template) and remove the getTwitterUrl method afterwards! -->
                     <span v-if="user.twitterUrl" class="font-weight-bold ps-sm-2">
-            <a :href="user.twitterUrl" class="text-white" rel="me" target="_blank">
-              <i aria-hidden="true" class="fab fa-twitter d-inline"/>
-            </a>
-          </span>
+                        <a :href="user.twitterUrl" class="text-white" rel="me" target="_blank">
+                            <i aria-hidden="true" class="fab fa-twitter d-inline"/>
+                        </a>
+                    </span>
                     <span v-if="user.mastodonUrl" class="font-weight-bold ps-sm-2">
-            <a :href="user.mastodonUrl" class="text-white" rel="me" target="_blank">
-              <i aria-hidden="true" class="fab fa-mastodon d-inline"/>
-            </a>
-          </span>
+                        <a :href="user.mastodonUrl" class="text-white" rel="me" target="_blank">
+                            <i aria-hidden="true" class="fab fa-mastodon d-inline"/>
+                        </a>
+                    </span>
                 </h2>
             </div>
         </template>
@@ -130,16 +132,6 @@ export default {
         LayoutBasic,
         Status
     },
-    computed: {
-        duration() {
-            //ToDo this needs localization, also this is code duplication...
-            const duration = moment.duration(this.user.trainDuration, "minutes").asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
-        },
-    },
     created() {
         this.fetchData();
     },
@@ -162,8 +154,8 @@ export default {
         updateMetadata() {
             this.description = this.i18n.choice("_.description.profile", 1, {
                 "username": this.user.username,
-                "kmAmount": this.user.trainDistance.toFixed(2),
-                "hourAmount": this.duration
+                "kmAmount": this.localizeDistance(this.user.trainDistance),
+                "hourAmount": this.fullTime(this.duration)
             });
             if (this.user.preventIndex) {
                 this.robots = "noindex";
