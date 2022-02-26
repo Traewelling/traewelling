@@ -2,7 +2,11 @@ import axios from "axios";
 
 export function catchError(error) {
     let errors   = [];
-    let response = {};
+    let response = {
+        status: 0,
+        errors: [],
+        meta: []
+    };
     if (error.response.data.errors) {
         Object.entries(error.response.data.errors).forEach((err) => {
             errors.push(err[1][0]);
@@ -13,6 +17,9 @@ export function catchError(error) {
 
     response["status"] = error.response.status;
     response["errors"] = errors;
+    if (error.response.data.meta) {
+        response["meta"] = error.response.data.meta;
+    }
 
     return response;
 }

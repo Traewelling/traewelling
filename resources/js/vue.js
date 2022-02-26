@@ -41,8 +41,14 @@ Vue.prototype.i18n   = new Lang({
 Vue.prototype.moment = moment;
 Vue.prototype.moment.locale(Vue.prototype.i18n.getLocale().substr(0, 2));
 Vue.prototype.$appName = process.env.MIX_APP_NAME;
+
+Vue.prototype.notyf = new Notyf({
+    duration: 5000,
+    position: {x: "center", y: "top"},
+    dismissible: true
+});
 // Set Vue router
-Vue.router             = router;
+Vue.router          = router;
 Vue.use(VueRouter);
 
 axios.defaults.baseURL = "/api/v1";
@@ -79,17 +85,35 @@ Vue.use(VueMeta, {
     refreshOnceOnNavigation: true
 });
 
+new Vue({
+    el: "#app",
+    components: {App},
+    router,
+});
 
 Vue.mixin({
     methods: {
         apiErrorHandler: (response) => {
-            if (response.errors.length > 0) {
-                response.errors.forEach((error) => {
-                    this.notyf.error(error);
-                });
+            if (response.status === 406) {
+                if (router.currentRoute.name !== "privacy") {
+                    //we do not need any "privacy policy not accepted" errors on the privacy policy
+                    router.push({
+                        name: "privacy", query: {
+                            validFrom: response.meta.validFrom,
+                            acceptedAt: response.meta.acceptedAt
+                        }
+                    });
+                }
             } else {
-                this.notyf.error(this.i18n.get("_.messages.exception.general"));
+                if (response.errors.length > 0) {
+                    response.errors.forEach((error) => {
+                        Vue.prototype.notyf.error(error);
+                    });
+                } else {
+                    Vue.prototype.notyf.error(this.i18n.get("_.messages.exception.general"));
+                }
             }
+
         },
         fetchMoreData(next) {
             return new Promise(function (resolve) {
@@ -104,23 +128,53 @@ Vue.mixin({
                         this.apiErrorHandler(error);
                     });
             });
+        },
+        localizeThousands(number, fixed = 0) {
+            return parseFloat(number.toFixed(fixed)).toLocaleString(Vue.prototype.i18n.getLocale());
+        },
+        localizeDistance(distance) {
+            return this.localizeThousands(distance / 1000, 1);
+        },
+        hoursAndMinutes(duration) {
+            const dur   = moment.duration(duration, "minutes").asMinutes();
+            let minutes = dur % 60;
+            let hours   = Math.floor(dur / 60);
+
+            return "".concat(
+                hours.toString(),
+                this.i18n.get("_.time.hours.short"),
+                " ",
+                minutes.toString(),
+                this.i18n.get("_.time.minutes.short")
+            );
+        },
+        fullTime(minutes, short = false) {
+            const duration = moment.duration(minutes, "minutes");
+            let append     = "";
+            if (short) {
+                append = ".short";
+            }
+
+            let output = "";
+            if (duration.years()) {
+                output = output.concat(duration.years().toString(), this.i18n.get("_.time.years" + append), " ");
+            }
+            if (duration.months()) {
+                output = output.concat(duration.months().toString(), this.i18n.get("_.time.months" + append), " ");
+            }
+            if (duration.days()) {
+                output = output.concat(duration.days().toString(), this.i18n.get("_.time.days" + append), " ");
+            }
+            if (duration.hours()) {
+                output = output.concat(duration.hours().toString(), this.i18n.get("_.time.hours" + append), " ");
+            }
+            if (duration.minutes()) {
+                output = output.concat(duration.minutes().toString(), this.i18n.get("_.time.minutes" + append), " ");
+            }
+
+            return output;
         }
     },
-});
-
-new Vue({
-    provide: () => {
-        return {
-            notyf: new Notyf({
-                duration: 5000,
-                position: {x: "center", y: "top"},
-                dismissible: true
-            })
-        };
-    },
-    el: "#app",
-    components: {App},
-    router,
 });
 
 /**

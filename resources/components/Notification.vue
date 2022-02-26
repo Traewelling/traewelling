@@ -26,7 +26,6 @@ import Notifications from "../js/ApiClient/Notifications";
 export default {
     name: "Notification",
     props: ["data"],
-    inject: ["notyf"],
     data() {
         return {
             notification: null

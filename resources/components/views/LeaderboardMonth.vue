@@ -49,17 +49,17 @@
                                         <td>
                                             <i aria-hidden="true" class="fas fa-dice-d20"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
-                                            {{ place.points.toFixed(0) }}
+                                            {{ localizeThousands(place.points) }}
                                         </td>
-                                        <td>
+                                        <td data-mdb-toggle="tooltip" :title="fullTime(place.trainDuration)">
                                             <i aria-hidden="true" class="fas fa-clock"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
-                                            {{ place.trainDuration.toFixed(0) }}min
+                                            {{ hoursAndMinutes(place.trainDuration) }}
                                         </td>
                                         <td>
                                             <i aria-hidden="true" class="fas fa-route"/>
                                             <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
-                                            {{ (place.trainDistance / 1000).toFixed(1) }}km
+                                            {{ this.localizeDistance(place.trainDistance) }}km
                                         </td>
                                     </tr>
                                 </tbody>
@@ -102,14 +102,14 @@
                                                 {{ place.username }}
                                             </router-link>
                                         </td>
-                                        <td>
-                                            {{ place.trainDuration }}min
+                                        <td data-mdb-toggle="tooltip" :title="fullTime(place.trainDuration)">
+                                            {{ hoursAndMinutes(place.trainDuration) }}
                                         </td>
                                         <td>
-                                            {{ (place.trainDistance / 1000).toFixed(1) }}km
+                                            {{ this.localizeDistance(place.trainDistance) }}km
                                         </td>
                                         <td>
-                                            {{ place.points.toFixed(0) }}
+                                            {{ localizeThousands(place.points) }}
                                         </td>
                                     </tr>
                                 </tbody>

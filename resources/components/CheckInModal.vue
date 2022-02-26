@@ -51,34 +51,21 @@
                                                 :pre-select="status.visibility"></FADropdown>
                                 </div>
                             </div>
-
-                            <!--            @if($events->count() == 1)-->
-                            <!--            <div class="custom-control custom-checkbox mt-2">-->
-                            <!--              <input type="checkbox" class="custom-control-input" id="event_check" name="event"-->
-                            <!--                     value="{{ $events[0]->id }}"/>-->
-                            <!--              <label class="custom-control-label" for="event_check">-->
-                            <!--                {{ i18n.get('_.events.on-my-way-to', ['name' => $events[0]->name]) }}-->
-                            <!--              </label>-->
-                            <!--            </div>-->
-                            <!--            @elseif($events->count() > 1)-->
-                            <!--            <div class="form-group">-->
-                            <!--              <label for="event-dropdown" class="col-form-label">-->
-                            <!--                {{i18n.get('_.events.on-my-way-dropdown')}}-->
-                            <!--              </label>-->
-                            <!--              <select class="form-control" id="event-dropdown" name="event">-->
-                            <!--                <option value="0" selected>{{ i18n.get('_.events.no-event-dropdown') }}</option>-->
-                            <!--                @foreach($events as $event)-->
-                            <!--&lt;!&ndash;                <option value="{{ $event->id }}">{{ $event->name }}</option>&ndash;&gt;-->
-                            <!--                @endforeach-->
-                            <!--              </select>-->
-                            <!--            </div>-->
-                            <!--            @else-->
-                            <input name="event" type="hidden" value="0"/>
-                            <!--            <input type="hidden" id="input-tripID" name="tripID" value=""/>-->
-                            <!--            <input type="hidden" id="input-destination" name="destination" value=""/>-->
-                            <!--            <input type="hidden" name="start" value="{{request()->start}}"/>-->
-                            <!--            <input type="hidden" name="departure" value="{{request()->departure}}"/>-->
-                            <!--            <input type="hidden" id="input-arrival" name="arrival"/>-->
+                            <div v-if="events.length > 0" class="row w-100 mx-0 mb-0">
+                                {{ i18n.get('_.events.on-my-way-dropdown') }} <br>
+                                <div v-if="events.length === 1" class="custom-control custom-checkbox mt-2">
+                                    <input type="checkbox" class="custom-control-input" id="event_check" v-model="eventCheck"/>
+                                    <label class="custom-control-label" for="event_check">
+                                        {{ this.events[0].name }}
+                                    </label>
+                                </div>
+                                <div v-else class="form-group">
+                                    <select class="form-control" id="event-dropdown" name="event" v-model="selectedEvent">
+                                        <option value="0" selected>{{ i18n.get('_.events.no-event-dropdown') }}</option>
+                                        <option v-for="event in events" :value="event.id">{{ event.name }}</option>
+                                    </select>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -126,7 +113,6 @@ import ModalConfirm from "./ModalConfirm";
 
 export default {
     name: "CheckInModal",
-    inject: ["notyf"],
     components: {ModalConfirm, FADropdown},
     data() {
         return {
@@ -147,7 +133,9 @@ export default {
             },
             travelReason: travelReason,
             visibility: visibility,
-            result: null
+            result: null,
+            selectedEvent: 0,
+            eventCheck: false
         };
     },
     props: {
@@ -157,6 +145,16 @@ export default {
         },
         trainData: {
             type: Object
+        },
+        events: []
+    },
+    watch: {
+        eventCheck() {
+            if (this.eventCheck === true) {
+                this.selectedEvent = this.events[0].id;
+            } else {
+                this.selectedEvent = 0;
+            }
         }
     },
     mounted() {
@@ -170,7 +168,6 @@ export default {
     computed: {
         edit() {
             return !!this.$props.statusData;
-
         },
         dest() {
             if (this.edit) {
@@ -198,6 +195,9 @@ export default {
         },
         submitCheckin() {
             const formData = {};
+            if (this.selectedEvent > 0) {
+                this.status.eventId = this.selectedEvent;
+            }
             Object.assign(formData, this.status);
             Object.assign(formData, this.$props.trainData);
             Checkin

@@ -14,16 +14,18 @@
                             {{ event.trainDistance.toFixed(0) }}
                         </span>
                         <span class="small font-weight-lighter">km</span>
-                        <span class="font-weight-bold ps-sm-2">
-                            <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;{{ duration }}
+                        <span class="font-weight-bold ps-sm-2" data-mdb-toggle="tooltip"
+                              :title="fullTime(event.trainDuration)">
+                            <i aria-hidden="true" class="fa fa-stopwatch d-inline"/>&nbsp;
+                            {{ fullTime(event.trainDuration, true) }}
                         </span>
                         <br class="d-block d-sm-none">
                         <span class="font-weight-bold ps-sm-2">
                             <i aria-hidden="true" class="fa fa-user"/>&nbsp;{{ event.host }}
                         </span>
                         <span class="font-weight-bold ps-sm-2 text-nowrap">
-                            <i aria-hidden="true" class="fa fa-link"/>&nbsp;<a :href="event.url"
-                                                                               class="text-white">{{ event.url }}</a>
+                            <i aria-hidden="true" class="fa fa-link"/>&nbsp;
+                            <a :href="event.url" class="text-white">{{ event.url }}</a>
                         </span>
                     </h3>
                     <h2>
@@ -84,15 +86,6 @@ export default {
         HeroLayout,
         LayoutBasic,
         Status
-    },
-    computed: {
-        duration() {
-            const duration = moment.duration(this.event.trainDuration, "minutes").asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
-        },
     },
     mounted() {
         this.fetchData();

@@ -503,5 +503,15 @@
     "christmas-mode.enable": "Enable Christmas mode for this session",
     "christmas-mode.disable": "Disable Christmas mode for this session",
     "merry-christmas": "We wish you a Merry Christmas!",
-    "user.email.not-set": "There is no email address saved yet"
+    "user.email.not-set": "There is no email address saved yet",
+    "time.minutes.short": "min",
+    "time.hours.short": "h",
+    "time.days.short": "d",
+    "time.months.short": "mo",
+    "time.years.short": "y",
+    "time.minutes": "minutes",
+    "time.hours": "hours",
+    "time.days": "days",
+    "time.months": "months",
+    "time.years": "years"
 }

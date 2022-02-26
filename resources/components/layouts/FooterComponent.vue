@@ -10,15 +10,15 @@
                              class="footer-link">
                     {{ i18n.get("_.menu.globaldashboard") }}
                 </router-link>
-                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(events) ">
+                <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name:'events'}">
                     {{ i18n.get("_.events") }}
-                </a>
-                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.privacy) ">
+                </router-link>
+                <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name: 'privacy'}">
                     {{ i18n.get("_.menu.privacy") }}
-                </a>
-                <a :class="{'text-white': dashboard}" class="footer-link" href=" route(static.imprint) ">
+                </router-link>
+                <router-link :class="{'text-white': dashboard}" class="footer-link" :to="{name: 'legal'}">
                     {{ i18n.get("_.menu.legal-notice") }}
-                </a>
+                </router-link>
                 <a :class="{'text-white': dashboard}" class="footer-link" href="https://blog.traewelling.de"
                    target="blog">
                     {{ i18n.get("_.menu.blog") }}
