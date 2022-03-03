@@ -11,9 +11,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('train_stopovers', function (Blueprint $table) {
+    public function up(): void {
+        Schema::table('train_stopovers', static function(Blueprint $table) {
             $table->boolean('cancelled')->default(false)->after('departure_platform_real');
         });
     }
@@ -23,9 +22,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('train_stopovers', function (Blueprint $table) {
+    public function down(): void {
+        Schema::table('train_stopovers', static function(Blueprint $table) {
             $table->dropColumn('cancelled');
         });
     }
