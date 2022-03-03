@@ -30,7 +30,8 @@ class StopoverResource extends JsonResource
             "departurePlatformReal"    => $this->departure_platform_real,
             "platform"                 => $this->platform,
             "isArrivalDelayed"         => (bool) $this->isArrivalDelayed,
-            "isDepartureDelayed"       => (bool) $this->isDepartureDelayed
+            "isDepartureDelayed"       => (bool) $this->isDepartureDelayed,
+            "cancelled"                => $this->cancelled ?? false
         ];
     }
 }
