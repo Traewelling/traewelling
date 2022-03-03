@@ -319,6 +319,7 @@ abstract class HafasController extends Controller
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
+            $updatePayload['cancelled'] = $stopover?->cancelled ?? false;
             try {
                 TrainStopover::updateOrCreate(
                     [
