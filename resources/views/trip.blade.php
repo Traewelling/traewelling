@@ -46,7 +46,7 @@
                                         @continue
                                     @endif
 
-                                    @if(@$stop['cancelled'] == 'true')
+                                    @if(@$stop['cancelled'] == 'true' && $stop['arrival'] === null && $stop['departure'] === null)
                                         <tr>
                                             <td>{{ $stop['stop']['name'] }}</td>
                                             <td>
@@ -61,7 +61,7 @@
                                             data-arrival="{{$stop['plannedArrival']}}">
                                             <td>{{ $stop['stop']['name'] }}</td>
                                             <td>
-                                                @if($stop['plannedArrival'] != null)
+                                                @if(!(isset($stop['cancelled']) && $stop['arrival'] == null) && $stop['plannedArrival'] != null)
                                                     {{ __('stationboard.arr') }}
                                                     {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['arrivalDelay']))
@@ -70,7 +70,7 @@
                                                     @endif
                                                 @endif
                                                 <br/>
-                                                @if($stop['plannedDeparture'] != null)
+                                                @if(!(isset($stop['cancelled']) && $stop['departure'] == null) && $stop['plannedDeparture'] != null)
                                                     {{ __('stationboard.dep') }}
                                                     {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format'))}}
                                                     @if(isset($stop['departureDelay']))
@@ -79,7 +79,15 @@
                                                     @endif
                                                 @endif
                                             </td>
-                                            <td>{{ $stop['departurePlatform'] }}</td>
+                                            <td>
+                                                {{ $stop['arrivalPlatform'] }}
+                                                @if(isset($stop['plannedArrivalPlatform']) && $stop['plannedArrivalPlatform'] != $stop['arrivalPlatform'])
+                                                    &nbsp;
+                                                    <span class="text-danger text-decoration-line-through">
+                                                        {{ $stop['plannedArrivalPlatform'] }}
+                                                    </span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endif
                                 @endforeach
