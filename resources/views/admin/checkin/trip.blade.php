@@ -99,17 +99,23 @@
                         <div class="row mt-1">
                             <div class="col">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="tweet" name="tweet">
+                                    <input class="form-check-input" type="checkbox" id="tweet" name="tweet" {{$user->twitterUrl ? '' : 'disabled'}}>
                                     <label class="form-check-label" for="tweet">
                                         Twitter
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="mastodon" name="toot">
+                                    <input class="form-check-input" type="checkbox" id="mastodon" name="toot" {{$user->mastodonUrl ? '' : 'disabled'}}>
                                     <label class="form-check-label" for="mastodon">
                                         Mastodon
                                     </label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 border-top border-bottom">
+                            <div class="col">
+                                <input type="checkbox" class="form-check-input" id="force" name="force">
+                                <label class="form-check-label" for="force">Checkin forcieren? (Punkte werden hierfür abgezogen)</label>
                             </div>
                         </div>
                         <div class="row mt-3">

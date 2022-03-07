@@ -12,7 +12,7 @@
                     <form class="center">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Haltestelle / DS100" aria-label="Haltestelle" name="station">
+                                <input type="text" class="form-control" placeholder="Haltestelle / DS100" aria-label="Haltestelle" name="station" value="{{isset($station['name']) ? $station['name'] : ''}}">
                             </div>
                         </div>
                         <div class="row">
@@ -54,6 +54,12 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col">
+                                    <label for="user" class="form-label">User</label>
+                                    <input type="text" class="form-control" value="{{$user->id}}" name="user" id="user">
+                                </div>
+                            </div>
+                            <div class="row mt-1">
                                 <div class="col">
                                     <input type="submit" class="btn btn-primary">
                                 </div>

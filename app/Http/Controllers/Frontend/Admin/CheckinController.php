@@ -38,7 +38,7 @@ class CheckinController
 
         $user = Auth::user();
         if (isset($request->user)) {
-            $user = User::find($request->user);
+            $user = User::findOrFail($request->user);
         }
 
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : Carbon::now();
@@ -73,8 +73,6 @@ class CheckinController
     }
 
     public function renderTrip(string $id, Request $request) {
-
-
         $request->validate([
                                'lineName'  => ['required'],
                                'start'     => ['required', 'numeric'],
@@ -127,14 +125,14 @@ class CheckinController
                                             'business'    => ['nullable', new Enum(Business::class)],
                                             'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'       => ['nullable', 'boolean'],
-                                            'toot'        => ['nullable', 'boolean'],
+                                            'tweet'       => ['nullable', 'max:2'],
+                                            'toot'        => ['nullable', 'max:2'],
                                             'tripId'      => ['required'],
                                             'lineName'    => ['required'],
                                             'start'       => ['required', 'numeric'],
                                             'destination' => ['required', 'json'],
                                             'departure'   => ['required', 'date'],
-                                            'force'       => ['nullable', 'boolean'],
+                                            'force'       => ['nullable', 'max:2'],
                                             'user'        => ['required', 'integer']
                                         ]);
 
@@ -160,7 +158,7 @@ class CheckinController
                 exitStop:  $destination['destination'],
                 departure: Carbon::parse($validated['departure']),
                 arrival:   Carbon::parse($destination['arrival']),
-                force:     $validated['force'] ?? false,
+                force:     isset($validated['force']) ? true : false,
                 ibnr:      true
             );
 
