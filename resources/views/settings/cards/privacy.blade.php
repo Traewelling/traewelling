@@ -60,7 +60,7 @@
                     </div>
                     <small>{{__('empty-input-disable-function')}}</small>
 
-                    @error('prevent_index')
+                    @error('privacy_hide_days')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                     @enderror
                 </div>
@@ -70,8 +70,6 @@
 
             <div class="form-group row">
                 <div class="col-md-6 offset-md-4">
-
-
                     <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="private_profile" type="checkbox"
                                class="custom-control-input @error('private_profile') is-invalid @enderror"
