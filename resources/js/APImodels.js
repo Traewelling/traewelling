@@ -38,7 +38,8 @@ export let Stopover = {
     departurePlatformReal: null,
     plattform: null,
     isArrivalDelayed: false,
-    isDepartureDelayed: false
+    isDepartureDelayed: false,
+    cancelled: false
 };
 
 export let ProfileModel = {

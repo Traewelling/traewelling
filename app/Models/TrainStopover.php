@@ -17,6 +17,7 @@ class TrainStopover extends Model
         'arrival_platform_planned', 'arrival_platform_real',
         'departure_planned', 'departure_real',
         'departure_platform_planned', 'departure_platform_real',
+        'cancelled'
     ];
     protected $appends  = [
         'arrival', 'departure', 'platform',
