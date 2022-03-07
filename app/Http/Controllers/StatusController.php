@@ -11,7 +11,6 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -186,7 +185,10 @@ class StatusController extends Controller
                                  'user_id'   => $user->id,
                                  'status_id' => $status->id
                              ]);
-        $status->user->notify(new StatusLiked($like));
+
+        if (!$status->user->mutedUsers->contains('id', $user->id)) {
+            $status->user->notify(new StatusLiked($like));
+        }
         return $like;
     }
 
