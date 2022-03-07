@@ -46,7 +46,11 @@ class StatusEditController extends Controller
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
-        $distanceInMeters = GeoController::calculateDistance($status->trainCheckin->HafasTrip, $newOrigin, $newDestination);
+        $distanceInMeters = GeoController::calculateDistance(
+            hafasTrip:   $status->trainCheckin->HafasTrip,
+            origin:      $newOrigin,
+            destination: $newDestination
+        );
 
         $points = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
