@@ -32,6 +32,7 @@ use Mastodon;
  * @property integer default_status_visibility
  * @property boolean private_profile
  * @property boolean prevent_index
+ * @property int     privacy_hide_days
  * @property string  language
  * @property Carbon  last_login
  */
@@ -42,7 +43,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'language', 'last_login',
+        'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'privacy_hide_days',
+        'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -61,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'private_profile'           => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
+        'privacy_hide_days'         => 'integer',
         'role'                      => 'integer',
         'last_login'                => 'datetime',
     ];

@@ -26,7 +26,6 @@
                     @enderror
                 </div>
             </div>
-            <hr/>
             <div class="form-group row">
                 <label for="name" class="col-md-4 col-form-label text-md-right">
                     {{ __('settings.visibility.default') }}
@@ -40,6 +39,26 @@
                             </option>
                         @endforeach
                     </select>
+
+                    @error('prevent_index')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="name" class="col-md-4 col-form-label text-md-right">
+                    {{ __('settings.visibility.hide') }}
+                    <i class="fas fa-info-circle" title="{{__('settings.visibility.hide.explain')}}"
+                       data-mdb-toggle="tooltip"></i>
+                </label>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input class="form-control" type="number" name="privacy_hide_days" min="1"
+                               value="{{auth()->user()->privacy_hide_days}}"/>
+                        <span class="input-group-text">{{__('time.days')}}</span>
+                    </div>
+                    <small>{{__('empty-input-disable-function')}}</small>
 
                     @error('prevent_index')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
