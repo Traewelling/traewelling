@@ -21,7 +21,7 @@
         "ext-json": "*",
         "ext-pdo_mysql": "*",
         "ext-sodium": "*",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
