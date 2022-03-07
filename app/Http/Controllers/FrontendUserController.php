@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class FrontendUserController extends Controller
 {
     public function getProfilePage($username): Renderable {
-        $profilePage = UserBackend::getProfilePage($username);
+        $profilePage = UserBackend::getProfilePage($username, $this);
         if ($profilePage === null) {
             abort(404);
         }

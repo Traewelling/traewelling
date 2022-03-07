@@ -63,7 +63,7 @@ class StatusController extends ResponseController
             $statuses['statuses'] = DashboardController::getPrivateDashboard(Auth::user());
         }
         if ($view === 'user') {
-            $statuses = UserBackend::getProfilePage($request->username);
+            $statuses = UserBackend::getProfilePage($request->username, $this);
         }
         return response()->json($statuses['statuses']);
     }
