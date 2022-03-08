@@ -17,12 +17,14 @@ use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
@@ -39,17 +41,14 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    /**
-     * @todo remove twitterUrl after implemented ID-Link in vue Template
-     */
-    public static function getProfilePage($username): ?array {
+    public static function getProfilePage(string $username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
         try {
-            $statuses = UserController::statusesForUser($user);
-        } catch (PermissionException) {
+            $statuses = self::statusesForUser($user);
+        } catch (AuthorizationException) {
             $statuses = null;
         }
 
@@ -66,14 +65,12 @@ class UserController extends Controller
      * @param User $user
      *
      * @return LengthAwarePaginator|null
-     * @throws PermissionException
      * @api v1
      * @frontend
+     * @throws AuthorizationException
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
-        if (!\request()?->user()->can('view', $user)) {
-            throw new PermissionException();
-        }
+        Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
