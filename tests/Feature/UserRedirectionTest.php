@@ -58,7 +58,7 @@ class UserRedirectionTest extends TestCase
      */
     public function gdpr_interception() {
         // Creates user
-        $user = User::factory()->create();
+        $user = User::factory(['privacy_ack_at' => null])->create();
 
         // Has not yet signed -> Redirection.
         $response = $this->actingAs($user)
