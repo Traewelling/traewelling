@@ -102,18 +102,10 @@ class CheckinController
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
 
-        // Find out where this train terminates and offer this as a "fast check-in" option.
-        $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while ($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
-            $terminalStopIndex--;
-        }
-        $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
-
         return view('admin.checkin.trip', [
             'hafasTrip'    => $TrainTripResponse['hafasTrip'],
             'events'       => EventBackend::activeEvents(),
             'stopovers'    => $TrainTripResponse['stopovers'],
-            'terminalStop' => $terminalStop,
             'user'         => $user,
         ]);
     }
