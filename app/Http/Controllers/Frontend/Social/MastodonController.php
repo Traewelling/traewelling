@@ -22,7 +22,7 @@ class MastodonController extends Controller
      * @return SympfonyRedirectResponse|RedirectResponse
      */
     public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
-        $request->request->set('domain', MastodonBackend::formatDomain($request->input('domain')));
+        $request->request->set('domain', MastodonBackend::formatDomain($request->input('domain') ?? ''));
         $validated = $request->validate(['domain' => ['required', 'active_url']]);
 
         try {
