@@ -47,7 +47,6 @@ class UserController extends Controller
             return null;
         }
         try {
-            Gate::authorize('view', $user);
             $statuses = self::statusesForUser($user);
         } catch (AuthorizationException) {
             $statuses = null;
@@ -68,8 +67,10 @@ class UserController extends Controller
      * @return LengthAwarePaginator|null
      * @api v1
      * @frontend
+     * @ŧhrows AuthorizationException
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
+        Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([

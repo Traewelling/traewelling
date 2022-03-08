@@ -43,7 +43,6 @@ class UserController extends ResponseController
     public function statuses(string $username): AnonymousResourceCollection {
         $user = User::where('username', 'like', $username)->firstOrFail();
         try {
-            $this->authorize('view', $user);
             $userResponse = UserBackend::statusesForUser($user);
         } catch (AuthorizationException) {
             abort(404, "No statuses found, or statuses are not visible to you.");
