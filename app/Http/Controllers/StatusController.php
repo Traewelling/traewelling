@@ -185,7 +185,10 @@ class StatusController extends Controller
                                  'user_id'   => $user->id,
                                  'status_id' => $status->id
                              ]);
-        $status->user->notify(new StatusLiked($like));
+
+        if (!$status->user->mutedUsers->contains('id', $user->id)) {
+            $status->user->notify(new StatusLiked($like));
+        }
         return $like;
     }
 
