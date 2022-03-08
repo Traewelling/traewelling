@@ -22,7 +22,8 @@ class UsersTableSeeder extends Seeder
                          'username' => 'Gertrud123',
                          'name'     => 'Gertrud',
                          'email'    => 'gertrud@traewelling.de',
-                         'password' => Hash::make('thisisnotasecurepassword123')
+                         'password' => Hash::make('thisisnotasecurepassword123'),
+                         'role'     => 10,
                      ]);
 
         User::factory()

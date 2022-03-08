@@ -1,13 +1,24 @@
 <?php
 
+use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
+use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
+
+    Route::prefix('checkin')->group(function() {
+        Route::get('/', [CheckinController::class, 'renderStationboard'])
+            ->name('admin.stationboard');
+        Route::get('/trip/{tripId}', [CheckinController::class, 'renderTrip'])
+             ->name('admin.trip');
+        Route::post('/checkin', [CheckinController::class, 'checkin'])
+             ->name('admin.checkin');
+    });
 
     Route::prefix('status')->group(function() {
         Route::get('/', [StatusEditController::class, 'renderMain'])

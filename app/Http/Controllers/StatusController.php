@@ -224,13 +224,12 @@ class StatusController extends Controller
      * @return array
      */
     public static function getStatusesByEvent(?string $slug, ?int $id): array {
-        if ($slug != null) {
+        if ($slug !== null) {
             $event = Event::where('slug', $slug)->firstOrFail();
         }
-        if ($id != null) {
+        if ($id !== null) {
             $event = Event::findOrFail($id);
         }
-
 
         $statuses = $event->statuses()
                           ->with('user')
@@ -249,19 +248,20 @@ class StatusController extends Controller
                                                   ->orWhere('statuses.visibility', StatusVisibility::PUBLIC->value);
                                         });
                               }
-                          });
+                          })
+                          ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
             $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
         }
 
-        $distance = $statuses->sum('train_checkins.distance');
+        $distance = (clone $statuses)->get()->sum('trainCheckin.distance');
         $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
                                      ->get()
                                      ->map(function($row) {
                                          $arrival   = Carbon::parse($row->arrival);
                                          $departure = Carbon::parse($row->departure);
-                                         return $arrival->diffInMinutes($departure);
+                                         return $arrival->diffInSeconds($departure);
                                      })
                                      ->sum();
 
