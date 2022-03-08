@@ -69,7 +69,7 @@ class SettingsController extends ResponseController
                                             'name'                      => ['required', 'string', 'max:50'],
                                             'private_profile'           => ['boolean', 'nullable'],
                                             'prevent_index'             => ['boolean', 'nullable'],
-                                            'privacy_hide_days'         => ['integer', 'nullable'],
+                                            'privacy_hide_days'         => ['integer', 'nullable', 'gte:1'],
                                             'always_dbl'                => ['boolean', 'nullable'],
                                             'default_status_visibility' => [
                                                 'nullable',
