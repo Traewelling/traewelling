@@ -11,7 +11,6 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -253,13 +252,13 @@ class StatusController extends Controller
             $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
         }
 
-        $distance = $statuses->sum('train_checkins.distance');
+        $distance = (clone $statuses)->get()->sum('trainCheckin.distance');
         $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
                                      ->get()
                                      ->map(function($row) {
                                          $arrival   = Carbon::parse($row->arrival);
                                          $departure = Carbon::parse($row->departure);
-                                         return $arrival->diffInMinutes($departure);
+                                         return $arrival->diffInSeconds($departure);
                                      })
                                      ->sum();
 
