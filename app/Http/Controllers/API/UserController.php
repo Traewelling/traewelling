@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class UserController extends ResponseController
 {
     public function show($username): JsonResponse {
-        return $this->sendResponse(UserBackend::getProfilePage($username, $this));
+        return $this->sendResponse(UserBackend::getProfilePage($username));
     }
 
     public function active($username) {

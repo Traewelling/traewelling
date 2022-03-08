@@ -24,6 +24,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
@@ -40,13 +41,13 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    public static function getProfilePage(string $username, Controller $controller): ?array {
+    public static function getProfilePage(string $username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {
             return null;
         }
         try {
-            $controller->authorize('view', $user);
+            Gate::authorize('view', $user);
             $statuses = self::statusesForUser($user);
         } catch (AuthorizationException) {
             $statuses = null;
