@@ -28,9 +28,10 @@ class AuthController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $input             = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user              = User::create($input);
+        $input               = $request->all();
+        $input['password']   = Hash::make($input['password']);
+        $input['last_login'] = now();
+        $user                = User::create($input);
 
         if ($user) {
             $userToken = $user->createToken('token');

@@ -48,7 +48,7 @@
                             <div class="image-box pe-0 d-lg-flex">
                                 <a href="{{ route('profile', ['username' => $place->user->username]) }}">
                                     <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($place->user) }}"
-                                         alt="{{$place->user->username}}" style="width: 50%;">
+                                         alt="{{$place->user->username}}" style="width: 50%; max-width: 300px;">
                                 </a>
                             </div>
                             <a href="{{ route('profile', ['username' => $place->user->username]) }}"
