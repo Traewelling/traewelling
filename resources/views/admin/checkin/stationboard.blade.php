@@ -12,20 +12,24 @@
                     <form class="center">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Haltestelle / DS100" aria-label="Haltestelle" name="station" value="{{isset($station['name']) ? $station['name'] : ''}}">
+                                <input type="text" class="form-control" placeholder="Haltestelle / DS100"
+                                       aria-label="Haltestelle" name="station"
+                                       value="{{isset($station['name']) ? $station['name'] : ''}}">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <label for="date" class="form-label">Wann</label>
-                                <input type="datetime-local" class="form-control" value="{{$when->format("Y-m-d\TH:i")}}" name="when" id="date">
+                                <input type="datetime-local" class="form-control" value="{{$when->toDateTimeString()}}"
+                                       name="when" id="date">
                             </div>
                         </div>
                         <div class="row mt-1">
                             <div class="col">
                                 <label for="date" class="form-label">Filter</label><br>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter1" value="express">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter1"
+                                           value="express">
                                     <label class="form-check-label" for="filter1">FV</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -49,14 +53,16 @@
                                     <label class="form-check-label" for="filter6">Bus</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter7" value="ferry">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter7"
+                                           value="ferry">
                                     <label class="form-check-label" for="filter7">Fähre</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="user" class="form-label">User</label>
-                                    <input type="text" class="form-control" value="{{$user->id}}" name="user" id="user">
+                                    <label for="userId" class="form-label">User</label>
+                                    <input type="text" class="form-control" value="{{$user->id}}" name="userId"
+                                           id="user">
                                 </div>
                             </div>
                             <div class="row mt-1">
@@ -160,9 +166,9 @@
                                         </td>
                                         <td>
                                             <a class="btn btn-outline-primary" href="{{ route('admin.trip', [
-    'id' => $departure->tripId,
+    'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
-    'start' => $departure->stop->id,
+    'startIBNR' => $departure->stop->id,
     'departure' => $departure->plannedWhen]) }}">
                                                 <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
                                             </a>

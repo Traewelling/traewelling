@@ -14,7 +14,7 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
             ->name('admin.stationboard');
-        Route::get('/trip/{id}', [CheckinController::class, 'renderTrip'])
+        Route::get('/trip/{tripId}', [CheckinController::class, 'renderTrip'])
              ->name('admin.trip');
         Route::post('/checkin', [CheckinController::class, 'checkin'])
              ->name('admin.checkin');
