@@ -67,7 +67,7 @@ class UserController extends Controller
      * @return LengthAwarePaginator|null
      * @api v1
      * @frontend
-     * @ŧhrows AuthorizationException
+     * @throws AuthorizationException
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
         Gate::authorize('view', $user);
