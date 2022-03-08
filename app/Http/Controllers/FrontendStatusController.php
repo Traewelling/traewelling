@@ -110,10 +110,10 @@ class FrontendStatusController extends Controller
             $status = Status::findOrFail($validated['statusId']);
             StatusBackend::createLike(Auth::user(), $status);
             return response(__('controller.status.like-ok'), 201);
-        } catch (StatusAlreadyLikedException $e) {
+        } catch (StatusAlreadyLikedException) {
             return response(__('controller.status.like-already'), 409);
         } catch (PermissionException) {
-            abort(403);
+            return response(__('controller.status.not-permitted'), 403);
         }
     }
 

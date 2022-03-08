@@ -17,7 +17,7 @@
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold">
                             <i class="fa fa-route d-inline"></i>
-                            {{ number($distance, 0) }}
+                            {{ number($distance / 1000, 0) }}
                         </span>
                         <span class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2">

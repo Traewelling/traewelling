@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -41,14 +43,33 @@ class StatusEditController extends Controller
         $newOrigin      = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $originStation->id)->first();
         $newDestination = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $destinationStation->id)->first();
 
+        $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
+        $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
+
+        $distanceInMeters = GeoController::calculateDistance(
+            hafasTrip:   $status->trainCheckin->HafasTrip,
+            origin:      $newOrigin,
+            destination: $newDestination
+        );
+
+        $points = PointsCalculationController::calculatePoints(
+            distanceInMeter: $distanceInMeters,
+            hafasTravelType: $status->trainCheckin->HafasTrip->category,
+            departure:       $newDeparture,
+            arrival:         $newArrival,
+            timestampOfView: $newDeparture,
+        )['points'];
+
         $status->trainCheckIn->update([
                                           'origin'      => $originStation->ibnr,
                                           'destination' => $destinationStation->ibnr,
-                                          'departure'   => $newOrigin->departure->toIso8601String(),
-                                          'arrival'     => $newDestination->arrival->toIso8601String(),
+                                          'departure'   => $newDeparture->toIso8601String(),
+                                          'arrival'     => $newArrival->toIso8601String(),
+                                          'distance'    => $distanceInMeters,
+                                          'points'      => $points,
                                       ]);
 
-        if ($status->body != $validated['body']) {
+        if ($status->body !== $validated['body']) {
             $status->update(['body' => $validated['body']]);
         }
 
