@@ -512,5 +512,8 @@
     "time.hours": "Stunden",
     "time.days": "Tage",
     "time.months": "Monate",
-    "time.years": "Jahre"
+    "time.years": "Jahre",
+    "settings.visibility.hide": "CheckIns automatisch ausblenden nach",
+    "settings.visibility.hide.explain": "Deine CheckIns werden nach den von dir angegebenen Tagen auf privat gesetzt, so dass nur noch du sie sehen kannst.",
+    "empty-input-disable-function": "Lasse dieses Feld leer, um die Funktion zu deaktivieren."
 }

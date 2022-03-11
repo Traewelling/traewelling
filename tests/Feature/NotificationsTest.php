@@ -6,7 +6,6 @@ use App\Enum\StatusVisibility;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Like;
 use App\Models\User;
-use App\Notifications\StatusLiked;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -24,52 +23,6 @@ class NotificationsTest extends TestCase
         parent::setUp();
 
         $this->user = $this->createGDPRAckedUser();
-    }
-
-    /** @test */
-    public function likes_appear_in_notifications(): void {
-        // Given: There is a likable status
-        $timestamp = Carbon::parse("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $timestamp);
-
-        $status = $this->user->statuses->first();
-
-        // When: Someone (e.g. the user itself) likes the status
-        $like = $this->actingAs($this->user)
-                     ->post(route('like.create'), ['statusId' => $status->id]);
-        $like->assertStatus(201); // Created
-
-        // Then: The like appears in the notifications
-        $notifications = $this->actingAs($this->user)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(1); // one like
-        $notifications->assertJsonFragment([
-                                               'type'            => StatusLiked::class,
-                                               'notifiable_type' => User::class,
-                                               'notifiable_id'   => (string) $this->user->id
-                                           ]);
-    }
-
-    /** @test */
-    public function removed_likes_dont_appear_in_notifications(): void {
-        // Given: There is a likable status
-        $timestamp = Carbon::parse("+2 day 7:45");
-        $this->checkin("Hamburg Hbf", $timestamp);
-
-        $status = $this->user->statuses->first();
-        $like   = $this->actingAs($this->user)
-                       ->post(route('like.create'), ['statusId' => $status->id]);
-        $like->assertStatus(201); // Created
-
-        // When: The like is removed
-        Like::first()->delete();
-
-        // Then: It does not show up in the notifications anymore
-        $notifications = $this->actingAs($this->user)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(0); // no likes left
     }
 
     /** @test */

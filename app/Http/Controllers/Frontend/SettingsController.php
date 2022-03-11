@@ -55,6 +55,7 @@ class SettingsController extends Controller
         $validated = $request->validate([
                                             'private_profile'           => ['nullable'],
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
+                                            'privacy_hide_days'         => ['nullable', 'gte:1',],
                                             'default_status_visibility' => [
                                                 'required',
                                                 new Enum(StatusVisibility::class),
@@ -65,6 +66,7 @@ class SettingsController extends Controller
                                    'prevent_index'             => $validated['prevent_index'],
                                    'private_profile'           => isset($validated['private_profile'])
                                                                   && $validated['private_profile'] === 'on',
+                                   'privacy_hide_days'         => $validated['privacy_hide_days'] ?? null,
                                    'default_status_visibility' => $validated['default_status_visibility'],
                                ]);
 

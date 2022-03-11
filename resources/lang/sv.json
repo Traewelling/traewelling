@@ -512,5 +512,8 @@
     "settings.follower.no-followings": "Du följer inte någon.",
     "time.years.short": "år",
     "time.months.short": "mån.",
-    "time.minutes.short": "min"
+    "time.minutes.short": "min",
+    "settings.visibility.hide.explain": "Dina incheckningar kommer att ställas in på privata efter de dagar du angett, så bara du kan se dem.",
+    "empty-input-disable-function": "Lämna detta fält tomt för att inaktivera funktionen.",
+    "settings.visibility.hide": "Dölj incheckningar automatiskt efter"
 }
