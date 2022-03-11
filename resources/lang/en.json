@@ -483,6 +483,9 @@
     "settings.visibility": "Visibility",
     "settings.visibility.disclaimer": "If your profile is private, even statuses marked as public will only be shown to your followers.",
     "settings.visibility.default": "CheckIns: Default visibility",
+    "settings.visibility.hide": "Hide CheckIns Automatically after",
+    "settings.visibility.hide.explain": "Your CheckIns will be set to private after the days you specify, so only you can still see them.",
+    "empty-input-disable-function": "Leave this field empty to disable the function.",
     "request-time": "requested at :time",
     "email.change": "Please update your email by entering the new address and your current password. A confirmation email will be sent to you to confirm this change.",
     "email.validation": "Confirm email address",
@@ -502,5 +505,15 @@
     "christmas-mode.enable": "Enable Christmas mode for this session",
     "christmas-mode.disable": "Disable Christmas mode for this session",
     "merry-christmas": "We wish you a Merry Christmas!",
-    "user.email.not-set": "There is no email address saved yet"
+    "user.email.not-set": "There is no email address saved yet",
+    "time.minutes.short": "min",
+    "time.hours.short": "h",
+    "time.days.short": "d",
+    "time.months.short": "mo",
+    "time.years.short": "y",
+    "time.minutes": "minutes",
+    "time.hours": "hours",
+    "time.days": "days",
+    "time.months": "months",
+    "time.years": "years"
 }

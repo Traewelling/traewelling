@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\HafasTravelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,8 @@ class HafasTrip extends Model
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
         'id'          => 'integer',
+        'trip_id'     => 'string',
+        'category'    => HafasTravelType::class,
         'operator_id' => 'integer',
         'origin'      => 'integer',
         'destination' => 'integer',

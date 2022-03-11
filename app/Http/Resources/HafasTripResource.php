@@ -16,7 +16,7 @@ class HafasTripResource extends JsonResource
     public function toArray($request): array {
         return [
             "id"          => $this->id,
-            "category"    => $this->category,
+            "category"    => $this->category->value,
             "number"      => $this->number,
             "lineName"    => $this->linename,
             "origin"      => new TrainStationResource($this->originStation),

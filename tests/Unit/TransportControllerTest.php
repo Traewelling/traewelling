@@ -24,34 +24,21 @@ class TransportControllerTest extends TestCase
         // 50km in an IC/ICE => 50/10 + 10 = 15 points
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
         )['points']);
         // 50km in an RB => 50/10 + 5 = 10 points
         $this->assertEquals(10, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::REGIONAL,
+            hafasTravelType: HafasTravelType::REGIONAL,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
         )['points']);
         // 18km in a Bus => 20/10 + 2 = 4 points
         $this->assertEquals(4, PointsCalculationController::calculatePoints(
             distanceInMeter: 18000,
-            category:        HafasTravelType::BUS,
-            departure:       Carbon::now()->subMinutes(2),
-            arrival:         Carbon::now()->addMinutes(10),
-        )['points']);
-    }
-
-    /**
-     * Unknown transport product, gives 1 point blanco.
-     * 50km in an unknown mode of transport => 50/10 + 1 = 6 points
-     */
-    public function testCalculateTrainPoints_unknown_product() {
-        $this->assertEquals(6, PointsCalculationController::calculatePoints(
-            distanceInMeter: 50000,
-            category:        'unknown_mode_of_transport',
+            hafasTravelType: HafasTravelType::BUS,
             departure:       Carbon::now()->subMinutes(2),
             arrival:         Carbon::now()->addMinutes(10),
         )['points']);
@@ -65,7 +52,7 @@ class TransportControllerTest extends TestCase
         // 50/10 + 10 = 15
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(18),
             arrival:         Carbon::now()->addMinutes(40),
         )['points']);
@@ -74,7 +61,7 @@ class TransportControllerTest extends TestCase
         // (50/10 + 10) * 0.25 = 4
         $this->assertEquals(4, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(40),
             arrival:         Carbon::now()->addMinutes(100),
         )['points']);
@@ -84,7 +71,7 @@ class TransportControllerTest extends TestCase
         // 0*(50/10) + 10 = 1
         $this->assertEquals(1, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->addMinutes(62),
             arrival:         Carbon::now()->addMinutes(100),
         )['points']);
@@ -93,12 +80,12 @@ class TransportControllerTest extends TestCase
     /**
      * I'm trying to check-into trains that have depart in the past.
      */
-    public function testCalculateTrainPoints_late_checkins() {
+    public function testCalculateTrainPoints_late_checkins(): void {
         // just before the Arrival
         // 50/10 + 10 = 15
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->addMinute(),
         )['points']);
@@ -107,7 +94,7 @@ class TransportControllerTest extends TestCase
         // (50/10 + 10) * 0.25 = 4
         $this->assertEquals(4, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(92),
             arrival:         Carbon::now()->subMinutes(35),
         )['points']);
@@ -117,7 +104,7 @@ class TransportControllerTest extends TestCase
         // 0*(50/10) + 10 = 1
         $this->assertEquals(1, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
-            category:        HafasTravelType::NATIONAL_EXPRESS,
+            hafasTravelType: HafasTravelType::NATIONAL_EXPRESS,
             departure:       Carbon::now()->subMinutes(62),
             arrival:         Carbon::now()->subMinutes(61),
         )['points']);

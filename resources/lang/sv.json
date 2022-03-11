@@ -498,5 +498,22 @@
     "christmas-mode.disable": "Deaktivera julläge för den här sessionen",
     "merry-christmas": "Vi önskar god jul!",
     "christmas-mode": "Julläge",
-    "christmas-mode.enable": "Aktivera julläge för den här sessionen"
+    "christmas-mode.enable": "Aktivera julläge för den här sessionen",
+    "menu.settings.followings": "Följar jag",
+    "user.profile-picture": "profilbild av @:username",
+    "time.hours.short": "tim.",
+    "time.days.short": "dagar",
+    "time.minutes": "minuter",
+    "time.hours": "timmar",
+    "time.days": "dygn",
+    "time.months": "månader",
+    "time.years": "år",
+    "settings.follower.no-requests": "Du har inga följningsförfrågningar.",
+    "settings.follower.no-followings": "Du följer inte någon.",
+    "time.years.short": "år",
+    "time.months.short": "mån.",
+    "time.minutes.short": "min",
+    "settings.visibility.hide.explain": "Dina incheckningar kommer att ställas in på privata efter de dagar du angett, så bara du kan se dem.",
+    "empty-input-disable-function": "Lämna detta fält tomt för att inaktivera funktionen.",
+    "settings.visibility.hide": "Dölj incheckningar automatiskt efter"
 }

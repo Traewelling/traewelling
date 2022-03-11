@@ -502,5 +502,18 @@
     "christmas-mode": "Weihnachtsmodus",
     "christmas-mode.enable": "Weihnachtsmodus für diese Session aktivieren",
     "christmas-mode.disable": "Weihnachtsmodus für diese Session deaktivieren",
-    "merry-christmas": "Wir wünschen eine frohe Weihnachtszeit!"
+    "merry-christmas": "Wir wünschen eine frohe Weihnachtszeit!",
+    "time.minutes.short": "Min.",
+    "time.hours.short": "Std.",
+    "time.days.short": "Tg.",
+    "time.months.short": "Mt.",
+    "time.years.short": "Jr.",
+    "time.minutes": "Minuten",
+    "time.hours": "Stunden",
+    "time.days": "Tage",
+    "time.months": "Monate",
+    "time.years": "Jahre",
+    "settings.visibility.hide": "CheckIns automatisch ausblenden nach",
+    "settings.visibility.hide.explain": "Deine CheckIns werden nach den von dir angegebenen Tagen auf privat gesetzt, so dass nur noch du sie sehen kannst.",
+    "empty-input-disable-function": "Lasse dieses Feld leer, um die Funktion zu deaktivieren."
 }

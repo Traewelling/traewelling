@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class TransportController extends ResponseController
 {
@@ -37,14 +37,14 @@ class TransportController extends ResponseController
     public function departures(Request $request, string $name): JsonResponse {
         $validated = $request->validate([
                                             'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', Rule::in(TravelType::getList())]
+                                            'travelType' => ['nullable', new Enum(TravelType::class)],
                                         ]);
 
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
                 stationQuery: $name,
                 when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   $validated['travelType'] ?? null
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
             return $this->sendv1Error("There has been an error with our data provider", 400);
@@ -107,8 +107,8 @@ class TransportController extends ResponseController
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
-                                            'business'    => ['nullable', Rule::in(Business::getList())],
-                                            'visibility'  => ['nullable', Rule::in(StatusVisibility::getList())],
+                                            'business'    => ['nullable', new Enum(Business::class)],
+                                            'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
                                             'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
@@ -125,8 +125,8 @@ class TransportController extends ResponseController
         try {
             $status = StatusBackend::createStatus(
                 user:       auth()->user(),
-                business:   $validated['business'] ?? 0,
-                visibility: $validated['visibility'] ?? StatusVisibility::PUBLIC,
+                business:   Business::tryFrom($validated['business'] ?? 0),
+                visibility: StatusVisibility::tryFrom($validated['visibility'] ?? 0),
                 body:       $validated['body'] ?? null,
                 eventId:    $validated['eventId'] ?? null
             );

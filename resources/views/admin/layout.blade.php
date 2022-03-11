@@ -37,16 +37,23 @@
                     </li>
                     <li>
                         <a href="{{route('admin.events')}}"
-                           class="nav-link text-white {{ request()->is('admin/events/*') ? 'active' : '' }}">
+                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
                             <i class="fas fa-calendar me-2" aria-hidden="true"></i>
                             Veranstaltungen
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.status') }}"
-                           class="nav-link text-white {{ request()->is('admin/status/*') ? 'active' : '' }}">
+                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
                             <i class="fas fa-train me-2" aria-hidden="true"></i>
                             Status
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.stationboard') }}"
+                           class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
+                            <i class="fas fa-ticket-alt me-2" aria-hidden="true"></i>
+                            Checkin
                         </a>
                     </li>
                 </ul>
@@ -85,7 +92,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="container-fluid bg-light px-5 pt-4">
+            <div class="container-fluid bg-light px-5 pt-4" style="overflow-y: scroll !important;">
                 @hasSection('title')
                     <h1 class="mt-3 mb-3 text-dark">@yield('title')</h1>
                 @endif

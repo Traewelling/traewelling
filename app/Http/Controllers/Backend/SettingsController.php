@@ -11,6 +11,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 abstract class SettingsController extends Controller
 {
+    /** @todo Implement privacy_hide_days */
     public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
         if ($user === null) {
             $user = auth()->user();

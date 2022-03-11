@@ -42,10 +42,10 @@
                 </span>
                                 <span class="ps-2">
                   <i aria-hidden="true" class="fa fa-route d-inline"></i>
-                  &nbsp;{{ (statusData.train.distance / 1000).toFixed(1) }}<small>km</small>
+                  &nbsp;{{ localizeDistance(statusData.train.distance) }}<small>km</small>
                 </span>
                                 <span class="ps-2"><i aria-hidden="true" class="fa fa-stopwatch d-inline"></i>
-                  &nbsp;{{ duration }}
+                  &nbsp;{{ hoursAndMinutes(statusData.train.duration) }}
                 </span>
                                 <span v-if="statusData.business > 0" class="pl-sm-2">
                   <i :class="travelReason[statusData.business].icon"
@@ -212,7 +212,6 @@ import Status from "../js/ApiClient/Status";
 
 export default {
     name: "Status.vue",
-    inject: ["notyf"],
     data() {
         return {
             isSingleStatus: false,
@@ -258,14 +257,6 @@ export default {
         },
         arrival() {
             return moment(this.statusData.train.destination.arrival);
-        },
-        duration() {
-            // ToDo: This needs localization, currently handled in `durationToSpan`
-            const duration = moment.duration(this.statusData.train.duration, 'minutes').asMinutes();
-            let minutes    = duration % 60;
-            let hours      = Math.floor(duration / 60);
-
-            return hours + "h " + minutes + "m";
         },
         percentage() {
             const start = moment(this.statusData.train.origin.departure);

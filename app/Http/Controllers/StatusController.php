@@ -36,12 +36,13 @@ class StatusController extends Controller
      * @frontend
      */
     public static function getStatus(int $statusId): Status {
-        return Status::where('id', $statusId)->with('user',
-                                                    'trainCheckin',
-                                                    'trainCheckin.Origin',
-                                                    'trainCheckin.Destination',
-                                                    'trainCheckin.HafasTrip',
-                                                    'event')->withCount('likes')->firstOrFail();
+        return Status::where('id', $statusId)
+                     ->with([
+                                'user', 'trainCheckin', 'trainCheckin.Origin',
+                                'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event',
+                            ])
+                     ->withCount('likes')
+                     ->firstOrFail();
     }
 
     /**
@@ -130,22 +131,22 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User        $user
-     * @param int         $statusId
-     * @param string|null $body
-     * @param int         $business
-     * @param int         $visibility
+     * @param User             $user
+     * @param int              $statusId
+     * @param string|null      $body
+     * @param Business         $business
+     * @param StatusVisibility $visibility
      *
      * @return Status
      * @throws PermissionException
      * @api v1
      */
     public static function EditStatus(
-        User   $user,
-        int    $statusId,
-        string $body = null,
-        int    $business = Business::PRIVATE,
-        int    $visibility = StatusVisibility::PUBLIC
+        User             $user,
+        int              $statusId,
+        string           $body = null,
+        Business         $business = Business::PRIVATE,
+        StatusVisibility $visibility = StatusVisibility::PUBLIC
     ): Status {
         $status = Status::findOrFail($statusId);
 
@@ -184,7 +185,10 @@ class StatusController extends Controller
                                  'user_id'   => $user->id,
                                  'status_id' => $status->id
                              ]);
-        $status->user->notify(new StatusLiked($like));
+
+        if (!$status->user->mutedUsers->contains('id', $user->id)) {
+            $status->user->notify(new StatusLiked($like));
+        }
         return $like;
     }
 
@@ -220,13 +224,12 @@ class StatusController extends Controller
      * @return array
      */
     public static function getStatusesByEvent(?string $slug, ?int $id): array {
-        if ($slug != null) {
+        if ($slug !== null) {
             $event = Event::where('slug', $slug)->firstOrFail();
         }
-        if ($id != null) {
+        if ($id !== null) {
             $event = Event::findOrFail($id);
         }
-
 
         $statuses = $event->statuses()
                           ->with('user')
@@ -235,29 +238,30 @@ class StatusController extends Controller
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('statuses.visibility', StatusVisibility::PUBLIC);
+                                    ->where('statuses.visibility', StatusVisibility::PUBLIC->value);
                               if (auth()->check()) {
                                   $query->orWhere('statuses.user_id', auth()->user()->id)
                                         ->orWhere(function($query) {
                                             $followIds = auth()->user()->follows()->select('follow_id');
-                                            $query->where('statuses.visibility', StatusVisibility::FOLLOWERS)
+                                            $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
                                                   ->whereIn('statuses.user_id', $followIds)
-                                                  ->orWhere('statuses.visibility', StatusVisibility::PUBLIC);
+                                                  ->orWhere('statuses.visibility', StatusVisibility::PUBLIC->value);
                                         });
                               }
-                          });
+                          })
+                          ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
             $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
         }
 
-        $distance = $statuses->sum('train_checkins.distance');
+        $distance = (clone $statuses)->get()->sum('trainCheckin.distance');
         $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
                                      ->get()
                                      ->map(function($row) {
                                          $arrival   = Carbon::parse($row->arrival);
                                          $departure = Carbon::parse($row->departure);
-                                         return $arrival->diffInMinutes($departure);
+                                         return $arrival->diffInSeconds($departure);
                                      })
                                      ->sum();
 
@@ -284,12 +288,12 @@ class StatusController extends Controller
     }
 
     public static function createStatus(
-        User   $user,
-        int    $business,
-        int    $visibility,
-        string $body = null,
-        int    $eventId = null,
-        string $type = "hafas"
+        User             $user,
+        Business         $business,
+        StatusVisibility $visibility,
+        string           $body = null,
+        int              $eventId = null,
+        string           $type = "hafas"
     ): Status {
         $event = null;
         if ($eventId !== null) {
@@ -305,7 +309,7 @@ class StatusController extends Controller
                                   'business'   => $business,
                                   'visibility' => $visibility,
                                   'type'       => $type,
-                                  'event'      => $event?->id
+                                  'event_id'   => $event?->id
                               ]);
     }
 }

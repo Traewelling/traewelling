@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * @property int    user_id
- * @property string body
- * @property int    business
- * @property int    event_id
- * @property int    visibility
+ * @property int              user_id
+ * @property string           body
+ * @property Business         business
+ * @property int              event_id
+ * @property StatusVisibility visibility
  */
 class Status extends Model
 {
@@ -27,8 +29,8 @@ class Status extends Model
     protected $casts    = [
         'id'         => 'integer',
         'user_id'    => 'integer',
-        'business'   => 'integer', //TODO: Change to Enum Cast with Laravel 9
-        'visibility' => 'integer', //TODO: Change to Enum Cast with Laravel 9
+        'business'   => Business::class,
+        'visibility' => StatusVisibility::class,
         'event_id'   => 'integer',
     ];
 

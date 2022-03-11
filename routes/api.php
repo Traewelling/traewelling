@@ -11,22 +11,25 @@
 |
 */
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
+Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [v1Auth::class, 'login']);
         Route::post('signup', [v1Auth::class, 'register']);
@@ -37,7 +40,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
+         ->name('api.v1.getPrivacyPolicy');
+
+    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
+        Route::post('event', [EventController::class, 'suggest']);
+        Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
@@ -46,6 +54,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
+        Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
@@ -81,6 +90,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::get('search/{query}', [UserController::class, 'search']);
         });
         Route::group(['prefix' => 'settings'], function() {
+            Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
@@ -88,7 +99,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
             Route::put('email', [SettingsController::class, 'updateMail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
-            Route::delete('account', [UserController::class, 'deleteAccount']);
+            Route::delete('account', [UserController::class, 'deleteAccount'])
+                 ->withoutMiddleware('privacypolicy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -103,7 +115,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         });
     });
 
-    Route::group(['middleware' => 'semiguest:api'], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
@@ -111,6 +123,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);
         Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+        Route::get('events', [EventController::class, 'upcoming']);
         Route::get('user/{username}', [UserController::class, 'show']);
         Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
@@ -119,9 +132,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], function() {
     });
 });
 
-Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
-    Route::group(['middleware' => ['guest:api']], function() {
-        Route::group(['prefix' => 'auth'], function() {
+Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], static function() {
+    Route::group(['middleware' => ['guest:api']], static function() {
+        Route::group(['prefix' => 'auth'], static function() {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
             Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
@@ -129,11 +142,11 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
     Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
          ->name('api.v0.user.accept_privacy');
     // All protected routes
-    Route::group(['middleware' => ['auth:api', 'privacy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
-        Route::get('getuser', 'API\AuthController@getUser')->name('api.v0.getUser');
+        Route::get('getuser', [AuthController::class, 'getUser'])->name('api.v0.getUser');
 
-        Route::group(['prefix' => 'user'], function() {
+        Route::group(['prefix' => 'user'], static function() {
             Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
             Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
@@ -143,7 +156,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
         });
 
         // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], function() {
+        Route::group(['prefix' => 'statuses'], static function() {
             Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
             Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
             Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
@@ -155,7 +168,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], function() {
         Route::resource('notifications', 'API\NotificationController');
 
         // Controller for complete Train-Transport-Stuff
-        Route::group(['prefix' => 'trains'], function() {
+        Route::group(['prefix' => 'trains'], static function() {
             Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
                  ->name('api.v0.checkin.train.autocomplete');
             Route::get('stationboard', 'API\TransportController@TrainStationboard')

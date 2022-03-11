@@ -2,7 +2,7 @@
     <div id="offcanvasNavigation" aria-labelledby="offcanvasNavigationLabel" class="offcanvas offcanvas-start"
          tabindex="-1">
         <div class="offcanvas-header">
-            <h5 id="offcanvasNavigationLabel" class="offcanvas-title">Träwelling</h5><!--ToDo: Get name from .env -->
+            <h5 id="offcanvasNavigationLabel" class="offcanvas-title">{{ this.$appName }}</h5>
             <button aria-label="Close" class="btn-close text-reset" data-mdb-dismiss="offcanvas"
                     type="button"></button>
         </div>

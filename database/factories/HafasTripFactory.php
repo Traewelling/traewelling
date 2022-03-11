@@ -36,6 +36,10 @@ class HafasTripFactory extends Factory
         $stopOvers = [];
         $time      = Carbon::now()->subMinutes(15);
         foreach ($stops as $stop) {
+            $products = [];
+            foreach (HafasTravelType::cases() as $hafasTravelType) {
+                $products[$hafasTravelType->value] = $this->faker->boolean();
+            }
             $features[]  = [
                 'type'       => 'Feature',
                 'properties' => [
@@ -48,7 +52,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
+                    'products' => $products,
                 ],
                 'geometry'   => [
                     'type'        => 'Point',
@@ -69,7 +73,7 @@ class HafasTripFactory extends Factory
                         'latitude'  => $stop->latitude,
                         'longitude' => $stop->longitude,
                     ],
-                    'products' => array_fill_keys(HafasTravelType::getList(), $this->faker->boolean(50)),
+                    'products' => $products,
                 ],
                 'arrival'                  => $time->toIso8601String(),
                 'plannedArrival'           => $time->toIso8601String(),
@@ -93,7 +97,7 @@ class HafasTripFactory extends Factory
         $polyline = TransportController::getPolylineHash($polyline);
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
-            'category'    => $this->faker->randomElement(HafasTravelType::getList()),
+            'category'    => $this->faker->randomElement(HafasTravelType::cases())->value,
             'number'      => $this->faker->bothify('??-##'),
             'linename'    => $this->faker->bothify('?? ##'),
             'origin'      => $stops[0]->ibnr,

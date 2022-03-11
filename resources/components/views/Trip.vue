@@ -31,7 +31,8 @@
                         </thead>
                         <tbody>
                             <tr v-for="stop in stopovers" @click="showModal(stop)">
-                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}" class="px-2">
+                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled && stop.arrivalPlatformPlanned === null}"
+                                    class="px-2">
                                     {{ stop.name }}
                                     <br/>
                                     <span v-if="stop.arrivalPlanned" class="d-sm-inline d-md-none ms-4">
@@ -56,8 +57,12 @@
                                         </small>
                                     </span>
                                 </td>
-                                <td v-if="!stop.cancelled">
-                                    <span v-if="stop.arrivalPlanned" class="d-none d-md-inline">
+
+                                <td v-if="stop.cancelled && stop.arrivalPlatformPlanned === null" class="text-danger">
+                                    {{ i18n.get('_.stationboard.stop-cancelled') }}
+                                </td>
+                                <td v-else>
+                                    <span v-if="stop.arrivalPlanned && stop.arrivalPlatformPlanned" class="d-none d-md-inline">
                                         {{ i18n.get('_.stationboard.arr') }}&nbsp;
                                         <span :class="delay(stop.arrivalPlanned, stop.arrivalReal)">
                                             {{ moment(stop.arrival).format("LT") }}
@@ -68,7 +73,7 @@
                                         </small>
                                     </span>
                                     <br/>
-                                    <span v-if="stop.departurePlanned" class="d-none d-md-inline">
+                                    <span v-if="stop.departurePlanned && stop.departurePlatformPlanned" class="d-none d-md-inline">
                                         {{ i18n.get('_.stationboard.dep') }}&nbsp;
                                         <span :class="delay(stop.departurePlanned, stop.departureReal)">
                                             {{ moment(stop.departure).format("LT") }}
@@ -79,12 +84,17 @@
                                         </small>
                                     </span>
                                 </td>
-                                <td v-else class="text-danger">
-                                    {{ i18n.get('_.stationboard.stop-cancelled') }}
-                                </td>
-                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled}"
+                                <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled && stop.arrivalPlatformPlanned === null}"
                                     class="ps-0">
-                                    {{ stop.platform }}
+                                    <span v-if="stop.arrivalPlatformPlanned != stop.platform">
+                                        {{ stop.arrivalPlatformReal }}
+                                        <span class="text-decoration-line-through text-danger">
+                                            {{ stop.arrivalPlatformPlanned }}
+                                        </span>
+                                    </span>
+                                    <span v-else>
+                                        {{ stop.platform }}
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -95,6 +105,7 @@
         <CheckInModal
             ref="checkInModal"
             :destination="destination"
+            :events="events"
             :train-data="trainData"
         ></CheckInModal>
     </LayoutBasic>
@@ -107,10 +118,10 @@ import CheckInModal from "../CheckInModal";
 import LayoutBasic from "../layouts/Basic";
 import Spinner from "../Spinner";
 import Checkin from "../../js/ApiClient/Checkin";
+import Event from "../../js/ApiClient/Event";
 
 export default {
     name: "Trip",
-    inject: ["notyf"],
     components: {Spinner, LayoutBasic, CheckInModal},
     data() {
         return {
@@ -121,6 +132,7 @@ export default {
             lastStation: null,
             moment: moment,
             destination: null,
+            events: [],
             trainData: {
                 tripId: 0,
                 lineName: "",
@@ -153,18 +165,28 @@ export default {
                     this.loading = false;
                     this.apiErrorHandler(error);
                 });
+            Event
+                .active()
+                .then((data) => {
+                    this.events = data;
+                })
+                .catch((error) => {
+                    this.apiErrorHandler(error);
+                });
         },
         showModal(stop) {
-            this.trainData   = {
-                tripId: this.$route.query.tripId,
-                lineName: this.$route.query.lineName,
-                start: this.$route.query.start,
-                destination: stop.id,
-                departure: this.$route.query.departure,
-                arrival: stop.arrivalPlanned
-            };
-            this.destination = stop.name;
-            this.$refs.checkInModal.show();
+            if (!(stop.cancelled && stop.arrivalPlatformPlanned === null)) {
+                this.trainData   = {
+                    tripId: this.$route.query.tripId,
+                    lineName: this.$route.query.lineName,
+                    start: this.$route.query.start,
+                    destination: stop.id,
+                    departure: this.$route.query.departure,
+                    arrival: stop.arrivalPlanned
+                };
+                this.destination = stop.name;
+                this.$refs.checkInModal.show();
+            }
         },
         delay(planned, current) {
             const delay = moment(current).diff(moment(planned), "seconds");

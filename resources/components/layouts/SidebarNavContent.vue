@@ -11,27 +11,27 @@
             <div class="col">
                 <i aria-hidden="true" class="fas fa-dice-d20"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.points") }}</span>
-                {{ $auth.user().points.toFixed(0) }}
+                {{ localizeThousands($auth.user().points) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-clock"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.duration") }}</span>
-                {{ $auth.user().trainDuration.toFixed(0) }}min
-                <!-- ToDo: trainDuration in hours & minutes -->
+                {{ hoursAndMinutes($auth.user().trainDuration) }}
             </div>
             <div class="col">
                 <i aria-hidden="true" class="fas fa-route"/>
                 <span class="sr-only">{{ i18n.get("_.leaderboard.distance") }}</span>
-                {{ ($auth.user().trainDistance / 1000).toFixed(1) }}km
+                {{ this.localizeDistance($auth.user().trainDistance) }}km
             </div>
         </div>
         <hr>
         <ul v-if="!$auth.check()" class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                <router-link :to="{ name: 'events' }" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-calendar me-2"></i>
                     {{ i18n.get("_.events") }}
-                </a>
+                </router-link>
             </li>
         </ul>
         <ul v-if="$auth.check()" class="nav nav-pills flex-column mb-auto">
@@ -72,13 +72,15 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link bg-transparent" href="#"><!-- ToDo: Link -->
+                <router-link :to="{ name: 'events' }" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-calendar me-2"></i>
                     {{ i18n.get("_.events") }}
-                </a>
+                </router-link>
             </li>
             <li class="nav-item">
-                <router-link :to="{name: 'settings'}" class="nav-link bg-transparent">
+                <router-link :to="{name: 'settings'}" active-class="bg-primary text-light"
+                             class="nav-link bg-transparent">
                     <i aria-hidden="true" class="fas fa-cog me-2"></i>
                     {{ i18n.get("_.menu.settings") }}
                 </router-link>
@@ -97,14 +99,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-black-50" href="#"><!-- ToDo: Link -->
+                <router-link class="nav-link text-black-50" :to="{name: 'privacy'}">
                     {{ i18n.get("_.menu.privacy") }}
-                </a>
+                </router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-black-50" href="#"><!-- ToDo: Link -->
+                <router-link :to="{name: 'legal'}" class="nav-link text-black-50">
                     {{ i18n.get("_.menu.legal-notice") }}
-                </a>
+                </router-link>
             </li>
         </ul>
         <hr>
@@ -134,6 +136,7 @@
 
 <script>
 import ChangeLanguageButton from "../ChangeLanguageButton";
+import moment from "moment";
 
 export default {
     name: "SidebarNavContent",

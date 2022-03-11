@@ -122,7 +122,6 @@ import Checkin from "../js/ApiClient/Checkin";
 
 export default {
     name: "StationForm",
-    inject: ["notyf"],
     data() {
         return {
             station: null,

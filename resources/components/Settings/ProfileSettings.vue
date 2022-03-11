@@ -138,7 +138,6 @@ import Settings from "../../js/ApiClient/Settings";
 
 export default {
     name: "ProfileSettings",
-    inject: ["notyf"],
     props: ["value"],
     model: {
         prop: "value",

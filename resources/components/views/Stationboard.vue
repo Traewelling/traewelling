@@ -111,7 +111,6 @@ import Checkin from "../../js/ApiClient/Checkin";
 
 export default {
     name: "Stationboard",
-    inject: ["notyf"],
     components: {
         Spinner,
         LayoutBasic,

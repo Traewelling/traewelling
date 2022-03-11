@@ -92,18 +92,7 @@
                 </div>
             </form>
         </ModalConfirm>
-        <ModalConfirm ref="delete" :abort-text="i18n.get('_.settings.delete-account-btn-back')"
-                      :confirm-text="i18n.get('_.settings.delete-account-btn-confirm')"
-                      :title-text="i18n.get('_.settings.delete-account')"
-                      confirm-button-color="btn-primary" v-on:confirm="deleteAccount">
-            <span v-html="i18n.choice('_.settings.delete-account-verify', 1, {appname: $appName})"></span>
-            <hr>
-            <label v-html="i18n.choice('_.messages.account.please-confirm', 1, {delete: value.username})">
-            </label>
-            <input v-model="confirmDelete" :placeholder="value.username" class="form-control" name="confirmation"
-                   required
-                   type="text" @submit="$refs.delete.confirm()"/>
-        </ModalConfirm>
+        <DeleteAccountModal :username="value.username" ref="delete"></DeleteAccountModal>
     </div>
 </template>
 
@@ -111,12 +100,12 @@
 import ChangeLanguageButton from "../ChangeLanguageButton";
 import ModalConfirm from "../ModalConfirm";
 import Settings from "../../js/ApiClient/Settings";
+import DeleteAccountModal from "../DeleteAccountModal";
 
 export default {
     name: "AccountSettings",
-    components: {ModalConfirm, ChangeLanguageButton},
+    components: {DeleteAccountModal, ModalConfirm, ChangeLanguageButton},
     props: ["value"],
-    inject: ["notyf"],
     model: {prop: "value", event: "input"},
     data() {
         return {
@@ -125,25 +114,12 @@ export default {
             newPasswordConfirm: null,
             email: null,
             setValue: null,
-            confirmDelete: null
         };
     },
     mounted() {
         this.setValue = this.$props.value;
     },
     methods: {
-        deleteAccount() {
-            Settings.deleteAccount(this.confirmDelete)
-                .then(() => {
-                    this.confirmDelete = null;
-                    this.$auth.logout();
-                    this.notyf.success(this.i18n.get("_.settings.delete-account-completed"));
-                })
-                .catch((error) => {
-                    this.confirmDelete = null;
-                    this.apiErrorHandler(error);
-                });
-        },
         updatePassword() {
             Settings.updatePassword(this.password, this.newPassword, this.newPasswordConfirm)
                 .then((data) => {

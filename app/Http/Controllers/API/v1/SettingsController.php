@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
 class SettingsController extends ResponseController
@@ -68,10 +69,11 @@ class SettingsController extends ResponseController
                                             'name'                      => ['required', 'string', 'max:50'],
                                             'private_profile'           => ['boolean', 'nullable'],
                                             'prevent_index'             => ['boolean', 'nullable'],
+                                            'privacy_hide_days'         => ['integer', 'nullable', 'gte:1'],
                                             'always_dbl'                => ['boolean', 'nullable'],
                                             'default_status_visibility' => [
-                                                Rule::in(StatusVisibility::getList()),
-                                                'nullable'
+                                                'nullable',
+                                                new Enum(StatusVisibility::class),
                                             ]
                                         ]);
 

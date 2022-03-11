@@ -7,11 +7,10 @@ import LayoutBasic from "./layouts/Basic";
 
 export default {
     name: "App",
-    inject: ["notyf"],
     metaInfo() {
         return {
             title: "Träwelling",
-            titleTemplate: "%s - Träwelling",//ToDo get name from .env
+            titleTemplate: "%s - " + this.$appName,
             htmlAttrs: {
                 lang: this.i18n.getLocale()
             },
@@ -22,7 +21,7 @@ export default {
                 {name: "apple-mobile-web-app-status-bar-style", content: "#c72730"},
                 {name: "mobile-web-app-capable", content: "yes"},
                 {name: "theme-color", content: "#c72730"},
-                {name: "name", content: "Träwelling"}, //ToDo get name from .env
+                {name: "name", content: this.$appName},
 
                 {name: "copyright", content: "Träwelling Team"},
                 {name: "description", content: this.i18n.get("_.about.block1"), vmid: "description"},
@@ -34,8 +33,8 @@ export default {
                 {name: "DC.Rights", content: "Träwelling Team"},
                 {name: "DC.Description", content: this.i18n.get("_.about.block1"), vmid: "DC.Description"},
                 {name: "DC.Language", content: this.i18n.getLocale()},
-                {property: "og:title", content: "Träwelling", vmid: "og:title"}, //ToDo get name from .env
-                {property: "og:site_name", content: "Träwelling"}, //ToDo get name from .env
+                {property: "og:title", content: this.$appName, vmid: "og:title"},
+                {property: "og:site_name", content: this.$appName},
                 {property: "og:type", content: "website"},
                 {name: "robots", content: "index,follow", vmid: "robots"}
             ]
