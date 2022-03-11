@@ -29,12 +29,12 @@ return new class extends Migration
         "BAT"    => "",
         "BAV"    => "",
         "BUS"    => "suburban",
-        "CNL"    => "",
+        "CNL"    => "national", // DB City Night Line, discontinued
         "D"      => "",
         "E"      => "",
-        "EC"     => "",
+        "EC"     => "national", // EuroCity
         "EM"     => "",
-        "EN"     => "",
+        "EN"     => "national", // EuroNight
         "ES"     => "",
         "EST"    => "",
         "EXT"    => "",
@@ -61,8 +61,8 @@ return new class extends Migration
         "R"      => "national",
         "RB"     => "regional",
         "RE"     => "regionalExp",
-        "RJ"     => "",
-        "RJX"    => "",
+        "RJ"     => "national", // OeBB RailJet
+        "RJX"    => "nationalExpress", // OeBB Railjet Express
         "S"      => "regional",
         "S12"    => "regional",
         "S23"    => "regional",
@@ -74,8 +74,8 @@ return new class extends Migration
         "T"      => "tram",
         "TAL"    => "",
         "TER"    => "",
-        "TGV"    => "nationalExpress",
-        "THA"    => "",
+        "TGV"    => "nationalExpress", // SNCF TGV
+        "THA"    => "nationalExpress", // Thalys
         "TLK"    => "",
         "VAE"    => "",
         "WB"     => "",
