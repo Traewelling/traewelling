@@ -8,7 +8,7 @@ COPY --from=NodeBuildContainer /usr/src/trwl /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs
 
-FROM php:8-apache
+FROM php:8.1-apache
 RUN apt update && apt install -y zlib1g-dev libpng-dev wait-for-it
 RUN docker-php-ext-install gd exif pdo pdo_mysql
 RUN a2enmod rewrite
