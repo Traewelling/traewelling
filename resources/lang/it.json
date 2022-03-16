@@ -10,7 +10,7 @@
     "about.no-train-heading": "Perché il mio treno non è presente nell'elenco?",
     "about.points-heading": "Come vengono calcolati i punti?",
     "about.productclass": "Categoria di prodotto",
-    "about.regional": "Treno regionale/regionale veloce",
+    "about.regional": "Treno regionale/veloce",
     "about.suburban": "Treno suburbano, traghetto",
     "about.tram": "Tram / tranvia, autobus, metropolitana",
     "about.who-heading": "Chi si occupa dello sviluppo di Träwelling?",
@@ -512,5 +512,8 @@
     "time.minutes.short": "min",
     "time.hours.short": "h",
     "time.days.short": "g",
-    "time.months": "mesi"
+    "time.months": "mesi",
+    "settings.visibility.hide": "Nascondere automaticamente i check in dopo",
+    "empty-input-disable-function": "Lasciare vuoto questo campo per disattivare la funzione.",
+    "settings.visibility.hide.explain": "I tuoi check in saranno messi in privato dopo i giorni da te specificati, in modo che solo tu possa vederli."
 }
