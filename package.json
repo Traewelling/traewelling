@@ -28,7 +28,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.0.0",
         "@tarekraafat/autocomplete.js": "^10.2.6",
-        "@websanova/vue-auth": "^4.1.11",
+        "@websanova/vue-auth": "^4.1.12",
         "apexcharts": "^3.33.2",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
@@ -40,7 +40,7 @@
         "leaflet": "^1.7.1",
         "litepicker": "^2.0.11",
         "marked": "^4.0.12",
-        "mdb-ui-kit": "^3.10.2",
+        "mdb-ui-kit": "^3.11.0",
         "moment": "^2.29.1",
         "momentjs": "^2.0.0",
         "notyf": "^3.10.0",
