@@ -169,7 +169,8 @@
     'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
     'startIBNR' => $departure->stop->id,
-    'departure' => $departure->plannedWhen]) }}">
+    'departure' => $departure->plannedWhen, 
+    'userId' => $user->id]) }}">
                                                 <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
                                             </a>
                                         </td>
