@@ -492,5 +492,9 @@
     "support.email-required": "Il te faut avoir une adresse e-mail vérifiée pour envoyer une demande de support. Sinon on ne peut pas te reprendre.",
     "settings.follower.no-requests": "Tu n‘as aucune demande de suivre.",
     "generic.why": "Pourquoi ?",
-    "transport_types.taxi": "Taxi"
+    "transport_types.taxi": "Taxi",
+    "settings.ics.modal": "Jetons ICS délivré",
+    "settings.revoke-token.success": "L'accès est révoqué",
+    "settings.ics.descriptor": "Ici tu peux gérer ton lien ICS. C'est pour montrer tes trajets précédents dans un calendrier qui le soutient.",
+    "support.answer": "On va te répondre dès que possible. La réponse est envoyé à l'adresse mail :address."
 }
