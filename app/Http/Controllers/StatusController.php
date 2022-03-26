@@ -12,6 +12,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -72,7 +74,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function(Status $status) {
-                                  return request()?->user()->can('view', $status);
+                                  return Gate::inspect(ability: 'view', arguments: $status)->allowed();
                               })
                               ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
