@@ -74,7 +74,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function(Status $status) {
-                                  return Gate::inspect(ability: 'view', arguments: $status)->allowed();
+                                  return Gate::allows('view', $status);
                               })
                               ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
