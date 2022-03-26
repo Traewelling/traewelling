@@ -43,7 +43,7 @@ return new class extends Migration
         "FixBus" => HafasTravelType::NATIONAL,
         "FUN"    => HafasTravelType::REGIONAL, //Standseilbahn
         "GEX"    => HafasTravelType::REGIONAL_EXP, //Glacier Express
-        "IC"     => HafasTravelType::NATIONAL_EXPRESS,
+        "IC"     => HafasTravelType::NATIONAL,
         "ICB"    => HafasTravelType::NATIONAL, //InterCity-Bus
         "ICE"    => HafasTravelType::NATIONAL_EXPRESS,
         "ICN"    => HafasTravelType::NATIONAL, //InterCity Neigezug
