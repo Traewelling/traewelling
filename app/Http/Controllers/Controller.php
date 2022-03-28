@@ -19,7 +19,7 @@ class Controller extends BaseController
      * @param Carbon|null $arrival
      *
      * @return int|null
-     * @deprecated This function is only used in TransportController::TrainCheckin and ::TrainTrip which is both
+     * @deprecated This function is only used in TransportController::TrainTrip which is
      *             deprecated and replaced with other functions
      */
     public static function searchForId(

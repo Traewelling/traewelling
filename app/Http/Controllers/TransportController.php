@@ -2,30 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
-use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
-use App\Exceptions\TrainCheckinAlreadyExistException;
-use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\Social\MastodonController;
-use App\Http\Controllers\Backend\Social\TwitterController;
-use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Resources\HafasTripResource;
-use App\Models\Event;
-use App\Models\HafasTrip;
 use App\Models\PolyLine;
-use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
-use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
@@ -161,185 +147,6 @@ class TransportController extends Controller
             throw new StationNotOnTripException();
         }
         return new HafasTripResource($hafasTrip);
-    }
-
-    /**
-     * @param                  $tripId
-     * @param                  $start
-     * @param                  $destination
-     * @param                  $body
-     * @param                  $user
-     * @param Business         $business
-     * @param                  $tweetCheck
-     * @param                  $tootCheck
-     * @param StatusVisibility $visibility
-     * @param int|null         $eventId
-     * @param Carbon|null      $departure
-     * @param Carbon|null      $arrival
-     *
-     * @return array
-     * @throws CheckInCollisionException
-     * @throws HafasException
-     * @throws NotConnectedException
-     * @throws StationNotOnTripException
-     * @throws TrainCheckinAlreadyExistException
-     * @deprecated replaced by createTrainCheckin()
-     */
-    #[ArrayShape([
-        'success'              => "bool",
-        'statusId'             => "int",
-        'points'               => "int",
-        'alsoOnThisConnection' => Collection::class,
-        'lineName'             => "string",
-        'distance'             => "float",
-        'duration'             => "float",
-        'event'                => "mixed"
-    ])]
-    public static function TrainCheckin(
-        $tripId,
-        $start,
-        $destination,
-        $body,
-        $user,
-        Business $business,
-        $tweetCheck,
-        $tootCheck,
-        StatusVisibility $visibility,
-        int $eventId = null,
-        Carbon $departure = null,
-        Carbon $arrival = null
-    ): array {
-        $hafasTrip = HafasTrip::where('trip_id', $tripId)->first();
-        $stopovers = json_decode($hafasTrip->stopovers, true);
-        $offset1   = self::searchForId($start, $stopovers, $departure);
-        $offset2   = self::searchForId($destination, $stopovers, null, $arrival);
-        if ($offset1 === null || $offset2 === null) {
-            throw new StationNotOnTripException();
-        }
-        $originAttributes      = $stopovers[$offset1];
-        $destinationAttributes = $stopovers[$offset2];
-
-        $originStation      = HafasController::getTrainStation(
-            $originAttributes['stop']['id'],
-            $originAttributes['stop']['name'],
-            $originAttributes['stop']['location']['latitude'],
-            $originAttributes['stop']['location']['longitude']
-        );
-        $destinationStation = HafasController::getTrainStation(
-            $destinationAttributes['stop']['id'],
-            $destinationAttributes['stop']['name'],
-            $destinationAttributes['stop']['location']['latitude'],
-            $destinationAttributes['stop']['location']['longitude']
-        );
-
-        $departureStopover = $hafasTrip->stopoversNEW
-            ->where('train_station_id', $originStation->id)
-            ->where('departure_planned', $departure)
-            ->first();
-        $arrivalStopover   = $hafasTrip->stopoversNEW
-            ->where('train_station_id', $destinationStation->id)
-            ->where('arrival_planned', $arrival)
-            ->first();
-
-        $distanceInMeters = 0;
-        if ($departureStopover != null && $arrivalStopover != null) {
-            $distanceInMeters = GeoController::calculateDistance($hafasTrip, $departureStopover, $arrivalStopover);
-        }
-
-        $points = PointsCalculationController::calculatePoints(
-            $distanceInMeters,
-            $hafasTrip->category,
-            Carbon::parse($stopovers[$offset1]['departure']),
-            Carbon::parse($stopovers[$offset2]['arrival']),
-        )['points'];
-
-        $departure = Carbon::parse($stopovers[$offset1]['departure']);
-        $departure->subSeconds($stopovers[$offset1]['departureDelay'] ?? 0);
-
-        if ($stopovers[$offset2]['arrival']) {
-            $arrival = Carbon::parse($stopovers[$offset2]['arrival']);
-            $arrival->subSeconds($stopovers[$offset2]['arrivalDelay'] ?? 0);
-        } else {
-            $arrival = Carbon::parse($stopovers[$offset2]['departure']);
-            $arrival->subSeconds($stopovers[$offset2]['departureDelay'] ?? 0);
-        }
-
-        $overlapping = self::getOverlappingCheckIns($user, $departure, $arrival);
-        if ($overlapping->count() > 0) {
-            throw new CheckInCollisionException($overlapping->first());
-        }
-
-        $status = Status::create([
-                                     'user_id'    => $user->id,
-                                     'body'       => $body,
-                                     'business'   => $business,
-                                     'visibility' => $visibility
-                                 ]);
-
-        $plannedDeparture = Carbon::parse(
-            $stopovers[$offset1]['plannedDeparture'] ?? $stopovers[$offset2]['plannedArrival']
-        );
-        $plannedArrival   = Carbon::parse(
-            $stopovers[$offset2]['plannedArrival'] ?? $stopovers[$offset2]['plannedDeparture']
-        );
-
-        try {
-            $trainCheckin = TrainCheckin::create([
-                                                     'status_id'   => $status->id,
-                                                     'user_id'     => $user->id,
-                                                     'trip_id'     => $tripId,
-                                                     'origin'      => $originStation->ibnr,
-                                                     'destination' => $destinationStation->ibnr,
-                                                     'distance'    => $distanceInMeters,
-                                                     'points'      => $points,
-                                                     'departure'   => $plannedDeparture,
-                                                     'arrival'     => $plannedArrival
-                                                 ]);
-        } catch (QueryException $exception) {
-            $errorCode = $exception->errorInfo[1];
-            if ($errorCode == 1062) {
-                //duplicate entry
-                $status->delete();
-                throw new TrainCheckinAlreadyExistException();
-            }
-        }
-        $user->load(['statuses']);
-
-        // Let's connect our statuses and the events
-        $event = null;
-        if ($eventId !== null) {
-            $event = Event::find($eventId);
-            if ($event !== null && Carbon::now()->isBetween(new Carbon($event->begin), new Carbon($event->end))) {
-                $status->update([
-                                    'event_id' => $event->id
-                                ]);
-            }
-        }
-
-        if (isset($tootCheck) && $tootCheck) {
-            MastodonController::postStatus($status);
-        }
-        if (isset($tweetCheck) && $tweetCheck) {
-            TwitterController::postStatus($status);
-        }
-
-        // check for other people on this train
-        foreach ($trainCheckin->alsoOnThisConnection as $otherStatus) {
-            if ($otherStatus->user->can('view', $status)) {
-                $otherStatus->user->notify(new UserJoinedConnection($status));
-            }
-        }
-
-        return [
-            'success'              => true,
-            'statusId'             => $status->id,
-            'points'               => $trainCheckin->points,
-            'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
-            'lineName'             => $hafasTrip->linename,
-            'distance'             => $trainCheckin->distance,
-            'duration'             => $trainCheckin->duration,
-            'event'                => $event ?? null
-        ];
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
@@ -56,7 +57,7 @@ class CheckinTest extends TestCase
         // amount of assertions, no matter what time how the trains are moving.
         $this->assertTrue(array_reduce($departures->toArray(), function($carry, $hafastrip) use ($requestDate) {
             return $carry && $this->isCorrectHafasTrip($hafastrip, $requestDate);
-        }, true));
+        },                             true));
     }
 
     /**
@@ -310,19 +311,13 @@ class CheckinTest extends TestCase
         );
 
         try {
-            TransportController::TrainCheckin(
-                $baseTrip->trip_id,
-                $baseTrip->origin,
-                $baseTrip->destination,
-                '',
-                $user,
-                Business::PRIVATE,
-                0,
-                0,
-                StatusVisibility::PUBLIC,
-                0,
-                Carbon::parse($baseTrip->departure),
-                Carbon::parse($baseTrip->arrival)
+            TrainCheckinController::checkin(
+                user:        $user,
+                hafasTrip:   $baseTrip,
+                origin:      $baseTrip->origin,
+                departure:   $baseTrip->departure,
+                destination: $baseTrip->destination,
+                arrival:     $baseTrip->arrival,
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -331,19 +326,13 @@ class CheckinTest extends TestCase
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                TransportController::TrainCheckin(
-                    $trip->trip_id,
-                    $trip->origin,
-                    $trip->destination,
-                    '',
-                    $user,
-                    Business::PRIVATE,
-                    0,
-                    0,
-                    StatusVisibility::PUBLIC,
-                    0,
-                    Carbon::parse($trip->departure),
-                    Carbon::parse($trip->arrival)
+                TrainCheckinController::checkin(
+                    user:        $user,
+                    hafasTrip:   $trip,
+                    origin:      $trip->origin,
+                    departure:   $trip->departure,
+                    destination: $trip->destination,
+                    arrival:     $trip->arrival,
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
@@ -357,19 +346,13 @@ class CheckinTest extends TestCase
         //check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                TransportController::TrainCheckin(
-                    $trip->trip_id,
-                    $trip->origin,
-                    $trip->destination,
-                    '',
-                    $user,
-                    Business::PRIVATE,
-                    0,
-                    0,
-                    StatusVisibility::PUBLIC,
-                    0,
-                    Carbon::parse($trip->departure),
-                    Carbon::parse($trip->arrival)
+                TrainCheckinController::checkin(
+                    user:        $user,
+                    hafasTrip:   $trip,
+                    origin:      $trip->origin,
+                    departure:   $trip->departure,
+                    destination: $trip->destination,
+                    arrival:     $trip->arrival,
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {

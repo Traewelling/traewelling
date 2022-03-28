@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -131,40 +131,42 @@ class TransportController extends ResponseController
         }
 
         try {
-            $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $hafasTrip->trip_id,
-                $request->input('start'),
-                $request->input('destination'),
-                $request->input('body'),
-                auth()->user(),
-                Business::PRIVATE,
-                $request->input('tweet'),
-                $request->input('toot'),
-                StatusVisibility::PUBLIC,
-                0,
-                isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
-                isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
+            $origin = TrainStation::where('ibnr', $request->input('start'))->first();;
+            $departure   = isset($request->departure) ? Carbon::parse($request->input('departure')) : null; //Todo: Problem -> benötigt die Uhrzeit
+            $destination = TrainStation::where('ibnr', $request->input('destination'))->first();
+            $arrival     = isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null; //Todo: Problem -> benötigt die Uhrzeit
+
+            $backendResponse = TrainCheckinController::checkin(
+                user:        Auth::user(),
+                hafasTrip:   $hafasTrip,
+                origin:      $origin,
+                departure:   $departure,
+                destination: $destination,
+                arrival:     $arrival,
+                body:        $request->input('body'),
+                postOnTwitter: isset($request->tweet),
+                postOnMastodon: isset($request->toot)
             );
 
+            $trainCheckin = $backendResponse['status']->trainCheckin;
+
             return $this->sendResponse([
-                                           'distance'             => $trainCheckinResponse['distance'] / 1000,
-                                           'duration'             => $trainCheckinResponse['duration'],
-                                           'statusId'             => $trainCheckinResponse['statusId'],
-                                           'points'               => $trainCheckinResponse['points'],
-                                           'lineName'             => $trainCheckinResponse['lineName'],
-                                           'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
+                                           'distance'             => $trainCheckin['distance'] / 1000,
+                                           'duration'             => $trainCheckin['duration'],
+                                           'statusId'             => $backendResponse['status']->id,
+                                           'points'               => $trainCheckin['points'],
+                                           'lineName'             => $trainCheckin['lineName'],
+                                           'alsoOnThisConnection' => $trainCheckin['alsoOnThisConnection']
                                                ->map(function($status) {
                                                    return $status->user;
                                                })
                                        ]);
 
-        } catch (CheckInCollisionException $e) {
-
+        } catch (CheckInCollisionException $exception) {
             return $this->sendError([
-                                        'status_id' => $e->getCollision()->status_id,
-                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
+                                        'status_id' => $exception->getCollision()->status_id,
+                                        'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
                                     ], 409);
-
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip.', 400);
         } catch (Throwable $exception) {

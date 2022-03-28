@@ -10,7 +10,11 @@ use App\Exceptions\HafasException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Models\Event;
+use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -133,31 +137,37 @@ class FrontendTransportController extends Controller
 
     public function TrainCheckin(Request $request): RedirectResponse {
         $validated = $request->validate([
+                                            'tripID'            => ['required'],
+                                            'start'             => ['required', 'numeric'], //Origin station IBNR
+                                            'departure'         => ['required', 'date'],
+                                            'destination'       => ['required', 'numeric'], //Destination station IBNR
+                                            'arrival'           => ['required', 'date'],
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
                                             'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
                                             'tweet_check'       => 'max:2',
                                             'toot_check'        => 'max:2',
-                                            'event'             => 'integer',
-                                            'departure'         => ['required', 'date'],
-                                            'arrival'           => ['required', 'date'],
+                                            'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                         ]);
 
         try {
-            $trainCheckin = TransportBackend::TrainCheckin(
-                tripId:      $request->tripID,
-                start:       $request->start,
-                destination: $request->destination,
-                body:        $request->body,
+            $backendResponse = TrainCheckinController::checkin(
                 user:        Auth::user(),
-                business:    Business::from($validated['business_check']),
-                tweetCheck:  $request->tweet_check,
-                tootCheck:   $request->toot_check,
-                visibility:  StatusVisibility::from($validated['checkinVisibility']),
-                eventId:     $request->event,
-                departure:   Carbon::parse($request->departure),
-                arrival:     Carbon::parse($request->arrival),
+                hafasTrip:   HafasTrip::where('trip_id', $validated['tripID'])->first(),
+                origin:      TrainStation::where('ibnr', $validated['start'])->first(),
+                departure:   Carbon::parse($validated['departure']),
+                destination: TrainStation::where('ibnr', $validated['destination'])->first(),
+                arrival:     Carbon::parse($validated['arrival']),
+                tripType:    Business::from($validated['business_check']),
+                visibility:  StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC),
+                body:        $validated['body'] ?? null,
+                event:       isset($validated['event']) ? Event::find($validated['event']) : null,
+                // force:       false, //TODO
+                postOnTwitter: isset($request->tweet_check),
+                postOnMastodon: isset($request->toot_check)
             );
+
+            $trainCheckin = $backendResponse['status']->trainCheckin;
 
             return redirect()->route('dashboard')->with('checkin-success', [
                 'distance'             => $trainCheckin['distance'],

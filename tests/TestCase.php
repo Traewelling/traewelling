@@ -2,15 +2,18 @@
 
 namespace Tests;
 
-use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\Event;
+use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -99,7 +102,7 @@ abstract class TestCase extends BaseTestCase
      * @param StatusVisibility $statusVisibility
      *
      * @return array|null
-     * @throws TrainCheckinAlreadyExistException
+     * @throws TrainCheckinAlreadyExistException|NotConnectedException
      */
     #[ArrayShape([
         'success'              => "bool",
@@ -170,24 +173,44 @@ abstract class TestCase extends BaseTestCase
 
         // WHEN: User tries to check-in
         try {
-            return TransportController::TrainCheckin(
-                tripId:      $trip['train']['trip_id'],
-                start:       $trip['stopovers'][0]['stop']['id'],
-                destination: end($trip['stopovers'])['stop']['id'],
-                body:        '',
+            $hafasTrip   = HafasTrip::where('trip_id', $trip['train']['trip_id'])->firstOrFail();
+            $origin      = TrainStation::where('ibnr', $trip['stopovers'][0]['stop']['id'])->firstOrFail();
+            $departure   = $hafasTrip->stopoversNew->where('train_station_id', $origin->id)->firstOrFail()->departure_planned;
+            $destination = TrainStation::where('ibnr', end($trip['stopovers'])['stop']['id'])->firstOrFail();
+            $arrival     = $hafasTrip->stopoversNew->where('train_station_id', $destination->id)->firstOrFail()->arrival_planned;
+            $event       = $eventId === null ? null : Event::find($eventId);
+
+            $backendResponse = TrainCheckinController::checkin(
                 user:        $user,
-                business:    Business::PRIVATE,
-                tweetCheck:  0,
-                tootCheck:   0,
+                hafasTrip:   $hafasTrip,
+                origin:      $origin,
+                departure:   $departure,
+                destination: $destination,
+                arrival:     $arrival,
                 visibility:  $statusVisibility,
-                eventId:     $eventId
+                event:       $event
             );
+
+            $status       = $backendResponse['status'];
+            $trainCheckin = $status->trainCheckin;
+
+            //Legacy return to be compatible with old tests
+            return [
+                'success'              => true,
+                'statusId'             => $status->id,
+                'points'               => $trainCheckin->points,
+                'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
+                'lineName'             => $hafasTrip->linename,
+                'distance'             => $trainCheckin->distance,
+                'duration'             => $trainCheckin->duration,
+                'event'                => $event
+            ];
         } catch (StationNotOnTripException) {
             $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
         } catch (CheckInCollisionException) {
             $this->markTestSkipped("failure for " . $timestamp->format('Y-m-d H:i:s') . ": Collision");
-        } catch (HafasException $e) {
-            $this->markTestSkipped($e->getMessage());
+        } catch (HafasException $exception) {
+            $this->markTestSkipped($exception->getMessage());
         }
     }
 
