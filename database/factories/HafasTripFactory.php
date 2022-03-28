@@ -121,7 +121,7 @@ class HafasTripFactory extends Factory
             if (!isset($hafasTrip->stopovers)) {
                 return;
             }
-            $stopOvers = json_decode($hafasTrip->stopovers);
+            $stopOvers = json_decode($hafasTrip->stopovers, false, 512, JSON_THROW_ON_ERROR);
             $startTime = $hafasTrip->departure;
             $endTime   = $hafasTrip->arrival;
             $cnt       = count($stopOvers);
