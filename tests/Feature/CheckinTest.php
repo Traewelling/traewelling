@@ -12,6 +12,7 @@ use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -532,7 +533,12 @@ class CheckinTest extends TestCase
         }
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
+        dump($trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr);
+        dump($trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String());
+        dump($trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr);
+        dump($trip['hafasTrip']->stopoversNew->last()->departure_planned->toIso8601String());
+
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
@@ -541,10 +547,10 @@ class CheckinTest extends TestCase
                              'tripID'            => $departure->tripId,
                              // Westkreuz is right behind Messe Nord / ICC. We hop in there.
                              'start'             => $trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr,
-                             'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned,
+                             'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String(),
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination'       => $trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr, // Tempelhof
-                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->departure_planned,
+                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->departure_planned->toIso8601String(),
                              'checkinVisibility' => StatusVisibility::PUBLIC->value,
                              'business_check'    => Business::PRIVATE->value,
                          ]);

@@ -66,14 +66,13 @@ abstract class TrainCheckinController extends Controller
 
         try {
             $trainCheckinResponse = self::createTrainCheckin(
-                status:    $status,
-                trip:      $hafasTrip,
-                entryStop: $origin->id,
-                exitStop:  $destination->id,
-                departure: $departure,
-                arrival:   $arrival,
-                force:     $force,
-                ibnr:      false
+                status:      $status,
+                trip:        $hafasTrip,
+                origin:      $origin,
+                destination: $destination,
+                departure:   $departure,
+                arrival:     $arrival,
+                force:       $force,
             );
 
             if ($postOnTwitter && $user->socialProfile?->twitter_id !== null) {
@@ -100,31 +99,22 @@ abstract class TrainCheckinController extends Controller
         'points'               => PointsCalculationResource::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
-    public static function createTrainCheckin(
-        Status    $status,
-        HafasTrip $trip,
-        int       $entryStop,
-        int       $exitStop,
-        Carbon    $departure = null,
-        Carbon    $arrival = null,
-        bool      $force = false,
-        bool      $ibnr = false,
+    private static function createTrainCheckin(
+        Status       $status,
+        HafasTrip    $trip,
+        TrainStation $origin,
+        TrainStation $destination,
+        Carbon       $departure,
+        Carbon       $arrival,
+        bool         $force = false,
     ): array {
         $trip->load('stopoversNEW');
 
-        if (!$ibnr) {
-            $firstStop = $trip->stopoversNEW->where('train_station_id', $entryStop)
-                                            ->where('departure_planned', $departure)->first();
+        $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
+                                        ->where('departure_planned', $departure)->first();
 
-            $lastStop = $trip->stopoversNEW->where('train_station_id', $exitStop)
-                                           ->where('arrival_planned', $arrival)->first();
-        } else {
-            $firstStop = $trip->stopoversNEW->where('trainStation.ibnr', $entryStop)
-                                            ->where('departure_planned', $departure)->first();
-
-            $lastStop = $trip->stopoversNEW->where('trainStation.ibnr', $exitStop)
-                                           ->where('arrival_planned', $arrival)->first();
-        }
+        $lastStop = $trip->stopoversNEW->where('train_station_id', $destination->id)
+                                       ->where('arrival_planned', $arrival)->first();
 
         if (empty($firstStop) || empty($lastStop)) {
             throw new StationNotOnTripException();
