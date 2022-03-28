@@ -6,6 +6,7 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JsonException;
@@ -144,7 +145,24 @@ class HafasTripFactory extends Factory
             $stopOvers[$cnt - 1]->departure        = $endTime->format('c');
             $stopOvers[$cnt - 1]->plannedDeparture = $endTime->format('c');
 
-            $hafasTrip->update(['stopovers' => json_encode($stopOvers)]);
+            $hafasTrip->update(['stopovers' => json_encode($stopOvers, JSON_THROW_ON_ERROR)]);
+
+            foreach ($stopOvers as $legacyStopover) {
+                TrainStopover::create([
+                                          'trip_id'                    => $hafasTrip->trip_id,
+                                          'train_station_id'           => TrainStation::where('ibnr', $legacyStopover->stop->id)->first()->id,
+                                          'arrival_planned'            => $legacyStopover->plannedArrival,
+                                          'arrival_real'               => $legacyStopover->arrival,
+                                          'arrival_platform_planned'   => $legacyStopover->plannedArrivalPlatform,
+                                          'arrival_platform_real'      => $legacyStopover->arrivalPlatform,
+                                          'departure_planned'          => $legacyStopover->plannedDeparture,
+                                          'departure_real'             => $legacyStopover->departure,
+                                          'departure_platform_planned' => $legacyStopover->plannedDeparturePlatform,
+                                          'departure_platform_real'    => $legacyStopover->departurePlatform,
+                                          'cancelled'                  => false,
+                                      ]);
+            }
+            $hafasTrip->refresh();
         });
     }
 }

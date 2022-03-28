@@ -183,7 +183,7 @@ class CheckinTest extends TestCase
             }
         }
         $departure = $trainStationboard['departures'][$i];
-        $this->isCorrectHafasTrip($departure, $timestamp);
+        self::isCorrectHafasTrip($departure, $timestamp);
 
         try {
             // Third: Get the trip information
@@ -206,8 +206,8 @@ class CheckinTest extends TestCase
                              'tripID'            => $departure->tripId,
                              'start'             => $ibnr,
                              'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
-                             'departure'         => Carbon::parse($departure->plannedWhen),
-                             'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival']),
+                             'departure'         => Carbon::parse($departure->plannedWhen)->toIso8601String(),
+                             'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival'])->toIso8601String(),
                              'checkinVisibility' => StatusVisibility::PUBLIC->value,
                              'business_check'    => Business::PRIVATE->value,
                          ]);
@@ -314,9 +314,9 @@ class CheckinTest extends TestCase
             TrainCheckinController::checkin(
                 user:        $user,
                 hafasTrip:   $baseTrip,
-                origin:      $baseTrip->origin,
+                origin:      $baseTrip->originStation,
                 departure:   $baseTrip->departure,
-                destination: $baseTrip->destination,
+                destination: $baseTrip->destinationStation,
                 arrival:     $baseTrip->arrival,
             );
         } catch (HafasException $e) {
@@ -329,9 +329,9 @@ class CheckinTest extends TestCase
                 TrainCheckinController::checkin(
                     user:        $user,
                     hafasTrip:   $trip,
-                    origin:      $trip->origin,
+                    origin:      $trip->originStation,
                     departure:   $trip->departure,
-                    destination: $trip->destination,
+                    destination: $trip->destinationStation,
                     arrival:     $trip->arrival,
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
@@ -349,9 +349,9 @@ class CheckinTest extends TestCase
                 TrainCheckinController::checkin(
                     user:        $user,
                     hafasTrip:   $trip,
-                    origin:      $trip->origin,
+                    origin:      $trip->originStation,
                     departure:   $trip->departure,
-                    destination: $trip->destination,
+                    destination: $trip->destinationStation,
                     arrival:     $trip->arrival,
                 );
                 $this->assertTrue(true);
@@ -540,11 +540,11 @@ class CheckinTest extends TestCase
                              'body'              => 'Example Body',
                              'tripID'            => $departure->tripId,
                              // Westkreuz is right behind Messe Nord / ICC. We hop in there.
-                             'start'             => $trip['stopovers'][0]['stop']['id'],
-                             'departure'         => $trip['stopovers'][0]['departure'],
+                             'start'             => $trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr,
+                             'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned,
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-                             'destination'       => $trip['stopovers'][8]['stop']['id'], // Tempelhof
-                             'arrival'           => $trip['stopovers'][8]['arrival'],
+                             'destination'       => $trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr, // Tempelhof
+                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->departure_planned,
                              'checkinVisibility' => StatusVisibility::PUBLIC->value,
                              'business_check'    => Business::PRIVATE->value,
                          ]);

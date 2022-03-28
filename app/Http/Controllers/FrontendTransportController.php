@@ -170,12 +170,12 @@ class FrontendTransportController extends Controller
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
             return redirect()->route('dashboard')->with('checkin-success', [
-                'distance'             => $trainCheckin['distance'],
-                'duration'             => $trainCheckin['duration'],
-                'points'               => $trainCheckin['points'],
-                'lineName'             => $trainCheckin['lineName'],
-                'alsoOnThisConnection' => $trainCheckin['alsoOnThisConnection'],
-                'event'                => $trainCheckin['event']
+                'distance'             => $trainCheckin->distance,
+                'duration'             => $trainCheckin->duration,
+                'points'               => $trainCheckin->points,
+                'lineName'             => $trainCheckin->HafasTrip->linename,
+                'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
+                'event'                => $trainCheckin->event
             ]);
 
         } catch (CheckInCollisionException $exception) {
@@ -203,7 +203,6 @@ class FrontendTransportController extends Controller
                 ->with('error', __('messages.exception.general'));
 
         }
-
     }
 
     public function setTrainHome(Request $request): RedirectResponse {

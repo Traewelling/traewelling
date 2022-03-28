@@ -68,12 +68,12 @@ abstract class TrainCheckinController extends Controller
             $trainCheckinResponse = self::createTrainCheckin(
                 status:    $status,
                 trip:      $hafasTrip,
-                entryStop: $origin->ibnr,
-                exitStop:  $destination->ibnr,
+                entryStop: $origin->id,
+                exitStop:  $destination->id,
                 departure: $departure,
                 arrival:   $arrival,
                 force:     $force,
-                ibnr:      true
+                ibnr:      false
             );
 
             if ($postOnTwitter && $user->socialProfile?->twitter_id !== null) {

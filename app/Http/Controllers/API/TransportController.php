@@ -131,10 +131,20 @@ class TransportController extends ResponseController
         }
 
         try {
-            $origin = TrainStation::where('ibnr', $request->input('start'))->first();;
-            $departure   = isset($request->departure) ? Carbon::parse($request->input('departure')) : null; //Todo: Problem -> benötigt die Uhrzeit
+            $origin = TrainStation::where('ibnr', $request->input('start'))->first();
+            if (isset($request->departure)) {
+                $departure = Carbon::parse($request->input('departure'));
+            } else {
+                //Legacy: Get best matching timestamp from stopovers... it's just APIv0
+                $departure = $hafasTrip->stopoversNEW->where('train_station_id', $origin->id)->first()->departure;
+            }
             $destination = TrainStation::where('ibnr', $request->input('destination'))->first();
-            $arrival     = isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null; //Todo: Problem -> benötigt die Uhrzeit
+            if (isset($request->arrival)) {
+                $arrival = Carbon::parse($request->input('arrival'));
+            } else {
+                //Legacy: Get best matching timestamp from stopovers... it's just APIv0
+                $arrival = $hafasTrip->stopoversNEW->where('train_station_id', $destination->id)->first()->departure;
+            }
 
             $backendResponse = TrainCheckinController::checkin(
                 user:        Auth::user(),
