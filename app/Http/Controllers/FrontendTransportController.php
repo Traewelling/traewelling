@@ -95,20 +95,19 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainTrip(Request $request): Renderable|RedirectResponse {
-
-        $request->validate([
-                               'tripID'    => ['required'],
-                               'lineName'  => ['required'],
-                               'start'     => ['required', 'numeric'],
-                               'departure' => ['required', 'date']
-                           ]);
+        $validated = $request->validate([
+                                            'tripID'    => ['required'],
+                                            'lineName'  => ['required'],
+                                            'start'     => ['required', 'numeric'],
+                                            'departure' => ['required', 'date']
+                                        ]);
 
         try {
             $TrainTripResponse = TransportBackend::TrainTrip(
-                $request->tripID,
-                $request->lineName,
-                $request->start,
-                Carbon::parse($request->departure)
+                $validated['tripID'],
+                $validated['lineName'],
+                $validated['start'],
+                Carbon::parse($validated['departure'])
             );
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
@@ -149,7 +148,7 @@ class FrontendTransportController extends Controller
                                             'toot_check'        => 'max:2',
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                         ]);
-
+        dump($validated);
         try {
             $backendResponse = TrainCheckinController::checkin(
                 user:        Auth::user(),

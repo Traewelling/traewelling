@@ -109,7 +109,7 @@ abstract class TrainCheckinController extends Controller
         bool         $force = false,
     ): array {
         $trip->load('stopoversNEW');
-
+        
         $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
                                         ->where('departure_planned', $departure)->first();
 

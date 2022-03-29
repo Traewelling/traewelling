@@ -211,7 +211,6 @@ abstract class HafasController extends Controller
                                                 ]);
         } catch (GuzzleException $e) {
             throw new HafasException($e->getMessage());
-            throw new HafasException($e->getMessage());
         }
     }
 
@@ -223,12 +222,8 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $trip = HafasTrip::where('trip_id', $tripID)->first();
-        if ($trip !== null) {
-            return $trip;
-        }
-
-        return self::fetchHafasTrip($tripID, $lineName);
+        $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
 
     /**
@@ -252,7 +247,7 @@ abstract class HafasController extends Controller
             //sometimes DB-Rest gives 502 Bad Request
             throw new HafasException(__('messages.exception.generalHafas'));
         }
-        $tripJson = json_decode($tripResponse->getBody()->getContents());
+        $tripJson = json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
 
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
@@ -294,28 +289,25 @@ abstract class HafasController extends Controller
 
         foreach ($tripJson->stopovers as $stopover) {
             $hafasStop = self::parseHafasStopObject($stopover->stop);
-
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
             //so.. just save data we really got. :)
             $updatePayload = [
-                'arrival_planned'            => $stopover->plannedArrival,
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
-                'departure_planned'          => $stopover->plannedDeparture,
-                'departure_platform_planned' => $stopover->plannedDeparturePlatform
+                'departure_platform_planned' => $stopover->plannedDeparturePlatform,
             ];
             //remove "null" values
             $updatePayload = array_filter($updatePayload, 'strlen');
 
-            if ($stopover->arrival != null && Carbon::parse($stopover->arrival)->isFuture()) {
-                $updatePayload['arrival_real'] = $stopover->arrival;
-                if ($stopover->arrivalPlatform != null) {
+            if ($stopover->arrival !== null && Carbon::parse($stopover->arrival)->isFuture()) {
+                $updatePayload['arrival_real'] = Carbon::parse($stopover->arrival);
+                if ($stopover->arrivalPlatform !== null) {
                     $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
                 }
             }
-            if ($stopover->departure != null && Carbon::parse($stopover->departure)->isFuture()) {
-                $updatePayload['departure_real'] = $stopover->departure;
-                if ($stopover->departurePlatform != null) {
+            if ($stopover->departure !== null && Carbon::parse($stopover->departure)->isFuture()) {
+                $updatePayload['departure_real'] = Carbon::parse($stopover->departure);
+                if ($stopover->departurePlatform !== null) {
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
@@ -323,8 +315,10 @@ abstract class HafasController extends Controller
             try {
                 TrainStopover::updateOrCreate(
                     [
-                        'trip_id'          => $tripID,
-                        'train_station_id' => $hafasStop->id
+                        'trip_id'           => $tripID,
+                        'train_station_id'  => $hafasStop->id,
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival) : null,
+                        'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture) : null,
                     ],
                     $updatePayload
                 );
