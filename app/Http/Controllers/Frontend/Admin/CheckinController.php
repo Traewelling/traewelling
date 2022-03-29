@@ -31,16 +31,20 @@ class CheckinController
 
     public function renderStationboard(Request $request): View|RedirectResponse {
         $validated = $request->validate([
-                                            'station' => ['nullable'],
-                                            'when'    => ['nullable', 'date'],
-                                            'filter'  => ['nullable', new Enum(TravelType::class)],
-                                            'userId'  => ['nullable', 'numeric']
+                                            'station'   => ['nullable'],
+                                            'when'      => ['nullable', 'date'],
+                                            'filter'    => ['nullable', new Enum(TravelType::class)],
+                                            'userQuery' => ['nullable']
                                         ]);
 
         $user = Auth::user();
-        if (isset($validated['userId'])) {
+        if (isset($validated['userQuery'])) {
             try {
-                $user = User::findOrFail($validated['userId']);
+                if (is_numeric($validated['userQuery'])) {
+                    $user = User::findOrFail($validated['userQuery']);
+                } else {
+                    $user = User::where('username', 'like', '%' . $validated['userQuery'] . '%')->firstOrFail();
+                }
             } catch (ModelNotFoundException) {
                 return redirect()->back()->withErrors("User non-existent");
             }
@@ -103,10 +107,10 @@ class CheckinController
         }
 
         return view('admin.checkin.trip', [
-            'hafasTrip'    => $TrainTripResponse['hafasTrip'],
-            'events'       => EventBackend::activeEvents(),
-            'stopovers'    => $TrainTripResponse['stopovers'],
-            'user'         => $user,
+            'hafasTrip' => $TrainTripResponse['hafasTrip'],
+            'events'    => EventBackend::activeEvents(),
+            'stopovers' => $TrainTripResponse['stopovers'],
+            'user'      => $user,
         ]);
     }
 
