@@ -447,13 +447,11 @@ class CheckinTest extends TestCase
             $this->markTestSkipped($e->getMessage());
         }
 
-        // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'              => 'Example Body',
                              'tripID'            => $departure->tripId,
                              // Höhenstr ist die nächste Haltestelle hinter Schloss Cecilienhof. Dort steigen wir ein
                              'start'             => $trip['stopovers'][0]['stop']['id'],
@@ -534,11 +532,6 @@ class CheckinTest extends TestCase
 
         // GIVEN: A logged-in and gdpr-acked user
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
-        dump($trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr);
-        dump($trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String());
-        dump($trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr);
-        dump($trip['hafasTrip']->stopoversNew->last()->departure_planned->toIso8601String());
-
 
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
