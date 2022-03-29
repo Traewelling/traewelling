@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'post_social'       => env('POST_SOCIAL', true),
+    'post_social'       => env('POST_SOCIAL', false),
 
     # Twitter
     'twitter_redirect'  => env('TWITTER_REDIRECT'),
@@ -16,8 +16,8 @@ return [
     'mastodon_appname'  => env('MASTODON_APPNAME'),
 
     # DB_REST
-    'db_rest'           => env('DB_REST'),
-    'db_rest_timeout'   => env('DB_REST_TIMEOUT', 30),
+    'db_rest'           => env('DB_REST', 'https://v5.db.transport.rest/'),
+    'db_rest_timeout'   => env('DB_REST_TIMEOUT', 10),
     'base_points'       => [
         'train' => [
             'tram'            => env('BASE_POINTS_TRAIN_TRAM', 2),
