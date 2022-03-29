@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "077fedcc361ecb60d57745f862e114eb",
+    "content-hash": "0fa528325f61f46854a3be45bddce99c",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -10878,12 +10878,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "2fcd9551cd31a444bbc43d221d483fa658d4c21b"
+                "reference": "d18138cbf1c2143c21b29d58eac6e0bd0852db2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2fcd9551cd31a444bbc43d221d483fa658d4c21b",
-                "reference": "2fcd9551cd31a444bbc43d221d483fa658d4c21b",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/d18138cbf1c2143c21b29d58eac6e0bd0852db2b",
+                "reference": "d18138cbf1c2143c21b29d58eac6e0bd0852db2b",
                 "shasum": ""
             },
             "conflict": {
@@ -11029,7 +11029,10 @@
                 "ivankristianto/phpwhois": "<=4.3",
                 "jackalope/jackalope-doctrine-dbal": "<1.7.4",
                 "james-heinrich/getid3": "<1.9.21",
-                "joomla/archive": "<1.1.10",
+                "joomla/archive": "<1.1.12|>=2,<2.0.1",
+                "joomla/filesystem": "<1.6.2|>=2,<2.0.1",
+                "joomla/filter": "<1.4.4|>=2,<2.0.1",
+                "joomla/input": ">=2,<2.0.2",
                 "joomla/session": "<1.3.1",
                 "jsdecena/laracom": "<2.0.9",
                 "jsmitty12/phpwhois": "<5.1",
@@ -11335,7 +11338,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-26T01:31:07+00:00"
+            "time": "2022-03-29T17:10:39+00:00"
         },
         {
             "name": "spatie/backtrace",
@@ -11701,6 +11704,7 @@
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-sodium": "*",
         "php": "^8.1"

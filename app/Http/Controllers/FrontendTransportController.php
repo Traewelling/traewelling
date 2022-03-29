@@ -148,7 +148,7 @@ class FrontendTransportController extends Controller
                                             'toot_check'        => 'max:2',
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                         ]);
-        dump($validated);
+
         try {
             $backendResponse = TrainCheckinController::checkin(
                 user:        Auth::user(),
