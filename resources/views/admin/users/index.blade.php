@@ -7,12 +7,23 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title mb-4">Users</h5>
-
-
+                    <form class="row g-3">
+                        <div class="col-md-6">
+                            <label for="inputUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="inputUsername" name="query" value="{{$query}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputId" class="form-label">UserId</label>
+                            <input type="text" class="form-control" id="inputId" name="userId" value="{{$userId}}">
+                        </div>
+                        <div class="col-md-12 justify-content-end text-end">
+                            <button type="submit" class="btn btn-primary">Suchen</button>
+                        </div>
+                    </form>
                 </div>
             </div>
     </div>
-    <div class="row">
+    <div class="row mt-1">
         <div class="card">
             <div class="card-body">
                 <table class="table table-striped table-hover">
