@@ -56,6 +56,13 @@
                             Checkin
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.users') }}"
+                           class="nav-link text-white {{ request()->is('admin/users*') ? 'active' : '' }}">
+                            <i class="fas fa-users me-2" aria-hidden="true"></i>
+                            Users
+                        </a>
+                    </li>
                 </ul>
                 <hr>
                 <div class="dropdown">
