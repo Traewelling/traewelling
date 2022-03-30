@@ -20,7 +20,8 @@
                         <div class="row">
                             <div class="col">
                                 <label for="date" class="form-label">Wann</label>
-                                <input type="datetime-local" class="form-control" value="{{$when->toDateTimeString()}}"
+                                <input type="datetime-local" class="form-control"
+                                       value="{{($when ?? \Carbon\Carbon::now())->toDateTimeLocalString()}}"
                                        name="when" id="date">
                             </div>
                         </div>
@@ -33,19 +34,23 @@
                                     <label class="form-check-label" for="filter1">FV</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter2" value="regional">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter2"
+                                           value="regional">
                                     <label class="form-check-label" for="filter2">Regio</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter3" value="suburban">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter3"
+                                           value="suburban">
                                     <label class="form-check-label" for="filter3">S</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter4" value="subway">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter4"
+                                           value="subway">
                                     <label class="form-check-label" for="filter4">U</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="filter" id="filter5" value="tram">
+                                    <input class="form-check-input" type="radio" name="filter" id="filter5"
+                                           value="tram">
                                     <label class="form-check-label" for="filter5">Tram</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -61,7 +66,7 @@
                             <div class="row">
                                 <div class="col">
                                     <label for="userId" class="form-label">User</label>
-                                    <input type="text" class="form-control" value="{{$user->id}}" name="userId"
+                                    <input type="text" class="form-control" value="{{$user->username}}" name="userQuery"
                                            id="user">
                                 </div>
                             </div>
@@ -169,7 +174,7 @@
     'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
     'startIBNR' => $departure->stop->id,
-    'departure' => $departure->plannedWhen, 
+    'departure' => $departure->plannedWhen,
     'userId' => $user->id]) }}">
                                                 <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
                                             </a>

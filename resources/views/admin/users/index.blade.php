@@ -69,7 +69,7 @@
                             </a>
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('admin.stationboard') }}?userId={{ $user->id }}"
+                            <a href="{{ route('admin.stationboard') }}?userQuery={{ $user->id }}"
                                class="btn btn-small btn-success" title="Neuen Checkin erstellen">
                                 <i class="fas fa-plus-circle"></i>
                             </a>
