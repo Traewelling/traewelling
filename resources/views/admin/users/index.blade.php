@@ -32,7 +32,7 @@
                             <td class="text-center">#</td>
                             <td>Username</td>
                             <td>Displayname</td>
-                            <td class="text-center">Telefonpin</td>
+                            <td class="text-center">Supportcode</td>
                             <td>Registrierung</td>
                             <td>DSGVO-Accept</td>
                             <td>Mail</td>
@@ -52,7 +52,7 @@
                             </a>
                         </td>
                         <td>{{ $user->name }}</td>
-                        <td class="text-center"><code>133756</code></td>
+                        <td class="text-center"><code>{{ $user->support_code }}</code></td>
                         <td>{{ $user->created_at }}</td>
                         <td>{{ $user->privacy_ack_at }}</td>
                         <td>{{ $user->email }}<br>{{ $user->email_verified_at }}</td>
