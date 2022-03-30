@@ -7,6 +7,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
+                @include('includes.messages.support-code')
                 @if($future->count() >= 1)
                     <div class="accordion accordion-flush" id="accordionFutureCheckIns">
                         <div class="accordion-item">
