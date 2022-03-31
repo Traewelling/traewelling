@@ -82,13 +82,7 @@
 
             <div class="card mt-3">
                 <div class="card-body p-0 table-responsive">
-                    @if(empty($departures))
-                        <table class="table table-dark table-borderless m-0">
-                            <tr>
-                                <td>{{ __('stationboard.no-departures') }}</td>
-                            </tr>
-                        </table>
-                    @else
+                    @if(!empty($departures))
                         <table aria-labelledby="stationTableHeader" id="stationboard"
                                class="table table-dark table-borderless table-hover table-striped m-0">
                             <thead>
@@ -182,6 +176,13 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+                        </table>
+
+                    @elseif(request()->has('station'))
+                        <table class="table table-dark table-borderless m-0">
+                            <tr>
+                                <td>{{ __('stationboard.no-departures') }}</td>
+                            </tr>
                         </table>
                     @endif
                 </div>

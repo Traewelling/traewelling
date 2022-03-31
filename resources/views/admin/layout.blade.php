@@ -7,8 +7,8 @@
 
         <title>@yield('title') | Admin | {{ config('app.name') }}</title>
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
         <script src="{{ asset('js/admin.js') }}"></script>
-
     </head>
 
     <body>
@@ -68,13 +68,14 @@
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                             alt="" width="32" height="32" class="rounded-circle me-2">
+                        <img
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                            alt="" width="32" height="32" class="rounded-circle me-2">
                         <strong>{{auth()->user()->name}}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                         <li>
-                            <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">
+                            <a class="dropdown-item" href="{{ url('profile/' . Auth::user()->username) }}">
                                 <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
                             </a>
                         </li>
@@ -101,7 +102,7 @@
             </div>
             <div class="container-fluid bg-light px-5 pt-4" style="overflow-y: scroll !important;">
                 @hasSection('title')
-                    <h1 class="mt-3 mb-3 text-dark">@yield('title')</h1>
+                    <h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
                 @endif
                 @if ($errors->any())
                     <div class="row">

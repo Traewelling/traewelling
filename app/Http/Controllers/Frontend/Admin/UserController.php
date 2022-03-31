@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
-use App\Http\Controllers\Backend\UserController as BackendUserController;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +17,10 @@ class UserController
         if (isset($validated['userId'])) {
             $users = User::where('id', $validated['userId'])->simplePaginate(10);
         } elseif (isset($validated['query'])) {
-            $users = BackendUserController::searchUser(searchQuery: $validated['query']);
+            $users = User::where('name', 'like', '%' . $validated['query'] . '%')
+                         ->orWhere('username', 'like', '%' . $validated['query'] . '%')
+                         ->orWhere('support_code', $validated['query'])
+                         ->simplePaginate(10);
         } else {
             $users = User::simplePaginate(10);
         }
