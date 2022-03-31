@@ -136,7 +136,7 @@ class CheckinController
             return redirect()->back()->withErrors("User non-existent");
         }
 
-        $destination = json_decode($validated['destination'], true);
+        $destination = json_decode($validated['destination'], true, 512, JSON_THROW_ON_ERROR);
 
         try {
             $status = StatusBackend::createStatus(
@@ -167,8 +167,8 @@ class CheckinController
                 MastodonController::postStatus($status);
             }
 
-            return redirect()->route('statuses.get', ['id' => $trainCheckinResponse['status']['id']])
-                             ->with('success', 'points: ' . $trainCheckinResponse['points']['points']);
+            return redirect()->route('admin.stationboard')
+                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $trainCheckinResponse['points']['points']);
 
         } catch (CheckInCollisionException $e) {
             $status?->delete();

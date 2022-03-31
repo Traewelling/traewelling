@@ -56,7 +56,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="date" class="form-label">Status</label><br>
-                                <textarea aria-valuemax="280" class="form-control" aria-label="Haltestelle" name="station"></textarea>
+                                <textarea maxlength="280" class="form-control" aria-label="Haltestelle" name="body"></textarea>
                             </div>
                         </div>
                         <div class="row mt-1">
