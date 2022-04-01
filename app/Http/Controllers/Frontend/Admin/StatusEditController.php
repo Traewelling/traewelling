@@ -14,7 +14,9 @@ use Illuminate\View\View;
 class StatusEditController extends Controller
 {
     public function renderMain(): View {
-        return view('admin.status.main');
+        return view('admin.status.main', [
+            'lastStatuses' => Status::orderBy('created_at', 'desc')->limit(20)->get(),
+        ]);
     }
 
     public function renderEdit(Request $request): View {
