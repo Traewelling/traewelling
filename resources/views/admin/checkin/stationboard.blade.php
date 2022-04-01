@@ -24,7 +24,7 @@
                             <div class="col">
                                 <div class="form-floating">
                                     <input type="datetime-local" class="form-control"
-                                           value="{{($when ?? \Carbon\Carbon::now())->setSecond(0)->toDateTimeLocalString()}}"
+                                           value="{{($when ?? \Carbon\Carbon::now()->subMinutes(5))->setSecond(0)->toDateTimeLocalString()}}"
                                            name="when" id="formDate">
                                     <label for="formDate" class="form-label">Abfahrtszeit</label>
                                 </div>
