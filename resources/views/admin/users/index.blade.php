@@ -40,7 +40,6 @@
                                     <th class="text-center">#</th>
                                     <th>Username</th>
                                     <th>Displayname</th>
-                                    <th class="text-center">SupportCode</th>
                                     <th>Registrierung</th>
                                     <th>DSGVO-Accept</th>
                                     <th>Mail</th>
@@ -62,7 +61,6 @@
                                             </a>
                                         </td>
                                         <td>{{ $user->name }}</td>
-                                        <td class="text-center"><code>{{ $user->support_code }}</code></td>
                                         <td>{{ $user->created_at }}</td>
                                         <td>{{ $user->privacy_ack_at }}</td>
                                         <td>{{ $user->email }}<br>{{ $user->email_verified_at }}</td>
