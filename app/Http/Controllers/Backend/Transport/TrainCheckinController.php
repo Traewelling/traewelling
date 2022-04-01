@@ -61,7 +61,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         $overlapping = TransportController::getOverlappingCheckIns(
-            user:  auth()->user(),
+            user:  $status->user,
             start: $firstStop->departure,
             end:   $lastStop->arrival
         );
@@ -81,7 +81,7 @@ abstract class TrainCheckinController extends Controller
 
         $trainCheckin         = TrainCheckin::create([
                                                          'status_id'   => $status->id,
-                                                         'user_id'     => auth()->user()->id,
+                                                         'user_id'     => $status->user->id,
                                                          'trip_id'     => $trip->trip_id,
                                                          'origin'      => $firstStop->trainStation->ibnr,
                                                          'destination' => $lastStop->trainStation->ibnr,
