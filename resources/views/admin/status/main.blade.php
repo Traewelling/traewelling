@@ -28,6 +28,19 @@
                 <div class="card-body">
                     <h2 class="fs-5 card-title mb-4">Letzte Reisen</h2>
 
+                    <hr/>
+                    <form method="GET">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="inputUsername" name="userQuery"
+                                   value="{{request()->get('userQuery')}}"
+                                   placeholder="Username / Displayname / SupportCode"/>
+                            <label for="inputUsername" class="form-label">
+                                Username / Displayname / SupportCode
+                            </label>
+                        </div>
+                    </form>
+                    <hr/>
+
                     <div class="table-responsive">
                         <table class="table table-hover table-striped">
                             <thead>
@@ -56,7 +69,7 @@
                                                     ({{$status->trainCheckin->originStation->rilIdentifier}})
                                                 </small>
                                             @endisset
-                                            <br />
+                                            <br/>
                                             @isset($status?->trainCheckin?->originStation?->ibnr)
                                                 <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
                                                 <br/>
@@ -65,15 +78,15 @@
                                             <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
                                         </td>
                                         <td>
-                                            {{$status->trainCheckin?->originStation?->name}}
-                                            @isset($status->trainCheckin?->originStation?->rilIdentifier)
+                                            {{$status->trainCheckin?->destinationStation?->name}}
+                                            @isset($status->trainCheckin?->destinationStation?->rilIdentifier)
                                                 <small>
-                                                    ({{$status->trainCheckin->originStation->rilIdentifier}})
+                                                    ({{$status->trainCheckin->destinationStation->rilIdentifier}})
                                                 </small>
                                             @endisset
-                                            <br />
-                                            @isset($status?->trainCheckin?->originStation?->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
+                                            <br/>
+                                            @isset($status?->trainCheckin?->destinationStation?->ibnr)
+                                                <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
 
