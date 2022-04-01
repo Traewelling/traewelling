@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -70,12 +71,15 @@ class CheckinController
             }
         }
 
+        $lastStatuses = Status::where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(10)->get();
+
         return view('admin.checkin.stationboard', [
-            'station'    => $station ?? null,
-            'departures' => $departures ?? null,
-            'times'      => $times ?? null,
-            'when'       => $when,
-            'user'       => $user
+            'station'      => $station ?? null,
+            'departures'   => $departures ?? null,
+            'times'        => $times ?? null,
+            'when'         => $when,
+            'user'         => $user,
+            'lastStatuses' => $lastStatuses,
         ]);
     }
 
