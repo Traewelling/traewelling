@@ -30,7 +30,10 @@
                     </form>
                 </div>
             </div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -92,9 +95,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-12 justify-content-center mb-5">
             {{ $users->withQueryString()->links() }}
         </div>
-
     </div>
 @endsection

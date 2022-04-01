@@ -7,22 +7,27 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Reiseauskunft</h5>
+                    <h2 class="fs-5 mb-2">Reiseauskunft</h2>
 
                     <form class="center">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Haltestelle / DS100"
-                                       aria-label="Haltestelle" name="station"
-                                       value="{{isset($station['name']) ? $station['name'] : ''}}">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" placeholder="Haltestelle / DS100"
+                                           aria-label="Haltestelle" name="station" id="formStation"
+                                           value="{{isset($station['name']) ? $station['name'] : ''}}">
+                                    <label for="formStation" class="form-label">Haltestelle / DS100</label>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <label for="date" class="form-label">Wann</label>
-                                <input type="datetime-local" class="form-control"
-                                       value="{{($when ?? \Carbon\Carbon::now())->toDateTimeLocalString()}}"
-                                       name="when" id="date">
+                                <div class="form-floating">
+                                    <input type="datetime-local" class="form-control"
+                                           value="{{($when ?? \Carbon\Carbon::now())->setSecond(0)->toDateTimeLocalString()}}"
+                                           name="when" id="formDate">
+                                    <label for="formDate" class="form-label">Abfahrtszeit</label>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-1">
@@ -65,14 +70,16 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="userId" class="form-label">User</label>
-                                    <input type="text" class="form-control" value="{{$user->username}}" name="userQuery"
-                                           id="user">
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" value="{{$user->username}}"
+                                               name="userQuery" id="formUserId">
+                                        <label for="formUserId" class="form-label">Benutzername</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row mt-1">
                                 <div class="col">
-                                    <input type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary">Suchen</button>
                                 </div>
                             </div>
                         </div>
