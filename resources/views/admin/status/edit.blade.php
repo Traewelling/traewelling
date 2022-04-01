@@ -42,7 +42,8 @@
                                     <label class="form-label" for="form-origin">Origin / Abfahrtsort</label>
                                 </div>
                                 <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="origin">
+                                    <select id="form-origin" class="form-control" name="origin" required>
+                                        <option value="">bitte wählen</option>
                                         @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->origin) selected @endif>
@@ -61,7 +62,8 @@
                                     <label class="form-label" for="form-origin">Destination / Ankunftsort</label>
                                 </div>
                                 <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="destination">
+                                    <select id="form-origin" class="form-control" name="destination" required>
+                                        <option value="">bitte wählen</option>
                                         @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->destination) selected @endif>

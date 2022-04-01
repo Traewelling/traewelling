@@ -63,7 +63,7 @@
                                             <small>{{$status->user->name}}</small>
                                         </td>
                                         <td>
-                                            {{$status->trainCheckin?->originStation?->name}}
+                                            <strong>{{$status->trainCheckin?->originStation?->name}}</strong>
                                             @isset($status->trainCheckin?->originStation?->rilIdentifier)
                                                 <small>
                                                     ({{$status->trainCheckin->originStation->rilIdentifier}})
@@ -78,7 +78,7 @@
                                             <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
                                         </td>
                                         <td>
-                                            {{$status->trainCheckin?->destinationStation?->name}}
+                                            <strong>{{$status->trainCheckin?->destinationStation?->name}}</strong>
                                             @isset($status->trainCheckin?->destinationStation?->rilIdentifier)
                                                 <small>
                                                     ({{$status->trainCheckin->destinationStation->rilIdentifier}})
