@@ -94,6 +94,7 @@
                                class="table table-dark table-borderless table-hover table-striped m-0">
                             <thead>
                                 <tr>
+                                    <th class="d-sm-table-cell d-lg-none"></th>
                                     <th scope="col" class="ps-2 ps-md-4">
                                         {{__('stationboard.dep-time')}}
                                     </th>
@@ -117,6 +118,16 @@
                                     @endif
 
                                     <tr @if(!isset($departure->cancelled)) class="trainrow" @endif>
+                                        <td class="d-sm-table-cell d-lg-none">
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
+    'tripId' => $departure->tripId,
+    'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
+    'startIBNR' => $departure->stop->id,
+    'departure' => $departure->plannedWhen,
+    'userId' => $user->id]) }}">
+                                                <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
                                         <td class="ps-2 ps-md-4">
                                             @if($departure->delay === null)
                                                 <span class="text-white">
@@ -171,7 +182,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.trip', [
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
     'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
     'startIBNR' => $departure->stop->id,
