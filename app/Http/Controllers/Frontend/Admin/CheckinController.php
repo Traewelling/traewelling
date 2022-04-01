@@ -137,7 +137,7 @@ class CheckinController
         try {
             $user = User::findOrFail($validated['userId']);
         } catch (NotFoundException) {
-            return redirect()->back()->withErrors("User non-existent");
+            return redirect()->back()->withErrors('User non-existent');
         }
 
         $destination = json_decode($validated['destination'], true, 512, JSON_THROW_ON_ERROR);
