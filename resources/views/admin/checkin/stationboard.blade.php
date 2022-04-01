@@ -220,7 +220,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->originStation->name])}}"
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status?->trainCheckin?->originStation?->name])}}"
                                                class="fw-bold">
                                                 {{$status->trainCheckin?->originStation?->name}}
 
