@@ -4,25 +4,30 @@
 
 @section('content')
     <div class="row">
-        <div class="col">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card mb-2">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Reiseauskunft</h5>
+                    <h2 class="fs-5 mb-2">Reiseauskunft</h2>
 
                     <form class="center">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Haltestelle / DS100"
-                                       aria-label="Haltestelle" name="station"
-                                       value="{{isset($station['name']) ? $station['name'] : ''}}">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control" placeholder="Haltestelle / DS100"
+                                           aria-label="Haltestelle" name="station" id="formStation"
+                                           value="{{isset($station['name']) ? $station['name'] : ''}}">
+                                    <label for="formStation" class="form-label">Haltestelle / DS100</label>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <label for="date" class="form-label">Wann</label>
-                                <input type="datetime-local" class="form-control"
-                                       value="{{($when ?? \Carbon\Carbon::now())->toDateTimeLocalString()}}"
-                                       name="when" id="date">
+                                <div class="form-floating">
+                                    <input type="datetime-local" class="form-control"
+                                           value="{{($when ?? \Carbon\Carbon::now()->subMinutes(5))->setSecond(0)->toDateTimeLocalString()}}"
+                                           name="when" id="formDate">
+                                    <label for="formDate" class="form-label">Abfahrtszeit</label>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-1">
@@ -65,14 +70,16 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="userId" class="form-label">User</label>
-                                    <input type="text" class="form-control" value="{{$user->username}}" name="userQuery"
-                                           id="user">
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" value="{{$user->username}}"
+                                               name="userQuery" id="formUserId">
+                                        <label for="formUserId" class="form-label">Benutzername</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row mt-1">
                                 <div class="col">
-                                    <input type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary">Suchen</button>
                                 </div>
                             </div>
                         </div>
@@ -80,13 +87,14 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
+            <div class="card">
                 <div class="card-body p-0 table-responsive">
                     @if(!empty($departures))
                         <table aria-labelledby="stationTableHeader" id="stationboard"
                                class="table table-dark table-borderless table-hover table-striped m-0">
                             <thead>
                                 <tr>
+                                    <th class="d-sm-table-cell d-lg-none"></th>
                                     <th scope="col" class="ps-2 ps-md-4">
                                         {{__('stationboard.dep-time')}}
                                     </th>
@@ -110,6 +118,16 @@
                                     @endif
 
                                     <tr @if(!isset($departure->cancelled)) class="trainrow" @endif>
+                                        <td class="d-sm-table-cell d-lg-none">
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
+    'tripId' => $departure->tripId,
+    'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
+    'startIBNR' => $departure->stop->id,
+    'departure' => $departure->plannedWhen,
+    'userId' => $user->id]) }}">
+                                                <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
                                         <td class="ps-2 ps-md-4">
                                             @if($departure->delay === null)
                                                 <span class="text-white">
@@ -164,7 +182,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a class="btn btn-outline-primary" href="{{ route('admin.trip', [
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
     'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
     'startIBNR' => $departure->stop->id,
@@ -188,8 +206,73 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-6">
             @include('admin.users.usercard')
+
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="fs-5 mb-2">Letzte Reisen</h2>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Start</th>
+                                    <th>Ziel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($lastStatuses as $status)
+                                    <tr>
+                                        <td>
+                                            <a href="{{route('statuses.get', ['id' => $status->id])}}">
+                                                {{$status->id}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status?->trainCheckin?->originStation?->name])}}"
+                                               class="fw-bold">
+                                                {{$status->trainCheckin?->originStation?->name}}
+
+                                                @isset($status->trainCheckin?->originStation?->rilIdentifier)
+                                                    <small>
+                                                        ({{$status->trainCheckin?->originStation?->rilIdentifier}})
+                                                    </small>
+                                                @endisset
+                                            </a>
+                                            <br/>
+                                            @isset($status?->trainCheckin?->originStation?->ibnr)
+                                                <small>IBNR {{$status->trainCheckin?->originStation->ibnr}}</small>
+                                                <br/>
+                                            @endisset
+                                            <small>Abfahrt {{$status?->trainCheckin?->departure->diffForHumans()}}</small>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin?->destinationStation?->name])}}"
+                                               class="fw-bold">
+                                                {{$status->trainCheckin?->destinationStation?->name}}
+                                                @isset($status->trainCheckin?->destinationStation?->rilIdentifier)
+                                                    <small>
+                                                        ({{$status->trainCheckin->destinationStation->rilIdentifier}})
+                                                    </small>
+                                                @endisset
+                                            </a>
+                                            <br/>
+                                            @isset($status?->trainCheckin?->destinationStation?->ibnr)
+                                                <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
+                                                <br/>
+                                            @endisset
+
+                                            <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
