@@ -12,32 +12,33 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class EventController extends Controller
 {
-    public function renderList(): Renderable {
+    public function renderList(): View {
         return view('admin.events.list', [
             'events' => Event::orderByDesc('end')->paginate(10)
         ]);
     }
 
-    public function renderSuggestions(): Renderable {
+    public function renderSuggestions(): View {
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)->get()
         ]);
     }
 
-    public function renderSuggestionCreation(int $id): Renderable {
+    public function renderSuggestionCreation(int $id): View {
         return view('admin.events.suggestion-create', [
             'event' => EventSuggestion::findOrFail($id)
         ]);
     }
 
-    public function renderCreate(): Renderable {
+    public function renderCreate(): View {
         return view('admin.events.create');
     }
 
-    public function renderEdit(int $id): Renderable {
+    public function renderEdit(int $id): View {
         return view('admin.events.edit', ['event' => Event::findOrFail($id)]);
     }
 
