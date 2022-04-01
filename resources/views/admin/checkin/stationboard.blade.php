@@ -226,13 +226,13 @@
 
                                                 @isset($status->trainCheckin?->originStation?->rilIdentifier)
                                                     <small>
-                                                        ({{$status->trainCheckin->originStation->rilIdentifier}})
+                                                        ({{$status->trainCheckin?->originStation?->rilIdentifier}})
                                                     </small>
                                                 @endisset
                                             </a>
                                             <br/>
-                                            @isset($status->trainCheckin?->originStation?->ibnr)
-                                                <small>IBNR {{$status->trainCheckin?->originStation?->ibnr}}</small>
+                                            @isset($status?->trainCheckin?->originStation?->ibnr)
+                                                <small>IBNR {{$status->trainCheckin?->originStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
                                             <small>Abfahrt {{$status?->trainCheckin?->departure->diffForHumans()}}</small>
@@ -248,7 +248,7 @@
                                                 @endisset
                                             </a>
                                             <br/>
-                                            @isset($status->trainCheckin?->destinationStation?->ibnr)
+                                            @isset($status?->trainCheckin?->destinationStation?->ibnr)
                                                 <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
