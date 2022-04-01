@@ -34,6 +34,8 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>User</th>
+                                    <th>Abfahrt</th>
+                                    <th>Ankunft</th>
                                     <th>Eingecheckt</th>
                                     <th></th>
                                 </tr>
