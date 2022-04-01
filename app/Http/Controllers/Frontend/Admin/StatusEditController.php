@@ -7,14 +7,32 @@ use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainStation;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StatusEditController extends Controller
 {
-    public function renderMain(): View {
-        return view('admin.status.main');
+    public function renderMain(Request $request): View {
+        $validated    = $request->validate([
+                                               'userQuery' => ['nullable', 'max:255'],
+                                           ]);
+        $lastStatuses = Status::orderBy('created_at', 'desc')->limit(20);
+
+        if (isset($validated['userQuery'])) {
+            $lastStatuses = $lastStatuses->whereIn(
+                'user_id',
+                User::where('name', 'like', '%' . $validated['userQuery'] . '%')
+                    ->orWhere('username', 'like', '%' . $validated['userQuery'] . '%')
+                    ->orWhere('support_code', $validated['userQuery'])
+                    ->pluck('id')
+            );
+        }
+
+        return view('admin.status.main', [
+            'lastStatuses' => $lastStatuses->get(),
+        ]);
     }
 
     public function renderEdit(Request $request): View {
