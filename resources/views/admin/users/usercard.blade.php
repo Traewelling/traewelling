@@ -24,10 +24,6 @@
                 Mastodon<br>
                 <strong>{{ $user->mastodonUrl ? 'Ja' : 'Nein' }}</strong>
             </div>
-            <div class="col border-right">
-                Supportcode<br>
-                <code>{{ $user->support_code }}</code>
-            </div>
         </div>
     </div>
 </div>

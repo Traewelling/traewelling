@@ -19,7 +19,6 @@ class UserController
         } elseif (isset($validated['query'])) {
             $users = User::where('name', 'like', '%' . $validated['query'] . '%')
                          ->orWhere('username', 'like', '%' . $validated['query'] . '%')
-                         ->orWhere('support_code', $validated['query'])
                          ->simplePaginate(10);
         } else {
             $users = User::simplePaginate(10);

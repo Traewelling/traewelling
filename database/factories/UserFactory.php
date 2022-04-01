@@ -32,7 +32,6 @@ class UserFactory extends Factory
             'remember_token'    => Str::random(10),
             'private_profile'   => false,
             'role'              => 0,
-            'support_code'      => $this->faker->unique()->numberBetween(111111, 999999),
         ];
     }
 }
