@@ -28,9 +28,11 @@ To set up a Träwelling instance you'll need:
 
 * [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 * [MariaDB](https://mariadb.org/download) or [MySQL](https://www.mysql.com/de/downloads/) (SQLite is used for running tests)
-* A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5)
 * [Composer](https://getcomposer.org/download/)
 * PHP 8.1 and the dependencies mentioned in composer.json
+
+A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5) is recommended for the connection to HAFAS.
+Alternatively you can use a public instance (see .env.example).
 
 After setting up these, you can clone the repository and install the project's dependencies:
 
