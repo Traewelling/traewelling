@@ -264,7 +264,7 @@
                                                 <br/>
                                             @endisset
 
-                                            <small>Abfahrt {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
+                                            <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
                                         </td>
                                     </tr>
                                 @endforeach
