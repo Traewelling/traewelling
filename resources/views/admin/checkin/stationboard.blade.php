@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-body">
                     <h2 class="fs-5 mb-2">Reiseauskunft</h2>
 
@@ -86,79 +86,8 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            @include('admin.users.usercard')
 
             <div class="card">
-                <div class="card-body">
-                    <h2 class="fs-5 mb-2">Letzte Reisen</h2>
-
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Start</th>
-                                    <th>Ziel</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($lastStatuses as $status)
-                                    <tr>
-                                        <td>
-                                            <a href="{{route('statuses.get', ['id' => $status->id])}}">
-                                                {{$status->id}}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->originStation->name])}}"
-                                               class="fw-bold">
-                                                {{$status->trainCheckin->originStation->name}}
-
-                                                @isset($status->trainCheckin->originStation->rilIdentifier)
-                                                    <small>
-                                                        ({{$status->trainCheckin->originStation->rilIdentifier}})
-                                                    </small>
-                                                @endisset
-                                            </a>
-                                            <br/>
-                                            @isset($status->trainCheckin->originStation->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
-                                                <br/>
-                                            @endisset
-                                            <small>Abfahrt {{$status->trainCheckin->departure->diffForHumans()}}</small>
-                                        </td>
-                                        <td>
-                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->destinationStation->name])}}"
-                                               class="fw-bold">
-                                                {{$status->trainCheckin->destinationStation->name}}
-                                                @isset($status->trainCheckin->destinationStation->rilIdentifier)
-                                                    <small>
-                                                        ({{$status->trainCheckin->destinationStation->rilIdentifier}})
-                                                    </small>
-                                                @endisset
-                                            </a>
-                                            <br/>
-                                            @isset($status->trainCheckin->destinationStation->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
-                                                <br/>
-                                            @endisset
-
-                                            <small>Abfahrt {{$status->trainCheckin->arrival->diffForHumans()}}</small>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <div class="card mt-3">
                 <div class="card-body p-0 table-responsive">
                     @if(!empty($departures))
                         <table aria-labelledby="stationTableHeader" id="stationboard"
@@ -263,6 +192,74 @@
                             </tr>
                         </table>
                     @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            @include('admin.users.usercard')
+
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="fs-5 mb-2">Letzte Reisen</h2>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Start</th>
+                                    <th>Ziel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($lastStatuses as $status)
+                                    <tr>
+                                        <td>
+                                            <a href="{{route('statuses.get', ['id' => $status->id])}}">
+                                                {{$status->id}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->originStation->name])}}"
+                                               class="fw-bold">
+                                                {{$status->trainCheckin->originStation->name}}
+
+                                                @isset($status->trainCheckin->originStation->rilIdentifier)
+                                                    <small>
+                                                        ({{$status->trainCheckin->originStation->rilIdentifier}})
+                                                    </small>
+                                                @endisset
+                                            </a>
+                                            <br/>
+                                            @isset($status->trainCheckin->originStation->ibnr)
+                                                <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
+                                                <br/>
+                                            @endisset
+                                            <small>Abfahrt {{$status->trainCheckin->departure->diffForHumans()}}</small>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->destinationStation->name])}}"
+                                               class="fw-bold">
+                                                {{$status->trainCheckin->destinationStation->name}}
+                                                @isset($status->trainCheckin->destinationStation->rilIdentifier)
+                                                    <small>
+                                                        ({{$status->trainCheckin->destinationStation->rilIdentifier}})
+                                                    </small>
+                                                @endisset
+                                            </a>
+                                            <br/>
+                                            @isset($status->trainCheckin->destinationStation->ibnr)
+                                                <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
+                                                <br/>
+                                            @endisset
+
+                                            <small>Abfahrt {{$status->trainCheckin->arrival->diffForHumans()}}</small>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
