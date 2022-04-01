@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -65,9 +66,9 @@ class UserController extends Controller
      * @param User $user
      *
      * @return LengthAwarePaginator|null
+     * @throws AuthorizationException
      * @api v1
      * @frontend
-     * @throws AuthorizationException
      */
     public static function statusesForUser(User $user): ?LengthAwarePaginator {
         Gate::authorize('view', $user);
@@ -265,11 +266,13 @@ class UserController extends Controller
             abort(400);
         }
 
-        return User::where(
-            'name', 'like', "%{$searchQuery}%"
-        )->orWhere(
-            'username', 'like', "%{$searchQuery}%"
-        )->simplePaginate(10);
+        return User::join('train_checkins', 'train_checkins.user_id', '=', 'users.id')
+                   ->groupBy(['users.id', 'users.username', 'users.name'])
+                   ->select(['users.id', 'users.username', 'users.name'])
+                   ->orderByDesc(DB::raw('MAX(train_checkins.created_at)'))
+                   ->where('name', 'like', "%{$searchQuery}%")
+                   ->orWhere('username', 'like', "%{$searchQuery}%")
+                   ->simplePaginate(10);
     }
 
     /**
