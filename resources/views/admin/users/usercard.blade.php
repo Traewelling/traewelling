@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card mb-2">
     <div class="card-body">
         <h4 class="card-title">{{ $user->name }} <small>@ {{ $user->username }}</small></h4>
         <div class="row border-bottom">

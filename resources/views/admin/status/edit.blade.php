@@ -5,7 +5,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Status bearbeiten</h5>
+                    <h2 class="card-title mb-4 fs-5">Status bearbeiten</h2>
                     <div class="row">
                         <div class="col-4">
                             <label class="form-label" for="form-origin">Benutzer</label>
@@ -26,7 +26,9 @@
                         </div>
                         <div class="col-8">
                             {{$status->trainCheckIn->HafasTrip->linename}}
-                            <small>(Betreiber: {{$status->trainCheckIn->HafasTrip->operator?->name}})</small>
+                            @isset($status->trainCheckIn->HafasTrip->operator?->name)
+                                <small>(Betreiber: {{$status->trainCheckIn->HafasTrip->operator?->name}})</small>
+                            @endisset
                         </div>
                     </div>
                     <hr/>
@@ -40,7 +42,8 @@
                                     <label class="form-label" for="form-origin">Origin / Abfahrtsort</label>
                                 </div>
                                 <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="origin">
+                                    <select id="form-origin" class="form-control" name="origin" required>
+                                        <option value="">bitte wählen</option>
                                         @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->origin) selected @endif>
@@ -59,7 +62,8 @@
                                     <label class="form-label" for="form-origin">Destination / Ankunftsort</label>
                                 </div>
                                 <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="destination">
+                                    <select id="form-origin" class="form-control" name="destination" required>
+                                        <option value="">bitte wählen</option>
                                         @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->destination) selected @endif>
