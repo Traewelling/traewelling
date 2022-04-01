@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h2 class="fs-5 mb-2">Reiseauskunft</h2>
@@ -86,7 +86,13 @@
                     </form>
                 </div>
             </div>
-
+        </div>
+        <div class="col-md-6">
+            @include('admin.users.usercard')
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
             <div class="card mt-3">
                 <div class="card-body p-0 table-responsive">
                     @if(!empty($departures))
@@ -194,9 +200,6 @@
                     @endif
                 </div>
             </div>
-        </div>
-        <div class="col">
-            @include('admin.users.usercard')
         </div>
     </div>
 @endsection
