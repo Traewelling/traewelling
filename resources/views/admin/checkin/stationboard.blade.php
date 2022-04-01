@@ -222,38 +222,38 @@
                                         <td>
                                             <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->originStation->name])}}"
                                                class="fw-bold">
-                                                {{$status->trainCheckin->originStation->name}}
+                                                {{$status->trainCheckin?->originStation?->name}}
 
-                                                @isset($status->trainCheckin->originStation->rilIdentifier)
+                                                @isset($status->trainCheckin?->originStation?->rilIdentifier)
                                                     <small>
                                                         ({{$status->trainCheckin->originStation->rilIdentifier}})
                                                     </small>
                                                 @endisset
                                             </a>
                                             <br/>
-                                            @isset($status->trainCheckin->originStation->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
+                                            @isset($status->trainCheckin?->originStation?->ibnr)
+                                                <small>IBNR {{$status->trainCheckin?->originStation?->ibnr}}</small>
                                                 <br/>
                                             @endisset
-                                            <small>Abfahrt {{$status->trainCheckin->departure->diffForHumans()}}</small>
+                                            <small>Abfahrt {{$status?->trainCheckin?->departure->diffForHumans()}}</small>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin->destinationStation->name])}}"
+                                            <a href="{{route('admin.stationboard', ['userQuery' => $user->id, 'station' => $status->trainCheckin?->destinationStation?->name])}}"
                                                class="fw-bold">
-                                                {{$status->trainCheckin->destinationStation->name}}
-                                                @isset($status->trainCheckin->destinationStation->rilIdentifier)
+                                                {{$status->trainCheckin?->destinationStation?->name}}
+                                                @isset($status->trainCheckin?->destinationStation?->rilIdentifier)
                                                     <small>
                                                         ({{$status->trainCheckin->destinationStation->rilIdentifier}})
                                                     </small>
                                                 @endisset
                                             </a>
                                             <br/>
-                                            @isset($status->trainCheckin->destinationStation->ibnr)
+                                            @isset($status->trainCheckin?->destinationStation?->ibnr)
                                                 <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
 
-                                            <small>Abfahrt {{$status->trainCheckin->arrival->diffForHumans()}}</small>
+                                            <small>Abfahrt {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
                                         </td>
                                     </tr>
                                 @endforeach
