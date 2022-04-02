@@ -175,7 +175,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], static function(
                  ->name('api.v0.checkin.train.stationboard');
             Route::get('trip', 'API\TransportController@TrainTrip')
                  ->name('api.v0.checkin.train.trip');
-            Route::post('checkin', 'API\TransportController@TrainCheckin')
+            Route::post('checkin', [\App\Http\Controllers\API\TransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')
                  ->name('api.v0.checkin.train.latest');

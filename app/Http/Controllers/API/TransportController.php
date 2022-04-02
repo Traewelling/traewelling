@@ -104,13 +104,13 @@ class TransportController extends ResponseController
 
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID'      => 'required',
+            'tripID'      => ['required'],
             'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
             'start'       => ['required', 'numeric'],
             'destination' => ['required', 'numeric'],
-            'body'        => 'max:280',
-            'tweet'       => 'boolean',
-            'toot'        => 'boolean',
+            'body'        => ['nullable', 'max:280'],
+            'tweet'       => ['nullable', 'boolean'],
+            'toot'        => ['nullable', 'boolean'],
             //nullable, so that it is not a breaking change
             'departure'   => ['nullable', 'date'],
             'arrival'     => ['nullable', 'date'],
@@ -120,9 +120,11 @@ class TransportController extends ResponseController
         }
         $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
 
-        if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
+        if ($hafasTrip === null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
-        } elseif ($hafasTrip == null) {
+        }
+
+        if ($hafasTrip === null) {
             try {
                 $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
             } catch (HafasException $exception) {
@@ -136,14 +138,14 @@ class TransportController extends ResponseController
                 $departure = Carbon::parse($request->input('departure'));
             } else {
                 //Legacy: Get best matching timestamp from stopovers... it's just APIv0
-                $departure = $hafasTrip->stopoversNEW->where('train_station_id', $origin->id)->first()->departure;
+                $departure = $hafasTrip->stopoversNEW->where('train_station_id', $origin->id)->first()->departure_planned;
             }
             $destination = TrainStation::where('ibnr', $request->input('destination'))->first();
             if (isset($request->arrival)) {
                 $arrival = Carbon::parse($request->input('arrival'));
             } else {
                 //Legacy: Get best matching timestamp from stopovers... it's just APIv0
-                $arrival = $hafasTrip->stopoversNEW->where('train_station_id', $destination->id)->first()->departure;
+                $arrival = $hafasTrip->stopoversNEW->where('train_station_id', $destination->id)->first()->arrival_planned;
             }
 
             $backendResponse = TrainCheckinController::checkin(
@@ -177,7 +179,8 @@ class TransportController extends ResponseController
                                         'status_id' => $exception->getCollision()->status_id,
                                         'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
                                     ], 409);
-        } catch (StationNotOnTripException) {
+        } catch (StationNotOnTripException $exception) {
+            report($exception);
             return $this->sendError('Given stations are not on the trip.', 400);
         } catch (Throwable $exception) {
             report($exception);

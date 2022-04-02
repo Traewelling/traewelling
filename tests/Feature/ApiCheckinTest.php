@@ -59,12 +59,7 @@ class ApiCheckinTest extends ApiTestCase
     }
 
 
-    /**
-     * Testing the checkin blah blah blah
-     *
-     * @test
-     */
-    public function testCheckin(): void {
+    public function testApiV0Checkin(): void {
         // First: Get a train
         $timestamp   = Carbon::parse($this->plus_one_day_then_8pm);
         $stationname = "Frankfurt(Main)Hbf";
