@@ -225,7 +225,6 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
-        return self::fetchHafasTrip($tripID, $lineName);
         $trip = HafasTrip::where('trip_id', $tripID)->first();
         if ($trip !== null) {
             return $trip;
