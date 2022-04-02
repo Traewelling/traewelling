@@ -32,16 +32,20 @@ class CheckinController
 
     public function renderStationboard(Request $request): View|RedirectResponse {
         $validated = $request->validate([
-                                            'station' => ['nullable'],
-                                            'when'    => ['nullable', 'date'],
-                                            'filter'  => ['nullable', new Enum(TravelType::class)],
-                                            'userId'  => ['nullable', 'numeric']
+                                            'station'   => ['nullable'],
+                                            'when'      => ['nullable', 'date'],
+                                            'filter'    => ['nullable', new Enum(TravelType::class)],
+                                            'userQuery' => ['nullable']
                                         ]);
 
         $user = Auth::user();
-        if (isset($validated['userId'])) {
+        if (isset($validated['userQuery'])) {
             try {
-                $user = User::findOrFail($validated['userId']);
+                if (is_numeric($validated['userQuery'])) {
+                    $user = User::findOrFail($validated['userQuery']);
+                } else {
+                    $user = User::where('username', 'like', '%' . $validated['userQuery'] . '%')->firstOrFail();
+                }
             } catch (ModelNotFoundException) {
                 return redirect()->back()->withErrors("User non-existent");
             }
@@ -67,12 +71,15 @@ class CheckinController
             }
         }
 
+        $lastStatuses = Status::where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(10)->get();
+
         return view('admin.checkin.stationboard', [
-            'station'    => $station ?? null,
-            'departures' => $departures ?? null,
-            'times'      => $times ?? null,
-            'when'       => $when,
-            'user'       => $user
+            'station'      => $station ?? null,
+            'departures'   => $departures ?? null,
+            'times'        => $times ?? null,
+            'when'         => $when,
+            'user'         => $user,
+            'lastStatuses' => $lastStatuses,
         ]);
     }
 
@@ -130,10 +137,10 @@ class CheckinController
         try {
             $user = User::findOrFail($validated['userId']);
         } catch (NotFoundException) {
-            return redirect()->back()->withErrors("User non-existent");
+            return redirect()->back()->withErrors('User non-existent');
         }
 
-        $destination = json_decode($validated['destination'], true);
+        $destination = json_decode($validated['destination'], true, 512, JSON_THROW_ON_ERROR);
 
         try {
             $backendResponse = TrainCheckinController::checkin(
@@ -161,8 +168,8 @@ class CheckinController
                 MastodonController::postStatus($status);
             }
 
-            return redirect()->route('statuses.get', ['id' => $status->id])
-                             ->with('success', 'points: ' . $status->trainCheckin->points);
+            return redirect()->route('admin.stationboard')
+                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $trainCheckinResponse['points']['points']);
 
         } catch (CheckInCollisionException $e) {
             return redirect()

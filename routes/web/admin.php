@@ -20,6 +20,11 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.checkin');
     });
 
+    Route::prefix('users')->group(function() {
+        Route::get('/', [UserController::class, 'renderIndex'])
+             ->name('admin.users');
+    });
+
     Route::prefix('status')->group(function() {
         Route::get('/', [StatusEditController::class, 'renderMain'])
              ->name('admin.status');
