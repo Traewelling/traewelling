@@ -317,8 +317,8 @@ abstract class HafasController extends Controller
                     [
                         'trip_id'           => $tripID,
                         'train_station_id'  => $hafasStop->id,
-                        'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival) : null,
-                        'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture) : null,
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
+                        'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                     ],
                     $updatePayload
                 );

@@ -24,6 +24,7 @@ use App\Models\TrainStation;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -56,6 +57,10 @@ abstract class TrainCheckinController extends Controller
         bool             $postOnTwitter = false,
         bool             $postOnMastodon = false
     ): array {
+        if ($departure->isAfter($arrival)) {
+            throw new Exception('Departure time must be before arrival time');
+        }
+
         $status = StatusBackend::createStatus(
             user:       $user,
             business:   $tripType,

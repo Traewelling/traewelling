@@ -10,7 +10,6 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
-use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
@@ -406,30 +405,27 @@ class CheckinTest extends TestCase
     }
 
     /**
-     * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus). Previously,
-     * TRWL produced negative trip durations, or unexpected route distances.
+     * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus).
+     * Previously, TRWL produced negative trip durations, or unexpected route distances.
      *
-     * @throws HafasException
      * @see    https://github.com/Traewelling/traewelling/issues/37
      * @author jeyemwey
      */
     public function testCheckinAtBus603Potsdam(): void {
         // First: Get a train that's fine for our stuff
-        $timestamp   = Carbon::parse("+1 days 10:00");
-        $stationName = "Schloss Cecilienhof, Potsdam";
+        $timestamp = Carbon::parse("+1 days 10:00");
         try {
             $trainStationboard = TransportController::getDepartures(
-                stationQuery: $stationName,
+                stationQuery: 'Schloss Cecilienhof, Potsdam',
                 when:         $timestamp,
                 travelType:   TravelType::BUS
             );
-        } catch (HafasException $e) {
-            $this->markTestSkipped($e->getMessage());
+        } catch (HafasException $exception) {
+            $this->fail($exception->getMessage());
         }
 
-        $countDepartures = count($trainStationboard['departures']);
-        if ($countDepartures === 0) {
-            $this->markTestSkipped("Unable to find matching bus. Is it night in $stationName?");
+        if (count($trainStationboard['departures']) === 0) {
+            $this->fail('Unable to find matching bus.');
         }
 
         // The bus runs in a 20min interval
@@ -441,32 +437,33 @@ class CheckinTest extends TestCase
             $trip = TransportController::TrainTrip(
                 $departure->tripId,
                 $departure->line->name,
-                $departure->stop->location->id
+                $departure->stop->location->id,
+                Carbon::parse($departure->plannedWhen)
             );
-        } catch (HafasException $e) {
-            $this->markTestSkipped($e->getMessage());
+        } catch (HafasException $exception) {
+            $this->markTestSkipped($exception->getMessage());
         }
+
+        //Höhenstr., Potsdam
+        $originStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736140')->first();
+        //Rathaus, Potsdam
+        $destinationStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736160')->last();
 
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
-        $response = $this->actingAs($user)
-                         ->post(route('trains.checkin'), [
-                             'tripID'            => $departure->tripId,
-                             // Höhenstr ist die nächste Haltestelle hinter Schloss Cecilienhof. Dort steigen wir ein
-                             'start'             => $trip['stopovers'][0]['stop']['id'],
-                             'departure'         => $trip['stopovers'][0]['departure'],
-                             // Reiterweg ist 6 Stationen hinter Schloss Cecilienhof
-                             'destination'       => $trip['stopovers'][5]['stop']['id'], // Reiterweg
-                             'arrival'           => $trip['stopovers'][5]['arrival'],
-                             'checkinVisibility' => "0",
-                             'business_check'    => 0
-                         ]);
+        $backendResponse = TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $trip['hafasTrip'],
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->departure_planned,
+        );
 
-        $response->assertStatus(302);
-        $response->assertSessionHas('checkin-success.lineName', $departure->line->name);
+        $status  = $backendResponse['status'];
+        $checkin = $status->trainCheckin;
 
-        $checkin = TrainCheckin::first();
         // Es wird tatsächlich die zeitlich spätere Station angenommen.
         $this->assertTrue($checkin->arrival > $checkin->departure);
     }
