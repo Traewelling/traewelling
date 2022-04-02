@@ -77,8 +77,6 @@ class DistanceCalculationTest extends TestCase
     }
 
     public function test_distance_calculation_for_foreign_trip_with_stopovers(): void {
-        $this->markTestSkipped('This test needs to be fixed. Doesn\'t support the stopoversNew relation.');
-
         $origin      = TrainStation::factory([
                                                  'id'        => 8700030,
                                                  'name'      => 'Lille Flandres',
