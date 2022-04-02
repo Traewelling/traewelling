@@ -6,6 +6,7 @@ use App\Enum\HafasTravelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -45,6 +46,10 @@ class HafasTrip extends Model
 
     public function operator(): BelongsTo {
         return $this->belongsTo(HafasOperator::class, 'operator_id', 'id');
+    }
+
+    public function remarks(): BelongsToMany {
+        return $this->belongsToMany(Remark::class, 'trip_remarks', 'trip_id', 'remark_id');
     }
 
     public function stopoversNEW(): HasMany {

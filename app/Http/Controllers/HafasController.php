@@ -7,9 +7,11 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
+use App\Models\Remark;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -223,6 +225,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
+        return self::fetchHafasTrip($tripID, $lineName);
         $trip = HafasTrip::where('trip_id', $tripID)->first();
         if ($trip !== null) {
             return $trip;
@@ -333,6 +336,26 @@ abstract class HafasController extends Controller
             }
         }
 
+        self::saveRemarks($tripJson?->remarks ?? [], $hafasTrip);
+
         return $hafasTrip;
+    }
+
+    private static function saveRemarks(iterable $remarks, HafasTrip $hafasTrip): void {
+        $remarkObjects = [];
+        foreach ($remarks as $remark) {
+            try {
+                $dbRemark        = Remark::firstOrCreate([
+                                                             'text'    => $remark?->text,
+                                                             'type'    => $remark?->type,
+                                                             'code'    => $remark?->code,
+                                                             'summary' => $remark?->summary ?? null,
+                                                         ]);
+                $remarkObjects[] = $dbRemark->id;
+            } catch (Exception $exception) {
+                report($exception);
+            }
+        }
+        $hafasTrip->remarks()->syncWithoutDetaching($remarkObjects);
     }
 }
