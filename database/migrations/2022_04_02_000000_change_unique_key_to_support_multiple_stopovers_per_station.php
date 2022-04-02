@@ -14,6 +14,7 @@ return new class extends Migration
                 ['trip_id', 'train_station_id', 'arrival_planned', 'departure_planned'],
                 'train_stopovers_trip_id_train_station_id_unique'
             );
+            $table->dropIndex('trip_station_time');
         });
     }
 
@@ -24,6 +25,7 @@ return new class extends Migration
                 ['trip_id', 'train_station_id'],
                 'train_stopovers_trip_id_train_station_id_unique'
             );
+            $table->index(['trip_id', 'train_station_id', 'arrival_planned', 'departure_planned'], 'trip_station_time');
         });
     }
 };
