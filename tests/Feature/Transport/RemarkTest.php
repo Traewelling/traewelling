@@ -15,6 +15,7 @@ class RemarkTest extends TestCase
     public function testRemarkRelationship(): void {
         $this->assertDatabaseCount('hafas_trips', 0);
         $this->assertDatabaseCount('remarks', 0);
+        $this->assertDatabaseCount('trip_remarks', 0);
 
         $hafasTrip = HafasTrip::factory()->create();
         $remark    = Remark::factory()->create();
@@ -23,6 +24,7 @@ class RemarkTest extends TestCase
 
         $this->assertDatabaseCount('hafas_trips', 1);
         $this->assertDatabaseCount('remarks', 1);
+        $this->assertDatabaseCount('trip_remarks', 1);
 
         $this->assertCount(1, $hafasTrip->remarks);
         $this->assertEquals($remark->id, $hafasTrip->remarks->first()->id);
