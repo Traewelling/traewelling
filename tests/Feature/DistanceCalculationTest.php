@@ -76,7 +76,7 @@ class DistanceCalculationTest extends TestCase
         $this->assertEquals(4526, $result);
     }
 
-    public function test_distance_calculation_for_foreign_trip_with_stopovers() {
+    public function test_distance_calculation_for_foreign_trip_with_stopovers(): void {
         $origin      = TrainStation::factory([
                                                  'id'        => 8700030,
                                                  'name'      => 'Lille Flandres',
@@ -89,6 +89,7 @@ class DistanceCalculationTest extends TestCase
                                                  'latitude'  => 48.880886,
                                                  'longitude' => 2.354931,
                                              ])->create();
+
 
         $hafasTrip = HafasTrip::factory([
                                             'origin'      => $origin->ibnr,

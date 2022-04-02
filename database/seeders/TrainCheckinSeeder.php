@@ -2,40 +2,30 @@
 
 namespace Database\Seeders;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
-use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
-use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\TransportController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Seeder;
 
 class TrainCheckinSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+
     public function run(): void {
         foreach (User::all() as $user) {
-            $trip = HafasTrip::all()->random();
+            $hafasTrip = HafasTrip::all()->random();
             try {
-                TransportController::TrainCheckin(
-                    $trip->trip_id,
-                    $trip->origin,
-                    $trip->destination,
-                    '',
-                    $user,
-                    Business::PRIVATE,
-                    0,
-                    0,
-                    StatusVisibility::PUBLIC,
-                    rand(0, 1)
+                TrainCheckinController::checkin(
+                    user:        $user,
+                    hafasTrip:   $hafasTrip,
+                    origin:      $hafasTrip->originStation,      //Checkin from the first station...
+                    departure:   $hafasTrip->departure,
+                    destination: $hafasTrip->destinationStation, //...to the last station
+                    arrival:     $hafasTrip->arrival,
+                    event:       random_int(0, 1) ? Event::all()->random() : null,
                 );
-            } catch (CheckInCollisionException | HafasException | StationNotOnTripException) {
+            } catch (Exception) {
                 continue;
             }
         }

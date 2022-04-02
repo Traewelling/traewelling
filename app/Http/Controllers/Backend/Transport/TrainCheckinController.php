@@ -2,59 +2,124 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Enum\Business;
+use App\Enum\StatusVisibility;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Social\MastodonController;
+use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
+use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
+use App\Models\TrainStation;
+use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class TrainCheckinController extends Controller
 {
+
+    /**
+     * @throws StationNotOnTripException
+     * @throws CheckInCollisionException|NotConnectedException
+     * @throws HafasException
+     */
+    #[ArrayShape([
+        'status'               => Status::class,
+        'points'               => PointsCalculationResource::class,
+        'alsoOnThisConnection' => AnonymousResourceCollection::class
+    ])]
+    public static function checkin(
+        User             $user,
+        HafasTrip        $hafasTrip,
+        TrainStation     $origin,
+        Carbon           $departure,
+        TrainStation     $destination,
+        Carbon           $arrival,
+        Business         $tripType = Business::PRIVATE,
+        StatusVisibility $visibility = StatusVisibility::PUBLIC,
+        string           $body = null,
+        Event            $event = null,
+        bool             $force = false,
+        bool             $postOnTwitter = false,
+        bool             $postOnMastodon = false
+    ): array {
+        if ($departure->isAfter($arrival)) {
+            throw new Exception('Departure time must be before arrival time');
+        }
+
+        $status = StatusBackend::createStatus(
+            user:       $user,
+            business:   $tripType,
+            visibility: $visibility,
+            body:       $body,
+            eventId:    $event?->id
+        );
+
+        try {
+            $trainCheckinResponse = self::createTrainCheckin(
+                status:      $status,
+                trip:        $hafasTrip,
+                origin:      $origin,
+                destination: $destination,
+                departure:   $departure,
+                arrival:     $arrival,
+                force:       $force,
+            );
+
+            if ($postOnTwitter && $user->socialProfile?->twitter_id !== null) {
+                TwitterController::postStatus($status);
+            }
+            if ($postOnMastodon && $user->socialProfile?->mastodon_id !== null) {
+                MastodonController::postStatus($status);
+            }
+
+            return $trainCheckinResponse;
+        } catch (CheckInCollisionException|HafasException|StationNotOnTripException $exception) {
+            $status?->delete();
+            throw $exception;
+        }
+    }
+
     /**
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws ModelNotFoundException
      */
     #[ArrayShape([
-        'status'               => StatusResource::class,
+        'status'               => Status::class,
         'points'               => PointsCalculationResource::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
-    public static function createTrainCheckin(
-        Status    $status,
-        HafasTrip $trip,
-        int       $entryStop,
-        int       $exitStop,
-        Carbon    $departure = null,
-        Carbon    $arrival = null,
-        bool      $force = false,
-        bool      $ibnr = false
+    private static function createTrainCheckin(
+        Status       $status,
+        HafasTrip    $trip,
+        TrainStation $origin,
+        TrainStation $destination,
+        Carbon       $departure,
+        Carbon       $arrival,
+        bool         $force = false,
     ): array {
         $trip->load('stopoversNEW');
 
-        if (!$ibnr) {
-            $firstStop = $trip->stopoversNEW->where('train_station_id', $entryStop)
-                                            ->where('departure_planned', $departure)->first();
+        $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
+                                        ->where('departure_planned', $departure)->first();
 
-            $lastStop = $trip->stopoversNEW->where('train_station_id', $exitStop)
-                                           ->where('arrival_planned', $arrival)->first();
-        } else {
-            $firstStop = $trip->stopoversNEW->where('trainStation.ibnr', $entryStop)
-                                            ->where('departure_planned', $departure)->first();
-
-            $lastStop = $trip->stopoversNEW->where('trainStation.ibnr', $exitStop)
-                                           ->where('arrival_planned', $arrival)->first();
-        }
+        $lastStop = $trip->stopoversNEW->where('train_station_id', $destination->id)
+                                       ->where('arrival_planned', $arrival)->first();
 
         if (empty($firstStop) || empty($lastStop)) {
             throw new StationNotOnTripException();
@@ -81,7 +146,7 @@ abstract class TrainCheckinController extends Controller
 
         $trainCheckin         = TrainCheckin::create([
                                                          'status_id'   => $status->id,
-                                                         'user_id'     => $status->user->id,
+                                                         'user_id'     => $status->user_id,
                                                          'trip_id'     => $trip->trip_id,
                                                          'origin'      => $firstStop->trainStation->ibnr,
                                                          'destination' => $lastStop->trainStation->ibnr,
@@ -101,7 +166,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         return [
-            'status'               => new StatusResource($status),
+            'status'               => $status,
             'points'               => $pointsResource,
             'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
         ];

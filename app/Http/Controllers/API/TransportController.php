@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\HafasTrip;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -104,13 +104,13 @@ class TransportController extends ResponseController
 
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'tripID'      => 'required',
+            'tripID'      => ['required'],
             'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
             'start'       => ['required', 'numeric'],
             'destination' => ['required', 'numeric'],
-            'body'        => 'max:280',
-            'tweet'       => 'boolean',
-            'toot'        => 'boolean',
+            'body'        => ['nullable', 'max:280'],
+            'tweet'       => ['nullable', 'boolean'],
+            'toot'        => ['nullable', 'boolean'],
             //nullable, so that it is not a breaking change
             'departure'   => ['nullable', 'date'],
             'arrival'     => ['nullable', 'date'],
@@ -120,9 +120,11 @@ class TransportController extends ResponseController
         }
         $hafasTrip = HafasTrip::where('trip_id', $request->input('tripID'))->first();
 
-        if ($hafasTrip == null && strlen($request->input('lineName')) == 0) {
+        if ($hafasTrip === null && strlen($request->input('lineName')) == 0) {
             return $this->sendError('Please specify the trip with lineName.', 400);
-        } elseif ($hafasTrip == null) {
+        }
+
+        if ($hafasTrip === null) {
             try {
                 $hafasTrip = HafasController::getHafasTrip($request->input('tripID'), $request->input('lineName'));
             } catch (HafasException $exception) {
@@ -131,41 +133,54 @@ class TransportController extends ResponseController
         }
 
         try {
-            $trainCheckinResponse = TransportBackend::TrainCheckin(
-                $hafasTrip->trip_id,
-                $request->input('start'),
-                $request->input('destination'),
-                $request->input('body'),
-                auth()->user(),
-                Business::PRIVATE,
-                $request->input('tweet'),
-                $request->input('toot'),
-                StatusVisibility::PUBLIC,
-                0,
-                isset($request->departure) ? Carbon::parse($request->input('departure')) : null,
-                isset($request->arrival) ? Carbon::parse($request->input('arrival')) : null,
+            $origin = TrainStation::where('ibnr', $request->input('start'))->first();
+            if (isset($request->departure)) {
+                $departure = Carbon::parse($request->input('departure'));
+            } else {
+                //Legacy: Get best matching timestamp from stopovers... it's just APIv0
+                $departure = $hafasTrip->stopoversNEW->where('train_station_id', $origin->id)->first()->departure_planned;
+            }
+            $destination = TrainStation::where('ibnr', $request->input('destination'))->first();
+            if (isset($request->arrival)) {
+                $arrival = Carbon::parse($request->input('arrival'));
+            } else {
+                //Legacy: Get best matching timestamp from stopovers... it's just APIv0
+                $arrival = $hafasTrip->stopoversNEW->where('train_station_id', $destination->id)->first()->arrival_planned;
+            }
+
+            $backendResponse = TrainCheckinController::checkin(
+                user:        Auth::user(),
+                hafasTrip:   $hafasTrip,
+                origin:      $origin,
+                departure:   $departure,
+                destination: $destination,
+                arrival:     $arrival,
+                body:        $request->input('body'),
+                postOnTwitter: isset($request->tweet),
+                postOnMastodon: isset($request->toot)
             );
 
+            $trainCheckin = $backendResponse['status']->trainCheckin;
+
             return $this->sendResponse([
-                                           'distance'             => $trainCheckinResponse['distance'] / 1000,
-                                           'duration'             => $trainCheckinResponse['duration'],
-                                           'statusId'             => $trainCheckinResponse['statusId'],
-                                           'points'               => $trainCheckinResponse['points'],
-                                           'lineName'             => $trainCheckinResponse['lineName'],
-                                           'alsoOnThisConnection' => $trainCheckinResponse['alsoOnThisConnection']
+                                           'distance'             => $trainCheckin['distance'] / 1000,
+                                           'duration'             => $trainCheckin['duration'],
+                                           'statusId'             => $backendResponse['status']->id,
+                                           'points'               => $trainCheckin['points'],
+                                           'lineName'             => $trainCheckin['lineName'],
+                                           'alsoOnThisConnection' => $trainCheckin['alsoOnThisConnection']
                                                ->map(function($status) {
                                                    return $status->user;
                                                })
                                        ]);
 
-        } catch (CheckInCollisionException $e) {
-
+        } catch (CheckInCollisionException $exception) {
             return $this->sendError([
-                                        'status_id' => $e->getCollision()->status_id,
-                                        'lineName'  => $e->getCollision()->HafasTrip->first()->linename
+                                        'status_id' => $exception->getCollision()->status_id,
+                                        'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
                                     ], 409);
-
-        } catch (StationNotOnTripException) {
+        } catch (StationNotOnTripException $exception) {
+            report($exception);
             return $this->sendError('Given stations are not on the trip.', 400);
         } catch (Throwable $exception) {
             report($exception);
