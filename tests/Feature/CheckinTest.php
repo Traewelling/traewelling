@@ -543,7 +543,7 @@ class CheckinTest extends TestCase
                              'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String(),
                              // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
                              'destination'       => $trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr, // Tempelhof
-                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->departure_planned->toIso8601String(),
+                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->arrival_planned->toIso8601String(),
                              'checkinVisibility' => StatusVisibility::PUBLIC->value,
                              'business_check'    => Business::PRIVATE->value,
                          ]);
