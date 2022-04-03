@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
+use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
+use Exception;
 use JsonException;
 use stdClass;
 
@@ -155,5 +157,49 @@ abstract class GeoController extends Controller
                     * $equatorialRadiusInMeters;
 
         return round($distance);
+    }
+
+    public static function getMapLinesForCheckin(TrainCheckin $checkin): array {
+        try {
+            $allFeatures = self::getPolylineWithTimestamps($checkin->hafasTrip);
+
+            $originIndex      = null;
+            $destinationIndex = null;
+            foreach ($allFeatures->features as $key => $data) {
+                if (!isset($data->properties->id)) {
+                    continue;
+                }
+                if ($originIndex === null
+                    && $checkin->originStation->ibnr === (int) $data->properties->id
+                    && $checkin->origin_stopover->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
+                ) {
+                    $originIndex = $key;
+                }
+                if ($destinationIndex === null
+                    && $checkin->destinationStation->ibnr === (int) $data->properties->id
+                    && $checkin->destination_stopover->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
+                ) {
+                    $destinationIndex = $key;
+                }
+            }
+
+            $slicedFeatures = array_slice($allFeatures->features, $originIndex, $destinationIndex - $originIndex + 1);
+            $mapLines       = [];
+            foreach ($slicedFeatures as $feature) {
+                if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
+                    $mapLines[] = [
+                        $feature->geometry->coordinates[0],
+                        $feature->geometry->coordinates[1]
+                    ];
+                }
+            }
+            return $mapLines;
+        } catch (Exception $exception) {
+            report($exception);
+            return [
+                [$checkin->originStation->latitude, $checkin->originStation->longitude],
+                [$checkin->destinationStation->latitude, $checkin->destinationStation->longitude]
+            ];
+        }
     }
 }
