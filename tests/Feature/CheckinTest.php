@@ -8,9 +8,11 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -530,19 +532,20 @@ class CheckinTest extends TestCase
         // GIVEN: A logged-in and gdpr-acked user
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
+        // Berlin-Westkreuz. We hop in there.
+        $originStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '8089047')->first();
+        // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
+        $destinationStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '8089090')->last();
+
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'              => 'Example Body',
-                             'tripID'            => $departure->tripId,
-                             // Westkreuz is right behind Messe Nord / ICC. We hop in there.
-                             'start'             => $trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr,
-                             'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String(),
-                             // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-                             'destination'       => $trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr, // Tempelhof
-                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->arrival_planned->toIso8601String(),
-                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
-                             'business_check'    => Business::PRIVATE->value,
+                             'tripID'         => $departure->tripId,
+                             'start'          => $originStopover->trainStation->ibnr,
+                             'departure'      => $originStopover->departure_planned->toIso8601String(),
+                             'destination'    => $destinationStopover->trainStation->ibnr,
+                             'arrival'        => $destinationStopover->arrival_planned->toIso8601String(),
+                             'business_check' => Business::PRIVATE->value,
                          ]);
 
         $response->assertStatus(302);
@@ -551,5 +554,89 @@ class CheckinTest extends TestCase
         $checkin = $user->statuses->first()->trainCheckin;
         // Es wird tatsächlich die zeitlich spätere Station angenommen.
         $this->assertTrue($checkin->arrival > $checkin->departure);
+    }
+
+    public function testDistanceCalculationOnRingLinesForFirstOccurrence(): void {
+        $user                    = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
+        $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
+        $departures              = HafasController::getDepartures(
+            station: $stationPlantagenPotsdam,
+            when:    Carbon::parse('next monday 10:00 am'),
+        );
+        $rawTrip                 = $departures->where('line.name', 'STR 94')
+                                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
+                                              ->first();
+        if ($rawTrip === null) {
+            $this->fail("Unable to find trip.");
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        // We hop in at Plantagenstr, Potsdam.
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 736165)->first();
+        // We check out two stations later at Babelsberg (S)/Wattstr., Potsdam.
+        $destinationStopover = $hafasTrip->stopoversNew
+            ->where('trainStation.ibnr', 736089)
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return $stopover->arrival_planned->isAfter($originStopover->departure_planned);
+            })
+            ->first();
+
+        $response     = TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        );
+        $trainCheckin = $response['status']->trainCheckin;
+        $distance     = $trainCheckin->distance;
+
+        //We check, that the distance is between 500 and 1000 meters.
+        // This avoids failed tests when the polyline is changed by the EVU.
+        $this->assertGreaterThan(500, $distance);
+        $this->assertLessThan(1000, $distance);
+    }
+
+    public function testDistanceCalculationOnRingLinesForSecondOccurrence(): void {
+        $user                    = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
+        $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
+        $departures              = HafasController::getDepartures(
+            station: $stationPlantagenPotsdam,
+            when:    Carbon::parse('next monday 10:00 am'),
+        );
+        $rawTrip                 = $departures->where('line.name', 'STR 94')
+                                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
+                                              ->first();
+        if ($rawTrip === null) {
+            $this->fail("Unable to find trip.");
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        // We hop in at Plantagenstr, Potsdam.
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 736165)->first();
+        // We check out at Babelsberg (S)/Wattstr., Potsdam. But this time we go a whole round with.
+        $destinationStopover = $hafasTrip->stopoversNew
+            ->where('trainStation.ibnr', 736089)
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
+            })
+            ->first();
+
+        $response     = TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        );
+        $trainCheckin = $response['status']->trainCheckin;
+        $distance     = $trainCheckin->distance;
+
+        //We check, that the distance is between 12000 and 12500 meters.
+        // This avoids failed tests when the polyline is changed by the EVU.
+        $this->assertGreaterThan(12000, $distance);
+        $this->assertLessThan(12500, $distance);
     }
 }

@@ -158,7 +158,7 @@ class FrontendTransportController extends Controller
                 destination: TrainStation::where('ibnr', $validated['destination'])->first(),
                 arrival:     Carbon::parse($validated['arrival']),
                 tripType:    Business::from($validated['business_check']),
-                visibility:  StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC),
+                visibility:  StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC->value),
                 body:        $validated['body'] ?? null,
                 event:       isset($validated['event']) ? Event::find($validated['event']) : null,
                 // force:       false, //TODO
