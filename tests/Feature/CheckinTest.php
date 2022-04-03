@@ -530,19 +530,20 @@ class CheckinTest extends TestCase
         // GIVEN: A logged-in and gdpr-acked user
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
+        // Berlin-Westkreuz. We hop in there.
+        $originStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '8089047')->first();
+        // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
+        $destinationStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '8089090')->last();
+
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'body'              => 'Example Body',
-                             'tripID'            => $departure->tripId,
-                             // Westkreuz is right behind Messe Nord / ICC. We hop in there.
-                             'start'             => $trip['hafasTrip']->stopoversNew->first()->trainStation->ibnr,
-                             'departure'         => $trip['hafasTrip']->stopoversNew->first()->departure_planned->toIso8601String(),
-                             // Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-                             'destination'       => $trip['hafasTrip']->stopoversNew->last()->trainStation->ibnr, // Tempelhof
-                             'arrival'           => $trip['hafasTrip']->stopoversNew->last()->arrival_planned->toIso8601String(),
-                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
-                             'business_check'    => Business::PRIVATE->value,
+                             'tripID'         => $departure->tripId,
+                             'start'          => $originStopover->trainStation->ibnr,
+                             'departure'      => $originStopover->departure_planned->toIso8601String(),
+                             'destination'    => $destinationStopover->trainStation->ibnr,
+                             'arrival'        => $destinationStopover->arrival_planned->toIso8601String(),
+                             'business_check' => Business::PRIVATE->value,
                          ]);
 
         $response->assertStatus(302);
