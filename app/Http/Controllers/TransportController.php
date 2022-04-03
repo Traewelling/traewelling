@@ -30,10 +30,22 @@ class TransportController extends Controller
      * @api v1
      */
     public static function getTrainStationAutocomplete(string $query): Collection {
-        return HafasController::getStations($query)->map(function($station) {
+        if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
+            $station = HafasController::getTrainStationByRilIdentifier($query);
+            if ($station !== null) {
+                return collect([
+                                   'ibnr'          => $station->ibnr,
+                                   'rilIdentifier' => $station->rilIdentifier,
+                                   'name'          => $station->name
+                               ]);
+            }
+        }
+
+        return HafasController::getStations($query)->map(function(TrainStation $station) {
             return [
-                'ibnr' => $station->ibnr,
-                'name' => $station->name
+                'ibnr'          => $station->ibnr,
+                'rilIdentifier' => $station->rilIdentifier,
+                'name'          => $station->name
             ];
         });
     }

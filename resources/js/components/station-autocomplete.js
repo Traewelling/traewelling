@@ -19,25 +19,21 @@ const popularStations = [
         minChars: 2,
         autoFirst: true,
         list: popularStations,
-        container: function (input) {
+        container: function () {
             container.classList.add("awesomplete");
             return container;
         }
     });
     input.addEventListener("keyup", (event) => {
-        if (input.value.length < 5) return;
+        if (input.value.length < 2) return;
 
-        // Hier können wir dann auch irgendwann die Flixbus-API einbauen,
-        // finds ohne getrackte Flixbusse eher sinnlos.
-
-        // Hier ist nur Bahn-Stuff
         fetch(urlAutocomplete + "/" + encodeURI(input.value))
             .then(res => res.json())
             .then(json => {
-                window.awesomplete.list = json.map(d => {
+                window.awesomplete.list = json.map(station => {
                     return {
-                        value: d.name,
-                        label: d.name + "",
+                        value: station.name,
+                        label: station.name + (station.rilIdentifier ? " (" + station.rilIdentifier + ")" : "")
                     };
                 });
             });
