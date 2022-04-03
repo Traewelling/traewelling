@@ -38,20 +38,15 @@ abstract class GeoController extends Controller
         return $geoJsonObj;
     }
 
-    public static function calculateDistance(
-        HafasTrip     $hafasTrip,
-        TrainStopover $origin,
-        TrainStopover $destination
-    ): int {
-        if ($hafasTrip->polyline === null || $hafasTrip?->polyline?->polyline === null) {
-            return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
-        }
-
-        $allFeatures = self::getPolylineWithTimestamps($hafasTrip);
+    /**
+     * @throws JsonException
+     */
+    private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
+        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
 
         $originIndex      = null;
         $destinationIndex = null;
-        foreach ($allFeatures->features as $key => $data) {
+        foreach ($geoJson->features as $key => $data) {
             if (!isset($data->properties->id)) {
                 continue;
             }
@@ -69,18 +64,23 @@ abstract class GeoController extends Controller
             }
         }
 
-        if ($destinationIndex < $originIndex) { //TODO: should not happen... remove?
-            //Some polyline are inverted, so switch the keys...
-            $temp             = $destinationIndex;
-            $destinationIndex = $originIndex;
-            $originIndex      = $temp;
+        $slicedFeatures    = array_slice($geoJson->features, $originIndex, $destinationIndex - $originIndex + 1);
+        $geoJson->features = $slicedFeatures;
+        return $geoJson;
+    }
+
+    public static function calculateDistance(
+        HafasTrip     $hafasTrip,
+        TrainStopover $origin,
+        TrainStopover $destination
+    ): int {
+        if ($hafasTrip->polyline === null || $hafasTrip?->polyline?->polyline === null) {
+            return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
-
-        $slicedFeatures = array_slice($allFeatures->features, $originIndex, $destinationIndex - $originIndex + 1);
-
+        $geoJson      = self::getPolylineBetween($hafasTrip, $origin, $destination);
         $distance     = 0;
         $lastStopover = null;
-        foreach ($slicedFeatures as $stopover) {
+        foreach ($geoJson->features as $stopover) {
             if ($lastStopover !== null) {
                 $distance += self::calculateDistanceBetweenCoordinates(
                     latitudeA:  $lastStopover->geometry->coordinates[1],
@@ -161,31 +161,9 @@ abstract class GeoController extends Controller
 
     public static function getMapLinesForCheckin(TrainCheckin $checkin): array {
         try {
-            $allFeatures = self::getPolylineWithTimestamps($checkin->hafasTrip);
-
-            $originIndex      = null;
-            $destinationIndex = null;
-            foreach ($allFeatures->features as $key => $data) {
-                if (!isset($data->properties->id)) {
-                    continue;
-                }
-                if ($originIndex === null
-                    && $checkin->originStation->ibnr === (int) $data->properties->id
-                    && $checkin->origin_stopover->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
-                ) {
-                    $originIndex = $key;
-                }
-                if ($destinationIndex === null
-                    && $checkin->destinationStation->ibnr === (int) $data->properties->id
-                    && $checkin->destination_stopover->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
-                ) {
-                    $destinationIndex = $key;
-                }
-            }
-
-            $slicedFeatures = array_slice($allFeatures->features, $originIndex, $destinationIndex - $originIndex + 1);
-            $mapLines       = [];
-            foreach ($slicedFeatures as $feature) {
+            $geoJson  = self::getPolylineBetween($checkin->hafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
+            $mapLines = [];
+            foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
                     $mapLines[] = [
                         $feature->geometry->coordinates[0],
