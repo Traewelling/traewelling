@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApiLogMiddleware;
 use App\Http\Middleware\SemiGuest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -56,6 +57,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth'          => \App\Http\Middleware\Authenticate::class,
+        'api.log'       => ApiLogMiddleware::class,
         'semiguest'     => SemiGuest::class,
         'auth.basic'    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'      => \Illuminate\Routing\Middleware\SubstituteBindings::class,
