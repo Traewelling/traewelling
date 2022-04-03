@@ -40,7 +40,6 @@ class FrontendTransportController extends Controller
     }
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
-
         $validated = $request->validate([
                                             'station'    => ['required'],
                                             'when'       => ['nullable', 'date'],

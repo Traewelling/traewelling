@@ -11,7 +11,10 @@
                         </button>
                     </div>
                     <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
-                        <input type="hidden" id="autocomplete-provider" name="provider" value="train">
+                        @isset($request->when)
+                            <input type="hidden" name="when" value="{{$request->when}}"/>
+                        @endisset
+
                         <div id="station-autocomplete-container">
                             <div class="input-group mb-2 mr-sm-2">
                                 <input type="text" id="station-autocomplete" name="station" class="form-control"
@@ -19,7 +22,7 @@
                                        @isset($station) value="{{$station->name}}" @endisset
                                 />
 
-                                @if($latest->count() > 0 || Auth::user()->home)
+                                @if($latest->count() > 0 || auth()->user()->home)
                                     <div class="btn btn-outline-grey stationSearchButton"
                                          data-mdb-toggle="collapse"
                                          data-mdb-target="#last-stations"
@@ -36,16 +39,17 @@
                             </div>
                         </div>
                         <div class="list-group collapse" id="last-stations">
-                            @if(Auth::user()->home)
-                                <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => Auth::user()->home->ibnr ]) }}"
-                                   title="{{ Auth::user()->home->name }}" id="home-button"
+                            @if(auth()->user()->home)
+                                <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => auth()->user()->home->ibnr ]) }}"
+                                   title="{{ auth()->user()->home->name }}" id="home-button"
                                    class="list-group-item list-group-item-action">
-                                    <i class="fa fa-home mr-2"></i> {{ Auth::user()->home->name }}
+                                    <i class="fa fa-home mr-2"></i> {{ auth()->user()->home->name }}
                                 </a>
                             @endif
 
                             @if($latest->count())
-                                <span class="list-group-item title list-group-item-action disabled">{{__('stationboard.last-stations')}}</span>
+                                <span
+                                    class="list-group-item title list-group-item-action disabled">{{__('stationboard.last-stations')}}</span>
                             @endif
                             @foreach($latest as $station)
                                 <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => $station->ibnr ]) }}"
@@ -55,8 +59,6 @@
                                 </a>
                             @endforeach
                         </div>
-
-                        <input type="hidden" name="when" value="{{@$request->when}}">
                         <button class="btn btn-outline-primary float-end" type="submit">
                             {{__('stationboard.submit-search')}}
                         </button>
