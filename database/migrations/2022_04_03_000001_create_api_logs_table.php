@@ -16,8 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_agent_id');
             $table->timestamps();
 
-            $table->index(['method', 'route']);
-            $table->index(['route']);
+            $table->index(['created_at', 'method', 'route']);
 
             $table->foreign('user_agent_id')->references('id')->on('user_agents');
         });
