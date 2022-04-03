@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\PolylineResource;
@@ -132,7 +133,7 @@ class StatusController extends ResponseController
                                          'type'       => 'Feature',
                                          'geometry'   => [
                                              'type'        => 'LineString',
-                                             'coordinates' => $status->trainCheckin->getMapLines()
+                                             'coordinates' => GeoController::getMapLinesForCheckin($status->trainCheckin)
                                          ],
                                          'properties' => [
                                              'statusId' => $status->id

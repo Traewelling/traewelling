@@ -108,13 +108,6 @@ class TrainCheckin extends Model
     }
 
     /**
-     * @deprecated Use GeoController::getMapLineForCheckin() instead.
-     */
-    public function getMapLines(): array {
-        return GeoController::getMapLinesForCheckin($this);
-    }
-
-    /**
      * The duration of the journey in minutes
      * @return int
      */
