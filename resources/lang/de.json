@@ -515,5 +515,8 @@
     "time.years": "Jahre",
     "settings.visibility.hide": "CheckIns automatisch ausblenden nach",
     "settings.visibility.hide.explain": "Deine CheckIns werden nach den von dir angegebenen Tagen auf privat gesetzt, so dass nur noch du sie sehen kannst.",
-    "empty-input-disable-function": "Lasse dieses Feld leer, um die Funktion zu deaktivieren."
+    "empty-input-disable-function": "Lasse dieses Feld leer, um die Funktion zu deaktivieren.",
+    "maintenance": "Wartungsarbeiten",
+    "maintenance.title": "Wir arbeiten gerade daran, die Website zu verbessern.",
+    "try-later": "Versuche es später noch einmal."
 }
