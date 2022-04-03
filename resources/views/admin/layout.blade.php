@@ -63,6 +63,13 @@
                             <span class="d-md-none d-lg-inline">Users</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.api.usage') }}"
+                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-book me-2" aria-hidden="true"></i>
+                            <span class="d-md-none d-lg-inline">API Usage</span>
+                        </a>
+                    </li>
                 </ul>
                 <hr>
                 <div class="dropdown">

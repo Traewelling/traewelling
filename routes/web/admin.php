@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\Admin\ApiUsageController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
@@ -11,9 +12,12 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
+    Route::get('/api/usage', [ApiUsageController::class, 'showUsage'])
+         ->name('admin.api.usage');
+
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
-            ->name('admin.stationboard');
+             ->name('admin.stationboard');
         Route::get('/trip/{tripId}', [CheckinController::class, 'renderTrip'])
              ->name('admin.trip');
         Route::post('/checkin', [CheckinController::class, 'checkin'])
