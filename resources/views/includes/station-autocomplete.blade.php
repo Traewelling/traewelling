@@ -15,7 +15,7 @@
                             <input type="hidden" name="when" value="{{$request->when}}"/>
                         @endisset
 
-                        <div id="station-autocomplete-container">
+                        <div id="station-autocomplete-container" style="z-index: 3;">
                             <div class="input-group mb-2 mr-sm-2">
                                 <input type="text" id="station-autocomplete" name="station" class="form-control"
                                        placeholder="{{ __('stationboard.station-placeholder') }} / DS100"
