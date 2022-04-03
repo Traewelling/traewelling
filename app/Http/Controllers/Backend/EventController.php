@@ -66,7 +66,7 @@ abstract class EventController extends Controller
     public static function getUpcomingEvents(): Paginator {
         return Event::where('end', '>=', Carbon::now()->toIso8601String())
                                       ->orderBy('begin')
-                                      ->simplepaginate(15);
+                                      ->simplePaginate(15);
     }
 
 }
