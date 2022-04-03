@@ -5,19 +5,44 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\TrainStopover;
+use JsonException;
+use stdClass;
 
 abstract class GeoController extends Controller
 {
+
+    /**
+     * Timestamps in the GeoJSON are required to calculate the distance of ring lines correctly.
+     *
+     * @param HafasTrip $hafasTrip
+     *
+     * @return mixed
+     * @throws JsonException
+     */
+    private static function getPolylineWithTimestamps(HafasTrip $hafasTrip): stdClass {
+        $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        $stopovers  = $hafasTrip->stopoversNEW;
+        foreach ($geoJsonObj->features as $polylineFeature) {
+            $stopover                                       = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
+                                                                        ->whereNull('passed')
+                                                                        ->first();
+            $stopover->passed                               = true;
+            $polylineFeature->properties->departure_planned = $stopover->departure_planned?->clone();
+            $polylineFeature->properties->arrival_planned   = $stopover->arrival_planned?->clone();
+        }
+        return $geoJsonObj;
+    }
+
     public static function calculateDistance(
         HafasTrip     $hafasTrip,
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        if ($hafasTrip->polyline == null || $hafasTrip?->polyline?->polyline == null) {
+        if ($hafasTrip->polyline === null || $hafasTrip?->polyline?->polyline === null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
 
-        $allFeatures = json_decode($hafasTrip->polyline->polyline);
+        $allFeatures = self::getPolylineWithTimestamps($hafasTrip);
 
         $originIndex      = null;
         $destinationIndex = null;
@@ -25,15 +50,21 @@ abstract class GeoController extends Controller
             if (!isset($data->properties->id)) {
                 continue;
             }
-            if ($origin->trainStation->ibnr == $data->properties->id && $originIndex == null) {
+            if ($originIndex === null
+                && $origin->trainStation->ibnr === (int) $data->properties->id
+                && $origin->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
+            ) {
                 $originIndex = $key;
             }
-            if ($destination->trainStation->ibnr == $data->properties->id) {
+            if ($destinationIndex === null
+                && $destination->trainStation->ibnr === (int) $data->properties->id
+                && $destination->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
+            ) {
                 $destinationIndex = $key;
             }
         }
 
-        if ($destinationIndex < $originIndex) {
+        if ($destinationIndex < $originIndex) { //TODO: should not happen... remove?
             //Some polyline are inverted, so switch the keys...
             $temp             = $destinationIndex;
             $destinationIndex = $originIndex;
@@ -45,7 +76,7 @@ abstract class GeoController extends Controller
         $distance     = 0;
         $lastStopover = null;
         foreach ($slicedFeatures as $stopover) {
-            if ($lastStopover != null) {
+            if ($lastStopover !== null) {
                 $distance += self::calculateDistanceBetweenCoordinates(
                     latitudeA:  $lastStopover->geometry->coordinates[1],
                     longitudeA: $lastStopover->geometry->coordinates[0],
@@ -66,7 +97,7 @@ abstract class GeoController extends Controller
      * @param TrainStopover $origin
      * @param TrainStopover $destination
      *
-     * @return float
+     * @return int
      */
     private static function calculateDistanceByStopovers(
         HafasTrip     $hafasTrip,
@@ -86,7 +117,7 @@ abstract class GeoController extends Controller
         $distance     = 0;
         $lastStopover = null;
         foreach ($stopovers as $stopover) {
-            if ($lastStopover == null) {
+            if ($lastStopover === null) {
                 $lastStopover = $stopover;
                 continue;
             }
