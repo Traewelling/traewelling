@@ -634,7 +634,7 @@ class CheckinTest extends TestCase
         $trainCheckin = $response['status']->trainCheckin;
         $distance     = $trainCheckin->distance;
 
-        //We check, that the distance is between 500 and 1000 meters.
+        //We check, that the distance is between 12000 and 12500 meters.
         // This avoids failed tests when the polyline is changed by the EVU.
         $this->assertGreaterThan(12000, $distance);
         $this->assertLessThan(12500, $distance);
