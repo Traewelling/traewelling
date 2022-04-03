@@ -43,7 +43,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
          ->name('api.v1.getPrivacyPolicy');
 
-    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy-policy']], function() {
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'suggest']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
@@ -91,7 +91,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
         Route::group(['prefix' => 'settings'], function() {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
-                 ->withoutMiddleware('privacypolicy');
+                 ->withoutMiddleware('privacy-policy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
@@ -100,7 +100,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                 ->withoutMiddleware('privacypolicy');
+                 ->withoutMiddleware('privacy-policy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -115,7 +115,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);

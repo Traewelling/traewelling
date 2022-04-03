@@ -103,7 +103,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin), JSON_THROW_ON_ERROR);
+            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
         });
         if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
