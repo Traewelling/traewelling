@@ -23,6 +23,9 @@ abstract class GeoController extends Controller
         $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
         $stopovers  = $hafasTrip->stopoversNEW;
         foreach ($geoJsonObj->features as $polylineFeature) {
+            if (!isset($polylineFeature->properties->id)) {
+                continue;
+            }
             $stopover                                       = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
                                                                         ->whereNull('passed')
                                                                         ->first();
