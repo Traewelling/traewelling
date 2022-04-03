@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
+use App\Models\Status;
 use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
