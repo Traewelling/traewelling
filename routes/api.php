@@ -29,7 +29,7 @@ use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1', 'middleware' => ['return-json', 'api.log']], static function() {
+Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [v1Auth::class, 'login']);
         Route::post('signup', [v1Auth::class, 'register']);
@@ -132,7 +132,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json', 'api.log']], sta
     });
 });
 
-Route::group(['prefix' => 'v0', 'middleware' => ['return-json', 'api.log']], static function() {
+Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static function() {
     Route::group(['middleware' => ['guest:api']], static function() {
         Route::group(['prefix' => 'auth'], static function() {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');

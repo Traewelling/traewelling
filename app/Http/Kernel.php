@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Api\JsonMiddleware;
 use App\Http\Middleware\ApiLogMiddleware;
 use App\Http\Middleware\SemiGuest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -44,7 +45,8 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
-            \App\Http\Middleware\Api\JsonMiddleware::class,
+            JsonMiddleware::class,
+            ApiLogMiddleware::class,
         ],
     ];
 
@@ -70,7 +72,7 @@ class Kernel extends HttpKernel
         'throttle'      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'userrole'      => \App\Http\Middleware\UserRoleMiddleware::class,
         'verified'      => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'return-json'   => \App\Http\Middleware\Api\JsonMiddleware::class,
+        'return-json'   => JsonMiddleware::class,
     ];
 
     /**
