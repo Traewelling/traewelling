@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -164,7 +165,7 @@ class FrontendStatusController extends Controller
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
         if ($status?->trainCheckin?->HafasTrip?->polyline) {
-            $polyline = $status->trainCheckin->getMapLines();
+            $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [
                     $elementValue[1], $elementValue[0]

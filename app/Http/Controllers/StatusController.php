@@ -6,6 +6,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Http\Controllers\Backend\GeoController;
 use App\Models\Event;
 use App\Models\Like;
 use App\Models\Status;
@@ -102,7 +103,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return json_encode($status->trainCheckin->getMapLines());
+            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin), JSON_THROW_ON_ERROR);
         });
         if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];

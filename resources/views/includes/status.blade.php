@@ -2,13 +2,11 @@
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
      data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
 >
-    @if (Route::current()->uri == "status/{id}")
-        @isset($polyline)
-            <div class="card-img-top">
-                <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                     data-polygon="{{ $polyline }}"></div>
-            </div>
-        @endisset
+    @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
+        <div class="card-img-top">
+            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
+                 data-polygon="{{ $polyline }}"></div>
+        </div>
     @endif
 
     <div class="card-body row">
@@ -35,7 +33,8 @@
                         @endif
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}" class="text-trwl clearfix">
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}"
+                       class="text-trwl clearfix">
                         {{$status->trainCheckin->Origin->name}}
                     </a>
 
@@ -89,7 +88,8 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->ibnr])}}" class="text-trwl clearfix">
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\FrontendStatusController::nextStation($status)?->ibnr])}}"
+                               class="text-trwl clearfix">
                                 {{\App\Http\Controllers\FrontendStatusController::nextStation($status)?->name}}
                             </a>
                         </p>
@@ -108,7 +108,8 @@
                             {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
                         @endif
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}" class="text-trwl clearfix">
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
+                       class="text-trwl clearfix">
                         {{$status->trainCheckin->Destination->name}}
                     </a>
                 </li>
@@ -129,7 +130,8 @@
         <span class="float-end like-text">
             <i class="fas
 {{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility->value]}} visibility-icon text-small"
-               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility->value)}}" data-mdb-toggle="tooltip"
+               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility->value)}}"
+               data-mdb-toggle="tooltip"
                data-mdb-placement="top"></i>
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                 @if(auth()?->user()?->id == $status->user_id)
@@ -149,8 +151,9 @@
                     id="avatar-small-{{ $status->id }}"
                     data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
-                             class="profile-image" alt="{{__('settings.picture')}}">
+                        <img
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                            class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
 
@@ -177,8 +180,9 @@
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
-                             class="profile-image" alt="{{__('settings.picture')}}">
+                        <img
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                            class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
             @endauth

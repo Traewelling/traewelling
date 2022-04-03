@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Backend\GeoController;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -104,54 +105,6 @@ class TrainCheckin extends Model
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;
-    }
-
-    /**
-     * @return array
-     * @deprecated I have not found any use. It can be removed in my opinion.
-     *             ~ kr
-     */
-    public function getMapLines(): array {
-        $hafas = $this->HafasTrip->polyline;
-        if ($hafas === null) {
-            $origin = $this->Origin;
-
-            $destination = $this->Destination;
-            $route       = [];
-            $route[0]    = [$origin->latitude, $origin->longitude];
-            $route[1]    = [$destination->latitude, $destination->longitude];
-
-            return $route;
-        }
-
-
-        $polyline = json_decode($hafas->polyline);
-
-        // Bei manchen Posts ist das Feld leer.
-        if (!isset($polyline->features)) {
-            return [];
-        }
-
-        $features     = $polyline->features;
-        $coords       = [];
-        $origin       = $this->origin;
-        $destination  = $this->destination;
-        $behindOrigin = false;
-
-        foreach ($features as $f) {
-            // Check if this point is the trips origin => Include this point!
-            if ($behindOrigin || (isset($f->properties->id) && $f->properties->id == $origin)) {
-                $behindOrigin = true;
-                $coords[]     = [$f->geometry->coordinates[0], $f->geometry->coordinates[1]];
-            }
-
-            // If this was the destination, don't loop any further.
-            if (isset($f->properties->id) && $f->properties->id == $destination) {
-                break;
-            }
-
-        }
-        return $coords;
     }
 
     /**
