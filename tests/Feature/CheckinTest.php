@@ -538,12 +538,12 @@ class CheckinTest extends TestCase
         // WHEN: User tries to check-in
         $response = $this->actingAs($user)
                          ->post(route('trains.checkin'), [
-                             'tripID'         => $departure->tripId,
-                             'start'          => $originStopover->trainStation->ibnr,
-                             'departure'      => $originStopover->departure_planned->toIso8601String(),
-                             'destination'    => $destinationStopover->trainStation->ibnr,
-                             'arrival'        => $destinationStopover->arrival_planned->toIso8601String(),
-                             'business_check' => Business::PRIVATE->value,
+                             'tripID'            => $departure->tripId,
+                             'start'             => $originStopover->trainStation->ibnr,
+                             'departure'         => $originStopover->departure_planned->toIso8601String(),
+                             'destination'       => $destinationStopover->trainStation->ibnr,
+                             'arrival'           => $destinationStopover->arrival_planned->toIso8601String(),
+                             'business_check'    => Business::PRIVATE->value,
                          ]);
 
         $response->assertStatus(302);
