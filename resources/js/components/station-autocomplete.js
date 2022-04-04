@@ -24,7 +24,19 @@ const popularStations = [
             return container;
         }
     });
-    input.addEventListener("keyup", (event) => {
+
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func.apply(this, args);
+            }, timeout);
+        };
+    }
+
+    function fetchStations() {
+        console.log('Saving data');
         if (input.value.length < 2) return;
 
         fetch(urlAutocomplete + "/" + encodeURI(input.value))
@@ -37,5 +49,9 @@ const popularStations = [
                     };
                 });
             });
-    });
+    }
+
+    const processChange = debounce(() => fetchStations());
+    input.addEventListener("keyup", processChange);
+
 })();
