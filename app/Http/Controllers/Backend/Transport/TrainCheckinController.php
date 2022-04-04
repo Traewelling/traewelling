@@ -49,10 +49,10 @@ abstract class TrainCheckinController extends Controller
         Carbon           $departure,
         TrainStation     $destination,
         Carbon           $arrival,
-        Business         $tripType = Business::PRIVATE,
+        Business         $travelReason = Business::PRIVATE,
         StatusVisibility $visibility = StatusVisibility::PUBLIC,
-        ?string           $body = null,
-        ?Event            $event = null,
+        ?string          $body = null,
+        ?Event           $event = null,
         bool             $force = false,
         bool             $postOnTwitter = false,
         bool             $postOnMastodon = false
