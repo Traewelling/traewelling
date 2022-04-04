@@ -149,15 +149,15 @@ class TransportController extends ResponseController
             }
 
             $backendResponse = TrainCheckinController::checkin(
-                user:        Auth::user(),
-                hafasTrip:   $hafasTrip,
-                origin:      $origin,
-                departure:   $departure,
-                destination: $destination,
-                arrival:     $arrival,
-                body:        $request->input('body'),
-                postOnTwitter: isset($request->tweet),
-                postOnMastodon: isset($request->toot)
+                user:           Auth::user(),
+                hafasTrip:      $hafasTrip,
+                origin:         $origin,
+                departure:      $departure,
+                destination:    $destination,
+                arrival:        $arrival,
+                body:           $request->input('body'),
+                postOnTwitter:  isset($request->tweet) && $request->tweet,
+                postOnMastodon: isset($request->toot) && $request->toot,
             );
 
             $trainCheckin = $backendResponse['status']->trainCheckin;
