@@ -33,8 +33,7 @@ class TrainStopover extends Model
         'departure_planned'          => 'datetime',
         'departure_real'             => 'datetime',
         'departure_platform_planned' => 'string',
-        'departure_platform_real'    => 'string',
-        'platform'                   => 'string'
+        'departure_platform_real' => 'string'
     ];
 
     public function trip(): BelongsTo {
