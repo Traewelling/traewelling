@@ -19,7 +19,7 @@
         "laravel-mix": "^6.0",
         "lodash": "^4.17.21",
         "resolve-url-loader": "^5.0",
-        "sass": "^1.49.9",
+        "sass": "^1.49.11",
         "sass-loader": "^12.6.0",
         "vue": "^2.6.12",
         "vue-loader": "^15.9.7",
