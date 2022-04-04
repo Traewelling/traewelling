@@ -18,6 +18,7 @@ const popularStations = [
     window.awesomplete = new Awesomplete(input, {
         minChars: 2,
         autoFirst: true,
+        sort: false,
         list: popularStations,
         container: function () {
             container.classList.add("awesomplete");

@@ -47,6 +47,14 @@ abstract class HafasController extends Controller
         }
     }
 
+    public static function getTrainStationsByRilIdentifier(string $rilIdentifier): ?Collection {
+        $trainStation = TrainStation::where('rilIdentifier', 'LIKE', "$rilIdentifier%")->orderBy('rilIdentifier')->get();
+        if ($trainStation->count() === 0) {
+            $trainStation = collect([self::getTrainStationByRilIdentifier(rilIdentifier: $rilIdentifier)]);
+        }
+        return $trainStation;
+    }
+
     public static function getStations(string $query, int $results = 10): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
