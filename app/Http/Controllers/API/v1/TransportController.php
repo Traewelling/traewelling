@@ -129,19 +129,19 @@ class TransportController extends ResponseController
             $destinationStation = TrainStation::where($searchKey, $validated['destination'])->first();
 
             $trainCheckinResponse           = TrainCheckinController::checkin(
-                user:        Auth::user(),
-                hafasTrip:   HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:      $originStation,
-                departure:   Carbon::parse($validated['departure']),
-                destination: $destinationStation,
-                arrival:     Carbon::parse($validated['arrival']),
-                tripType:    Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
-                visibility:  StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
-                body:        $validated['body'] ?? null,
-                event:       isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
-                force: isset($validated['force']),
-                postOnTwitter: isset($validated['tweet']),
-                postOnMastodon: isset($validated['toot'])
+                user:           Auth::user(),
+                hafasTrip:      HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                origin:         $originStation,
+                departure:      Carbon::parse($validated['departure']),
+                destination:    $destinationStation,
+                arrival:        Carbon::parse($validated['arrival']),
+                travelReason:   Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
+                visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
+                body:           $validated['body'] ?? null,
+                event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
+                force:          isset($validated['force']) && $validated['force'],
+                postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
+                postOnMastodon: isset($validated['toot']) && $validated['toot'],
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
             return $this->sendv1Response($trainCheckinResponse);
