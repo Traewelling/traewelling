@@ -45,7 +45,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], function() {
         Route::post('event', [EventController::class, 'suggest']);
-        Route::get('activeEvents', [EventController::class, 'suggest']);
+        Route::get('activeEvents', [EventController::class, 'activeEvents']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
