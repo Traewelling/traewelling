@@ -175,7 +175,7 @@ export default {
             },
             data: {
                 src: async (query) => {
-                    if (query.length < 2) {
+                    if (query.length <= 3 && query !== query.toUpperCase()) {
                         return popularStations;
                     }
                     try {
