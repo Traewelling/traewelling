@@ -1,12 +1,6 @@
 name: Resources build with `prod`
 
-on:
-  push:
-    branches-ignore:
-      - 'i18n'
-  pull_request:
-    branches-ignore:
-      - 'i18n'
+on: [ push ]
 
 jobs:
   build:
@@ -15,18 +9,18 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
+        node-version: [ 16.x, 17.x ]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-      run: npm install
-    - name: Run production build
-      run: npm run production
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm install
+      - name: Run production build
+        run: npm run production
 
-      env:
-        CI: true
+        env:
+          CI: true

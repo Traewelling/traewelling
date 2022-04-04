@@ -6,6 +6,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Http\Controllers\Backend\GeoController;
 use App\Models\Event;
 use App\Models\Like;
 use App\Models\Status;
@@ -16,6 +17,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -72,7 +74,7 @@ class StatusController extends Controller
                               })
                               ->get()
                               ->filter(function(Status $status) {
-                                  return request()?->user()->can('view', $status);
+                                  return Gate::allows('view', $status);
                               })
                               ->sortByDesc(function(Status $status) {
                                   return $status->trainCheckin->departure;
@@ -101,7 +103,7 @@ class StatusController extends Controller
             return null;
         }
         $polylines = $statuses->map(function($status) {
-            return json_encode($status->trainCheckin->getMapLines());
+            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
         });
         if ($array) {
             return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
@@ -292,7 +294,7 @@ class StatusController extends Controller
         Business         $business,
         StatusVisibility $visibility,
         string           $body = null,
-        int              $eventId = null,
+        int              $eventId = null, //TODO: change to Event Object
         string           $type = "hafas"
     ): Status {
         $event = null;

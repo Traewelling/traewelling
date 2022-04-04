@@ -1,0 +1,75 @@
+version: '3'
+services:
+  db:
+    image: mariadb:10
+    restart: always
+    env_file:
+      - .env.db
+    command:
+      - --innodb-buffer-pool-size=2G
+      - --innodb-log-file-size=1G
+    networks:
+      default:
+      replica:
+    volumes:
+      - mariadb:/var/lib/mysql
+      - ./dump.sql.gz:/docker-entrypoint-initdb.d/dump.sql.gz
+
+  # backup_replica:
+  #   image: mariadb:10.3
+  #   restart: always
+  #   env_file:
+  #     - .env.db_backup
+  #   networks:
+  #     replica:
+  #   volumes:
+  #     - mariadb_backup:/var/lib/mysql
+
+  service:
+    image: ghcr.io/traewelling/traewelling:develop
+    restart: always
+    depends_on:
+      - db
+      - db-rest
+    env_file:
+      - .env.trwl
+    networks:
+      default:
+      web:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traewelling-insecure.rule=Host(`testing.traewelling.de`)
+      - traefik.http.routers.traewelling-insecure.middlewares=traewelling-redirectscheme
+      - traefik.http.middlewares.traewelling-redirectscheme.redirectscheme.scheme=https
+      - traefik.http.middlewares.traewelling-redirectscheme.redirectscheme.permanent=true
+      - traefik.http.routers.traewelling.rule=Host(`testing.traewelling.de`)
+      - traefik.http.routers.traewelling.tls=true
+      - traefik.http.routers.traewelling.tls.certresolver=lets-encrypt
+      #- traefik.http.services.traewelling.loadbalancer.server.port=80
+    volumes:
+      - avatars:/var/www/html/public/uploads/avatars
+      - storage:/var/www/html/storage
+
+  db-rest:
+    image: derhuerst/db-rest:5
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: "redis://redis:6379"
+
+  redis:
+    image: redis
+    restart: always
+
+networks:
+  replica:
+    internal: true
+  web:
+    external: true
+
+volumes:
+  mariadb:
+  mariadb_backup:
+  avatars:
+  storage:

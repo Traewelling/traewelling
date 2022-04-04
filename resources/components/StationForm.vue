@@ -175,12 +175,17 @@ export default {
             },
             data: {
                 src: async (query) => {
-                    if (query.length < 3) {
+                    if (query.length <= 3 && query !== query.toUpperCase()) {
                         return popularStations;
                     }
                     try {
-                        const source = await axios.get(`/trains/station/autocomplete/${query.replace("/", " ")}`);
-                        return await source.data.data;
+                        let source = await axios.get(`/trains/station/autocomplete/${query.replace("/", " ")}`);
+                        return source.data.data.map((item) => {
+                            if (item.rilIdentifier) {
+                                item.name = item.name.concat(" (", item.rilIdentifier, ")")
+                            }
+                            return item;
+                        });
                     } catch (error) {
                         this.apiErrorHandler(error);
                     }

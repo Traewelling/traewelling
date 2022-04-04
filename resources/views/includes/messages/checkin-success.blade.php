@@ -1,7 +1,7 @@
 @if(session()->has('checkin-success'))
-    <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
+
         <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</p>
         @if(session()->get('checkin-success')['alsoOnThisConnection']->count() >= 1)
             <span>{{ trans_choice('controller.transport.also-in-connection', session()->get('checkin-success')['alsoOnThisConnection']->count()) }}</span>
@@ -55,5 +55,6 @@
             <i class="fa fa-dice-d20 d-inline"></i>&nbsp;
             <b>{{ session()->get('checkin-success')['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
         </p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif

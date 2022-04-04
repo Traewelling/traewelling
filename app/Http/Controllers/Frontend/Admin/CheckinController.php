@@ -14,8 +14,10 @@ use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
-use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Models\Event;
+use App\Models\Status;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -31,16 +33,20 @@ class CheckinController
 
     public function renderStationboard(Request $request): View|RedirectResponse {
         $validated = $request->validate([
-                                            'station' => ['nullable'],
-                                            'when'    => ['nullable', 'date'],
-                                            'filter'  => ['nullable', new Enum(TravelType::class)],
-                                            'userId'  => ['nullable', 'numeric']
+                                            'station'   => ['nullable'],
+                                            'when'      => ['nullable', 'date'],
+                                            'filter'    => ['nullable', new Enum(TravelType::class)],
+                                            'userQuery' => ['nullable']
                                         ]);
 
         $user = Auth::user();
-        if (isset($validated['userId'])) {
+        if (isset($validated['userQuery'])) {
             try {
-                $user = User::findOrFail($validated['userId']);
+                if (is_numeric($validated['userQuery'])) {
+                    $user = User::findOrFail($validated['userQuery']);
+                } else {
+                    $user = User::where('username', 'like', '%' . $validated['userQuery'] . '%')->firstOrFail();
+                }
             } catch (ModelNotFoundException) {
                 return redirect()->back()->withErrors("User non-existent");
             }
@@ -66,12 +72,15 @@ class CheckinController
             }
         }
 
+        $lastStatuses = Status::where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(10)->get();
+
         return view('admin.checkin.stationboard', [
-            'station'    => $station ?? null,
-            'departures' => $departures ?? null,
-            'times'      => $times ?? null,
-            'when'       => $when,
-            'user'       => $user
+            'station'      => $station ?? null,
+            'departures'   => $departures ?? null,
+            'times'        => $times ?? null,
+            'when'         => $when,
+            'user'         => $user,
+            'lastStatuses' => $lastStatuses,
         ]);
     }
 
@@ -103,10 +112,10 @@ class CheckinController
         }
 
         return view('admin.checkin.trip', [
-            'hafasTrip'    => $TrainTripResponse['hafasTrip'],
-            'events'       => EventBackend::activeEvents(),
-            'stopovers'    => $TrainTripResponse['stopovers'],
-            'user'         => $user,
+            'hafasTrip' => $TrainTripResponse['hafasTrip'],
+            'events'    => EventBackend::activeEvents(),
+            'stopovers' => $TrainTripResponse['stopovers'],
+            'user'      => $user,
         ]);
     }
 
@@ -129,32 +138,29 @@ class CheckinController
         try {
             $user = User::findOrFail($validated['userId']);
         } catch (NotFoundException) {
-            return redirect()->back()->withErrors("User non-existent");
+            return redirect()->back()->withErrors('User non-existent');
         }
 
-        $destination = json_decode($validated['destination'], true);
+        $destination = json_decode($validated['destination'], true, 512, JSON_THROW_ON_ERROR);
 
         try {
-            $status = StatusBackend::createStatus(
-                user:       $user,
-                business:   Business::tryFrom($validated['business'] ?? 0),
-                visibility: StatusVisibility::tryFrom($validated['visibility'] ?? 0),
-                body:       $validated['body'] ?? null,
-                eventId:    $validated['eventId'] ?? null
-            );
-
-            $hafasTrip = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
-
-            $trainCheckinResponse = TrainCheckinController::createTrainCheckin(
-                status:    $status,
-                trip:      $hafasTrip,
-                entryStop: $validated['startIBNR'],
-                exitStop:  $destination['destination'],
-                departure: Carbon::parse($validated['departure']),
-                arrival:   Carbon::parse($destination['arrival']),
+            $backendResponse = TrainCheckinController::checkin(
+                user:         $user,
+                hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
+                departure:    Carbon::parse($validated['departure']),
+                destination:  TrainStation::where('ibnr', $destination['destination'])->first(),
+                arrival:      Carbon::parse($validated['arrival']),
+                travelReason: Business::tryFrom($validated['business'] ?? 0),
+                visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),
+                body:         $validated['body'] ?? null,
+                event:        isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force: isset($validated['force']),
-                ibnr:      true
+                postOnTwitter: isset($request->tweet_check),
+                postOnMastodon: isset($request->toot_check)
             );
+
+            $status = $backendResponse['status'];
 
             if (isset($validated['tweet']) && $user?->socialProfile?->twitter_id !== null) {
                 TwitterController::postStatus($status);
@@ -163,11 +169,10 @@ class CheckinController
                 MastodonController::postStatus($status);
             }
 
-            return redirect()->route('statuses.get', ['id' => $trainCheckinResponse['status']['id']])
-                             ->with('success', 'points: ' . $trainCheckinResponse['points']['points']);
+            return redirect()->route('admin.stationboard')
+                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $trainCheckinResponse['points']['points']);
 
         } catch (CheckInCollisionException $e) {
-            $status?->delete();
             return redirect()
                 ->back()
                 ->withErrors(__(
@@ -183,12 +188,10 @@ class CheckinController
                              ));
 
         } catch (StationNotOnTripException) {
-            $status?->delete();
             return redirect()
                 ->back()
                 ->withErrors("station not on trip");
         } catch (HafasException $exception) {
-            $status?->delete();
             return redirect()
                 ->back()
                 ->withErrors($exception->getMessage());

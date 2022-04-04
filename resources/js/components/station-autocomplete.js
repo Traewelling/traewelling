@@ -18,28 +18,40 @@ const popularStations = [
     window.awesomplete = new Awesomplete(input, {
         minChars: 2,
         autoFirst: true,
+        sort: false,
         list: popularStations,
-        container: function (input) {
+        container: function () {
             container.classList.add("awesomplete");
             return container;
         }
     });
-    input.addEventListener("keyup", (event) => {
-        if (input.value.length < 5) return;
 
-        // Hier können wir dann auch irgendwann die Flixbus-API einbauen,
-        // finds ohne getrackte Flixbusse eher sinnlos.
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func.apply(this, args);
+            }, timeout);
+        };
+    }
 
-        // Hier ist nur Bahn-Stuff
+    function fetchStations() {
+        if (input.value.length < 2) return;
+
         fetch(urlAutocomplete + "/" + encodeURI(input.value))
             .then(res => res.json())
             .then(json => {
-                window.awesomplete.list = json.map(d => {
+                window.awesomplete.list = json.map(station => {
                     return {
-                        value: d.name,
-                        label: d.name + "",
+                        value: station.name,
+                        label: station.name + (station.rilIdentifier ? " (" + station.rilIdentifier + ")" : "")
                     };
                 });
             });
-    });
+    }
+
+    const processChange = debounce(() => fetchStations());
+    input.addEventListener("keyup", processChange);
+
 })();

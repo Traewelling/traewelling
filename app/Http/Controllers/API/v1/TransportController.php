@@ -10,19 +10,20 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
-use App\Http\Controllers\Backend\Social\MastodonController;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
-use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
+use App\Models\Event;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 
 class TransportController extends ResponseController
@@ -123,47 +124,36 @@ class TransportController extends ResponseController
                                         ]);
 
         try {
-            $status = StatusBackend::createStatus(
-                user:       auth()->user(),
-                business:   Business::tryFrom($validated['business'] ?? 0),
-                visibility: StatusVisibility::tryFrom($validated['visibility'] ?? 0),
-                body:       $validated['body'] ?? null,
-                eventId:    $validated['eventId'] ?? null
+            $searchKey          = isset($validated['ibnr']) ? 'ibnr' : 'id';
+            $originStation      = TrainStation::where($searchKey, $validated['start'])->first();
+            $destinationStation = TrainStation::where($searchKey, $validated['destination'])->first();
+
+            $trainCheckinResponse           = TrainCheckinController::checkin(
+                user:           Auth::user(),
+                hafasTrip:      HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                origin:         $originStation,
+                departure:      Carbon::parse($validated['departure']),
+                destination:    $destinationStation,
+                arrival:        Carbon::parse($validated['arrival']),
+                travelReason:   Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
+                visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
+                body:           $validated['body'] ?? null,
+                event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
+                force:          isset($validated['force']) && $validated['force'],
+                postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
+                postOnMastodon: isset($validated['toot']) && $validated['toot'],
             );
-
-            $hafasTrip = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
-
-            $trainCheckinResponse = TrainCheckinController::createTrainCheckin(
-                status:    $status,
-                trip:      $hafasTrip,
-                entryStop: $validated['start'],
-                exitStop:  $validated['destination'],
-                departure: Carbon::parse($validated['departure']),
-                arrival:   Carbon::parse($validated['arrival']),
-                force:     $validated['force'] ?? false,
-                ibnr:      $validated['ibnr'] ?? false
-            );
-
-            if ($validated['tweet'] && auth()->user()?->socialProfile?->twitter_id != null) {
-                TwitterController::postStatus($status);
-            }
-            if ($validated['toot'] && auth()->user()?->socialProfile?->mastodon_id != null) {
-                MastodonController::postStatus($status);
-            }
-
+            $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
             return $this->sendv1Response($trainCheckinResponse);
-        } catch (CheckInCollisionException $e) {
-            $status?->delete();
+        } catch (CheckInCollisionException $exception) {
             return $this->sendv1Error([
-                                          'status_id' => $e->getCollision()->status_id,
-                                          'lineName'  => $e->getCollision()->HafasTrip->first()->linename
+                                          'status_id' => $exception->getCollision()->status_id,
+                                          'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
                                       ], 409);
 
         } catch (StationNotOnTripException) {
-            $status?->delete();
             return $this->sendv1Error('Given stations are not on the trip/have wrong departure/arrival.', 400);
         } catch (HafasException $exception) {
-            $status?->delete();
             return $this->sendv1Error($exception->getMessage(), 400);
         } catch (TrainCheckinAlreadyExistException) {
             return $this->sendv1Error('CheckIn already exists', 409);

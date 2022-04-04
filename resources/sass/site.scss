@@ -30,7 +30,7 @@ ul.timeline {
       left: 20px;
       width: 20px;
       height: 20px;
-      z-index: 400;
+      z-index: 2;
     }
 
     &:first-child:before {
@@ -41,7 +41,7 @@ ul.timeline {
       width: 2px;
       height: 90%;
       position: absolute;
-      z-index: 400;
+      z-index: 2;
     }
 
     &:last-child {

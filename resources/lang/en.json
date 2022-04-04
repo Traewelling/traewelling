@@ -515,5 +515,8 @@
     "time.hours": "hours",
     "time.days": "days",
     "time.months": "months",
-    "time.years": "years"
+    "time.years": "years",
+    "maintenance": "Maintenance",
+    "maintenance.title": "We are currently working on improving the website.",
+    "try-later": "Try again later."
 }

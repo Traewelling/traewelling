@@ -21,17 +21,17 @@ class StopoverResource extends JsonResource
             "arrival"                  => $this->arrival?->toIso8601String(),
             "arrivalPlanned"           => $this->arrival_planned?->toIso8601String(),
             "arrivalReal"              => $this->arrival_real?->toIso8601String(),
-            "arrivalPlatformPlanned"   => $this->arrival_platform_planned,
-            "arrivalPlatformReal"      => $this->arrival_platform_real,
+            "arrivalPlatformPlanned"   => $this->arrival_platform_planned ?? null,
+            "arrivalPlatformReal"      => $this->arrival_platform_real ?? null,
             "departure"                => $this->departure?->toIso8601String(),
             "departurePlanned"         => $this->departure_planned?->toIso8601String(),
             "departureReal"            => $this->departure_real?->toIso8601String(),
-            "departurePlatformPlanned" => $this->departure_platform_planned,
-            "departurePlatformReal"    => $this->departure_platform_real,
-            "platform"                 => $this->platform,
+            "departurePlatformPlanned" => $this->departure_platform_planned ?? null,
+            "departurePlatformReal"    => $this->departure_platform_real ?? null,
+            "platform"                 => $this->platform ?? null,
             "isArrivalDelayed"         => (bool) $this->isArrivalDelayed,
             "isDepartureDelayed"       => (bool) $this->isDepartureDelayed,
-            "cancelled"                => $this->cancelled ?? false
+            "cancelled"                => (bool) ($this->cancelled ?? false)
         ];
     }
 }

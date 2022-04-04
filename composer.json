@@ -19,6 +19,7 @@
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-sodium": "*",
         "fruitcake/laravel-cors": "^3.0",

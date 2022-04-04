@@ -7,53 +7,67 @@
 
         <title>@yield('title') | Admin | {{ config('app.name') }}</title>
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
         <script src="{{ asset('js/admin.js') }}"></script>
-
     </head>
 
     <body>
         <main>
-            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="max-width: 280px;">
                 <a href="{{ route('admin.dashboard') }}"
                    class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                          class="brand-image me-3" style="width: 30px; opacity: 0.8">
-                    <span class="fs-4">TRWL Admin</span>
+                    <span class="fs-4 d-md-none d-lg-inline">TRWL Admin</span>
                 </a>
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li class="nav-item">
                         <a href="{{ route('dashboard') }}" class="nav-link text-muted">
                             <i class="fas fa-backward me-2" aria-hidden="true"></i>
-                            Zurück zu Träwelling
+                            <span class="d-md-none d-lg-inline">Zurück zu Träwelling</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.dashboard') }}"
                            class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
                             <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>
-                            Dashboard
+                            <span class="d-md-none d-lg-inline">Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{route('admin.events')}}"
                            class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
                             <i class="fas fa-calendar me-2" aria-hidden="true"></i>
-                            Veranstaltungen
+                            <span class="d-md-none d-lg-inline">Veranstaltungen</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.status') }}"
                            class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
                             <i class="fas fa-train me-2" aria-hidden="true"></i>
-                            Status
+                            <span class="d-md-none d-lg-inline">Status</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.stationboard') }}"
                            class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
                             <i class="fas fa-ticket-alt me-2" aria-hidden="true"></i>
-                            Checkin
+                            <span class="d-md-none d-lg-inline">Checkin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.users') }}"
+                           class="nav-link text-white {{ request()->is('admin/users*') ? 'active' : '' }}">
+                            <i class="fas fa-users me-2" aria-hidden="true"></i>
+                            <span class="d-md-none d-lg-inline">Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.api.usage') }}"
+                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-book me-2" aria-hidden="true"></i>
+                            <span class="d-md-none d-lg-inline">API Usage</span>
                         </a>
                     </li>
                 </ul>
@@ -61,13 +75,14 @@
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
                        id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                             alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong>{{auth()->user()->name}}</strong>
+                        <img
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                            alt="" width="32" height="32" class="rounded-circle me-2">
+                        <strong class="d-md-none d-lg-inline">{{auth()->user()->name}}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                         <li>
-                            <a class="dropdown-item" href="{{ url('profile/'.Auth::user()->username) }}">
+                            <a class="dropdown-item" href="{{ url('profile/' . Auth::user()->username) }}">
                                 <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
                             </a>
                         </li>
@@ -94,7 +109,7 @@
             </div>
             <div class="container-fluid bg-light px-5 pt-4" style="overflow-y: scroll !important;">
                 @hasSection('title')
-                    <h1 class="mt-3 mb-3 text-dark">@yield('title')</h1>
+                    <h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
                 @endif
                 @if ($errors->any())
                     <div class="row">

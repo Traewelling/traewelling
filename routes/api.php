@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\TransportController as ApiTransportController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -29,7 +30,7 @@ use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function() {
+Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [v1Auth::class, 'login']);
         Route::post('signup', [v1Auth::class, 'register']);
@@ -43,9 +44,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
          ->name('api.v1.getPrivacyPolicy');
 
-    Route::group(['middleware' => ['auth:api', 'privacypolicy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy-policy']], function() {
         Route::post('event', [EventController::class, 'suggest']);
-        Route::get('activeEvents', [EventController::class, 'suggest']);
+        Route::get('activeEvents', [EventController::class, 'activeEvents']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
@@ -91,7 +92,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
         Route::group(['prefix' => 'settings'], function() {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
-                 ->withoutMiddleware('privacypolicy');
+                 ->withoutMiddleware('privacy-policy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
             Route::put('profile', [SettingsController::class, 'updateSettings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']);
@@ -100,7 +101,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
             Route::post('email/resend', [SettingsController::class, 'resendMail']);
             Route::put('password', [SettingsController::class, 'updatePassword']);
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                 ->withoutMiddleware('privacypolicy');
+                 ->withoutMiddleware('privacy-policy');
             Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
             Route::post('ics-token', [IcsController::class, 'createIcsToken']);
             Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -115,7 +116,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
         });
     });
 
-    Route::group(['middleware' => ['semiguest:api', 'privacypolicy']], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
@@ -132,7 +133,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'return-json'], static function(
     });
 });
 
-Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], static function() {
+Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static function() {
     Route::group(['middleware' => ['guest:api']], static function() {
         Route::group(['prefix' => 'auth'], static function() {
             Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
@@ -175,7 +176,7 @@ Route::group(['prefix' => 'v0', 'middleware' => 'return-json'], static function(
                  ->name('api.v0.checkin.train.stationboard');
             Route::get('trip', 'API\TransportController@TrainTrip')
                  ->name('api.v0.checkin.train.trip');
-            Route::post('checkin', 'API\TransportController@TrainCheckin')
+            Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')
                  ->name('api.v0.checkin.train.latest');

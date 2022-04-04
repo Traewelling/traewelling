@@ -86,8 +86,8 @@
                                 </td>
                                 <td :class="{ 'text-danger text-decoration-line-through': stop.cancelled && stop.arrivalPlatformPlanned === null}"
                                     class="ps-0">
-                                    <span v-if="stop.arrivalPlatformPlanned != stop.platform">
-                                        {{ stop.arrivalPlatformReal }}
+                                    <span v-if="stop.arrivalPlatformPlanned !== stop.platform">
+                                        {{ stop.platform }}
                                         <span class="text-decoration-line-through text-danger">
                                             {{ stop.arrivalPlatformPlanned }}
                                         </span>

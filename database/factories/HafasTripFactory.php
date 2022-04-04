@@ -6,6 +6,7 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JsonException;
@@ -145,6 +146,33 @@ class HafasTripFactory extends Factory
             $stopOvers[$cnt - 1]->plannedDeparture = $endTime->format('c');
 
             $hafasTrip->update(['stopovers' => json_encode($stopOvers)]);
+
+            foreach ($stopOvers as $legacyStopover) {
+                $trainStation = TrainStation::where('ibnr', $legacyStopover->stop->id)->first();
+                if ($trainStation === null) {
+                    //Some tests specify a stopover that does not exist (because of using real data)
+                    $trainStation = TrainStation::factory()->create([
+                                                                        'ibnr' => $legacyStopover->stop->id,
+                                                                        'name' => $legacyStopover->stop->name,
+                                                                    ]);
+                }
+
+
+                TrainStopover::create([
+                                          'trip_id'                    => $hafasTrip->trip_id,
+                                          'train_station_id'           => $trainStation->id,
+                                          'arrival_planned'            => $legacyStopover->plannedArrival,
+                                          'arrival_real'               => $legacyStopover->arrival,
+                                          'arrival_platform_planned'   => $legacyStopover->plannedArrivalPlatform,
+                                          'arrival_platform_real'      => $legacyStopover->arrivalPlatform,
+                                          'departure_planned'          => $legacyStopover->plannedDeparture,
+                                          'departure_real'             => $legacyStopover->departure,
+                                          'departure_platform_planned' => $legacyStopover->plannedDeparturePlatform,
+                                          'departure_platform_real'    => $legacyStopover->departurePlatform,
+                                          'cancelled'                  => false,
+                                      ]);
+            }
+            $hafasTrip->refresh();
         });
     }
 }

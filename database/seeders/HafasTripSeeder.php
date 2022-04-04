@@ -7,12 +7,8 @@ use Illuminate\Database\Seeder;
 
 class HafasTripSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run() {
+
+    public function run(): void {
         HafasTrip::factory()->count(50)->create();
     }
 }
