@@ -162,14 +162,12 @@
                                     {{__('events.on-my-way-dropdown')}}
                                 </label>
                                 <select class="form-control" id="event-dropdown" name="event">
-                                    <option value="0" selected>{{ __('events.no-event-dropdown') }}</option>
+                                    <option value="" selected>{{ __('events.no-event-dropdown') }}</option>
                                     @foreach($events as $event)
                                         <option value="{{ $event->id }}">{{ $event->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                        @else
-                            <input type="hidden" name="event" value="0"/>
                         @endif
 
                         <input type="hidden" id="input-tripID" name="tripID" value=""/>
