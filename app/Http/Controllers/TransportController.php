@@ -34,9 +34,11 @@ class TransportController extends Controller
             $station = HafasController::getTrainStationByRilIdentifier($query);
             if ($station !== null) {
                 return collect([
-                                   'ibnr'          => $station->ibnr,
-                                   'rilIdentifier' => $station->rilIdentifier,
-                                   'name'          => $station->name
+                                   [
+                                       'ibnr'          => $station->ibnr,
+                                       'rilIdentifier' => $station->rilIdentifier,
+                                       'name'          => $station->name
+                                   ]
                                ]);
             }
         }
