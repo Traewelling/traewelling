@@ -63,7 +63,7 @@ abstract class TrainCheckinController extends Controller
 
         $status = StatusBackend::createStatus(
             user:       $user,
-            business:   $tripType,
+            business:   $travelReason,
             visibility: $visibility,
             body:       $body,
             eventId:    $event?->id
