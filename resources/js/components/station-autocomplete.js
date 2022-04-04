@@ -36,7 +36,6 @@ const popularStations = [
     }
 
     function fetchStations() {
-        console.log('Saving data');
         if (input.value.length < 2) return;
 
         fetch(urlAutocomplete + "/" + encodeURI(input.value))
