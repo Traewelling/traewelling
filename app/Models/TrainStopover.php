@@ -28,12 +28,12 @@ class TrainStopover extends Model
         'train_station_id'           => 'integer',
         'arrival_planned'            => 'datetime',
         'arrival_real'               => 'datetime',
-        'arrival_platform_planned'   => 'integer',
-        'arrival_platform_real'      => 'integer',
+        'arrival_platform_planned'   => 'string',
+        'arrival_platform_real'      => 'string',
         'departure_planned'          => 'datetime',
         'departure_real'             => 'datetime',
-        'departure_platform_planned' => 'integer',
-        'departure_platform_real'    => 'integer',
+        'departure_platform_planned' => 'string',
+        'departure_platform_real'    => 'string'
     ];
 
     public function trip(): BelongsTo {
@@ -54,7 +54,8 @@ class TrainStopover extends Model
     }
 
     public function getPlatformAttribute(): ?string {
-        return $this->departure_platform_real ?? $this->departure_platform_planned;
+        return ($this->departure_platform_real ?? $this->arrival_platform_planned) ??
+               ($this->arrival_platform_real ?? $this->departure_platform_planned);
     }
 
     public function getIsArrivalDelayedAttribute(): bool {
