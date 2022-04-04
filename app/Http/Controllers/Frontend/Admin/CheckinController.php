@@ -145,16 +145,16 @@ class CheckinController
 
         try {
             $backendResponse = TrainCheckinController::checkin(
-                user:        $user,
-                hafasTrip:   HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:      TrainStation::where('ibnr', $validated['startIBNR'])->first(),
-                departure:   Carbon::parse($validated['departure']),
-                destination: TrainStation::where('ibnr', $destination['destination'])->first(),
-                arrival:     Carbon::parse($validated['arrival']),
-                tripType:    Business::tryFrom($validated['business'] ?? 0),
-                visibility:  StatusVisibility::tryFrom($validated['visibility'] ?? 0),
-                body:        $validated['body'] ?? null,
-                event:       isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
+                user:         $user,
+                hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
+                departure:    Carbon::parse($validated['departure']),
+                destination:  TrainStation::where('ibnr', $destination['destination'])->first(),
+                arrival:      Carbon::parse($validated['arrival']),
+                travelReason: Business::tryFrom($validated['business'] ?? 0),
+                visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),
+                body:         $validated['body'] ?? null,
+                event:        isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
                 postOnMastodon: isset($request->toot_check)

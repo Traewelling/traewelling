@@ -15,6 +15,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
+use JsonException;
 use PDOException;
 use stdClass;
 
@@ -245,12 +246,11 @@ abstract class HafasController extends Controller
                     'stopovers' => 'true'
                 ]
             ]);
-        } catch (GuzzleException) {
+            $tripJson     = json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (GuzzleException|JsonException) {
             //sometimes DB-Rest gives 502 Bad Request
             throw new HafasException(__('messages.exception.generalHafas'));
         }
-        $tripJson = json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
         $operator    = null;

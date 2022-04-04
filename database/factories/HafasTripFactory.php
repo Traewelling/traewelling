@@ -121,7 +121,7 @@ class HafasTripFactory extends Factory
             if (!isset($hafasTrip->stopovers)) {
                 return;
             }
-            $stopOvers = json_decode($hafasTrip->stopovers, false, 512, JSON_THROW_ON_ERROR);
+            $stopOvers = json_decode($hafasTrip->stopovers);
             $startTime = $hafasTrip->departure;
             $endTime   = $hafasTrip->arrival;
             $cnt       = count($stopOvers);
@@ -145,7 +145,7 @@ class HafasTripFactory extends Factory
             $stopOvers[$cnt - 1]->departure        = $endTime->format('c');
             $stopOvers[$cnt - 1]->plannedDeparture = $endTime->format('c');
 
-            $hafasTrip->update(['stopovers' => json_encode($stopOvers, JSON_THROW_ON_ERROR)]);
+            $hafasTrip->update(['stopovers' => json_encode($stopOvers)]);
 
             foreach ($stopOvers as $legacyStopover) {
                 $trainStation = TrainStation::where('ibnr', $legacyStopover->stop->id)->first();

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\TransportController as ApiTransportController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -175,7 +176,7 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
                  ->name('api.v0.checkin.train.stationboard');
             Route::get('trip', 'API\TransportController@TrainTrip')
                  ->name('api.v0.checkin.train.trip');
-            Route::post('checkin', [\App\Http\Controllers\API\TransportController::class, 'TrainCheckin'])
+            Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')
                  ->name('api.v0.checkin.train.latest');
