@@ -24,10 +24,6 @@ class CheckinTest extends TestCase
 
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        parent::setUp();
-    }
-
     private $plus_one_day_then_8pm = "+1 day 8:00";
 
     /**
@@ -232,10 +228,6 @@ class CheckinTest extends TestCase
         $this->assertStringContainsString("Example Body (@ ", $status->socialText);
     }
 
-    /*
-     * Test if the checkin collision is truly working
-     * @test
-     */
     public function testCheckinCollision(): void {
         // GIVEN: Generate TrainStations
         TrainStation::factory()->count(4)->create();
@@ -366,6 +358,11 @@ class CheckinTest extends TestCase
             $caseCount++;
         }
     }
+
+    /*
+     * Test if the checkin collision is truly working
+     * @test
+     */
 
     /**
      * Let us see if the message-flash works as intended. Therfore we fake a checkin or at least
@@ -561,7 +558,7 @@ class CheckinTest extends TestCase
         $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    self::checkinTime(),
         );
         $rawTrip                 = $departures->where('line.name', 'STR 94')
                                               ->where('direction', 'Schloss Charlottenhof, Potsdam')
@@ -598,12 +595,21 @@ class CheckinTest extends TestCase
         $this->assertLessThan(1000, $distance);
     }
 
+    private static function checkinTime(): Carbon {
+        $timeString = 'next monday 10:00 am';
+        if (Carbon::now()->dayOfWeek < 4) {
+            $timeString = 'tomorrow 10:00 am';
+        }
+
+        return Carbon::parse($timeString);
+    }
+
     public function testDistanceCalculationOnRingLinesForSecondOccurrence(): void {
         $user                    = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
         $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    self::checkinTime(),
         );
         $rawTrip                 = $departures->where('line.name', 'STR 94')
                                               ->where('direction', 'Schloss Charlottenhof, Potsdam')
@@ -638,5 +644,9 @@ class CheckinTest extends TestCase
         // This avoids failed tests when the polyline is changed by the EVU.
         $this->assertGreaterThan(12000, $distance);
         $this->assertLessThan(12500, $distance);
+    }
+
+    protected function setUp(): void {
+        parent::setUp();
     }
 }
