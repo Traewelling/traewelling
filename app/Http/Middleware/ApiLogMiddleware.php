@@ -30,10 +30,10 @@ class ApiLogMiddleware
     }
 
     public function terminate(Request $request, $response): void {
-        if (self::$apiLog === null) {
-            return;
-        }
         try {
+            if (self::$apiLog === null) {
+                return;
+            }
             self::$apiLog->update([
                                       'status_code' => $response->getStatusCode(),
                                   ]);
