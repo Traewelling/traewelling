@@ -15,7 +15,7 @@ return new class extends Migration
 
     public function down(): void {
         Schema::table('api_logs', static function(Blueprint $table) {
-            $table->unsignedTinyInteger('status_code')->nullable();
+            $table->unsignedTinyInteger('status_code')->nullable()->change();
         });
     }
 };
