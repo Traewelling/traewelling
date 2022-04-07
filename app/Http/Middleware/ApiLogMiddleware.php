@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 class ApiLogMiddleware
 {
 
-    private static ?ApiLog $apiLog;
+    private static ?ApiLog $apiLog = null;
 
     public function handle(Request $request, Closure $next): mixed {
         try {
