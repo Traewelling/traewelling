@@ -151,9 +151,9 @@ class BackendCheckinTest extends TestCase
             when:    Carbon::parse('next monday 10:00 am'),
             type:    TravelType::TRAM,
         );
-        $rawTrip = $departures->where('line.name', 'STR 94')
-                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
-                              ->first();
+        $rawTrip                 = $departures->where('line.name', 'STR 94')
+                                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
+                                              ->first();
         if ($rawTrip === null) {
             $this->fail("Unable to find trip.");
         }
@@ -228,5 +228,45 @@ class BackendCheckinTest extends TestCase
         // This avoids failed tests when the polyline is changed by the EVU.
         $this->assertGreaterThan(12000, $distance);
         $this->assertLessThan(12500, $distance);
+    }
+
+    public function testBusAirAtFrankfurtAirport(): void {
+        $user       = User::factory()->create();
+        $station    = HafasController::getTrainStation(102932); // Flughafen Terminal 1, Frankfurt a.M.
+        $departures = HafasController::getDepartures(
+            station: $station,
+            when:    Carbon::parse('next monday 10:00 am'),
+        );
+        $rawTrip    = $departures->where('line.name', 'Bus AIR')
+                                 ->first();
+        if ($rawTrip === null) {
+            $this->fail("Unable to find trip.");
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        // We hop in at Flughafen Terminal 1, Frankfurt a.M.
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 102932)->first();
+        // We check out at Kongresszentrum darmstadtium, Darmstadt
+        $destinationStopover = $hafasTrip->stopoversNew
+            ->where('trainStation.ibnr', 102668)
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return isset($stopover->arrival_planned)
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
+            })
+            ->first();
+
+        $response     = TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        );
+        $trainCheckin = $response['status']->trainCheckin;
+
+        $this->assertEquals(102932, $trainCheckin->origin);
+        $this->assertEquals(102668, $trainCheckin->destination);
+        $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 }
