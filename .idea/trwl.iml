@@ -166,6 +166,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/ignition" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/flare-client-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fruitcake/php-cors" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/uri-interfaces" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/uri" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
