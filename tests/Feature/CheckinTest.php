@@ -25,7 +25,7 @@ class CheckinTest extends TestCase
         parent::setUp();
     }
 
-    private $plus_one_day_then_8pm = "+1 day 8:00";
+    private string $plus_one_day_then_8pm = "+1 day 8:00";
 
     /**
      * Use the stationboard api and check if it works.

@@ -117,12 +117,15 @@ abstract class GeoController extends Controller
             }
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id
+                && isset($data->properties->departure_planned) //Important for ring lines!
                 && $origin->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
             ) {
                 $originIndex = $key;
             }
+
             if ($destinationIndex === null
                 && $destination->trainStation->ibnr === (int) $data->properties->id
+                && isset($data->properties->arrival_planned) //Important for ring lines!
                 && $destination->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
             ) {
                 $destinationIndex = $key;
