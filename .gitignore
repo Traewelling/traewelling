@@ -1,7 +1,7 @@
 vendor/
 node_modules/
 npm-debug.log
-report/
+test-coverage/
 clover.xml
 
 # Profile pictures
