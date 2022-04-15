@@ -36,14 +36,18 @@ abstract class IcsController extends Controller
 
         $calendar = Calendar::create()
                             ->name(__('profile.last-journeys-of') . ' ' . $user->name)
-                            ->description('Check-Ins at traewelling.de');
+                            ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
             $event = Event::create()
-                          ->name(__('export.journey-from-to', [
-                              'origin'      => $checkIn->Origin->name,
-                              'destination' => $checkIn->Destination->name
-                          ]))
+                          ->name(__(
+                                     key:     'export.journey-from-to',
+                                     replace: [
+                                                  'origin'      => $checkIn->Origin->name,
+                                                  'destination' => $checkIn->Destination->name
+                                              ],
+                                     locale:  $user->language
+                                 ))
                           ->uniqueIdentifier($checkIn->id)
                           ->createdAt($checkIn->created_at)
                           ->startsAt($checkIn->origin_stopover->departure ?? $checkIn->departure)

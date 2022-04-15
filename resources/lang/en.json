@@ -339,6 +339,7 @@
     "settings.ics.descriptor": "You can manage your ICS links here. This will allow you to view your previous trips in a calendar that supports it.",
     "settings.ics.modal": "Issued ICS tokens",
     "settings.token": "Token",
+    "ics.description": "My journeys with traewelling.de",
     "settings.revoke-token": "Revoke access",
     "settings.revoke-token.success": "Access has been revoked",
     "settings.create-ics-token": "Create new token",
