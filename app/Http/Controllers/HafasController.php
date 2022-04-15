@@ -95,7 +95,6 @@ abstract class HafasController extends Controller
 
     private static function parseHafasStops(array $hafasResponse): Collection {
         $payload = [];
-        $ibnrs   = [];
         foreach ($hafasResponse as $hafasStation) {
             $payload[] = [
                 'ibnr'      => $hafasStation->id,
@@ -103,8 +102,12 @@ abstract class HafasController extends Controller
                 'latitude'  => $hafasStation?->location?->latitude,
                 'longitude' => $hafasStation?->location?->longitude,
             ];
-            $ibnrs[]   = $hafasStation->id;
         }
+        return self::upsertTrainStations($payload);
+    }
+
+    private static function upsertTrainStations(array $payload) {
+        $ibnrs = array_column($payload, 'ibnr');
         TrainStation::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
         return TrainStation::whereIn('ibnr', $ibnrs)->get();
     }
@@ -175,10 +178,27 @@ abstract class HafasController extends Controller
                 'query' => $query,
             ]);
 
-            $data       = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+
+            //First fetch all stations in one request
+            $trainStationPayload = [];
+            foreach ($data as $departure) {
+                if (in_array($departure->stop->id, array_column($trainStationPayload, 'ibnr'), true)) {
+                    continue;
+                }
+                $trainStationPayload[] = [
+                    'ibnr'      => $departure->stop->id,
+                    'name'      => $departure->stop->name,
+                    'latitude'  => $departure->stop?->location?->latitude,
+                    'longitude' => $departure->stop?->location?->longitude,
+                ];
+            }
+            $trainStations = self::upsertTrainStations($trainStationPayload);
+
+            //Then match the stations to the departures
             $departures = collect();
             foreach ($data as $departure) {
-                $departure->station = self::getTrainStation($departure->stop->id);
+                $departure->station = $trainStations->where('ibnr', $departure->stop->id)->first();
                 $departures->push($departure);
             }
 
@@ -255,6 +275,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
+        return self::fetchHafasTrip($tripID, $lineName);
         $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
@@ -319,12 +340,28 @@ abstract class HafasController extends Controller
                                                    'delay'       => $tripJson->arrivalDelay ?? null
                                                ]);
 
+        //Save TrainStations
+        $payload = [];
         foreach ($tripJson->stopovers as $stopover) {
-            $hafasStop = self::parseHafasStopObject($stopover->stop);
+            $payload[] = [
+                'ibnr'      => $stopover->stop->id,
+                'name'      => $stopover->stop->name,
+                'latitude'  => $stopover->stop->location?->latitude,
+                'longitude' => $stopover->stop->location?->longitude,
+            ];
+        }
+        $stations = self::upsertTrainStations($payload);
+
+
+        foreach ($tripJson->stopovers as $stopover) {
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
             //so.. just save data we really got. :)
             $updatePayload = [
+                'trip_id'                    => $tripID,
+                'train_station_id'           => $stopover->stop->id,
+                'arrival_planned'            => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
+                'departure_planned'          => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
             ];
@@ -348,7 +385,7 @@ abstract class HafasController extends Controller
                 TrainStopover::updateOrCreate(
                     [
                         'trip_id'           => $tripID,
-                        'train_station_id'  => $hafasStop->id,
+                        'train_station_id'  => $stopover->stop->id,
                         'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
                         'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                     ],
