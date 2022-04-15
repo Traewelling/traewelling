@@ -222,6 +222,8 @@
     "messages.exception.general": "An unknown error occurred. Please try again.",
     "messages.exception.generalHafas": "There was a problem with the interface to the timetable data. Please try again.",
     "messages.account.please-confirm": "Please enter <i><b>:delete</b></i> to confirm the deletion.",
+    "messages.exception.already-checkedin": "There is already a checkin in this connection.",
+    "messages.exception.maybe-too-fast": "Maybe you sent your request multiple times by mistake?",
     "modals.delete-confirm": "Delete",
     "modals.deleteStatus-title": "Do you really want to delete this status?",
     "modals.edit-confirm": "Save",

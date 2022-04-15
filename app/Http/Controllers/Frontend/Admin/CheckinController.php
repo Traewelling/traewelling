@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 use Intervention\Image\Exception\NotFoundException;
+use Throwable;
 
 class CheckinController
 {
@@ -199,6 +200,8 @@ class CheckinController
             return redirect()
                 ->back()
                 ->withErrors('CheckIn already exists');
+        } catch (Throwable $trowed) {
+            return back()->with('alert-danger', 'Fehler beim Speichern des CheckIns: ' . get_class($trowed) . ' -> ' . $trowed->getMessage());
         }
     }
 }
