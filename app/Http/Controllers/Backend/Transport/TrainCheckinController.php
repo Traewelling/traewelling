@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 use JetBrains\PhpStorm\ArrayShape;
 
 abstract class TrainCheckinController extends Controller
@@ -122,6 +123,9 @@ abstract class TrainCheckinController extends Controller
                                        ->where('arrival_planned', $arrival)->first();
 
         if (empty($firstStop) || empty($lastStop)) {
+            Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
+            Log::debug('TrainCheckin: Origin-ID: ' . $origin->id . ', Departure: ' . $departure->toIso8601String());
+            Log::debug('TrainCheckin: Destination-ID: ' . $destination->id . ', Arrival: ' . $arrival->toIso8601String());
             throw new StationNotOnTripException();
         }
 
