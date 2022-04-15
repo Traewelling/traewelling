@@ -332,8 +332,9 @@ abstract class HafasController extends Controller
                     ],
                     $updatePayload
                 );
-            } catch (PDOException $exception) {
-                report($exception);
+            } catch (PDOException) {
+                //do nothing: updateOrCreate will handle duplicate keys, but if the database is a bit laggy
+                // it can be throw an error here. But thats not a big deal.
             }
         }
         try {
