@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\IcsToken;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -18,33 +19,26 @@ abstract class IcsController extends Controller
         string  $token,
         int     $limit = 10000,
         ?Carbon $from = null,
-        ?Carbon $until = null): Calendar {
+        ?Carbon $until = null
+    ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = $user->statuses->map(function($status) {
-            return $status->trainCheckIn;
-        });
+        $trainCheckIns = TrainCheckin::where('user_id', $user->id)
+                                     ->orderByDesc('departure')
+                                     ->limit($limit);
 
-        if (isset($from)) {
-            $trainCheckIns = $trainCheckIns->filter(function($checkIn) use ($from) {
-                return $checkIn->departure->isAfter($from);
-            });
+        if ($from !== null) {
+            $trainCheckIns->where('departure', '>=', $from->toIso8601String());
         }
-
-        if (isset($until)) {
-            $trainCheckIns = $trainCheckIns->filter(function($checkIn) use ($until) {
-                return $checkIn->departure->isBefore($until);
-            });
+        if ($until !== null) {
+            $trainCheckIns->where('departure', '<=', $until->toIso8601String());
         }
-
-        $trainCheckIns = $trainCheckIns->sortByDesc('created_at')
-                                       ->take($limit);
 
         $calendar = Calendar::create()
                             ->name(__('profile.last-journeys-of') . ' ' . $user->name)
                             ->description('Check-Ins at traewelling.de');
 
-        foreach ($trainCheckIns as $checkIn) {
+        foreach ($trainCheckIns->get() as $checkIn) {
             $event = Event::create()
                           ->name(__('export.journey-from-to', [
                               'origin'      => $checkIn->Origin->name,
