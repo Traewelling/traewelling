@@ -361,9 +361,10 @@ abstract class HafasController extends Controller
             $updatePayload = [
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
+                'cancelled'                  => $stopover?->cancelled ?? false,
             ];
             //remove "null" values
-            $updatePayload = array_filter($updatePayload, 'strlen');
+            $updatePayload = array_filter($updatePayload, 'strlen'); //TODO: This is deprecated, find a better way
 
             if ($stopover->arrival !== null && Carbon::parse($stopover->arrival)->isFuture()) {
                 $updatePayload['arrival_real'] = Carbon::parse($stopover->arrival);
@@ -377,7 +378,6 @@ abstract class HafasController extends Controller
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
-            $updatePayload['cancelled'] = $stopover?->cancelled ?? false;
             try {
                 TrainStopover::updateOrCreate(
                     [
