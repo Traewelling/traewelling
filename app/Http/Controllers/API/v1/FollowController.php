@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
-use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Follow;
@@ -18,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 
 class FollowController extends ResponseController
 {
@@ -30,7 +29,7 @@ class FollowController extends ResponseController
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
             return $instance->sendv1Error(['message' => __('controller.user.follow-error')], 409);
-        } catch (IdenticalModelException) {
+        } catch (InvalidArgumentException) {
             abort(409);
         }
 
