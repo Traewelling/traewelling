@@ -19,10 +19,6 @@ use JsonException;
 use PDOException;
 use stdClass;
 
-/**
- * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
- * @deprecated Will be replaced by https://github.com/Traewelling/hafas-client-php
- */
 abstract class HafasController extends Controller
 {
 
@@ -74,21 +70,9 @@ abstract class HafasController extends Controller
                 ]
             ]);
 
-            $data    = json_decode($response->getBody()->getContents());
-            $payload = [];
-            $ibnrs   = [];
-            foreach ($data as $hafasStation) {
-                $payload[] = [
-                    'ibnr'      => $hafasStation->id,
-                    'name'      => $hafasStation->name,
-                    'latitude'  => $hafasStation?->location?->latitude,
-                    'longitude' => $hafasStation?->location?->longitude,
-                ];
-                $ibnrs[]   = $hafasStation->id;
-            }
-            TrainStation::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
-            return TrainStation::whereIn('ibnr', $ibnrs)->get();
-        } catch (GuzzleException $exception) {
+            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            return self::parseHafasStops($data);
+        } catch (GuzzleException|JsonException $exception) {
             throw new HafasException($exception->getMessage());
         }
     }
@@ -109,6 +93,28 @@ abstract class HafasController extends Controller
                                             ]);
     }
 
+    private static function parseHafasStops(array $hafasResponse): Collection {
+        $payload = [];
+        foreach ($hafasResponse as $hafasStation) {
+            $payload[] = [
+                'ibnr'      => $hafasStation->id,
+                'name'      => $hafasStation->name,
+                'latitude'  => $hafasStation?->location?->latitude,
+                'longitude' => $hafasStation?->location?->longitude,
+            ];
+        }
+        return self::upsertTrainStations($payload);
+    }
+
+    private static function upsertTrainStations(array $payload) {
+        $ibnrs = array_column($payload, 'ibnr');
+        TrainStation::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
+        return TrainStation::whereIn('ibnr', $ibnrs)->get();
+    }
+
+    /**
+     * @throws HafasException
+     */
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
@@ -120,17 +126,17 @@ abstract class HafasController extends Controller
                 ]
             ]);
 
-            $data     = json_decode($response->getBody()->getContents());
-            $stations = collect();
+            $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $stations = self::parseHafasStops($data);
+
             foreach ($data as $hafasStation) {
-                $station           = self::parseHafasStopObject($hafasStation);
-                $station->distance = $hafasStation->distance ?? 0;
-                $stations->push($station);
+                $station           = $stations->where('ibnr', $hafasStation->id)->first();
+                $station->distance = $hafasStation->distance;
             }
 
             return $stations;
-        } catch (GuzzleException $e) {
-            throw new HafasException($e->getMessage());
+        } catch (GuzzleException|JsonException $exception) {
+            throw new HafasException($exception->getMessage());
         }
     }
 
@@ -172,16 +178,33 @@ abstract class HafasController extends Controller
                 'query' => $query,
             ]);
 
-            $data       = json_decode($response->getBody()->getContents());
+            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+
+            //First fetch all stations in one request
+            $trainStationPayload = [];
+            foreach ($data as $departure) {
+                if (in_array($departure->stop->id, array_column($trainStationPayload, 'ibnr'), true)) {
+                    continue;
+                }
+                $trainStationPayload[] = [
+                    'ibnr'      => $departure->stop->id,
+                    'name'      => $departure->stop->name,
+                    'latitude'  => $departure->stop?->location?->latitude,
+                    'longitude' => $departure->stop?->location?->longitude,
+                ];
+            }
+            $trainStations = self::upsertTrainStations($trainStationPayload);
+
+            //Then match the stations to the departures
             $departures = collect();
             foreach ($data as $departure) {
-                $departure->station = self::getTrainStation($departure->stop->id);
+                $departure->station = $trainStations->where('ibnr', $departure->stop->id)->first();
                 $departures->push($departure);
             }
 
             return $departures;
-        } catch (GuzzleException $e) {
-            throw new HafasException($e->getMessage());
+        } catch (GuzzleException|JsonException $exception) {
+            throw new HafasException($exception->getMessage());
         }
     }
 
@@ -196,10 +219,12 @@ abstract class HafasController extends Controller
      * @return TrainStation
      * @throws HafasException
      */
-    public static function getTrainStation(int    $ibnr,
-                                           string $name = null,
-                                           float  $latitude = null,
-                                           float  $longitude = null): TrainStation {
+    public static function getTrainStation(
+        int    $ibnr,
+        string $name = null,
+        float  $latitude = null,
+        float  $longitude = null
+    ): TrainStation {
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
@@ -250,6 +275,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
+        return self::fetchHafasTrip($tripID, $lineName);
         $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
@@ -314,17 +340,31 @@ abstract class HafasController extends Controller
                                                    'delay'       => $tripJson->arrivalDelay ?? null
                                                ]);
 
+        //Save TrainStations
+        $payload = [];
         foreach ($tripJson->stopovers as $stopover) {
-            $hafasStop = self::parseHafasStopObject($stopover->stop);
+            $payload[] = [
+                'ibnr'      => $stopover->stop->id,
+                'name'      => $stopover->stop->name,
+                'latitude'  => $stopover->stop->location?->latitude,
+                'longitude' => $stopover->stop->location?->longitude,
+            ];
+        }
+        $trainStations = self::upsertTrainStations($payload);
+
+        foreach ($tripJson->stopovers as $stopover) {
+            //TODO: make this better 🤯
+
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
             //so.. just save data we really got. :)
             $updatePayload = [
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
+                'cancelled'                  => $stopover?->cancelled ?? false,
             ];
             //remove "null" values
-            $updatePayload = array_filter($updatePayload, 'strlen');
+            $updatePayload = array_filter($updatePayload, 'strlen'); //TODO: This is deprecated, find a better way
 
             if ($stopover->arrival !== null && Carbon::parse($stopover->arrival)->isFuture()) {
                 $updatePayload['arrival_real'] = Carbon::parse($stopover->arrival);
@@ -338,12 +378,11 @@ abstract class HafasController extends Controller
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
                 }
             }
-            $updatePayload['cancelled'] = $stopover?->cancelled ?? false;
             try {
                 TrainStopover::updateOrCreate(
                     [
                         'trip_id'           => $tripID,
-                        'train_station_id'  => $hafasStop->id,
+                        'train_station_id'  => $trainStations->where('ibnr', $stopover->stop->id)->first()->id,
                         'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
                         'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                     ],
