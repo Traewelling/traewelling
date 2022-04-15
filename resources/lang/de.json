@@ -361,6 +361,7 @@
     "settings.ics.descriptor": "Hier kannst du deine ICS-Link verwalten. Damit kannst du deine bisherigen Fahrten in einem Kalender anzeigen, der das unterstützt.",
     "settings.ics.modal": "Ausgestellte ICS-Tokens",
     "settings.token": "Token",
+    "ics.description": "Meine Fahrten mit traewelling.de",
     "settings.revoke-token": "Zugriff entziehen",
     "settings.revoke-token.success": "Zugriff wurde entzogen",
     "settings.create-ics-token": "Neue Freigabe erstellen",
