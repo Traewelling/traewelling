@@ -23,7 +23,8 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::where('user_id', $user->id)
+        $trainCheckIns = TrainCheckin::with(['HafasTrip'])
+                                     ->where('user_id', $user->id)
                                      ->orderByDesc('departure')
                                      ->limit($limit);
 
@@ -39,15 +40,18 @@ abstract class IcsController extends Controller
                             ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
+            $name = $checkIn->HafasTrip->category->getEmoji();
+            $name .= ' ' . __(
+                    key:     'export.journey-from-to',
+                    replace: [
+                                 'origin'      => $checkIn->Origin->name,
+                                 'destination' => $checkIn->Destination->name
+                             ],
+                    locale:  $user->language
+                );
+
             $event = Event::create()
-                          ->name(__(
-                                     key:     'export.journey-from-to',
-                                     replace: [
-                                                  'origin'      => $checkIn->Origin->name,
-                                                  'destination' => $checkIn->Destination->name
-                                              ],
-                                     locale:  $user->language
-                                 ))
+                          ->name($name)
                           ->uniqueIdentifier($checkIn->id)
                           ->createdAt($checkIn->created_at)
                           ->startsAt($checkIn->origin_stopover->departure ?? $checkIn->departure)
