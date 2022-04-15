@@ -336,9 +336,11 @@ abstract class HafasController extends Controller
                 report($exception);
             }
         }
-
-        self::saveRemarks($tripJson?->remarks ?? [], $hafasTrip);
-
+        try {
+            self::saveRemarks($tripJson?->remarks ?? [], $hafasTrip);
+        } catch (PDOException) {
+            // do nothing (not important)
+        }
         return $hafasTrip;
     }
 
