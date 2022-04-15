@@ -34,7 +34,7 @@ abstract class HafasController extends Controller
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
             $response = $client->get("/stations/$rilIdentifier");
-            $data     = json_decode($response->getBody()->getContents());
+            $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
             return TrainStation::updateOrCreate([
                                                     'ibnr' => $data->id
                                                 ], [
@@ -43,19 +43,23 @@ abstract class HafasController extends Controller
                                                     'latitude'      => $data->location->latitude,
                                                     'longitude'     => $data->location->longitude
                                                 ]);
-        } catch (GuzzleException) {
+        } catch (Exception $exception) {
+            report($exception);
             return null;
         }
     }
 
     public static function getTrainStationsByRilIdentifier(string $rilIdentifier): ?Collection {
-        $trainStation = TrainStation::where('rilIdentifier', 'LIKE', "$rilIdentifier%")->orderBy('rilIdentifier')->get();
-        if ($trainStation->count() === 0) {
-            $trainStation = collect([self::getTrainStationByRilIdentifier(rilIdentifier: $rilIdentifier)]);
+        $trainStations = TrainStation::where('rilIdentifier', 'LIKE', "$rilIdentifier%")->orderBy('rilIdentifier')->get();
+        if ($trainStations->count() > 0) {
+            return $trainStations;
         }
-        return $trainStation;
+        return collect([self::getTrainStationByRilIdentifier(rilIdentifier: $rilIdentifier)]);
     }
 
+    /**
+     * @throws HafasException
+     */
     public static function getStations(string $query, int $results = 10): Collection {
         try {
             $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
@@ -70,18 +74,31 @@ abstract class HafasController extends Controller
                 ]
             ]);
 
-            $data     = json_decode($response->getBody()->getContents());
-            $stations = collect();
+            $data    = json_decode($response->getBody()->getContents());
+            $payload = [];
+            $ibnrs   = [];
             foreach ($data as $hafasStation) {
-                $stations->push(self::parseHafasStopObject($hafasStation));
+                $payload[] = [
+                    'ibnr'      => $hafasStation->id,
+                    'name'      => $hafasStation->name,
+                    'latitude'  => $hafasStation?->location?->latitude,
+                    'longitude' => $hafasStation?->location?->longitude,
+                ];
+                $ibnrs[]   = $hafasStation->id;
             }
-
-            return $stations;
-        } catch (GuzzleException $e) {
-            throw new HafasException($e->getMessage());
+            TrainStation::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
+            return TrainStation::whereIn('ibnr', $ibnrs)->get();
+        } catch (GuzzleException $exception) {
+            throw new HafasException($exception->getMessage());
         }
     }
 
+    /**
+     * @param stdClass $hafasStop
+     *
+     * @return TrainStation
+     * @throws PDOException
+     */
     public static function parseHafasStopObject(stdClass $hafasStop): TrainStation {
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $hafasStop->id
