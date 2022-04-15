@@ -5,7 +5,6 @@ name: "Docker Image"
 on:
   push:
     branches:
-      - develop
       - release
     tags:
       - v*
