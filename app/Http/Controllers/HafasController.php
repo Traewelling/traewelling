@@ -350,18 +350,15 @@ abstract class HafasController extends Controller
                 'longitude' => $stopover->stop->location?->longitude,
             ];
         }
-        $stations = self::upsertTrainStations($payload);
-
+        self::upsertTrainStations($payload);
 
         foreach ($tripJson->stopovers as $stopover) {
+            //TODO: make this better 🤯
+
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
             //so.. just save data we really got. :)
             $updatePayload = [
-                'trip_id'                    => $tripID,
-                'train_station_id'           => $stopover->stop->id,
-                'arrival_planned'            => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
-                'departure_planned'          => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
             ];
