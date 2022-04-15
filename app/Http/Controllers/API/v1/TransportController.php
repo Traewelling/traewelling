@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
+use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
@@ -155,6 +156,8 @@ class TransportController extends ResponseController
             return $this->sendv1Error('Given stations are not on the trip/have wrong departure/arrival.', 400);
         } catch (HafasException $exception) {
             return $this->sendv1Error($exception->getMessage(), 400);
+        } catch (AlreadyCheckedInException) {
+            return $this->sendv1Error(__('messages.exception.already-checkedin', [], 'en'), 400);
         } catch (TrainCheckinAlreadyExistException) {
             return $this->sendv1Error('CheckIn already exists', 409);
         }

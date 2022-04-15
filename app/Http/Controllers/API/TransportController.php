@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Enum\TravelType;
+use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
@@ -182,6 +183,8 @@ class TransportController extends ResponseController
         } catch (StationNotOnTripException $exception) {
             report($exception);
             return $this->sendError('Given stations are not on the trip.', 400);
+        } catch (AlreadyCheckedInException) {
+            return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         } catch (Throwable $exception) {
             report($exception);
             return $this->sendError('Unknown Error occurred', 500);
