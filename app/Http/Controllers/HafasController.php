@@ -350,7 +350,7 @@ abstract class HafasController extends Controller
                 'longitude' => $stopover->stop->location?->longitude,
             ];
         }
-        self::upsertTrainStations($payload);
+        $trainStations = self::upsertTrainStations($payload);
 
         foreach ($tripJson->stopovers as $stopover) {
             //TODO: make this better 🤯
@@ -382,7 +382,7 @@ abstract class HafasController extends Controller
                 TrainStopover::updateOrCreate(
                     [
                         'trip_id'           => $tripID,
-                        'train_station_id'  => $stopover->stop->id,
+                        'train_station_id'  => $trainStations->where('ibnr', $stopover->stop->id)->first()->id,
                         'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
                         'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
                     ],
