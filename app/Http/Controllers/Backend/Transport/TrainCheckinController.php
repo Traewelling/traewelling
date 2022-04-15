@@ -28,6 +28,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use PDOException;
 
@@ -61,7 +62,7 @@ abstract class TrainCheckinController extends Controller
         bool             $postOnMastodon = false
     ): array {
         if ($departure->isAfter($arrival)) {
-            throw new Exception('Departure time must be before arrival time');
+            throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
         $status = StatusBackend::createStatus(
