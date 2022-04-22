@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $event->name)
+@section('canonical', route('statuses.byEvent', ['eventSlug' => $event->slug]))
 
 @section('content')
     <div class="px-4 py-5 mt-n4"
