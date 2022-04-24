@@ -40,7 +40,7 @@
         "leaflet": "^1.8.0",
         "litepicker": "^2.0.11",
         "marked": "^4.0.14",
-        "mdb-ui-kit": "^3.11.0",
+        "mdb-ui-kit": "^4.0.0",
         "moment": "^2.29.2",
         "momentjs": "^2.0.0",
         "notyf": "^3.10.0",
