@@ -1,4 +1,4 @@
-FROM node:16-alpine as NodeBuildContainer
+FROM node:18-alpine as NodeBuildContainer
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm i && npm run prod
