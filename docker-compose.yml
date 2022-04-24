@@ -1,54 +1,52 @@
 version: '3'
+
 services:
-  db:
-    image: mariadb:10
+  app:
+    image: ghcr.io/traewelling/traewelling:latest
     restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+      - db-rest
+    environment:
+      - CONTAINER_ROLE=app
     env_file:
-      - .env.db
-    command:
-      - --innodb-buffer-pool-size=2G
-      - --innodb-log-file-size=1G
+      - .env
     networks:
-      default:
-      replica:
+      - internal
     volumes:
-      - mariadb:/var/lib/mysql
-      - ./dump.sql.gz:/docker-entrypoint-initdb.d/dump.sql.gz
+      - ./docker/avatars:/var/www/html/public/uploads/avatars
+      - ./docker/storage:/var/www/html/storage
 
-  # backup_replica:
-  #   image: mariadb:10.3
-  #   restart: always
-  #   env_file:
-  #     - .env.db_backup
-  #   networks:
-  #     replica:
-  #   volumes:
-  #     - mariadb_backup:/var/lib/mysql
-
-  service:
-    image: ghcr.io/traewelling/traewelling:develop
+  scheduler:
+    image: ghcr.io/traewelling/traewelling:latest
     restart: always
     depends_on:
       - db
       - db-rest
+    environment:
+      - CONTAINER_ROLE=scheduler
     env_file:
-      - .env.trwl
+      - .env
     networks:
-      default:
-      web:
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traewelling-insecure.rule=Host(`testing.traewelling.de`)
-      - traefik.http.routers.traewelling-insecure.middlewares=traewelling-redirectscheme
-      - traefik.http.middlewares.traewelling-redirectscheme.redirectscheme.scheme=https
-      - traefik.http.middlewares.traewelling-redirectscheme.redirectscheme.permanent=true
-      - traefik.http.routers.traewelling.rule=Host(`testing.traewelling.de`)
-      - traefik.http.routers.traewelling.tls=true
-      - traefik.http.routers.traewelling.tls.certresolver=lets-encrypt
-      #- traefik.http.services.traewelling.loadbalancer.server.port=80
+      - internal
+
+  db:
+    image: mariadb:10
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=unsecurepassword
+      - MARIADB_DATABASE=traewelling
+      - MARIADB_USER=traewelling_u
+      - MARIADB_PASSWORD=unsecurepassword
+    command:
+      - --innodb-buffer-pool-size=2G
+      - --innodb-log-file-size=1G
+    networks:
+      - internal
     volumes:
-      - avatars:/var/www/html/public/uploads/avatars
-      - storage:/var/www/html/storage
+      - ./docker/database:/var/lib/mysql
 
   db-rest:
     image: derhuerst/db-rest:5
@@ -57,19 +55,15 @@ services:
       - redis
     environment:
       REDIS_URL: "redis://redis:6379"
+    networks:
+      - internal
 
   redis:
     image: redis
     restart: always
+    networks:
+      - internal
 
 networks:
-  replica:
-    internal: true
-  web:
-    external: true
-
-volumes:
-  mariadb:
-  mariadb_backup:
-  avatars:
-  storage:
+  internal:
+    external: false

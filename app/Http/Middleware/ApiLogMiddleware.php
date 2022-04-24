@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 class ApiLogMiddleware
 {
 
-    private static ?ApiLog $apiLog;
+    private static ?ApiLog $apiLog = null;
 
     public function handle(Request $request, Closure $next): mixed {
         try {
@@ -30,10 +30,10 @@ class ApiLogMiddleware
     }
 
     public function terminate(Request $request, $response): void {
-        if (self::$apiLog === null) {
-            return;
-        }
         try {
+            if (self::$apiLog === null) {
+                return;
+            }
             self::$apiLog->update([
                                       'status_code' => $response->getStatusCode(),
                                   ]);

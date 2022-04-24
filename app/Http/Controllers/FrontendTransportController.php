@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
+use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
@@ -193,7 +194,12 @@ class FrontendTransportController extends Controller
                                 ));
 
         } catch (TrainCheckinAlreadyExistException) {
-            return redirect()->route('dashboard')->with('error', __('messages.exception.general'));
+            return redirect()->route('dashboard')
+                             ->with('error', __('messages.exception.general'));
+        } catch (AlreadyCheckedInException) {
+            $message = __('messages.exception.already-checkedin') . ' ' . __('messages.exception.maybe-too-fast');
+            return redirect()->route('dashboard')
+                             ->with('error', $message);
         } catch (Throwable $exception) {
             report($exception);
             return redirect()

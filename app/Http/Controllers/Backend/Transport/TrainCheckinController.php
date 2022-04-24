@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
@@ -27,15 +27,19 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
+use PDOException;
 
 abstract class TrainCheckinController extends Controller
 {
 
     /**
      * @throws StationNotOnTripException
-     * @throws CheckInCollisionException|NotConnectedException
-     * @throws HafasException
+     * @throws CheckInCollisionException
+     * @throws NotConnectedException
+     * @throws AlreadyCheckedInException
      */
     #[ArrayShape([
         'status'               => Status::class,
@@ -58,7 +62,7 @@ abstract class TrainCheckinController extends Controller
         bool             $postOnMastodon = false
     ): array {
         if ($departure->isAfter($arrival)) {
-            throw new Exception('Departure time must be before arrival time');
+            throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
         $status = StatusBackend::createStatus(
@@ -88,8 +92,9 @@ abstract class TrainCheckinController extends Controller
             }
 
             return $trainCheckinResponse;
-        } catch (CheckInCollisionException|HafasException|StationNotOnTripException $exception) {
-            $status?->delete();
+        } catch (Exception $exception) {
+            // Delete status if it was created and rethrow exception, so it can be handled by the caller
+            $status->delete();
             throw $exception;
         }
     }
@@ -98,6 +103,7 @@ abstract class TrainCheckinController extends Controller
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws ModelNotFoundException
+     * @throws AlreadyCheckedInException
      */
     #[ArrayShape([
         'status'               => Status::class,
@@ -122,6 +128,9 @@ abstract class TrainCheckinController extends Controller
                                        ->where('arrival_planned', $arrival)->first();
 
         if (empty($firstStop) || empty($lastStop)) {
+            Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
+            Log::debug('TrainCheckin: Origin-ID: ' . $origin->id . ', Departure: ' . $departure->toIso8601String());
+            Log::debug('TrainCheckin: Destination-ID: ' . $destination->id . ', Arrival: ' . $arrival->toIso8601String());
             throw new StationNotOnTripException();
         }
 
@@ -143,32 +152,38 @@ abstract class TrainCheckinController extends Controller
             arrival:         $lastStop->arrival,
             forceCheckin:    $force
         );
+        try {
+            $trainCheckin         = TrainCheckin::create([
+                                                             'status_id'   => $status->id,
+                                                             'user_id'     => $status->user_id,
+                                                             'trip_id'     => $trip->trip_id,
+                                                             'origin'      => $firstStop->trainStation->ibnr,
+                                                             'destination' => $lastStop->trainStation->ibnr,
+                                                             'distance'    => $distance,
+                                                             'points'      => $pointsResource['points'],
+                                                             'departure'   => $firstStop->departure_planned,
+                                                             'arrival'     => $lastStop->arrival_planned
+                                                         ]);
+            $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection->reject(function($status) {
+                return $status->statusInvisibleToMe;
+            });
 
-        $trainCheckin         = TrainCheckin::create([
-                                                         'status_id'   => $status->id,
-                                                         'user_id'     => $status->user_id,
-                                                         'trip_id'     => $trip->trip_id,
-                                                         'origin'      => $firstStop->trainStation->ibnr,
-                                                         'destination' => $lastStop->trainStation->ibnr,
-                                                         'distance'    => $distance,
-                                                         'points'      => $pointsResource['points'],
-                                                         'departure'   => $firstStop->departure_planned,
-                                                         'arrival'     => $lastStop->arrival_planned
-                                                     ]);
-        $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection->reject(function($status) {
-            return $status->statusInvisibleToMe;
-        });
-
-        foreach ($alsoOnThisConnection as $otherStatus) {
-            if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
-                $otherStatus->user->notify(new UserJoinedConnection($status));
+            foreach ($alsoOnThisConnection as $otherStatus) {
+                if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
+                    $otherStatus->user->notify(new UserJoinedConnection($status));
+                }
             }
-        }
 
-        return [
-            'status'               => $status,
-            'points'               => $pointsResource,
-            'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
-        ];
+            return [
+                'status'               => $status,
+                'points'               => $pointsResource,
+                'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
+            ];
+        } catch (PDOException $exception) {
+            if ($exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
+                throw new AlreadyCheckedInException();
+            }
+            throw $exception; //Other szenarios are not handled, so rethrow the exception
+        }
     }
 }

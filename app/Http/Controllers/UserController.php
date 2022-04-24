@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\IdenticalModelException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Controllers\Backend\User\SessionController;
@@ -27,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Mastodon;
 
@@ -102,12 +102,12 @@ class UserController extends Controller
      *
      * @return User
      * @throws AlreadyFollowingException
-     * @throws IdenticalModelException
+     * @throws InvalidArgumentException
      * @api v1
      */
     public static function createOrRequestFollow(User $user, User $userToFollow): User {
         if ($user->is($userToFollow)) {
-            throw new IdenticalModelException();
+            throw new InvalidArgumentException();
         }
         if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
             throw new AlreadyFollowingException($user, $userToFollow);

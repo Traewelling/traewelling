@@ -15,4 +15,18 @@ enum HafasTravelType: string
     case SUBWAY = 'subway';
     case TRAM = 'tram';
     case TAXI = 'taxi';
+
+    public function getEmoji(): string {
+        return match ($this->value) {
+            'nationalExpress', 'national' => '🚄',
+            'regionalExp', 'regional'     => '🚆',
+            'suburban'                    => '🚋',
+            'bus'                         => '🚌',
+            'ferry'                       => '⛴',
+            'subway'                      => '🚇',
+            'tram'                        => '🚊',
+            'taxi'                        => '🚖',
+            default                       => '',
+        };
+    }
 }
