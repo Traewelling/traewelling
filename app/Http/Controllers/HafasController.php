@@ -13,6 +13,7 @@ use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use JsonException;
@@ -39,10 +40,14 @@ abstract class HafasController extends Controller
                                                     'latitude'      => $data->location->latitude,
                                                     'longitude'     => $data->location->longitude
                                                 ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() !== 404) {
+                report($exception);
+            }
         } catch (Exception $exception) {
             report($exception);
-            return null;
         }
+        return null;
     }
 
     public static function getTrainStationsByRilIdentifier(string $rilIdentifier): ?Collection {
