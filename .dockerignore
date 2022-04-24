@@ -1,4 +1,17 @@
 .git
 .env.*
+.github
+docker/
 node_modules
 vendor
+*.md
+traewelling.jpg
+phpunit.xml
+phpcs.xml
+Dockerfile
+codesize.xml
+api-swagger-v0.yml
+.styleci.yml
+tests/
+public/css/
+public/js/

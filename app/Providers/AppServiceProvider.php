@@ -27,9 +27,10 @@ class AppServiceProvider extends ServiceProvider
      * @throws BindingResolutionException
      */
     public function boot(): void {
-        if (config('app.env') === 'production') {
+        if (config('app.force-https')) {
             URL::forceScheme('https');
         }
+
         $socialite = $this->app->make(Factory::class);
         $socialite->extend(
             'mastodon',
