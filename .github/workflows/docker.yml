@@ -1,11 +1,7 @@
-# shamelessly copied from https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-ghcrio
-# modified to meet our needs
 name: "Docker Image"
 
 on:
   push:
-    branches:
-      - release
     tags:
       - v*
 
@@ -26,18 +22,19 @@ jobs:
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          [ "$VERSION" == "main" ] && VERSION=main
 
-          docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${{ github.run_number }}" \
-          --label "org.opencontainers.image.title=The Traewelling container image" \
+          echo "$VERSION" > VERSION
+
+          docker build . --file Dockerfile \
+          --tag traewelling:$VERSION \
+          --tag traewelling:latest \
+          --label "runnumber=${{ github.run_number }}" \
+          --label "org.opencontainers.image.title=Traewelling" \
           --label "org.opencontainers.image.version=$VERSION" \
-          --label "org.opencontainers.image.description=Easy-to-use deployment image of the Traewelling project" \
           --label "org.opencontainers.image.url=https://github.com/Traewelling/traewelling#readme" \
           --label "org.opencontainers.image.source=https://github.com/Traewelling/traewelling.git" \
-          --label "org.opencontainers.image.authors=Jonas Möller <jonas@traewelling.de>" \
-          --label "org.opencontainers.image.vendor=The Traewelling team <hi@traewelling.de>" \
-          --label "org.opencontainers.image.license=AGPL-3.0" \
-          --label "org.opencontainers.image.base.name=docker.io/library/php:8-apache"
+          --label "org.opencontainers.image.vendor=The Traewelling team <support@traewelling.de>" \
+          --label "org.opencontainers.image.license=AGPL-3.0"
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -45,16 +42,13 @@ jobs:
       - name: Push image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-
-          # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
+
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "release" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
+          docker push $IMAGE_ID:latest
