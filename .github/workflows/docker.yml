@@ -45,7 +45,9 @@ jobs:
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          echo "VERSION=$VERSION"
+
           docker tag $IMAGE_NAME traewelling:$VERSION
+          docker push traewelling:$VERSION
+
           docker tag $IMAGE_NAME traewelling:latest
-          docker push $IMAGE_ID:$VERSION
+          docker push traewelling:latest
