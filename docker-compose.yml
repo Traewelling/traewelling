@@ -16,8 +16,8 @@ services:
     networks:
       - internal
     volumes:
-      - ./avatars:/var/www/html/public/uploads/avatars
-      - ./storage:/var/www/html/storage
+      - ./docker/avatars:/var/www/html/public/uploads/avatars
+      - ./docker/storage:/var/www/html/storage
 
   scheduler:
     image: ghcr.io/traewelling/traewelling:latest
@@ -46,7 +46,7 @@ services:
     networks:
       - internal
     volumes:
-      - ./database:/var/lib/mysql
+      - ./docker/database:/var/lib/mysql
 
   db-rest:
     image: derhuerst/db-rest:5
