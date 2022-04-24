@@ -20,26 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set image name
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          echo "IMAGE_NAME=${IMAGE_NAME}"
-          echo "IMAGE_ID=${IMAGE_ID}"
-
-      - name: Set version
+      - name: Build image
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          echo "VERSION=${VERSION}"
 
-      - name: Build image
-        run: |
-          docker build .  \
-          --file Dockerfile  \
-          --tag $IMAGE_NAME:$VERSION \
-          --tag $IMAGE_NAME:latest \
+          echo "$VERSION" > VERSION
+
+          docker build . --file Dockerfile \
+          --tag traewelling:$VERSION \
+          --tag traewelling:latest \
           --label "runnumber=${{ github.run_number }}" \
           --label "org.opencontainers.image.title=Traewelling" \
           --label "org.opencontainers.image.version=$VERSION" \
@@ -53,6 +43,7 @@ jobs:
 
       - name: Push image
         run: |
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:latest
+          echo "VERSION=$VERSION"
+          docker tag $IMAGE_NAME traewelling:$VERSION
+          docker tag $IMAGE_NAME traewelling:latest
           docker push $IMAGE_ID:$VERSION
