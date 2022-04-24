@@ -2,8 +2,6 @@ name: "Docker Image"
 
 on:
   push:
-    branches:
-      - dev-ks-dockerworkflow
     tags:
       - v*
 
