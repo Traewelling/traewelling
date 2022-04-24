@@ -48,10 +48,10 @@
             </div>
         </div>
         <div id="app">
-            <nav class="navbar navbar-expand-md navbar-dark {{ !config('app.debug') ? 'bg-trwl' : 'bg-black' }}">
+            <nav class="navbar navbar-expand-md navbar-dark {{ config('app.env') === 'local' ? 'bg-black' : 'bg-trwl' }}">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Träwelling') }}
+                        {{ config('app.name') }}
                     </a>
                     <div class="navbar-toggler">
                         @auth

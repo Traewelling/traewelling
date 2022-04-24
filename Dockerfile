@@ -6,7 +6,7 @@ RUN npm i && npm run prod
 FROM composer:2 as ComposerBuildContainer
 COPY --from=NodeBuildContainer /usr/src/trwl /usr/src/trwl
 WORKDIR /usr/src/trwl
-RUN composer install --ignore-platform-reqs --no-interaction --no-dev --no-progress --no-suggest --optimize-autoloader
+RUN composer install --ignore-platform-reqs --no-interaction --no-progress --no-suggest --optimize-autoloader
 
 FROM php:8.1.5-apache
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
