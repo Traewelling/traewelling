@@ -184,3 +184,10 @@ window.addEventListener("load", () => {
     require("./components/alert");
     require("bootstrap-cookie-alert/cookiealert");
 });
+
+
+axios.interceptors.request.use(function (config) {
+    config.headers["User-Agent"] = "vue-mdb-spa";
+
+    return config;
+});
