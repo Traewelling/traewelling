@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Träwelling'),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,8 +28,8 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
-
+    'env'         => env('APP_ENV', 'production'),
+    'force-https' => env('FORCE_HTTPS', false),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

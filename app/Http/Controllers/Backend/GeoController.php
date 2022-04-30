@@ -13,62 +13,6 @@ use stdClass;
 abstract class GeoController extends Controller
 {
 
-    /**
-     * Timestamps in the GeoJSON are required to calculate the distance of ring lines correctly.
-     *
-     * @param HafasTrip $hafasTrip
-     *
-     * @return mixed
-     * @throws JsonException
-     */
-    private static function getPolylineWithTimestamps(HafasTrip $hafasTrip): stdClass {
-        $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
-        $stopovers  = $hafasTrip->stopoversNEW;
-        foreach ($geoJsonObj->features as $polylineFeature) {
-            if (!isset($polylineFeature->properties->id)) {
-                continue;
-            }
-            $stopover                                       = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
-                                                                        ->whereNull('passed')
-                                                                        ->first();
-            $stopover->passed                               = true;
-            $polylineFeature->properties->departure_planned = $stopover->departure_planned?->clone();
-            $polylineFeature->properties->arrival_planned   = $stopover->arrival_planned?->clone();
-        }
-        return $geoJsonObj;
-    }
-
-    /**
-     * @throws JsonException
-     */
-    private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
-        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
-
-        $originIndex      = null;
-        $destinationIndex = null;
-        foreach ($geoJson->features as $key => $data) {
-            if (!isset($data->properties->id)) {
-                continue;
-            }
-            if ($originIndex === null
-                && $origin->trainStation->ibnr === (int) $data->properties->id
-                && $origin->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
-            ) {
-                $originIndex = $key;
-            }
-            if ($destinationIndex === null
-                && $destination->trainStation->ibnr === (int) $data->properties->id
-                && $destination->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
-            ) {
-                $destinationIndex = $key;
-            }
-        }
-
-        $slicedFeatures    = array_slice($geoJson->features, $originIndex, $destinationIndex - $originIndex + 1);
-        $geoJson->features = $slicedFeatures;
-        return $geoJson;
-    }
-
     public static function calculateDistance(
         HafasTrip     $hafasTrip,
         TrainStopover $origin,
@@ -157,6 +101,77 @@ abstract class GeoController extends Controller
                     * $equatorialRadiusInMeters;
 
         return round($distance);
+    }
+
+    /**
+     * @throws JsonException
+     */
+    private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
+        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
+
+        $originIndex      = null;
+        $destinationIndex = null;
+        foreach ($geoJson->features as $key => $data) {
+            if (!isset($data->properties->id)) {
+                continue;
+            }
+            if ($originIndex === null
+                && $origin->trainStation->ibnr === (int) $data->properties->id
+                && isset($data->properties->departure_planned) //Important for ring lines!
+                && $origin->departure_planned->is($data->properties->departure_planned) //Important for ring lines!
+            ) {
+                $originIndex = $key;
+            }
+
+            if ($destinationIndex === null
+                && $destination->trainStation->ibnr === (int) $data->properties->id
+                && isset($data->properties->arrival_planned) //Important for ring lines!
+                && $destination->arrival_planned->is($data->properties->arrival_planned) //Important for ring lines!
+            ) {
+                $destinationIndex = $key;
+            }
+        }
+
+        $slicedFeatures    = array_slice($geoJson->features, $originIndex, $destinationIndex - $originIndex + 1);
+        $geoJson->features = $slicedFeatures;
+        return $geoJson;
+    }
+
+    /**
+     * Timestamps in the GeoJSON are required to calculate the distance of ring lines correctly.
+     *
+     * @param HafasTrip $hafasTrip
+     *
+     * @return mixed
+     * @throws JsonException
+     */
+    private static function getPolylineWithTimestamps(HafasTrip $hafasTrip): stdClass {
+        $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        $stopovers  = $hafasTrip->stopoversNEW;
+
+        $stopovers = $stopovers->map(function($stopover) {
+            $stopover['passed'] = false;
+            return $stopover;
+        });
+
+        foreach ($geoJsonObj->features as $polylineFeature) {
+            if (!isset($polylineFeature->properties->id)) {
+                continue;
+            }
+
+            $stopover = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
+                                  ->where('passed', false)
+                                  ->first();
+
+            if (is_null($stopover)) {
+                continue;
+            }
+
+            $stopover->passed                               = true;
+            $polylineFeature->properties->departure_planned = $stopover->departure_planned?->clone();
+            $polylineFeature->properties->arrival_planned   = $stopover->arrival_planned?->clone();
+        }
+        return $geoJsonObj;
     }
 
     public static function getMapLinesForCheckin(TrainCheckin $checkin): array {

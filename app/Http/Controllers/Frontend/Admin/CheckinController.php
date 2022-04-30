@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 use Intervention\Image\Exception\NotFoundException;
+use Throwable;
 
 class CheckinController
 {
@@ -150,7 +151,7 @@ class CheckinController
                 origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
                 departure:    Carbon::parse($validated['departure']),
                 destination:  TrainStation::where('ibnr', $destination['destination'])->first(),
-                arrival:      Carbon::parse($validated['arrival']),
+                arrival:      Carbon::parse($destination['arrival']),
                 travelReason: Business::tryFrom($validated['business'] ?? 0),
                 visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),
                 body:         $validated['body'] ?? null,
@@ -170,7 +171,7 @@ class CheckinController
             }
 
             return redirect()->route('admin.stationboard')
-                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $trainCheckinResponse['points']['points']);
+                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $backendResponse['points']['points']);
 
         } catch (CheckInCollisionException $e) {
             return redirect()
@@ -199,6 +200,8 @@ class CheckinController
             return redirect()
                 ->back()
                 ->withErrors('CheckIn already exists');
+        } catch (Throwable $trowed) {
+            return back()->with('alert-danger', 'Fehler beim Speichern des CheckIns: ' . get_class($trowed) . ' -> ' . $trowed->getMessage());
         }
     }
 }
