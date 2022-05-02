@@ -219,7 +219,7 @@
     "user.email": "Adresse e-mail",
     "settings.service": "Service",
     "events.on-your-way": "Tu es en route pour <a href=\":url\">:name</a>.",
-    "controller.status.email-resend-mail": "Envoyer le lien de confirmation.",
+    "controller.status.email-resend-mail": "Envoyer le lien de confirmation",
     "controller.status.like-deleted": "Tu n’aimes plus cet enregistrement.",
     "settings.platform": "Plateforme",
     "auth.failed": "Ce compte n’existe pas ou les données ont été mal saisies.",
@@ -281,7 +281,7 @@
     "events.url": "Site web externe",
     "transport_types.privatePlural": "Voyages privés",
     "settings.connected": "Connecté(e)",
-    "controller.transport.overlapping-checkin": "Tu as déjà enregistré dans le trajet :linename : ",
+    "controller.transport.overlapping-checkin": "Tu as déjà enregistré dans le trajet :linename:",
     "modals.delete-confirm": "Supprimer",
     "stationboard.next-stop": "Prochain arrêt :",
     "settings.delete-profile-picture": "Supprimer l’image de profil",
@@ -515,5 +515,8 @@
     "checkin.conflict.question": "Tu veux encore t'enregistrer ? Tu ne vas recevoir aucun point pour ça mais tes statistiques personnelles vont mettre à jour quand même.",
     "christmas-mode.enable": "Activer le mode Noël pour cette séance",
     "settings.visibility.hide": "Cacher automatiquement les enregistrements après",
-    "settings.prevent-indexing": "Empêcher l'indexation par les chercheurs Web"
+    "settings.prevent-indexing": "Empêcher l'indexation par les chercheurs Web",
+    "maintenance.title": "On est en train d'améliorer cette site web.",
+    "try-later": "Réessaye-le plus tard.",
+    "maintenance": "Maintenance"
 }
