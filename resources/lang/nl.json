@@ -243,7 +243,7 @@
     "notifications.mark-all-read": "Alle als gelezen makeeren",
     "notifications.mark-as-unread": "Als ongelezen makeeren",
     "notifications.mark-as-read": "Als gelezen makeeren",
-    "messages.exception.general": "Het is een foud opgetreden. Probeer het alsjeblieft opnieuw.",
+    "messages.exception.general": "Er is een fout opgetreden. Probeer het opnieuw.",
     "messages.exception.generalHafas": "Het is een probleem met de interface van de dienstregeling gegevens opgetreden. Probeer het alsjeblieft opniuew.",
     "modals.deleteStatus-title": "Wil je deze status zeker verwijdern?",
     "modals.edit-confirm": "Opslaan",
