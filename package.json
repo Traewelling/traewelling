@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.11",
-        "axios": "^0.26",
+        "axios": "^0.27",
         "bootstrap": "^5.1",
         "cross-env": "^7.0",
         "jquery": "^3.5.1",
