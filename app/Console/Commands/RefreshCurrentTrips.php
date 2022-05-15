@@ -26,6 +26,7 @@ class RefreshCurrentTrips extends Command
 
         $trips = HafasTrip::whereIn('trip_id', $qStops)
                           ->where('created_at', '>', Carbon::now()->subDays(2)->toIso8601String())
+                          ->limit(15) //TODO Roll over all trips instead of refreshing the same 15 every time
                           ->get();
 
         if ($trips->count() === 0) {
