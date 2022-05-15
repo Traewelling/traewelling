@@ -21,11 +21,13 @@ class RefreshCurrentTrips extends Command
                                          ->orWhere('arrival_real', '>=', Carbon::now()->toIso8601String());
                                })
                                ->select('trip_id')
-                               ->distinct();
+                               ->get()
+                               ->pluck('trip_id');
 
-        $trips  = HafasTrip::whereIn('trip_id', $qStops)
-                           ->where('created_at', Carbon::now()->subDays(2)->toIso8601String())
-                           ->get();
+        $trips = HafasTrip::whereIn('trip_id', $qStops)
+                          ->where('created_at', '>', Carbon::now()->subDays(2)->toIso8601String())
+                          ->limit(15) //TODO Roll over all trips instead of refreshing the same 15 every time
+                          ->get();
 
         if ($trips->count() === 0) {
             echo "There are currently no trips to refresh.\r\n";
