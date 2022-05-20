@@ -16,13 +16,13 @@ for (let delay of delays) {
 var touchmoved;
 $(document)
     .on("click touchstart", ".trainrow", function () {
-        var lineName  = $(this).data("linename");
-        var tripID    = $(this).data("tripid");
-        var start     = $(this).data("start");
-        let departure = $(this).data("departure");
+        var lineName        = $(this).data("linename");
+        var tripID          = $(this).data("tripid");
+        var start           = $(this).data("start");
+        let departure       = $(this).data("departure");
+        let searchedStation = $(this).data('searched-station')
         if (!touchmoved) {
-            window.location =
-                urlTrainTrip +
+            let redirectUrl = urlTrainTrip +
                 "?tripID=" +
                 encodeURIComponent(tripID) +
                 "&lineName=" +
@@ -31,6 +31,12 @@ $(document)
                 encodeURIComponent(start) +
                 "&departure=" +
                 encodeURIComponent(departure);
+
+            if (searchedStation !== undefined) {
+                redirectUrl += '&searchedStation=' + encodeURIComponent(searchedStation);
+            }
+
+            window.location = redirectUrl;
         }
     })
     .on("touchmove", function (e) {

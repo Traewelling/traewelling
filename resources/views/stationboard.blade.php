@@ -91,11 +91,15 @@
                                             </tr>
                                         @endif
 
-                                        <tr @if(!isset($departure->cancelled)) class="trainrow"
-                                            @endif data-tripID="{{ $departure->tripId }}"
-                                            data-lineName="{{ $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr }}"
+                                        <tr data-tripID="{{ $departure->tripId }}"
+                                            data-lineName="{{ $departure->line->name ?? $departure->line->fahrtNr }}"
                                             data-start="{{ $departure->stop->id }}"
-                                            data-departure="{{ $departure->plannedWhen }}">
+                                            data-departure="{{ $departure->plannedWhen }}"
+                                            @if($departure->station->id !== $station->id)
+                                                data-searched-station="{{$station->id}}"
+                                            @endif
+                                            @if(!isset($departure->cancelled)) class="trainrow" @endif
+                                        >
                                             <td class="ps-2 ps-md-4">
                                                 @if($departure->delay === null)
                                                     <span class="text-white">
@@ -147,6 +151,13 @@
                                                     </small>
                                                 @else
                                                     {{$departure->direction}}
+                                                @endif
+
+                                                @if($departure->station->id !== $station->id)
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        ab {{$departure->station->name}}
+                                                    </small>
                                                 @endif
                                             </td>
                                         </tr>

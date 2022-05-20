@@ -96,10 +96,11 @@ class FrontendTransportController extends Controller
 
     public function TrainTrip(Request $request): Renderable|RedirectResponse {
         $validated = $request->validate([
-                                            'tripID'    => ['required'],
-                                            'lineName'  => ['required'],
-                                            'start'     => ['required', 'numeric'],
-                                            'departure' => ['required', 'date']
+                                            'tripID'          => ['required'],
+                                            'lineName'        => ['required'],
+                                            'start'           => ['required', 'numeric'],
+                                            'departure'       => ['required', 'date'],
+                                            'searchedStation' => ['nullable', 'exists:train_stations,id'],
                                         ]);
 
         try {
@@ -124,13 +125,15 @@ class FrontendTransportController extends Controller
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
 
         return view('trip', [
-            'hafasTrip'    => $TrainTripResponse['hafasTrip'],
-            'destination'  => $TrainTripResponse['destination'], //deprecated. use hafasTrip->destinationStation instead
-            'events'       => EventBackend::activeEvents(),
-            'start'        => $TrainTripResponse['start'], //deprecated. use hafasTrip->originStation instead
-            'stopovers'    => $TrainTripResponse['stopovers'],
-            'terminalStop' => $terminalStop,
-            'user'         => Auth::user(),
+            'hafasTrip'       => $TrainTripResponse['hafasTrip'],
+            'destination'     => $TrainTripResponse['destination'], //deprecated. use hafasTrip->destinationStation instead
+            'events'          => EventBackend::activeEvents(),
+            'start'           => $TrainTripResponse['start'], //deprecated. use hafasTrip->originStation instead
+            'stopovers'       => $TrainTripResponse['stopovers'],
+            'startStation'    => TrainStation::where('ibnr', $validated['start'])->firstOrFail(),
+            'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
+            'terminalStop'    => $terminalStop,
+            'user'            => Auth::user(),
         ]);
     }
 
