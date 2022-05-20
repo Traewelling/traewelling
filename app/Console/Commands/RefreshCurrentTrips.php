@@ -15,26 +15,31 @@ class RefreshCurrentTrips extends Command
     protected $description = 'Refresh delay data from current active trips';
 
     public function handle(): int {
-        $qStops = TrainStopover::where('arrival_planned', '<=', Carbon::now()->addHours(2)->toIso8601String())
-                               ->where(function($query) {
-                                   $query->where('arrival_planned', '>=', Carbon::now()->toIso8601String())
-                                         ->orWhere('arrival_real', '>=', Carbon::now()->toIso8601String());
-                               })
-                               ->select('trip_id')
-                               ->distinct();
+        $activeTripIds = TrainStopover::where('arrival_planned', '<=', Carbon::now()->addHours(2)->toIso8601String())
+                                      ->where(function($query) {
+                                          $query->where('arrival_planned', '>=', Carbon::now()->toIso8601String())
+                                                ->orWhere('arrival_real', '>=', Carbon::now()->toIso8601String());
+                                      })
+                                      ->groupBy('trip_id')
+                                      ->select('trip_id')
+                                      ->get()
+                                      ->pluck('trip_id');
 
-        $trips  = HafasTrip::whereIn('trip_id', $qStops)
-                           ->where('created_at', Carbon::now()->subDays(2)->toIso8601String())
-                           ->get();
+        //Join is to filter to only checked in journeys
+        $trips = HafasTrip::join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
+                          ->select('hafas_trips.*')
+                          ->whereIn('hafas_trips.trip_id', $activeTripIds)
+                          ->where('hafas_trips.arrival', '<=', Carbon::now()->addDay()->toIso8601String())
+                          ->get();
 
         if ($trips->count() === 0) {
-            echo "There are currently no trips to refresh.\r\n";
+            $this->info('There are currently no trips to refresh.');
             return 0;
         }
 
         foreach ($trips as $trip) {
             try {
-                echo "Refreshing " . $trip->linename . "...\r\n";
+                $this->info("Refreshing " . $trip->linename . "...");
                 HafasController::fetchHafasTrip($trip->trip_id, $trip->linename);
             } catch (Throwable $exception) {
                 report($exception);

@@ -329,21 +329,24 @@ abstract class HafasController extends Controller
 
         $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
 
-        $hafasTrip = HafasTrip::updateOrCreate([
-                                                   'trip_id' => $tripID
-                                               ], [
-                                                   'category'    => $tripJson->line->product,
-                                                   'number'      => $tripJson->line->id,
-                                                   'linename'    => $tripJson->line->name,
-                                                   'operator_id' => $operator?->id,
-                                                   'origin'      => $origin->ibnr,
-                                                   'destination' => $destination->ibnr,
-                                                   'stopovers'   => json_encode($tripJson->stopovers),
-                                                   'polyline_id' => $polyline->id,
-                                                   'departure'   => $tripJson->plannedDeparture,
-                                                   'arrival'     => $tripJson->plannedArrival,
-                                                   'delay'       => $tripJson->arrivalDelay ?? null
-                                               ]);
+        $hafasTrip = HafasTrip::updateOrCreate(
+            [
+                'trip_id'  => $tripID,
+                'linename' => $tripJson->line->name,
+            ],
+            [
+                'category'    => $tripJson->line->product,
+                'number'      => $tripJson->line->id,
+                'operator_id' => $operator?->id,
+                'origin'      => $origin->ibnr,
+                'destination' => $destination->ibnr,
+                'stopovers'   => json_encode($tripJson->stopovers),
+                'polyline_id' => $polyline->id,
+                'departure'   => $tripJson->plannedDeparture,
+                'arrival'     => $tripJson->plannedArrival,
+                'delay'       => $tripJson->arrivalDelay ?? null
+            ]
+        );
 
         //Save TrainStations
         $payload = [];
