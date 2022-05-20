@@ -1,10 +1,20 @@
 @extends('layouts.app')
 
-@section('title'){{ $hafasTrip->linename }} -> {{$destination}}@endsection
+@section('title')
+    {{ $hafasTrip->linename }} -> {{$destination}}
+@endsection
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
+
+                <div class="alert alert-warning">
+                    {{__('warning-alternative-station', [
+                        'newStation' => $start->name,
+                        'searchedStation' => $searchedStation->name,
+                    ])}}
+                </div>
+
                 <div class="card">
                     <div class="card-header" data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
