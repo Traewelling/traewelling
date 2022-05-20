@@ -96,7 +96,7 @@
                                             data-start="{{ $departure->stop->id }}"
                                             data-departure="{{ $departure->plannedWhen }}"
                                             @if($departure->station->id !== $station->id)
-                                                data-searched-station="{{$departure->station->id}}"
+                                                data-searched-station="{{$station->id}}"
                                             @endif
                                             @if(!isset($departure->cancelled)) class="trainrow" @endif
                                         >

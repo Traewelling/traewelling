@@ -8,17 +8,22 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
 
-                <div class="alert alert-warning">
-                    {{__('warning-alternative-station', [
-                        'newStation' => $start->name,
-                        'searchedStation' => $searchedStation->name,
-                    ])}}
-                </div>
+                @isset($searchedStation)
+                    <div class="alert alert-warning">
+                        {!! __('warning-alternative-station', [
+                            'newStation' => $startStation->name,
+                            'searchedStation' => $searchedStation->name,
+                        ]) !!}
+                    </div>
+                @endisset
 
                 <div class="card">
-                    <div class="card-header" data-linename="{{ $hafasTrip->linename }}"
-                         data-startname="{{ $hafasTrip->originStation->name }}" data-start="{{ request()->start }}"
-                         data-tripid="{{ $hafasTrip->trip_id }}">
+                    <div class="card-header"
+                         data-linename="{{ $hafasTrip->linename }}"
+                         data-startname="{{ $hafasTrip->originStation->name }}"
+                         data-start="{{ request()->start }}"
+                         data-tripid="{{ $hafasTrip->trip_id }}"
+                    >
                         <div class="float-end">
                             <a href="#" class="train-destinationrow"
                                data-ibnr="{{$terminalStop['stop']['id']}}"

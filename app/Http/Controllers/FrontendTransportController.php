@@ -130,6 +130,7 @@ class FrontendTransportController extends Controller
             'events'          => EventBackend::activeEvents(),
             'start'           => $TrainTripResponse['start'], //deprecated. use hafasTrip->originStation instead
             'stopovers'       => $TrainTripResponse['stopovers'],
+            'startStation'    => TrainStation::where('ibnr', $validated['start'])->firstOrFail(),
             'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
             'terminalStop'    => $terminalStop,
             'user'            => Auth::user(),
