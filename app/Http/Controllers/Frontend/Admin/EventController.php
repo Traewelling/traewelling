@@ -72,13 +72,13 @@ class EventController extends Controller
         }
 
         AdminEventBackend::createEvent(
-            name: $validated['name'],
-            hashtag: $validated['hashtag'],
-            host: $validated['host'],
+            name:         $validated['name'],
+            hashtag:      $validated['hashtag'],
+            host:         $validated['host'],
             trainStation: $trainStation,
-            begin: Carbon::parse($validated['begin']),
-            end: Carbon::parse($validated['end']),
-            url: $validated['url']
+            begin:        Carbon::parse($validated['begin']),
+            end:          Carbon::parse($validated['end']),
+            url:          $validated['url']
         );
 
         $eventSuggestion->update(['processed' => true]);
@@ -107,13 +107,13 @@ class EventController extends Controller
         }
 
         AdminEventBackend::createEvent(
-            name: $validated['name'],
-            hashtag: $validated['hashtag'],
-            host: $validated['host'],
+            name:         $validated['name'],
+            hashtag:      $validated['hashtag'],
+            host:         $validated['host'],
             trainStation: $trainStation,
-            begin: Carbon::parse($validated['begin']),
-            end: Carbon::parse($validated['end']),
-            url: $validated['url']
+            begin:        Carbon::parse($validated['begin']),
+            end:          Carbon::parse($validated['end']),
+            url:          $validated['url']
         );
 
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde erstellt!');
@@ -138,7 +138,6 @@ class EventController extends Controller
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
         $validated['trainstation'] = $trainStation->id;
-        unset($validated['nearest_station_name']);
 
         $event->update($validated);
 
