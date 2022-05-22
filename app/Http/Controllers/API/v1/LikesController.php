@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -28,15 +29,14 @@ class LikesController extends ResponseController
     }
 
     /**
-     * @param int $status
+     * @param int $statusId
+     *
      * @return JsonResponse
+     * @throws PermissionException
      */
-    public function create(int $status): JsonResponse {
-        $status = Status::find($status);
-        if ($status == null) {
-            abort(404);
-        }
+    public function create(int $statusId): JsonResponse {
         try {
+            $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
             return $this->sendv1Response(null, 201);
         } catch (StatusAlreadyLikedException) {
