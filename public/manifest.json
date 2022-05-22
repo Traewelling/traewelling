@@ -1,7 +1,7 @@
 {
     "name": "Träwelling",
     "short_name": "Träwelling",
-    "start_url": "/",
+    "start_url": "/dashboard",
     "display": "standalone",
     "theme_color": "#c72730",
     "background_color": "#ffffff",
@@ -16,6 +16,12 @@
             "src": "images/icons/logo128.png",
             "sizes": "128x128",
             "type": "image\/png"
+        },
+        {
+            "src": "images/icons/logo1024.png",
+            "sizes": "1024x1024",
+            "type": "image\/png",
+            "purpose": "any maskable"
         }
     ]
 }

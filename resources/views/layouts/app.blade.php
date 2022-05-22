@@ -19,6 +19,7 @@
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
+        <link rel="manifest" href="/manifest.json"/>
 
         @yield('head')
     </head>
@@ -48,7 +49,8 @@
             </div>
         </div>
         <div id="app">
-            <nav class="navbar navbar-expand-md navbar-dark {{ config('app.env') === 'local' ? 'bg-black' : 'bg-trwl' }}">
+            <nav
+                class="navbar navbar-expand-md navbar-dark {{ config('app.env') === 'local' ? 'bg-black' : 'bg-trwl' }}">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
