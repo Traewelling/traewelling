@@ -19,12 +19,12 @@ class Event extends Model
         'end'          => 'datetime',
     ];
 
-    /**
-     * @return HasOne
-     * @todo rename to ->trainStation when variable is renamed in database to train_station_id
-     */
     public function station(): HasOne {
-        return $this->hasOne(TrainStation::class, 'id', 'trainstation');
+        return $this->hasOne(TrainStation::class, 'id', 'station_id');
+    }
+
+    public function statuses(): HasMany {
+        return $this->hasMany(Status::class);
     }
 
     public function getTrainDistanceAttribute(): float {
@@ -38,17 +38,5 @@ class Event extends Model
                            ->select(['arrival', 'departure'])
                            ->get()
                            ->sum('duration');
-    }
-
-    public function statuses(): HasMany {
-        return $this->hasMany(Status::class);
-    }
-
-    /**
-     * @return TrainStation
-     * @deprecated Use ->station relationship instead
-     */
-    public function getTrainstation(): TrainStation {
-        return TrainStation::where("id", "=", $this->trainstation)->first() ?? new TrainStation();
     }
 }

@@ -45,7 +45,7 @@
                                     <td>{{$event->begin->format('d.m.Y')}}</td>
                                     <td>{{$event->end->format('d.m.Y')}}</td>
                                     <td>{{$event->url}}</td>
-                                    <td>{{$event->getTrainstation()?->name}}</td>
+                                    <td>{{$event->station?->name}}</td>
                                     <td class="text-end">
                                         <form method="POST" action="{{route('admin.events.delete')}}">
                                             @csrf

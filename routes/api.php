@@ -51,7 +51,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
         Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
-        Route::post('like/{status}', [LikesController::class, 'create']);
+        Route::post('like/{statusId}', [LikesController::class, 'create']);
         Route::delete('like/{status}', [LikesController::class, 'destroy']);
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
