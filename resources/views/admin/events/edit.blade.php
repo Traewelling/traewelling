@@ -62,7 +62,7 @@
                         <div class="col-md-6 text-left" id="autocomplete-form">
                             <input type="text" id="station-autocomplete" name="nearest_station_name"
                                    class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
-                                   required value="{{$event->getTrainstation()?->name}}"/>
+                                   required value="{{$event->station?->name}}"/>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Speichern</button>
