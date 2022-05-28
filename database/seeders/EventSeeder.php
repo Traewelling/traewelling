@@ -13,7 +13,9 @@ class EventSeeder extends Seeder
         Event::factory([
                            'name'    => 'Jährliches Modelleisenbahntreffen ' . date('Y'),
                            'hashtag' => 'Modellbahn' . date('y'),
+                           'slug'    => 'Modellbahn' . date('y'),
                            'host'    => 'Modelleisenbahnfreunde Knuffingen',
+                           'url'     => 'https://traewelling.de',
                        ])->create();
     }
 }
