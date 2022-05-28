@@ -107,10 +107,9 @@ class BackendCheckinTest extends TestCase
             when:    Carbon::parse('next monday 10:00 am'),
         );
         $rawTrip    = $departures->where('line.name', 'S 42')
-                                 ->where('direction', 'Berlin-Tempelhof')
                                  ->first();
         if ($rawTrip === null) {
-            $this->fail("Unable to find trip.");
+            $this->fail('Unable to find trip.');
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
@@ -166,7 +165,7 @@ class BackendCheckinTest extends TestCase
             ->where('trainStation.ibnr', 736089)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
-                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             })
             ->first();
 
@@ -236,19 +235,20 @@ class BackendCheckinTest extends TestCase
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('next monday 10:00 am'),
+            type:    TravelType::BUS,
         );
         $rawTrip    = $departures->where('line.name', 'Bus AIR')
                                  ->first();
         if ($rawTrip === null) {
-            $this->fail("Unable to find trip.");
+            $this->fail('Unable to find trip.');
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Flughafen Terminal 1, Frankfurt a.M.
         $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 102932)->first();
-        // We check out at Kongresszentrum darmstadtium, Darmstadt
+        // We check out at Hauptbahnhof, Darmstadt
         $destinationStopover = $hafasTrip->stopoversNew
-            ->where('trainStation.ibnr', 102668)
+            ->where('trainStation.ibnr', 104734)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
@@ -266,7 +266,7 @@ class BackendCheckinTest extends TestCase
         $trainCheckin = $response['status']->trainCheckin;
 
         $this->assertEquals(102932, $trainCheckin->origin);
-        $this->assertEquals(102668, $trainCheckin->destination);
+        $this->assertEquals(104734, $trainCheckin->destination);
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 }
