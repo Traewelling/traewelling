@@ -9,13 +9,6 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class IcsTokenFactory extends Factory
 {
-
-    protected $model = IcsToken::class;
-
-    #[ArrayShape([
-        'user_id' => "\Illuminate\Database\Eloquent\Factories\Factory",
-        'token'   => "string"
-    ])]
     public function definition(): array {
         return [
             'user_id' => User::factory(),
