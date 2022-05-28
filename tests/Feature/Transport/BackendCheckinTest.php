@@ -165,7 +165,7 @@ class BackendCheckinTest extends TestCase
             ->where('trainStation.ibnr', 736089)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
-                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             })
             ->first();
 
