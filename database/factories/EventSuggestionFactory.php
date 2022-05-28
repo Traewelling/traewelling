@@ -11,19 +11,6 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class EventSuggestionFactory extends Factory
 {
-
-    protected $model = EventSuggestion::class;
-
-    #[ArrayShape([
-        'user_id'          => "\Illuminate\Database\Eloquent\Factories\Factory",
-        'name'             => "string",
-        'hashtag'          => "string",
-        'host'             => "string",
-        'url'              => "string",
-        'train_station_id' => "\Illuminate\Database\Eloquent\Factories\Factory",
-        'begin'            => "string",
-        'end'              => "string"
-    ])]
     public function definition(): array {
         $begin = Carbon::today()->addDays(rand(0, 30));
         $end   = $begin->clone()->addDays(3);

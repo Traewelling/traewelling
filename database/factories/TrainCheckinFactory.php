@@ -11,9 +11,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TrainCheckinFactory extends Factory
 {
-
-    protected $model = TrainCheckin::class;
-
     public function definition(): array {
         return [
             'status_id'   => Status::factory(),

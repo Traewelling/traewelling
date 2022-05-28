@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TrainStopoverFactory extends Factory
 {
-    protected $model = TrainStopover::class;
-
     public function definition(): array {
         return [
             'trip_id'                    => HafasTrip::factory(),
