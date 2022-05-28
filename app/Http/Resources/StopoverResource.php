@@ -11,6 +11,7 @@ class StopoverResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function toArray($request): array {
@@ -18,6 +19,7 @@ class StopoverResource extends JsonResource
             "id"                       => (int) $this->train_station_id,
             "name"                     => $this->trainStation->name,
             "rilIdentifier"            => $this->trainStation->rilIdentifier ?? null,
+            'evaIdentifier'            => $this->trainStation->ibnr,
             "arrival"                  => $this->arrival?->toIso8601String(),
             "arrivalPlanned"           => $this->arrival_planned?->toIso8601String(),
             "arrivalReal"              => $this->arrival_real?->toIso8601String(),
