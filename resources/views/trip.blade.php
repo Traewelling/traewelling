@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
-@section('title')
-    {{ $hafasTrip->linename }} -> {{$destination}}
-@endsection
+@section('title', $hafasTrip->linename . ' -> ' . $destination)
+
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -120,9 +119,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="checkinModalTitle">{{__('stationboard.new-checkin')}}</h5>
-                    <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('trains.checkin') }}" method="POST" id="checkinForm">
