@@ -9,19 +9,8 @@ return new class extends Migration
 {
 
     public function up(): void {
-        Schema::table('events', static function(Blueprint $table) {
-            $table->unsignedBigInteger('station_id')->nullable()->after('trainstation');
-            $table->foreign('station_id')->references('id')->on('train_stations');
-        });
-
-        DB::table('events')->update([
-                                        'station_id' => DB::raw('trainstation'),
-                                    ]);
-
-        Schema::table('events', static function(Blueprint $table) {
-            $table->dropForeign(['trainstation']);
-            $table->dropColumn(['trainstation']);
-        });
+        //Migration removed in v1.14 due to compatibility issues with SQLite testing.
+        //Please upgrade to v1.13.2 first, run `php artisan migrate` and THEN you can upgrade to v1.14.
     }
 
     public function down(): void {
