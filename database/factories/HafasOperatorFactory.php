@@ -8,13 +8,6 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class HafasOperatorFactory extends Factory
 {
-
-    protected $model = HafasOperator::class;
-
-    #[ArrayShape([
-        'hafas_id' => "string",
-        'name'     => "string"
-    ])]
     public function definition(): array {
         return [
             'hafas_id' => $this->faker->unique()->word,

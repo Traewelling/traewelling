@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FollowFactory extends Factory
 {
-
-    protected $model = Follow::class;
-
     public function definition(): array {
         return [
             'user_id'   => User::factory(),

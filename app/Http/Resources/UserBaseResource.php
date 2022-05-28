@@ -14,8 +14,7 @@ class UserBaseResource extends JsonResource
      *
      * @param Request $request
      *
-     * @return array|UserBaseResource
-     * @todo remove twitterUrl after replaced url in vue profile template (it's unused)
+     * @return array
      */
     public function toArray($request): array {
         return [

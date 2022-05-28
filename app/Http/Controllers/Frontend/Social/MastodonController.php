@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse as SympfonyRedirectResponse;
 
@@ -22,8 +23,9 @@ class MastodonController extends Controller
      * @return SympfonyRedirectResponse|RedirectResponse
      */
     public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
-        $request->request->set('domain', MastodonBackend::formatDomain($request->input('domain') ?? ''));
-        $validated = $request->validate(['domain' => ['required', 'active_url']]);
+        $domain = MastodonBackend::formatDomain($request->input('domain') ?? '');
+        $validator = Validator::make(['domain' => $domain], ['domain' => ['required', 'active_url']]);
+        $validated = $validator->validate();
 
         try {
             $server = MastodonBackend::getMastodonServer($validated['domain']);

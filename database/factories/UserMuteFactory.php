@@ -9,13 +9,6 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class UserMuteFactory extends Factory
 {
-
-    protected $model = UserMute::class;
-
-    #[ArrayShape([
-        'user_id'  => "\Illuminate\Database\Eloquent\Factories\Factory",
-        'muted_id' => "\Illuminate\Database\Eloquent\Factories\Factory"
-    ])]
     public function definition(): array {
         return [
             'user_id'  => User::factory(),

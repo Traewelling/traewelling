@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\API\ResponseController as ResponseController;
+use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Auth\LoginController;
 use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
@@ -19,7 +19,6 @@ class AuthController extends ResponseController
      *
      * @return JsonResponse
      * @api  v1
-     * @todo refactor this
      */
     public function register(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
@@ -28,16 +27,18 @@ class AuthController extends ResponseController
             'email'    => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed'],
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                                         'status' => 'error',
                                         'errors' => $validator->errors()
                                     ], 422);
         }
-        $input               = $request->only('username', 'name', 'email', 'password');
-        $input['password']   = Hash::make($input['password']);
-        $input['last_login'] = now();
-        $user                = User::create($input);
+
+        $validated               = $validator->validated();
+        $validated['password']   = Hash::make($validated['password']);
+        $validated['last_login'] = now();
+        $user                    = User::create($validated);
 
         if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');

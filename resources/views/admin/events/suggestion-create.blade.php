@@ -46,13 +46,13 @@
                     <div class="row">
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="begin">{{ __('events.begin') }}:</label>
-                            <input id="begin" type="date" class="form-control" name="begin"
-                                   value="{{ $event->begin->format("Y-m-d") }}" required/>
+                            <input id="begin" type="datetime-local" class="form-control" name="begin"
+                                   value="{{ $event->begin->toDateTimeLocalString() }}" required/>
                         </div>
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="end">{{ __('events.end') }}:</label>
-                            <input id="end" type="date" class="form-control" name="end"
-                                   value="{{ $event->end->format("Y-m-d") }}" required/>
+                            <input id="end" type="datetime-local" class="form-control" name="end"
+                                   value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}" required/>
                         </div>
                     </div>
                     <div class="form-group row">

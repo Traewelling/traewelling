@@ -64,7 +64,6 @@ class FrontendStatusController extends Controller
      * @param Request $request
      *
      * @return JsonResponse|RedirectResponse
-     * @todo Is this api? Because of JsonReponse. But if yes: Why it does an Redirect?
      */
     public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
         try {

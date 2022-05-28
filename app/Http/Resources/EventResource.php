@@ -11,6 +11,7 @@ class EventResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function toArray($request): array {
@@ -25,7 +26,7 @@ class EventResource extends JsonResource
             "end"           => $this->end?->toIso8601String(),
             "trainDistance" => $this->trainDistance,
             "trainDuration" => $this->trainDuration,
-            "station" => new TrainStationResource($this->station)
+            "station"       => new TrainStationResource($this->station)
         ];
     }
 }

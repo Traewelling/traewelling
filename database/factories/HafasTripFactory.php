@@ -13,19 +13,6 @@ use JsonException;
 
 class HafasTripFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = HafasTrip::class;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     * @throws JsonException
-     */
     public function definition(): array {
         $stops = TrainStation::inRandomOrder()->limit(4)->get();
         if ($stops->count() < 4) {

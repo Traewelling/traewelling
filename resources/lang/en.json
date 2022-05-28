@@ -521,5 +521,6 @@
     "time.years": "years",
     "maintenance": "Maintenance",
     "maintenance.title": "We are currently working on improving the website.",
-    "try-later": "Try again later."
+    "try-later": "Try again later.",
+    "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>."
 }
