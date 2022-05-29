@@ -121,11 +121,13 @@ abstract class TrainCheckinController extends Controller
     ): array {
         $trip->load('stopoversNEW');
 
+        //Note: Compare with ->format because of timezone differences!
         $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
-                                        ->where('departure_planned', $departure)->first();
-
+                                        ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
+                                        ->first();
         $lastStop = $trip->stopoversNEW->where('train_station_id', $destination->id)
-                                       ->where('arrival_planned', $arrival)->first();
+                                       ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
+                                       ->first();
 
         if (empty($firstStop) || empty($lastStop)) {
             Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
