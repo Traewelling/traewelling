@@ -37,9 +37,18 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
+            <div class="col-12">
+                <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
+            </div>
             <div class="col-md-8 col-lg-7">
-                <h5>{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h5>
                 @include('includes.status')
+            </div>
+            <div class="col-md-4 col-lg-5">
+                @if($status->trainCheckin->origin_stopover->carriageSequences->count() > 0)
+                    @include('includes.carriage-sequence', [
+                        'carriageSequence' => $status->trainCheckin->origin_stopover->carriageSequences
+                    ])
+                @endif
             </div>
         </div>
         @if(auth()->check() && auth()->user()->id == $status->user_id)

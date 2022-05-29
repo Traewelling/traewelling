@@ -125,9 +125,9 @@ abstract class TrainCheckinController extends Controller
         $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
                                         ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
                                         ->first();
-        $lastStop = $trip->stopoversNEW->where('train_station_id', $destination->id)
-                                       ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
-                                       ->first();
+        $lastStop  = $trip->stopoversNEW->where('train_station_id', $destination->id)
+                                        ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
+                                        ->first();
 
         if (empty($firstStop) || empty($lastStop)) {
             Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
@@ -175,6 +175,9 @@ abstract class TrainCheckinController extends Controller
                     $otherStatus->user->notify(new UserJoinedConnection($status));
                 }
             }
+
+            //TODO: Move to background job
+            CarriageSequenceController::fetchSequence($firstStop);
 
             return [
                 'status'               => $status,
