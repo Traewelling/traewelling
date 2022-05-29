@@ -370,6 +370,7 @@
     "stationboard.dep": "dep",
     "stationboard.dep-time": "Departure Time",
     "stationboard.destination": "Destination",
+    "stationboard.to": "to",
     "stationboard.dt-picker": "Datetime picker",
     "stationboard.filter-products": "Filter",
     "stationboard.label-message": "Message:",

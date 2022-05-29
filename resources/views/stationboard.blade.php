@@ -95,7 +95,7 @@
                                             data-lineName="{{ $departure->line->name ?? $departure->line->fahrtNr }}"
                                             data-start="{{ $departure->stop->id }}"
                                             data-departure="{{ $departure->plannedWhen }}"
-                                            @if($departure->station->id !== $station->id)
+                                            @if($departure->station->id !== $station->id && $departure->station->name !== $station->name)
                                                 data-searched-station="{{$station->id}}"
                                             @endif
                                             @if(!isset($departure->cancelled)) class="trainrow" @endif
@@ -147,16 +147,17 @@
                                                     </span>
                                                     <br/>
                                                     <small class="text-muted text-decoration-line-through">
+                                                        {{__('stationboard.to')}}
                                                         {{$departure->direction}}
                                                     </small>
                                                 @else
                                                     {{$departure->direction}}
                                                 @endif
 
-                                                @if($departure->station->id !== $station->id)
+                                                @if($departure->station->id !== $station->id && $departure->station->name !== $station->name)
                                                     <br/>
                                                     <small class="text-muted">
-                                                        ab {{$departure->station->name}}
+                                                        {{__('stationboard.dep')}} {{$departure->station->name}}
                                                     </small>
                                                 @endif
                                             </td>

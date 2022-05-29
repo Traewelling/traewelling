@@ -393,6 +393,7 @@
     "stationboard.dep": "ab",
     "stationboard.dep-time": "Abfahrt",
     "stationboard.destination": "Ziel",
+    "stationboard.to": "nach",
     "stationboard.dt-picker": "Zeit-Wähler",
     "stationboard.filter-products": "Filter",
     "stationboard.label-message": "Status-Nachricht:",
