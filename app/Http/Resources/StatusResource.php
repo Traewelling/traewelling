@@ -15,8 +15,7 @@ class StatusResource extends JsonResource
      *
      * @return array
      */
-    public function toArray($request): array
-    {
+    public function toArray($request): array {
         return [
             'id'             => (int) $this->id,
             'body'           => (string) $this->body,
@@ -32,7 +31,7 @@ class StatusResource extends JsonResource
             'createdAt'      => $this->created_at->toIso8601String(),
             'train'          => [
                 'trip'        => (int) $this->trainCheckin->HafasTrip->id,
-                'tripId'      => (string) $this->trainCheckin->HafasTrip->trip_id,
+                'hafasId'      => (string) $this->trainCheckin->HafasTrip->trip_id,
                 'category'    => (string) $this->trainCheckin->HafasTrip->category->value,
                 'number'      => (string) $this->trainCheckin->HafasTrip->number,
                 'lineName'    => (string) $this->trainCheckin->HafasTrip->linename,
