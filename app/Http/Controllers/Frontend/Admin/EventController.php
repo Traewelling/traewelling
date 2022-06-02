@@ -137,7 +137,7 @@ class EventController extends Controller
         if ($trainStation === null) {
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
-        $validated['trainstation'] = $trainStation->id;
+        $validated['station_id'] = $trainStation->id;
 
         $event->update($validated);
 
