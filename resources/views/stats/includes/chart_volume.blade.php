@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <h5>{{__('stats.volume')}} <small>{{__('stats.per-week')}}</small></h5>
+        <h5>{{__('stats.time')}}</h5>
         @if($travelTime->count() > 0)
-            <canvas id="chart_triptime_calendar"></canvas>
+            <div id="chart_triptime_calendar"></div>
         @else
             <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
@@ -13,37 +13,75 @@
     @parent
     @if($travelTime->count() > 0)
         <script>
-            new Chart(document.getElementById('chart_triptime_calendar').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: [
-                        @foreach($travelTime as $row)
-                            '{{__('stats.week-short')}} {{$row->date->isoFormat('w / Y')}}',
-                        @endforeach
-                    ],
-                    datasets: [{
-                        label: '{{__('stats.time-in-minutes')}}',
+            new ApexCharts(document.querySelector("#chart_triptime_calendar"), {
+                series: [
+                    {
+                        name: '{{__('stats.time-in-minutes')}}',
                         data: [
-                            @foreach($travelTime as $row)
-                                    {{$row->duration}},
+                                @foreach($travelTime as $row)
+                            {
+                                x: new Date('{{$row->date->toIso8601String()}}').getTime(),
+                                y: {{$row->duration ?? 0}}
+                            },
                             @endforeach
-                        ],
-                        backgroundColor: [
-                            '#c72730'
-                        ],
-                    }]
+                        ]
+                    }
+                ],
+                chart: {
+                    type: 'area',
+                    stacked: false,
+                    height: 350,
+                    zoom: {
+                        type: 'x',
+                        enabled: true,
+                        autoScaleYaxis: true
+                    },
+                    toolbar: {
+                        autoSelected: 'zoom'
+                    }
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                dataLabels: {
+                    enabled: false
+                },
+                markers: {
+                    size: 0,
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 0.5,
+                        opacityTo: 0,
+                        stops: [0, 90, 100]
+                    },
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value + ' {{__('minutes')}}';
                         }
                     },
-                    legend: {
-                        display: false
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        datetimeUTC: false,
+                        datetimeFormatter: {
+                            year: 'yyyy',
+                            month: 'MMM \'yy',
+                            day: 'dd MMM',
+                            hour: 'HH:mm'
+                        }
+                    }
+                },
+                tooltip: {
+                    shared: false,
+                    x: {
+                        format: 'dd MMM yyyy HH:mm'
                     }
                 }
-            });
+            }).render();
         </script>
     @endif
 @endsection
