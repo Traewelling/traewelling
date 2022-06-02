@@ -7,7 +7,7 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
      */
     const mapInStatusView = elem.dataset.showmapcontrols == " 1 ";
 
-    var map = L.map(elem, {
+    let map = L.map(elem, {
         zoomControl: mapInStatusView,
         dragging: mapInStatusView,
         tap: mapInStatusView
@@ -23,8 +23,8 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
         }
     ).addTo(map);
 
-    const latlngs = JSON.parse(elem.dataset.polygon);
-    var polyline = L.polyline(latlngs)
+    let coordinates = JSON.parse(elem.dataset.polygon);
+    let polyline    = L.polyline(coordinates)
         .setStyle({color: "rgb(192, 57, 43)", weight: 5})
         .addTo(map);
 

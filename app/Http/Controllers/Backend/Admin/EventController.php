@@ -12,23 +12,23 @@ abstract class EventController extends Controller
 {
 
     public static function createEvent(
-        string $name,
-        string $hashtag,
-        string $host,
+        string       $name,
+        string       $hashtag,
+        string       $host,
         TrainStation $trainStation,
-        Carbon $begin,
-        Carbon $end,
-        string $url = null
+        Carbon       $begin,
+        Carbon       $end,
+        string       $url = null
     ): Event {
         return Event::create([
-                                 'name'         => $name,
-                                 'slug'         => self::createSlug($name),
-                                 'hashtag'      => $hashtag,
-                                 'host'         => $host,
-                                 'trainstation' => $trainStation->id,
-                                 'begin'        => $begin->toIso8601String(),
-                                 'end'          => $end->toIso8601String(),
-                                 'url'          => $url
+                                 'name'       => $name,
+                                 'slug'       => self::createSlug($name),
+                                 'hashtag'    => $hashtag,
+                                 'host'       => $host,
+                                 'station_id' => $trainStation->id,
+                                 'begin'      => $begin->toIso8601String(),
+                                 'end'        => $end->toIso8601String(),
+                                 'url'        => $url
                              ]);
     }
 
