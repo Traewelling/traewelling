@@ -427,6 +427,7 @@
     "stats.companies": "Transport companies",
     "stats.categories": "Means of transport of your travels",
     "stats.volume": "Your travel volume",
+    "stats.time": "Your daily travel time",
     "stats.per-week": "per week",
     "stats.trips": "Journeys",
     "stats.no-data": "There are no data available in the period.",
