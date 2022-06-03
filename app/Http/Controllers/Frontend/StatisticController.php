@@ -24,8 +24,15 @@ class StatisticController extends Controller
 
         $topCategories  = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
         $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
-        $travelTime     = StatisticBackend::getDailyTravelTimeByUser(auth()->user(), $from, $to);
         $travelPurposes = StatisticBackend::getTravelPurposes(auth()->user(), $from, $to);
+
+        $travelTime = StatisticBackend::getDailyTravelTimeByUser(
+            user:  auth()->user(),
+            from:  isset($validated['from']) ? $from : Carbon::now()->subYear(),
+            until: isset($validated['to']) ? $to : Carbon::now(),
+        )->groupBy(function($row) {
+            return $row->date->isoFormat('MMMM YY');
+        });
 
         $travelPurposes = $travelPurposes->map(function($row) {
             if ($row->reason === Business::PRIVATE->value) {

@@ -128,10 +128,10 @@ abstract class StatisticController extends Controller
 
         $dateList = collect();
         for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
-            $e           = collect();
+            $e           = new stdClass();
             $e->date     = $date->clone();
-            $e->count    = 0;
-            $e->duration = 0;
+            $e->count    = 1;
+            $e->duration = 1;
             $dateList->push($e);
         }
 

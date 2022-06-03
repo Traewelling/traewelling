@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-body">
-        <h5>{{__('stats.time')}}</h5>
         @if($travelTime->count() > 0)
-            <div id="chart_triptime_calendar"></div>
+            <div id="chartTripTimeCalendar"></div>
         @else
+            <h5>{{__('stats.time')}}</h5>
             <p class="text-danger font-weight-bold mt-2">{{__('stats.no-data')}}</p>
         @endif
     </div>
@@ -13,12 +13,58 @@
     @parent
     @if($travelTime->count() > 0)
         <script>
-            new ApexCharts(document.querySelector("#chart_triptime_calendar"), {
+            new ApexCharts(document.querySelector("#chartTripTimeCalendar"), {
+                series: [
+                        @foreach($travelTime as $month => $data)
+                    {
+                        name: '{{$month}}',
+                        data: [
+                                @foreach($data as $row)
+                            {
+                                x: '{{$row->date->day}}',
+                                y: {{$row->duration ?? 0}}
+                            },
+                            @endforeach
+                        ]
+                    },
+                    @endforeach
+                ],
+                chart: {
+                    type: 'heatmap',
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    type: 'category',
+                    categories: [
+                        @for($i = 1; $i <= 31; $i++)
+                            '{{$i}}',
+                        @endfor
+                    ]
+                },
+                colors: ["#C72730"],
+                title: {
+                    text: '{{__('stats.time')}}'
+                },
+                heatmap: {
+                    colorScale: {
+                        ranges: [{
+                            from: 0,
+                            to: 200,
+                            color: '#C72730',
+                            name: 'low',
+                        }]
+                    }
+                }
+            }).render();
+
+            let old = {
                 series: [
                     {
                         name: '{{__('stats.time-in-minutes')}}',
                         data: [
-                                @foreach($travelTime as $row)
+                                @foreach([] as $row)
                             {
                                 x: new Date('{{$row->date->toIso8601String()}}').getTime(),
                                 y: {{$row->duration ?? 0}}
@@ -81,7 +127,7 @@
                         format: 'dd MMM yyyy HH:mm'
                     }
                 }
-            }).render();
+            };
         </script>
     @endif
 @endsection
