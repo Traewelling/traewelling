@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('trwl:cleanUpHafasTrips')->dailyAt('1:35');
         $schedule->command('trwl:cleanUpPolylines')->dailyAt('1:40');
         $schedule->command('trwl:cleanUpPasswordResets')->dailyAt('1:45');
+        $schedule->command('trwl:cleanUpDatabase')->dailyAt('1:50');
         $schedule->command('trwl:refreshTrips')->withoutOverlapping()->everyTwoMinutes();
         $schedule->command('trwl:hideStatus')->daily();
     }
