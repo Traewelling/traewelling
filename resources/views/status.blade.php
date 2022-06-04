@@ -38,7 +38,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <h5>{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h5>
+                <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
             </div>
         </div>

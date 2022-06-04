@@ -18,6 +18,11 @@ if [ "$role" = "app" ]; then
     runuser -u www-data -- php artisan storage:link
     apache2-foreground
 
+elif [ "$role" = "queue" ]; then
+
+    echo "Running the queue..."
+    runuser -u www-data -- php artisan queue:work
+
 elif [ "$role" = "scheduler" ]; then
 
     echo "Running as scheduler..."

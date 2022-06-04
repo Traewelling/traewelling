@@ -26,7 +26,7 @@
     <body>
         <div id="app">
             <nav
-                class="navbar navbar-expand-md navbar-dark {{ config('app.env') === 'local' ? 'bg-black' : 'bg-trwl' }}">
+                class="navbar navbar-expand-md navbar-dark bg-trwl">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
