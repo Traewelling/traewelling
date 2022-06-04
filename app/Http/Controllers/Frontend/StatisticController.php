@@ -12,20 +12,19 @@ use Illuminate\Http\Request;
 class StatisticController extends Controller
 {
     public function renderMainStats(Request $request): Renderable {
-
         $validated = $request->validate([
                                             'from' => ['nullable', 'date'],
                                             'to'   => ['nullable', 'date', 'after_or_equal:from']
                                         ]);
 
-        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subQuarter();
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
         $globalStats = StatisticBackend::getGlobalCheckInStats($from, $to);
 
         $topCategories  = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
         $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
-        $travelTime     = StatisticBackend::getWeeklyTravelTimeByUser(auth()->user(), $from, $to);
+        $travelTime     = StatisticBackend::getDailyTravelTimeByUser(auth()->user(), $from, $to);
         $travelPurposes = StatisticBackend::getTravelPurposes(auth()->user(), $from, $to);
 
         $travelPurposes = $travelPurposes->map(function($row) {

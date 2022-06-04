@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title'){{__('stats')}} @endsection
+@section('title', __('stats'))
 
 @section('head')
     @parent
