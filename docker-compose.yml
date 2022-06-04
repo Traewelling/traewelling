@@ -15,7 +15,7 @@ services:
       CONTAINER_ROLE: scheduler
 
   queue:
-    image: ghcr.io/mrkriskrisu/traewelling:latest
+    image: ghcr.io/traewelling/traewelling:latest
     container_name: traewelling-queue
     restart: 'always'
     depends_on:
@@ -28,7 +28,7 @@ services:
       CONTAINER_ROLE: queue
 
   app:
-    image: ghcr.io/mrkriskrisu/traewelling:latest
+    image: ghcr.io/traewelling/traewelling:latest
     container_name: traewelling-app
     restart: 'always'
     ports:

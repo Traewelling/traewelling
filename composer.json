@@ -32,7 +32,7 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
-        "mrkriskrisu/db-wagenreihung-php": "0.0.1",
+        "mrkriskrisu/db-wagenreihung-php": "0.2",
         "revolution/laravel-mastodon-api": "^2.0",
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-sitemap": "^6.0",
