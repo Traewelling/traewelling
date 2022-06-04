@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  scheduler:
+    image: ghcr.io/traewelling/traewelling:latest
+    container_name: traewelling-scheduler
+    restart: 'always'
+    depends_on:
+      - app
+    networks:
+      - internal
+    env_file:
+      - .env.docker
+    environment:
+      CONTAINER_ROLE: scheduler
+
+  queue:
+    image: ghcr.io/mrkriskrisu/traewelling:latest
+    container_name: traewelling-queue
+    restart: 'always'
+    depends_on:
+      - app
+    networks:
+      - internal
+    env_file:
+      - .env.docker
+    environment:
+      CONTAINER_ROLE: queue
+
+  app:
+    image: ghcr.io/mrkriskrisu/traewelling:latest
+    container_name: traewelling-app
+    restart: 'always'
+    ports:
+      - "80:80"
+    networks:
+      - internal
+    env_file:
+      - .env.docker
+    environment:
+      - CONTAINER_ROLE=app
+
+  database:
+    image: mariadb:10
+    container_name: traewelling-db
+    restart: 'always'
+    volumes:
+      - ./docker/database:/var/lib/mysql
+    networks:
+      - internal
+    environment:
+      - TZ=Europe/Berlin
+    env_file:
+      - .env.docker
+
+networks:
+  internal:
+    external: false

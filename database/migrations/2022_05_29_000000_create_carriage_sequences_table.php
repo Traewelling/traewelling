@@ -13,12 +13,17 @@ return new class extends Migration
             $table->unsignedBigInteger('stopover_id');
             $table->unsignedTinyInteger('position');
             $table->string('sequence');
-            $table->string('vehicle_type');
-            $table->string('vehicle_number');
+            $table->string('vehicle_type')->index();
+            $table->string('vehicle_number')->index();
             $table->unsignedInteger('order_number');
             $table->timestamps();
 
             $table->unique(['stopover_id', 'position']);
+
+            $table->foreign('stopover_id')
+                  ->references('id')
+                  ->on('train_stopovers')
+                  ->cascadeOnDelete();
         });
     }
 

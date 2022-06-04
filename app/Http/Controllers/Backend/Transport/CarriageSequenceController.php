@@ -11,11 +11,23 @@ use App\Models\HafasTrip;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use JetBrains\PhpStorm\Pure;
+use K118\DB\Exceptions\TrainNotFoundException;
 use K118\DB\Wagenreihung;
+use Throwable;
 
 abstract class CarriageSequenceController extends Controller
 {
+    /**
+     * It's not recommended to call this method directly.
+     * Consider using the background job using `FetchCarriageSequence::dispatch($stopover)`
+     *
+     * @param TrainStopover $stopover
+     * @param bool          $force
+     *
+     * @return void
+     */
     public static function fetchSequence(TrainStopover $stopover, bool $force = false): void {
         if (
             $stopover->trip->category !== HafasTravelType::NATIONAL
@@ -47,7 +59,9 @@ abstract class CarriageSequenceController extends Controller
                     ]
                 );
             }
-        } catch (Exception $exception) {
+        } catch (TrainNotFoundException) {
+            // do nothing
+        } catch (Throwable $exception) {
             report($exception);
             //This feature is experimental, so just log all errors to improve later.
         }

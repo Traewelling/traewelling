@@ -2,22 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\TrainStopover;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CarriageSequence>
- */
 class CarriageSequenceFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
+
+    public function definition(): array {
         return [
-            //
+            'stopover_id'    => TrainStopover::factory(),
+            'position'       => $this->faker->unique()->numberBetween(),
+            'sequence'       => $this->faker->randomLetter,
+            'vehicle_type'   => $this->faker->word,
+            'vehicle_number' => $this->faker->numberBetween(),
+            'order_number'   => $this->faker->numberBetween(1, 99),
         ];
     }
 }

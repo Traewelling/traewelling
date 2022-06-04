@@ -16,6 +16,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
+use App\Jobs\FetchCarriageSequence;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -176,8 +177,7 @@ abstract class TrainCheckinController extends Controller
                 }
             }
 
-            //TODO: Move to background job
-            CarriageSequenceController::fetchSequence($firstStop);
+            FetchCarriageSequence::dispatch($firstStop);
 
             return [
                 'status'               => $status,
