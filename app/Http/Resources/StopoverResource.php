@@ -33,7 +33,8 @@ class StopoverResource extends JsonResource
             "platform"                 => $this->platform ?? null,
             "isArrivalDelayed"         => (bool) $this->isArrivalDelayed,
             "isDepartureDelayed"       => (bool) $this->isDepartureDelayed,
-            "cancelled"                => (bool) ($this->cancelled ?? false)
+            "cancelled"                => (bool) ($this->cancelled ?? false),
+            'carriages'                => CarriageSequenceResource::collection($this->carriageSequences),
         ];
     }
 }
