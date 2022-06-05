@@ -525,5 +525,9 @@
     "maintenance": "Wartungsarbeiten",
     "maintenance.title": "Wir arbeiten gerade daran, die Website zu verbessern.",
     "try-later": "Versuche es später noch einmal.",
-    "warning-alternative-station": "Du bist dabei einen Checkin für eine Abfahrt an der Station <b>:newStation</b> durchzuführen, welche dir angezeigt wurde, weil diese in der Nähe von <b>:searchedStation</b> liegt."
+    "warning-alternative-station": "Du bist dabei einen Checkin für eine Abfahrt an der Station <b>:newStation</b> durchzuführen, welche dir angezeigt wurde, weil diese in der Nähe von <b>:searchedStation</b> liegt.",
+    "carriage-sequence": "Wagenreihung",
+    "carriage": "Wagen",
+    "experimental-feature": "Experimentelle Funktion",
+    "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein."
 }
