@@ -20,10 +20,7 @@ class TrainStopover extends Model
         'departure_platform_planned', 'departure_platform_real',
         'cancelled'
     ];
-    protected $appends  = [
-        'arrival', 'departure', 'platform',
-        'isArrivalDelayed', 'isDepartureDelayed'
-    ];
+    protected $appends  = ['arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed'];
     protected $casts    = [
         'id'                         => 'integer',
         'train_station_id'           => 'integer',
