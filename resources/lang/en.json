@@ -525,5 +525,9 @@
     "maintenance": "Maintenance",
     "maintenance.title": "We are currently working on improving the website.",
     "try-later": "Try again later.",
-    "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>."
+    "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>.",
+    "carriage-sequence": "Carriage sequence",
+    "carriage": "Carriage",
+    "experimental-feature": "Experimental function",
+    "data-may-incomplete": "Information may be incomplete or incorrect."
 }
