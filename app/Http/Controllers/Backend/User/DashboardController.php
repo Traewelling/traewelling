@@ -29,6 +29,7 @@ abstract class DashboardController extends Controller
                      ->whereIn('visibility', [
                          StatusVisibility::PUBLIC->value,
                          StatusVisibility::FOLLOWERS->value,
+                         StatusVisibility::AUTHENTICATED->value
                      ])
                      ->orWhere('statuses.user_id', $user->id)
                      ->withCount('likes')
@@ -50,7 +51,10 @@ abstract class DashboardController extends Controller
                          //Option 1: User is public AND status is public
                          $query->where(function(Builder $query) {
                              $query->where('users.private_profile', 0)
-                                   ->where('visibility', StatusVisibility::PUBLIC->value);
+                                   ->whereIn('visibility', [
+                                       StatusVisibility::PUBLIC->value,
+                                       StatusVisibility::AUTHENTICATED->value
+                                   ]);
                          });
 
                          //Option 2: Status is from oneself

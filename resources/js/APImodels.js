@@ -142,6 +142,11 @@ export let visibility = [
         desc: "_.status.visibility.3",
         detail: "_.status.visibility.3.detail"
     },
+    {
+        icon: "fa fa-user-check",
+        desc: "_.status.visibility.4",
+        detail: "_.status.visibility.4.detail"
+    }
 ];
 
 export let profileNotifications = [
