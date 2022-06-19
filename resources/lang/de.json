@@ -292,6 +292,7 @@
     "profile.follow_req.pending": "Ausstehend",
     "profile.last-journeys-of": "Letzte Reisen von",
     "profile.no-statuses": ":username hat bisher in keine Reisen eingecheckt.",
+    "profile.no-visible-statuses": "Die Reisen von :username sind für dich leider nicht sichtbar.",
     "profile.points-abbr": "Pkt",
     "profile.settings": "Einstellungen",
     "profile.statistics-for": "Statistiken für",
@@ -393,6 +394,7 @@
     "stationboard.dep": "ab",
     "stationboard.dep-time": "Abfahrt",
     "stationboard.destination": "Ziel",
+    "stationboard.to": "nach",
     "stationboard.dt-picker": "Zeit-Wähler",
     "stationboard.filter-products": "Filter",
     "stationboard.label-message": "Status-Nachricht:",
@@ -454,6 +456,7 @@
     "stats.companies": "Verkehrsunternehmen",
     "stats.categories": "Verkehrsmittel deiner Reisen",
     "stats.volume": "Dein Reisevolumen",
+    "stats.time": "Deine tägliche Reisezeit",
     "stats.per-week": "pro Kalenderwoche",
     "stats.trips": "Fahrten",
     "stats.no-data": "Es sind keine Daten in dem Zeitraum vorhanden.",
@@ -522,5 +525,9 @@
     "maintenance": "Wartungsarbeiten",
     "maintenance.title": "Wir arbeiten gerade daran, die Website zu verbessern.",
     "try-later": "Versuche es später noch einmal.",
-    "warning-alternative-station": "Du bist dabei einen Checkin für eine Abfahrt an der Station <b>:newStation</b> durchzuführen, welche dir angezeigt wurde, weil diese in der Nähe von <b>:searchedStation</b> liegt."
+    "warning-alternative-station": "Du bist dabei einen Checkin für eine Abfahrt an der Station <b>:newStation</b> durchzuführen, welche dir angezeigt wurde, weil diese in der Nähe von <b>:searchedStation</b> liegt.",
+    "carriage-sequence": "Wagenreihung",
+    "carriage": "Wagen",
+    "experimental-feature": "Experimentelle Funktion",
+    "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein."
 }

@@ -56,7 +56,8 @@ class FrontendTransportController extends Controller
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException $exception) {
-            return back()->with('error', $exception->getMessage());
+            report($exception);
+            return back()->with('error', __('messages.exception.generalHafas'));
         } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }

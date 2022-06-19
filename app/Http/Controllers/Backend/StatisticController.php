@@ -16,6 +16,7 @@ abstract class StatisticController extends Controller
     /**
      * @param Carbon $from
      * @param Carbon $until
+     *
      * @return stdClass
      * @api v1
      */
@@ -38,18 +39,19 @@ abstract class StatisticController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param Carbon $from
      * @param Carbon $until
-     * @param int $limit
+     * @param int    $limit
+     *
      * @return Collection
      * @api v1
      */
     public static function getTopTravelCategoryByUser(
-        User $user,
+        User   $user,
         Carbon $from,
         Carbon $until,
-        int $limit = 10
+        int    $limit = 10
     ): Collection {
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
@@ -74,18 +76,19 @@ abstract class StatisticController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param Carbon $from
      * @param Carbon $until
-     * @param int $limit
+     * @param int    $limit
+     *
      * @return Collection
      * @api v1
      */
     public static function getTopTripOperatorByUser(
-        User $user,
+        User   $user,
         Carbon $from,
         Carbon $until,
-        int $limit = 10
+        int    $limit = 10
     ): Collection {
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
@@ -111,42 +114,10 @@ abstract class StatisticController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param Carbon $from
      * @param Carbon $until
-     * @return Collection
-     * @deprecated this will be replaced by getDailyTravelTimeByUser
-     */
-    public static function getWeeklyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
-        if ($from->isAfter($until)) {
-            throw new InvalidArgumentException('since cannot be after until');
-        }
-
-        return DB::table('train_checkins')
-                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                 ->groupBy([DB::raw('YEAR(train_checkins.departure)'), DB::raw('WEEK(train_checkins.departure, 1)')])
-                 ->select([
-                              DB::raw('YEAR(train_checkins.departure) AS year'),
-                              DB::raw('WEEK(train_checkins.departure, 1) AS kw'),
-                              DB::raw('COUNT(*) AS count'),
-                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
-                          ])
-                 ->orderBy(DB::raw('YEAR(train_checkins.departure)'))
-                 ->orderBy(DB::raw('WEEK(train_checkins.departure, 1)'))
-                 ->get()
-                 ->map(function($row) {
-                     $row->date = Carbon::today()->setISODate($row->year, $row->kw);
-                     return $row;
-                 });
-    }
-
-    /**
-     * @param User $user
-     * @param Carbon $from
-     * @param Carbon $until
+     *
      * @return Collection
      * @api v1
      */
@@ -155,6 +126,14 @@ abstract class StatisticController extends Controller
             throw new InvalidArgumentException('since cannot be after until');
         }
 
+        $dateList = collect();
+        for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
+            $e           = collect();
+            $e->date     = $date->clone();
+            $e->count    = 0;
+            $e->duration = 0;
+            $dateList->push($e);
+        }
 
         return DB::table('train_checkins')
                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
@@ -168,14 +147,21 @@ abstract class StatisticController extends Controller
                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
                           ])
                  ->orderBy(DB::raw('date'))
-                 ->get();
+                 ->get()
+                 ->map(function($row) {
+                     $row->date = Carbon::parse($row->date);
+                     return $row;
+                 })
+                 ->union($dateList)
+                 ->sortBy('date');
     }
 
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param Carbon $from
      * @param Carbon $until
+     *
      * @return Collection
      * @api v1
      */

@@ -19,36 +19,14 @@
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
+        <link rel="manifest" href="/manifest.json"/>
 
         @yield('head')
     </head>
     <body>
-        <div class="modal fade bd-example-modal-lg" id="notifications-board" tabindex="-1" role="dialog"
-             aria-hidden="true" aria-labelledby="notifications-board-title">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="notifications-board-title">
-                            {{ __('notifications.title') }}
-                        </h4>
-                        <button type="button" class="close" id="mark-all-read"
-                                aria-label="{{ __('notifications.mark-all-read') }}">
-                            <span aria-hidden="true"><i class="fas fa-check-double"></i></span>
-                        </button>
-                        <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="notifications-list">
-                        <div id="notifications-empty" class="text-center text-muted">{{ __('notifications.empty') }}
-                            <br/>¯\_(ツ)_/¯
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div id="app">
-            <nav class="navbar navbar-expand-md navbar-dark {{ config('app.env') === 'local' ? 'bg-black' : 'bg-trwl' }}">
+            <nav
+                class="navbar navbar-expand-md navbar-dark bg-trwl">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
@@ -252,5 +230,7 @@
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
         </script>
     </body>
+
+    @include('includes.modals.notifications-board')
     @yield('footer')
 </html>

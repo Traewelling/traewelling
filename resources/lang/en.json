@@ -270,6 +270,7 @@
     "profile.follow_req.pending": "Pending",
     "profile.last-journeys-of": "Last journeys of",
     "profile.no-statuses": ":username hasn't checked into any trips yet.",
+    "profile.no-visible-statuses": "Unfortunately, the travels of :username are not visible to you.",
     "profile.points-abbr": "pts",
     "profile.settings": "Settings",
     "profile.statistics-for": "Statistics for",
@@ -370,6 +371,7 @@
     "stationboard.dep": "dep",
     "stationboard.dep-time": "Departure Time",
     "stationboard.destination": "Destination",
+    "stationboard.to": "to",
     "stationboard.dt-picker": "Datetime picker",
     "stationboard.filter-products": "Filter",
     "stationboard.label-message": "Message:",
@@ -426,6 +428,7 @@
     "stats.companies": "Transport companies",
     "stats.categories": "Means of transport of your travels",
     "stats.volume": "Your travel volume",
+    "stats.time": "Your daily travel time",
     "stats.per-week": "per week",
     "stats.trips": "Journeys",
     "stats.no-data": "There are no data available in the period.",
@@ -522,5 +525,9 @@
     "maintenance": "Maintenance",
     "maintenance.title": "We are currently working on improving the website.",
     "try-later": "Try again later.",
-    "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>."
+    "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>.",
+    "carriage-sequence": "Carriage sequence",
+    "carriage": "Carriage",
+    "experimental-feature": "Experimental function",
+    "data-may-incomplete": "Information may be incomplete or incorrect."
 }

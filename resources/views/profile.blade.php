@@ -21,16 +21,21 @@
                  src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
                  height="20%" width="20%" class="float-end img-thumbnail rounded-circle img-fluid"/>
             <div class="text-white px-4">
-                <h2 class="card-title h1-responsive font-bold">
-                    <strong>{{ $user->name }} @if($user->private_profile) <i class="fas fa-user-lock"></i>@endif
-                    </strong> <br/>
+                <h1 class="card-title h1-responsive font-bold fs-2 mb-0">
+                    <strong>{{ $user->name }} @if($user->private_profile)
+                            <i class="fas fa-user-lock"></i>
+                        @endif
+                    </strong>
+                </h1>
+                <span class="fs-2">
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
                         @include('includes.mute-button')
                     @endauth
-                </h2>
-                <h2>
+                </span>
+                <br/>
+                <span class="fs-2">
                     <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
                         class="small font-weight-lighter">km</span>
                     <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
@@ -51,19 +56,12 @@
                             </a>
                         </span>
                     @endif
-                </h2>
-
+                </span>
             </div>
         </div>
     </div>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
-                <header><h3>&nbsp;</h3></header>
-            </div>
-        </div>
-
-        <div class="row justify-content-center">
+        <div class="row justify-content-center mt-4">
             @if(auth()->check() && auth()->user()->mutedUsers->contains('id', $user->id))
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('user.muted.heading')}}</h3></header>
@@ -79,12 +77,15 @@
                 </div>
             @elsecannot('view', $user)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
-                    <header><h3>{{__('profile.private-profile-text')}}</h3></header>
-                    <h5>{{__('profile.private-profile-information-text', ["username" => $user->username, "request" => __('profile.follow_req')])}}</h5>
+                    <span class="fs-3">{{__('profile.private-profile-text')}}</span>
+                    <br/>
+                    <span class="fs-5">
+                        {{__('profile.private-profile-information-text', ['username' => $user->username, 'request' => __('profile.follow_req')])}}
+                    </span>
                 </div>
             @elseif($statuses->count() > 0)
                 <div class="col-md-8 col-lg-7">
-                    <header><h3>{{__('profile.last-journeys-of')}} {{ $user->name }}:</h3></header>
+                    <h1 class="fs-3">{{__('profile.last-journeys-of')}} {{ $user->name }}:</h1>
                     @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 </div>
 
@@ -93,9 +94,13 @@
                 </div>
             @else
                 <div class="col-md-8 col-lg-7">
-                    <h3 class="text-danger">
-                        {{strtr(__('profile.no-statuses'), [':username' => $user->name])}}
-                    </h3>
+                    <span class="text-danger fs-3">
+                        @if($user->train_distance > 0)
+                            {{__('profile.no-visible-statuses', ['username' => $user->name])}}
+                        @else
+                            {{__('profile.no-statuses', ['username' => $user->name])}}
+                        @endif
+                    </span>
                 </div>
             @endif
         </div>

@@ -61,20 +61,24 @@ class ApiStatusTest extends ApiTestCase
      * Get Statuses for a specific event
      * @test
      */
-    public function get_event_statuses() {
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-                                        'Accept'        => 'application/json'])
+    public function get_event_statuses(): void {
+        $response = $this->withHeaders([
+                                           'Authorization' => 'Bearer ' . $this->token,
+                                           'Accept'        => 'application/json',
+                                       ])
                          ->get(route('api.v0.statuses.event', ['statusId' => '1']));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
         $firstTrain = json_decode($response->getContent(), true)['data'][0];
-        $this->assertTrue($firstTrain['event']['id'] == 1);
-        $this->assertTrue($firstTrain['event']['name'] == 'Jährliches Modelleisenbahntreffen ' . date('Y'));
-        $this->assertTrue($firstTrain['event']['slug'] == 'Modellbahn' . date('y'));
-        $this->assertTrue($firstTrain['event']['hashtag'] == 'Modellbahn' . date('y'));
-        $this->assertTrue($firstTrain['event']['host'] == 'Modelleisenbahnfreunde Knuffingen');
-        $this->assertTrue($firstTrain['event']['url'] == 'https://traewelling.de');
-        $this->assertTrue($firstTrain['event']['trainstation'] != '');
+
+        $this->assertEquals(1, $firstTrain['event']['id']);
+        $this->assertEquals('Jährliches Modelleisenbahntreffen ' . date('Y'), $firstTrain['event']['name']);
+
+        $this->assertEquals('Modellbahn' . date('y'), $firstTrain['event']['slug']);
+        $this->assertEquals('Modellbahn' . date('y'), $firstTrain['event']['hashtag']);
+        $this->assertSame('Modelleisenbahnfreunde Knuffingen', $firstTrain['event']['host']);
+        $this->assertSame('https://traewelling.de', $firstTrain['event']['url']);
+        $this->assertNotEquals('', $firstTrain['event']['station_id']);
     }
 
     /**

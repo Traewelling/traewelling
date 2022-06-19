@@ -521,5 +521,7 @@
     "try-later": "Försök igen senare.",
     "messages.exception.maybe-too-fast": "Kanske har du skickat din förfrågan av misstag flera gånger?",
     "messages.exception.already-checkedin": "Det finns redan en incheckning i denna förbindelse.",
-    "ics.description": "Mina resor med traewelling.de"
+    "ics.description": "Mina resor med traewelling.de",
+    "warning-alternative-station": "Du är på väg att checka in för en avgång på stationen <b>:newStation</b>, som visades för dig eftersom den är nära <b>:searchedStation</b>.",
+    "stationboard.to": "till"
 }

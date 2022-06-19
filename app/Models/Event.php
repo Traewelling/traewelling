@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -9,14 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Event extends Model
 {
 
-    protected $fillable = ['name', 'hashtag', 'trainstation', 'slug', 'host', 'url', 'begin', 'end'];
+    use HasFactory;
+
+    protected $fillable = ['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end'];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $appends  = ['trainDistance', 'trainDuration'];
     protected $casts    = [
-        'id'           => 'integer',
-        'trainstation' => 'integer',
-        'begin'        => 'datetime',
-        'end'          => 'datetime',
+        'id'         => 'integer',
+        'station_id' => 'integer',
+        'begin'      => 'datetime',
+        'end'        => 'datetime',
     ];
 
     public function station(): HasOne {

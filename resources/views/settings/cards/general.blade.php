@@ -113,9 +113,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="mb-0">{{__('settings.upload-image')}}</h5>
-                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>
@@ -142,9 +140,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="mb-0">{{__('settings.delete-profile-picture')}}:</h5>
-                <button type="button" class="close" data-mdb-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">x</span>
-                </button>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>{!! __('settings.delete-profile-picture-desc') !!}</p>

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainStopover extends Model
 {
@@ -19,10 +20,7 @@ class TrainStopover extends Model
         'departure_platform_planned', 'departure_platform_real',
         'cancelled'
     ];
-    protected $appends  = [
-        'arrival', 'departure', 'platform',
-        'isArrivalDelayed', 'isDepartureDelayed'
-    ];
+    protected $appends  = ['arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed'];
     protected $casts    = [
         'id'                         => 'integer',
         'train_station_id'           => 'integer',
@@ -42,6 +40,10 @@ class TrainStopover extends Model
 
     public function trainStation(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'train_station_id', 'id');
+    }
+
+    public function carriageSequences(): HasMany {
+        return $this->hasMany(CarriageSequence::class, 'stopover_id', 'id');
     }
 
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣
