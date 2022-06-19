@@ -98,7 +98,7 @@
                         @if($user->train_distance > 0)
                             {{__('profile.no-visible-statuses', ['username' => $user->name])}}
                         @else
-                            {{__('profile.no-statuses', [':username' => $user->name])}}
+                            {{__('profile.no-statuses', ['username' => $user->name])}}
                         @endif
                     </span>
                 </div>
