@@ -8,7 +8,7 @@
             </div>
             <div class="col-8 text-center">
                 <span class="font-weight-bold color-main fs-2">
-                    {{number($globalStats->distance, 0)}} km
+                    {{number($globalStats->distance / 1000, 0)}} km
                 </span>
                 <br>
                 <small class="text-muted">{{__('stats.global.distance')}}</small>
