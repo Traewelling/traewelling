@@ -243,7 +243,9 @@
                                 "url": "{{$event->url}}",
                                 "begin": "{{ $event->begin->format('Y-m-d') }}",
                                 "end": "{{ $event->end->format('Y-m-d') }}",
+                                @isset($event->station)
                                 "ts": {!! $event->station !!},
+                                @endisset
                                 "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
                                 "closestLink": "@isset($event->station) <a href=\"{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}\" class=\"text-trwl clearfix\">{{$event->station->name}}</a> @endisset"
                             },
