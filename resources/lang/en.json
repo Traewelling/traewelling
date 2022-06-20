@@ -531,5 +531,6 @@
     "carriage-sequence": "Carriage sequence",
     "carriage": "Carriage",
     "experimental-feature": "Experimental function",
-    "data-may-incomplete": "Information may be incomplete or incorrect."
+    "data-may-incomplete": "Information may be incomplete or incorrect.",
+    "empty-en-route": "There are currently no Träweller en route."
 }
