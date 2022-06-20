@@ -1218,16 +1218,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "3.2",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "a5ed8d58ed0c340a7c2109f587951b1c84cf6286"
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/a5ed8d58ed0c340a7c2109f587951b1c84cf6286",
-                "reference": "a5ed8d58ed0c340a7c2109f587951b1c84cf6286",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/f88dcf4b14af14a98ad96b14b2b317969eab6715",
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715",
                 "shasum": ""
             },
             "require": {
@@ -1274,7 +1274,7 @@
             ],
             "support": {
                 "issues": "https://github.com/egulias/EmailValidator/issues",
-                "source": "https://github.com/egulias/EmailValidator/tree/3.2"
+                "source": "https://github.com/egulias/EmailValidator/tree/3.2.1"
             },
             "funding": [
                 {
@@ -1282,7 +1282,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-05-28T22:19:18+00:00"
+            "time": "2022-06-18T20:57:19+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -7273,16 +7273,16 @@
         },
         {
             "name": "spatie/browsershot",
-            "version": "3.54.0",
+            "version": "3.55.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/browsershot.git",
-                "reference": "038cfecb095c74b80a64c8daa9d2194f680c99c1"
+                "reference": "305adf5860427b206509366bdebcd1b4307cac9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/browsershot/zipball/038cfecb095c74b80a64c8daa9d2194f680c99c1",
-                "reference": "038cfecb095c74b80a64c8daa9d2194f680c99c1",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/305adf5860427b206509366bdebcd1b4307cac9f",
+                "reference": "305adf5860427b206509366bdebcd1b4307cac9f",
                 "shasum": ""
             },
             "require": {
@@ -7327,7 +7327,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/browsershot/issues",
-                "source": "https://github.com/spatie/browsershot/tree/3.54.0"
+                "source": "https://github.com/spatie/browsershot/tree/3.55.0"
             },
             "funding": [
                 {
@@ -7335,7 +7335,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-05-19T13:37:26+00:00"
+            "time": "2022-06-13T08:38:15+00:00"
         },
         {
             "name": "spatie/crawler",
@@ -7665,16 +7665,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.11.3",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "baeb3df0ebb3a541394fdaf8cbe6115bf4034a59"
+                "reference": "9e6c0382553f1317c02f1ae0ee71c64821eb5af0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/baeb3df0ebb3a541394fdaf8cbe6115bf4034a59",
-                "reference": "baeb3df0ebb3a541394fdaf8cbe6115bf4034a59",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/9e6c0382553f1317c02f1ae0ee71c64821eb5af0",
+                "reference": "9e6c0382553f1317c02f1ae0ee71c64821eb5af0",
                 "shasum": ""
             },
             "require": {
@@ -7712,7 +7712,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.11.3"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.12.0"
             },
             "funding": [
                 {
@@ -7720,20 +7720,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-15T20:01:36+00:00"
+            "time": "2022-06-19T20:01:24+00:00"
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "6.1.1",
+            "version": "6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "2c84ae2eb7f65021136a07d6a1bc261873ceecf2"
+                "reference": "0da6e85eda6e044ed67132d3232c9bbf2f2eb73d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/2c84ae2eb7f65021136a07d6a1bc261873ceecf2",
-                "reference": "2c84ae2eb7f65021136a07d6a1bc261873ceecf2",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/0da6e85eda6e044ed67132d3232c9bbf2f2eb73d",
+                "reference": "0da6e85eda6e044ed67132d3232c9bbf2f2eb73d",
                 "shasum": ""
             },
             "require": {
@@ -7785,7 +7785,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-sitemap/issues",
-                "source": "https://github.com/spatie/laravel-sitemap/tree/6.1.1"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/6.2.0"
             },
             "funding": [
                 {
@@ -7793,7 +7793,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-06-06T00:02:30+00:00"
+            "time": "2022-06-13T09:54:14+00:00"
         },
         {
             "name": "spatie/robots-txt",
