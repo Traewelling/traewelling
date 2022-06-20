@@ -150,8 +150,9 @@
                                                name="toot_check"/>
                                         <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
                                             <i class="fab fa-mastodon"></i>
-                                            <span
-                                                class="visually-hidden-focusable">{{ __('stationboard.check-toot') }}</span>
+                                            <span class="visually-hidden-focusable">
+                                                {{ __('stationboard.check-toot') }}
+                                            </span>
                                         </label>
                                     </div>
                                 @endif
