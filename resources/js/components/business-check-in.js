@@ -9,7 +9,7 @@ let businessButton      = $("#businessDropdownButton");
 const businessIcons     = ["fa-user", "fa-briefcase", "fa-building"];
 let visibilityFormInput = $("#checkinVisibility");
 let visibilityButton    = $("#visibilityDropdownButton");
-const visibilityIcons   = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"];
+const visibilityIcons   = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"];
 
 function setIconForDropdown(value, button, inputFieldValue, icons) {
     let number  = parseInt(value, 10);

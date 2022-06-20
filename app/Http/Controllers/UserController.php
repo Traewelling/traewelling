@@ -89,6 +89,11 @@ class UserController extends Controller
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                   $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
                                         ->whereIn('statuses.user_id', $followings);
+                                  if (Auth::check()) {
+                                      $query->orWhere(function($query) {
+                                          $query->where('statuses.visibility', StatusVisibility::AUTHENTICATED->value);
+                                      });
+                                  }
                               });
                     })
                     ->select('statuses.*')

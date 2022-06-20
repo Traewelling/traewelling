@@ -54,8 +54,8 @@ class StatusPolicy
         // Case 5: Status is unlisted
         // This isn't checked here. This is done in the query from the (global/private) dashboard.
 
-        // Case 6: Status is public
-        if ($status->visibility === StatusVisibility::PUBLIC) {
+        // Case 6: Status is public or authenticated
+        if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
             return Response::allow(); //TODO: How to handle with private profile?
         }
 
