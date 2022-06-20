@@ -6,7 +6,7 @@
     @include('includes.station-autocomplete')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div class="col-md-8 col-lg-7 pt-4">
                 @if($future->count() >= 1)
                     <div class="accordion accordion-flush mt-4" id="accordionFutureCheckIns">
                         <div class="accordion-item">
