@@ -125,6 +125,8 @@ abstract class StatisticController extends Controller
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
+        $from->setTime(0, 0);
+        $until->setTime(0, 0);
 
         $dateList = collect();
         for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
@@ -135,25 +137,37 @@ abstract class StatisticController extends Controller
             $dateList->push($e);
         }
 
-        return DB::table('train_checkins')
-                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                 ->groupBy([DB::raw('date(train_checkins.departure)')])
-                 ->select([
-                              DB::raw('DATE(train_checkins.departure) AS date'),
-                              DB::raw('COUNT(*) AS count'),
-                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
-                          ])
-                 ->orderBy(DB::raw('date'))
-                 ->get()
-                 ->map(function($row) {
-                     $row->date = Carbon::parse($row->date);
-                     return $row;
-                 })
-                 ->union($dateList)
-                 ->sortBy('date');
+        $data = DB::table('train_checkins')
+                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                  ->where('statuses.user_id', '=', $user->id)
+                  ->where('train_checkins.departure', '>=', $from->toIso8601String())
+                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                  ->groupBy([DB::raw('date(train_checkins.departure)')])
+                  ->select([
+                               DB::raw('DATE(train_checkins.departure) AS date'),
+                               DB::raw('COUNT(*) AS count'),
+                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
+                           ])
+                  ->orderBy(DB::raw('date'))
+                  ->get();
+
+        foreach ($data as $row) {
+            $obj = $dateList->where(function($item) use ($row) {
+                return $item->date->isSameDay(Carbon::parse($row->date));
+            })->first();
+            if ($obj) {
+                $obj->count    = $row->count;
+                $obj->duration = $row->duration;
+            } else {
+                $e           = collect();
+                $e->date     = Carbon::parse($row->date);
+                $e->count    = 0;
+                $e->duration = 0;
+                $dateList->push($e);
+            }
+        }
+
+        return $dateList->sortBy('date');
     }
 
 
