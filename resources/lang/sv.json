@@ -523,5 +523,14 @@
     "messages.exception.already-checkedin": "Det finns redan en incheckning i denna förbindelse.",
     "ics.description": "Mina resor med traewelling.de",
     "warning-alternative-station": "Du är på väg att checka in för en avgång på stationen <b>:newStation</b>, som visades för dig eftersom den är nära <b>:searchedStation</b>.",
-    "stationboard.to": "till"
+    "stationboard.to": "till",
+    "stats.time": "Din dagliga restid",
+    "carriage-sequence": "vagnarnas ordning",
+    "carriage": "Vagn",
+    "experimental-feature": "Experimentell funktion",
+    "data-may-incomplete": "Informationen kan vara ofullständig eller felaktig.",
+    "empty-en-route": "Det finns för närvarande inga Träwellers på vägen.",
+    "profile.no-visible-statuses": "Tyvärr är resorna för :username inte synliga för dig.",
+    "status.visibility.4": "Endast registrerade användare",
+    "status.visibility.4.detail": "Endast synlig för registrerade användare"
 }
