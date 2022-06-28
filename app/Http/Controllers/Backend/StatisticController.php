@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -197,5 +198,21 @@ abstract class StatisticController extends Controller
                           ])
                  ->orderByDesc('duration')
                  ->get();
+    }
+
+    public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
+        $qUsedStations = DB::table('train_checkins')
+                           ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                           ->where('statuses.user_id', '=', $user->id)
+                           ->where('train_checkins.departure', '>=', $from->toIso8601String())
+                           ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                           ->select(['origin', 'destination'])
+                           ->get();
+
+        $usedStationIds = $qUsedStations->pluck('origin')
+                                        ->merge($qUsedStations->pluck('destination'))
+                                        ->unique();
+
+        return TrainStation::whereIn('ibnr', $usedStationIds)->get();
     }
 }
