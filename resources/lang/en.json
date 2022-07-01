@@ -532,5 +532,6 @@
     "carriage": "Carriage",
     "experimental-feature": "Experimental function",
     "data-may-incomplete": "Information may be incomplete or incorrect.",
-    "empty-en-route": "There are currently no Träweller en route."
+    "empty-en-route": "There are currently no Träweller en route.",
+    "stats.stations": "Route map"
 }

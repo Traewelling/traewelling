@@ -63,10 +63,12 @@ class StatisticController extends Controller
         $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subQuarter();
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
-        $usedStations = StatisticBackend::getUsedStations(auth()->user(), $from, $to);
+        $usedStations   = StatisticBackend::getUsedStations(auth()->user(), $from, $to);
+        $passedStations = StatisticBackend::getPassedStations(auth()->user(), $from, $to);
 
         return view('stats.stations', [
-            'usedStations' => $usedStations,
+            'usedStations'   => $usedStations,
+            'passedStations' => $passedStations,
         ]);
 
     }
