@@ -240,14 +240,20 @@ class StatusController extends Controller
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where(function($query) {
                               $query->where('users.private_profile', 0)
-                                    ->where('statuses.visibility', StatusVisibility::PUBLIC->value);
+                                    ->whereIn('statuses.visibility', [
+                                        StatusVisibility::PUBLIC->value,
+                                        StatusVisibility::AUTHENTICATED->value
+                                    ]);
                               if (auth()->check()) {
                                   $query->orWhere('statuses.user_id', auth()->user()->id)
                                         ->orWhere(function($query) {
                                             $followIds = auth()->user()->follows()->select('follow_id');
                                             $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
                                                   ->whereIn('statuses.user_id', $followIds)
-                                                  ->orWhere('statuses.visibility', StatusVisibility::PUBLIC->value);
+                                                  ->orWhereIn('statuses.visibility', [
+                                                      StatusVisibility::PUBLIC->value,
+                                                      StatusVisibility::AUTHENTICATED->value
+                                                  ]);
                                         });
                               }
                           })

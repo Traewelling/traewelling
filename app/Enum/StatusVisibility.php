@@ -9,4 +9,5 @@ enum StatusVisibility: int
     case UNLISTED = 1;
     case FOLLOWERS = 2;
     case PRIVATE = 3;
+    case AUTHENTICATED = 4;
 }

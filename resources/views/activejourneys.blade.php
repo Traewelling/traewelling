@@ -7,11 +7,12 @@
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7" id="activeJourneys">
-                <h4>{{ __('menu.active') }}</h4>
-
-                <div id="map" class="embed-responsive embed-responsive-1by1"></div>
+        <div class="row">
+            <div class="col-12">
+                <h1 class="fs-4">{{ __('menu.active') }}</h1>
+            </div>
+            <div class="col-md-6 mb-4" id="activeJourneys">
+                <div id="map" class="embed-responsive embed-responsive-1by1" style="min-height: 600px;"></div>
                 <script>
                     window.addEventListener("load", () => {
                         var map = L.map(document.getElementById('map'), {
@@ -242,7 +243,9 @@
                                 "url": "{{$event->url}}",
                                 "begin": "{{ $event->begin->format('Y-m-d') }}",
                                 "end": "{{ $event->end->format('Y-m-d') }}",
+                                @isset($event->station)
                                 "ts": {!! $event->station !!},
+                                @endisset
                                 "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
                                 "closestLink": "@isset($event->station) <a href=\"{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}\" class=\"text-trwl clearfix\">{{$event->station->name}}</a> @endisset"
                             },
@@ -263,6 +266,13 @@ ${event.closestLink}`);
                         });
                     });
                 </script>
+            </div>
+            <div class="col-md-6">
+                @if($statuses->count() === 0)
+                    <div class="alert alert-danger text-center">
+                        <strong class="fs-4">{{__('empty-en-route')}}</strong>
+                    </div>
+                @endif
 
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => false])
             </div>

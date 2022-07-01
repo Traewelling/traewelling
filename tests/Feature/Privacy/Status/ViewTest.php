@@ -59,6 +59,17 @@ class ViewTest extends TestCase
         $statusRequest->assertStatus(403);
     }
 
+    public function testUnauthenticatedViewOnlyAuthenticatedUsersStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::AUTHENTICATED])
+                        ->has(TrainCheckin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest->assertStatus(403);
+    }
+
     public function testViewOwnStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id])->create();
@@ -107,5 +118,15 @@ class ViewTest extends TestCase
                                            'visibility' => StatusVisibility::PRIVATE,
                                        ])->create();
         $this->assertFalse($user->can('view', $status));
+    }
+
+    public function testViewForeignOnlyAuthenticatedUsersStatus(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        $status      = Status::factory([
+                                           'user_id'    => $foreignUser->id,
+                                           'visibility' => StatusVisibility::AUTHENTICATED
+                                       ])->create();
+        $this->assertTrue($user->can('view', $status));
     }
 }

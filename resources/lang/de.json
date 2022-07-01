@@ -428,6 +428,8 @@
     "status.visibility.2.detail": "Nur für (akzeptierte) Follower sichtbar",
     "status.visibility.3": "Privat",
     "status.visibility.3.detail": "Nur für dich sichtbar",
+    "status.visibility.4": "Nur angemeldete Nutzer",
+    "status.visibility.4.detail": "Nur für angemeldete Nutzer sichtbar",
     "time-format": "HH:mm",
     "time-format.with-day": "HH:mm (DD.MM.YYYY)",
     "datetime-format": "DD.MM.YYYY HH:mm",
@@ -529,5 +531,7 @@
     "carriage-sequence": "Wagenreihung",
     "carriage": "Wagen",
     "experimental-feature": "Experimentelle Funktion",
-    "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein."
+    "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein.",
+    "empty-en-route": "Aktuell sind keine Träweller unterwegs.",
+    "stats.stations": "Streckenkarte"
 }

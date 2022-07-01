@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -125,6 +126,8 @@ abstract class StatisticController extends Controller
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
+        $from->setTime(0, 0);
+        $until->setTime(0, 0);
 
         $dateList = collect();
         for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
@@ -135,25 +138,37 @@ abstract class StatisticController extends Controller
             $dateList->push($e);
         }
 
-        return DB::table('train_checkins')
-                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('statuses.user_id', '=', $user->id)
-                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                 ->groupBy([DB::raw('date(train_checkins.departure)')])
-                 ->select([
-                              DB::raw('DATE(train_checkins.departure) AS date'),
-                              DB::raw('COUNT(*) AS count'),
-                              DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
-                          ])
-                 ->orderBy(DB::raw('date'))
-                 ->get()
-                 ->map(function($row) {
-                     $row->date = Carbon::parse($row->date);
-                     return $row;
-                 })
-                 ->union($dateList)
-                 ->sortBy('date');
+        $data = DB::table('train_checkins')
+                  ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
+                  ->where('statuses.user_id', '=', $user->id)
+                  ->where('train_checkins.departure', '>=', $from->toIso8601String())
+                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                  ->groupBy([DB::raw('date(train_checkins.departure)')])
+                  ->select([
+                               DB::raw('DATE(train_checkins.departure) AS date'),
+                               DB::raw('COUNT(*) AS count'),
+                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
+                           ])
+                  ->orderBy(DB::raw('date'))
+                  ->get();
+
+        foreach ($data as $row) {
+            $obj = $dateList->where(function($item) use ($row) {
+                return $item->date->isSameDay(Carbon::parse($row->date));
+            })->first();
+            if ($obj) {
+                $obj->count    = $row->count;
+                $obj->duration = $row->duration;
+            } else {
+                $e           = collect();
+                $e->date     = Carbon::parse($row->date);
+                $e->count    = 0;
+                $e->duration = 0;
+                $dateList->push($e);
+            }
+        }
+
+        return $dateList->sortBy('date');
     }
 
 
@@ -183,5 +198,48 @@ abstract class StatisticController extends Controller
                           ])
                  ->orderByDesc('duration')
                  ->get();
+    }
+
+    public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
+        $qUsedStations = DB::table('train_checkins')
+                           ->where('user_id', '=', $user->id)
+                           ->where('departure', '>=', $from->toIso8601String())
+                           ->where('departure', '<=', $until->toIso8601String())
+                           ->select(['origin', 'destination'])
+                           ->get();
+
+        $usedStationIds = $qUsedStations->pluck('origin')
+                                        ->merge($qUsedStations->pluck('destination'))
+                                        ->unique();
+
+        return TrainStation::whereIn('ibnr', $usedStationIds)->get();
+    }
+
+    public static function getPassedStations(User $user, Carbon $from, Carbon $to): Collection {
+        $checkIns = DB::table('train_checkins')
+                      ->where('user_id', '=', $user->id)
+                      ->where('departure', '>=', $from->toIso8601String())
+                      ->where('departure', '<=', $to->toIso8601String())
+                      ->select(['trip_id', 'departure', 'arrival'])
+                      ->get();
+
+        $stopoverQ = DB::table('train_stopovers')->select('train_station_id');
+        foreach ($checkIns as $checkIn) {
+            $stopoverQ->orWhere(function($q) use ($checkIn) {
+                $q->where('trip_id', '=', $checkIn->trip_id)
+                  ->where('departure_planned', '>', $checkIn->departure)
+                  ->where('departure_planned', '<', $checkIn->arrival);
+            });
+            $stopoverQ->orWhere(function($q) use ($checkIn) {
+                $q->where('trip_id', '=', $checkIn->trip_id)
+                  ->where('arrival_planned', '>', $checkIn->departure)
+                  ->where('arrival_planned', '<', $checkIn->arrival);
+            });
+        }
+
+        $passedStationIds = $stopoverQ->pluck('train_station_id')
+                                      ->unique();
+
+        return TrainStation::whereIn('id', $passedStationIds)->get();
     }
 }

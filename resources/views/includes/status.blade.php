@@ -1,4 +1,4 @@
-<div class="card status mt-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
+<div class="card status mb-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
      data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
 >
@@ -129,7 +129,7 @@
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
             <i class="fas
-{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock"][$status->visibility->value]}} visibility-icon text-small"
+{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"][$status->visibility->value]}} visibility-icon text-small"
                aria-hidden="true" title="{{__('status.visibility.'.$status->visibility->value)}}"
                data-mdb-toggle="tooltip"
                data-mdb-placement="top"></i>
