@@ -130,8 +130,12 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
          ->name('provider.destroy');
 
-    Route::get('/stats', [StatisticController::class, 'renderMainStats'])
-         ->name('stats');
+    Route::prefix('stats')->group(static function() {
+        Route::get('/', [StatisticController::class, 'renderMainStats'])
+             ->name('stats');
+        Route::get('/stations', [StatisticController::class, 'renderStations'])
+             ->name('stats.stations');
+    });
 
     if (config('ticket.host') != null) {
         Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');

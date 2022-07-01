@@ -202,10 +202,9 @@ abstract class StatisticController extends Controller
 
     public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
         $qUsedStations = DB::table('train_checkins')
-                           ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                           ->where('statuses.user_id', '=', $user->id)
-                           ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                           ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                           ->where('user_id', '=', $user->id)
+                           ->where('departure', '>=', $from->toIso8601String())
+                           ->where('departure', '<=', $until->toIso8601String())
                            ->select(['origin', 'destination'])
                            ->get();
 
