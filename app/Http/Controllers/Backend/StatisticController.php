@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -197,5 +198,48 @@ abstract class StatisticController extends Controller
                           ])
                  ->orderByDesc('duration')
                  ->get();
+    }
+
+    public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
+        $qUsedStations = DB::table('train_checkins')
+                           ->where('user_id', '=', $user->id)
+                           ->where('departure', '>=', $from->toIso8601String())
+                           ->where('departure', '<=', $until->toIso8601String())
+                           ->select(['origin', 'destination'])
+                           ->get();
+
+        $usedStationIds = $qUsedStations->pluck('origin')
+                                        ->merge($qUsedStations->pluck('destination'))
+                                        ->unique();
+
+        return TrainStation::whereIn('ibnr', $usedStationIds)->get();
+    }
+
+    public static function getPassedStations(User $user, Carbon $from, Carbon $to): Collection {
+        $checkIns = DB::table('train_checkins')
+                      ->where('user_id', '=', $user->id)
+                      ->where('departure', '>=', $from->toIso8601String())
+                      ->where('departure', '<=', $to->toIso8601String())
+                      ->select(['trip_id', 'departure', 'arrival'])
+                      ->get();
+
+        $stopoverQ = DB::table('train_stopovers')->select('train_station_id');
+        foreach ($checkIns as $checkIn) {
+            $stopoverQ->orWhere(function($q) use ($checkIn) {
+                $q->where('trip_id', '=', $checkIn->trip_id)
+                  ->where('departure_planned', '>', $checkIn->departure)
+                  ->where('departure_planned', '<', $checkIn->arrival);
+            });
+            $stopoverQ->orWhere(function($q) use ($checkIn) {
+                $q->where('trip_id', '=', $checkIn->trip_id)
+                  ->where('arrival_planned', '>', $checkIn->departure)
+                  ->where('arrival_planned', '<', $checkIn->arrival);
+            });
+        }
+
+        $passedStationIds = $stopoverQ->pluck('train_station_id')
+                                      ->unique();
+
+        return TrainStation::whereIn('id', $passedStationIds)->get();
     }
 }

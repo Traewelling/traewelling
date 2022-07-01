@@ -532,5 +532,6 @@
     "carriage": "Wagen",
     "experimental-feature": "Experimentelle Funktion",
     "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein.",
-    "empty-en-route": "Aktuell sind keine Träweller unterwegs."
+    "empty-en-route": "Aktuell sind keine Träweller unterwegs.",
+    "stats.stations": "Streckenkarte"
 }
