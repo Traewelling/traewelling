@@ -60,8 +60,8 @@ class StatisticController extends Controller
                                             'to'   => ['nullable', 'date', 'after_or_equal:from']
                                         ]);
 
-        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subQuarter();
-        $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subQuarter()->startOfDay();
+        $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now()->endOfDay();
 
         $usedStations   = StatisticBackend::getUsedStations(auth()->user(), $from, $to);
         $passedStations = StatisticBackend::getPassedStations(auth()->user(), $from, $to)
