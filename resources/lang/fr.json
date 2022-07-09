@@ -142,7 +142,7 @@
     "stationboard.dt-picker": "Sélecteur de date",
     "dates.October": "octobre",
     "menu.abort": "Annuler",
-    "about.name": "Le nom est une allusion au célèbre « <i>Senk ju for träwelling wis Deutsche Bahn</i> » qu’on doit avoir entendu dans presque tous les trains de grande ligne de la Deutsche Bahn.",
+    "about.name": "Le nom est une allusion au célèbre « <i>Senk ju for träwelling wis Deutsche Bahn</i> » qu’on doit avoir entendu dans presque tous les trains grandes lignes de la Deutsche Bahn.",
     "settings.notconnected": "Pas connecté(e)",
     "menu.developed": "Codé avec <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"></i> dans l’Union européene. <a href=\"https://github.com/traewelling/traewelling\">Code source</a> publié sous la licence <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>.",
     "user.email-verify": "Confirmer l’adresse e-mail",
@@ -532,5 +532,6 @@
     "data-may-incomplete": "Des informations peuvent être manquantes.",
     "carriage": "Voiture",
     "carriage-sequence": "Placement des voitures",
-    "empty-en-route": "Actuellement, il n'y a pas de Träweller en route."
+    "empty-en-route": "Actuellement, il n'y a pas de Träweller en route.",
+    "stats.stations": "Carte des trajets"
 }
