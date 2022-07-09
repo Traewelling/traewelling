@@ -36,16 +36,22 @@ class UserController extends ResponseController
     /**
      * Returns paginated statuses for user
      *
-     * @param string $username
+     * @param Request $request
+     * @param string  $username
      *
      * @return AnonymousResourceCollection
      */
-    public function statuses(string $username): AnonymousResourceCollection {
+    public function statuses(Request $request, string $username): AnonymousResourceCollection {
         $user = User::where('username', 'like', $username)->firstOrFail();
+
+        $validated = $request->validate([
+                                            'limit' => ['nullable', 'integer', 'min:1', 'max:15'],
+                                        ]);
+
         try {
-            $userResponse = UserBackend::statusesForUser($user);
+            $userResponse = UserBackend::statusesForUser(user: $user, limit: $validated['limit'] ?? null);
         } catch (AuthorizationException) {
-            abort(404, "No statuses found, or statuses are not visible to you.");
+            abort(404, 'No statuses found, or statuses are not visible to you.');
         }
         return StatusResource::collection($userResponse);
     }

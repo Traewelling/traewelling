@@ -63,20 +63,20 @@ class UserController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User     $user
+     * @param int|null $limit
      *
      * @return LengthAwarePaginator|null
-     * @throws AuthorizationException
      * @api v1
      * @frontend
      */
-    public static function statusesForUser(User $user): ?LengthAwarePaginator {
+    public static function statusesForUser(User $user, int $limit = null): ?LengthAwarePaginator {
         Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
                                'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
-                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                               'trainCheckin.HafasTrip.stopoversNEW.carriageSequences', 'event'
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user()->id : null;
@@ -98,7 +98,7 @@ class UserController extends Controller
                     })
                     ->select('statuses.*')
                     ->orderByDesc('train_checkins.departure')
-                    ->paginate(15);
+                    ->paginate($limit !== null && $limit <= 15 ? $limit : 15);
     }
 
     /**
