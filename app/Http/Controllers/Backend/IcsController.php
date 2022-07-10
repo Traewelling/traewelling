@@ -40,7 +40,7 @@ abstract class IcsController extends Controller
                             ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
-            $name = $checkIn->HafasTrip->category->getEmoji();
+            $name = $checkIn?->HafasTrip?->category?->getEmoji();
             $name .= ' ' . __(
                     key:     'export.journey-from-to',
                     replace: [
@@ -54,8 +54,8 @@ abstract class IcsController extends Controller
                           ->name($name)
                           ->uniqueIdentifier($checkIn->id)
                           ->createdAt($checkIn->created_at)
-                          ->startsAt($checkIn->origin_stopover->departure ?? $checkIn->departure)
-                          ->endsAt($checkIn->destination_stopover->arrival ?? $checkIn->arrival);
+                          ->startsAt($checkIn->departure)
+                          ->endsAt($checkIn->arrival);
             $calendar->event($event);
         }
 
