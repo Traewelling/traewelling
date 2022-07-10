@@ -532,5 +532,6 @@
     "empty-en-route": "Det finns för närvarande inga Träwellers på vägen.",
     "profile.no-visible-statuses": "Tyvärr är resorna för :username inte synliga för dig.",
     "status.visibility.4": "Endast registrerade användare",
-    "status.visibility.4.detail": "Endast synlig för registrerade användare"
+    "status.visibility.4.detail": "Endast synlig för registrerade användare",
+    "stats.stations": "Ruttkarta"
 }
