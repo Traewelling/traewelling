@@ -18,6 +18,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
         "ext-sodium": "*",
         "abraham/twitteroauth": "^3.0",
         "barryvdh/laravel-dompdf": "^1.0",
