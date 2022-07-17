@@ -19,25 +19,16 @@
         "lodash": "^4.17.21",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.53.0",
-        "sass-loader": "^12.6.0",
-        "vue": "^2.6.12"
+        "sass-loader": "^12.6.0"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.1.1",
-        "@websanova/vue-auth": "^4.1.13",
         "apexcharts": "^3.33.2",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
-        "lang.js": "^1.1.14",
         "leaflet": "^1.8.0",
-        "mdb-ui-kit": "^4.2.0",
-        "moment": "^2.29.3",
-        "notyf": "^3.10.0",
-        "vue-axios": "^3.4.1",
-        "vue-localstorage": "^0.6.2",
-        "vue-meta": "^2.4.0",
-        "vue-router": "^3.5.1"
+        "mdb-ui-kit": "^4.2.0"
     }
 }
