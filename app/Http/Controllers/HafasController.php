@@ -214,7 +214,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * Get the TrainStation Model from Database
+     * Get the TrainStopover Model from Database
      *
      * @param int         $ibnr
      * @param string|null $name

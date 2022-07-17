@@ -1,0 +1,433 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Träwelling API",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors.",
+        "contact": {
+            "email": "support@traewelling.de"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0 - alpha"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "Production"
+        }
+    ],
+    "paths": {
+        "/dashboard": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get paginated statuses of personal dashboard",
+                "description": "Returns paginated statuses of personal dashboard",
+                "operationId": "getDashboard",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Status"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key_security_example": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Event": {
+                "title": "Event",
+                "description": "Event model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 39
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "Name of event",
+                        "type": "string",
+                        "example": "9-Euro-Ticket"
+                    },
+                    "slug": {
+                        "title": "slug",
+                        "description": "URL-Slug for event",
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "hashtag": {
+                        "title": "hashtag",
+                        "description": "social media hashtag for event",
+                        "type": "string",
+                        "example": "NeunEuroTicket"
+                    },
+                    "host": {
+                        "title": "host",
+                        "description": "host of the event",
+                        "example": "Die Bundesregierung"
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
+                    },
+                    "begin": {
+                        "title": "begin",
+                        "description": "Timestamp for the start of the event",
+                        "example": "2022-06-01T00:00:00+02:00"
+                    },
+                    "end": {
+                        "title": "end",
+                        "description": "Timestamp for the end of the event",
+                        "example": "2022-08-31T23:59:00+02:00"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance traveled for this event in meters",
+                        "type": "integer",
+                        "example": 321735105
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration traveled for this event in minutes",
+                        "example": "303453"
+                    },
+                    "station": {
+                        "title": "station",
+                        "description": "nearest station for this event (nullable)",
+                        "nullable": "true"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Event"
+                }
+            },
+            "Status": {
+                "title": "Status",
+                "description": "Status model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "body": {
+                        "title": "body",
+                        "description": "User defined status text",
+                        "example": "Hello world!"
+                    },
+                    "type": {
+                        "title": "type",
+                        "description": "type of status",
+                        "type": "string",
+                        "example": "HAFAS"
+                    },
+                    "user": {
+                        "title": "user",
+                        "description": "user id",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "username": {
+                        "title": "username",
+                        "description": "username (@-name)",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "business": {
+                        "title": "business",
+                        "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "example": 0
+                    },
+                    "visibility": {
+                        "title": "visibility",
+                        "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the user specify?",
+                        "type": "integer",
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "example": 0
+                    },
+                    "likes": {
+                        "title": "likes",
+                        "description": "How many people have liked this status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12
+                    },
+                    "liked": {
+                        "title": "liked",
+                        "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "creation date of this status",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
+                    },
+                    "train": {
+                        "$ref": "#/components/schemas/Train"
+                    },
+                    "event": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Status"
+                }
+            },
+            "Train": {
+                "title": "Train",
+                "description": "Train model",
+                "properties": {
+                    "trip": {
+                        "title": "trip",
+                        "description": "ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "hafasId": {
+                        "title": "hafasId",
+                        "description": "Deutsche bahn internal HAFAS ID",
+                        "type": "string",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "category": {
+                        "title": "category",
+                        "description": "Category of transport. ",
+                        "type": "string",
+                        "enum": [
+                            "nationalExpress",
+                            "national",
+                            "regionalExp",
+                            "regional",
+                            "suburban",
+                            "bus",
+                            "ferry",
+                            "subway",
+                            "tram",
+                            "taxi"
+                        ],
+                        "example": "suburban"
+                    },
+                    "number": {
+                        "title": "number",
+                        "description": "number of train",
+                        "type": "string",
+                        "example": "4-a6s4-4"
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "name of the transport line",
+                        "type": "string",
+                        "example": "S 4"
+                    },
+                    "distance": {
+                        "title": "distance",
+                        "description": "travelled distance of this checkin in meters",
+                        "type": "integer",
+                        "example": 3349
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "points achieved for this checkin",
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "duration": {
+                        "title": "duration",
+                        "description": "time traveled in this checkin in minutes",
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "speed": {
+                        "title": "speed",
+                        "description": "speed of this checkin in kph",
+                        "type": "number",
+                        "format": "float",
+                        "example": 85.98857142857143
+                    },
+                    "origin": {
+                        "$ref": "#/components/schemas/TrainStopover"
+                    },
+                    "destination": {
+                        "$ref": "#/components/schemas/TrainStopover"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Train"
+                }
+            },
+            "TrainStopover": {
+                "title": "TrainStopover",
+                "description": "train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": "12089"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "evaIdentifier": {
+                        "title": "evaIdentifier",
+                        "description": "IBNR identifier of Deutsche Bahn",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalPlanned": {
+                        "title": "arrivalPlanned",
+                        "description": "planned arrival according to timetable records",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalReal": {
+                        "title": "arrivalReal",
+                        "description": "real arrival according to live data",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalPlatformPlanned": {
+                        "title": "arrivalPlatformPlanned",
+                        "description": "planned arrival platform according to timetable records",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": true
+                    },
+                    "arrivalPlatformReal": {
+                        "title": "arrivalPlatformReal",
+                        "description": "real arrival platform according to live data",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": true
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "departurePlanned": {
+                        "title": "departurePlanned",
+                        "description": "planned departure according to timetable records",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "departureReal": {
+                        "title": "departureReal",
+                        "description": "real departure according to live data",
+                        "example": "2022-07-17T14:17:00+02:00",
+                        "nullable": true
+                    },
+                    "departurePlatformPlanned": {
+                        "title": "departurePlatformPlanned",
+                        "description": "planned departure platform according to timetable records",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": true
+                    },
+                    "departurePlatformReal": {
+                        "title": "departurePlatformReal",
+                        "description": "real departure platform according to live data",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": true
+                    },
+                    "platform": {
+                        "title": "platform",
+                        "description": "platform",
+                        "type": "string",
+                        "example": "3",
+                        "nullable": "true"
+                    },
+                    "isArrivalDelayed": {
+                        "title": "isArrivalDelayed",
+                        "description": "Is there a delay in the arrival time?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "isDeparutreDelayed": {
+                        "title": "isDepartureDelayed",
+                        "description": "Is there a delay in the departure time?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "cancelled": {
+                        "title": "cancelled",
+                        "description": "is this stopover cancelled?",
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainStopover"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        }
+    ]
+}
