@@ -29,6 +29,6 @@
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
         "leaflet": "^1.8.0",
-        "mdb-ui-kit": "^4.2.0"
+        "mdb-ui-kit": "^4.3.0"
     }
 }
