@@ -22,8 +22,8 @@ class AuthController extends ResponseController
      */
     public function register(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'unique:users'],
-            'name'     => ['required'],
+            'username' => ['required', 'unique:users','max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
+            'name'     => ['required', 'max:50'],
             'email'    => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed'],
         ]);
