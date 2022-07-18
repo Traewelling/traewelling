@@ -28,6 +28,26 @@ use Illuminate\Validation\ValidationException;
 
 class StatusController extends ResponseController
 {
+    /**
+     * @OA\Get(
+     *      path="/dashboard",
+     *      operationId="getDashboard",
+     *      tags={"Dashboard"},
+     *      summary="Get paginated statuses of personal dashboard",
+     *      description="Returns paginated statuses of personal dashboard",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Status")
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"api_key_security_example": {}}
+     *       }
+     *     )
+     *
+     * Returns list of projects
+     */
     public static function getDashboard(): AnonymousResourceCollection {
         return StatusResource::collection(DashboardController::getPrivateDashboard(Auth::user()));
     }
