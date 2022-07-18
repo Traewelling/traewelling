@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6bb69f66f8a6c5c366adf26bda84979f",
+    "content-hash": "32f47235dd7d8605911b06cfad62fd80",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -145,16 +145,16 @@
         },
         {
             "name": "brianium/paratest",
-            "version": "v6.5.1",
+            "version": "v6.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "41fc4cc01422dae2d6bf6a0ce39756f57ac7d8a9"
+                "reference": "bce7b965a5fe5028a53c3151042ca12777600acd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/41fc4cc01422dae2d6bf6a0ce39756f57ac7d8a9",
-                "reference": "41fc4cc01422dae2d6bf6a0ce39756f57ac7d8a9",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/bce7b965a5fe5028a53c3151042ca12777600acd",
+                "reference": "bce7b965a5fe5028a53c3151042ca12777600acd",
                 "shasum": ""
             },
             "require": {
@@ -169,18 +169,18 @@
                 "phpunit/php-timer": "^5.0.3",
                 "phpunit/phpunit": "^9.5.21",
                 "sebastian/environment": "^5.1.4",
-                "symfony/console": "^5.4.9 || ^6.1.1",
+                "symfony/console": "^5.4.9 || ^6.1.2",
                 "symfony/process": "^5.4.8 || ^6.1.0"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^9.0.0",
                 "ext-pcov": "*",
                 "ext-posix": "*",
-                "infection/infection": "^0.26.12",
+                "infection/infection": "^0.26.13",
                 "malukenho/mcbumpface": "^1.1.5",
                 "squizlabs/php_codesniffer": "^3.7.1",
                 "symfony/filesystem": "^5.4.9 || ^6.1.0",
-                "vimeo/psalm": "^4.23.0"
+                "vimeo/psalm": "^4.24.0"
             },
             "bin": [
                 "bin/paratest",
@@ -221,7 +221,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v6.5.1"
+                "source": "https://github.com/paratestphp/paratest/tree/v6.6.0"
             },
             "funding": [
                 {
@@ -233,7 +233,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2022-06-24T16:02:27+00:00"
+            "time": "2022-07-12T07:15:58+00:00"
         },
         {
             "name": "brick/math",
@@ -12169,6 +12169,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
         "ext-sodium": "*"
     },
     "platform-dev": {
