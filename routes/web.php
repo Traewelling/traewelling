@@ -39,11 +39,6 @@ require_once realpath(__DIR__) . '/web/admin.php';
 Route::get('/@{username}/picture', [ProfilePictureController::class, 'generateProfilePicture'])
      ->name('profile.picture');
 
-//This is responsible to make vue available as a subdomain at vue.traewelling.de
-Route::domain('beta.' . parse_url(url('/'), PHP_URL_HOST))->group(function() {
-    Route::view('/{view?/}', 'landing')->where('view', '(.*)')->name('landing');
-});
-
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
