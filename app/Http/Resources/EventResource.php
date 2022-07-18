@@ -24,8 +24,6 @@ class EventResource extends JsonResource
             "url"           => $this->url,
             "begin"         => $this->begin?->toIso8601String(),
             "end"           => $this->end?->toIso8601String(),
-            "trainDistance" => 0, //ToDo remove once properly migrated
-            "trainDuration" => 0, //ToDo remove once properly migrated
             "station"       => new TrainStationResource($this->station)
         ];
     }
