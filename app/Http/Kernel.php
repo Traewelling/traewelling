@@ -47,6 +47,7 @@ class Kernel extends HttpKernel
             'bindings',
             JsonMiddleware::class,
             ApiLogMiddleware::class,
+            \App\Http\Middleware\Language::class,
         ],
     ];
 
