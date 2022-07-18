@@ -123,6 +123,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);
+        Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
         Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
         Route::get('events', [EventController::class, 'upcoming']);
         Route::get('user/{username}', [UserController::class, 'show']);

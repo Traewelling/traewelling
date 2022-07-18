@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use App\Models\User;
@@ -21,7 +22,9 @@ class EventController extends ResponseController
 {
     /**
      * Returns model of Event
+     *
      * @param string $slug
+     *
      * @return EventResource
      */
     public function show(string $slug): EventResource {
@@ -30,8 +33,22 @@ class EventController extends ResponseController
     }
 
     /**
-     * Returns paginated statuses for user
+     * Returns stats for event
+     *
      * @param string $slug
+     *
+     * @return EventDetailsResource
+     */
+    public function showDetails(string $slug): EventDetailsResource {
+        $event = EventBackend::getBySlug($slug);
+        return new EventDetailsResource($event);
+    }
+
+    /**
+     * Returns paginated statuses for user
+     *
+     * @param string $slug
+     *
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
