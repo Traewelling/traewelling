@@ -34,7 +34,7 @@
                         @isset($event->url)
                             <span class="font-weight-bold ps-sm-2">
                                 <i class="fa fa-link text-white"></i>&nbsp;
-                                <a href="{{ $event->url }}" class="text-white">
+                                <a href="{{ $event->url }}" class="text-white" target="_blank">
                                     {{ parse_url($event->url)['host'] }}
                                 </a>
                             </span>
