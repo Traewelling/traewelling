@@ -268,7 +268,7 @@ class UserController extends Controller
     public static function searchUser(?string $searchQuery): Paginator {
         $validator = Validator::make(
             ['searchQuery' => $searchQuery],
-            ['searchQuery' => ['required', 'regex:/^[äöüÄÖÜa-zA-Z0-9_\-]+$/']]
+            ['searchQuery' => ['required', 'regex:/^[äöüÄÖÜa-zA-Z0-9_\-]+$/', 'max:50']]
         );
         if ($validator->fails()) {
             abort(400);

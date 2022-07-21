@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Backend\User\DashboardController;
-use App\Http\Controllers\StatusController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -220,10 +219,12 @@ class ApiUserTest extends ApiTestCase
      * Test the user search
      * @test
      */
-    public function get_user_search() {
+    public function get_user_search(): void {
         //Test that user has been found
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-                                        'Accept'        => 'application/json'])
+        $response = $this->withHeaders([
+                                           'Authorization' => 'Bearer ' . $this->token,
+                                           'Accept'        => 'application/json',
+                                       ])
                          ->get(route('api.v0.user.search', 'gertru'));
         $response->assertOk();
         $this->assertFalse(empty(json_decode($response->getContent(), true)));
@@ -246,8 +247,10 @@ class ApiUserTest extends ApiTestCase
                                         'to']);
 
         //Test that an unknown user returns 200 and an empty json object
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token,
-                                        'Accept'        => 'application/json'])
+        $response = $this->withHeaders([
+                                           'Authorization' => 'Bearer ' . $this->token,
+                                           'Accept'        => 'application/json',
+                                       ])
                          ->get(route('api.v0.user.search',
                                      'sdfklghbqeörgjaösrjgäIERGKJAEFÖRGJSDÖFJHBÜÄAJRÄÜG'));
         $response->assertOk();
