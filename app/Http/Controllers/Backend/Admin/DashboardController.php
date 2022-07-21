@@ -49,44 +49,6 @@ abstract class DashboardController extends Controller
         })->sortBy('date');
     }
 
-    public static function getTransportTypesByDate(Carbon $since, Carbon $until): Collection {
-        $data = DB::table('statuses')
-                  ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                  ->join('hafas_trips', 'hafas_trips.trip_id', '=', 'train_checkins.trip_id')
-                  ->where('train_checkins.departure', '>=', $since->toIso8601String())
-                  ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                  ->groupBy([
-                                DB::raw('DATE(train_checkins.departure)'),
-                                'hafas_trips.category',
-                            ])
-                  ->select([
-                               DB::raw('DATE(train_checkins.departure) AS date'),
-                               'hafas_trips.category',
-                               DB::raw('COUNT(*) AS count'),
-                           ])
-                  ->get()
-                  ->groupBy('category');
-
-        foreach ($data as $category => $rows) {
-            for ($date = $since->clone(); $date->isBefore($until); $date->addDay()) {
-                if (!$rows->contains('date', $date->toDateString())) {
-                    $row           = new stdClass();
-                    $row->date     = $date->toDateString();
-                    $row->category = $category;
-                    $row->count    = 0;
-                    $rows->push($row);
-                }
-            }
-
-            $data->{$category} = $rows->sortBy('date')
-                                      ->map(function($row) {
-                                          $row->date = Carbon::parse($row->date);
-                                          return $row;
-                                      });
-        }
-        return $data;
-    }
-
     public static function getHafasAndPolylinesByDate(Carbon $since, Carbon $until): Collection {
         $polyLineData = DB::table('poly_lines')
                           ->where('created_at', '>=', $since->toIso8601String())

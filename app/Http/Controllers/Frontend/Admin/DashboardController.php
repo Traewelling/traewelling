@@ -24,7 +24,6 @@ class DashboardController extends Controller
             'until'                   => $until,
             'statusesByDate'          => DashboardBackend::getStatusesByDate($since, $until),
             'registrationsByDate'     => DashboardBackend::getRegistrationsByDate($since, $until),
-            'transportTypesByDate'    => DashboardBackend::getTransportTypesByDate($since, $until),
             'hafasAndPolylinesByDate' => DashboardBackend::getHafasAndPolylinesByDate($since, $until),
         ]);
     }

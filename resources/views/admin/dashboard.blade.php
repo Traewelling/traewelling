@@ -23,16 +23,13 @@
             </form>
 
             <div class="row pt-4">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     @include('admin.charts.statusesByDate')
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     @include('admin.charts.userRegistration')
                 </div>
-                <div class="col-md-3">
-                    @include('admin.charts.transportTypes')
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     @include('admin.charts.hafasPolylines')
                 </div>
             </div>
