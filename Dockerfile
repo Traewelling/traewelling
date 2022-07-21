@@ -1,7 +1,7 @@
 FROM node:18-alpine as NodeBuildContainer
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
-RUN npm i && npm run prod
+RUN npm install && npm run prod && rm -rf node_modules
 
 FROM composer:2 as ComposerBuildContainer
 COPY --from=NodeBuildContainer /usr/src/trwl /usr/src/trwl
