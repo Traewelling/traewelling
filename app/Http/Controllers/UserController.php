@@ -266,17 +266,20 @@ class UserController extends Controller
      * @deprecated is now in backend/usercontroller for api v1
      */
     public static function searchUser(?string $searchQuery): Paginator {
-        $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => 'required|alpha_num']);
+        $validator = Validator::make(
+            ['searchQuery' => $searchQuery],
+            ['searchQuery' => ['required', 'regex:/^[a-zA-Z0-9_\-]+$/']]
+        );
         if ($validator->fails()) {
             abort(400);
         }
-
+        $escapedQuery = str_replace('_', "\_", $searchQuery);
         return User::join('train_checkins', 'train_checkins.user_id', '=', 'users.id')
                    ->groupBy(['users.id', 'users.username', 'users.name'])
                    ->select(['users.id', 'users.username', 'users.name'])
                    ->orderByDesc(DB::raw('MAX(train_checkins.created_at)'))
-                   ->where('name', 'like', "%{$searchQuery}%")
-                   ->orWhere('username', 'like', "%{$searchQuery}%")
+                   ->where('name', 'like', '%' . $escapedQuery . '%')
+                   ->orWhere('username', 'like', '%' . $escapedQuery . '%')
                    ->simplePaginate(10);
     }
 
