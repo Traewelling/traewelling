@@ -85,6 +85,7 @@
                                 <form class="form-inline" action="{{ route('userSearch') }}">
                                     <div class="input-group md-form form-sm form-2 ps-0 m-0">
                                         <input name="searchQuery" type="text"
+                                               value="{{request()->has('searchQuery') ? request()->searchQuery : ''}}"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="{{ __('stationboard.submit-search') }}"
                                                aria-label="User suchen"/>
@@ -99,15 +100,17 @@
                                        data-mdb-toggle="modal"
                                        data-mdb-target="#notifications-board">
                                         <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification"
-                                              hidden>0</span>
+                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>
+                                            0
+                                        </span>
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
                                        role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
                                        aria-expanded="false">
-                                        {{ Auth::user()->name }} <span class="caret"></span>
+                                        {{ Auth::user()->name }}
+                                        <span class="caret"></span>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

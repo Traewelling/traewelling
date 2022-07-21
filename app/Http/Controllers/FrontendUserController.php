@@ -112,12 +112,13 @@ class FrontendUserController extends Controller
             if ($userSearchResponse->count() === 1) {
                 return redirect()->route('profile', ['username' => $userSearchResponse->first()->username]);
             }
-        } catch (HttpException) {
-            return redirect()->back();
-        }
 
-        return view('search', [
-            'userSearchResponse' => $userSearchResponse
-        ]);
+            return view('search', [
+                'userSearchResponse' => $userSearchResponse
+            ]);
+        } catch (HttpException) {
+            //abort(400) is triggered.
+            return redirect()->route('dashboard')->with('error', __('error.bad-request'));
+        }
     }
 }

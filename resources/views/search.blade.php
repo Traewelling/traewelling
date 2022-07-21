@@ -7,10 +7,8 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 @if($userSearchResponse->count() === 0)
-                    <div class="col-md-8 col-lg-7">
-                        <div class="alert my-3 alert-danger" role="alert">
-                            {{ __('user.no-user') }}
-                        </div>
+                    <div class="alert alert-danger" role="alert">
+                        {{ __('user.no-user') }}
                     </div>
                 @endif
                 @foreach($userSearchResponse as $user)
@@ -18,8 +16,9 @@
                         <div class="card-body row">
                             <div class="col-2 image-box search-image-box d-lg-flex">
                                 <a href="{{ route('profile', ['username' => $user->username]) }}">
-                                    <img src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user)}}"
-                                         alt="Profile picture"/>
+                                    <img
+                                        src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user)}}"
+                                        alt="Profile picture"/>
                                 </a>
                             </div>
 
