@@ -1,6 +1,8 @@
 # [Träwelling](https://traewelling.de)
 
-> Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it. Check it out at [traewelling.de](https://traewelling.de).
+> Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public
+> transit journeys. In short, you can check into trains and get points for it. 
+> Check it out at [traewelling.de](https://traewelling.de).
 
 ![Resources build with `prod`](https://img.shields.io/github/workflow/status/Traewelling/traewelling/Resources%20build%20with%20%60prod%60?label=npm%20prod&logo=github)
 ![Resources build with `dev`](https://img.shields.io/github/workflow/status/Traewelling/traewelling/Resources%20build%20with%20%60dev%60?label=npm%20dev&logo=github)
@@ -14,12 +16,15 @@
 
 ## Features
 
-* Check into trains and other public transport options in most of Europe
+* Check into trains, trams, busses and more travel types in most of Europe
 * Track your work trips, e.g. for tax returns and travel expenses
 * Follow other people and see where they're going
-* Meet new friends who are on the same train
-* Find who's going to an event and is in your train
-* Automatic sharing to Twitter and Mastodon
+* Meet new friends who are on the same trip
+* Find who's going to an event and is with you in your journey
+* Optional sharing to Twitter and Mastodon
+* See statistics about your trips
+* Export your trips to CSV, JSON or PDF
+* Create own applications with our API
 * Available in German, English, Polish, French and Dutch
 
 ## Set up an instance
@@ -33,6 +38,7 @@ values according to your requirements and start the containers:
 cd docker
 docker-compose up
 ```
+
 You can have sample data created if you set the environment variable `SEED_DB=true`.
 
 ### Option 2: Manual installation (e.g. for local development)
@@ -53,6 +59,7 @@ After setting up these, you can clone the repository and install the project's d
 ```sh
 composer install
 npm install
+npm run dev
 ```
 
 Now, you can create your own environment configuration:
@@ -62,12 +69,13 @@ cp .env.example .env
 vi .env
 ```
 
-Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter). While you will
-not need all of those, you can stumble into weird bugs.
+Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter).
+While you will not need all of those, you can stumble into weird bugs.
 
 Then, generate some application keys and migrate the database to the latest level:
 
 ```sh
+php artisan optimize
 php artisan key:generate
 php artisan migrate 
 #for example data use 
@@ -75,10 +83,8 @@ php artisan migrate
 php artisan passport:install
 ```
 
-Last, but not least, you can run `npm run dev` to build the frontend and watch for changes in the `resources/` folder.
-
-Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application. You should
-see the Träwelling homepage at http://localhost:8000.
+Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application. 
+You should see the Träwelling homepage at http://localhost:8000.
 
 ## Contributing
 
