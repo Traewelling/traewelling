@@ -46,7 +46,7 @@
     "controller.status.not-permitted": "DES darfst Du nich.",
     "controller.transport.checkin-heading": "Einjecheckt",
     "controller.transport.not-in-stopovers": "De Start-ID is nich in den Zwischenstops.",
-    "controller.transport.overlapping-checkin": "Du hast ä üwerschneidenden Check-In in Verbindung :linename:",
+    "controller.transport.overlapping-checkin": "Du hast ä üwerschneidenden Check-In in Verbindung :linename.",
     "controller.transport.social-post": "Ich bin jerade in :lineName nach :Destination! #NowTräwelling |Ich bin jerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-for": "für #:hashtag",
     "controller.transport.no-station-found": "Für die Suche wurde keene Haltestelle jefunden.",

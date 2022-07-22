@@ -220,9 +220,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
 
-    Route::get('/busses/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
-         ->name('busses.stationboard');
-
     Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
          ->name('notifications.latest');
 

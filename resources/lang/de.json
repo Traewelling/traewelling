@@ -59,7 +59,7 @@
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
     "controller.transport.not-in-stopovers": "Die Start-ID ist nicht in den Zwischenstops.",
-    "controller.transport.overlapping-checkin": "Du hast einen überschneidenden Check-In in Verbindung :linename:",
+    "controller.transport.overlapping-checkin": "Du hast einen überschneidenden Check-In in Verbindung :linename.",
     "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
     "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
@@ -533,5 +533,11 @@
     "experimental-feature": "Experimentelle Funktion",
     "data-may-incomplete": "Angaben können unvollständig oder fehlerhaft sein.",
     "empty-en-route": "Aktuell sind keine Träweller unterwegs.",
-    "stats.stations": "Streckenkarte"
+    "stats.stations": "Streckenkarte",
+    "overlapping-checkin": "Überschneidende Fahrt",
+    "overlapping-checkin.description": "Deine Fahrt konnte nicht gespeichert werden, da es mit deinem Check-In in :lineName überlappt.",
+    "overlapping-checkin.description2": "Möchtest du den Check-In jetzt erzwingen?",
+    "no-points-warning": "Dafür bekommst du keine vollen Punkte gutgeschrieben.",
+    "overlapping-checkin.force-yes": "Ja, erzwingen.",
+    "overlapping-checkin.force-no": "Nein, nichts machen."
 }

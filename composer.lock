@@ -147,16 +147,16 @@
         },
         {
             "name": "brianium/paratest",
-            "version": "v6.6.0",
+            "version": "v6.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "bce7b965a5fe5028a53c3151042ca12777600acd"
+                "reference": "ae5803ce4558f855c7d955baa2d90b93ec40c4b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/bce7b965a5fe5028a53c3151042ca12777600acd",
-                "reference": "bce7b965a5fe5028a53c3151042ca12777600acd",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/ae5803ce4558f855c7d955baa2d90b93ec40c4b7",
+                "reference": "ae5803ce4558f855c7d955baa2d90b93ec40c4b7",
                 "shasum": ""
             },
             "require": {
@@ -223,7 +223,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v6.6.0"
+                "source": "https://github.com/paratestphp/paratest/tree/v6.6.1"
             },
             "funding": [
                 {
@@ -235,7 +235,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2022-07-12T07:15:58+00:00"
+            "time": "2022-07-22T14:07:17+00:00"
         },
         {
             "name": "brick/math",
@@ -2320,16 +2320,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.21.4",
+            "version": "v9.21.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "7707d6a16c70da1561bf80964e89b1b94ca78a48"
+                "reference": "569d7a2e361895f90e66bb4e02db89c27691a0e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/7707d6a16c70da1561bf80964e89b1b94ca78a48",
-                "reference": "7707d6a16c70da1561bf80964e89b1b94ca78a48",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/569d7a2e361895f90e66bb4e02db89c27691a0e7",
+                "reference": "569d7a2e361895f90e66bb4e02db89c27691a0e7",
                 "shasum": ""
             },
             "require": {
@@ -2496,7 +2496,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-07-21T13:30:12+00:00"
+            "time": "2022-07-22T14:16:44+00:00"
         },
         {
             "name": "laravel/passport",
@@ -11744,12 +11744,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "0144c1225b5e4da02cf2c27a0e2cb2705168c47c"
+                "reference": "4bc2609bf9e2c2146d25465546bb10651cce47ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0144c1225b5e4da02cf2c27a0e2cb2705168c47c",
-                "reference": "0144c1225b5e4da02cf2c27a0e2cb2705168c47c",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4bc2609bf9e2c2146d25465546bb10651cce47ac",
+                "reference": "4bc2609bf9e2c2146d25465546bb10651cce47ac",
                 "shasum": ""
             },
             "conflict": {
@@ -11911,6 +11911,7 @@
                 "in2code/femanager": "<5.5.1|>=6,<6.3.1",
                 "in2code/lux": "<17.6.1|>=18,<24.0.2",
                 "intelliants/subrion": "<=4.2.1",
+                "islandora/islandora": ">=2,<2.4.1",
                 "ivankristianto/phpwhois": "<=4.3",
                 "jackalope/jackalope-doctrine-dbal": "<1.7.4",
                 "james-heinrich/getid3": "<1.9.21",
@@ -12077,7 +12078,7 @@
                 "simplito/elliptic-php": "<1.0.6",
                 "slim/slim": "<2.6",
                 "smarty/smarty": "<3.1.45|>=4,<4.1.1",
-                "snipe/snipe-it": "<5.4.4|>= 6.0.0-RC-1, <= 6.0.0-RC-5",
+                "snipe/snipe-it": "<=6.0.2|>= 6.0.0-RC-1, <= 6.0.0-RC-5",
                 "socalnick/scn-social-auth": "<1.15.2",
                 "socialiteproviders/steam": "<1.1",
                 "spipu/html2pdf": "<5.2.4",
@@ -12168,6 +12169,7 @@
                 "wikimedia/parsoid": "<0.12.2",
                 "willdurand/js-translation-bundle": "<2.1.1",
                 "wintercms/winter": "<1.0.475|>=1.1,<1.1.9",
+                "woocommerce/woocommerce": "<6.6",
                 "wp-cli/wp-cli": "<2.5",
                 "wp-graphql/wp-graphql": "<0.3.5",
                 "wpanel/wpanel4-cms": "<=4.3.1",
@@ -12247,7 +12249,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-15T22:04:13+00:00"
+            "time": "2022-07-21T23:04:29+00:00"
         },
         {
             "name": "spatie/backtrace",

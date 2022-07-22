@@ -41,7 +41,7 @@
     "controller.transport.checkin-ok": "Du har lyckats checka in på :lineName!|Du har lyckats checka in på tågförbindelsen :lineName!",
     "controller.transport.no-name-given": "Du måste ange ett stationsnamn!",
     "controller.transport.not-in-stopovers": "Start-ID är inte bland tågstoppen.",
-    "controller.transport.overlapping-checkin": "Du har redan en incheckning i anslutningen :linename:",
+    "controller.transport.overlapping-checkin": "Du har redan en incheckning i anslutningen :linename.",
     "controller.transport.also-in-connection": "Också i detta tågförbindelse är:",
     "controller.transport.social-post": "Jag är för närvarande i :lineName till :Destination! #NowTräwelling |Jag är för närvarande i tågförbindelsen :lineName till :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "Jag är för närvarande i :lineName till :destination för #:hashtag! #NowTräwelling | Jag är för närvarande i tågförbindelsen :lineName till #destination för #:hashtag! #NowTräwelling ",
