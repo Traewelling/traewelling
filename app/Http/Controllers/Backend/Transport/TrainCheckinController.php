@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\NotConnectedException;
@@ -178,6 +179,7 @@ abstract class TrainCheckinController extends Controller
             }
 
             FetchCarriageSequence::dispatch($firstStop);
+            UserCheckedIn::dispatch($status->user, $status);
 
             return [
                 'status'               => $status,
