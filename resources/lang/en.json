@@ -533,5 +533,11 @@
     "experimental-feature": "Experimental function",
     "data-may-incomplete": "Information may be incomplete or incorrect.",
     "empty-en-route": "There are currently no Träweller en route.",
-    "stats.stations": "Route map"
+    "stats.stations": "Route map",
+    "overlapping-checkin": "Overlapping Check-In",
+    "overlapping-checkin.description": "Your trip could not be saved because it overlapped with your check-in in :lineName.",
+    "overlapping-checkin.description2": "Do you want to force check-in now?",
+    "no-points-warning": "You won't get full points for that.",
+    "overlapping-checkin.force-yes": "Yes, enforce.",
+    "overlapping-checkin.force-no": "No, do nothing."
 }
