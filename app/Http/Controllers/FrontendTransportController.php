@@ -148,8 +148,8 @@ class FrontendTransportController extends Controller
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
                                             'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
-                                            'tweet_check'       => ['max:2'],
-                                            'toot_check'        => ['max:2'],
+                                            'tweet_check'       => ['nullable', 'max:2'],
+                                            'toot_check'        => ['nullable', 'max:2'],
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                             'force'             => ['nullable'],
                                         ]);
