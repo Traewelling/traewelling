@@ -538,6 +538,7 @@
     "overlapping-checkin.description": "Your trip could not be saved because it overlapped with your check-in in :lineName.",
     "overlapping-checkin.description2": "Do you want to force check-in now?",
     "no-points-warning": "You won't get full points for that.",
+    "no-points-message": "You didn't get the full points because you forced the check-in.",
     "overlapping-checkin.force-yes": "Yes, enforce.",
     "overlapping-checkin.force-no": "No, do nothing."
 }

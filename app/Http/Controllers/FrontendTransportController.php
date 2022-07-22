@@ -179,7 +179,8 @@ class FrontendTransportController extends Controller
                 'points'               => $trainCheckin->points,
                 'lineName'             => $trainCheckin->HafasTrip->linename,
                 'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
-                'event'                => $trainCheckin->event
+                'event'                => $trainCheckin->event,
+                'forced'               => isset($validated['force']),
             ]);
 
         } catch (CheckInCollisionException $exception) {

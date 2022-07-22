@@ -1,8 +1,20 @@
 @if(session()->has('checkin-success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">{{ __('controller.transport.checkin-heading') }}</h4>
+        <h4 class="alert-heading">
+            <i class="fa-solid fa-check"></i>
+            {{ __('controller.transport.checkin-heading') }}
+        </h4>
 
-        <p>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</p>
+        <p>
+            <span>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</span>
+            @if(session()->get('checkin-success')['points'] == 1 && session()->get('checkin-success')['forced'])
+                <br/>
+                <span class="text-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{__('no-points-message')}}
+                </span>
+            @endif
+        </p>
         @if(session()->get('checkin-success')['alsoOnThisConnection']->count() >= 1)
             <span>{{ trans_choice('controller.transport.also-in-connection', session()->get('checkin-success')['alsoOnThisConnection']->count()) }}</span>
             <table style="margin-left: auto;margin-right: auto;">
