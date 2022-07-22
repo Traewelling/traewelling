@@ -66,7 +66,7 @@
     "controller.transport.checkin-ok": "You've successfully checked into :lineName!|You've successfully checked into line :lineName!",
     "controller.transport.no-name-given": "You need to provide a station name!",
     "controller.transport.not-in-stopovers": "Start-ID is not in stopovers.",
-    "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename: ",
+    "controller.transport.overlapping-checkin": "You have an overlapping checkin with connection :linename.",
     "controller.transport.also-in-connection": "Also in this connection is:|Also in this connection are:",
     "controller.transport.social-post": "I'm in :lineName towards :Destination! #NowTräwelling |I'm in line :lineName towards :Destination! #NowTräwelling ",
     "controller.transport.social-post-with-event": "I'm in :lineName towards #:hashtag via :Destination! #NowTräwelling | I'm in Line :lineName towards #:hashtag via :Destination! #NowTräwelling ",
@@ -533,5 +533,12 @@
     "experimental-feature": "Experimental function",
     "data-may-incomplete": "Information may be incomplete or incorrect.",
     "empty-en-route": "There are currently no Träweller en route.",
-    "stats.stations": "Route map"
+    "stats.stations": "Route map",
+    "overlapping-checkin": "Overlapping Check-In",
+    "overlapping-checkin.description": "Your trip could not be saved because it overlapped with your check-in in :lineName.",
+    "overlapping-checkin.description2": "Do you want to force check-in now?",
+    "no-points-warning": "You won't get full points for that.",
+    "no-points-message": "You didn't get the full points because you forced the check-in.",
+    "overlapping-checkin.force-yes": "Yes, enforce.",
+    "overlapping-checkin.force-no": "No, do nothing."
 }

@@ -226,7 +226,7 @@
     "modals.editStatus-title": "Modifica lo stato",
     "modals.deleteEvent-title": "Elimina l'evento",
     "modals.setHome-title": "Impostare la stazione d'origine",
-    "controller.transport.overlapping-checkin": "Hai un check-in sovrapposto nel collegamento :linename:",
+    "controller.transport.overlapping-checkin": "Hai un check-in sovrapposto nel collegamento :linename.",
     "export.lead": "Qui puoi esportare i tuoi viaggi in treno dal database come CSV, JSON e PDF. I dati individuali sono separati l'uno dall'altro da un tab stop.",
     "controller.transport.also-in-connection": "Anche in questo collegamento:|Anche in questo collegamento:",
     "export.export": "Esportare",

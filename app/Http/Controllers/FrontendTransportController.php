@@ -148,9 +148,10 @@ class FrontendTransportController extends Controller
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
                                             'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
-                                            'tweet_check'       => 'max:2',
-                                            'toot_check'        => 'max:2',
+                                            'tweet_check'       => ['max:2'],
+                                            'toot_check'        => ['max:2'],
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
+                                            'force'             => ['nullable'],
                                         ]);
 
         try {
@@ -165,7 +166,7 @@ class FrontendTransportController extends Controller
                 visibility:   StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC->value),
                 body:         $validated['body'] ?? null,
                 event:        isset($validated['event']) ? Event::find($validated['event']) : null,
-                // force:       false, //TODO
+                force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
                 postOnMastodon: isset($request->toot_check)
             );
@@ -178,24 +179,17 @@ class FrontendTransportController extends Controller
                 'points'               => $trainCheckin->points,
                 'lineName'             => $trainCheckin->HafasTrip->linename,
                 'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
-                'event'                => $trainCheckin->event
+                'event'                => $trainCheckin->event,
+                'forced'               => isset($validated['force']),
             ]);
 
         } catch (CheckInCollisionException $exception) {
-
             return redirect()
                 ->route('dashboard')
-                ->with('error', __(
-                                    'controller.transport.overlapping-checkin',
-                                    [
-                                        'linename' => $exception->getCollision()->HafasTrip->linename
-                                    ]
-                                ) . strtr(' <a href=":url">#:id</a>',
-                                          [
-                                              ':url' => url('/status/' . $exception->getCollision()->status->id),
-                                              ':id'  => $exception->getCollision()->status->id,
-                                          ]
-                                ));
+                ->with('checkin-collision', [
+                    'lineName'  => $exception->getCollision()->HafasTrip->linename,
+                    'validated' => $validated,
+                ]);
 
         } catch (TrainCheckinAlreadyExistException) {
             return redirect()->route('dashboard')
