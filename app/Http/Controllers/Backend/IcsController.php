@@ -19,7 +19,8 @@ abstract class IcsController extends Controller
         string  $token,
         int     $limit = 10000,
         ?Carbon $from = null,
-        ?Carbon $until = null
+        ?Carbon $until = null,
+        bool    $useEmojis = true,
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
@@ -40,15 +41,18 @@ abstract class IcsController extends Controller
                             ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
-            $name = $checkIn?->HafasTrip?->category?->getEmoji();
-            $name .= ' ' . __(
-                    key:     'export.journey-from-to',
-                    replace: [
-                                 'origin'      => $checkIn->Origin->name,
-                                 'destination' => $checkIn->Destination->name
-                             ],
-                    locale:  $user->language
-                );
+            $name = '';
+            if ($useEmojis) {
+                $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
+            }
+            $name .= __(
+                key:     'export.journey-from-to',
+                replace: [
+                             'origin'      => $checkIn->Origin->name,
+                             'destination' => $checkIn->Destination->name
+                         ],
+                locale:  $user->language
+            );
 
             $event = Event::create()
                           ->name($name)

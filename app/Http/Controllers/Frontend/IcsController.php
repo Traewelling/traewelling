@@ -19,7 +19,8 @@ class IcsController extends Controller
                                             'token'   => ['required', 'exists:ics_tokens,token'],
                                             'limit'   => ['nullable', 'numeric', 'gte:1', 'lte:10000'],
                                             'from'    => ['nullable', 'date'],
-                                            'until'   => ['nullable', 'date']
+                                            'until'   => ['nullable', 'date'],
+                                            'emojis'  => ['nullable', 'boolean'],
                                         ]);
 
         $user               = User::where('id', $validated['user_id'])->firstOrFail();
@@ -29,11 +30,12 @@ class IcsController extends Controller
 
         try {
             $calendar = BackendIcsController::generateIcsCalendar(
-                user:  $user,
-                token: $validated['token'],
-                limit: $validated['limit'],
-                from:  $from,
-                until: $until
+                user:      $user,
+                token:     $validated['token'],
+                limit:     $validated['limit'],
+                from:      $from,
+                until:     $until,
+                useEmojis: $validated['emojis'] ?? true,
             );
             return response($calendar->get())
                 ->header('Content-Type', 'text/calendar')
@@ -54,7 +56,8 @@ class IcsController extends Controller
                 'token'   => $icsToken->token,
                 'limit'   => 10000,
                 'from'    => '2010-01-01',
-                'until'   => '2030-12-31'
+                'until'   => '2030-12-31',
+                'emojis'  => true,
             ])
         ]));
     }
