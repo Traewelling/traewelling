@@ -15,7 +15,7 @@ class TrainCheckin extends Model
 
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
-        'distance', 'departure', 'arrival', 'points',
+        'distance', 'departure', 'arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
@@ -29,6 +29,7 @@ class TrainCheckin extends Model
         'departure'   => 'datetime',
         'arrival'     => 'datetime',
         'points'      => 'integer',
+        'forced'      => 'boolean',
     ];
 
     public function status(): BelongsTo {
