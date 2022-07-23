@@ -20,9 +20,9 @@ class ResponseController extends Controller
         array               $additional = null
     ): JsonResponse {
         if ($data === null) {
-            return response()->json(["status" => "success"], $code);
+            return response()->json(['status' => 'success'], $code);
         }
-        $response = ["data" => $data];
+        $response = ['data' => $data];
         $response = $additional ? array_merge($response, $additional) : $response;
         return response()->json($response, $code);
     }
@@ -31,7 +31,7 @@ class ResponseController extends Controller
         $response = [
             'message' => $error,
         ];
-        $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
+        $response = $additional ? array_merge($response, ['meta' => $additional]) : $response;
         return response()->json($response, $code);
     }
 
