@@ -1,0 +1,40 @@
+@import "variables";
+
+$body-bg: #000;
+//$primary: #1d3a8f;
+$secondary: #6c757d;
+//$success: #28a745;
+//$info: #17a2b8;
+//$warning: #EE7202;
+//$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+@import '~mdb-ui-kit/src/scss/mdb.free.scss';
+
+body {
+    h1, h2, h3, h4, h5, h6, label, span, p, td, th {
+        color: #fff;
+    }
+
+    div.card {
+        color: #fff;
+        background-color: rgba(17, 17, 17, 0.85);
+        border: 1px solid rgba(250, 250, 250, 0.1);
+        box-shadow: 0 0.5rem 1rem rgb(17 17 17 / 15%);
+
+        .card-header {
+            background-color: rgba(17, 17, 17, 0.85);
+            border-bottom: 1px solid rgba(250, 250, 250, 0.05);
+        }
+
+        div.card .card-footer {
+            background-color: rgba(17, 17, 17, 0.85);
+            border-top: 1px solid rgba(250, 250, 250, 0.05);
+        }
+
+        h1, h2, h3, h4, h5, h6, label, span, p, td, th {
+            color: #fff;
+        }
+    }
+}

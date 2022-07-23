@@ -1,14 +1,10 @@
+@import "variables";
+
 // Fonts
 @import "~@fortawesome/fontawesome-free/scss/brands";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
-
-// Variables
-@import "variables";
-
-// mdbootstrap
-@import '~mdb-ui-kit/src/scss/mdb.free.scss';
 
 body {
   font-family: "Nunito", sans-serif;
