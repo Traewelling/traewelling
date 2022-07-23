@@ -35,7 +35,7 @@ class StatusResource extends JsonResource
                 'category'    => (string) $this->trainCheckin->HafasTrip->category->value,
                 'number'      => (string) $this->trainCheckin->HafasTrip->number,
                 'lineName'    => (string) $this->trainCheckin->HafasTrip->linename,
-                'distance'    => (int) $this->trainCheckin->distance, //TODO: Das hier sind jetzt Meter (vorher km). Das muss in Vue angepasst werden.
+                'distance'    => (int) $this->trainCheckin->distance,
                 'points'      => (int) $this->trainCheckin->points,
                 'duration'    => (int) $this->trainCheckin->duration,
                 'speed'       => (float) $this->trainCheckin->speed,
