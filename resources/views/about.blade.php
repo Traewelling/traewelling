@@ -57,8 +57,10 @@
                             {{ __('about.who-heading') }}
                         </h2>
                         <p class="lead m-0">
-                            {{ __('about.who') }}
-                            <a href="{{ url('humans.txt') }}">humans.txt</a>
+                            {{ __('about.who0') }}
+                            {{ __('about.who1') }}
+                            {!! __('about.who2', ['link' => 'https://github.com/Traewelling/traewelling/graphs/contributors']) !!}
+                            {!! __('about.who3', ['link' => url('humans.txt')]) !!}
                         </p>
                     </div>
                 </div>
