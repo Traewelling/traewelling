@@ -8,7 +8,7 @@ use App\Http\Controllers\Backend\Export\Format\JsonExportController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
@@ -60,8 +60,8 @@ abstract class ExportController extends Controller
         return Response::json(data: $exportData, headers: $headers);
     }
 
-    private static function exportPdf(Carbon $begin, Carbon $end) {
-        return PDF::loadView('pdf.export-template', [
+    private static function exportPdf(Carbon $begin, Carbon $end): \Illuminate\Http\Response {
+        return Pdf::loadView('pdf.export-template', [
             'statuses' => ExportBackend::getExportableStatuses(auth()->user(), $begin, $end),
             'begin'    => $begin,
             'end'      => $end
