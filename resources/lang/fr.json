@@ -113,7 +113,7 @@
     "about.feature-missing": "Avec cette version de Träwelling, on est reparti de zéro, c’est la raison pour laquelle il y a peut-être encore des fonctionnalités manquantes. Tu peux nous proposer de nouvelles fonctionnalités par courriel.",
     "controller.social.create-error": "Il y a eu un problème lors de la création de ton compte.",
     "stationboard.plus-15": "+15 minutes",
-    "about.heading": "À propos",
+    "about.heading": "À Träwelling",
     "user.not-received-link": "clique ici pour en envoyer un nouveau",
     "stationboard.label-message": "Message d’enregistrement :",
     "controller.user.follow-delete-not-permitted": "L’action n’est pas autorisée.",

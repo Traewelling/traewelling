@@ -6,7 +6,7 @@
     "about.faq-heading": "Frequently asked questions",
     "about.feature-missing": "In this version of Träwelling we'll start from scratch – and may have missed little-used functions. If you would like to suggest a feature, just send an email to",
     "about.feature-missing-heading": "Something's missing! Why was this feature removed?",
-    "about.heading": "About us",
+    "about.heading": "About Träwelling",
     "about.international": "InterCityExpress, TGV, RailJet",
     "about.name": "The name is an allusion to the well-known <i>\"Senk ju for träwelling wis Deutsche Bahn\"</i>, which you should have heard in almost every long-distance train of the Deutsche Bahn.",
     "about.name-heading": "Where does the name come from?",
@@ -22,6 +22,7 @@
     "about.who-heading": "Who develops Träwelling?",
     "admin.greeting": "Hello",
     "admin.usage": "Usage",
+    "login-required": "(Login required)",
     "admin.usage-board": "Usage Board",
     "admin.select-range": "Select range",
     "admin.checkins": "Check-in's",
@@ -540,5 +541,8 @@
     "no-points-warning": "You won't get full points for that.",
     "no-points-message": "You didn't get the full points because you forced the check-in.",
     "overlapping-checkin.force-yes": "Yes, enforce.",
-    "overlapping-checkin.force-no": "No, do nothing."
+    "overlapping-checkin.force-no": "No, do nothing.",
+    "report-bug": "Report bug",
+    "to-support": "Support Request",
+    "request-feature": "Request feature"
 }

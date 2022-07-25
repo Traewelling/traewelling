@@ -5,7 +5,7 @@
     "about.block1": "Träwelling is een gratis incheckservice waarmee je jouw vrienden kunt vertellen waar je momenteel met de openbaar vervoer reist en een logboek bijhouden. Kort: je kunt in treinen inchecken en daarvoor punten halen.",
     "about.feature-missing": "In deze versie van Träwelling beginnen wij kompleet opniuew. Daarbij kan het zijn dat minder gebruikte funtices nog niet geïmplementeerd zijn. Als je een functie wilt voorstellen, schrijf dan een e-mail naar",
     "about.feature-missing-heading": "Er ontbreekt iets! Waarom is deze functie verwijderd?",
-    "about.heading": "Over ons",
+    "about.heading": "Over Träwelling",
     "about.international": "InterCityExpress, TGV, RailJet",
     "about.points-heading": "Hoe worden de punten berekend?",
     "about.calculation": "De distantie wordt afgerond op de dichtstbijzijnde 10 km en vervolgens gedeeld door 10. Dan worden de basispunten opgeteld.<br />Dus een ICE-rit van 143 km levert <code>10 + afronding(143/10) = 10 + 15 = 25</code>&nbsp;punten, voor een S-Bahn-rit van 8 km is er <code>2 + afronding(8/10) = 2 + 1 = 3</code>&nbsp;punten.<br />We willen dat je zo snel mogelijk incheckt, zodat het platform altijd een actuele status van uw reizen heeft. Daarom krijg je alleen volledige punten als je incheckt tijdens je reis of 20min voor live vertrek (gepland vertrek + vertraging). Als je 1 uur voor of na de reisperiode incheckt, krijgt je nog steeds 1/4 van de punten. Als je nog eerder of later incheckt in een verbinding, krijg je de volledige kilometers en uren bijgeschreven, maar slechts één medelijdenpunt.",
