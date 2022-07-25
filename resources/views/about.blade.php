@@ -86,7 +86,7 @@
                         </p>
                         <hr/>
                         <p>
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <i class="fa-solid fa-triangle-exclamation text-trwl"></i>
                             {{ __('about.missing-verification-email.description4') }}
                             {{ __('about.missing-verification-email.description5') }}
                         </p>
