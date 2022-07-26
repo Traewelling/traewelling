@@ -1,26 +1,36 @@
 /* TEAM */
-	Name: Levin Baumann
-	Site: https://herrlev.in
-	Twitter: @HerrLevin_
-	Mastodon: HerrLevin_@uelfte.club
-	Location: Karlsruhe, Germany
+    Name: Levin Baumann
+    Site: https://herrlev.in
+    Twitter: @HerrLevin_
+    Mastodon: HerrLevin_@uelfte.club
+    Location: Karlsruhe, Germany
 
-	Name: Jannik Volkland
-	Site: https://iamjannik.me
-	Twitter: @confuzd_
-	Mastodon: jannik@uelfte.club
-	Location: Cologne, Germany
+    Name: Kristian Stöckel
+    Site: https://k118.de
+    Twitter: @MrKrisKrisu
+    Mastodon: @MrKrisKrisu@chaos.social
+    Location: Hanover, Germany
 
-	Name: Matthias Kahlow
-	Site: http://derkarl.de
-	Mastodon: der_Karl@uelfte.club
+    Name: Jannik Volkland
+    Site: https://iamjannik.me
+    Twitter: @confuzd_
+    Mastodon: jannik@uelfte.club
+    Location: Cologne, Germany
+
+    Additional Credits to this contributors:
+        https://github.com/Traewelling/traewelling/graphs/contributors
 
 /* THANKS */
     Name: Jan Hassel
     Site: https://janhassel.de
-    Great contributor of the alpha version.
+        Great contributor of the alpha version.
+
+    Name: Matthias Kahlow
+    Site: http://derkarl.de
+    Mastodon: der_Karl@uelfte.club
+        Former team member
 
 /* SITE */
-	Language: German, English, Dutch, French, Norwegian Bokmål, Polish and Swedish
-	Components: Bootstrap, JQuery, Leaflet, Laravel
-	Software: Gitlab, Mattermost, Visual Studio Code
+    Languages: German, English, Dutch, French, Norwegian Bokmål, Polish and Swedish
+    License: AGPL-3.0
+    Dependencies: https://github.com/Traewelling/traewelling/network/dependencies
