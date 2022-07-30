@@ -8,6 +8,7 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class ApiLogMiddleware
 {
@@ -16,7 +17,7 @@ class ApiLogMiddleware
 
     public function handle(Request $request, Closure $next): mixed {
         try {
-            $userAgent    = UserAgent::firstOrCreate(['user_agent' => substr($request->userAgent(), 0, 255)]);
+            $userAgent    = UserAgent::firstOrCreate(['user_agent' => substr(Str::ascii($request->userAgent()), 0, 255)]);
             self::$apiLog = ApiLog::create([
                                                'method'        => $request->method(),
                                                'route'         => Route::getCurrentRoute()?->uri() ?? 'unknown',
