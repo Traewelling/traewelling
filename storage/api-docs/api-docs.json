@@ -145,7 +145,7 @@
                     "Dashboard"
                 ],
                 "summary": "Get paginated future statuses of current user",
-                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future",
+                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\n     *      future",
                 "operationId": "getFutureDashboard",
                 "parameters": [
                     {
@@ -279,6 +279,52 @@
                     },
                     "403": {
                         "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Destroy a status",
+                "description": "Deletes a single status Object, if user is authorized to",
+                "operationId": "destroySingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
                     }
                 },
                 "security": [
@@ -540,6 +586,22 @@
                     "name": "Status"
                 }
             },
+            "SuccessResponse": {
+                "title": "SuccessResponse",
+                "description": "Success Response",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "status",
+                        "type": "string",
+                        "example": "success"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "SuccessResponse"
+                }
+            },
             "Train": {
                 "title": "Train",
                 "description": "Train model",
@@ -765,6 +827,10 @@
         {
             "name": "Dashboard",
             "description": "API Endpoints of Dashboard"
+        },
+        {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         }
     ]
 }

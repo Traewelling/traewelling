@@ -225,6 +225,35 @@ class StatusController extends ResponseController
     }
 
     /**
+     * @OA\Delete(
+     *      path="/statuses/{id}",
+     *      operationId="destroySingleStatus",
+     *      tags={"Status"},
+     *      summary="Destroy a status",
+     *      description="Deletes a single status Object, if user is authorized to",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *                      ref="#/components/schemas/SuccessResponse"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @param int $id
      *
      * @return JsonResponse

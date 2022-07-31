@@ -38,6 +38,10 @@ namespace App\Http\Controllers\API\v1;
  *     name="Dashboard",
  *     description="API Endpoints of Dashboard"
  * )
+ * @OA\Tag(
+ *     name="Status",
+ *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ * )
  */
 class Controller
 {
