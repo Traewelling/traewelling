@@ -288,6 +288,67 @@
                     {}
                 ]
             },
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a status",
+                "description": "Updates a single status Object, if user is authorized to",
+                "operationId": "updateSingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusUpdateBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
             "delete": {
                 "tags": [
                     "Status"
@@ -531,28 +592,10 @@
                         "example": false
                     },
                     "business": {
-                        "title": "business",
-                        "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
-                        "type": "integer",
-                        "enum": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "example": 0
+                        "$ref": "#/components/schemas/BusinessEnum"
                     },
                     "visibility": {
-                        "title": "visibility",
-                        "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n     *     user specify?",
-                        "type": "integer",
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "example": 0
+                        "$ref": "#/components/schemas/VisibilityEnum"
                     },
                     "likes": {
                         "title": "likes",
@@ -802,6 +845,52 @@
                 "xml": {
                     "name": "TrainStopover"
                 }
+            },
+            "StatusUpdateBody": {
+                "title": "StatusUpdateBody",
+                "description": "Status Update Body",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Status-Text to be displayed alongside the checkin",
+                        "example": "Wow. This train is extremely crowded!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StatusUpdateBody"
+                }
+            },
+            "BusinessEnum": {
+                "title": "Business",
+                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "example": 0
+            },
+            "VisibilityEnum": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 0
             }
         },
         "parameters": {

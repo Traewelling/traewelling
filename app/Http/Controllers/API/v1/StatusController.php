@@ -271,6 +271,42 @@ class StatusController extends ResponseController
     }
 
     /**
+     * @OA\Put(
+     *      path="/statuses/{id}",
+     *      operationId="updateSingleStatus",
+     *      tags={"Status"},
+     *      summary="Update a status",
+     *      description="Updates a single status Object, if user is authorized to",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="data",
+     *                  ref="#/components/schemas/Status"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @param Request $request
      * @param int     $statusId
      *
