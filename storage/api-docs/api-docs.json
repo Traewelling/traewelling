@@ -14,8 +14,12 @@
     },
     "servers": [
         {
+            "url": "https://traewelling.de/api/v1",
+            "description": "Production Server"
+        },
+        {
             "url": "http://localhost:8000/api/v1",
-            "description": "Production"
+            "description": "This instance"
         }
     ],
     "paths": {
@@ -54,11 +58,14 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
                     }
                 },
                 "security": [
                     {
-                        "api_key_security_example": []
+                        "token": []
                     }
                 ]
             }
@@ -507,6 +514,13 @@
                 "xml": {
                     "name": "TrainStopover"
                 }
+            }
+        },
+        "securitySchemes": {
+            "token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     },

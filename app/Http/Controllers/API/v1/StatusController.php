@@ -49,8 +49,9 @@ class StatusController extends ResponseController
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"api_key_security_example": {}}
+     *           {"token": {}}
      *       }
      *     )
      *
