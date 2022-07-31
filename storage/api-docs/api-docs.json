@@ -31,6 +31,17 @@
                 "summary": "Get paginated statuses of personal dashboard",
                 "description": "Returns paginated statuses of personal dashboard",
                 "operationId": "getDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -67,6 +78,214 @@
                     {
                         "token": []
                     }
+                ]
+            }
+        },
+        "/dashboard/global": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get paginated statuses of global dashboard",
+                "description": "Returns paginated statuses of global dashboard",
+                "operationId": "getGlobalDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/future": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get paginated future statuses of current user",
+                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future",
+                "operationId": "getFutureDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statuses": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get active statuses",
+                "description": "Returns all currently active statuses that are visible to the (un)authenticated user",
+                "operationId": "getActiveStatuses",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/statuses/{id}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get single statuses",
+                "description": "Returns a single status Object, if user is authorized to see it",
+                "operationId": "getSingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
                 ]
             }
         }
@@ -215,6 +434,13 @@
                 "type": "object",
                 "xml": {
                     "name": "PaginationMeta"
+                }
+            },
+            "PaginationPage": {
+                "title": "PaginationPage",
+                "description": "pagination links",
+                "xml": {
+                    "name": "PaginationPage"
                 }
             },
             "Status": {
@@ -513,6 +739,17 @@
                 "type": "object",
                 "xml": {
                     "name": "TrainStopover"
+                }
+            }
+        },
+        "parameters": {
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "Page of pagination",
+                "required": false,
+                "schema": {
+                    "type": "integer"
                 }
             }
         },
