@@ -38,7 +38,15 @@ class StatusController extends ResponseController
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Status")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Status"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={

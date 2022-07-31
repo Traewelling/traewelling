@@ -33,7 +33,21 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Status"
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -102,17 +116,6 @@
                         "description": "Timestamp for the end of the event",
                         "example": "2022-08-31T23:59:00+02:00"
                     },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance traveled for this event in meters",
-                        "type": "integer",
-                        "example": 321735105
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration traveled for this event in minutes",
-                        "example": "303453"
-                    },
                     "station": {
                         "title": "station",
                         "description": "nearest station for this event (nullable)",
@@ -122,6 +125,89 @@
                 "type": "object",
                 "xml": {
                     "name": "Event"
+                }
+            },
+            "Links": {
+                "title": "Links",
+                "description": "pagination links",
+                "properties": {
+                    "first": {
+                        "title": "first",
+                        "description": "URL to first page of this pagination",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
+                        "nullable": true
+                    },
+                    "last": {
+                        "title": "last",
+                        "description": "URL to last page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "prev": {
+                        "title": "prev",
+                        "description": "URL to previous page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
+                        "nullable": true
+                    },
+                    "next": {
+                        "title": "next",
+                        "description": "URL to next page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=2",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Links"
+                }
+            },
+            "PaginationMeta": {
+                "title": "Meta",
+                "description": "Pagination meta data",
+                "properties": {
+                    "current_page": {
+                        "title": "current_page",
+                        "description": "currently displayed page in this pagination",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "from": {
+                        "title": "from",
+                        "description": "The first element on this page is the nth element of the query",
+                        "type": "integer",
+                        "example": 16
+                    },
+                    "path": {
+                        "title": "path",
+                        "description": "The path of this pagination",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT"
+                    },
+                    "per_page": {
+                        "title": "per_page",
+                        "description": "the amount of items per page in this pagination",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "to": {
+                        "title": "to",
+                        "description": "The last element on this page is the nth element of the query",
+                        "type": "integer",
+                        "example": 30
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PaginationMeta"
                 }
             },
             "Status": {
@@ -178,7 +264,7 @@
                     },
                     "visibility": {
                         "title": "visibility",
-                        "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the user specify?",
+                        "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n     *     user specify?",
                         "type": "integer",
                         "enum": [
                             0,
@@ -361,7 +447,7 @@
                     },
                     "departure": {
                         "title": "departure",
-                        "description": "currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.",
+                        "description": "currently known departure time. Equal to departureReal if known. Else equal to\n     *     departurePlanned.",
                         "example": "2022-07-17T14:17:00+02:00",
                         "nullable": true
                     },
