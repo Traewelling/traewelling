@@ -14,8 +14,12 @@
     },
     "servers": [
         {
+            "url": "https://traewelling.de/api/v1",
+            "description": "Production Server"
+        },
+        {
             "url": "http://localhost:8000/api/v1",
-            "description": "Production"
+            "description": "This instance"
         }
     ],
     "paths": {
@@ -27,13 +31,195 @@
                 "summary": "Get paginated statuses of personal dashboard",
                 "description": "Returns paginated statuses of personal dashboard",
                 "operationId": "getDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Status"
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/global": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get paginated statuses of global dashboard",
+                "description": "Returns paginated statuses of global dashboard",
+                "operationId": "getGlobalDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/future": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get paginated future statuses of current user",
+                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\n     *      future",
+                "operationId": "getFutureDashboard",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statuses": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get active statuses",
+                "description": "Returns all currently active statuses that are visible to the (un)authenticated user",
+                "operationId": "getActiveStatuses",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -44,8 +230,169 @@
                 },
                 "security": [
                     {
-                        "api_key_security_example": []
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/statuses/{id}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get single statuses",
+                "description": "Returns a single status Object, if user is authorized to see it",
+                "operationId": "getSingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a status",
+                "description": "Updates a single status Object, if user is authorized to",
+                "operationId": "updateSingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusUpdateBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Destroy a status",
+                "description": "Deletes a single status Object, if user is authorized to",
+                "operationId": "destroySingleStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
                 ]
             }
         }
@@ -102,17 +449,6 @@
                         "description": "Timestamp for the end of the event",
                         "example": "2022-08-31T23:59:00+02:00"
                     },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance traveled for this event in meters",
-                        "type": "integer",
-                        "example": 321735105
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration traveled for this event in minutes",
-                        "example": "303453"
-                    },
                     "station": {
                         "title": "station",
                         "description": "nearest station for this event (nullable)",
@@ -122,6 +458,96 @@
                 "type": "object",
                 "xml": {
                     "name": "Event"
+                }
+            },
+            "Links": {
+                "title": "Links",
+                "description": "pagination links",
+                "properties": {
+                    "first": {
+                        "title": "first",
+                        "description": "URL to first page of this pagination",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
+                        "nullable": true
+                    },
+                    "last": {
+                        "title": "last",
+                        "description": "URL to last page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "prev": {
+                        "title": "prev",
+                        "description": "URL to previous page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=1",
+                        "nullable": true
+                    },
+                    "next": {
+                        "title": "next",
+                        "description": "URL to next page of this pagination (mostly null)",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT?page=2",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Links"
+                }
+            },
+            "PaginationMeta": {
+                "title": "Meta",
+                "description": "Pagination meta data",
+                "properties": {
+                    "current_page": {
+                        "title": "current_page",
+                        "description": "currently displayed page in this pagination",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "from": {
+                        "title": "from",
+                        "description": "The first element on this page is the nth element of the query",
+                        "type": "integer",
+                        "example": 16
+                    },
+                    "path": {
+                        "title": "path",
+                        "description": "The path of this pagination",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://traewelling.de/api/v1/ENDPOINT"
+                    },
+                    "per_page": {
+                        "title": "per_page",
+                        "description": "the amount of items per page in this pagination",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "to": {
+                        "title": "to",
+                        "description": "The last element on this page is the nth element of the query",
+                        "type": "integer",
+                        "example": 30
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PaginationMeta"
+                }
+            },
+            "PaginationPage": {
+                "title": "PaginationPage",
+                "description": "pagination links",
+                "xml": {
+                    "name": "PaginationPage"
                 }
             },
             "Status": {
@@ -166,28 +592,10 @@
                         "example": false
                     },
                     "business": {
-                        "title": "business",
-                        "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
-                        "type": "integer",
-                        "enum": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "example": 0
+                        "$ref": "#/components/schemas/BusinessEnum"
                     },
                     "visibility": {
-                        "title": "visibility",
-                        "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the user specify?",
-                        "type": "integer",
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "example": 0
+                        "$ref": "#/components/schemas/VisibilityEnum"
                     },
                     "likes": {
                         "title": "likes",
@@ -219,6 +627,22 @@
                 "type": "object",
                 "xml": {
                     "name": "Status"
+                }
+            },
+            "SuccessResponse": {
+                "title": "SuccessResponse",
+                "description": "Success Response",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "status",
+                        "type": "string",
+                        "example": "success"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "SuccessResponse"
                 }
             },
             "Train": {
@@ -361,7 +785,7 @@
                     },
                     "departure": {
                         "title": "departure",
-                        "description": "currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.",
+                        "description": "currently known departure time. Equal to departureReal if known. Else equal to\n     *     departurePlanned.",
                         "example": "2022-07-17T14:17:00+02:00",
                         "nullable": true
                     },
@@ -421,6 +845,70 @@
                 "xml": {
                     "name": "TrainStopover"
                 }
+            },
+            "StatusUpdateBody": {
+                "title": "StatusUpdateBody",
+                "description": "Status Update Body",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Status-Text to be displayed alongside the checkin",
+                        "example": "Wow. This train is extremely crowded!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StatusUpdateBody"
+                }
+            },
+            "BusinessEnum": {
+                "title": "Business",
+                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "example": 0
+            },
+            "VisibilityEnum": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 0
+            }
+        },
+        "parameters": {
+            "page": {
+                "name": "page",
+                "in": "query",
+                "description": "Page of pagination",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
+        "securitySchemes": {
+            "token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     },
@@ -428,6 +916,10 @@
         {
             "name": "Dashboard",
             "description": "API Endpoints of Dashboard"
+        },
+        {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         }
     ]
 }
