@@ -188,7 +188,7 @@ abstract class TrainCheckinController extends Controller
             if ($exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();
             }
-            throw $exception; //Other szenarios are not handled, so rethrow the exception
+            throw $exception; // Other scenarios are not handled, so rethrow the exception
         }
     }
 }

@@ -11,8 +11,7 @@ class ReasonTest extends TestCase
 {
 
     protected function setUp(): void {
-        // Don't include parent, because TestCase needs a database.
-        // parent::setUp();
+        Carbon::setTestNow("10.05.2020 13:15");
     }
 
     public function test5MinutesBeforeTrip(): void {
