@@ -96,11 +96,7 @@ class Status
 
     /**
      * @OA\Property (
-     *     title="business",
-     *     description="What type of travel (0=private, 1=business, 2=commute) did the user specify?",
-     *     type="integer",
-     *     enum={0,1,2},
-     *     example=0
+     *     ref="#/components/schemas/BusinessEnum"
      * )
      *
      * @var integer
@@ -109,9 +105,7 @@ class Status
 
     /**
      * @OA\Property (
-     *     title="visibility",
-     *     description="What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
-     *     user specify?", type="integer", enum={0,1,2,3,4}, example=0
+     *      ref="#/components/schemas/VisibilityEnum"
      * )
      *
      * @var integer
