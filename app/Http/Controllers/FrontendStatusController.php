@@ -191,7 +191,6 @@ class FrontendStatusController extends Controller
      * @param $status
      *
      * @return TrainStation|null
-     * @deprecated when vue is implemented
      */
     public static function nextStation(&$status): ?TrainStation {
         if ($status->trainCheckin->HafasTrip->stopoversNEW->count() > 0) {

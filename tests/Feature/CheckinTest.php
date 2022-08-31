@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enum\Business;
+use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
@@ -20,10 +21,6 @@ class CheckinTest extends TestCase
 {
 
     use RefreshDatabase;
-
-    protected function setUp(): void {
-        parent::setUp();
-    }
 
     private string $plus_one_day_then_8pm = "+1 day 8:00";
 
@@ -376,12 +373,14 @@ class CheckinTest extends TestCase
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [
-            "distance"             => 72.096,
-            "duration"             => 1860,
-            "points"               => 18.0,
-            "lineName"             => "ICE 107",
-            "alsoOnThisConnection" => new Collection(),
-            "event"                => null
+            "distance"                => 72.096,
+            "duration"                => 1860,
+            "points"                  => 18.0,
+            "lineName"                => "ICE 107",
+            "alsoOnThisConnection"    => new Collection(),
+            "event"                   => null,
+            "pointsCalculationReason" => PointReason::IN_TIME
+
         ];
         $response = $this->actingAs($user)
                          ->withSession(["checkin-success" => $message])

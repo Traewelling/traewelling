@@ -283,9 +283,6 @@ class UserController extends Controller
                    ->simplePaginate(10);
     }
 
-    /**
-     * @deprecated Backend/SettingsController::deleteProfilePicture in vue
-     */
     public function deleteProfilePicture(): RedirectResponse {
         $user = Auth::user();
 

@@ -20,7 +20,6 @@ use Illuminate\Validation\Rules\Enum;
 class SettingsController extends Controller
 {
 
-    /** @deprecated replaced by Backend/SettingsController::updateSettings in vue */
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'username'   => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
@@ -50,7 +49,6 @@ class SettingsController extends Controller
         return back();
     }
 
-    /** @deprecated replaced by Backend/SettingsController::updateSettings in vue */
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'private_profile'           => ['nullable'],

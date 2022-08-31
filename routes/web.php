@@ -132,10 +132,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('stats.stations');
     });
 
-    if (config('ticket.host') != null) {
-        Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
-        Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
-    }
+    Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
+    Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
 
     Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
          ->name('events.suggest');
