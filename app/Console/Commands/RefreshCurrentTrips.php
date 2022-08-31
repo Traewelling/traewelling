@@ -44,6 +44,7 @@ class RefreshCurrentTrips extends Command
         $loop = 1;
         foreach ($trips as $trip) {
             $this->info('Refreshing trip ' . $trip->trip_id . ' (' . $trip->linename . ')...');
+            $trip->update(['last_refreshed' => now()]);
 
             $rawHafas = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
 
@@ -84,8 +85,6 @@ class RefreshCurrentTrips extends Command
             );
 
             $this->info('Updated ' . $res . ' rows.');
-
-            $trip->update(['last_refreshed' => now()]);
 
             if ($loop++ >= config('trwl.refresh.max_trips_per_minute')) {
                 $this->warn('Max number of trips reached. Waiting for next minute...');
