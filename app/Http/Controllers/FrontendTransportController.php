@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enum\Business;
+use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -174,13 +175,14 @@ class FrontendTransportController extends Controller
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
             return redirect()->route('dashboard')->with('checkin-success', [
-                'distance'             => $trainCheckin->distance,
-                'duration'             => $trainCheckin->duration,
-                'points'               => $trainCheckin->points,
-                'lineName'             => $trainCheckin->HafasTrip->linename,
-                'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
-                'event'                => $trainCheckin->event,
-                'forced'               => isset($validated['force']),
+                'distance'                => $trainCheckin->distance,
+                'duration'                => $trainCheckin->duration,
+                'points'                  => $trainCheckin->points,
+                'lineName'                => $trainCheckin->HafasTrip->linename,
+                'alsoOnThisConnection'    => $trainCheckin->alsoOnThisConnection,
+                'event'                   => $trainCheckin->event,
+                'forced'                  => isset($validated['force']),
+                'pointsCalculationReason' => PointReason::from($backendResponse['points']['calculation']['reason'])
             ]);
 
         } catch (CheckInCollisionException $exception) {
