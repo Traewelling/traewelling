@@ -553,5 +553,6 @@
     "about.missing-verification-email.description2": "If the email is not in the spam folder, please add ':email' to your contacts and request the email again.",
     "about.missing-verification-email.description3": "If the email still does not arrive, please contact us via our contact form.",
     "about.missing-verification-email.description4": "Please note that in the past there were often problems with Microsoft addresses (e.g. Live, Outlook, Hotmail, ...).",
-    "about.missing-verification-email.description5": "In this case, please try an e-mail with another provider first."
+    "about.missing-verification-email.description5": "In this case, please try an e-mail with another provider first.",
+    "about.points-real-time": "If your connection is delayed you should make sure to check in before the real departure time, as we cannot get real-time information about the trip after the real departure time."
 }

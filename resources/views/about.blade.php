@@ -128,6 +128,11 @@
                         </table>
 
                         <p class="lead m-0">{!! __('about.calculation') !!}</p>
+
+                        <p class="lead text-danger mt-2">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            {{__('about.points-real-time')}}
+                        </p>
                     </div>
                 </div>
             </div>
