@@ -31,5 +31,8 @@ return [
             'national'        => env('BASE_POINTS_TRAIN_NATIONAL', 10),
             'nationalExpress' => env('BASE_POINTS_TRAIN_NATIONALEXPRESS', 10),
         ]
+    ],
+    'refresh'           => [
+        'max_trips_per_minute' => env('REFRESH_TRIPS_PER_MINUTE', 1)
     ]
 ];

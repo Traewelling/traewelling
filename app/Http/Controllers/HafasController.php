@@ -285,6 +285,26 @@ abstract class HafasController extends Controller
     }
 
     /**
+     * @throws HafasException
+     */
+    public static function fetchRawHafasTrip(string $tripId, string $lineName) {
+        $tripClient = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
+        try {
+            $tripResponse = $tripClient->get("trips/$tripId", [
+                'query' => [
+                    'lineName'  => $lineName,
+                    'polyline'  => 'true',
+                    'stopovers' => 'true'
+                ]
+            ]);
+            return json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (GuzzleException|JsonException) {
+            //sometimes DB-Rest gives 502 Bad Request
+        }
+        throw new HafasException(__('messages.exception.generalHafas'));
+    }
+
+    /**
      * @param string $tripID
      * @param string $lineName
      *
@@ -292,20 +312,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $tripClient = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-        try {
-            $tripResponse = $tripClient->get("trips/$tripID", [
-                'query' => [
-                    'lineName'  => $lineName,
-                    'polyline'  => 'true',
-                    'stopovers' => 'true'
-                ]
-            ]);
-            $tripJson     = json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-        } catch (GuzzleException|JsonException) {
-            //sometimes DB-Rest gives 502 Bad Request
-            throw new HafasException(__('messages.exception.generalHafas'));
-        }
+        $tripJson    = self::fetchRawHafasTrip($tripID, $lineName);
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
         $operator    = null;
