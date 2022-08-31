@@ -49,9 +49,12 @@ class RefreshCurrentTrips extends Command
 
             $payload = [];
             foreach ($rawHafas?->stopovers ?? [] as $stopover) {
+                $this->info('Updating stopover ' . $stopover?->stop?->name . '...');
+
                 $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
-                if ($timestampToCheck->isPast()) {
+                if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
                     //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
+                    $this->warn('-> Skipping, because departure/arrival is out of range (' . $timestampToCheck->toIso8601String() . ')');
                     continue;
                 }
 
@@ -61,7 +64,8 @@ class RefreshCurrentTrips extends Command
                 $departurePlanned = Carbon::parse($stopover->plannedDeparture);
                 $departureReal    = Carbon::parse($stopover->departure);
 
-                $this->info('Updating stopover ' . $stop->name . ' (' . $stop->ibnr . ') delayed +' . ($departureReal->diffInMinutes($departurePlanned)) . '...');
+                $this->info('-> Arrival is delayed +' . ($arrivalReal->diffInMinutes($arrivalPlanned)) . ' minutes...');
+                $this->info('-> Departure is delayed +' . ($departureReal->diffInMinutes($departurePlanned)) . ' minutes...');
 
                 $payload[] = [
                     'trip_id'           => $rawHafas->id,
