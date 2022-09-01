@@ -7,6 +7,7 @@ use App\Models\HafasTrip;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use PDOException;
 
 class RefreshCurrentTrips extends Command
 {
@@ -43,48 +44,59 @@ class RefreshCurrentTrips extends Command
 
         $loop = 1;
         foreach ($trips as $trip) {
-            $this->info('Refreshing trip ' . $trip->trip_id . ' (' . $trip->linename . ')...');
-            $trip->update(['last_refreshed' => now()]);
+            try {
+                $this->info('Refreshing trip ' . $trip->trip_id . ' (' . $trip->linename . ')...');
+                $trip->update(['last_refreshed' => now()]);
 
-            $rawHafas = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                $rawHafas = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
 
-            $payload = [];
-            foreach ($rawHafas?->stopovers ?? [] as $stopover) {
-                $this->info('Updating stopover ' . $stopover?->stop?->name . '...');
+                $payload = [];
+                foreach ($rawHafas?->stopovers ?? [] as $stopover) {
+                    $this->info('Updating stopover ' . $stopover?->stop?->name . '...');
 
-                $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
-                if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
-                    //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
-                    $this->warn('-> Skipping, because departure/arrival is out of range (' . $timestampToCheck->toIso8601String() . ')');
-                    continue;
+                    $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
+                    if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
+                        //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
+                        $this->warn('-> Skipping, because departure/arrival is out of range (' . $timestampToCheck->toIso8601String() . ')');
+                        continue;
+                    }
+
+                    $stop             = HafasController::parseHafasStopObject($stopover->stop);
+                    $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
+                    $arrivalReal      = Carbon::parse($stopover->arrival);
+                    $departurePlanned = Carbon::parse($stopover->plannedDeparture);
+                    $departureReal    = Carbon::parse($stopover->departure);
+
+                    $this->info('-> Arrival is delayed +' . ($arrivalReal->diffInMinutes($arrivalPlanned)) . ' minutes...');
+                    $this->info('-> Departure is delayed +' . ($departureReal->diffInMinutes($departurePlanned)) . ' minutes...');
+
+                    $payload[] = [
+                        'trip_id'           => $rawHafas->id,
+                        'train_station_id'  => $stop->id,
+                        'arrival_planned'   => $arrivalPlanned->toDateTimeString(),
+                        'arrival_real'      => $arrivalReal->toDateTimeString(),
+                        'departure_planned' => $departurePlanned->toDateTimeString(),
+                        'departure_real'    => $departureReal->toDateTimeString(),
+                    ];
                 }
 
-                $stop             = HafasController::parseHafasStopObject($stopover->stop);
-                $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
-                $arrivalReal      = Carbon::parse($stopover->arrival);
-                $departurePlanned = Carbon::parse($stopover->plannedDeparture);
-                $departureReal    = Carbon::parse($stopover->departure);
+                $res = TrainStopover::upsert(
+                    $payload,
+                    ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
+                    ['arrival_real', 'departure_real']
+                );
 
-                $this->info('-> Arrival is delayed +' . ($arrivalReal->diffInMinutes($arrivalPlanned)) . ' minutes...');
-                $this->info('-> Departure is delayed +' . ($departureReal->diffInMinutes($departurePlanned)) . ' minutes...');
-
-                $payload[] = [
-                    'trip_id'           => $rawHafas->id,
-                    'train_station_id'  => $stop->id,
-                    'arrival_planned'   => $arrivalPlanned->toDateTimeString(),
-                    'arrival_real'      => $arrivalReal->toDateTimeString(),
-                    'departure_planned' => $departurePlanned->toDateTimeString(),
-                    'departure_real'    => $departureReal->toDateTimeString(),
-                ];
+                $this->info('Updated ' . $res . ' rows.');
+                
+            } catch (PDOException $exception) {
+                if ($exception->getCode() === '23000') {
+                    $this->warn('-> Skipping, due to integrity constraint violation');
+                } else {
+                    report($exception);
+                }
+            } catch (\Exception $exception) {
+                report($exception);
             }
-
-            $res = TrainStopover::upsert(
-                $payload,
-                ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
-                ['arrival_real', 'departure_real']
-            );
-
-            $this->info('Updated ' . $res . ' rows.');
 
             if ($loop++ >= config('trwl.refresh.max_trips_per_minute')) {
                 $this->warn('Max number of trips reached. Waiting for next minute...');
