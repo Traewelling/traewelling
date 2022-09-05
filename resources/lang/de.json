@@ -554,5 +554,12 @@
     "about.missing-verification-email.description3": "Sollte die E-Mail weiterhin nicht ankommen, kontaktiere uns bitte über unser Kontaktformular.",
     "about.missing-verification-email.description4": "Bitte beachte, dass es in der Vergangenheit öfters zu Problemen bei Microsoft-Adressen (z.B. Live, Outlook, Hotmail, ...) kam.",
     "about.missing-verification-email.description5": "Probiere in dem Fall bitte zunächst eine E-Mail bei einem anderen Anbieter aus.",
-    "about.points-real-time": "Wenn deine Verbindung verspätet ist solltest du darauf achten, vor der reellen Abfahrtszeit einzuchecken, da wir nach der reellen Abfahrt keine Echtzeitinformationen über die Fahrt mehr erhalten können."
+    "about.points-real-time": "Wenn deine Verbindung verspätet ist solltest du darauf achten, vor der reellen Abfahrtszeit einzuchecken, da wir nach der reellen Abfahrt keine Echtzeitinformationen über die Fahrt mehr erhalten können.",
+    "about.dev": "Ich möchte auch an Träwelling mitentwickeln!",
+    "about.dev.1": "Träwelling ist ein Open Source Projekt und jeder kann mitentwickeln.",
+    "about.dev.2": "Du findest alle Informationen dazu auf unserer GitHub-Seite.",
+    "about.dev.3": "Wir freuen uns über jeden Beitrag - erstelle einfach einen PullRequest!",
+    "about.dev.4": "Du kannst entweder an eigenen Ideen arbeiten oder dir eine Aufgabe aus unseren Issues auf GitHub raussuchen.",
+    "about.dev.5": "Wenn du Fragen hast, kannst du dich gerne auf unserem <a href=\":link\">Discord-Server</a> an uns wenden: <a href=\":link\">:link</a>"
+
 }
