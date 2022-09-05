@@ -554,5 +554,11 @@
     "about.missing-verification-email.description3": "If the email still does not arrive, please contact us via our contact form.",
     "about.missing-verification-email.description4": "Please note that in the past there were often problems with Microsoft addresses (e.g. Live, Outlook, Hotmail, ...).",
     "about.missing-verification-email.description5": "In this case, please try an e-mail with another provider first.",
-    "about.points-real-time": "If your connection is delayed you should make sure to check in before the real departure time, as we cannot get real-time information about the trip after the real departure time."
+    "about.points-real-time": "If your connection is delayed you should make sure to check in before the real departure time, as we cannot get real-time information about the trip after the real departure time.",
+    "about.dev": "I would like to contribute to Träwelling!",
+    "about.dev.1": "Träwelling is an open source project and everyone can contribute.",
+    "about.dev.2": "You can find all the information about it on our GitHub page.",
+    "about.dev.3": "We are happy about every contribution - simply create a PullRequest!",
+    "about.dev.4": "You can either work on your own ideas or pick a task from our Issues on GitHub.",
+    "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>."
 }
