@@ -7,3 +7,4 @@ window.addEventListener("load", () => {
 window.Popper = require("@popperjs/core");
 
 require("bootstrap");
+require("leaflet");

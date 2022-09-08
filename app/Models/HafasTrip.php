@@ -17,19 +17,20 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'operator_id', 'origin', 'destination',
-        'stopovers', 'polyline_id', 'departure', 'arrival', 'delay'
+        'stopovers', 'polyline_id', 'departure', 'arrival', 'delay', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
-        'id'          => 'integer',
-        'trip_id'     => 'string',
-        'category'    => HafasTravelType::class,
-        'operator_id' => 'integer',
-        'origin'      => 'integer',
-        'destination' => 'integer',
-        'polyline_id' => 'integer',
-        'departure'   => 'datetime',
-        'arrival'     => 'datetime',
+        'id'             => 'integer',
+        'trip_id'        => 'string',
+        'category'       => HafasTravelType::class,
+        'operator_id'    => 'integer',
+        'origin'         => 'integer',
+        'destination'    => 'integer',
+        'polyline_id'    => 'integer',
+        'departure'      => 'datetime',
+        'arrival'        => 'datetime',
+        'last_refreshed' => 'datetime',
     ];
 
     public function polyline(): HasOne {

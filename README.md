@@ -99,6 +99,8 @@ If you add code:
 
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
+If you want, you can [join our discord server](https://discord.gg/QypAnG2qAw) for discussions, support and more: https://discord.gg/QypAnG2qAw
+
 ### Translations
 
 We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
