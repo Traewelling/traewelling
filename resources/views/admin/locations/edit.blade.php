@@ -103,7 +103,7 @@
                     <div class="card-body">
                         <button type="submit" class="btn btn-success">
                             <i class="fa-regular fa-floppy-disk" aria-hidden="true"></i>
-                            Speichern
+                            Save
                         </button>
                     </div>
                 </div>
