@@ -16,6 +16,7 @@ use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LeaderboardController;
+use App\Http\Controllers\Frontend\LocationController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
@@ -71,6 +72,9 @@ Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'sta
 
 Route::get('/events', [EventController::class, 'renderEventOverview'])
      ->name('events');
+
+Route::get('/location/{slug}', [LocationController::class, 'renderLocation'])
+     ->name('location');
 
 Auth::routes(['verify' => true]);
 

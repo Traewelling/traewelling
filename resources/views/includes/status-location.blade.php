@@ -58,8 +58,12 @@
 
         <div class="col ps-0">
             <ul style="list-style-type: none; ">
-                <li class="text-trwl">
-                    {{$status->locationCheckin->location->name}}
+                <li>
+                    <a href="{{route('location', ['slug' => $status->locationCheckin->location->slug ?? $status->locationCheckin->location->id])}}"
+                       class="text-trwl"
+                    >
+                        {{$status->locationCheckin->location->name}}
+                    </a>
                 </li>
                 @if(!empty($status->body))
                     <li>

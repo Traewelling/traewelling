@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LocationController extends Controller
@@ -20,12 +21,17 @@ class LocationController extends Controller
         $this->authorize('create', Location::class);
         $validated = $request->validate([
                                             'name'           => ['required', 'string'],
+                                            'slug'           => ['nullable', 'string', 'unique:locations,slug'],
                                             'address_street' => ['required', 'string'],
                                             'address_zip'    => ['required', 'string'],
                                             'address_city'   => ['required', 'string'],
                                             'latitude'       => ['required', 'numeric'],
                                             'longitude'      => ['required', 'numeric'],
                                         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
 
         $location = Location::create($validated);
         return redirect()->route('admin.locations')
@@ -46,12 +52,18 @@ class LocationController extends Controller
 
         $validated = $request->validate([
                                             'name'           => ['required', 'string'],
+                                            'slug'           => ['nullable', 'string', 'unique:locations,slug'],
                                             'address_street' => ['required', 'string'],
                                             'address_zip'    => ['required', 'string'],
                                             'address_city'   => ['required', 'string'],
                                             'latitude'       => ['required', 'numeric'],
                                             'longitude'      => ['required', 'numeric'],
                                         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
+
         $location->update($validated);
         return redirect()->route('admin.locations')
                          ->with('alert-success', 'Location with ID ' . $location->id . ' updated');

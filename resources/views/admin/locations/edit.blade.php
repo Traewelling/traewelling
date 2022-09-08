@@ -16,6 +16,13 @@
                             <label for="inputName">Name</label>
                         </div>
 
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="inputSlug" name="slug"
+                                   placeholder="Slug (empty field will generate slug)"
+                                   value="{{old('slug') ?? ($location ?? null)?->slug}}">
+                            <label for="inputSlug">Slug (empty field will generate slug)</label>
+                        </div>
+
                         <hr/>
 
                         <div class="form-floating mb-3">
