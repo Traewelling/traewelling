@@ -153,7 +153,7 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus($statusId): Renderable {
+    public function getStatus($statusId): Renderable|RedirectResponse {
         $status = StatusBackend::getStatus($statusId);
 
         try {
@@ -162,29 +162,47 @@ class FrontendStatusController extends Controller
             abort(403, 'Status invisible to you.');
         }
 
-        //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($status?->trainCheckin?->HafasTrip?->polyline) {
-            $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
-            foreach ($polyline as $element => $elementValue) {
-                $polyline[$element] = [
-                    $elementValue[1], $elementValue[0]
-                ];
+        if ($status->type === 'hafas') {
+            //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
+            if ($status?->trainCheckin?->HafasTrip?->polyline) {
+                $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
+                foreach ($polyline as $element => $elementValue) {
+                    $polyline[$element] = [
+                        $elementValue[1], $elementValue[0]
+                    ];
+                }
             }
+
+            return view('status.hafas', [
+                'status'      => $status,
+                'time'        => time(),
+                'title'       => __('status.ogp-title', ['name' => $status->user->username]),
+                'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
+                    'linename'    => $status->trainCheckin->HafasTrip->linename,
+                    'distance'    => number($status->trainCheckin->distance / 1000, 1),
+                    'destination' => $status->trainCheckin->Destination->name,
+                    'origin'      => $status->trainCheckin->Origin->name
+                ]),
+                'image'       => ProfilePictureController::getUrl($status->user),
+                'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
+            ]);
         }
 
-        return view('status', [
-            'status'      => $status,
-            'time'        => time(),
-            'title'       => __('status.ogp-title', ['name' => $status->user->username]),
-            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
-                'linename'    => $status->trainCheckin->HafasTrip->linename,
-                'distance'    => number($status->trainCheckin->distance / 1000, 1),
-                'destination' => $status->trainCheckin->Destination->name,
-                'origin'      => $status->trainCheckin->Origin->name
-            ]),
-            'image'       => ProfilePictureController::getUrl($status->user),
-            'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
-        ]);
+        if ($status->type === 'location') {
+            return view('status.location', [
+                'status'          => $status,
+                'pageTitle'       => __('status.ogp-title', ['name' => $status->user->username]),
+                'pageDescription' => __('description.status.location', [
+                    'username' => $status->user->name,
+                    'name'     => $status->locationCheckin->location->name,
+                    'date'     => $status->locationCheckin->departure->isoFormat(__('datetime-format')),
+                    'city'     => $status->locationCheckin->location->address_city,
+                ]),
+                'image'       => ProfilePictureController::getUrl($status->user),
+            ]);
+        }
+
+        return back()->with('alert-danger', 'Unsupported status type');
     }
 
     /**

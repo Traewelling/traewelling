@@ -440,7 +440,7 @@
     "leaderboard.notice": "Dataene som vises her er basert på innsjekkingene de siste 7 dagene.",
     "localisation.not-available": "Dessverre er dette innholdet for øyeblikket ikke tilgjengelig på språket ditt.",
     "description.profile": ":username har allerede vært :kmAmount Kilometer i :hourAmount timer på offentlig transport.",
-    "description.status": "Reisen fra :username fra :origin til :destination på :date i :lineName.",
+    "description.status.hafas": "Reisen fra :username fra :origin til :destination på :date i :lineName.",
     "export.reason.private": "Privat reise",
     "modals.setHome-title": "Sett hjemmestasjon",
     "privacy.we-changed": "<b>Vi har endret våre databeskyttelsesvilkår.</b> For å fortsette å bruke denne tjenesten må du godta de nye vilkårene. Hvis du ikke er enig, kan du også slette kontoen din nå.",

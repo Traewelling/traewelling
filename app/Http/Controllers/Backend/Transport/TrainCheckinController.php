@@ -12,7 +12,6 @@ use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
@@ -66,13 +65,15 @@ abstract class TrainCheckinController extends Controller
             throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
-        $status = StatusBackend::createStatus(
-            user:       $user,
-            business:   $travelReason,
-            visibility: $visibility,
-            body:       $body,
-            eventId:    $event?->id
-        );
+        $status = Status::create([
+                                     'user_id'      => $user->id,
+                                     'body'         => $body,
+                                     'business'     => $travelReason,
+                                     'visibility'   => $visibility,
+                                     'type'         => 'hafas',
+                                     'event_id'     => $event?->id,
+                                     'effective_at' => $departure->toDateTimeString(),
+                                 ]);
 
         try {
             $trainCheckinResponse = self::createTrainCheckin(

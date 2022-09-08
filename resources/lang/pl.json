@@ -398,7 +398,7 @@
     "controller.social.delete-set-email": "Musisz ustawić adres e-mail przed usunięciem powiązania konta, aby zapobiec zablokowaniu.",
     "controller.social.delete-never-connected": "Nie masz powiązanych kont innych serwisów.",
     "description.profile": ":username przejechał już :kmAmount kilometrów w :hourAmount godzin środkami transportu publicznego.",
-    "description.status": "Podróż :username z :origin do :destination w dniu :date w :lineName.",
+    "description.status.hafas": "Podróż :username z :origin do :destination w dniu :date w :lineName.",
     "description.leaderboard.main": "Czołowi podróżnicy z ostatnich 7 dni.",
     "description.leaderboard.monthly": "Czołowi podróżnicy :month :year z poprzednich 7 dni.",
     "events.live-and-upcoming": "Obecne i przyszłe wydarzenia",

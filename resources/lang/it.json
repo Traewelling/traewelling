@@ -437,7 +437,7 @@
     "user.already-unmuted": "L'utente :username non è silenziato.",
     "user.unmute-tooltip": "Disattiva il silenziamento dell'utente",
     "dashboard.future": "I tuoi check-in nel futuro",
-    "description.status": "Il viaggio di :username col :lineName da :origin a :destination al :date.",
+    "description.status.hafas": "Il viaggio di :username col :lineName da :origin a :destination al :date.",
     "description.en-route": "Mappa panoramica di tutti i Träweller, che sono attualmente in movimento nel mondo.",
     "leaderboard.notice": "I dati mostrati qui sono basati sui check-in degli ultimi 7 giorni.",
     "minutes": "Minuti",

@@ -184,7 +184,7 @@
     "profile.last-journeys-of": "Letzte Reisa vu",
     "settings.token": "Token",
     "stats": "Schdadischtika",
-    "description.status": "Dia Reisn vu :username vu :origin noch :destination am :date in :lineName.",
+    "description.status.hafas": "Dia Reisn vu :username vu :origin noch :destination am :date in :lineName.",
     "description.leaderboard.main": "Dia Top-Träweller vu de ledschde 7 Täg.",
     "description.leaderboard.monthly": "Die Top-Träweller im :month :year de ledschde 7 Täg.",
     "description.en-route": "Iabrsichtskartn vu alle Träweller, dia grad uff dr Welt untrweags sand.",

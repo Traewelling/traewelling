@@ -397,7 +397,7 @@
     "user.muted.text": "Tu ne peux pas voir les enregistrements de :username car tu l‘as masqué(e).",
     "user.already-unmuted": "L’utilisateur :username n‘est pas masqué(e).",
     "controller.user.follow-error": "Tu ne peux pas suivre cette personne.",
-    "description.status": "Le voyage de :username en provenance de :origin et à destination de :destination dans :lineName le :date.",
+    "description.status.hafas": "Le voyage de :username en provenance de :origin et à destination de :destination dans :lineName le :date.",
     "description.leaderboard.main": "Les meilleurs Träwelleurs des derniers 7 jours.",
     "description.leaderboard.monthly": "Les meilleurs Träwelleurs en :month :year des derniers 7 jours.",
     "description.profile": ":username a déjà passé :kmAmount kilomètres et :hourAmount heures dans les transports en commun.",

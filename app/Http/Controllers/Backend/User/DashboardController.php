@@ -21,19 +21,16 @@ abstract class DashboardController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('statuses.user_id', $followingIDs)
+                     ->where('effective_at', '<', Carbon::now()->addMinutes(20)->toIso8601String())
+                     ->whereIn('user_id', $followingIDs)
                      ->whereIn('visibility', [
                          StatusVisibility::PUBLIC->value,
                          StatusVisibility::FOLLOWERS->value,
                          StatusVisibility::AUTHENTICATED->value
                      ])
-                     ->orWhere('statuses.user_id', $user->id)
+                     ->orWhere('user_id', $user->id)
+                     ->orderByDesc('effective_at')
                      ->withCount('likes')
-                     ->latest()
                      ->simplePaginate(15);
     }
 
@@ -43,7 +40,6 @@ abstract class DashboardController extends Controller
                                 'trainCheckin.Origin', 'trainCheckin.Destination',
                                 'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
                      ->where(function(Builder $query) use ($user) {
                          //Visibility checks: One of the following options must be true
@@ -69,10 +65,10 @@ abstract class DashboardController extends Controller
                                    ]);
                          });
                      })
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
+                     ->where('effective_at', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->select('statuses.*')
-                     ->orderBy('train_checkins.departure', 'desc')
+                     ->orderByDesc('effective_at')
                      ->withCount('likes')
                      ->simplePaginate(15);
     }

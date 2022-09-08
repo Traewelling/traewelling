@@ -18,7 +18,7 @@ class TrainCheckin extends Model
         'distance', 'departure', 'arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
+    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed', 'socialText'];
     protected $casts    = [
         'id'          => 'integer',
         'status_id'   => 'integer',
@@ -137,5 +137,51 @@ class TrainCheckin extends Model
                    ->filter(function($status) {
                        return $status !== null;
                    });
+    }
+
+    public function getSocialTextAttribute(): string {
+        $postText = trans_choice(
+            key:     'controller.transport.social-post',
+            number:  preg_match('/\s/', $this->HafasTrip->linename),
+            replace: [
+                         'lineName'    => $this->HafasTrip->linename,
+                         'destination' => $this->Destination->name
+                     ]
+        );
+        if ($this->status->event !== null) {
+            $postText = trans_choice(
+                key:     'controller.transport.social-post-with-event',
+                number:  preg_match('/\s/', $this->HafasTrip->linename),
+                replace: [
+                             'lineName'    => $this->HafasTrip->linename,
+                             'destination' => $this->Destination->name,
+                             'hashtag'     => $this->status->event->hashtag
+                         ]
+            );
+        }
+
+
+        if (isset($this->status->body)) {
+            if ($this->status->event !== null) {
+                $eventIntercept = __('controller.transport.social-post-for', [
+                    'hashtag' => $this->status->event->hashtag
+                ]);
+            }
+
+            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
+                ':linename'       => $this->HafasTrip->linename,
+                ':destination'    => $this->Destination->name,
+                ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
+            ]);
+
+            $appendixLength = strlen($appendix) + 30;
+            $postText       = substr($this->status->body, 0, 280 - $appendixLength);
+            if (strlen($postText) !== strlen($this->status->body)) {
+                $postText .= '...';
+            }
+            $postText .= $appendix;
+        }
+
+        return $postText;
     }
 }

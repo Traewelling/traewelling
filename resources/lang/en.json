@@ -465,7 +465,7 @@
     "localisation.not-available": "Sorry, this content is currently not available in your language.",
     "description.leaderboard.main": "The top Träwellers of the past 7 days.",
     "description.leaderboard.monthly": "The top Träwellers in :month :year for the last 7 days.",
-    "description.status": "The journey of :username from :origin to :destination on :date in :lineName.",
+    "description.status.hafas": "The journey of :username from :origin to :destination on :date in :lineName.",
     "description.en-route": "Overview map of all Träwellers, which are currently on the road in the world.",
     "events.no-upcoming": "Currently we are not aware of any events.",
     "events.request-question": "Feel free to report upcoming events to us.",

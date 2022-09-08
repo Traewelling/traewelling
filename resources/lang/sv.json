@@ -398,7 +398,7 @@
     "stats.trips": "Resor",
     "stats.global.explain": "De globala statistiker avser till incheckningar av alla Träweller under perioden från :fromDate till :toDate.",
     "dashboard.future": "Dina Check-Ins i framtiden",
-    "description.status": "Resan från :username från :origin till :destination på :datum i :lineName.",
+    "description.status.hafas": "Resan från :username från :origin till :destination på :datum i :lineName.",
     "description.leaderboard.main": "Top Träweller av de senaste 7 dagar.",
     "description.leaderboard.monthly": "Top Träwelller i :month :year de senaste 7 dagar.",
     "description.en-route": "Översiktskarta över alla Träweller som för närvarande reser runt om i världen.",

@@ -23,15 +23,16 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
+    protected $fillable = ['body', 'user_id', 'business', 'visibility', 'type', 'event_id', 'effective_at'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'latitude', 'longitude'];
     protected $casts    = [
-        'id'         => 'integer',
-        'user_id'    => 'integer',
-        'business'   => Business::class,
-        'visibility' => StatusVisibility::class,
-        'event_id'   => 'integer',
+        'id'           => 'integer',
+        'user_id'      => 'integer',
+        'business'     => Business::class,
+        'visibility'   => StatusVisibility::class,
+        'event_id'     => 'integer',
+        'effective_at' => 'datetime',
     ];
 
     public function user(): BelongsTo {
@@ -43,7 +44,11 @@ class Status extends Model
     }
 
     public function trainCheckin(): HasOne {
-        return $this->hasOne(TrainCheckin::class);
+        return $this->hasOne(TrainCheckin::class, 'status_id', 'id');
+    }
+
+    public function locationCheckin(): HasOne {
+        return $this->hasOne(LocationCheckin::class, 'status_id', 'id');
     }
 
     public function event(): HasOne {
@@ -58,49 +63,13 @@ class Status extends Model
     }
 
     public function getSocialTextAttribute(): string {
-        $postText = trans_choice(
-            key:     'controller.transport.social-post',
-            number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-            replace: [
-                         'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                         'destination' => $this->trainCheckin->Destination->name
-                     ]
-        );
-        if ($this->event !== null) {
-            $postText = trans_choice(
-                key:     'controller.transport.social-post-with-event',
-                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-                replace: [
-                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                             'destination' => $this->trainCheckin->Destination->name,
-                             'hashtag'     => $this->event->hashtag
-                         ]
-            );
+        if ($this->type === 'location') {
+            return $this->locationCheckin->socialText;
         }
-
-
-        if (isset($this->body)) {
-            if ($this->event !== null) {
-                $eventIntercept = __('controller.transport.social-post-for', [
-                    'hashtag' => $this->event->hashtag
-                ]);
-            }
-
-            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
-                ':linename'       => $this->trainCheckin->HafasTrip->linename,
-                ':destination'    => $this->trainCheckin->Destination->name,
-                ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
-            ]);
-
-            $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($this->body, 0, 280 - $appendixLength);
-            if (strlen($postText) !== strlen($this->body)) {
-                $postText .= '...';
-            }
-            $postText .= $appendix;
+        if ($this->type === 'hafas') {
+            return $this->trainCheckin->socialText;
         }
-
-        return $postText;
+        return '';
     }
 
     /**
@@ -109,5 +78,25 @@ class Status extends Model
      */
     public function getStatusInvisibleToMeAttribute(): bool {
         return !request()?->user()?->can('view', $this);
+    }
+
+    public function getLatitudeAttribute(): ?float {
+        if ($this->type === 'location') {
+            return $this->locationCheckin->location->latitude;
+        }
+        if ($this->type === 'hafas') {
+            return $this->trainCheckin->Origin->latitude;
+        }
+        return null;
+    }
+
+    public function getLongitudeAttribute(): ?float {
+        if ($this->type === 'location') {
+            return $this->locationCheckin->location->longitude;
+        }
+        if ($this->type === 'hafas') {
+            return $this->trainCheckin->Origin->longitude;
+        }
+        return null;
     }
 }

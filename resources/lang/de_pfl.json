@@ -424,6 +424,6 @@
     "user.unmute-tooltip": "Benutzer nimmie stummschalde",
     "dashboard.future": "Dei Check-Ins in de Zukunfd",
     "description.profile": ":username is schun :kmAmount Kilomeder in :hourAmount Stunne in öffentliche Verkehrsmiddeln unnerweegs gewän.",
-    "description.status": "Die Rääs vun :username aus :origin noo :destination am :date in :lineName.",
+    "description.status.hafas": "Die Rääs vun :username aus :origin noo :destination am :date in :lineName.",
     "description.en-route": "Üwwersichtskart üwwer alle Träweller, welle g'rad uff de Welt unnerweegs sinn."
 }

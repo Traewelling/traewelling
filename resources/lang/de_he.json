@@ -405,7 +405,7 @@
     "status.visibility.2.detail": "Blous für (akzeptierte) Follower sischtbar",
     "status.visibility.3": "Privat",
     "status.visibility.3.detail": "Blous für disch sischtbar",
-    "description.status": "Die Reis vunn :username vunn :origin noach :destination oam :date in :lineName.",
+    "description.status.hafas": "Die Reis vunn :username vunn :origin noach :destination oam :date in :lineName.",
     "description.profile": ":username is schunn :kmAmount Kilometer in :hourAmount Schdunne in öffentlischen Verkehrsmiddeln unnerwejgs gewese.",
     "description.leaderboard.main": "Die Top Träweller der leddschde 7 Doache.",
     "description.leaderboard.monthly": "Die Top Träweller im :month :year der leddschde 7 Doache.",

@@ -98,8 +98,8 @@ abstract class TwitterController extends Controller
             $connection->post("statuses/update",
                               [
                                   "status" => $socialText,
-                                  'lat'    => $status->trainCheckin->Origin->latitude,
-                                  'lon'    => $status->trainCheckin->Origin->longitude
+                                  'lat'    => $status->latitude,
+                                  'lon'    => $status->longitude
                               ]
             );
 

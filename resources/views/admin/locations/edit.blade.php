@@ -46,7 +46,7 @@
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input type="number" class="form-control" id="inputLatitude" name="latitude"
-                                           placeholder="Latitude" required
+                                           placeholder="Latitude" required step="0.0000001"
                                            value="{{old('latitude') ?? ($location ?? null)?->latitude}}">
                                     <label for="inputLatitude">Latitude</label>
                                 </div>
@@ -54,7 +54,7 @@
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input type="number" class="form-control" id="inputLongitude" name="longitude"
-                                           placeholder="Longitude" required
+                                           placeholder="Longitude" required step="0.0000001"
                                            value="{{old('longitude') ?? ($location ?? null)?->longitude}}">
                                     <label for="inputLongitude">Longitude</label>
                                 </div>
@@ -86,8 +86,8 @@
                         .addTo(map)
                         .on('dragend', function () {
                             let latlng                                      = marker.getLatLng();
-                            document.getElementById('inputLatitude').value  = latlng.lat;
-                            document.getElementById('inputLongitude').value = latlng.lng;
+                            document.getElementById('inputLatitude').value  = latlng.lat.toFixed(6);
+                            document.getElementById('inputLongitude').value = latlng.lng.toFixed(6);
                         });
 
                     document.getElementById('inputLatitude').addEventListener('change', function () {

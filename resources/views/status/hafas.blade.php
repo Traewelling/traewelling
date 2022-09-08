@@ -6,7 +6,7 @@
 @if($status->user->prevent_index)
     @section('meta-robots', 'noindex')
 @else
-    @section('meta-description', __('description.status', [
+    @section('meta-description', __('description.status.hafas', [
         'username' => $status->user->name,
         'origin' => $status->trainCheckin->Origin->name .
                     ($status->trainCheckin->Origin->rilIdentifier ?
@@ -39,7 +39,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
-                @include('includes.status')
+                @include('includes.status-hafas')
 
                 @if($status?->trainCheckin?->origin_stopover?->carriageSequences?->count() > 0)
                     @include('includes.carriage-sequence', ['carriageSequence' => $status->trainCheckin->origin_stopover->carriageSequences])
