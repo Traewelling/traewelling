@@ -67,6 +67,21 @@
                 <div class="card mb-2">
                     <div class="card-body">
                         <h2 class="fs-4 fw-bold text-trwl">
+                            <i class="fa-solid fa-code"></i>
+                            {{ __('about.dev') }}
+                        </h2>
+                        <p class="lead m-0">
+                            {{ __('about.dev.1') }}
+                            {{ __('about.dev.2') }}
+                            {{ __('about.dev.3') }}
+                            {{ __('about.dev.4') }}
+                            {!! __('about.dev.5', ['link' => 'https://discord.gg/QypAnG2qAw']) !!}
+                        </p>
+                    </div>
+                </div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h2 class="fs-4 fw-bold text-trwl">
                             <i class="fa-solid fa-comment-dots"></i>
                             {{ __('about.name-heading') }}
                         </h2>
@@ -128,6 +143,11 @@
                         </table>
 
                         <p class="lead m-0">{!! __('about.calculation') !!}</p>
+
+                        <p class="lead text-danger mt-2">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            {{__('about.points-real-time')}}
+                        </p>
                     </div>
                 </div>
             </div>

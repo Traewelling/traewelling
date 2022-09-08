@@ -4,6 +4,7 @@ use App\Http\Controllers\Frontend\Admin\ApiUsageController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Frontend\Admin\LocationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,22 @@ Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.trip');
         Route::post('/checkin', [CheckinController::class, 'checkin'])
              ->name('admin.checkin');
+    });
+
+    Route::prefix('locations')->group(function() {
+        Route::get('/', [LocationController::class, 'index'])
+             ->name('admin.locations');
+
+        Route::get('/edit/{id}', [LocationController::class, 'renderEdit'])
+             ->name('admin.locations.edit');
+        Route::post('/edit/{id}', [LocationController::class, 'edit']);
+
+        Route::view('/create', 'admin.locations.edit')
+             ->name('admin.locations.create');
+        Route::post('/create', [LocationController::class, 'create']);
+
+        Route::post('/delete', [LocationController::class, 'delete'])
+             ->name('admin.locations.delete');
     });
 
     Route::prefix('users')->group(function() {

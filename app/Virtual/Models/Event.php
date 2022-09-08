@@ -106,28 +106,6 @@ class Event
 
     /**
      * @OA\Property (
-     *     title="trainDistance",
-     *     description="distance traveled for this event in meters",
-     *     example=321735105
-     * )
-     *
-     * @var integer
-     */
-    private $trainDistance;
-
-    /**
-     * @OA\Property (
-     *     title="trainDuration",
-     *     description="duration traveled for this event in minutes",
-     *     example="303453"
-     * )
-     *
-     * @var integer;
-     */
-    private $trainDuration;
-
-    /**
-     * @OA\Property (
      *     title="station",
      *     description="nearest station for this event (nullable)",
      *     nullable="true"
