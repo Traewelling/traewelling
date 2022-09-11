@@ -23,6 +23,62 @@
         }
     ],
     "paths": {
+        "/statuses/{id}/likedby": {
+            "get": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "[Auth optional] Get likes for status",
+                "description": "Returns array of users that liked the status",
+                "operationId": "getLikesForStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [
@@ -947,6 +1003,124 @@
                 "type": "object",
                 "xml": {
                     "name": "TrainStopover"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "title": "displayName",
+                        "description": "Display name of the user",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "title": "username",
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance travelled by train in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration travelled by train in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 6
+                    },
+                    "trainSpeed": {
+                        "title": "trainSpeed",
+                        "description": "average speed travelled by train in meters",
+                        "type": "number",
+                        "format": "float",
+                        "example": 123.45
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "Current points of the last 7 days",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 300
+                    },
+                    "twitterUrl": {
+                        "title": "twitterUrl",
+                        "description": "URL to the Twitter profile of the user",
+                        "type": "string",
+                        "example": "https://twitter.com/i/user/843458335",
+                        "nullable": true
+                    },
+                    "mastodonUrl": {
+                        "title": "mastodonUrl",
+                        "description": "URL to the Mastodon profile of the user",
+                        "type": "string",
+                        "example": "https://chaos.social/@traewelling",
+                        "nullable": true
+                    },
+                    "privateProfile": {
+                        "title": "privateProfile",
+                        "description": "is this profile set to private?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Hide all statuses after x days",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "userInvisibleToMe": {
+                        "title": "userInvisibleToMe",
+                        "description": "Can the currently authenticated user see the statuses of this user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "muted": {
+                        "title": "muted",
+                        "description": "Is this user muted by the currently authenticated user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "following": {
+                        "title": "following",
+                        "description": "Does the currently authenticated user follow this user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "followPending": {
+                        "title": "followPending",
+                        "description": "Is there a currently pending follow request?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
                 }
             },
             "StatusUpdateBody": {

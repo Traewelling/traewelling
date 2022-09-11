@@ -18,7 +18,40 @@ use InvalidArgumentException;
 class LikesController extends ResponseController
 {
     /**
+     * @OA\Get(
+     *      path="/statuses/{id}/likedby",
+     *      operationId="getLikesForStatus",
+     *      tags={"Likes"},
+     *      summary="[Auth optional] Get likes for status",
+     *      description="Returns array of users that liked the status",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
      * @param int $status
+     *
      * @return AnonymousResourceCollection
      * @todo maybe put this in separate controller?
      */
