@@ -7,6 +7,16 @@
 
         <p>
             <span>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</span>
+            @if(session()->get('checkin-success')["pointsCalculationReason"]  === App\Enum\PointReason::NOT_SUFFICIENT)
+                <br/>
+                <span style="display: block;" class="text-danger mt-2">
+                    <i class="fa-solid fa-circle-info"></i>
+                    {{__('checkin.points.could-have')}}
+                    <a href="{{route('static.about') . '#heading-points'}}">
+                        ({{__('messages.cookie-notice-learn')}})
+                    </a>
+                </span>
+            @endif
             @if(session()->get('checkin-success')['points'] == 1 && session()->get('checkin-success')['forced'])
                 <br/>
                 <span class="text-danger">

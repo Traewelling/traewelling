@@ -97,12 +97,12 @@ class AuthController extends ResponseController
         return $this->sendv1Response(new UserSettingsResource($request->user()));
     }
 
-    public function refresh(): JsonResponse {
-        if ($token = Auth::guard()->refresh()) {
-            return response()
-                ->json(['status' => 'success'], 200)
-                ->header('Authorization', $token);
-        }
-        return response()->json(['error' => 'refresh_token_error'], 401);
+    public function refresh(Request $request): JsonResponse {
+        $oldToken = $request->user()->token();
+        $newToken = $request->user()->createToken('token');
+        $oldToken->revoke();
+        return $this->sendv1Response(['token'      => $newToken->accessToken,
+                                      'expires_at' => $newToken->token->expires_at->toIso8601String()])
+                    ->header('Authorization', $newToken->accessToken);
     }
 }

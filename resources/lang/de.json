@@ -507,7 +507,7 @@
     "support.privacy.description": "Deine User-ID, dein Username und deine E-Mail Adresse werden mit deiner Anfrage in unserem Ticketsystem erfasst.",
     "support.privacy.description2": "Die Daten werden unabhängig von deinem Benutzerkonto bei Träwelling nach einem Jahr gelöscht.",
     "checkin.points.earned": "Du bekommst",
-    "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der echten Abfahrtszeit eingecheckt hättest!",
+    "checkin.points.could-have": "Du hättest mehr Punkte bekommen können, wenn du näher an der reellen Abfahrtszeit eingecheckt hättest!",
     "checkin.points.forced": "Du hast für diesen Check-In keine Punkte erhalten, da du ihn forciert hast.",
     "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
     "generic.error": "Fehler",
@@ -553,5 +553,12 @@
     "about.missing-verification-email.description2": "Wenn die E-Mail nicht im Spamordner ist, füge bitte ':email' zu deinen Kontakten hinzu und fordere die E-Mail erneut an.",
     "about.missing-verification-email.description3": "Sollte die E-Mail weiterhin nicht ankommen, kontaktiere uns bitte über unser Kontaktformular.",
     "about.missing-verification-email.description4": "Bitte beachte, dass es in der Vergangenheit öfters zu Problemen bei Microsoft-Adressen (z.B. Live, Outlook, Hotmail, ...) kam.",
-    "about.missing-verification-email.description5": "Probiere in dem Fall bitte zunächst eine E-Mail bei einem anderen Anbieter aus."
+    "about.missing-verification-email.description5": "Probiere in dem Fall bitte zunächst eine E-Mail bei einem anderen Anbieter aus.",
+    "about.points-real-time": "Wenn deine Verbindung verspätet ist solltest du darauf achten, vor der reellen Abfahrtszeit einzuchecken, da wir nach der reellen Abfahrt keine Echtzeitinformationen über die Fahrt mehr erhalten können.",
+    "about.dev": "Ich möchte auch an Träwelling mitentwickeln!",
+    "about.dev.1": "Träwelling ist ein Open Source Projekt und jeder kann mitentwickeln.",
+    "about.dev.2": "Du findest alle Informationen dazu auf unserer GitHub-Seite.",
+    "about.dev.3": "Wir freuen uns über jeden Beitrag - erstelle einfach einen PullRequest!",
+    "about.dev.4": "Du kannst entweder an eigenen Ideen arbeiten oder dir eine Aufgabe aus unseren Issues auf GitHub raussuchen.",
+    "about.dev.5": "Wenn du Fragen hast, kannst du dich gerne auf unserem <a href=\":link\">Discord-Server</a> an uns wenden: <a href=\":link\">:link</a>"
 }

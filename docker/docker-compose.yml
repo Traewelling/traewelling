@@ -35,6 +35,20 @@ services:
     networks:
       - internal
 
+  queue:
+    image: ghcr.io/traewelling/traewelling:latest
+    container_name: traewelling-queue
+    restart: always
+    depends_on:
+      - db
+      - db-rest
+    environment:
+      - CONTAINER_ROLE=queue
+    env_file:
+      - .env.app
+    networks:
+      - internal
+
   db:
     image: mariadb:10
     container_name: traewelling-db
