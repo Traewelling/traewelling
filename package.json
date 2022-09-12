@@ -18,7 +18,7 @@
         "laravel-mix": "^6.0",
         "lodash": "^4.17.21",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.53.0",
+        "sass": "^1.54.9",
         "sass-loader": "^13.0.2"
     },
     "dependencies": {
