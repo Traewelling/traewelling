@@ -23,14 +23,18 @@ class ResponseController extends Controller
         int                 $code = 200,
         array               $additional = null
     ): JsonResponse {
+        $disclaimer = 'APIv1 is not officially released for use and is also not fully documented. Use at your own risk. Data fields may change at any time without notice.';
         if ($data === null) {
             return response()->json(
-                data:   ['status' => 'success'],
+                data:   [
+                            'disclaimer' => $disclaimer,
+                            'status'     => 'success',
+                        ],
                 status: $code
             );
         }
         $response = [
-            'disclaimer' => 'APIv1 is not officially released for use and is also not fully documented. Use at your own risk. Data fields may change at any time without notice.',
+            'disclaimer' => $disclaimer,
             'data'       => $data,
         ];
         $response = $additional ? array_merge($response, $additional) : $response;
