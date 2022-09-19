@@ -66,7 +66,7 @@
                     <li>
                         <a href="{{ route('admin.locations') }}"
                            class="nav-link text-white {{ request()->is('admin/locations*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <i class="fa-solid fa-map-location-dot me-2" aria-hidden="true"></i>
                             <span class="d-md-none d-lg-inline">Locations</span>
                         </a>
                     </li>
@@ -75,6 +75,12 @@
                            class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
                             <i class="fa-solid fa-book me-2" aria-hidden="true"></i>
                             <span class="d-none d-lg-inline">API Usage</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route("queue-monitor::index") }}" class="nav-link text-white }}">
+                            <i class="fa-solid fa-list-check me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Queue Monitoring</span>
                         </a>
                     </li>
                 </ul>
