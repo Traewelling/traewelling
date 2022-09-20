@@ -201,7 +201,7 @@
                         </td>
 
                         <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                            {{ $job->getElapsedInterval()->format('%H:%I:%S') }}
+                            {{ $job->getElapsedInterval()->format('%H:%I:%S.%F') }}
                         </td>
 
                         <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">

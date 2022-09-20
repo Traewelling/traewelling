@@ -13,13 +13,19 @@ return [
      *   romanzipp\QueueMonitor\Models\Contracts\MonitorContract
      * interface or extend the base model.
      */
-    'model' => \romanzipp\QueueMonitor\Models\Monitor::class,
+    'model' => \Traewelling\QueueMonitor\Models\Monitor::class,
 
     /*
      * Specify the max character length to use for storing exception backtraces.
      */
     'db_max_length_exception' => 4294967295,
     'db_max_length_exception_message' => 65535,
+
+    /*
+     * Set the retention time of the monitoring logs. To create accurate aggregations, this number
+     * should at least be double the `metrics_time_frame`.
+     */
+    'delete_old_items_after_days' => 28,
 
     /*
      * The optional UI settings.

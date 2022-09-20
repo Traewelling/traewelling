@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d03b1b96ada2592f311ee7490298ca6d",
+    "content-hash": "9dac7017da0a004ec68fbf67045d46b7",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -6348,75 +6348,6 @@
             "time": "2021-01-01T09:05:44+00:00"
         },
         {
-            "name": "romanzipp/laravel-queue-monitor",
-            "version": "2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "818cecb89d8fcaedc1919da062d7cec6ac1d35bd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/818cecb89d8fcaedc1919da062d7cec6ac1d35bd",
-                "reference": "818cecb89d8fcaedc1919da062d7cec6ac1d35bd",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "illuminate/database": "^5.5|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/queue": "^5.5|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0",
-                "nesbot/carbon": "^2.0",
-                "php": "^7.2|^8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.0",
-                "laravel/framework": "^5.5|^6.0|^7.0|^8.0|^9.0",
-                "mockery/mockery": "^1.3.2",
-                "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0",
-                "phpstan/phpstan": "^0.12.99|^1.0",
-                "phpunit/phpunit": "^8.0|^9.0",
-                "romanzipp/php-cs-fixer-config": "^3.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "romanzipp\\QueueMonitor\\Providers\\QueueMonitorProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "romanzipp\\QueueMonitor\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "romanzipp",
-                    "email": "ich@ich.wtf",
-                    "homepage": "https://ich.wtf"
-                }
-            ],
-            "description": "Queue Monitoring for Laravel Database Job Queue",
-            "support": {
-                "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/2.3.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/romanzipp",
-                    "type": "github"
-                }
-            ],
-            "time": "2022-02-08T16:25:09+00:00"
-        },
-        {
             "name": "sabberworm/php-css-parser",
             "version": "8.4.0",
             "source": {
@@ -10619,6 +10550,85 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/2.2.5"
             },
             "time": "2022-09-12T13:28:28+00:00"
+        },
+        {
+            "name": "trwl/laravel-queue-monitor",
+            "version": "v2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Traewelling/Laravel-Queue-Monitor.git",
+                "reference": "963f5d2f3189eac54cd7015ad0754f477dcdad70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Traewelling/Laravel-Queue-Monitor/zipball/963f5d2f3189eac54cd7015ad0754f477dcdad70",
+                "reference": "963f5d2f3189eac54cd7015ad0754f477dcdad70",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "illuminate/console": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/database": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/queue": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "nesbot/carbon": "^2.0",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "laravel/framework": "^5.5|^6.0|^7.0|^8.0|^9.0",
+                "mockery/mockery": "^1.3.2",
+                "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0",
+                "phpstan/phpstan": "^0.12.99|^1.0",
+                "phpunit/phpunit": "^8.0|^9.0",
+                "romanzipp/php-cs-fixer-config": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Traewelling\\QueueMonitor\\Providers\\QueueMonitorProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Traewelling\\QueueMonitor\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "romanzipp",
+                    "email": "ich@ich.wtf",
+                    "homepage": "https://ich.wtf"
+                },
+                {
+                    "name": "Jannik",
+                    "email": "jannik@outlook.com",
+                    "homepage": "https://traewelling.de"
+                },
+                {
+                    "name": "The Träwelling Team",
+                    "email": "support@traewelling.de",
+                    "homepage": "https://traewelling.de"
+                }
+            ],
+            "description": "Queue Monitoring for Laravel Database Job Queue",
+            "support": {
+                "source": "https://github.com/Traewelling/Laravel-Queue-Monitor/tree/v2.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/romanzipp",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-09-19T21:43:00+00:00"
         },
         {
             "name": "trwl/socialite-mastodon",
