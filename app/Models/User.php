@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\StatusVisibility;
+use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -234,5 +235,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function notifications(): MorphMany {
         return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+    }
+
+    public function sendEmailVerificationNotification() {
+        SendVerificationEmail::dispatch($this);
     }
 }
