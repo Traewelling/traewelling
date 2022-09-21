@@ -9,13 +9,13 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\Social\MastodonController;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
+use App\Jobs\PostStatusOnMastodon;
+use App\Jobs\PostStatusOnTwitter;
 use App\Jobs\FetchCarriageSequence;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -85,12 +85,15 @@ abstract class TrainCheckinController extends Controller
                 force:       $force,
             );
 
-            if ($postOnTwitter && $user->socialProfile?->twitter_id !== null) {
-                TwitterController::postStatus($status);
-            }
-            if ($postOnMastodon && $user->socialProfile?->mastodon_id !== null) {
-                MastodonController::postStatus($status);
-            }
+            PostStatusOnTwitter::dispatchIf($postOnTwitter
+                                            && $user?->socialProfile?->twitter_id !== null
+                                            && config('trwl.post_social') == true,
+                                            $status);
+
+            PostStatusOnMastodon::dispatchIf($postOnMastodon
+                                             && $user->socialProfile?->mastodon_id
+                                             && config('trwl.post_social') == true,
+                                             $status);
 
             return $trainCheckinResponse;
         } catch (Exception $exception) {

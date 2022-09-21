@@ -10,11 +10,11 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Controllers\Backend\Social\MastodonController;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Jobs\PostStatusOnMastodon;
+use App\Jobs\PostStatusOnTwitter;
 use App\Models\Event;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -163,12 +163,13 @@ class CheckinController
 
             $status = $backendResponse['status'];
 
-            if (isset($validated['tweet']) && $user?->socialProfile?->twitter_id !== null) {
-                TwitterController::postStatus($status);
-            }
-            if (isset($validated['toot']) && $user?->socialProfile?->mastodon_id !== null) {
-                MastodonController::postStatus($status);
-            }
+            PostStatusOnTwitter::dispatchIf(isset($validated['tweet'])
+                                            && $user?->socialProfile?->twitter_id !== null,
+                                            $status);
+
+            PostStatusOnMastodon::dispatchIf(isset($validated['toot'])
+                                             && $user?->socialProfile?->mastodon_id !== null,
+                                             $status);
 
             return redirect()->route('admin.stationboard')
                              ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $backendResponse['points']['points']);
