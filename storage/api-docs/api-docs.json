@@ -63,9 +63,6 @@
                     },
                     "404": {
                         "description": "No Event found for this id"
-                    },
-                    "403": {
-                        "description": "User not authorized to access this status"
                     }
                 },
                 "security": [
@@ -116,9 +113,74 @@
                     },
                     "404": {
                         "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
                     },
-                    "403": {
-                        "description": "User not authorized to access this status"
+                    {}
+                ]
+            }
+        },
+        "/event/{slug}/statuses": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get paginated statuses for event",
+                "description": "Returns all for user visible statuses for an event",
+                "operationId": "getEventStatuses",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
                     }
                 },
                 "security": [

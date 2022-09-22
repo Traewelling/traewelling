@@ -112,6 +112,47 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Get(
+     *      path="/event/{slug}/statuses",
+     *      operationId="getEventStatuses",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get paginated statuses for event",
+     *      description="Returns all for user visible statuses for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *     @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Status"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * Returns paginated statuses for user
      *
      * @param string $slug
