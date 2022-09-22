@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://my-default-host.com",
             "description": "This instance"
         }
     ],
@@ -457,7 +457,7 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "[Auth optional] Get single statuses",
+                "summary": "[Auth optional] Get GeoJSON for statuses",
                 "description": "Returns GeoJSON for all requested status IDs",
                 "operationId": "getPolylines",
                 "parameters": [
@@ -491,6 +491,59 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/stopovers/{ids}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get stopovers for statuses",
+                "description": "Returns all underway-stops for stations",
+                "operationId": "getStopOvers",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "comma seperated trip IDs",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Stopovers"
                                         }
                                     },
                                     "type": "object"
@@ -786,6 +839,23 @@
                 "type": "object",
                 "xml": {
                     "name": "Status"
+                }
+            },
+            "Stopovers": {
+                "title": "Stopovers",
+                "description": "Stopovers of a single status",
+                "properties": {
+                    "1": {
+                        "description": "Array of stopovers. Key describes trip id",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TrainStopover"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Stopovers"
                 }
             },
             "SuccessResponse": {
