@@ -165,6 +165,41 @@ class EventController extends ResponseController
     }
 
     /**
+     *
+     * * @OA\Get(
+     *      path="/events",
+     *      operationId="getUpcomingEvent",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Shows upcoming events with basic information",
+     *      description="Returns slug, name and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Event"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * Returns upcoming events
      */
     public function upcoming(): AnonymousResourceCollection {

@@ -191,6 +191,59 @@
                 ]
             }
         },
+        "/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Shows upcoming events with basic information",
+                "description": "Returns slug, name and duration for an event",
+                "operationId": "getUpcomingEvent",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/statuses/{id}/likedby": {
             "get": {
                 "tags": [
@@ -797,7 +850,7 @@
                         "nullable": "true",
                         "anyOf": [
                             {
-                                "$ref": "#/components/schemas/TrainStopover"
+                                "$ref": "#/components/schemas/TrainStation"
                             },
                             {
                                 "type": "'null'"
