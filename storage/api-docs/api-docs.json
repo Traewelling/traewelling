@@ -23,6 +23,59 @@
         }
     ],
     "paths": {
+        "/event/{slug}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get basic information for event",
+                "description": "Returns slug, name and duration for an event",
+                "operationId": "getEvent",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/statuses/{id}/likedby": {
             "get": {
                 "tags": [
@@ -625,7 +678,16 @@
                     "station": {
                         "title": "station",
                         "description": "nearest station for this event (nullable)",
-                        "nullable": "true"
+                        "type": "object",
+                        "nullable": "true",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/TrainStopover"
+                            },
+                            {
+                                "type": "'null'"
+                            }
+                        ]
                     }
                 },
                 "type": "object",
@@ -955,6 +1017,55 @@
                 "type": "object",
                 "xml": {
                     "name": "Train"
+                }
+            },
+            "TrainStation": {
+                "title": "TrainStation",
+                "description": "train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": "4711"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "title": "latitude",
+                        "description": "latitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "48.991591"
+                    },
+                    "longitude": {
+                        "title": "longitude",
+                        "description": "longitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "8.400538"
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainStation"
                 }
             },
             "TrainStopover": {

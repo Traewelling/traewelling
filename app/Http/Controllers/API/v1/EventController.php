@@ -21,6 +21,41 @@ use Intervention\Image\Commands\ResponseCommand;
 class EventController extends ResponseController
 {
     /**
+     * @OA\Get(
+     *      path="/event/{slug}",
+     *      operationId="getEvent",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get basic information for event",
+     *      description="Returns slug, name and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                      ref="#/components/schemas/Event"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     *
      * Returns model of Event
      *
      * @param string $slug
