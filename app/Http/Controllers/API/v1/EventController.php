@@ -46,8 +46,7 @@ class EventController extends ResponseController
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -68,6 +67,39 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Get(
+     *      path="/event/{slug}/details",
+     *      operationId="getEventDetails",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get additional information for event",
+     *      description="Returns overall travelled distance and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                      ref="#/components/schemas/EventDetails"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
      * Returns stats for event
      *
      * @param string $slug

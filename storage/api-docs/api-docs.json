@@ -62,7 +62,60 @@
                         "description": "Bad request"
                     },
                     "404": {
-                        "description": "No status found for this id"
+                        "description": "No Event found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/event/{slug}/details": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get additional information for event",
+                "description": "Returns overall travelled distance and duration for an event",
+                "operationId": "getEventDetails",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/EventDetails"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
                     },
                     "403": {
                         "description": "User not authorized to access this status"
@@ -693,6 +746,43 @@
                 "type": "object",
                 "xml": {
                     "name": "Event"
+                }
+            },
+            "EventDetails": {
+                "title": "EventDetails",
+                "description": "Statistics/Details for Event",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 39
+                    },
+                    "slug": {
+                        "title": "slug",
+                        "description": "URL-Slug for event",
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "Total travelled distance for this event in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 627675656
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "Total travelled duration for this event in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 591443
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "EventDetails"
                 }
             },
             "Links": {
