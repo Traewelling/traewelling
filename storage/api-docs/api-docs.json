@@ -244,6 +244,46 @@
                 ]
             }
         },
+        "/event": {
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Suggest a event",
+                "description": "Submit a possible event for our administrators to publish",
+                "operationId": "suggestEvent",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventSuggestion"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/statuses/{id}/likedby": {
             "get": {
                 "tags": [
@@ -898,6 +938,48 @@
                 "type": "object",
                 "xml": {
                     "name": "EventDetails"
+                }
+            },
+            "EventSuggestion": {
+                "title": "EventSuggestion",
+                "description": "Fields for suggesting an event",
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "name of the event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Eröffnung der Nebenbahn in Knuffingen"
+                    },
+                    "host": {
+                        "title": "host",
+                        "description": "host of the event",
+                        "type": "string",
+                        "example": "MiWuLa",
+                        "nullable": true
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
+                        "nullable": true
+                    },
+                    "begin": {
+                        "title": "begin",
+                        "description": "Timestamp for the start of the event",
+                        "example": "2022-06-01T00:00:00+02:00"
+                    },
+                    "end": {
+                        "title": "end",
+                        "description": "Timestamp for the end of the event",
+                        "example": "2022-08-31T23:59:00+02:00"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "EventSuggestion"
                 }
             },
             "Links": {
@@ -1584,6 +1666,10 @@
         {
             "name": "Status",
             "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+        },
+        {
+            "name": "Events",
+            "description": "Events that users can check in to"
         }
     ]
 }

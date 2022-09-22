@@ -165,8 +165,7 @@ class EventController extends ResponseController
     }
 
     /**
-     *
-     * * @OA\Get(
+     *  @OA\Get(
      *      path="/events",
      *      operationId="getUpcomingEvent",
      *      tags={"Events"},
@@ -208,6 +207,30 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Post(
+     *      path="/event",
+     *      operationId="suggestEvent",
+     *      tags={"Events"},
+     *      summary="Suggest a event",
+     *      description="Submit a possible event for our administrators to publish",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/EventSuggestion")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
      * @param Request $request
      *
      * @return JsonResponse
