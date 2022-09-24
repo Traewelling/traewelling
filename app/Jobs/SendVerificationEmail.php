@@ -26,8 +26,7 @@ class SendVerificationEmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user)
-    {
+    public function __construct(User $user) {
         $this->user = $user;
     }
 
@@ -36,10 +35,9 @@ class SendVerificationEmail implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
+    public function handle(): void {
         $this->queueData([
-                             "user_id" => $this->user->id,
+                             "user_id"  => $this->user->id,
                              "username" => $this->user->username,
                          ]);
 
