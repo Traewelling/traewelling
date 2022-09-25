@@ -560,5 +560,6 @@
     "about.dev.2": "You can find all the information about it on our GitHub page.",
     "about.dev.3": "We are happy about every contribution - simply create a PullRequest!",
     "about.dev.4": "You can either work on your own ideas or pick a task from our Issues on GitHub.",
-    "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>."
+    "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>.",
+    "mail.too-many-requests": "Please wait a few more minutes before requesting another confirmation email."
 }

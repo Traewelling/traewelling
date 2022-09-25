@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -20,7 +21,11 @@ abstract class SettingsController extends Controller
         if (in_array('email', $fields, true) && $fields['email'] !== $user->email) {
             $fields['email_verified_at'] = null;
             $fields['email']             = strtolower($fields['email']);
-            $user->sendEmailVerificationNotification();
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (RateLimitExceededException) {
+                //do nothing... the user can resend the mail later
+            }
         }
 
         $user->update($fields);

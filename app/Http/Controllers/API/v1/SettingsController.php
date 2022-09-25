@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Resources\UserProfileSettingsResource;
@@ -39,8 +40,12 @@ class SettingsController extends ResponseController
     }
 
     public function resendMail(): void {
-        auth()->user()->sendEmailVerificationNotification();
-        $this->sendv1Response('', 204);
+        try {
+            auth()->user()->sendEmailVerificationNotification();
+            $this->sendv1Response('', 204);
+        } catch (RateLimitExceededException) {
+            $this->sendv1Error(error: __('mail.too-many-requests'), code: 429);
+        }
     }
 
     public function updatePassword(Request $request): UserProfileSettingsResource {
