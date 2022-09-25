@@ -53,7 +53,7 @@ abstract class CsvExportController extends Controller
                     $status->trainCheckin->destination_stopover->arrival?->toIso8601String(),
                     $status->trainCheckin->duration,
                     number($status->trainCheckin->distance / 1000),
-                    $status->points,
+                    $status->trainCheckin->points,
                     $status->body,
                     $status->business->value,
                 ];
