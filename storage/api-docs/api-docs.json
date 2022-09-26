@@ -23,6 +23,62 @@
         }
     ],
     "paths": {
+        "/statuses/{id}/likedby": {
+            "get": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "[Auth optional] Get likes for status",
+                "description": "Returns array of users that liked the status",
+                "operationId": "getLikesForStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [
@@ -395,6 +451,70 @@
                     {}
                 ]
             }
+        },
+        "/polyline/{ids}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get single statuses",
+                "description": "Returns GeoJSON for all requested status IDs",
+                "operationId": "getPolylines",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "comma seperated status IDs",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1337,1338"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "type": {
+                                                    "example": "FeatureCollection"
+                                                },
+                                                "features": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Polyline"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
         }
     },
     "components": {
@@ -548,6 +668,45 @@
                 "description": "pagination links",
                 "xml": {
                     "name": "PaginationPage"
+                }
+            },
+            "Polyline": {
+                "title": "Polyline",
+                "description": "Polyline of a single status as GeoJSON Feature",
+                "properties": {
+                    "type": {
+                        "title": "type",
+                        "type": "string",
+                        "example": "Feature"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "object",
+                                "example": "LineString"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "example": "[[8.39767,49.01625],[8.45947,49.06576],[8.52401,49.01625],[8.39218,48.88729],[8.25759,49.00544],[8.30703,49.07476],[8.39080,49.01535]]"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "properties": {
+                        "properties": {
+                            "statusId": {
+                                "type": "integer",
+                                "example": 1337
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Polyline"
                 }
             },
             "Status": {
@@ -846,6 +1005,124 @@
                     "name": "TrainStopover"
                 }
             },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "title": "displayName",
+                        "description": "Display name of the user",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "title": "username",
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance travelled by train in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration travelled by train in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 6
+                    },
+                    "trainSpeed": {
+                        "title": "trainSpeed",
+                        "description": "average speed travelled by train in meters",
+                        "type": "number",
+                        "format": "float",
+                        "example": 123.45
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "Current points of the last 7 days",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 300
+                    },
+                    "twitterUrl": {
+                        "title": "twitterUrl",
+                        "description": "URL to the Twitter profile of the user",
+                        "type": "string",
+                        "example": "https://twitter.com/i/user/843458335",
+                        "nullable": true
+                    },
+                    "mastodonUrl": {
+                        "title": "mastodonUrl",
+                        "description": "URL to the Mastodon profile of the user",
+                        "type": "string",
+                        "example": "https://chaos.social/@traewelling",
+                        "nullable": true
+                    },
+                    "privateProfile": {
+                        "title": "privateProfile",
+                        "description": "is this profile set to private?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Hide all statuses after x days",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "userInvisibleToMe": {
+                        "title": "userInvisibleToMe",
+                        "description": "Can the currently authenticated user see the statuses of this user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "muted": {
+                        "title": "muted",
+                        "description": "Is this user muted by the currently authenticated user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "following": {
+                        "title": "following",
+                        "description": "Does the currently authenticated user follow this user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "followPending": {
+                        "title": "followPending",
+                        "description": "Is there a currently pending follow request?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            },
             "StatusUpdateBody": {
                 "title": "StatusUpdateBody",
                 "description": "Status Update Body",
@@ -853,6 +1130,7 @@
                     "body": {
                         "title": "body",
                         "description": "Status-Text to be displayed alongside the checkin",
+                        "maxLength": 280,
                         "example": "Wow. This train is extremely crowded!",
                         "nullable": true
                     },

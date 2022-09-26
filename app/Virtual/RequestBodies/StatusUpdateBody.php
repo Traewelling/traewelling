@@ -16,6 +16,7 @@ class StatusUpdateBody
     /**
      * @OA\Property (
      *     title="body",
+     *     maxLength=280,
      *     description="Status-Text to be displayed alongside the checkin",
      *     example="Wow. This train is extremely crowded!",
      *     nullable=true

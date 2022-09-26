@@ -342,6 +342,49 @@ class StatusController extends ResponseController
     }
 
     /**
+     * @OA\Get(
+     *      path="/polyline/{ids}",
+     *      operationId="getPolylines",
+     *      tags={"Status"},
+     *      summary="[Auth optional] Get single statuses",
+     *      description="Returns GeoJSON for all requested status IDs",
+     *      @OA\Parameter (
+     *          name="ids",
+     *          in="path",
+     *          description="comma seperated status IDs",
+     *          example="1337,1338",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="type",
+     *                      example="FeatureCollection"
+     *                  ),
+     *                  @OA\Property (
+     *                      property="features", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/Polyline"
+     *                      ),
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
      * @param string $parameters
      *
      * @return JsonResponse
