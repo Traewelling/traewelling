@@ -11,6 +11,10 @@ use Illuminate\Http\JsonResponse;
 class ResponseController extends Controller
 {
     public function sendResponse($response): JsonResponse {
+        $disclaimer = 'APIv0 is deprecated and will be removed in the future __WITHOUT ANY OFFICIAL NOTICE__. Please use APIv1 instead.';
+        if (is_array($response)) {
+            $response = array_merge(['disclaimer' => $disclaimer], $response);
+        }
         return response()->json($response);
     }
 
@@ -19,10 +23,20 @@ class ResponseController extends Controller
         int                 $code = 200,
         array               $additional = null
     ): JsonResponse {
+        $disclaimer = 'APIv1 is not officially released for use and is also not fully documented. Use at your own risk. Data fields may change at any time without notice.';
         if ($data === null) {
-            return response()->json(['status' => 'success'], $code);
+            return response()->json(
+                data:   [
+                            'disclaimer' => $disclaimer,
+                            'status'     => 'success',
+                        ],
+                status: $code
+            );
         }
-        $response = ['data' => $data];
+        $response = [
+            'disclaimer' => $disclaimer,
+            'data'       => $data,
+        ];
         $response = $additional ? array_merge($response, $additional) : $response;
         return response()->json($response, $code);
     }
@@ -31,7 +45,7 @@ class ResponseController extends Controller
         $response = [
             'message' => $error,
         ];
-        $response = $additional ? array_merge($response, ['meta' => $additional]) : $response;
+        $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
         return response()->json($response, $code);
     }
 

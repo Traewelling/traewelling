@@ -127,7 +127,13 @@
                             <label for="message-text" class="col-form-label">
                                 {{__('stationboard.label-message')}}
                             </label>
-                            <textarea name="body" class="form-control" id="message-text"></textarea>
+                            <textarea name="body" class="form-control" id="message-text" maxlength="280"></textarea>
+                            <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
+                            <script>
+                                document.querySelector('#message-text').addEventListener('input', function (e) {
+                                    document.querySelector('#body-length').innerText = e.target.value.length;
+                                });
+                            </script>
                         </div>
 
                         <div class="mt-2">

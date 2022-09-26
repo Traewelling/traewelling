@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TrainCheckin extends Model
 {
@@ -131,11 +133,11 @@ class TrainCheckin extends Model
                                ['departure', '<', $this->arrival]
                            ])
                    ->get()
-                   ->map(function($trainCheckIn) {
-                       return $trainCheckIn->status;
+                   ->map(function(TrainCheckin $trainCheckin) {
+                       return $trainCheckin->status;
                    })
                    ->filter(function($status) {
-                       return $status !== null;
+                       return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
                    });
     }
 }
