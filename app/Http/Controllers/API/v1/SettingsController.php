@@ -44,7 +44,7 @@ class SettingsController extends ResponseController
             auth()->user()->sendEmailVerificationNotification();
             $this->sendv1Response('', 204);
         } catch (RateLimitExceededException) {
-            $this->sendv1Error(error: __('mail.too-many-requests'), code: 429);
+            $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 429);
         }
     }
 

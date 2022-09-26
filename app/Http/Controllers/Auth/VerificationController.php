@@ -63,8 +63,8 @@ class VerificationController extends Controller
 
         } catch (RateLimitExceededException) {
             return $request->wantsJson()
-                ? new JsonResponse([__('mail.too-many-requests')], 429)
-                : back()->with('error', __('mail.too-many-requests'));
+                ? new JsonResponse([__('email.verification.too-many-requests')], 429)
+                : back()->with('error', __('email.verification.too-many-requests'));
         }
     }
 }

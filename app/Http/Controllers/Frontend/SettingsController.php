@@ -47,7 +47,7 @@ class SettingsController extends Controller
                 auth()->user()->sendEmailVerificationNotification();
                 session()->flash('info', __('email.verification.sent'));
             } catch (RateLimitExceededException) {
-                session()->flash('error', __('mail.too-many-requests'));
+                session()->flash('error', __('email.verification.too-many-requests'));
             }
         }
 
