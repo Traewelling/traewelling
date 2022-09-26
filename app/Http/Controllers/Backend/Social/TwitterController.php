@@ -95,13 +95,14 @@ abstract class TwitterController extends Controller
                 $socialText .= " #dbl";
             }
             $socialText .= ' ' . url("/status/{$status->id}");
-            $connection->post("statuses/update",
-                              [
-                                  "status" => $socialText,
-                                  'lat'    => $status->trainCheckin->Origin->latitude,
-                                  'lon'    => $status->trainCheckin->Origin->longitude
-                              ]
+            $response   = $connection->post("statuses/update",
+                                            [
+                                                "status" => $socialText,
+                                                'lat'    => $status->trainCheckin->Origin->latitude,
+                                                'lon'    => $status->trainCheckin->Origin->longitude
+                                            ]
             );
+            $status->update(['tweet_id' => $response->id]);
 
             if ($connection->getLastHttpCode() !== 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
