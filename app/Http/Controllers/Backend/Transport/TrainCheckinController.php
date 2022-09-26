@@ -130,6 +130,21 @@ abstract class TrainCheckinController extends Controller
                                         ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
                                         ->first();
 
+
+        // At some stations (e.g. around Hamburg and Berlin) the stopover is only for entry or exit.
+        // So if the stops are not found with the planned departure/arrival, try to find them with the arrival/departure.
+        // So when entry on an "exit only" station, you can submit the departure as arrival.
+        if ($firstStop === null) {
+            $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
+                                            ->where('arrival_planned', $departure->format('Y-m-d H:i:s'))
+                                            ->first();
+        }
+        if ($lastStop === null) {
+            $lastStop = $trip->stopoversNEW->where('train_station_id', $destination->id)
+                                           ->where('departure_planned', $arrival->format('Y-m-d H:i:s'))
+                                           ->first();
+        }
+
         if (empty($firstStop) || empty($lastStop)) {
             Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
             Log::debug('TrainCheckin: Origin-ID: ' . $origin->id . ', Departure: ' . $departure->toIso8601String());
