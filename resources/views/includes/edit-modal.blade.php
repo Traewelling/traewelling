@@ -10,7 +10,7 @@
                     <div class="form-group">
                         <label for="status-body">{{__('modals.editStatus-label')}}</label>
                         <textarea class="form-control" name="status-body" id="status-body" rows="5" maxlength="280"></textarea>
-                        <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
+                        <small class="text-muted float-end"><span id="body-length">-</span>/280</small>
                         <script>
                             document.querySelector('#status-body').addEventListener('input', function (e) {
                                 document.querySelector('#body-length').innerText = e.target.value.length;

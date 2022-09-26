@@ -42,6 +42,7 @@ $(document).on("click", ".edit", function (event) {
     setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
     $("#edit-modal").modal("show");
+    document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
 });
 
 $(document).on("click", "#modal-trwl-edit-save", function () {
