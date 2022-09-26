@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
@@ -245,13 +245,13 @@ class User extends Authenticatable implements MustVerifyEmail
         Log::info("Attempting to send verification email for user#" . $this->id);
 
         $executed = RateLimiter::attempt(
-            'verification-mail-sent-' . $this->id,
-            $maxAttempts = 1,
-            function() {
+            key:          'verification-mail-sent-' . $this->id,
+            maxAttempts:  1,
+            callback: function() {
                 parent::sendEmailVerificationNotification();
                 Log::info("Sent the verification email for user#" . $this->id . " successfully.");
             },
-            $decaySeconds = 5 * 60
+            decaySeconds: 5 * 60,
         );
 
         if (!$executed) {

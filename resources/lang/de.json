@@ -52,6 +52,7 @@
     "email.verification.required": "Um Träwelling in vollem Umfang nutzen zu können, musst du noch deine E-Mail Adresse bestätigen.",
     "email.verification.btn": "Klicke auf den Button um deinen Bestätigungslink zu erhalten.",
     "email.verification.sent": "Um die Änderung deiner E-Mail Adresse abzuschließen musst du noch auf den Link in der E-Mail klicken, welche wir dir gerade geschickt haben.",
+    "email.verification.too-many-requests": "Bitte warte noch ein paar Minuten, bevor du eine weitere Bestätigungsmail anforderst.",
     "controller.status.export-invalid-dates": "Das sind keine validen Daten.",
     "controller.status.export-neither-business": "Du kannst nicht sowohl Privat- als auch Business-Trips abwählen.",
     "controller.status.like-already": "Like existiert bereits.",
@@ -560,6 +561,5 @@
     "about.dev.2": "Du findest alle Informationen dazu auf unserer GitHub-Seite.",
     "about.dev.3": "Wir freuen uns über jeden Beitrag - erstelle einfach einen PullRequest!",
     "about.dev.4": "Du kannst entweder an eigenen Ideen arbeiten oder dir eine Aufgabe aus unseren Issues auf GitHub raussuchen.",
-    "about.dev.5": "Wenn du Fragen hast, kannst du dich gerne auf unserem <a href=\":link\">Discord-Server</a> an uns wenden: <a href=\":link\">:link</a>",
-    "email.verification.too-many-requests": "Bitte warte noch ein paar Minuten, bevor du eine weitere Bestätigungsmail anforderst."
+    "about.dev.5": "Wenn du Fragen hast, kannst du dich gerne auf unserem <a href=\":link\">Discord-Server</a> an uns wenden: <a href=\":link\">:link</a>"
 }
