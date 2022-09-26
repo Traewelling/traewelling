@@ -6,6 +6,12 @@
 
         @include('layouts.includes.meta')
 
+        <style>
+            body {
+                font-family: "opendyslexic", sans-serif !important;
+            }
+        </style>
+
         <!-- Scripts -->
         <script src="{{ mix('js/app.js') }}"></script>
 
