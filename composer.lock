@@ -371,16 +371,16 @@
         },
         {
             "name": "darkaonline/l5-swagger",
-            "version": "8.3.3",
+            "version": "8.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DarkaOnLine/L5-Swagger.git",
-                "reference": "64d820b006cf65d4247eef497c92501eb6b3a98d"
+                "reference": "0b1c3f5aca80fc710877bf7fdbab6d28d9b54f4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DarkaOnLine/L5-Swagger/zipball/64d820b006cf65d4247eef497c92501eb6b3a98d",
-                "reference": "64d820b006cf65d4247eef497c92501eb6b3a98d",
+                "url": "https://api.github.com/repos/DarkaOnLine/L5-Swagger/zipball/0b1c3f5aca80fc710877bf7fdbab6d28d9b54f4c",
+                "reference": "0b1c3f5aca80fc710877bf7fdbab6d28d9b54f4c",
                 "shasum": ""
             },
             "require": {
@@ -438,7 +438,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DarkaOnLine/L5-Swagger/issues",
-                "source": "https://github.com/DarkaOnLine/L5-Swagger/tree/8.3.3"
+                "source": "https://github.com/DarkaOnLine/L5-Swagger/tree/8.4.1"
             },
             "funding": [
                 {
@@ -446,7 +446,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-08-05T05:21:42+00:00"
+            "time": "2022-09-22T05:16:35+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -8052,16 +8052,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v4.14.0",
+            "version": "v4.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "424d704d1e971cb4b8c952d1b5e302414745f86c"
+                "reference": "0b4426ab6c78f027e00d6600bc3c6fd9b59bda46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/424d704d1e971cb4b8c952d1b5e302414745f86c",
-                "reference": "424d704d1e971cb4b8c952d1b5e302414745f86c",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/0b4426ab6c78f027e00d6600bc3c6fd9b59bda46",
+                "reference": "0b4426ab6c78f027e00d6600bc3c6fd9b59bda46",
                 "shasum": ""
             },
             "type": "library",
@@ -8107,9 +8107,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swagger-api/swagger-ui/issues",
-                "source": "https://github.com/swagger-api/swagger-ui/tree/v4.14.0"
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v4.14.1"
             },
-            "time": "2022-08-17T18:49:32+00:00"
+            "time": "2022-09-22T16:50:30+00:00"
         },
         {
             "name": "symfony/console",
