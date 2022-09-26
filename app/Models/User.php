@@ -242,12 +242,21 @@ class User extends Authenticatable implements MustVerifyEmail
      * @throws RateLimitExceededException
      */
     public function sendEmailVerificationNotification(): void {
-        $mailLimiter = Cache::get('verification-mail-sent-' . $this->id);
-        if (isset($mailLimiter)) {
+        Log::info("Attempting to send verification email for user#" . $this->id);
+
+        $executed = RateLimiter::attempt(
+            'verification-mail-sent-' . $this->id,
+            $maxAttempts = 1,
+            function() {
+                parent::sendEmailVerificationNotification();
+                Log::info("Sent the verification email for user#" . $this->id . " successfully.");
+            },
+            $decaySeconds = 5 * 60
+        );
+
+        if (!$executed) {
+            Log::info("Sending the verification email for user#" . $this->id . " was rate-limited.");
             throw new RateLimitExceededException();
         }
-
-        Cache::put('verification-mail-sent-' . $this->id, time(), now()->addMinutes(5));
-        parent::sendEmailVerificationNotification();
     }
 }
