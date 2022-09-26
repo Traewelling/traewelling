@@ -12,7 +12,9 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 abstract class SettingsController extends Controller
 {
-    /** @todo Implement privacy_hide_days */
+    /** @throws RateLimitExceededException
+     * @todo Implement privacy_hide_days
+     */
     public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
         if ($user === null) {
             $user = auth()->user();
@@ -21,11 +23,7 @@ abstract class SettingsController extends Controller
         if (in_array('email', $fields, true) && $fields['email'] !== $user->email) {
             $fields['email_verified_at'] = null;
             $fields['email']             = strtolower($fields['email']);
-            try {
-                $user->sendEmailVerificationNotification();
-            } catch (RateLimitExceededException) {
-                //do nothing... the user can resend the mail later
-            }
+            $user->sendEmailVerificationNotification();
         }
 
         $user->update($fields);
