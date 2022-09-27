@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\StatusVisibility;
+use App\Exceptions\RateLimitExceededException;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -15,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
@@ -234,5 +236,27 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function notifications(): MorphMany {
         return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * @throws RateLimitExceededException
+     */
+    public function sendEmailVerificationNotification(): void {
+        Log::info("Attempting to send verification email for user#" . $this->id);
+
+        $executed = RateLimiter::attempt(
+            key:          'verification-mail-sent-' . $this->id,
+            maxAttempts:  1,
+            callback: function() {
+                parent::sendEmailVerificationNotification();
+                Log::info("Sent the verification email for user#" . $this->id . " successfully.");
+            },
+            decaySeconds: 5 * 60,
+        );
+
+        if (!$executed) {
+            Log::info("Sending the verification email for user#" . $this->id . " was rate-limited.");
+            throw new RateLimitExceededException();
+        }
     }
 }
