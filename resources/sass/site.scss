@@ -1,83 +1,98 @@
 body {
-  background: rgb(248, 250, 252);
-  overflow-x: hidden;
+    background: rgb(248, 250, 252);
+    overflow-x: hidden;
 }
 
 .product-icon {
-  width: 1em;
-  height: 1em;
+    width: 1em;
+    height: 1em;
 }
 
 ul.timeline {
-  list-style-type: none;
-  position: relative;
-
-  &:last-child {
-    background: transparent !important;
-  }
-
-  > li {
-    margin: 20px 0;
-    padding-left: 20px;
-
-    > i.trwl-bulletpoint {
-      content: " ";
-      background: #fff;
-      display: inline-block;
-      position: absolute;
-      border-radius: 50%;
-      border: 3px solid $bahnrot;
-      left: 20px;
-      width: 20px;
-      height: 20px;
-      z-index: 2;
-    }
-
-    &:first-child:before {
-      content: " ";
-      background: #d4d9df;
-      display: inline-block;
-      left: 29px;
-      width: 2px;
-      height: 90%;
-      position: absolute;
-      z-index: 2;
-    }
+    list-style-type: none;
+    position: relative;
 
     &:last-child {
-      line-height: 1;
+        background: transparent !important;
     }
-  }
+
+    > li {
+        margin: 20px 0;
+        padding-left: 20px;
+
+        > i.trwl-bulletpoint {
+            content: " ";
+            background: #fff;
+            display: inline-block;
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid $bahnrot;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            z-index: 2;
+        }
+
+        &:first-child:before {
+            content: " ";
+            background: #d4d9df;
+            display: inline-block;
+            left: 29px;
+            width: 2px;
+            height: 90%;
+            position: absolute;
+            z-index: 2;
+        }
+
+        &:last-child {
+            line-height: 1;
+        }
+    }
 }
 
 ul.timeline > li p.status-body:before,
 p.train-status:before {
-  font-family: FontAwesome;
-  display: inline-block;
-  padding-right: 6px;
-  vertical-align: middle;
+    font-family: FontAwesome;
+    display: inline-block;
+    padding-right: 6px;
+    vertical-align: middle;
 }
 
 .connection {
-  background: #f5f5f5;
+    background: #f5f5f5;
 }
 
 .bg-trwl {
-  background-color: $trwlRot !important;
+    background-color: $trwlRot !important;
 }
 
 .navbar-dark .navbar-brand {
-  font-weight: bold !important;
+    font-weight: bold !important;
 }
 
 .dropdown-menu {
-  z-index: 2000;
+    z-index: 2000;
 }
 
 .nav-tabs {
-  border-bottom: 0; // Fix double line in Leaderboards.
+    border-bottom: 0; // Fix double line in Leaderboards.
 }
 
 .text-trwl {
-  color: $trwlRot !important;
+    color: $trwlRot !important;
+}
+
+#nav-main {
+    a.nav-link {
+        color: #fff;
+    }
+
+    a.nav-link:hover,
+    a.nav-link.active {
+        font-weight: bold;
+    }
+
+    button.navbar-toggler {
+        color: #fff;
+    }
 }
