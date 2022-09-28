@@ -554,5 +554,12 @@
     "about.missing-verification-email.description2": "Om e-postmeddelandet inte finns i skräppostmappen, lägg till ':email' i dina kontakter och begär e-postmeddelandet igen.",
     "about.missing-verification-email.description3": "Om e-postmeddelandet fortfarande inte kommer fram, vänligen kontakta oss via vårt kontaktformulär.",
     "about.missing-verification-email.description4": "Observera att det tidigare ofta har varit problem med Microsoft-adresser (t.ex. Live, Outlook, Hotmail, ...).",
-    "about.missing-verification-email.description5": "Försök i så fall att skicka ett e-postmeddelande från en annan leverantör först."
+    "about.missing-verification-email.description5": "Försök i så fall att skicka ett e-postmeddelande från en annan leverantör först.",
+    "about.dev": "Jag skulle också vilja vara med och utveckla Träwelling!",
+    "about.dev.1": "Träwelling är ett projekt med öppen källkod och alla kan bidra.",
+    "about.dev.2": "Du kan hitta all information om det på vår GitHub-sida.",
+    "about.dev.3": "Vi ser fram emot varje bidrag - skapa bara en Pull Request!",
+    "about.dev.4": "Du kan antingen arbeta med dina egna idéer eller välja en uppgift från våra problem på GitHub.",
+    "about.dev.5": "Om du har frågor är du välkommen att kontakta oss på vår <a href=\":link\">Discord-server</a>: <a href=\":link\">:link</a>",
+    "about.points-real-time": "Om din anslutning är försenad bör du se till att checka in innan den faktiska avgångstiden, eftersom vi inte längre kan få realtidsinformation om resan efter den faktiska avgången."
 }
