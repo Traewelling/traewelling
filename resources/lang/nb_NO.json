@@ -554,5 +554,12 @@
     "messages.exception.already-checkedin": "Det finnes allerede en innsjekking i denne forbindelse.",
     "messages.exception.maybe-too-fast": "Kanskje du ved et uhell sendte forespørselen flere ganger?",
     "ics.description": "Mine reiser med traewelling.de",
-    "profile.no-visible-statuses": "Dessverre er turene til :username ikke synlige for deg."
+    "profile.no-visible-statuses": "Dessverre er turene til :username ikke synlige for deg.",
+    "about.dev": "Jeg vil også gjerne være med å utvikle Träwelling!",
+    "about.dev.1": "Träwelling er et åpen kildekode-prosjekt og alle kan bidra.",
+    "about.dev.2": "Du kan finne all informasjon om det på vår GitHub-side.",
+    "about.points-real-time": "Hvis forbindelsen din er forsinket, bør du sørge for å sjekke inn før faktisk avgangstid, da vi ikke lenger kan få sanntidsinformasjon om reisen etter selve avgangen.",
+    "about.dev.3": "Vi ser frem til hvert bidrag - bare lag en Pull Request!",
+    "about.dev.4": "Du kan enten jobbe med dine egne ideer eller velge en oppgave fra problemene våre på GitHub.",
+    "about.dev.5": "Hvis du har spørsmål, kan du gjerne kontakte oss på vår <a href=\":link\">Discord-server</a>: <a href=\":link\">:link</a>"
 }
