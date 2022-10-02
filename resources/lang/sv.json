@@ -561,5 +561,6 @@
     "about.dev.3": "Vi ser fram emot varje bidrag - skapa bara en Pull Request!",
     "about.dev.4": "Du kan antingen arbeta med dina egna idéer eller välja en uppgift från våra problem på GitHub.",
     "about.dev.5": "Om du har frågor är du välkommen att kontakta oss på vår <a href=\":link\">Discord-server</a>: <a href=\":link\">:link</a>",
-    "about.points-real-time": "Om din anslutning är försenad bör du se till att checka in innan den faktiska avgångstiden, eftersom vi inte längre kan få realtidsinformation om resan efter den faktiska avgången."
+    "about.points-real-time": "Om din anslutning är försenad bör du se till att checka in innan den faktiska avgångstiden, eftersom vi inte längre kan få realtidsinformation om resan efter den faktiska avgången.",
+    "email.verification.too-many-requests": "Vänta några minuter till innan du begär en ny bekräftelse via e-post."
 }
