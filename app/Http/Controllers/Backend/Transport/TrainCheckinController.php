@@ -87,12 +87,12 @@ abstract class TrainCheckinController extends Controller
 
             PostStatusOnTwitter::dispatchIf($postOnTwitter
                                             && $user?->socialProfile?->twitter_id !== null
-                                            && config('trwl.post_social') == true,
+                                            && config('trwl.post_social') === true,
                                             $status);
 
             PostStatusOnMastodon::dispatchIf($postOnMastodon
                                              && $user->socialProfile?->mastodon_id
-                                             && config('trwl.post_social') == true,
+                                             && config('trwl.post_social') === true,
                                              $status);
 
             return $trainCheckinResponse;
