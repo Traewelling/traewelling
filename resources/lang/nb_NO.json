@@ -561,5 +561,6 @@
     "about.points-real-time": "Hvis forbindelsen din er forsinket, bør du sørge for å sjekke inn før faktisk avgangstid, da vi ikke lenger kan få sanntidsinformasjon om reisen etter selve avgangen.",
     "about.dev.3": "Vi ser frem til hvert bidrag - bare lag en Pull Request!",
     "about.dev.4": "Du kan enten jobbe med dine egne ideer eller velge en oppgave fra problemene våre på GitHub.",
-    "about.dev.5": "Hvis du har spørsmål, kan du gjerne kontakte oss på vår <a href=\":link\">Discord-server</a>: <a href=\":link\">:link</a>"
+    "about.dev.5": "Hvis du har spørsmål, kan du gjerne kontakte oss på vår <a href=\":link\">Discord-server</a>: <a href=\":link\">:link</a>",
+    "email.verification.too-many-requests": "Vent noen minutter før du forespør en ny bekreftelse via e-post."
 }
