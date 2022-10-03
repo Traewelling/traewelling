@@ -106,6 +106,7 @@ abstract class TwitterController extends Controller
             if ($connection->getLastHttpCode() !== 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
+            Log::info("Posted on Twitter: " . $socialText);
         } catch (NotConnectedException $exception) {
             throw $exception;
         } catch (Exception $exception) {
