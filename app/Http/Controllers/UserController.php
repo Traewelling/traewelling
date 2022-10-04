@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\CacheKey;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
@@ -22,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
@@ -137,6 +139,7 @@ class UserController extends Controller
                                  ]);
         $user->notify(new FollowRequestApproved($follow));
         $userToFollow->fresh();
+        Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;
     }
 

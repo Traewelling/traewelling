@@ -34,5 +34,8 @@ return [
     ],
     'refresh'           => [
         'max_trips_per_minute' => env('REFRESH_TRIPS_PER_MINUTE', 1)
+    ],
+    'cache'             => [
+        'leaderboard-retention-seconds' => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
     ]
 ];
