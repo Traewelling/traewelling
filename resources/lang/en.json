@@ -461,7 +461,7 @@
     "user.muted.heading2": "Muted users",
     "user.already-unmuted": "The user :username is not muted.",
     "user.unmute-tooltip": "Unmute user",
-    "leaderboard.notice": "The data shown here is based on the check-ins of the last 7 days.",
+    "leaderboard.notice": "The data shown here is based on the check-ins of the last 7 days. Updates to the leaderboard might take up to five minutes.",
     "localisation.not-available": "Sorry, this content is currently not available in your language.",
     "description.leaderboard.main": "The top Träwellers of the past 7 days.",
     "description.leaderboard.monthly": "The top Träwellers in :month :year for the last 7 days.",
