@@ -390,12 +390,17 @@ abstract class HafasController extends Controller
                 }
             }
             try {
+                //If there is no arrival set, we need to set the departure as arrival and vice versa
+                // -> this is for checkins for trips were no entry/exit is planned.
+                $plannedArrival   = Carbon::parse($stopover->plannedArrival);
+                $plannedDeparture = Carbon::parse($stopover->plannedDeparture);
+
                 TrainStopover::updateOrCreate(
                     [
                         'trip_id'           => $tripID,
                         'train_station_id'  => $trainStations->where('ibnr', $stopover->stop->id)->first()->id,
-                        'arrival_planned'   => isset($stopover->plannedArrival) ? Carbon::parse($stopover->plannedArrival)->format('Y-m-d H:i:s') : null,
-                        'departure_planned' => isset($stopover->plannedDeparture) ? Carbon::parse($stopover->plannedDeparture)->format('Y-m-d H:i:s') : null,
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? $plannedArrival?->toDateTimeString() : $plannedDeparture?->toDateTimeString(),
+                        'departure_planned' => isset($stopover->plannedDeparture) ? $plannedDeparture?->toDateTimeString() : $plannedArrival?->toDateTimeString(),
                     ],
                     $updatePayload
                 );
