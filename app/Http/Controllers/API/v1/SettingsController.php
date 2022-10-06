@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Resources\UserProfileSettingsResource;
@@ -22,7 +23,7 @@ class SettingsController extends ResponseController
     /**
      * @throws ValidationException
      */
-    public function updateMail(Request $request): UserProfileSettingsResource {
+    public function updateMail(Request $request): UserProfileSettingsResource|JsonResponse {
         $validated = $request->validate(['email'    => ['required',
                                                         'string',
                                                         'email:rfc,dns',
@@ -35,15 +36,23 @@ class SettingsController extends ResponseController
         }
         unset($validated['password']);
 
-        return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        try {
+            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        } catch (RateLimitExceededException) {
+            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+        }
     }
 
     public function resendMail(): void {
-        auth()->user()->sendEmailVerificationNotification();
-        $this->sendv1Response('', 204);
+        try {
+            auth()->user()->sendEmailVerificationNotification();
+            $this->sendv1Response('', 204);
+        } catch (RateLimitExceededException) {
+            $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 429);
+        }
     }
 
-    public function updatePassword(Request $request): UserProfileSettingsResource {
+    public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse {
         $userHasPassword = auth()->user()->password !== null;
 
         $validated = $request->validate([
@@ -57,10 +66,14 @@ class SettingsController extends ResponseController
 
         $validated['password'] = Hash::make($validated['password']);
 
-        return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        try {
+            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        } catch (RateLimitExceededException) {
+            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+        }
     }
 
-    public function updateSettings(Request $request): UserProfileSettingsResource {
+    public function updateSettings(Request $request): UserProfileSettingsResource|JsonResponse {
         $validated = $request->validate([
                                             'username'                  => ['required',
                                                                             'string',
@@ -77,7 +90,11 @@ class SettingsController extends ResponseController
                                             ]
                                         ]);
 
-        return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        try {
+            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        } catch (RateLimitExceededException) {
+            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+        }
     }
 
     public function deleteProfilePicture(): JsonResponse {

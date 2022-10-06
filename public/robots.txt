@@ -4,3 +4,9 @@ Disallow: /legal/privacy-policy
 
 User-agent: ia_archiver
 Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /

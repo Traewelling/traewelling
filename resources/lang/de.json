@@ -52,6 +52,7 @@
     "email.verification.required": "Um Träwelling in vollem Umfang nutzen zu können, musst du noch deine E-Mail Adresse bestätigen.",
     "email.verification.btn": "Klicke auf den Button um deinen Bestätigungslink zu erhalten.",
     "email.verification.sent": "Um die Änderung deiner E-Mail Adresse abzuschließen musst du noch auf den Link in der E-Mail klicken, welche wir dir gerade geschickt haben.",
+    "email.verification.too-many-requests": "Bitte warte noch ein paar Minuten, bevor du eine weitere Bestätigungsmail anforderst.",
     "controller.status.export-invalid-dates": "Das sind keine validen Daten.",
     "controller.status.export-neither-business": "Du kannst nicht sowohl Privat- als auch Business-Trips abwählen.",
     "controller.status.like-already": "Like existiert bereits.",
