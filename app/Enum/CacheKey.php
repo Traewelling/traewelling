@@ -10,7 +10,7 @@ class CacheKey
     public const LeaderboardGlobalDistance = "LeaderboardGlobalDistance";
     public const LeaderboardMonth          = "LeaderboardMonth";
 
-    public static function getFriendsLeaderboardKey(int $user_id): string {
-        return self::LeaderboardFriends + '-for-' + $user_id;
+    public static function getFriendsLeaderboardKey(int $userId): string {
+        return self::LeaderboardFriends . '-for-' . $userId;
     }
 }

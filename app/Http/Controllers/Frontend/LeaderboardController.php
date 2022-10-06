@@ -19,7 +19,8 @@ class LeaderboardController extends Controller
         $leaderboard = Cache::remember(
             CacheKey::LeaderboardMonth . '-for-' . $date->toISOString(),
             config(self::$cacheRetentionConfigKey),
-            fn() => LeaderboardBackend::getMonthlyLeaderboard($date));
+            fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
+        );
 
         return view('leaderboard.month', [
             'leaderboard' => $leaderboard,
@@ -33,12 +34,14 @@ class LeaderboardController extends Controller
         $usersLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalPoints,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard());
+            fn() => LeaderboardBackend::getLeaderboard()
+        );
 
         $distanceLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalDistance,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance'));
+            fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
+        );
 
         $friendsLeaderboard = auth()->check()
             ? Cache::remember(
