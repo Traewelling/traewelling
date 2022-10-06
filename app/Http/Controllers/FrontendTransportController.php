@@ -143,10 +143,8 @@ class FrontendTransportController extends Controller
         $validated = $request->validate([
                                             'tripID'            => ['required'],
                                             'start'             => ['required', 'numeric'], //Origin station IBNR
-                                            //if the train has no departure, arrival is okay
                                             'departure'         => ['required', 'date'],
                                             'destination'       => ['required', 'numeric'], //Destination station IBNR
-                                            //if the train has no arrival, departure is okay
                                             'arrival'           => ['required', 'date'],
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
