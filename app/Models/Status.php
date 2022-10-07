@@ -32,7 +32,7 @@ class Status extends Model
         'business'   => Business::class,
         'visibility' => StatusVisibility::class,
         'event_id'   => 'integer',
-        'tweet_id'   => 'integer',
+        'tweet_id'   => 'string',
     ];
 
     public function user(): BelongsTo {

@@ -9,7 +9,7 @@ return new class extends Migration
 
     public function up(): void {
         Schema::table('statuses', static function(Blueprint $table) {
-            $table->unsignedBigInteger('tweet_id')->nullable()->after('event_id');
+            $table->string('tweet_id')->nullable()->after('event_id');
         });
     }
 

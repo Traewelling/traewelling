@@ -102,11 +102,12 @@ abstract class TwitterController extends Controller
                                                 'lon'    => $status->trainCheckin->Origin->longitude
                                             ]
             );
-            $status->update(['tweet_id' => $response->id]);
 
             if ($connection->getLastHttpCode() !== 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
+
+            $status->update(['tweet_id' => $response->id]);
             Log::info("Posted on Twitter: " . $socialText);
         } catch (NotConnectedException $exception) {
             throw $exception;
