@@ -92,20 +92,22 @@ abstract class TwitterController extends Controller
             #dbl only works on Twitter.
             $socialText = $status->socialText;
             if ($status->user->always_dbl) {
-                $socialText .= " #dbl";
+                $socialText .= ' #dbl';
             }
-            $socialText .= ' ' . url("/status/{$status->id}");
-            $connection->post("statuses/update",
-                              [
-                                  "status" => $socialText,
-                                  'lat'    => $status->trainCheckin->Origin->latitude,
-                                  'lon'    => $status->trainCheckin->Origin->longitude
-                              ]
+            $socialText .= ' ' . url('/status/{$status->id}');
+            $response   = $connection->post('statuses/update',
+                                            [
+                                                'status' => $socialText,
+                                                'lat'    => $status->trainCheckin->Origin->latitude,
+                                                'lon'    => $status->trainCheckin->Origin->longitude
+                                            ]
             );
 
             if ($connection->getLastHttpCode() !== 200) {
                 $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
             }
+
+            $status->update(['tweet_id' => $response->id]);
             Log::info("Posted on Twitter: " . $socialText);
         } catch (NotConnectedException $exception) {
             throw $exception;
