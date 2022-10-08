@@ -8,8 +8,11 @@
             </button>
         </div>
         <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
-            @isset($request->when)
-                <input type="hidden" name="when" value="{{$request->when}}"/>
+            @isset(request()->when)
+                <input type="hidden" name="when" value="{{request()->when}}"/>
+            @endisset
+            @isset($station)
+                <input type="hidden" name="station_id" value="{{$station->ibnr}}"/>
             @endisset
 
             <div id="station-autocomplete-container" style="z-index: 3;">

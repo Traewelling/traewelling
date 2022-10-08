@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Frontend\Export;
 
 use App\Http\Controllers\Backend\Export\ExportController as ExportBackend;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
