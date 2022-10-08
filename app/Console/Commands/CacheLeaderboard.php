@@ -15,7 +15,7 @@ class CacheLeaderboard extends Command
      *
      * @var string
      */
-    protected $signature = 'trwl:leaderboard:cache';
+    protected $signature = 'trwl:cache:leaderboard';
 
     /**
      * The console command description.

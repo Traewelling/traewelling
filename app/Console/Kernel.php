@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('trwl:cleanUpDatabase')->dailyAt('1:50');
         $schedule->command('trwl:refreshTrips')->withoutOverlapping()->everyMinute();
         $schedule->command('trwl:hideStatus')->daily();
-        $schedule->command("trwl:leaderboard:cache")->withoutOverlapping()->everyFiveMinutes();
+        $schedule->command('trwl:cache:leaderboard')->withoutOverlapping()->everyFiveMinutes();
     }
 
     /**
