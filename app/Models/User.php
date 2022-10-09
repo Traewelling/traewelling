@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
+use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -248,7 +249,7 @@ class User extends Authenticatable implements MustVerifyEmail
             key:          'verification-mail-sent-' . $this->id,
             maxAttempts:  1,
             callback: function() {
-                parent::sendEmailVerificationNotification();
+                SendVerificationEmail::dispatch($this);
                 Log::info("Sent the verification email for user#" . $this->id . " successfully.");
             },
             decaySeconds: 5 * 60,

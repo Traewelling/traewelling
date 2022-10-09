@@ -126,6 +126,7 @@ abstract class MastodonController extends Controller
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
             Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+            Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (RequestException $e) {
             $status->user->notify(new MastodonNotSent($e->getResponse()?->getStatusCode(), $status));
         } catch (Exception $e) {
