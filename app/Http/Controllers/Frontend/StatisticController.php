@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enum\Business;
+use App\Enum\CacheKey;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -22,8 +23,8 @@ class StatisticController extends Controller
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
         $globalStats = Cache::remember(
-            key: 'stats-global-' . $from->toDateString() . '-' . $to->toDateString(),
-            ttl: 3600, //1 hour
+            key: CacheKey::getGlobalStatsKey($from, $to),
+            ttl: config('trwl.cache.global-statistics-retention-seconds'), // 1 hour
             callback: static fn() => StatisticBackend::getGlobalCheckInStats($from, $to)
         );
 
