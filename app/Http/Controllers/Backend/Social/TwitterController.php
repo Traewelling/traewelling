@@ -94,7 +94,7 @@ abstract class TwitterController extends Controller
             if ($status->user->always_dbl) {
                 $socialText .= ' #dbl';
             }
-            $socialText .= ' ' . url('/status/{$status->id}');
+            $socialText .= ' ' . url('/status/' . $status->id);
             $response   = $connection->post('statuses/update',
                                             [
                                                 'status' => $socialText,
