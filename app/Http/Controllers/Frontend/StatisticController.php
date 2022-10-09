@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class StatisticController extends Controller
@@ -20,7 +21,11 @@ class StatisticController extends Controller
         $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subQuarter();
         $to   = isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now();
 
-        $globalStats = StatisticBackend::getGlobalCheckInStats($from, $to);
+        $globalStats = Cache::remember(
+            key: 'stats-global-' . $from->toDateString() . '-' . $to->toDateString(),
+            ttl: 3600, //1 hour
+            callback: static fn() => StatisticBackend::getGlobalCheckInStats($from, $to)
+        );
 
         $topCategories  = StatisticBackend::getTopTravelCategoryByUser(auth()->user(), $from, $to);
         $topOperators   = StatisticBackend::getTopTripOperatorByUser(auth()->user(), $from, $to);
