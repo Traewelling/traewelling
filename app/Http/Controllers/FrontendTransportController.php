@@ -132,7 +132,7 @@ class FrontendTransportController extends Controller
 
         // Find out where this train terminates and offer this as a "fast check-in" option.
         $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while ($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
+        while ($terminalStopIndex >= 1 && @$this->isCancelled($TrainTripResponse['stopovers'][$terminalStopIndex])) {
             $terminalStopIndex--;
         }
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
@@ -235,5 +235,9 @@ class FrontendTransportController extends Controller
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
+    }
+
+    private function isCancelled(mixed $param): bool {
+        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
     }
 }

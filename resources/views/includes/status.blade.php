@@ -43,17 +43,22 @@
                             @if (file_exists(public_path('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg')))
                                 <img class="product-icon"
                                      src="{{ asset('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg') }}"
-                                     alt="{{$status->trainCheckin->HafasTrip->category->value}}">
+                                     alt="{{$status->trainCheckin->HafasTrip->category->value}}"
+                                />
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif {{ $status->trainCheckin->HafasTrip->linename }}
                         </span>
                         <span class="ps-2">
-                            <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
-                            {{number($status->trainCheckin->distance / 1000, 0)}}<small>km</small>
+                            <i class="fa fa-route d-inline" aria-hidden="true"></i>
+                            @if($status->trainCheckin->distance < 1000)
+                                {{ $status->trainCheckin->distance }}<small>m</small>
+                            @else
+                                {{round($status->trainCheckin->distance / 1000)}}<small>km</small>
+                            @endif
                         </span>
                         <span class="ps-2">
-                            <i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>&nbsp;
+                            <i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>
                             {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
                         </span>
 

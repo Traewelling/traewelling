@@ -31,7 +31,7 @@
 
                     @if(is_null($user->privacy_ack_at)||$agreement->valid_at->isAfter($user->privacy_ack_at))
                         <form method="POST" action="{{ route('gdpr.ack') }}" class="fixed-bottom text-end"
-                              style="background-color: hsl(216, 25%, 95.1%);">
+                              style="background-color: hsl(216, 25%, 95.1%);" id="form-privacy">
                             @csrf
                             <div class="container">
                                 <div class="row justify-content-center">
@@ -40,11 +40,22 @@
                                            data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
                                             {{ __('settings.delete-account') }}
                                         </a>
-                                        <input type="submit" value="{{__('privacy.sign')}}" class="btn btn-success"/>
+                                        <button type="submit" class="btn btn-success">
+                                            {{__('privacy.sign')}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+
+                        <button type="submit" class="btn btn-success btn-block" form="form-privacy">
+                            {{__('privacy.sign.more')}}
+                        </button>
+                        <a class="btn btn-block btn-outline-secondary pr-0" href="javascript:void(0)" role="button"
+                           data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
+                            {{ __('settings.delete-account.more') }}
+                        </a>
+                        <hr/>
 
                         @include('settings.modals.deleteUserModal')
                     @endif
