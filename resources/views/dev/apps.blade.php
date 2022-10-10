@@ -1,16 +1,32 @@
 @extends('layouts.settings')
 
-@section('title', __('menu.settings'))
+@section('title', 'Deine Anwendungen')
 
 @section('content')
-<h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
-
         <div class="row">
-            <div class="col-12 col-lg-10 col-xl-8 ">
+            @if($app)
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Redirect URL</th>
+                            <th scope="col">Provider</th>
+                        </tr>
+                    </thead>
+
+            @foreach($apps as $app)
+                <tr>
+                    <td><a href="#">{{ $app->name }}</a></td>
+                    <td>{{ $app->redirect }}</td>
+                    <td>{{ $app->provider }}</td>
+                </tr>
+            @endforeach
+                </table>
+            @else
+                Du hast noch keine Apps angelegt
+            @endif
+            <!--
                 <div class="my-4">
-                    <h5 class="mb-0 mt-5">Notifications Settings</h5>
-                    <p>Select notification you want to receive</p>
-                    <hr class="my-4" />
                     <strong class="mb-0">Security</strong>
                     <p>Control security alert you will be notified.</p>
                     <div class="list-group mb-5 shadow">
@@ -91,6 +107,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            -->
         </div>
 @endsection

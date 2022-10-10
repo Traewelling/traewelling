@@ -29,7 +29,7 @@
             <div class="d-flex flex-column col-3 d-none d-md-flex"></div>
 
             <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
-                <a href="{{ route('admin.dashboard') }}"
+                <a href="{{ route('dashboard') }}"
                    class="justify-content-center mb-3 mx-auto text-white text-decoration-none">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                          class="brand-image me-3" style="width: 110px">
@@ -41,6 +41,7 @@
                             <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
                         </a>
                     </li>
+                    <!--
                     <li>
                         <a href="#"
                            class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
@@ -69,6 +70,7 @@
                             <span class="d-none d-lg-inline">Develop</span>
                         </a>
                     </li>
+                    -->
                     <li>
                         <a href="#"
                            class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
@@ -80,7 +82,19 @@
             </div>
 
             <div class="container-fluid bg-light px-5 pt-4 bg-light-gray" style="overflow-y: scroll !important;">
-                @yield('content')
+                <div class="row">
+                    <div class="col-12 col-lg-10 col-xl-8 ">
+                        <div class="my-4">
+                            <h4 class="mb-0 mt-5">@yield('title')</h4>
+                                <p>@yield('subtitle')</p>
+                                <span class="float-end">
+                                    @yield('additional-content-end')
+                                </span>
+                                <hr class="my-4"/>
+                            @yield('content')
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 

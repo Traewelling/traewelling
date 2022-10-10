@@ -43,7 +43,7 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
 Route::prefix('/dev')->group(function() {
-    Route::view('/', 'dev.apps')->name('dev.apps');
+    Route::get('/', [\App\Http\Controllers\Frontend\DevController::class, 'renderSettings'])->name('dev.apps');
 });
 
 Route::view('/about', 'about')->name('static.about');
