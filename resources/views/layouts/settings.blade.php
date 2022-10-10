@@ -25,9 +25,64 @@
     </head>
     <body>
         @include('includes.message-block')
-            <main class="bg-dark">
+        <main class="bg-dark">
+            <div class="d-flex flex-column col-3 d-none d-md-flex"></div>
+
+            <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="justify-content-center mb-3 mx-auto text-white text-decoration-none">
+                    <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
+                         class="brand-image me-3" style="width: 110px">
+                </a>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link text-muted">
+                            <i class="fas fa-backward me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
+                            <i class="fas fa-user me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Profil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
+                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Privacy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
+                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Zugänge</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
+                            <i class="fas fa-code me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Develop</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="container-fluid bg-light px-5 pt-4 bg-light-gray" style="overflow-y: scroll !important;">
                 @yield('content')
-            </main>
+            </div>
+        </main>
 
         <script>
             /**
