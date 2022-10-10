@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Transport;
 
 use App\Enum\Business;
+use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -38,10 +39,23 @@ class StatusController extends Controller
 
             if (isset($validated['destinationStopoverId'])
                 && $validated['destinationStopoverId'] != $status->trainCheckin->destination_stopover->id) {
-                TrainCheckinController::changeDestination(
+                $pointReason = TrainCheckinController::changeDestination(
                     checkin:                $status->trainCheckin,
                     newDestinationStopover: TrainStopover::findOrFail($validated['destinationStopoverId']),
                 );
+                $status->fresh();
+
+                return redirect()->route('statuses.get', ['id' => $status->id])
+                                 ->with('checkin-success', [
+                                     'reason'                  => 'status-updated',
+                                     'distance'                => $status->trainCheckin->distance,
+                                     'duration'                => $status->trainCheckin->duration,
+                                     'points'                  => $status->trainCheckin->points,
+                                     'lineName'                => $status->trainCheckin->HafasTrip->linename,
+                                     'alsoOnThisConnection'    => $status->trainCheckin->alsoOnThisConnection,
+                                     'event'                   => $status->trainCheckin->event,
+                                     'pointsCalculationReason' => $pointReason,
+                                 ]);
             }
 
             return redirect()->route('statuses.get', ['id' => $status->id])
