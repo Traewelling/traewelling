@@ -222,8 +222,7 @@ class EventController extends ResponseController
      *          description="successful operation",
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *       @OA\Response(response=403, description="User not authorized"),
      *       security={
      *           {"token": {}},
      *           {}

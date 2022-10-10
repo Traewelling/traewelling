@@ -269,11 +269,8 @@
                     "400": {
                         "description": "Bad request"
                     },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
                     "403": {
-                        "description": "User not authorized to manipulate this status"
+                        "description": "User not authorized"
                     }
                 },
                 "security": [
