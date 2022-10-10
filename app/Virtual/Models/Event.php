@@ -108,7 +108,10 @@ class Event
      * @OA\Property (
      *     title="station",
      *     description="nearest station for this event (nullable)",
-     *     nullable="true"
+     *     type="object",
+     *     nullable="true",
+     *     anyOf={@OA\Schema(ref="#/components/schemas/TrainStation"), @OA\Schema(type="'null'")}
+     *
      * )
      */
     private $station;
