@@ -43,7 +43,7 @@ class FrontendTransportController extends Controller
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
         $validated = $request->validate([
-                                            'station'    => ['required_without:ibnr', 'string'],
+                                            'station'    => ['required_without:ibnr'],
                                             'ibnr'       => ['required_without:station', 'numeric'],
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
