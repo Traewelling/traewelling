@@ -18,8 +18,8 @@ class TrainStationResource extends JsonResource
         return [
             "id"            => (int) $this->id,
             "name"          => $this->name,
-            "latitude"      => $this->latitude,
-            "longitude"     => $this->longitude,
+            "latitude"      => (float) $this->latitude,
+            "longitude"     => (float) $this->longitude,
             "ibnr"          => (int) $this->ibnr,
             "rilIdentifier" => $this->rilIdentifier
         ];
