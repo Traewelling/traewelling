@@ -40,7 +40,9 @@
                                            data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
                                             {{ __('settings.delete-account') }}
                                         </a>
-                                        <input type="submit" value="{{__('privacy.sign')}}" class="btn btn-success"/>
+                                        <button type="submit" class="btn btn-success">
+                                            {{__('privacy.sign')}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
