@@ -42,6 +42,10 @@ Route::get('/@{username}/picture', [ProfilePictureController::class, 'generatePr
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
+Route::prefix('/dev')->group(function() {
+    Route::view('/', 'dev.apps')->name('dev.apps');
+});
+
 Route::view('/about', 'about')->name('static.about');
 
 Route::permanentRedirect('/imprint', '/legal/');
