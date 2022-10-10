@@ -59,7 +59,7 @@
     "controller.status.like-deleted": "Like gelöscht.",
     "controller.status.like-not-found": "Like nicht gefunden.",
     "controller.status.like-ok": "Liked!",
-    "controller.status.not-permitted": "DAS darfst Du nicht.",
+    "controller.status.not-permitted": "Das darfst Du nicht.",
     "controller.transport.checkin-heading": "Eingecheckt",
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",

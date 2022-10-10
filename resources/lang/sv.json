@@ -36,7 +36,7 @@
     "controller.status.like-deleted": "Like raderats.",
     "controller.status.like-not-found": "Like hittades inte.",
     "controller.status.like-ok": "Liked!",
-    "controller.status.not-permitted": "DET får du inte.",
+    "controller.status.not-permitted": "Det får du inte.",
     "controller.transport.checkin-heading": "Checkat in",
     "controller.transport.checkin-ok": "Du har lyckats checka in på :lineName!|Du har lyckats checka in på tågförbindelsen :lineName!",
     "controller.transport.no-name-given": "Du måste ange ett stationsnamn!",

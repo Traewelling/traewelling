@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\Business;
+use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -21,6 +22,7 @@ use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -187,4 +189,34 @@ abstract class TrainCheckinController extends Controller
             throw $exception; // Other scenarios are not handled, so rethrow the exception
         }
     }
+
+    public static function changeDestination(TrainCheckin $checkin, TrainStopover $newDestinationStopover): PointReason {
+        if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
+            || $newDestinationStopover->is($checkin->origin_stopover)
+        ) {
+            throw new InvalidArgumentException();
+        }
+
+        $newDistance = GeoController::calculateDistance(
+            hafasTrip:   $checkin->HafasTrip,
+            origin:      $checkin->origin_stopover,
+            destination: $newDestinationStopover,
+        );
+
+        $pointsResource = PointsCalculationController::calculatePoints(
+            distanceInMeter: $newDistance,
+            hafasTravelType: $checkin->HafasTrip->category,
+            departure:       $checkin->origin_stopover->departure,
+            arrival:         $newDestinationStopover->arrival,
+        );
+
+        $checkin->update([
+                             'arrival'     => $newDestinationStopover->arrival_planned->toIso8601String(),
+                             'destination' => $newDestinationStopover->trainStation->ibnr,
+                             'points'      => $pointsResource['points'],
+                         ]);
+
+        return PointReason::tryFrom($pointsResource['calculation']['reason']);
+    }
+
 }

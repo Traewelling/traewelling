@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Support\SupportController;
+use App\Http\Controllers\Frontend\Transport\TrainCheckinController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -214,6 +215,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
          ->name('trains.checkin');
+
+    Route::post('/checkin/changeDestination', [TrainCheckinController::class, 'changeDestination'])
+         ->name('checkin.changeDestination');
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
