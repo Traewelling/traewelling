@@ -124,6 +124,4 @@ public/js/*.js.map
 public/js/*.js.LICENSE.txt
 public/css/*.css
 public/css/*.css.map
-!public/js/jQuery.js
-!public/js/test.js
 .phpunit.result.cache

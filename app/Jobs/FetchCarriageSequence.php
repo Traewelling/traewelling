@@ -9,10 +9,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class FetchCarriageSequence implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     private TrainStopover $stopover;
 
@@ -21,6 +22,10 @@ class FetchCarriageSequence implements ShouldQueue
     }
 
     public function handle(): void {
+        $this->queueData([
+                             "stopover" => $this->stopover->id,
+                             "for_trip" => $this->stopover->trip_id
+                         ]);
         CarriageSequenceController::fetchSequence($this->stopover);
     }
 }

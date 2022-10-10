@@ -26,9 +26,10 @@
                 </div>
             @endif
 
-            @include('includes.messages.mail-verification')
-            @include('includes.messages.checkin-success')
-
+            @if(!request()->routeIs('gdpr.intercept'))
+                @include('includes.messages.mail-verification')
+                @include('includes.messages.checkin-success')
+            @endif
             <div id="alert_placeholder"></div>
         </div>
     </div>

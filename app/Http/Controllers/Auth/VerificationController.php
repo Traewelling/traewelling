@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
@@ -53,11 +54,17 @@ class VerificationController extends Controller
         if ($request->user()->hasVerifiedEmail()) {
             return $request->wantsJson() ? new JsonResponse([], 204) : redirect($this->redirectPath());
         }
+        try {
+            $request->user()->sendEmailVerificationNotification();
 
-        $request->user()->sendEmailVerificationNotification();
+            return $request->wantsJson()
+                ? new JsonResponse([], 202)
+                : back()->with('success', __('email.verification.sent'));
 
-        return $request->wantsJson()
-            ? new JsonResponse([], 202)
-            : back()->with('success', __('email.verification.sent'));
+        } catch (RateLimitExceededException) {
+            return $request->wantsJson()
+                ? new JsonResponse([__('email.verification.too-many-requests')], 429)
+                : back()->with('error', __('email.verification.too-many-requests'));
+        }
     }
 }

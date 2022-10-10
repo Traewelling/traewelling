@@ -23,7 +23,7 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'event_id', 'visibility'];
+    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id'];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
     protected $casts    = [
@@ -32,6 +32,7 @@ class Status extends Model
         'business'   => Business::class,
         'visibility' => StatusVisibility::class,
         'event_id'   => 'integer',
+        'tweet_id'   => 'string',
     ];
 
     public function user(): BelongsTo {
