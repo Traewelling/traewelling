@@ -43,8 +43,8 @@ class FrontendTransportController extends Controller
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
         $validated = $request->validate([
-                                            'station'    => ['required'],
-                                            'station_id' => ['nullable', 'numeric'],
+                                            'station'    => ['required_without:ibnr', 'string'],
+                                            'ibnr'       => ['required_without:station', 'numeric'],
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
@@ -53,13 +53,13 @@ class FrontendTransportController extends Controller
 
         try {
             //Per default: Use the given station query for lookup
-            $searchQuery = $validated['station'];
+            $searchQuery = $validated['station'] ?? $validated['ibnr'];
 
             //If a station_id is given (=user is already on a stationboard) check if the user changed the query.
             //If so: Use the given station string. Otherwise, use the station_id for lookup.
             //This is to prevent that HAFAS fuzzy search return other stations (e.g. "Bern, Hauptbahnhof", Issue 1082)
-            if (isset($validated['station_id'])) {
-                $station = HafasController::getTrainStation($validated['station_id']);
+            if (isset($validated['ibnr']) && $searchQuery !== $validated['ibnr']) {
+                $station = HafasController::getTrainStation($validated['ibnr']);
                 if ($station->name === $validated['station']) {
                     $searchQuery = $station->ibnr;
                 }

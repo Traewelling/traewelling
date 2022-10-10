@@ -12,7 +12,7 @@
                 <input type="hidden" name="when" value="{{request()->when}}"/>
             @endisset
             @isset($station)
-                <input type="hidden" name="station_id" value="{{$station->ibnr}}"/>
+                <input type="hidden" name="ibnr" value="{{$station->ibnr}}"/>
             @endisset
 
             <div id="station-autocomplete-container" style="z-index: 3;">
