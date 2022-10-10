@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
@@ -42,8 +43,12 @@ class SettingsController extends Controller
         auth()->user()->update($validated);
 
         if (!auth()->user()->hasVerifiedEmail()) {
-            auth()->user()->sendEmailVerificationNotification();
-            session()->flash('info', __('email.verification.sent'));
+            try {
+                auth()->user()->sendEmailVerificationNotification();
+                session()->flash('info', __('email.verification.sent'));
+            } catch (RateLimitExceededException) {
+                session()->flash('error', __('email.verification.too-many-requests'));
+            }
         }
 
         return back();
