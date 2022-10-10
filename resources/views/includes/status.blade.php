@@ -1,6 +1,12 @@
-<div class="card status mb-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
+<div class="card status mb-3" id="status-{{ $status->id }}"
+     data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
+     data-trwl-business-id="{{ $status->business->value }}"
+     data-trwl-visibility="{{ $status->visibility->value }}"
+     @if(auth()->check() && auth()->id() === $status->user_id)
+         data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
+     data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+    @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
         <div class="card-img-top">
@@ -114,16 +120,9 @@
                         @endif
                     </span>
                     <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
-                       class="text-trwl">
+                       class="text-trwl clearfix">
                         {{$status->trainCheckin->Destination->name}}
                     </a>
-
-                    @if(auth()->check() && $status->user_id === auth()->id())
-                        <a href="javascript:void(0)" data-mdb-toggle="modal"
-                           data-mdb-target="#changeDestination-{{$status->id}}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                        </a>
-                    @endif
                 </li>
             </ul>
         </div>
@@ -222,42 +221,3 @@
         @endforeach
     @endif
 </div>
-
-
-@if(auth()->check() && $status->user_id === auth()->id())
-    <div class="modal fade" id="changeDestination-{{$status->id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Neuen Ausstieg auswählen</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form method="POST" action="{{route('checkin.changeDestination')}}">
-                    @csrf
-                    <input type="hidden" name="checkin_id" value="{{$status->trainCheckin->id}}"/>
-
-                    <div class="modal-body">
-                        <select class="form-control" name="stopover_id" required>
-                            <option value="">bitte wählen</option>
-                            @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
-                                @if($stopover->arrival_planned->isBefore($status->trainCheckin->departure) || $stopover->is($status->trainCheckIn->origin_stopover))
-                                    @continue
-                                @endif
-                                <option value="{{$stopover->id}}">
-                                    {{$stopover->arrival->format('H:i')}} Uhr:
-                                    {{$stopover->trainStation->name}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary">Ändern</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endif

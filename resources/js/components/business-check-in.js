@@ -1,9 +1,3 @@
-let statusBusiness;
-let statusVisibility;
-let statusBody;
-let statusId          = 0;
-let statusBodyElement = $("#status-body");
-
 let businessCheckInput  = $("#business_check");
 let businessButton      = $("#businessDropdownButton");
 const businessIcons     = ["fa-user", "fa-briefcase", "fa-building"];
@@ -32,31 +26,37 @@ $(".trwl-visibility-item").on("click", function (event) {
 $(document).on("click", ".edit", function (event) {
     event.preventDefault();
 
-    statusId         = event.currentTarget.dataset.trwlStatusId;
-    statusBody       = document.getElementById("status-" + statusId).dataset.trwlStatusBody;
-    statusBusiness   = document.getElementById("status-" + statusId).dataset.trwlBusinessId;
-    statusVisibility = document.getElementById("status-" + statusId).dataset.trwlVisibility;
-    statusBodyElement.val(statusBody);
+    let statusId = event.currentTarget.dataset.trwlStatusId;
+    let dataset  = document.getElementById("status-" + statusId).dataset;
+
+    document.querySelector("#status-update input[name='statusId']").value = statusId;
+    document.querySelector("#status-update textarea[name='body']").value  = dataset.trwlStatusBody;
+
+    let statusBusiness   = dataset.trwlBusinessId;
+    let statusVisibility = dataset.trwlVisibility;
     businessCheckInput.val(statusBusiness);
     visibilityFormInput.val(statusVisibility);
     setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
+
+    let alternativeDestinations = JSON.parse(dataset.trwlAlternativeDestinations);
+    if (alternativeDestinations) {
+        document.querySelector('#status-update .destination-wrapper').classList.remove('d-none');
+        for (let destId in alternativeDestinations) {
+            let dest            = alternativeDestinations[destId];
+            let stopoverId      = dest.id;
+            let stopoverName    = dest.name;
+            let stopoverArrival = dest.arrival_planned;
+
+            let stopoverOption   = document.createElement("option");
+            stopoverOption.value = stopoverId;
+            stopoverOption.text  = stopoverArrival + ': ' + stopoverName;
+            document.querySelector("#status-update select[name='destinationStopoverId']").appendChild(stopoverOption);
+        }
+        document.querySelector("#status-update select[name='destinationStopoverId']").value = dataset.trwlDestinationStopover;
+    }
+
+
     $("#edit-modal").modal("show");
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
-});
-
-$(document).on("click", "#modal-trwl-edit-save", function () {
-    $.ajax({
-        method: "POST",
-        url: urlEdit,
-        data: {
-            body: statusBodyElement.val(),
-            statusId: statusId,
-            business_check: businessCheckInput.val(),
-            checkinVisibility: visibilityFormInput.val(),
-            _token: token
-        }
-    }).done(function (msg) {
-        window.location.reload();
-    });
 });

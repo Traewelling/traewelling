@@ -193,6 +193,7 @@ abstract class TrainCheckinController extends Controller
     public static function changeDestination(TrainCheckin $checkin, TrainStopover $newDestinationStopover): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
             || $newDestinationStopover->is($checkin->origin_stopover)
+            || !$checkin->HafasTrip->stopoversNEW->contains('id', $newDestinationStopover->id)
         ) {
             throw new InvalidArgumentException();
         }
