@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\NotConnectedException;
@@ -14,8 +15,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
-use App\Jobs\PostStatusOnMastodon;
-use App\Jobs\PostStatusOnTwitter;
 use App\Jobs\FetchCarriageSequence;
 use App\Models\Event;
 use App\Models\HafasTrip;
@@ -85,15 +84,9 @@ abstract class TrainCheckinController extends Controller
                 force:       $force,
             );
 
-            PostStatusOnTwitter::dispatchIf($postOnTwitter
-                                            && $user?->socialProfile?->twitter_id !== null
-                                            && config('trwl.post_social') === true,
-                                            $status);
-
-            PostStatusOnMastodon::dispatchIf($postOnMastodon
-                                             && $user->socialProfile?->mastodon_id
-                                             && config('trwl.post_social') === true,
-                                             $status);
+            UserCheckedIn::dispatch($status,
+                                    $postOnTwitter && $user?->socialProfile?->twitter_id !== null && config('trwl.post_social') === true,
+                                    $postOnMastodon && $user?->socialProfile?->mastodon_id !== null && config('trwl.post_social') === true);
 
             return $trainCheckinResponse;
         } catch (Exception $exception) {
