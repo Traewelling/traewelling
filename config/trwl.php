@@ -38,5 +38,6 @@ return [
     'cache'             => [
         'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),
         'leaderboard-retention-seconds' => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
-    ]
+    ],
+    'rights-claim-delay-minimum' => 60,
 ];

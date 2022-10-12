@@ -413,6 +413,7 @@
     "status.visibility.3.detail": "Only visible for you",
     "status.visibility.4": "Only logged-in users",
     "status.visibility.4.detail": "Only visible for logged-in users",
+    "status.get-rights-claim-form": "Generate Passenger Rights Claim Form",
     "transport_types.bus": "bus",
     "transport_types.business": "Business Trip",
     "transport_types.businessPlural": "Business Trips",

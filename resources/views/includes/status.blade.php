@@ -99,6 +99,15 @@
                             </a>
                         </p>
                     @endif
+
+                    @if(auth()->user()->can('update', $status) && $status->trainCheckin->isDestinationDelayedEnoughForRightsClaim)
+                        <p>
+                            <a class="btn" href="{{ route('export.rights-claim', ["id" => $status?->id]) }}">
+                                <i class="fa-solid fa-file-circle-exclamation pe-2"></i>
+                                {{ __('status.get-rights-claim-form') }}
+                            </a>
+                        </p>
+                    @endif
                 </li>
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>

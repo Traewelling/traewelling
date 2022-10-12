@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -139,5 +140,16 @@ class TrainCheckin extends Model
                    ->filter(function($status) {
                        return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
                    });
+    }
+
+    public function getIsDestinationDelayedEnoughForRightsClaimAttribute(): bool {
+        if (!$this->destination_stopover->isArrivalDelayed) {
+            return false;
+        }
+
+        $diffInMinutes = (new Carbon($this->destination_stopover->arrival_real))
+            ->diffInMinutes(new Carbon($this->destination_stopover->arrival_planned));
+
+        return $diffInMinutes >= config('trwl.rights-claim-delay-minimum');
     }
 }
