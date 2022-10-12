@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Backend\Export\RightsClaimFormController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
@@ -189,6 +190,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::prefix('export')->group(function() {
         Route::get('/', [ExportController::class, 'renderForm'])->name('export.landing');
         Route::get('/generate', [ExportController::class, 'renderExport'])->name('export.generate');
+        Route::get('/rights-claim/{id}', [RightsClaimFormController::class, 'render'])->name('export.rights-claim');
     });
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])

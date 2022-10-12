@@ -1,0 +1,371 @@
+--- Result of `pdftk fahrgastrechteformular.pdf dump_data_fields > fahrgastrechteformular-datafields.txt`
+--- Just for documentation, is not saved anywhere.
+
+---
+FieldType: Text
+FieldName: S1F1
+FieldNameAlt: Reisedatum Tag (TT)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F2
+FieldNameAlt: Reisedatum Monat (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F3
+FieldNameAlt: Reisedatum Jahr (JJ)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F4
+FieldNameAlt: Startbahnhof
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 26
+---
+FieldType: Text
+FieldName: S1F5
+FieldNameAlt: Abfahrt laut Fahrplan Stunde (HH)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F6
+FieldNameAlt: Abfahrt laut Fahrplan Minute (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F7
+FieldNameAlt: Zielbahnhof
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 26
+---
+FieldType: Text
+FieldName: S1F8
+FieldNameAlt: Ankunftszeit laut Fahrplan Stunde (HH)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F9
+FieldNameAlt: Ankunftszeit laut Fahrplan Minute (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F10
+FieldNameAlt: Ankunftsdatum Tag (TT)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F11
+FieldNameAlt: Ankunftsdatum Monat (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F12
+FieldNameAlt: Ankunftsdatum Jahr (JJ)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F13
+FieldNameAlt: Angekommen bin ich mit Zug &#8211; Zugart (ICE/IC/RE/RB etc.)
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 3
+---
+FieldType: Text
+FieldName: S1F14
+FieldNameAlt: Angekommen bin ich mit Zug &#8211; Zugnummer
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: S1F15
+FieldNameAlt: tats&#228;chliche Ankunft Stunde (HH)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F16
+FieldNameAlt: tats&#228;chliche Ankunft Minute (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F17
+FieldNameAlt: Erster versp&#228;teter/ausgefallener Zug &#8211; Zugart (ICE/IC/RE/RB etc.)
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 3
+---
+FieldType: Text
+FieldName: S1F18
+FieldNameAlt: Erster versp&#228;teter/ausgefallener Zug &#8211; Zugnummer
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: S1F19
+FieldNameAlt: Erster versp&#228;teter/ausgefallener Zug &#8211; Abfahrt laut Fahrplan Stunde (HH)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S1F20
+FieldNameAlt: Erster versp&#228;teter/ausgefallener Zug &#8211; Abfahrt laut Fahrplan Minute (MM)
+FieldFlags: 29360130
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Button
+FieldName: S1F21
+FieldNameAlt: Ich habe den Anschlusszug verpasst im Bahnhof
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Ja
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S1F22
+FieldNameAlt: Bahnhofsname
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 14
+---
+FieldType: Button
+FieldName: S1F23
+FieldNameAlt: Der letzte Umstieg erfolgte im Bahnhof
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Ja
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S1F24
+FieldNameAlt: Bahnhofsname
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 14
+---
+FieldType: Button
+FieldName: S1F25
+FieldNameAlt: Ich habe meine Reise wegen dieser Versp&#228;tung nicht angetreten oder habe sie im nachfolgenden Bahnhof abgebrochen (und bin gegebenenfalls zur&#252;ckgefahren) bitte Originalbelege beif&#252;gen
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Ja
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S1F26
+FieldNameAlt: Bahnhofsname
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 14
+---
+FieldType: Button
+FieldName: S1F27
+FieldNameAlt: Ich habe meine Reise wegen dieser Versp&#228;tung im nachfolgenden Bahnhof unterbrochen und musste mit einem anderen Verkehrsmittel/Zug weiterfahren, f&#252;r das/den zus&#228;tzliche Kosten entstanden sind &#8211; bitte Originalbelege beif&#252;gen
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Ja
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S1F28
+FieldNameAlt: Bahnhofsname
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 14
+---
+FieldType: Button
+FieldName: S1F29
+FieldFlags: 49152
+FieldValue: null
+FieldJustification: Left
+FieldStateOption: Auszahlung oder &#220;berweisung
+FieldStateOption: Gutschein
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S2F20
+FieldNameAlt: Kontoinhaber (Name, Vorname)
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 37
+---
+FieldType: Text
+FieldName: S2F21
+FieldNameAlt: IBAN
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 34
+---
+FieldType: Text
+FieldName: S2F22
+FieldNameAlt: BIC
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 11
+---
+FieldType: Button
+FieldName: S2F1
+FieldFlags: 49154
+FieldValue: null
+FieldJustification: Left
+FieldStateOption: Frau
+FieldStateOption: Herr
+FieldStateOption: Off
+---
+FieldType: Text
+FieldName: S2F2
+FieldNameAlt: Titel
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 10
+---
+FieldType: Text
+FieldName: S2F3
+FieldNameAlt: Firma
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 37
+---
+FieldType: Text
+FieldName: S2F4
+FieldNameAlt: Name (Nachname)
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 18
+---
+FieldType: Text
+FieldName: S2F5
+FieldNameAlt: Vorname
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 18
+---
+FieldType: Text
+FieldName: S2F6
+FieldNameAlt: c/o (wohnhaft bei) oder Adresszusatz
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 18
+---
+FieldType: Text
+FieldName: S2F7
+FieldNameAlt: Telefonnummer (f&#252;r R&#252;ckfragen)
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 18
+---
+FieldType: Text
+FieldName: S2F8
+FieldNameAlt: Stra&#223;e
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 32
+---
+FieldType: Text
+FieldName: S2F9
+FieldNameAlt: Hausnummer
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 4
+---
+FieldType: Text
+FieldName: S2F10
+FieldNameAlt: Staat (wenn nicht D)
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 3
+---
+FieldType: Text
+FieldName: S2F11
+FieldNameAlt: PLZ
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 5
+---
+FieldType: Text
+FieldName: S2F12
+FieldNameAlt: Wohnort
+FieldFlags: 29360130
+FieldJustification: Left
+FieldMaxLength: 23
+---
+FieldType: Button
+FieldName: S2F13
+FieldFlags: 49152
+FieldValue: null
+FieldJustification: Left
+FieldStateOption: BahnCard 100-Nr.
+FieldStateOption: Off
+FieldStateOption: Zeitkarten-Nr.
+---
+FieldType: Text
+FieldName: S2F15
+FieldNameAlt: BahnCard 100-/Zeitkarten-Nr.
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 18
+---
+FieldType: Text
+FieldName: S2F16
+FieldNameAlt: Geburtsdatum Tag (TT)
+FieldFlags: 29360128
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S2F17
+FieldNameAlt: Geburtsdatum Monat (MM)
+FieldFlags: 29360128
+FieldJustification: Right
+FieldMaxLength: 2
+---
+FieldType: Text
+FieldName: S2F18
+FieldNameAlt: Geburtsdatum Jahr (JJJJ)
+FieldFlags: 29360128
+FieldJustification: Right
+FieldMaxLength: 4
+---
+FieldType: Text
+FieldName: S2F19
+FieldNameAlt: E-Mail Adresse
+FieldFlags: 29360128
+FieldJustification: Left
+FieldMaxLength: 37
+---
+FieldType: Button
+FieldName: S2F23
+FieldNameAlt: Ich bin einverstanden, dass meine Kontaktdaten f&#252;r Marktforschungen im Zusammenhang mit den Fahrgastrechten verwendet anonymisiert genutzt werden (bei Zustimmung bitte ankreuzen)
+FieldFlags: 0
+FieldJustification: Left
+FieldStateOption: Ja
+FieldStateOption: Off
