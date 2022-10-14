@@ -34,5 +34,9 @@ return [
     ],
     'refresh'           => [
         'max_trips_per_minute' => env('REFRESH_TRIPS_PER_MINUTE', 1)
+    ],
+    'cache'             => [
+        'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),
+        'leaderboard-retention-seconds' => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
     ]
 ];

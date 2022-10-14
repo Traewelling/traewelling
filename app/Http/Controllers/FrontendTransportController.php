@@ -43,7 +43,8 @@ class FrontendTransportController extends Controller
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
         $validated = $request->validate([
-                                            'station'    => ['required'],
+                                            'station'    => ['required_without:ibnr'],
+                                            'ibnr'       => ['required_without:station', 'numeric'],
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
@@ -51,10 +52,29 @@ class FrontendTransportController extends Controller
         $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
 
         try {
-            $TrainStationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $validated['station'],
+            //Per default: Use the given station query for lookup
+            $searchQuery = $validated['station'] ?? $validated['ibnr'];
+
+            //If a station_id is given (=user is already on a stationboard) check if the user changed the query.
+            //If so: Use the given station string. Otherwise, use the station_id for lookup.
+            //This is to prevent that HAFAS fuzzy search return other stations (e.g. "Bern, Hauptbahnhof", Issue 1082)
+            if (isset($validated['ibnr']) && $searchQuery !== $validated['ibnr']) {
+                $station = HafasController::getTrainStation($validated['ibnr']);
+                if ($station->name === $validated['station']) {
+                    $searchQuery = $station->ibnr;
+                }
+            }
+            $stationboardResponse = TransportBackend::getDepartures(
+                stationQuery: $searchQuery,
                 when:         $when,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+            );
+            return view('stationboard', [
+                                          'station'    => $stationboardResponse['station'],
+                                          'departures' => $stationboardResponse['departures'],
+                                          'times'      => $stationboardResponse['times'],
+                                          'latest'     => TransportController::getLatestArrivals(Auth::user())
+                                      ]
             );
         } catch (HafasException $exception) {
             report($exception);
@@ -62,15 +82,6 @@ class FrontendTransportController extends Controller
         } catch (ModelNotFoundException) {
             return redirect()->back()->with('error', __('controller.transport.no-station-found'));
         }
-
-        return view('stationboard', [
-                                      'station'    => $TrainStationboardResponse['station'],
-                                      'departures' => $TrainStationboardResponse['departures'],
-                                      'times'      => $TrainStationboardResponse['times'],
-                                      'request'    => $request,
-                                      'latest'     => TransportController::getLatestArrivals(Auth::user())
-                                  ]
-        );
     }
 
     public function StationByCoordinates(Request $request): RedirectResponse {
@@ -121,7 +132,7 @@ class FrontendTransportController extends Controller
 
         // Find out where this train terminates and offer this as a "fast check-in" option.
         $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while ($terminalStopIndex >= 1 && @$TrainTripResponse['stopovers'][$terminalStopIndex]['cancelled'] == true) {
+        while ($terminalStopIndex >= 1 && @$this->isCancelled($TrainTripResponse['stopovers'][$terminalStopIndex])) {
             $terminalStopIndex--;
         }
         $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
@@ -224,5 +235,9 @@ class FrontendTransportController extends Controller
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
+    }
+
+    private function isCancelled(mixed $param): bool {
+        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
     }
 }

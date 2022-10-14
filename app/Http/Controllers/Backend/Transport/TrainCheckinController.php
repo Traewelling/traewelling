@@ -10,8 +10,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\Social\MastodonController;
-use App\Http\Controllers\Backend\Social\TwitterController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
@@ -86,12 +84,11 @@ abstract class TrainCheckinController extends Controller
                 force:       $force,
             );
 
-            if ($postOnTwitter && $user->socialProfile?->twitter_id !== null) {
-                TwitterController::postStatus($status);
-            }
-            if ($postOnMastodon && $user->socialProfile?->mastodon_id !== null) {
-                MastodonController::postStatus($status);
-            }
+            UserCheckedIn::dispatch(
+                $status,
+                $postOnTwitter && $user->socialProfile?->twitter_id !== null && config('trwl.post_social') === true,
+                $postOnMastodon && $user->socialProfile?->mastodon_id !== null && config('trwl.post_social') === true,
+            );
 
             return $trainCheckinResponse;
         } catch (Exception $exception) {

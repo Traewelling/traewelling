@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Events\UserCheckedIn;
+use App\Jobs\PostStatusOnMastodon;
+use App\Jobs\PostStatusOnTwitter;
 use App\Listeners\SendStatusWebhook;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,7 +23,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserCheckedIn::class => [
             SendStatusWebhook::class,
-        ]
+        ],
     ];
 
     /**
@@ -30,5 +33,11 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void {
         parent::boot();
+
+        // Dispatch Jobs from Events
+        Event::listen(fn(UserCheckedIn $event)
+            => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
+        Event::listen(fn(UserCheckedIn $event)
+            => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status));
     }
 }

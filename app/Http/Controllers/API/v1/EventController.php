@@ -21,6 +21,40 @@ use Intervention\Image\Commands\ResponseCommand;
 class EventController extends ResponseController
 {
     /**
+     * @OA\Get(
+     *      path="/event/{slug}",
+     *      operationId="getEvent",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get basic information for event",
+     *      description="Returns slug, name and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                      ref="#/components/schemas/Event"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     *
      * Returns model of Event
      *
      * @param string $slug
@@ -33,6 +67,39 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Get(
+     *      path="/event/{slug}/details",
+     *      operationId="getEventDetails",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get additional information for event",
+     *      description="Returns overall travelled distance and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                      ref="#/components/schemas/EventDetails"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
      * Returns stats for event
      *
      * @param string $slug
@@ -45,6 +112,47 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Get(
+     *      path="/event/{slug}/statuses",
+     *      operationId="getEventStatuses",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Get paginated statuses for event",
+     *      description="Returns all for user visible statuses for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *     @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Status"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * Returns paginated statuses for user
      *
      * @param string $slug
@@ -57,6 +165,40 @@ class EventController extends ResponseController
     }
 
     /**
+     *  @OA\Get(
+     *      path="/events",
+     *      operationId="getUpcomingEvent",
+     *      tags={"Events"},
+     *      summary="[Auth optional] Shows upcoming events with basic information",
+     *      description="Returns slug, name and duration for an event",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Event"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * Returns upcoming events
      */
     public function upcoming(): AnonymousResourceCollection {
@@ -65,6 +207,29 @@ class EventController extends ResponseController
     }
 
     /**
+     * @OA\Post(
+     *      path="/event",
+     *      operationId="suggestEvent",
+     *      tags={"Events"},
+     *      summary="Suggest a event",
+     *      description="Submit a possible event for our administrators to publish",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/EventSuggestion")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
      * @param Request $request
      *
      * @return JsonResponse

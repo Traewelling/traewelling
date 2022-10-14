@@ -42,6 +42,10 @@ namespace App\Http\Controllers\API\v1;
  *     name="Status",
  *     description="Endpoints for accessing and manipulating Statusses and their additional data"
  * )
+ * @OA\Tag(
+ *     name="Events",
+ *     description="Events that users can check in to"
+ * )
  */
 class Controller
 {

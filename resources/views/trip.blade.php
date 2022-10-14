@@ -27,7 +27,7 @@
                             <a href="#" class="train-destinationrow"
                                data-ibnr="{{$terminalStop['stop']['id']}}"
                                data-stopname="{{$terminalStop['stop']['name']}}"
-                               data-arrival="{{$terminalStop['plannedArrival']}}">
+                               data-arrival="{{$terminalStop['plannedArrival'] ?? $terminalStop['plannedDeparture']}}">
                                 <i class="fa fa-fast-forward"></i>
                             </a>
                         </div>
@@ -72,7 +72,7 @@
                                         <tr class="train-destinationrow"
                                             data-ibnr="{{$stop['stop']['id']}}"
                                             data-stopname="{{$stop['stop']['name']}}"
-                                            data-arrival="{{$stop['plannedArrival']}}">
+                                            data-arrival="{{$stop['plannedArrival'] ?? $stop['plannedDeparture']}}">
                                             <td>{{ $stop['stop']['name'] }}</td>
                                             <td>
                                                 @if(!(isset($stop['cancelled']) && $stop['arrival'] == null) && $stop['plannedArrival'] != null)

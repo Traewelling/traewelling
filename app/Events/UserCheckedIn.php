@@ -3,28 +3,29 @@
 namespace App\Events;
 
 use App\Models\Status;
-use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UserCheckedIn
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private User   $user;
-    private Status $status;
+    public Status $status;
+    public bool   $shouldPostOnTwitter;
+    public bool   $shouldPostOnMastodon;
 
-    public function __construct(User $user, Status $status) {
-        $this->user   = $user;
-        $this->status = $status;
-    }
+    /**
+     * @param Status $status               The Status that was just checked in.
+     * @param bool   $shouldPostOnTwitter  Whether this Checkin should be posted on Twitter.
+     * @param bool   $shouldPostOnMastodon Whether this Checkin should be posted on Mastodon.
+     */
+    public function __construct(Status $status, bool $shouldPostOnTwitter, bool $shouldPostOnMastodon) {
+        $this->status               = $status;
+        $this->shouldPostOnTwitter  = $shouldPostOnTwitter;
+        $this->shouldPostOnMastodon = $shouldPostOnMastodon;
 
-    public function getUser(): User {
-        return $this->user;
-    }
-
-    public function getStatus(): Status {
-        return $this->status;
+        Log::info("Dispatching UserCheckedIn event for status#" . $status->id);
     }
 }

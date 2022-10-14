@@ -18,11 +18,269 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://my-default-host.com",
             "description": "This instance"
         }
     ],
     "paths": {
+        "/event/{slug}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get basic information for event",
+                "description": "Returns slug, name and duration for an event",
+                "operationId": "getEvent",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/event/{slug}/details": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get additional information for event",
+                "description": "Returns overall travelled distance and duration for an event",
+                "operationId": "getEventDetails",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/EventDetails"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/event/{slug}/statuses": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Get paginated statuses for event",
+                "description": "Returns all for user visible statuses for an event",
+                "operationId": "getEventStatuses",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "[Auth optional] Shows upcoming events with basic information",
+                "description": "Returns slug, name and duration for an event",
+                "operationId": "getUpcomingEvent",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/event": {
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Suggest a event",
+                "description": "Submit a possible event for our administrators to publish",
+                "operationId": "suggestEvent",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventSuggestion"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/statuses/{id}/likedby": {
             "get": {
                 "tags": [
@@ -457,7 +715,7 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "[Auth optional] Get single statuses",
+                "summary": "[Auth optional] Get GeoJSON for statuses",
                 "description": "Returns GeoJSON for all requested status IDs",
                 "operationId": "getPolylines",
                 "parameters": [
@@ -491,6 +749,59 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/stopovers/{ids}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get stopovers for statuses",
+                "description": "Returns all underway-stops for stations",
+                "operationId": "getStopOvers",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "comma seperated trip IDs",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1,2"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Stopovers"
                                         }
                                     },
                                     "type": "object"
@@ -572,12 +883,100 @@
                     "station": {
                         "title": "station",
                         "description": "nearest station for this event (nullable)",
-                        "nullable": "true"
+                        "type": "object",
+                        "nullable": "true",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/TrainStation"
+                            },
+                            {
+                                "type": "'null'"
+                            }
+                        ]
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "Event"
+                }
+            },
+            "EventDetails": {
+                "title": "EventDetails",
+                "description": "Statistics/Details for Event",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 39
+                    },
+                    "slug": {
+                        "title": "slug",
+                        "description": "URL-Slug for event",
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "Total travelled distance for this event in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 627675656
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "Total travelled duration for this event in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 591443
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "EventDetails"
+                }
+            },
+            "EventSuggestion": {
+                "title": "EventSuggestion",
+                "description": "Fields for suggesting an event",
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "name of the event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Eröffnung der Nebenbahn in Knuffingen"
+                    },
+                    "host": {
+                        "title": "host",
+                        "description": "host of the event",
+                        "type": "string",
+                        "example": "MiWuLa",
+                        "nullable": true
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
+                        "nullable": true
+                    },
+                    "begin": {
+                        "title": "begin",
+                        "description": "Timestamp for the start of the event",
+                        "example": "2022-06-01T00:00:00+02:00"
+                    },
+                    "end": {
+                        "title": "end",
+                        "description": "Timestamp for the end of the event",
+                        "example": "2022-08-31T23:59:00+02:00"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "EventSuggestion"
                 }
             },
             "Links": {
@@ -788,6 +1187,23 @@
                     "name": "Status"
                 }
             },
+            "Stopovers": {
+                "title": "Stopovers",
+                "description": "Stopovers of a single status",
+                "properties": {
+                    "1": {
+                        "description": "Array of stopovers. Key describes trip id",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TrainStopover"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Stopovers"
+                }
+            },
             "SuccessResponse": {
                 "title": "SuccessResponse",
                 "description": "Success Response",
@@ -885,6 +1301,55 @@
                 "type": "object",
                 "xml": {
                     "name": "Train"
+                }
+            },
+            "TrainStation": {
+                "title": "TrainStation",
+                "description": "train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": "4711"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "title": "latitude",
+                        "description": "latitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "48.991591"
+                    },
+                    "longitude": {
+                        "title": "longitude",
+                        "description": "longitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "8.400538"
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainStation"
                 }
             },
             "TrainStopover": {
@@ -1198,6 +1663,10 @@
         {
             "name": "Status",
             "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+        },
+        {
+            "name": "Events",
+            "description": "Events that users can check in to"
         }
     ]
 }
