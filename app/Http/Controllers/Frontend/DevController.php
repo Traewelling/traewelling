@@ -21,9 +21,16 @@ class DevController extends Controller
         ]);
     }
 
-    public function renderAppUpdate(): Renderable {
+    public function renderAppUpdate(int $appId): Renderable {
+        $clients = new ClientRepository();
+        $app = $clients->findForUser($appId, auth()->user()->id);
+
+        if (!$app) {
+            abort(404);
+        }
         return view('dev.apps-edit', [
             'title' => 'Anwendung bearbeiten', //ToDo Übersetzen
+            'app' => $app,
         ]);
     }
 

@@ -16,7 +16,7 @@
 
             @foreach($apps as $app)
                 <tr>
-                    <td><a href="#">{{ $app->name }}</a></td>
+                    <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
                     <td>{{ $app->redirect }}</td>
                     <td>{{ $app->provider }}</td>
                 </tr>
