@@ -73,6 +73,7 @@ class TrainCheckin extends Model
                                                   ->where('departure_planned', $this->departure)
                                                   ->first();
         if ($stopOver == null) {
+            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
             $stopOver = TrainStopover::updateOrCreate(
                 [
                     "trip_id"          => $this->trip_id,

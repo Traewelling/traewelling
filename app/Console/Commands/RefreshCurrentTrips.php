@@ -73,9 +73,9 @@ class RefreshCurrentTrips extends Command
                     $payload[] = [
                         'trip_id'           => $rawHafas->id,
                         'train_station_id'  => $stop->id,
-                        'arrival_planned'   => $arrivalPlanned->toDateTimeString(),
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned?->toDateTimeString() : $departurePlanned?->toDateTimeString(),
                         'arrival_real'      => $arrivalReal->toDateTimeString(),
-                        'departure_planned' => $departurePlanned->toDateTimeString(),
+                        'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned?->toDateTimeString() : $arrivalPlanned?->toDateTimeString(),
                         'departure_real'    => $departureReal->toDateTimeString(),
                     ];
                 }
@@ -87,7 +87,7 @@ class RefreshCurrentTrips extends Command
                 );
 
                 $this->info('Updated ' . $res . ' rows.');
-                
+
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
                     $this->warn('-> Skipping, due to integrity constraint violation');
