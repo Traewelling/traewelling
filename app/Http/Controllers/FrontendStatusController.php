@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
@@ -23,7 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 
 /**

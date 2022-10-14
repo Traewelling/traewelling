@@ -23,7 +23,6 @@ use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
-use App\Http\Controllers\Frontend\Transport\TrainCheckinController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
