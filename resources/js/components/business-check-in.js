@@ -44,7 +44,7 @@ $(document).on("click", ".edit", function (event) {
 
     let alternativeDestinations = JSON.parse(dataset.trwlAlternativeDestinations);
     if (alternativeDestinations) {
-        document.querySelector('#status-update .destination-wrapper').classList.remove('d-none');
+        document.querySelector('.destination-wrapper').classList.remove('d-none');
         for (let destId in alternativeDestinations) {
             let dest            = alternativeDestinations[destId];
             let stopoverId      = dest.id;
@@ -57,8 +57,9 @@ $(document).on("click", ".edit", function (event) {
             document.querySelector("#status-update select[name='destinationStopoverId']").appendChild(stopoverOption);
         }
         document.querySelector("#status-update select[name='destinationStopoverId']").value = dataset.trwlDestinationStopover;
+    } else {
+        document.querySelector('.destination-wrapper').classList.add('d-none');
     }
-
 
     $("#edit-modal").modal("show");
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;

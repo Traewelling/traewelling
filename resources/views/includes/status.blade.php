@@ -5,7 +5,7 @@
      data-trwl-visibility="{{ $status->visibility->value }}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
-     data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+         data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
