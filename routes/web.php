@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
 use App\Http\Controllers\Frontend\IcsController;
@@ -43,7 +44,11 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
 Route::prefix('/dev')->group(function() {
-    Route::get('/', [\App\Http\Controllers\Frontend\DevController::class, 'renderSettings'])->name('dev.apps');
+    Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+    Route::get('/apps/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
+    Route::get('/apps/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
+    Route::post('/apps/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
+    Route::post('/apps', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
 });
 
 Route::view('/about', 'about')->name('static.about');

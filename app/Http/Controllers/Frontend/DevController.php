@@ -10,7 +10,7 @@ use Laravel\Passport\ClientRepository;
 
 class DevController extends Controller
 {
-    public function renderSettings(): Renderable {
+    public function renderAppList(): Renderable {
         $clients = new ClientRepository();
 
         $userId = request()->user()->getAuthIdentifier();
@@ -20,4 +20,18 @@ class DevController extends Controller
             //'apps' => SessionController::index(user: auth()->user()),
         ]);
     }
+
+    public function renderAppUpdate(): Renderable {
+        return view('dev.apps-edit', [
+            'title' => 'Anwendung bearbeiten', //ToDo Übersetzen
+        ]);
+    }
+
+    public function renderAppCreate(): Renderable {
+        return view('dev.apps-edit', [
+            'title' => 'Anwendung erstellen', //ToDo Übersetzen
+        ]);
+    }
+
+
 }
