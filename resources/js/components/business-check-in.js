@@ -39,6 +39,9 @@ $(document).on("click", ".edit", function (event) {
     setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 
+    //Clear list
+    document.querySelector("#status-update select[name='destinationStopoverId']").innerHTML = "";
+
     let alternativeDestinations = JSON.parse(dataset.trwlAlternativeDestinations);
     if (alternativeDestinations) {
         document.querySelector('#status-update .destination-wrapper').classList.remove('d-none');

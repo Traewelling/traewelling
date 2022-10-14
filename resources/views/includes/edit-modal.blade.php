@@ -11,7 +11,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="destination-wrapper d-none">
+                    <div class="destination-wrapper">
                         <label for="form-status-destination">Ausstieg</label>
                         <select name="destinationStopoverId" class="form-select" required
                                 id="form-status-destination"></select>

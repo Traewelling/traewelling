@@ -54,6 +54,7 @@ class StatusController extends Controller
                                      'lineName'                => $status->trainCheckin->HafasTrip->linename,
                                      'alsoOnThisConnection'    => $status->trainCheckin->alsoOnThisConnection,
                                      'event'                   => $status->trainCheckin->event,
+                                     'forced'                  => false,
                                      'pointsCalculationReason' => $pointReason,
                                  ]);
             }
