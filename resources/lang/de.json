@@ -419,7 +419,7 @@
     "stationboard.last-stations": "Letzte Stationen",
     "stationboard.next-stop": "Nächster Halt:",
     "stationboard.search-by-location": "Standortbasierte Suche",
-    "stationboard.position-unavailable": "Positionsbestimmung nicht möglich!",
+    "stationboard.position-unavailable": "Wir können deine Position nicht ermitteln. Bitte prüfe, ob du den Standortzugriff erlaubt hast.",
     "stationboard.business.private": "Privat",
     "stationboard.business.business": "Geschäftlich",
     "stationboard.business.business.detail": "Dienstfahrten",

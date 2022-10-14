@@ -395,7 +395,7 @@
     "stationboard.last-stations": "Last stations",
     "stationboard.next-stop": "Next stop:",
     "stationboard.search-by-location": "Search by location",
-    "stationboard.position-unavailable": "Locating not possible!",
+    "stationboard.position-unavailable": "We cannot determine your location. Please check if you have allowed location access.",
     "stationboard.business.private": "Personal",
     "stationboard.business.business": "Business",
     "stationboard.business.business.detail": "Business trip",
