@@ -174,7 +174,6 @@ abstract class TrainCheckinController extends Controller
             }
 
             FetchCarriageSequence::dispatch($firstStop);
-            UserCheckedIn::dispatch($status->user, $status);
 
             return [
                 'status'               => $status,
