@@ -144,11 +144,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::prefix('/applications')->group(function() {
             Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
-            Route::get('/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
-            Route::get('/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
-            Route::post('/{appId}/destroy', [DevController::class, 'appDestroy'])->name('dev.apps.destroy');
-            Route::post('/', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
+            Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
+            Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
+            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');
+            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy');
+            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');
         });
 
         Route::get('/', [SettingsController::class, 'renderSettings'])

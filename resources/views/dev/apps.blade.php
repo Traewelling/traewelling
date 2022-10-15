@@ -7,36 +7,39 @@
 @endsection
 
 @section('content')
-        <div class="row">
-            @if($app)
-                <table class="table table-striped table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Redirect URL</th>
-                            <th scope="col">&nbsp;</th>
-                        </tr>
-                    </thead>
+    <div class="row">
+        @if($app)
+            <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Redirect URL</th>
+                        <th scope="col">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-            @foreach($apps as $app)
-                <tr>
-                    <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
-                    <td>{{ $app->redirect }}</td>
-                    <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');">
-                        @csrf
-                        <td>
-                            <button type="submit" class="btn btn-sm btn-link">
-                                <i class="fa fa-times"></i> Löschen
-                            </button>
-                        </td>
-                    </form>
-                </tr>
-            @endforeach
-                </table>
-            @else
-                Du hast noch keine Apps angelegt
-            @endif
-            <!--
+                    @foreach($apps as $app)
+                        <tr>
+                            <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
+                            <td>{{ $app->redirect }}</td>
+                            <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');">
+                                @csrf
+                                <td>
+                                    <button type="submit" class="btn btn-sm btn-link">
+                                        <i class="fa fa-times"></i> Löschen
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            Du hast noch keine Apps angelegt
+        @endif
+        <!--
                 <div class="my-4">
                     <strong class="mb-0">Security</strong>
                     <p>Control security alert you will be notified.</p>
@@ -119,5 +122,5 @@
                     </div>
                 </div>
             -->
-        </div>
+    </div>
 @endsection

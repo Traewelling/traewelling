@@ -5,25 +5,25 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use http\Client;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Laravel\Passport\Http\Controllers\ClientController;
 use Laravel\Passport\ClientRepository;
 
 class DevController extends Controller
 {
-    public function renderAppList(): Renderable {
-
+    public function renderAppList(): View {
         $clients = new ClientRepository();
 
         $userId = request()->user()->getAuthIdentifier();
 
         return view('dev.apps', [
             'apps' => $clients->activeForUser($userId),
-            //'apps' => SessionController::index(user: auth()->user()),
         ]);
     }
 
-    public function renderAppUpdate(int $appId): Renderable {
+    public function renderUpdateApp(int $appId): View {
         $clients = new ClientRepository();
         $app     = $clients->findForUser($appId, auth()->user()->id);
 
@@ -36,21 +36,21 @@ class DevController extends Controller
         ]);
     }
 
-    public function renderAppCreate(): Renderable {
+    public function renderCreateApp(): View {
         return view('dev.apps-edit', [
             'title' => 'Anwendung erstellen', //ToDo Übersetzen
-            'app' => null
+            'app'   => null
         ]);
     }
 
-    public function appUpdate(int $appId, Request $request) {
+    public function updateApp(int $appId, Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'name'     => ['required', 'string'],
                                             'redirect' => ['required', 'string'],
                                         ]);
 
         $clients = new ClientRepository();
-        $app = $clients->findForUser($appId, auth()->user()->id);
+        $app     = $clients->findForUser($appId, auth()->user()->id);
 
         if (!$app) {
             abort(404);
@@ -58,12 +58,10 @@ class DevController extends Controller
 
         $clients->update($app, $validated['name'], $validated['redirect']);
 
-        session()->flash('success', __('settings.saved'));
-
-        return redirect(route('dev.apps'));
+        return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function appCreate(Request $request) {
+    public function createApp(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'name'     => ['required', 'string'],
                                             'redirect' => ['required', 'string'],
@@ -72,22 +70,19 @@ class DevController extends Controller
         $clients = new ClientRepository();
         $clients->create(auth()->user()->id, $validated['name'], $validated['redirect']);
 
-        session()->flash('success', __('settings.saved'));
-
-        return redirect(route('dev.apps'));
+        return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function appDestroy(int $appId) {
+    public function destroyApp(int $appId): RedirectResponse {
         $clients = new ClientRepository();
-        $app = $clients->findForUser($appId, auth()->user()->id);
+        $app     = $clients->findForUser($appId, auth()->user()->id);
 
         if (!$app) {
             abort(404);
         }
         $clients->delete($app);
-        session()->flash('success', __('settings.saved'));
 
-        return redirect(route('dev.apps'));
+        return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
 }

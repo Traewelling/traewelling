@@ -108,26 +108,6 @@
                 </div>
             </div>
         </main>
-
-        <script>
-            /**
-             * Let's only keep the JS here that is needed, e.g. Routes or CSRF tokens and put the rest
-             * in the compontents folder. I moved the touch controls that were here and are needed for
-             * checkin into components/stationboard.js.
-             */
-            var token            = '{{ csrf_token() }}';
-            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
-            var urlDelete        = '{{ route('status.delete') }}';
-            var urlDisconnect    = '{{ route('provider.destroy') }}';
-            var urlDislike       = '{{ route('like.destroy') }}';
-            var urlEdit          = '{{ route('edit') }}';
-            var urlFollow        = '{{ route('follow.create') }}';
-            var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike          = '{{ route('like.create') }}';
-            var urlTrainTrip     = '{{ route('trains.trip') }}';
-            var urlUnfollow      = '{{ route('follow.destroy') }}';
-            var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
-        </script>
     </body>
 
     @include('includes.modals.notifications-board')

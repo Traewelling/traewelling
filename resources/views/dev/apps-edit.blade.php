@@ -4,11 +4,11 @@
 
 @section('content')
     <div class="row">
-        <form enctype="multipart/form-data"
-              @if(Route::currentRouteName() === 'dev.apps.create')
-                  method="POST" action="{{ route('dev.apps.create.post') }}">
+        <form enctype="multipart/form-data" method="POST"
+            @if(Route::currentRouteName() === 'dev.apps.create')
+                  action="{{ route('dev.apps.create.post') }}">
             @else
-                method="POST" action="{{ route('dev.apps.edit', ['appId' => $app->id]) }}">
+                action="{{ route('dev.apps.edit', ['appId' => $app->id]) }}">
                 <div class="row my-2">
                     <table class="table table-striped table-dark">
                         <tr>
