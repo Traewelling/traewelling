@@ -1,6 +1,12 @@
-<div class="card status mb-3" id="status-{{ $status->id }}" data-trwl-status-body="{{ $status->body }}"
+<div class="card status mb-3" id="status-{{ $status->id }}"
+     data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business->value }}" data-trwl-visibility="{{ $status->visibility->value }}"
+     data-trwl-business-id="{{ $status->business->value }}"
+     data-trwl-visibility="{{ $status->visibility->value }}"
+     @if(auth()->check() && auth()->id() === $status->user_id)
+         data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
+         data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+    @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
         <div class="card-img-top">

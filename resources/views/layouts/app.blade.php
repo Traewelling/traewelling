@@ -225,7 +225,6 @@
             var urlDelete        = '{{ route('status.delete') }}';
             var urlDisconnect    = '{{ route('provider.destroy') }}';
             var urlDislike       = '{{ route('like.destroy') }}';
-            var urlEdit          = '{{ route('edit') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
             var urlLike          = '{{ route('like.create') }}';

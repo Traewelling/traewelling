@@ -48,7 +48,7 @@
     "controller.status.like-deleted": "Gefallt-mer gelescht.",
     "controller.status.like-not-found": "Gefallt-mer ned gefunn.",
     "controller.status.like-ok": "Gefallt-mer!",
-    "controller.status.not-permitted": "DES därfsch du ned.",
+    "controller.status.not-permitted": "Des därfsch du ned.",
     "controller.transport.checkin-heading": "Ingecheckt",
     "controller.transport.checkin-ok": "Du hasch erfolgreich in :lineName ingecheckt!|Du hasch erfoglreich in Linje :lineName ingecheckt!",
     "controller.transport.no-name-given": "Du musch e Stationsname angewwe!",
