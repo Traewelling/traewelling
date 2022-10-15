@@ -119,17 +119,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
 
-
-    Route::prefix('/dev')->group(function() {
-        Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
-        Route::get('/apps/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
-        Route::get('/apps/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
-        Route::post('/apps/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
-        Route::post('/apps/{appId}/destroy', [DevController::class, 'appDestroy'])->name('dev.apps.destroy');
-        Route::post('/apps', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
-    });
-
-
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken');
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
@@ -152,6 +141,16 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('events.suggest');
 
     Route::prefix('settings')->group(function() {
+
+        Route::prefix('/applications')->group(function() {
+            Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+            Route::get('/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
+            Route::get('/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
+            Route::post('/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
+            Route::post('/{appId}/destroy', [DevController::class, 'appDestroy'])->name('dev.apps.destroy');
+            Route::post('/', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
+        });
+
         Route::get('/', [SettingsController::class, 'renderSettings'])
              ->name('settings');
         Route::post('/', [SettingsController::class, 'updateMainSettings']);

@@ -63,14 +63,24 @@
                             <span class="d-none d-lg-inline">Zugänge</span>
                         </a>
                     </li>
+                    -->
                     <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
+                        <a href="{{ route('dev.apps') }}"
+                           class="nav-link text-white {{ request()->is('settings/applications*') ? 'active' : '' }}">
                             <i class="fas fa-code me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Develop</span>
+                            <span class="d-none d-lg-inline">Develop <span
+                                    class="badge text-bg-warning">beta</span></span>
                         </a>
                     </li>
-                    -->
+                    <li>
+                        <a href="{{ route('l5-swagger.default.api') }}" target="_blank"
+                           class="nav-link text-white ms-2 {{ request()->is('settings/applications*') ? '' : 'd-none' }}">
+                            <i class="fas fa-flask me-2" aria-hidden="true"></i>
+                            <span class="d-none d-lg-inline">API Docs <span
+                                    class="badge text-bg-danger">incomplete</span></span></span>
+                        </a>
+                    </li>
+                    <hr>
                     <li>
                         <a href="#"
                            class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">

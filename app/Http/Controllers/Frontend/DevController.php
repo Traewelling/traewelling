@@ -12,6 +12,7 @@ use Laravel\Passport\ClientRepository;
 class DevController extends Controller
 {
     public function renderAppList(): Renderable {
+
         $clients = new ClientRepository();
 
         $userId = request()->user()->getAuthIdentifier();
