@@ -8,7 +8,7 @@
               @if(Route::currentRouteName() === 'dev.apps.create')
                   method="POST" action="{{ route('dev.apps.create') }}">
             @else
-                method="POST" action="{{ route('dev.apps.edit', ['appId' => $appId ?? 0]) }}">
+                method="POST" action="{{ route('dev.apps.edit', ['appId' => $app->id]) }}">
                 <div class="row my-2">
                     <table class="table table-striped table-dark">
                         <tr>

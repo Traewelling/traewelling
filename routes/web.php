@@ -43,14 +43,6 @@ Route::get('/@{username}/picture', [ProfilePictureController::class, 'generatePr
 Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
-Route::prefix('/dev')->group(function() {
-    Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
-    Route::get('/apps/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
-    Route::get('/apps/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
-    Route::post('/apps/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
-    Route::post('/apps', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
-});
-
 Route::view('/about', 'about')->name('static.about');
 
 Route::permanentRedirect('/imprint', '/legal/');
@@ -126,6 +118,17 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
+
+
+    Route::prefix('/dev')->group(function() {
+        Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+        Route::get('/apps/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
+        Route::get('/apps/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
+        Route::post('/apps/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
+        Route::post('/apps', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
+    });
+
+
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken');
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])

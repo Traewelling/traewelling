@@ -10,7 +10,6 @@
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Redirect URL</th>
-                            <th scope="col">Provider</th>
                         </tr>
                     </thead>
 
@@ -18,7 +17,6 @@
                 <tr>
                     <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
                     <td>{{ $app->redirect }}</td>
-                    <td>{{ $app->provider }}</td>
                 </tr>
             @endforeach
                 </table>
