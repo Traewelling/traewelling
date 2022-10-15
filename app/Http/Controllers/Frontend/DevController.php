@@ -69,8 +69,21 @@ class DevController extends Controller
                                         ]);
 
         $clients = new ClientRepository();
-        $app = $clients->create(auth()->user()->id, $validated['name'], $validated['redirect']);
+        $clients->create(auth()->user()->id, $validated['name'], $validated['redirect']);
 
+        session()->flash('success', __('settings.saved'));
+
+        return redirect(route('dev.apps'));
+    }
+
+    public function appDestroy(int $appId) {
+        $clients = new ClientRepository();
+        $app = $clients->findForUser($appId, auth()->user()->id);
+
+        if (!$app) {
+            abort(404);
+        }
+        $clients->delete($app);
         session()->flash('success', __('settings.saved'));
 
         return redirect(route('dev.apps'));

@@ -125,6 +125,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::get('/apps/create', [DevController::class, 'renderAppCreate'])->name('dev.apps.create');
         Route::get('/apps/{appId}', [DevController::class, 'renderAppUpdate'])->name('dev.apps.edit');
         Route::post('/apps/{appId}', [DevController::class, 'appUpdate'])->name('dev.apps.update');
+        Route::post('/apps/{appId}/destroy', [DevController::class, 'appDestroy'])->name('dev.apps.destroy');
         Route::post('/apps', [DevController::class, 'appCreate'])->name('dev.apps.create.post');
     });
 

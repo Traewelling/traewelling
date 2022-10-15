@@ -14,6 +14,7 @@
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Redirect URL</th>
+                            <th scope="col">&nbsp;</th>
                         </tr>
                     </thead>
 
@@ -21,6 +22,14 @@
                 <tr>
                     <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
                     <td>{{ $app->redirect }}</td>
+                    <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');">
+                        @csrf
+                        <td>
+                            <button type="submit" class="btn btn-sm btn-link">
+                                <i class="fa fa-times"></i> Löschen
+                            </button>
+                        </td>
+                    </form>
                 </tr>
             @endforeach
                 </table>
