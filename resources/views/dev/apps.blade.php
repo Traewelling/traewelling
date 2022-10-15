@@ -2,10 +2,14 @@
 
 @section('title', 'Deine Anwendungen')
 
+@section('additional-content-end')
+    <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-primary">Anwendung erstellen</a>
+@endsection
+
 @section('content')
         <div class="row">
             @if($app)
-                <table>
+                <table class="table table-striped table-dark">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>

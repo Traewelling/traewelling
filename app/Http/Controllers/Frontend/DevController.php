@@ -38,6 +38,7 @@ class DevController extends Controller
     public function renderAppCreate(): Renderable {
         return view('dev.apps-edit', [
             'title' => 'Anwendung erstellen', //ToDo Übersetzen
+            'app' => null
         ]);
     }
 
@@ -61,5 +62,18 @@ class DevController extends Controller
         return redirect(route('dev.apps'));
     }
 
+    public function appCreate(Request $request) {
+        $validated = $request->validate([
+                                            'name'     => ['required', 'string'],
+                                            'redirect' => ['required', 'string'],
+                                        ]);
+
+        $clients = new ClientRepository();
+        $app = $clients->create(auth()->user()->id, $validated['name'], $validated['redirect']);
+
+        session()->flash('success', __('settings.saved'));
+
+        return redirect(route('dev.apps'));
+    }
 
 }

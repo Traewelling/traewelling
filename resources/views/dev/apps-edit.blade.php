@@ -6,7 +6,7 @@
     <div class="row">
         <form enctype="multipart/form-data"
               @if(Route::currentRouteName() === 'dev.apps.create')
-                  method="POST" action="{{ route('dev.apps.create') }}">
+                  method="POST" action="{{ route('dev.apps.create.post') }}">
             @else
                 method="POST" action="{{ route('dev.apps.edit', ['appId' => $app->id]) }}">
                 <div class="row my-2">
@@ -15,25 +15,10 @@
                             <td>Client Id</td>
                             <td><code>{{ $app->id }}</code></td>
                         </tr>
-                        <!--
-                        <tr>
-                            <td>Client Key</td>
-                            <td><code></code></td>
-                        </tr>
-                        -->
                         <tr>
                             <td>Client Secret</td>
                             <td><code>{{ $app->secret }}</code></td>
                         </tr>
-                        <!--
-                        <tr>
-                            <td>Your Access Token</td>
-                            <td>
-                                <code>asgpo8zoqihepg</code><br>
-                                <a href="#"><i class="fas fa-refresh" aria-hidden="true"></i> Regenerate Access Token</a>
-                            </td>
-                        </tr>
-                        -->
                     </table>
                     <hr>
                 </div>
@@ -62,7 +47,11 @@
             <div class="form-group row mb-0">
                 <div class="col-md-6 offset-md-4">
                     <button type="submit" class="btn btn-primary">
-                        Aktualisieren
+                        @if(Route::currentRouteName() === 'dev.apps.create')
+                            Erstellen
+                        @else
+                            Aktualisieren
+                        @endif
                     </button>
                 </div>
             </div>

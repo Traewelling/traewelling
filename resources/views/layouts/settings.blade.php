@@ -85,12 +85,13 @@
                 <div class="row">
                     <div class="col-12 col-lg-10 col-xl-8 ">
                         <div class="my-4">
+                             <span class="float-end">
+                                @yield('additional-content-end')
+                            </span>
                             <h4 class="mb-0 mt-5">@yield('title')</h4>
-                                <p>@yield('subtitle')</p>
-                                <span class="float-end">
-                                    @yield('additional-content-end')
-                                </span>
-                                <hr class="my-4"/>
+                            <p>@yield('subtitle')</p>
+
+                            <hr class="my-4"/>
                             @yield('content')
                         </div>
                     </div>
