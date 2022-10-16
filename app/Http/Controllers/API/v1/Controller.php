@@ -46,6 +46,14 @@ namespace App\Http\Controllers\API\v1;
  *     name="Events",
  *     description="Events that users can check in to"
  * )
+ * @OA\Tag(
+ *     name="Likes",
+ *     description="Likes regarding a single status"
+ * )
+ * @OA\Tag(
+ *     name="Settings",
+ *     description="User/Profile-Settings"
+ * )
  */
 class Controller
 {

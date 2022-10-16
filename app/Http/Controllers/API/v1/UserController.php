@@ -23,6 +23,41 @@ use InvalidArgumentException;
 class UserController extends ResponseController
 {
 
+    /**
+     * @OA\Delete(
+     *     path="/settings/account",
+     *     operationId="deleteUserAccount",
+     *     tags={"Settings"},
+     *     summary="Delete User Account",
+     *     description="Deletes the Account for the user and all posts created by it",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="confirmation",
+     *                  title="confirmation",
+     *                  description="Username of the to be deleted account (needs to match the currently logged in
+     *                  user)", example="Gertrud123"
+     *              )
+     *          )
+     *     ),
+     * @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *     ),
+     * @OA\Response(response=409, description="Conflict. This should not happen but it tries to prevent a 500."),
+     * @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=403, description="User not authorized to do this action"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function deleteAccount(Request $request): JsonResponse {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 

@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://my-default-host.com",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -817,6 +817,53 @@
                     },
                     "403": {
                         "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/settings/account": {
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete User Account",
+                "description": "Deletes the Account for the user and all posts created by it",
+                "operationId": "deleteUserAccount",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "confirmation": {
+                                        "title": "confirmation",
+                                        "description": "Username of the to be deleted account (needs to match the currently logged in\n     *                  user)",
+                                        "example": "Gertrud123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "409": {
+                        "description": "Conflict. This should not happen but it tries to prevent a 500."
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized to do this action"
                     }
                 },
                 "security": [
@@ -1667,6 +1714,14 @@
         {
             "name": "Events",
             "description": "Events that users can check in to"
+        },
+        {
+            "name": "Likes",
+            "description": "Likes regarding a single status"
+        },
+        {
+            "name": "Settings",
+            "description": "User/Profile-Settings"
         }
     ]
 }
