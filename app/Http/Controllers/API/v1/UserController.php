@@ -136,8 +136,7 @@ class UserController extends ResponseController
     }
 
     /**
-     *
-     *   @OA\Get(
+     * @OA\Get(
      *      path="/user/{username}",
      *      operationId="showUser",
      *      tags={"User"},
@@ -183,6 +182,46 @@ class UserController extends ResponseController
         return new UserResource(User::where('username', 'like', $username)->firstOrFail());
     }
 
+    /**
+     * @OA\Post(
+     *      path="/user/createMute",
+     *      operationId="createMute",
+     *      tags={"User"},
+     *      summary="Mute a user",
+     *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-muted user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="User is already muted"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function createMute(Request $request): JsonResponse {
         $validated     = $request->validate([
                                                 'userId' => [
@@ -211,6 +250,46 @@ class UserController extends ResponseController
         return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
+    /**
+     * @OA\Delete(
+     *      path="/user/destroyMute",
+     *      operationId="destroyMute",
+     *      tags={"User"},
+     *      summary="Unmute a user",
+     *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-unmuted user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="User is already unmuted"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function destroyMute(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'userId' => [

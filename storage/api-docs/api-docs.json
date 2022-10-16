@@ -996,6 +996,61 @@
                     }
                 ]
             }
+        },
+        "/user/createMute": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Mute a user",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+                "operationId": "createMute",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-muted user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "User is already muted"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
         }
     },
     "components": {
