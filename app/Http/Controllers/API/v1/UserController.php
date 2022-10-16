@@ -69,7 +69,7 @@ class UserController extends ResponseController
     }
 
     /**
-     * * @OA\Get(
+     *   @OA\Get(
      *      path="/user/{username}/statuses",
      *      operationId="getStatusesForUser",
      *      tags={"User", "Status"},
@@ -130,11 +130,48 @@ class UserController extends ResponseController
         return StatusResource::collection($userResponse);
     }
 
+   //ToDo: Is this even used anywhere?
     public function authenticated(): UserResource {
         return new UserResource(Auth::user());
     }
 
     /**
+     *
+     *   @OA\Get(
+     *      path="/user/{username}",
+     *      operationId="showUser",
+     *      tags={"User"},
+     *      summary="[Auth optional] Get information for single user",
+     *      description="Returns general information, metadata and statistics for a user",
+     *      @OA\Parameter (
+     *           name="username",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data",
+     *                      ref="#/components/schemas/User"
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="User not found"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
      * Returns Model of user
      *
      * @param string $username

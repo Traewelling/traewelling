@@ -938,6 +938,64 @@
                     }
                 ]
             }
+        },
+        "/user/{username}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "[Auth optional] Get information for single user",
+                "description": "Returns general information, metadata and statistics for a user",
+                "operationId": "showUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
