@@ -862,6 +862,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "401": {
+                        "description": "Not logged in"
+                    },
                     "403": {
                         "description": "User not authorized to do this action"
                     }
@@ -927,9 +930,6 @@
                     },
                     "400": {
                         "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Not logged in"
                     }
                 },
                 "security": [
@@ -985,9 +985,6 @@
                     },
                     "404": {
                         "description": "User not found"
-                    },
-                    "401": {
-                        "description": "Not logged in"
                     }
                 },
                 "security": [
@@ -1037,6 +1034,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "401": {
+                        "description": "Not logged in"
+                    },
                     "409": {
                         "description": "User is already muted"
                     },
@@ -1049,6 +1049,125 @@
                         "token": []
                     },
                     {}
+                ]
+            }
+        },
+        "/user/destroyMute": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Unmute a user",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+                "operationId": "destroyMute",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unmuted user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "409": {
+                        "description": "User is already unmuted"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/search/{query}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get paginated statuses for single user",
+                "description": "Returns paginated statuses of a single user specified by the username",
+                "operationId": "searchUsers",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
                 ]
             }
         }

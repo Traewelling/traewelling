@@ -47,6 +47,7 @@ class UserController extends ResponseController
      *     ),
      * @OA\Response(response=409, description="Conflict. This should not happen but it tries to prevent a 500."),
      * @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=401, description="Not logged in"),
      * @OA\Response(response=403, description="User not authorized to do this action"),
      *       security={
      *           {"token": {}},
@@ -102,7 +103,6 @@ class UserController extends ResponseController
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
      *       security={
      *           {"token": {}}
      *       }
@@ -166,7 +166,6 @@ class UserController extends ResponseController
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="User not found"),
-     *       @OA\Response(response=401, description="Not logged in"),
      *       security={
      *           {"token": {}}
      *       }
@@ -209,6 +208,7 @@ class UserController extends ResponseController
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=409, description="User is already muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
@@ -277,6 +277,7 @@ class UserController extends ResponseController
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=409, description="User is already unmuted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
@@ -319,6 +320,46 @@ class UserController extends ResponseController
         return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
+    /**
+     *   @OA\Get(
+     *      path="/user/search/{query}",
+     *      operationId="searchUsers",
+     *      tags={"User"},
+     *      summary="Get paginated statuses for single user",
+     *      description="Returns paginated statuses of a single user specified by the username",
+     *      @OA\Parameter (
+     *           name="query",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
+     *
+     */
     public function search(string $query): AnonymousResourceCollection|JsonResponse {
         try {
             return UserResource::collection(BackendUserBackend::searchUser($query));
