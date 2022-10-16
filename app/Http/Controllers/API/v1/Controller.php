@@ -35,6 +35,10 @@ namespace App\Http\Controllers\API\v1;
  *
  *
  * @OA\Tag(
+ *     name="User",
+ *     description="Information regarding users"
+ * )
+ * @OA\Tag(
  *     name="Dashboard",
  *     description="API Endpoints of Dashboard"
  * )

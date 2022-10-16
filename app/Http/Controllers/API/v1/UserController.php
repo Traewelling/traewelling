@@ -69,6 +69,45 @@ class UserController extends ResponseController
     }
 
     /**
+     * * @OA\Get(
+     *      path="/user/{username}/statuses",
+     *      operationId="getStatusesForUser",
+     *      tags={"User", "Status"},
+     *      summary="[Auth optional] Get paginated statuses for single user",
+     *      description="Returns paginated statuses of a single user specified by the username",
+     *      @OA\Parameter (
+     *           name="username",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Status"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
+     *
      * Returns paginated statuses for user
      *
      * @param Request $request

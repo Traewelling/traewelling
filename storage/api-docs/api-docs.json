@@ -873,6 +873,71 @@
                     {}
                 ]
             }
+        },
+        "/user/{username}/statuses": {
+            "get": {
+                "tags": [
+                    "User",
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get paginated statuses for single user",
+                "description": "Returns paginated statuses of a single user specified by the username",
+                "operationId": "getStatusesForUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1703,6 +1768,10 @@
         }
     },
     "tags": [
+        {
+            "name": "User",
+            "description": "Information regarding users"
+        },
         {
             "name": "Dashboard",
             "description": "API Endpoints of Dashboard"
