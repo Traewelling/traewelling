@@ -1,12 +1,6 @@
 <div class="card mb-4">
     <div class="card-header">{{__('stationboard.where-are-you')}}</div>
     <div class="card-body">
-        <div id="gps-disabled-error" class="alert my-3 alert-danger d-none" role="alert">
-            {{__('stationboard.position-unavailable')}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
         <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
             @isset(request()->when)
                 <input type="hidden" name="when" value="{{request()->when}}"/>
@@ -35,6 +29,9 @@
                     <div class="btn btn-outline-grey stationSearchButton" id="gps-button"
                          title="{{__('stationboard.search-by-location')}}">
                         <i class="fa fa-map-marker-alt"></i>
+                        <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>

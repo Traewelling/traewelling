@@ -231,6 +231,12 @@
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
+
+            let translations = {
+                stationboard: {
+                    position_unavailable: '{{__('stationboard.position-unavailable')}}',
+                }
+            };
         </script>
     </body>
 
