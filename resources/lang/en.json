@@ -86,7 +86,7 @@
     "controller.status.like-deleted": "Like deleted.",
     "controller.status.like-not-found": "Like not found.",
     "controller.status.like-ok": "Like created!",
-    "controller.status.not-permitted": "You 're not permitted to do this.",
+    "controller.status.not-permitted": "You're not permitted to do this.",
     "controller.social.already-connected-error": "This Account is already connected to another user.",
     "controller.social.create-error": "There has been an error creating your account.",
     "controller.social.delete-never-connected": "Your user does not have a Social Login provider.",
@@ -413,6 +413,7 @@
     "status.visibility.3.detail": "Only visible for you",
     "status.visibility.4": "Only logged-in users",
     "status.visibility.4.detail": "Only visible for logged-in users",
+    "status.update.success": "Your Status has been updated successfully.",
     "transport_types.bus": "bus",
     "transport_types.business": "Business Trip",
     "transport_types.businessPlural": "Business Trips",
@@ -563,5 +564,6 @@
     "about.dev.2": "You can find all the information about it on our GitHub page.",
     "about.dev.3": "We are happy about every contribution - simply create a PullRequest!",
     "about.dev.4": "You can either work on your own ideas or pick a task from our Issues on GitHub.",
-    "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>."
+    "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>.",
+    "other": "Other"
 }

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
 use App\Http\Controllers\Frontend\IcsController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Support\SupportController;
+use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
@@ -117,6 +119,7 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
+
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken');
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
@@ -139,6 +142,16 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('events.suggest');
 
     Route::prefix('settings')->group(function() {
+
+        Route::prefix('/applications')->group(function() {
+            Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+            Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
+            Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
+            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');
+            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy');
+            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');
+        });
+
         Route::get('/', [SettingsController::class, 'renderSettings'])
              ->name('settings');
         Route::post('/', [SettingsController::class, 'updateMainSettings']);
@@ -177,8 +190,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::delete('/destroystatus', [FrontendStatusController::class, 'DeleteStatus'])
          ->name('status.delete');
 
-    Route::post('/edit', [FrontendStatusController::class, 'EditStatus'])
-         ->name('edit');
+    Route::post('/status/update', [StatusController::class, 'updateStatus'])
+         ->name('status.update');
 
     Route::post('/createlike', [FrontendStatusController::class, 'createLike'])
          ->name('like.create');

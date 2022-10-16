@@ -64,7 +64,7 @@
     "controller.status.like-deleted": "Like verwijdert.",
     "controller.status.like-not-found": "Like niet gevonden.",
     "controller.status.like-ok": "Liked!",
-    "controller.status.not-permitted": "DAT mag je niet doen.",
+    "controller.status.not-permitted": "Dat mag je niet doen.",
     "controller.transport.no-name-given": "Je moet een stationsnaam invullen!",
     "controller.transport.not-in-stopovers": "De start-id is niet in de tussenstops.",
     "controller.transport.also-in-connection": "Ook in deze verbinding zijn:",
