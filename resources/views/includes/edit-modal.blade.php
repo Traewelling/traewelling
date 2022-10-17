@@ -11,23 +11,29 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="destination-wrapper">
-                        <label for="form-status-destination">Ausstieg</label>
+                    <div class="destination-wrapper form-floating mb-2">
                         <select name="destinationStopoverId" class="form-select" required
                                 id="form-status-destination"></select>
-                        <hr/>
+                        <label class="form-label" for="form-status-destination">
+                            {{__('exit')}}
+                        </label>
                     </div>
 
-                    <div class="form-group">
-                        <label for="status-body">{{__('modals.editStatus-label')}}</label>
-                        <textarea class="form-control" name="body" id="status-body" rows="5" maxlength="280"></textarea>
-                        <small class="text-muted float-end"><span id="body-length">-</span>/280</small>
-                        <script>
-                            document.querySelector('#status-body').addEventListener('input', function (e) {
-                                document.querySelector('#body-length').innerText = e.target.value.length;
-                            });
-                        </script>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="body" id="status-body" maxlength="280"
+                                  placeholder="{{__('modals.editStatus-label')}}"
+                                  style="min-height: 130px;"></textarea>
+                        <label for="status-body" class="form-label">
+                            {{__('modals.editStatus-label')}}
+                        </label>
                     </div>
+                    <small class="text-muted float-end"><span id="body-length">-</span>/280</small>
+                    <script>
+                        document.querySelector('#status-body').addEventListener('input', function (e) {
+                            document.querySelector('#body-length').innerText = e.target.value.length;
+                        });
+                    </script>
+
                     <div class="mt-2">
                         @include('includes.business-dropdown')
                         @include('includes.visibility-dropdown')
