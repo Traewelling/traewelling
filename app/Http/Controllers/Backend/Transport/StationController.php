@@ -73,7 +73,7 @@ abstract class StationController extends Controller
                 return [
                     'id'              => $stopover->id,
                     'name'            => $stopover->trainStation->name,
-                    'arrival_planned' => $stopover->arrival_planned->format('H:i'),
+                    'arrival_planned' => ($stopover->arrival_planned ?? $stopover->departure_planned)->format('H:i'),
                 ];
             });
     }
