@@ -78,30 +78,6 @@ class StatusController extends ResponseController
         return $this->sendResponse($status);
     }
 
-    public function update(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'body'     => 'max:280',
-            'business' => 'integer',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-        try {
-            $editStatusResponse = StatusBackend::EditStatus(
-                user:       Auth::user(),
-                statusId:   $request['statusId'],
-                body:       $request['body'],
-                business:   Business::tryFrom($request['businessCheck']),
-                visibility: null
-            );
-        } catch (ModelNotFoundException) {
-            return $this->sendError('Not found');
-        } catch (PermissionException) {
-            return $this->sendError(__('controller.status.not-permitted'), 403);
-        }
-        return $this->sendResponse(['newBody' => $editStatusResponse->body]);
-    }
-
     public function destroy($statusId) {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $statusId);
