@@ -23,6 +23,7 @@
         "abraham/twitteroauth": "^4.0",
         "barryvdh/laravel-dompdf": "^2.0",
         "brianium/paratest": "^6.3",
+        "coderjerk/bird-elephant": "^0.5.0",
         "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.1.4",
         "fruitcake/laravel-cors": "^3.0",

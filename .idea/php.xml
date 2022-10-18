@@ -205,6 +205,8 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-uuid" />
       <path value="$PROJECT_DIR$/vendor/romanzipp/laravel-queue-monitor" />
       <path value="$PROJECT_DIR$/vendor/_laravel_idea" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/oauth-subscriber" />
+      <path value="$PROJECT_DIR$/vendor/coderjerk/bird-elephant" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

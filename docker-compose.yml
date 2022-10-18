@@ -44,12 +44,18 @@ services:
     image: mariadb:10
     container_name: traewelling-db
     restart: 'always'
+    command:
+      - --max_allowed_packet=67108864      # Set max_allowed_packet to 256M (or any other value)
+      - --innodb-buffer-pool-size=2G
+      - --innodb-log-file-size=1G
     volumes:
       - ./docker/database:/var/lib/mysql
     networks:
       - internal
     environment:
       - TZ=Europe/Berlin
+    ports:
+      - "3306:3306"
     env_file:
       - .env.docker
 
