@@ -25,7 +25,7 @@ class AuthController extends ResponseController
             'username' => ['required', 'unique:users','max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
             'name'     => ['required', 'max:50'],
             'email'    => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'confirmed'],
+            'password' => ['required', 'confirmed', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -52,7 +52,56 @@ class AuthController extends ResponseController
     }
 
     /**
-     * Login
+     *  @OA\Post(
+     *      path="/auth/login",
+     *      operationId="loginUser",
+     *      tags={"Auth"},
+     *      summary="Login with username & password",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="login",
+     *                  type="string",
+     *                  minLength=8,
+     *                  maxLength=255,
+     *                  description="Username or email",
+     *                  example="gertrud@traewelling.de"
+     *              ),
+     *              @OA\Property(
+     *                  property="password",
+     *                  description="password",
+     *                  type="string",
+     *                  minLength=8,
+     *                  maxLength=255,
+     *                  example="thisisnotasecurepassword123"
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property (
+     *                      property="token",
+     *                      description="Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
+     *                      example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4.....",
+     *                  ),
+     *                  @OA\Property (
+     *                      property="expires_at",
+     *                      description="end of life for this token. Lifespan is usually one year.",
+     *                      example="2023-10-19T15:15:06+02:00"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Non-matching credentials")
+     *     )
+     *
      *
      * @param Request $request
      *
@@ -60,7 +109,7 @@ class AuthController extends ResponseController
      * @api v1
      */
     public function login(Request $request): JsonResponse {
-        $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8']]);
+        $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8', 'max:255']]);
 
         if (LoginController::login($validated['login'], $validated['password'])) {
             $token = $request->user()->createToken('token');

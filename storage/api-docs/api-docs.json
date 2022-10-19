@@ -23,6 +23,74 @@
         }
     ],
     "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login with username & password",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "description": "Username or email",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "gertrud@traewelling.de"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "thisisnotasecurepassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4....."
+                                                },
+                                                "expires_at": {
+                                                    "description": "end of life for this token. Lifespan is usually one year.",
+                                                    "example": "2023-10-19T15:15:06+02:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Non-matching credentials"
+                    }
+                }
+            }
+        },
         "/event/{slug}": {
             "get": {
                 "tags": [
@@ -271,6 +339,59 @@
                     },
                     "403": {
                         "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/activeEvents": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Shows current events with basic information",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+                "operationId": "getCurrentEvents",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
                     }
                 },
                 "security": [
@@ -2000,6 +2121,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Auth",
+            "description": "Logging in, creating Accounts, etc."
+        },
         {
             "name": "User",
             "description": "Information regarding users"
