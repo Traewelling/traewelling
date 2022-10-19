@@ -28,8 +28,8 @@ class LegacyTwitterController extends AbstractTwitterController
             throw new NotConnectedException();
         }
         return new TwitterOAuth(
-            consumerKey:      config('trwl.twitter_id'),
-            consumerSecret:   config('trwl.twitter_secret'),
+            consumerKey:      config('trwl.twitter_oauth1_id'),
+            consumerSecret:   config('trwl.twitter_oauth1_secret'),
             oauthToken:       $user->socialProfile->twitter_token,
             oauthTokenSecret: $user->socialProfile->twitter_tokenSecret
         );

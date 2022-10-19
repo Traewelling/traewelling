@@ -11,6 +11,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\TwitterNotSent;
 use Exception;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
@@ -66,10 +67,11 @@ abstract class AbstractTwitterController extends Controller
     }
 
     private static function updateToken(User $user, SocialiteUser $socialiteUser): void {
-        logger(serialize($socialiteUser));
         $user->socialProfile->update([
-                                         'twitter_id'    => $socialiteUser->id,
-                                         'twitter_token' => $socialiteUser->token
+                                         'twitter_id'               => $socialiteUser->id,
+                                         'twitter_token'            => $socialiteUser->token,
+                                         'twitter_refresh_token'    => $socialiteUser->refreshToken,
+                                         'twitter_token_expires_at' => Date::now()->add('second', $socialiteUser->expiresIn)
                                      ]);
     }
 

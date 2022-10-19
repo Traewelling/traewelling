@@ -38,6 +38,7 @@
         "mrkriskrisu/db-wagenreihung-php": "0.2",
         "revolution/laravel-mastodon-api": "^2.0",
         "romanzipp/laravel-queue-monitor": "^2.3",
+        "smolblog/oauth2-twitter": "^1.0",
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-sitemap": "^6.0",
         "trwl/socialite-mastodon": "^1.2"
