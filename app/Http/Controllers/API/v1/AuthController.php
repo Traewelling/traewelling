@@ -15,16 +15,89 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends ResponseController
 {
     /**
+     * @OA\Post(
+     *      path="/auth/signup",
+     *      operationId="registerUser",
+     *      tags={"Auth"},
+     *      summary="register new user",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="username",
+     *                  type="string",
+     *                  minLength=3,
+     *                  maxLength=25,
+     *                  pattern="^[a-zA-Z0-9_]*$",
+     *                  description="Username",
+     *                  example="Gertrud123"
+     *              ),
+     *              @OA\Property (
+     *                  property="name",
+     *                  type="string",
+     *                  maxLength=50,
+     *              ),
+     *              @OA\Property (
+     *                  property="email",
+     *                  example="mail@example.com"
+     *              ),
+     *              @OA\Property(
+     *                  property="password",
+     *                  description="password",
+     *                  type="string",
+     *                  minLength=8,
+     *                  maxLength=255,
+     *                  example="thisisnotasecurepassword123"
+     *              ),
+     *              @OA\Property (
+     *                  property="password_confirmation",
+     *                  description="confirmation of the password-field.",
+     *                  type="string",
+     *                  minLength=8,
+     *                  maxLength=255,
+     *                  example="thisisnotasecurepassword123"
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property (
+     *                      property="token",
+     *                      description="Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
+     *                      example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4.....",
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      example="Registration successful."
+     *                      ),
+     *                  @OA\Property (
+     *                      property="expires_at",
+     *                      description="end of life for this token. Lifespan is usually one year.",
+     *                      example="2023-10-19T15:15:06+02:00"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Other (not specified) error occured"),
+     *       @OA\Response(response=422, description="Username or email is already taken, or other input error")
+     *     )
+     *
+     *
      * @param Request $request
      *
      * @return JsonResponse
-     * @api  v1
+     * @api v1
      */
     public function register(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'unique:users','max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
+            'username' => ['required', 'unique:users', 'min:3', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
             'name'     => ['required', 'max:50'],
-            'email'    => ['required', 'email', 'unique:users'],
+            'email'    => ['required', 'email', 'unique:users', 'max:255'],
             'password' => ['required', 'confirmed', 'max:255'],
         ]);
 
