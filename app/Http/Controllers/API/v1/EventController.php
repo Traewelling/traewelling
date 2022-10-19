@@ -258,6 +258,42 @@ class EventController extends ResponseController
         return $this->sendError(error: null, code: 500);
     }
 
+    /**
+     *   @OA\Get(
+     *      path="/activeEvents",
+     *      operationId="getCurrentEvents",
+     *      tags={"Events"},
+     *      summary="Shows current events with basic information",
+     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Event"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     * @return AnonymousResourceCollection
+     */
     public function activeEvents(): AnonymousResourceCollection {
         $events = EventBackend::activeEvents();
         return EventResource::collection($events);

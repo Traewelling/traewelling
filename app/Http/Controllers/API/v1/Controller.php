@@ -35,6 +35,10 @@ namespace App\Http\Controllers\API\v1;
  *
  *
  * @OA\Tag(
+ *     name="Auth",
+ *     description="Logging in, creating Accounts, etc."
+ * )
+ * @OA\Tag(
  *     name="User",
  *     description="Information regarding users"
  * )
