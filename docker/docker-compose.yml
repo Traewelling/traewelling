@@ -60,8 +60,6 @@ services:
       - --innodb-log-file-size=1G
     networks:
       - internal
-    ports:
-      - "3306:3306"
     volumes:
       - ./database:/var/lib/mysql
 
