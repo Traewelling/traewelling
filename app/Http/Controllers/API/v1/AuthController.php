@@ -63,22 +63,9 @@ class AuthController extends ResponseController
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property (
-     *                      property="token",
-     *                      description="Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
-     *                      example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4.....",
-     *                  ),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      example="Registration successful."
-     *                      ),
-     *                  @OA\Property (
-     *                      property="expires_at",
-     *                      description="end of life for this token. Lifespan is usually one year.",
-     *                      example="2023-10-19T15:15:06+02:00"
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/BearerTokenResponse"
      *                  )
      *              )
      *          )
@@ -117,7 +104,6 @@ class AuthController extends ResponseController
             $userToken = $user->createToken('token');
             return $this->sendResponse([
                                            'token'      => $userToken->accessToken,
-                                           'message'    => 'Registration successful.',
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
         }
@@ -155,18 +141,9 @@ class AuthController extends ResponseController
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property (
-     *                      property="token",
-     *                      description="Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
-     *                      example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4.....",
-     *                  ),
-     *                  @OA\Property (
-     *                      property="expires_at",
-     *                      description="end of life for this token. Lifespan is usually one year.",
-     *                      example="2023-10-19T15:15:06+02:00"
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/BearerTokenResponse"
      *                  )
      *              )
      *          )
@@ -194,6 +171,27 @@ class AuthController extends ResponseController
     }
 
     /**
+     * @OA\Post(
+     *      path="/auth/logout",
+     *      operationId="logoutUser",
+     *      tags={"Auth"},
+     *      summary="Logout & invalidate current bearer token",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="status",
+     *                  example="success"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=500, description="Error during revoke"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
      * @param Request $request
      *
      * @return JsonResponse
@@ -219,6 +217,37 @@ class AuthController extends ResponseController
         return $this->sendv1Response(new UserSettingsResource($request->user()));
     }
 
+    /**
+     *  @OA\Post(
+     *      path="/auth/refresh",
+     *      operationId="refreshToken",
+     *      tags={"Auth"},
+     *      summary="Refresh Bearer Token",
+     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token."
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/BearerTokenResponse"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @api v1
+     */
     public function refresh(Request $request): JsonResponse {
         $oldToken = $request->user()->token();
         $newToken = $request->user()->createToken('token');
