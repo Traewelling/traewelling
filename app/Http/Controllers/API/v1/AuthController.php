@@ -63,10 +63,8 @@ class AuthController extends ResponseController
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array",
-     *                  @OA\Items(
+     *              @OA\Property(property="data", type="object",
      *                      ref="#/components/schemas/BearerTokenResponse"
-     *                  )
      *              )
      *          )
      *       ),
@@ -141,10 +139,8 @@ class AuthController extends ResponseController
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array",
-     *                  @OA\Items(
+     *              @OA\Property(property="data", type="object",
      *                      ref="#/components/schemas/BearerTokenResponse"
-     *                  )
      *              )
      *          )
      *       ),
@@ -207,6 +203,28 @@ class AuthController extends ResponseController
     }
 
     /**
+     *  @OA\Get(
+     *      path="/auth/user",
+     *      operationId="getAuthenticatedUser",
+     *      tags={"Auth", "User"},
+     *      summary="Get authenticated user information",
+     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/UserAuth"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     *
      *
      * @param Request $request
      *
@@ -223,15 +241,13 @@ class AuthController extends ResponseController
      *      operationId="refreshToken",
      *      tags={"Auth"},
      *      summary="Refresh Bearer Token",
-     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token."
+     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array",
-     *                  @OA\Items(
+     *              @OA\Property(property="data", type="object",
      *                      ref="#/components/schemas/BearerTokenResponse"
-     *                  )
      *              )
      *          )
      *       ),
