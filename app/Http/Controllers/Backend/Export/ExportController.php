@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Export;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController as ExportBackend;
 use App\Http\Controllers\Backend\Export\Format\CsvExportController;
 use App\Http\Controllers\Backend\Export\Format\JsonExportController;
@@ -19,15 +20,26 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 abstract class ExportController extends Controller
 {
 
+    /**
+     * @throws DataOverflowException If too many results are given.
+     */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
-        return Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                     ->where('statuses.user_id', $user->id)
-                     ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
-                     ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
-                     ->select(['statuses.*'])
-                     ->get();
+        $statuses = Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                          ->where('statuses.user_id', $user->id)
+                          ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
+                          ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
+                          ->select(['statuses.*'])
+                          ->limit(2001)
+                          ->get();
+        if ($statuses->count() >= 2001) {
+            throw new DataOverflowException();
+        }
+        return $statuses;
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     public static function generateExport(Carbon $from, Carbon $until, string $filetype) {
         if ($filetype === 'json') {
             return self::exportJson($from, $until);
@@ -44,6 +56,9 @@ abstract class ExportController extends Controller
         throw new InvalidArgumentException('unsupported filetype');
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     private static function exportJson(Carbon $begin, Carbon $end): JsonResponse {
         $headers    = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
@@ -60,6 +75,9 @@ abstract class ExportController extends Controller
         return Response::json(data: $exportData, headers: $headers);
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     private static function exportPdf(Carbon $begin, Carbon $end): \Illuminate\Http\Response {
         return Pdf::loadView('pdf.export-template', [
             'statuses' => ExportBackend::getExportableStatuses(auth()->user(), $begin, $end),
@@ -76,6 +94,9 @@ abstract class ExportController extends Controller
                   );
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     private static function exportCsv(Carbon $begin, Carbon $end): StreamedResponse {
         $headers      = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',

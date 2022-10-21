@@ -25,8 +25,7 @@
     </head>
     <body>
         <div id="app">
-            <nav
-                class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
+            <nav class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
