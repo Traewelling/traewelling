@@ -34,10 +34,10 @@
                                     <span>{{__('export.submit')}}: </span>
 
                                     <div class="btn-group">
-                                        @foreach(['pdf', 'csv', 'json'] as $filetype)
+                                        @foreach(['pdf' => 'fa-regular fa-file-pdf', 'csv' => 'fa-solid fa-file-csv', 'json' => 'fa-regular fa-file-code'] as $filetype => $icon)
                                             <button type="submit" class="btn btn-primary" name="filetype"
                                                     value="{{$filetype}}">
-                                                {{$filetype}}
+                                                <i class="{{$icon}}"></i>&nbsp;&nbsp;{{$filetype}}
                                             </button>
                                         @endforeach
                                     </div>
