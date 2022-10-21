@@ -75,11 +75,10 @@ class TransportController extends ResponseController
                 $validated['lineName'],
                 $validated['start']
             );
+            return $this->sendv1Response(data: $trainTripResponse);
         } catch (StationNotOnTripException) {
             return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
         }
-
-        return $this->sendv1Response(data: $trainTripResponse);
     }
 
     public function getNextStationByCoordinates(Request $request): JsonResponse {
