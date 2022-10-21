@@ -128,10 +128,10 @@ class TweetNotSendException extends Exception
      * @param Status $status
      * @param int    $statusCOde
      */
-    public function __construct(Status $status, int $statusCOde) {
+    public function __construct(Status $status, int $statusCode) {
         parent::__construct();
         $this->status     = $status;
-        $this->statusCode = $statusCOde;
+        $this->statusCode = $statusCode;
     }
 
     /**
