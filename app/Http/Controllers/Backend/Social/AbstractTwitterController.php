@@ -85,7 +85,7 @@ abstract class AbstractTwitterController extends Controller
      * @throws NotConnectedException
      * @throws TweetNotSendException
      */
-    public abstract function postTweet(Status $status, string $socialText): int;
+    public abstract function postTweet(Status $status, string $socialText): string;
 
     /**
      * @throws NotConnectedException

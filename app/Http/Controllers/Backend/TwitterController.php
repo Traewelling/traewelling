@@ -57,7 +57,7 @@ class TwitterController extends AbstractTwitterController
         return new BirdElephant($credentials);
     }
 
-    public function postTweet(Status $status, string $socialText): int {
+    public function postTweet(Status $status, string $socialText): string {
         $sPro = $status->user->socialProfile;
         if ($sPro?->twitter_id === null || $sPro?->twitter_token === null) {
             throw new NotConnectedException();

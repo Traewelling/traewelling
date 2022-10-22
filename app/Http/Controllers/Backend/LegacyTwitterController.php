@@ -8,8 +8,6 @@ use App\Http\Controllers\Backend\Social\AbstractTwitterController;
 use App\Exceptions\SocialAuth\TweetNotSendException;
 use App\Models\Status;
 use App\Models\User;
-use App\Notifications\TwitterNotSent;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -35,7 +33,7 @@ class LegacyTwitterController extends AbstractTwitterController
         );
     }
 
-    public function postTweet(Status $status, string $socialText): int {
+    public function postTweet(Status $status, string $socialText): string {
         if ($status?->user?->socialProfile?->twitter_id === null || config('trwl.post_social') !== true) {
             throw new NotConnectedException();
         }
