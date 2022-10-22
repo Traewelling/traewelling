@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Exceptions\NotConnectedException;
 use App\Http\Controllers\Backend\Social\AbstractTwitterController;
-use App\Http\Controllers\Backend\Social\TweetNotSendException;
+use App\Exceptions\SocialAuth\TweetNotSendException;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\TwitterNotSent;

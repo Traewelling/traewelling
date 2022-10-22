@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Social;
 use App\Exceptions\NotConnectedException;
 use App\Http\Controllers\Backend\LegacyTwitterController;
 use App\Http\Controllers\Backend\TwitterController;
+use App\Exceptions\SocialAuth\TweetNotSendException;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\Status;
@@ -116,35 +117,5 @@ abstract class AbstractTwitterController extends Controller
         $socialText .= ' ' . url('/status/' . $status->id);
 
         return $socialText;
-    }
-}
-
-class TweetNotSendException extends Exception
-{
-    protected Status $status;
-    protected int    $statusCode;
-
-    /**
-     * @param Status $status
-     * @param int    $statusCOde
-     */
-    public function __construct(Status $status, int $statusCode) {
-        parent::__construct();
-        $this->status     = $status;
-        $this->statusCode = $statusCode;
-    }
-
-    /**
-     * @return Status
-     */
-    public function getStatus(): Status {
-        return $this->status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatusCode(): int {
-        return $this->statusCode;
     }
 }
