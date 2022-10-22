@@ -31,7 +31,11 @@ abstract class ExportController extends Controller
                           ->select(['statuses.*'])
                           ->limit(2001)
                           ->get();
-        if ($statuses->count() >= 2001) {
+        // A user should only be able to export 2000 statuses at once to avoid memory
+        // overflows. Thus, if the database returns 2001 entries (which is the limit),
+        // there are `>2000` statuses in this time frame and the user must choose a
+        // smaller time frame.
+        if ($statuses->count() == 2001) {
             throw new DataOverflowException();
         }
         return $statuses;
