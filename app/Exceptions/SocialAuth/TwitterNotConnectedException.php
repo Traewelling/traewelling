@@ -3,6 +3,7 @@
 namespace App\Exceptions\SocialAuth;
 
 use Exception;
+use App\Models\Status;
 
 class TweetNotSendException extends Exception
 {
