@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('social_login_profiles', static function(Blueprint $table) {
-            $table->string('twitter_refresh_token', 2048)->nullable();
+            $table->text('twitter_refresh_token')->nullable();
             $table->timestamp('twitter_token_expires_at')->nullable();
         });
     }
