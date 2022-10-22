@@ -169,7 +169,7 @@
     "export.end": "Bis",
     "export.lead": "Hier kannst du deine Fahrten aus der Datenbank als CSV, JSON und als PDF exportieren.",
     "export.error.time": "Du kannst nur Fahrten über einen Zeitraum von maximal 365 Tagen exportieren.",
-    "export.error.amount": "Du hast zu viele Fahrten angefragt. Bitte versuche den Zeitraum einzuschränken.",
+    "export.error.amount": "Du hast mehr als 2000 Fahrten angefragt. Bitte versuche den Zeitraum einzuschränken.",
     "export.submit": "Exportieren als",
     "export.title": "Exportieren",
     "export.type": "Zugart",

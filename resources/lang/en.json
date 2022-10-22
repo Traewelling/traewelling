@@ -149,7 +149,7 @@
     "export.lead": "You can export your journeys into a CSV, JSON or PDF file here.",
     "export.submit": "Export as",
     "export.error.time": "You can only export trips over a maximum period of 365 days.",
-    "export.error.amount": "You have requested too many trips. Please try to limit the period.",
+    "export.error.amount": "You have requested more than 2000 trips. Please try to limit the period.",
     "export.title": "Export data",
     "export.type": "Type",
     "export.number": "Number",
