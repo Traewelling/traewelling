@@ -68,6 +68,6 @@ class TwitterController extends AbstractTwitterController
 
         $tweet = (new Tweet)->text($socialText);
 
-        return $api->tweets()->tweet($tweet)->data->id;
+        return $api->tweets()->tweet($tweet)->data->id_str;
     }
 }
