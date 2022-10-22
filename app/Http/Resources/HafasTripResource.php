@@ -21,7 +21,7 @@ class HafasTripResource extends JsonResource
             "lineName"    => $this->linename,
             "origin"      => new TrainStationResource($this->originStation),
             "destination" => new TrainStationResource($this->destinationStation),
-            "stopovers"   => StopoverResource::collection($this->stopoversNEW->sortBy('departure'))
+            "stopovers"   => StopoverResource::collection($this->stopoversNEW)
         ];
     }
 }
