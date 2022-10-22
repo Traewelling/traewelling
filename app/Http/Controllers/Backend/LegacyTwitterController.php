@@ -48,7 +48,7 @@ class LegacyTwitterController extends AbstractTwitterController
         );
 
         if ($connection->getLastHttpCode() !== 200) {
-            throw new TweetNotSendException($status, $connection->getLastHttpCode());
+            throw new TweetNotSendException($connection->getLastHttpCode());
         }
 
         return strval($response->id);

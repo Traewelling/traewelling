@@ -101,7 +101,7 @@ abstract class AbstractTwitterController extends Controller
         } catch (NotConnectedException $exception) {
             throw $exception;
         } catch (TweetNotSendException $exception) {
-            $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $exception->getStatus()));
+            $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $status));
         } catch (Exception $exception) {
             report($exception);
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
