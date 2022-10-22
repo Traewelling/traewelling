@@ -24,11 +24,11 @@ class TwitterController extends AbstractTwitterController
      * @throws NotConnectedException
      */
     public static function getApi(User $user): BirdElephant {
-        $sPro = $user->socialProfile;
-        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null || $sPro->twitter_refresh_token === null || $sPro->twitter_token_expires_at === null) {
+        $socialProfile = $user->socialProfile;
+        if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null || $socialProfile->twitter_refresh_token === null || $socialProfile->twitter_token_expires_at === null) {
             throw new NotConnectedException();
         }
-        if (Date::now()->isAfter($sPro->twitter_token_expires_at)) {
+        if (Date::now()->isAfter($socialProfile->twitter_token_expires_at)) {
             $provider = new Twitter([
                                         'clientId'     => config('trwl.twitter_id'),
                                         'clientSecret' => config('trwl.twitter_secret'),
@@ -36,17 +36,17 @@ class TwitterController extends AbstractTwitterController
                                     ]);
 
             $token = $provider->getAccessToken('refresh_token', [
-                'refresh_token' => $sPro->twitter_refresh_token
+                'refresh_token' => $socialProfile->twitter_refresh_token
             ]);
-            $sPro->update([
+            $socialProfile->update([
                               'twitter_token'            => $token->getToken(),
                               'twitter_refresh_token'    => $token->getRefreshToken(),
                               'twitter_token_expires_at' => Date::createFromTimestamp($token->getExpires())
                           ]);
             $access_token = $token->getToken();
-            Log::info("Refreshed twitter access token for {$sPro->twitter_id}");
+            Log::info("Refreshed twitter access token for {$socialProfile->twitter_id}");
         } else {
-            $access_token = $sPro->twitter_token;
+            $access_token = $socialProfile->twitter_token;
         }
 
         $credentials = [

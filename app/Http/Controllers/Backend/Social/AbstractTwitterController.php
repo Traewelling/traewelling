@@ -21,12 +21,12 @@ abstract class AbstractTwitterController extends Controller
      * @throws NotConnectedException
      */
     public static function forUser(User $user): AbstractTwitterController {
-        $sPro = $user->socialProfile;
-        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null) {
+        $socialProfile = $user->socialProfile;
+        if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null) {
             throw new NotConnectedException();
         }
 
-        if ($sPro->twitter_tokenSecret !== null) {
+        if ($socialProfile?->twitter_tokenSecret !== null) {
             return new LegacyTwitterController();
         } else {
             return new TwitterController();
