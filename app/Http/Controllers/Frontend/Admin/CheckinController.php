@@ -99,6 +99,7 @@ class CheckinController
         }
 
         try {
+            // TODO: Replace with new function
             $TrainTripResponse = TransportBackend::TrainTrip(
                 $tripId,
                 $validated['lineName'],

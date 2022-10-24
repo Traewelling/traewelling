@@ -117,6 +117,7 @@ class TransportController extends Controller
      * @return array|null
      * @throws HafasException
      * @deprecated replaced by getTrainTrip
+     * TODO: Remove
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);

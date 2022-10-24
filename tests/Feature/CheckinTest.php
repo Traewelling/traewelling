@@ -183,6 +183,7 @@ class CheckinTest extends TestCase
 
         try {
             // Third: Get the trip information
+            // TODO: Replace with new function
             $trip = TransportController::TrainTrip(
                 $departure->tripId,
                 $departure->line->name,
