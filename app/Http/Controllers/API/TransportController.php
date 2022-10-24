@@ -75,34 +75,6 @@ class TransportController extends ResponseController
                                    ]);
     }
 
-    public function TrainTrip(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'tripID'   => 'required',
-            'lineName' => 'required',
-            'start'    => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        $trainTripResponse = TransportBackend::TrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start
-        );
-        if ($trainTripResponse === null) {
-            return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
-        }
-
-        return $this->sendResponse([
-                                       'start'       => $trainTripResponse['start'],
-                                       'destination' => $trainTripResponse['destination'],
-                                       'train'       => $trainTripResponse['train'],
-                                       'stopovers'   => $trainTripResponse['stopovers']
-                                   ]);
-    }
-
     public function TrainCheckin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => ['required'],

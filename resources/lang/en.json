@@ -566,5 +566,6 @@
     "about.dev.4": "You can either work on your own ideas or pick a task from our Issues on GitHub.",
     "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>.",
     "other": "Other",
-    "exit": "Exit"
+    "exit": "Exit",
+    "platform": "Platform"
 }

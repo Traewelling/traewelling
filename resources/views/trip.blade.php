@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $hafasTrip->linename . ' -> ' . $destination)
+@section('title', $hafasTrip->linename . ' -> ' . $hafasTrip->destinationStation->name)
 
 @section('content')
     <div class="container">
@@ -25,9 +25,9 @@
                     >
                         <div class="float-end">
                             <a href="#" class="train-destinationrow"
-                               data-ibnr="{{$terminalStop['stop']['id']}}"
-                               data-stopname="{{$terminalStop['stop']['name']}}"
-                               data-arrival="{{$terminalStop['plannedArrival'] ?? $terminalStop['plannedDeparture']}}">
+                               data-ibnr="{{$lastStopover->trainStation->ibnr}}"
+                               data-stopname="{{$lastStopover->trainStation->name}}"
+                               data-arrival="{{$lastStopover->arrival_planned ?? $lastStopover->departure_planned}}">
                                 <i class="fa fa-fast-forward"></i>
                             </a>
                         </div>
@@ -51,54 +51,39 @@
                                 <tr>
                                     <th>{{__('stationboard.stopover')}}</th>
                                     <th></th>
-                                    <th></th>
+                                    <th class="text-end">{{__('platform')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stopovers as $stop)
-                                    @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
-                                        @continue
-                                    @endif
-
-                                    @if(@$stop['cancelled'] == 'true' && $stop['arrival'] === null && $stop['departure'] === null)
+                                @foreach($stopovers as $stopover)
+                                    @if($stopover->cancelled)
                                         <tr>
-                                            <td>{{ $stop['stop']['name'] }}</td>
+                                            <td>{{ $stopover->trainStation->name }}</td>
                                             <td>
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
                                             </td>
-                                            <td>{{ $stop['departurePlatform'] }}</td>
+                                            <td>{{ $stopover->platform }}</td>
                                         </tr>
                                     @else
                                         <tr class="train-destinationrow"
-                                            data-ibnr="{{$stop['stop']['id']}}"
-                                            data-stopname="{{$stop['stop']['name']}}"
-                                            data-arrival="{{$stop['plannedArrival'] ?? $stop['plannedDeparture']}}">
-                                            <td>{{ $stop['stop']['name'] }}</td>
+                                            data-ibnr="{{$stopover->trainStation->ibnr}}"
+                                            data-stopname="{{$stopover->trainStation->name}}"
+                                            data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
+                                        >
+                                            <td>{{ $stopover->trainStation->name }}</td>
                                             <td>
-                                                @if(!(isset($stop['cancelled']) && $stop['arrival'] == null) && $stop['plannedArrival'] != null)
-                                                    {{ __('stationboard.arr') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
-                                                    @if(isset($stop['arrivalDelay']))
-                                                        <small>(<span
-                                                                class="traindelay">+{{ $stop['arrivalDelay'] / 60 }}</span>)</small>
-                                                    @endif
-                                                @endif
-                                                <br/>
-                                                @if(!(isset($stop['cancelled']) && $stop['departure'] == null) && $stop['plannedDeparture'] != null)
-                                                    {{ __('stationboard.dep') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format'))}}
-                                                    @if(isset($stop['departureDelay']))
-                                                        <small>(<span
-                                                                class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>
-                                                    @endif
-                                                @endif
+                                                {{ __('stationboard.arr') }}
+                                                {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
+                                                @isset($stopover->arrival_real)
+                                                    <small>(<span
+                                                            class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
+                                                @endisset
                                             </td>
-                                            <td>
-                                                {{ $stop['arrivalPlatform'] }}
-                                                @if(isset($stop['plannedArrivalPlatform']) && $stop['plannedArrivalPlatform'] != $stop['arrivalPlatform'])
-                                                    &nbsp;
+                                            <td class="text-end">
+                                                {{$stopover->arrival_platform_planned}}
+                                                @if(isset($stopover->arrival_platform_real) && $stopover->arrival_platform_real !== $stopover->arrival_platform_planned)
                                                     <span class="text-danger text-decoration-line-through">
-                                                        {{ $stop['plannedArrivalPlatform'] }}
+                                                        {{ $stopover->arrival_platform_real }}
                                                     </span>
                                                 @endif
                                             </td>

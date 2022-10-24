@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 abstract class EventController extends Controller
 {
     public static function suggestEvent(
-        User $user,
+        User   $user,
         string $name,
         Carbon $begin,
         Carbon $end,
@@ -50,12 +50,14 @@ abstract class EventController extends Controller
         return $eventSuggestion;
     }
 
-    public static function activeEvents(): ?Collection {
-        $now = Carbon::now();
+    public static function activeEvents(Carbon $timestamp = null): ?Collection {
+        if ($timestamp === null) {
+            $timestamp = Carbon::now();
+        }
 
         return Event::where([
-                                ['begin', '<=', $now],
-                                ['end', '>=', $now]
+                                ['begin', '<=', $timestamp->toIso8601String()],
+                                ['end', '>=', $timestamp->toIso8601String()]
                             ])->get();
     }
 
@@ -65,8 +67,8 @@ abstract class EventController extends Controller
 
     public static function getUpcomingEvents(): Paginator {
         return Event::where('end', '>=', Carbon::now()->toIso8601String())
-                                      ->orderBy('begin')
-                                      ->simplePaginate(15);
+                    ->orderBy('begin')
+                    ->simplePaginate(15);
     }
 
 }

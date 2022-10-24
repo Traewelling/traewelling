@@ -8,10 +8,12 @@ use App\Enum\StatusVisibility;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
@@ -220,4 +222,32 @@ abstract class TrainCheckinController extends Controller
         return PointReason::tryFrom($pointsResource['calculation']['reason']);
     }
 
+    /**
+     * @param string $tripId
+     * @param string $lineName
+     * @param int    $start
+     *
+     * @return HafasTrip
+     * @throws HafasException
+     * @throws StationNotOnTripException
+     * @api v1
+     */
+    public static function getHafasTrip(string $tripId, string $lineName, int $start): HafasTrip {
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+
+        if ($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
+            throw new StationNotOnTripException();
+        }
+
+        //try to refresh the departure time of the origin station
+        $originStopover = $hafasTrip->stopoversNEW->where('train_station_id', $start)->first();
+        if ($originStopover) {
+            dispatch(function() use ($originStopover) {
+                HafasController::refreshStopover($originStopover);
+            })->afterResponse();
+        }
+
+        return $hafasTrip;
+    }
 }

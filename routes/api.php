@@ -175,8 +175,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
                  ->name('api.v0.checkin.train.autocomplete');
             Route::get('stationboard', 'API\TransportController@TrainStationboard')
                  ->name('api.v0.checkin.train.stationboard');
-            Route::get('trip', 'API\TransportController@TrainTrip')
-                 ->name('api.v0.checkin.train.trip');
             Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
             Route::get('latest', 'API\TransportController@TrainLatestArrivals')

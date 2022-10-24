@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
 use App\Models\Event;
@@ -70,12 +71,12 @@ class TransportController extends ResponseController
                                         ]);
 
         try {
-            $trainTripResponse = TransportBackend::getTrainTrip(
+            $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripId'],
                 $validated['lineName'],
                 $validated['start']
             );
-            return $this->sendv1Response(data: $trainTripResponse);
+            return $this->sendv1Response(data: new HafasTripResource($hafasTrip));
         } catch (StationNotOnTripException) {
             return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
         }
