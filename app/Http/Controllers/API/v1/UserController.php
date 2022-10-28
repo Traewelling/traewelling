@@ -23,6 +23,42 @@ use InvalidArgumentException;
 class UserController extends ResponseController
 {
 
+    /**
+     * @OA\Delete(
+     *     path="/settings/account",
+     *     operationId="deleteUserAccount",
+     *     tags={"Settings"},
+     *     summary="Delete User Account",
+     *     description="Deletes the Account for the user and all posts created by it",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="confirmation",
+     *                  title="confirmation",
+     *                  description="Username of the to be deleted account (needs to match the currently logged in
+     *                  user)", example="Gertrud123"
+     *              )
+     *          )
+     *     ),
+     * @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *     ),
+     * @OA\Response(response=409, description="Conflict. This should not happen but it tries to prevent a 500."),
+     * @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=401, description="Not logged in"),
+     * @OA\Response(response=403, description="User not authorized to do this action"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function deleteAccount(Request $request): JsonResponse {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
@@ -34,6 +70,44 @@ class UserController extends ResponseController
     }
 
     /**
+     *   @OA\Get(
+     *      path="/user/{username}/statuses",
+     *      operationId="getStatusesForUser",
+     *      tags={"User", "Status"},
+     *      summary="[Auth optional] Get paginated statuses for single user",
+     *      description="Returns paginated statuses of a single user specified by the username",
+     *      @OA\Parameter (
+     *           name="username",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Status"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
+     *
      * Returns paginated statuses for user
      *
      * @param Request $request
@@ -56,11 +130,46 @@ class UserController extends ResponseController
         return StatusResource::collection($userResponse);
     }
 
+   //ToDo: Is this even used anywhere?
     public function authenticated(): UserResource {
         return new UserResource(Auth::user());
     }
 
     /**
+     * @OA\Get(
+     *      path="/user/{username}",
+     *      operationId="showUser",
+     *      tags={"User"},
+     *      summary="[Auth optional] Get information for single user",
+     *      description="Returns general information, metadata and statistics for a user",
+     *      @OA\Parameter (
+     *           name="username",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data",
+     *                      ref="#/components/schemas/User"
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="User not found"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
      * Returns Model of user
      *
      * @param string $username
@@ -72,6 +181,47 @@ class UserController extends ResponseController
         return new UserResource(User::where('username', 'like', $username)->firstOrFail());
     }
 
+    /**
+     * @OA\Post(
+     *      path="/user/createMute",
+     *      operationId="createMute",
+     *      tags={"User"},
+     *      summary="Mute a user",
+     *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-muted user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       @OA\Response(response=409, description="User is already muted"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function createMute(Request $request): JsonResponse {
         $validated     = $request->validate([
                                                 'userId' => [
@@ -100,6 +250,47 @@ class UserController extends ResponseController
         return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
+    /**
+     * @OA\Delete(
+     *      path="/user/destroyMute",
+     *      operationId="destroyMute",
+     *      tags={"User"},
+     *      summary="Unmute a user",
+     *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-unmuted user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       @OA\Response(response=409, description="User is already unmuted"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function destroyMute(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'userId' => [
@@ -129,6 +320,46 @@ class UserController extends ResponseController
         return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
     }
 
+    /**
+     *   @OA\Get(
+     *      path="/user/search/{query}",
+     *      operationId="searchUsers",
+     *      tags={"User"},
+     *      summary="Get paginated statuses for single user",
+     *      description="Returns paginated statuses of a single user specified by the username",
+     *      @OA\Parameter (
+     *           name="query",
+     *           in="path",
+     *           description="username",
+     *           example="Gertrud123",
+     *      ),
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"token": {}}
+     *       }
+     *     )
+     *
+     */
     public function search(string $query): AnonymousResourceCollection|JsonResponse {
         try {
             return UserResource::collection(BackendUserBackend::searchUser($query));

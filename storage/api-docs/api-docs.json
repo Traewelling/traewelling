@@ -18,11 +18,250 @@
             "description": "Production Server"
         },
         {
-            "url": "http://my-default-host.com",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
     "paths": {
+        "/auth/signup": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "register new user",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "Username",
+                                        "type": "string",
+                                        "maxLength": 25,
+                                        "minLength": 3,
+                                        "pattern": "^[a-zA-Z0-9_]*$",
+                                        "example": "Gertrud123"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 50
+                                    },
+                                    "email": {
+                                        "example": "mail@example.com"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "thisisnotasecurepassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "confirmation of the password-field.",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "thisisnotasecurepassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BearerTokenResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Other (not specified) error occured"
+                    },
+                    "422": {
+                        "description": "Username or email is already taken, or other input error"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login with username & password",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "description": "Username or email",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "gertrud@traewelling.de"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "minLength": 8,
+                                        "example": "thisisnotasecurepassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BearerTokenResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Non-matching credentials"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout & invalidate current bearer token",
+                "operationId": "logoutUser",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error during revoke"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "Auth",
+                    "User"
+                ],
+                "summary": "Get authenticated user information",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+                "operationId": "getAuthenticatedUser",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserAuth"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh Bearer Token",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+                "operationId": "refreshToken",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BearerTokenResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/event/{slug}": {
             "get": {
                 "tags": [
@@ -271,6 +510,59 @@
                     },
                     "403": {
                         "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/activeEvents": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Shows current events with basic information",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+                "operationId": "getCurrentEvents",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug for event",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "weihnachten_2022"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
                     }
                 },
                 "security": [
@@ -826,10 +1118,375 @@
                     {}
                 ]
             }
+        },
+        "/settings/account": {
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete User Account",
+                "description": "Deletes the Account for the user and all posts created by it",
+                "operationId": "deleteUserAccount",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "confirmation": {
+                                        "title": "confirmation",
+                                        "description": "Username of the to be deleted account (needs to match the currently logged in\n     *                  user)",
+                                        "example": "Gertrud123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "409": {
+                        "description": "Conflict. This should not happen but it tries to prevent a 500."
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "User not authorized to do this action"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/{username}/statuses": {
+            "get": {
+                "tags": [
+                    "User",
+                    "Status"
+                ],
+                "summary": "[Auth optional] Get paginated statuses for single user",
+                "description": "Returns paginated statuses of a single user specified by the username",
+                "operationId": "getStatusesForUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Status"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/{username}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "[Auth optional] Get information for single user",
+                "description": "Returns general information, metadata and statistics for a user",
+                "operationId": "showUser",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/createMute": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Mute a user",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+                "operationId": "createMute",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-muted user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "409": {
+                        "description": "User is already muted"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/destroyMute": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Unmute a user",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+                "operationId": "destroyMute",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unmuted user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "409": {
+                        "description": "User is already unmuted"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/search/{query}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get paginated statuses for single user",
+                "description": "Returns paginated statuses of a single user specified by the username",
+                "operationId": "searchUsers",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "username",
+                        "example": "Gertrud123"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "BearerTokenResponse": {
+                "title": "BearerTokenResponse",
+                "properties": {
+                    "token": {
+                        "title": "token",
+                        "description": "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)",
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4....."
+                    },
+                    "expires_at": {
+                        "title": "slug",
+                        "description": "end of life for this token. Lifespan is usually one year.",
+                        "type": "string",
+                        "example": "2023-10-19T15:15:06+02:00"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "BearerTokenResponse"
+                }
+            },
             "Event": {
                 "title": "Event",
                 "description": "Event model",
@@ -1588,6 +2245,122 @@
                     "name": "User"
                 }
             },
+            "UserAuth": {
+                "title": "UserAuth",
+                "description": "User auth model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "title": "displayName",
+                        "description": "Display name of the user",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "title": "username",
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance travelled by train in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration travelled by train in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 6
+                    },
+                    "trainSpeed": {
+                        "title": "trainSpeed",
+                        "description": "average speed travelled by train in meters",
+                        "type": "number",
+                        "format": "float",
+                        "example": 123.45
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "Current points of the last 7 days",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 300
+                    },
+                    "twitterUrl": {
+                        "title": "twitterUrl",
+                        "description": "URL to the Twitter profile of the user",
+                        "type": "string",
+                        "example": "https://twitter.com/i/user/843458335",
+                        "nullable": true
+                    },
+                    "mastodonUrl": {
+                        "title": "mastodonUrl",
+                        "description": "URL to the Mastodon profile of the user",
+                        "type": "string",
+                        "example": "https://chaos.social/@traewelling",
+                        "nullable": true
+                    },
+                    "privateProfile": {
+                        "title": "privateProfile",
+                        "description": "is this profile set to private?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Hide all statuses after x days",
+                        "type": "integer",
+                        "example": 3,
+                        "nullable": true
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "role": {
+                        "title": "role",
+                        "description": "The permission-role of a user. Distinguishes access level to certain features.",
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "home": {
+                        "$ref": "#/components/schemas/TrainStation"
+                    },
+                    "dbl": {
+                        "title": "dbl",
+                        "description": "Should tweets contain the hashtag #dbl? (see https://twitter.com/dblocator)",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "language": {
+                        "title": "language",
+                        "description": "what is the specified language of this user",
+                        "example": "en",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserAuth"
+                }
+            },
             "StatusUpdateBody": {
                 "title": "StatusUpdateBody",
                 "description": "Status Update Body",
@@ -1657,6 +2430,14 @@
     },
     "tags": [
         {
+            "name": "Auth",
+            "description": "Logging in, creating Accounts, etc."
+        },
+        {
+            "name": "User",
+            "description": "Information regarding users"
+        },
+        {
             "name": "Dashboard",
             "description": "API Endpoints of Dashboard"
         },
@@ -1667,6 +2448,14 @@
         {
             "name": "Events",
             "description": "Events that users can check in to"
+        },
+        {
+            "name": "Likes",
+            "description": "Likes regarding a single status"
+        },
+        {
+            "name": "Settings",
+            "description": "User/Profile-Settings"
         }
     ]
 }

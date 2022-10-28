@@ -35,6 +35,14 @@ namespace App\Http\Controllers\API\v1;
  *
  *
  * @OA\Tag(
+ *     name="Auth",
+ *     description="Logging in, creating Accounts, etc."
+ * )
+ * @OA\Tag(
+ *     name="User",
+ *     description="Information regarding users"
+ * )
+ * @OA\Tag(
  *     name="Dashboard",
  *     description="API Endpoints of Dashboard"
  * )
@@ -45,6 +53,14 @@ namespace App\Http\Controllers\API\v1;
  * @OA\Tag(
  *     name="Events",
  *     description="Events that users can check in to"
+ * )
+ * @OA\Tag(
+ *     name="Likes",
+ *     description="Likes regarding a single status"
+ * )
+ * @OA\Tag(
+ *     name="Settings",
+ *     description="User/Profile-Settings"
  * )
  */
 class Controller
