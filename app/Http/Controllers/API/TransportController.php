@@ -192,12 +192,6 @@ class TransportController extends ResponseController
 
     }
 
-    public function TrainLatestArrivals() {
-        $arrivals = TransportBackend::getLatestArrivals(auth()->user());
-
-        return $this->sendResponse($arrivals);
-    }
-
     public function StationByCoordinates(Request $request) {
         $validator = Validator::make($request->all(), [
             'latitude'  => 'required|numeric|min:-180|max:180',
@@ -213,34 +207,5 @@ class TransportController extends ResponseController
         }
 
         return $this->sendResponse($nearestStation);
-    }
-
-    public function getHome() {
-        $home = auth()->user()->home;
-        if ($home === null) {
-            return $this->sendError('user has not set a home station.');
-        }
-        return $this->sendResponse($home);
-    }
-
-    public function setHome(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'ibnr' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        try {
-            $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
-            $trainStation = HomeController::setHome(Auth::user(), $station);
-            return $this->sendResponse($trainStation->name);
-        } catch (HafasException $e) {
-            return $this->sendError([
-                                        'id'      => 'HAFAS_EXCEPTION',
-                                        'message' => $e->getMessage()
-                                    ]);
-        }
     }
 }

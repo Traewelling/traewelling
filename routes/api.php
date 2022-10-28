@@ -169,11 +169,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
                  ->name('api.v0.checkin.train.trip');
             Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
-            Route::get('latest', 'API\TransportController@TrainLatestArrivals')
-                 ->name('api.v0.checkin.train.latest');
-            Route::get('home', 'API\TransportController@getHome')
-                 ->name('api.v0.checkin.train.home');
-            Route::put('home', 'API\TransportController@setHome');
             Route::get('nearby', 'API\TransportController@StationByCoordinates')
                  ->name('api.v0.trains.nearby');
         });

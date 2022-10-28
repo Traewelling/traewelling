@@ -116,34 +116,4 @@ class ApiCheckinTest extends ApiTestCase
                                            'alsoOnThisConnection'
                                        ]);
     }
-
-    /**
-     * Test if the latest stations are really shown.
-     * @test
-     */
-    public function latestStationsTest(): void {
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->json('GET', route('api.v0.checkin.train.latest'));
-        $response->assertOk();
-    }
-
-    /**
-     * Test the home stations
-     * @test
-     */
-    public function homeStationTest(): void {
-
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->json('PUT', route('api.v0.checkin.train.home'), ['ibnr' => '8000105']);
-        $this->checkHafasException($response, 404);
-        $response->assertOk();
-        $this->assertEquals($response->getContent(), '"Frankfurt(Main)Hbf"');
-
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->json('GET', route('api.v0.checkin.train.home'));
-        $response->assertOk();
-        $response->assertJsonStructure(['id', 'ibnr', 'name', 'latitude', 'longitude']);
-        $station = json_decode($response->getContent(), true)['name'];
-        $this->assertEquals($station, "Frankfurt(Main)Hbf");
-    }
 }
