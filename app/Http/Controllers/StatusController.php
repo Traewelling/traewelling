@@ -209,10 +209,6 @@ class StatusController extends Controller
         $like->delete();
     }
 
-    public static function getLikes($statusId) {
-        return Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
-    }
-
     public static function usageByDay(Carbon $date): int {
         return Status::where("created_at", ">=", $date->copy()->startOfDay())
                      ->where("created_at", "<=", $date->copy()->endOfDay())

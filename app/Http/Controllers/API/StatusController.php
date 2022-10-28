@@ -23,23 +23,6 @@ use InvalidArgumentException;
 class StatusController extends ResponseController
 {
 
-    public function enRoute() {
-        $activeStatusesResponse = StatusBackend::getActiveStatuses();
-        $response               = [];
-        if ($activeStatusesResponse['statuses'] !== null) {
-            $response = [
-                'statuses'  => $activeStatusesResponse['statuses'],
-                'polylines' => $activeStatusesResponse['polylines']
-            ];
-        }
-        return $this->sendResponse($response);
-    }
-
-    public function getByEvent(int $eventID): JsonResponse {
-        $eventStatusResponse = StatusBackend::getStatusesByEvent(null, $eventID);
-        return $this->sendResponse($eventStatusResponse['statuses']->simplePaginate(15));
-    }
-
     public function index(Request $request) {
         $validator = Validator::make($request->all(), [
             'maxStatuses' => 'integer',
@@ -112,34 +95,5 @@ class StatusController extends ResponseController
         }
 
         return $this->sendResponse(__('controller.status.delete-ok'));
-    }
-
-    public function createLike($statusId) {
-        $status = Status::find($statusId);
-        if ($status == null) {
-            return $this->sendError("false", 404);
-        }
-        try {
-            StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendResponse(true);
-        } catch (StatusAlreadyLikedException $e) {
-            return $this->sendError("false", 400);
-        }
-
-    }
-
-    public function destroyLike(int $statusId): JsonResponse {
-        try {
-            StatusBackend::destroyLike(Auth::user(), $statusId);
-            return $this->sendResponse(true);
-        } catch (InvalidArgumentException) {
-            return $this->sendResponse(false);
-        }
-    }
-
-    public function getLikes($statusId) {
-        $getLikesResponse = StatusBackend::getLikes($statusId);
-
-        return $this->sendResponse($getLikesResponse);
     }
 }
