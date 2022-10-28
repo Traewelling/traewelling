@@ -157,17 +157,7 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
             Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
         });
 
-        // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], static function() {
-            Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
-            Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
-            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
-            Route::delete('{statusId}/like', 'API\StatusController@destroyLike');
-            Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
-        });
         Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
-
-        Route::resource('notifications', 'API\NotificationController');
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], static function() {

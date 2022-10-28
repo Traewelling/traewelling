@@ -112,7 +112,7 @@ abstract class TwitterController extends Controller
         } catch (NotConnectedException $exception) {
             throw $exception;
         } catch (Exception $exception) {
-            Log::error($exception);
+            report($exception);
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
         }

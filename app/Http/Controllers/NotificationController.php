@@ -2,41 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\ShouldDeleteNotificationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
-use Throwable;
 
-/**
- * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
- */
 class NotificationController extends Controller
 {
-    /**
-     * @deprecated replaced with Backend/NotificationsController
-     */
-    public static function latest() {
-        return Auth::user()->notifications
-            ->take(10)->map(function($notification) {
-                try {
-                    $notification->type::detail($notification);
-                    return $notification;
-                } catch (ShouldDeleteNotificationException $e) {
-                    $notification->delete();
-                    return null;
-                }
-            })
-            // We don't need empty notifications
-            ->filter(function($notificationOrNull) {
-                return $notificationOrNull != null;
-            })
-            ->values();
-    }
-
-    /**
-     * @deprecated replaced with new functionality of latest()
-     */
     public static function renderLatest(): JsonResponse {
         $notifications = Auth::user()->notifications()
                              ->limit(10)
@@ -81,25 +52,7 @@ class NotificationController extends Controller
         }
     }
 
-    public static function destroy($notificationID): JsonResponse {
-        try {
-            $notification = Auth::user()->notifications->where('id', $notificationID)->first();
-            $notification->delete();
-        } catch (Throwable $e) {
-            return Response::json([], 404);
-        }
-
-        return Response::json($notification, 200);
-    }
-
     public static function readAll(): void {
         Auth::user()->unreadNotifications->markAsRead();
-    }
-
-    /**
-     * @return int
-     */
-    public static function count(): int {
-        return Auth::user()->notifications->count();
     }
 }
