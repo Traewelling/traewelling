@@ -35,18 +35,6 @@ class UserController extends ResponseController
         return $this->sendResponse($profilePictureResponse);
     }
 
-    public function PutProfilepicture(Request $request) {
-        $avatar                 = $request->getContent();
-        $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
-        return $this->sendResponse($profilePictureResponse);
-    }
-
-    public function PutDisplayname(Request $request) {
-        $displayname         = $request->getContent();
-        $displaynameResponse = UserBackend::updateDisplayName($displayname);
-        return $this->sendResponse(['success' => $displaynameResponse]);
-    }
-
     public function searchUser($searchQuery) {
         return UserBackend::searchUser($searchQuery);
     }

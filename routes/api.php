@@ -151,9 +151,10 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
         Route::group(['prefix' => 'user'], static function() {
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
             Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
-            Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
-            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
-            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
+
+            //Endpoint used between 2022-09-01 and 2022-10-28
+            Route::get('{username}/active', 'API\UserController@active')
+                 ->name('api.v0.user.active');
         });
 
         Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
