@@ -11,8 +11,7 @@
 |
 */
 
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\TransportController as ApiTransportController;
+use App\Http\Controllers\API\LegacyApi0Controller;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -136,40 +135,36 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
 Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static function() {
     Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
-        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::post('auth/logout', [AuthController::class, 'logout'])
-             ->name('api.v0.auth.logout');
-
         //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('getuser', [AuthController::class, 'getUser'])
+        Route::get('getuser', [LegacyApi0Controller::class, 'getUser'])
              ->name('api.v0.getUser');
 
-        //Endpoint used in many tests...
-        Route::get('/user/{username}', [\App\Http\Controllers\API\UserController::class, 'show'])
+        //Endpoint used between 2022-09-01 and 2022-10-28 (medium traffic)
+        Route::get('/user/{username}', [LegacyApi0Controller::class, 'showUser'])
              ->name('api.v0.user');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('/user/{username}/active', [\App\Http\Controllers\API\UserController::class, 'active'])
+        Route::get('/user/{username}/active', [LegacyApi0Controller::class, 'getActiveStatuses'])
              ->name('api.v0.user.active');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('statuses', [\App\Http\Controllers\API\StatusController::class, 'index'])
+        Route::get('statuses', [LegacyApi0Controller::class, 'showStatuses'])
              ->name('api.v0.statuses');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/stationboard', [ApiTransportController::class, 'TrainStationboard'])
+        Route::get('/trains/stationboard', [LegacyApi0Controller::class, 'showStationboard'])
              ->name('api.v0.checkin.train.stationboard');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/trip', [ApiTransportController::class, 'TrainTrip'])
+        Route::get('/trains/trip', [LegacyApi0Controller::class, 'showTrip'])
              ->name('api.v0.checkin.train.trip');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::post('/trains/checkin', [ApiTransportController::class, 'TrainCheckin'])
+        Route::post('/trains/checkin', [LegacyApi0Controller::class, 'checkin'])
              ->name('api.v0.checkin.train.checkin');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/nearby', [ApiTransportController::class, 'StationByCoordinates'])
+        Route::get('/trains/nearby', [LegacyApi0Controller::class, 'showStationByCoordinates'])
              ->name('api.v0.trains.nearby');
     });
 });

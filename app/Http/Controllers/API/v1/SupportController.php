@@ -30,7 +30,7 @@ class SupportController extends ResponseController
             return $this->sendv1Response(['ticket' => $ticketNumber], 201);
         } catch (GuzzleException $exception) {
             report($exception);
-            return $this->sendError(null, 503);
+            return $this->sendv1Error(null, 503);
         }
     }
 }

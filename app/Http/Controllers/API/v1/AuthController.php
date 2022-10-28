@@ -8,7 +8,6 @@ use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +21,7 @@ class AuthController extends ResponseController
      */
     public function register(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'unique:users','max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
+            'username' => ['required', 'unique:users', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
             'name'     => ['required', 'max:50'],
             'email'    => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed'],
@@ -42,11 +41,11 @@ class AuthController extends ResponseController
 
         if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');
-            return $this->sendResponse([
-                                           'token'      => $userToken->accessToken,
-                                           'message'    => 'Registration successful.',
-                                           'expires_at' => $userToken->token->expires_at->toIso8601String()
-                                       ]);
+            return $this->sendv1Response([
+                                             'token'      => $userToken->accessToken,
+                                             'message'    => 'Registration successful.',
+                                             'expires_at' => $userToken->token->expires_at->toIso8601String()
+                                         ]);
         }
         return $this->sendv1Error("Sorry! Registration is not successful.", 401);
     }
@@ -68,7 +67,7 @@ class AuthController extends ResponseController
                                           'expires_at' => $token->token->expires_at->toIso8601String()])
                         ->header('Authorization', $token->accessToken);
         }
-        return $this->sendError('Non-matching credentials', 401);
+        return $this->sendv1Error('Non-matching credentials', 401);
     }
 
     /**

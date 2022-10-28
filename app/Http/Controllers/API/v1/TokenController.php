@@ -23,7 +23,7 @@ class TokenController extends ResponseController
             BackendTokenController::revokeToken($validated['tokenId'], auth()->user());
             return $this->sendv1Response(null, 204);
         } catch (PermissionException) {
-            return $this->sendError(null, 403);
+            return $this->sendv1Error(null, 403);
         }
     }
 
