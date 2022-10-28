@@ -434,4 +434,36 @@ abstract class HafasController extends Controller
         }
         $hafasTrip->remarks()->syncWithoutDetaching($remarkObjects);
     }
+
+    public static function refreshStopovers(stdClass $rawHafas): int {
+        $payload = [];
+        foreach ($rawHafas?->stopovers ?? [] as $stopover) {
+            $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
+            if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
+                //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
+                continue;
+            }
+
+            $stop             = self::parseHafasStopObject($stopover->stop);
+            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
+            $arrivalReal      = Carbon::parse($stopover->arrival);
+            $departurePlanned = Carbon::parse($stopover->plannedDeparture);
+            $departureReal    = Carbon::parse($stopover->departure);
+
+            $payload[] = [
+                'trip_id'           => $rawHafas->id,
+                'train_station_id'  => $stop->id,
+                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned->toIso8601String() : $departurePlanned->toIso8601String(),
+                'arrival_real'      => $arrivalReal->toDateTimeString(),
+                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned->toIso8601String() : $arrivalPlanned->toIso8601String(),
+                'departure_real'    => $departureReal->toDateTimeString(),
+            ];
+        }
+
+        return TrainStopover::upsert(
+            $payload,
+            ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
+            ['arrival_real', 'departure_real']
+        );
+    }
 }

@@ -8,7 +8,6 @@ use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -100,7 +99,7 @@ class AuthController extends ResponseController
 
         if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');
-            return $this->sendResponse([
+            return $this->sendv1Response([
                                            'token'      => $userToken->accessToken,
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
@@ -163,7 +162,7 @@ class AuthController extends ResponseController
                                           'expires_at' => $token->token->expires_at->toIso8601String()])
                         ->header('Authorization', $token->accessToken);
         }
-        return $this->sendError('Non-matching credentials', 401);
+        return $this->sendv1Error('Non-matching credentials', 401);
     }
 
     /**

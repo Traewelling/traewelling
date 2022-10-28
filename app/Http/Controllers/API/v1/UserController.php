@@ -65,7 +65,7 @@ class UserController extends ResponseController
         try {
             return $this->sendv1Response(BackendUserBackend::deleteUserAccount(user: auth()->user()));
         } catch (Error) {
-            return $this->sendError('', 409);
+            return $this->sendv1Error('', 409);
         }
     }
 

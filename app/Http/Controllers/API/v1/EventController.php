@@ -255,7 +255,7 @@ class EventController extends ResponseController
         if ($eventSuggestion->wasRecentlyCreated) {
             return $this->sendv1Response(data: null, code: 201);
         }
-        return $this->sendError(error: null, code: 500);
+        return $this->sendv1Error(error: null, code: 500);
     }
 
     /**
