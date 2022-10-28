@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\IcsController as BackendIcsController;
 use App\Http\Resources\IcsEntryResource;
 use App\Models\IcsToken;
@@ -11,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class IcsController extends ResponseController
+class IcsController extends Controller
 {
     public function createIcsToken(Request $request): JsonResponse {
         $validated = $request->validate(['name' => ['required', 'max:255']]);

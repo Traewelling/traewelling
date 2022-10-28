@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
@@ -18,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
-class FollowController extends ResponseController
+class FollowController extends Controller
 {
 
     public static function createFollow(Request $request, FollowController $instance): JsonResponse {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Resources\UserProfileSettingsResource;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
-class SettingsController extends ResponseController
+class SettingsController extends Controller
 {
     public function getProfileSettings(): UserProfileSettingsResource {
         return new UserProfileSettingsResource(auth()->user());

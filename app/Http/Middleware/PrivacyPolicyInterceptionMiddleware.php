@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\API\v1\Controller;
 use App\Http\Controllers\Backend\PrivacyPolicyController;
 use App\Models\PrivacyAgreement;
 use Carbon\Carbon;
@@ -10,7 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class PrivacyPolicyInterceptionMiddleware extends ResponseController
+class PrivacyPolicyInterceptionMiddleware extends Controller
 {
     /**
      * Handle an incoming request.

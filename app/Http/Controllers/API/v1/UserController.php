@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotMutedException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
-class UserController extends ResponseController
+class UserController extends Controller
 {
 
     /**

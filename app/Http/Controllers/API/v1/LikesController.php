@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Like;
@@ -15,7 +14,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
-class LikesController extends ResponseController
+class LikesController extends Controller
 {
     /**
      * @OA\Get(
