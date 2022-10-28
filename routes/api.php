@@ -167,8 +167,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
         });
         Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
 
-        Route::resource('notifications', 'API\NotificationController');
-
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], static function() {
             Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
