@@ -123,18 +123,17 @@
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('trains.checkin') }}" method="POST" id="checkinForm">
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">
-                                {{__('stationboard.label-message')}}
-                            </label>
-                            <textarea name="body" class="form-control" id="message-text" maxlength="280"></textarea>
-                            <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
-                            <script>
-                                document.querySelector('#message-text').addEventListener('input', function (e) {
-                                    document.querySelector('#body-length').innerText = e.target.value.length;
-                                });
-                            </script>
+                        <div class="form-floating">
+                            <textarea name="body" class="form-control" id="message-text" maxlength="280"
+                                      style="min-height: 130px;"></textarea>
+                            <label for="message-text">{{__('stationboard.label-message')}}</label>
                         </div>
+                        <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
+                        <script>
+                            document.querySelector('#message-text').addEventListener('input', function (e) {
+                                document.querySelector('#body-length').innerText = e.target.value.length;
+                            });
+                        </script>
 
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
