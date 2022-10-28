@@ -34,7 +34,7 @@ class IcsController extends ResponseController
             BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['tokenId']);
             return $this->sendv1Response(null, 204);
         } catch (ModelNotFoundException) {
-            return $this->sendError(null);
+            return $this->sendv1Error(null);
         }
     }
 
