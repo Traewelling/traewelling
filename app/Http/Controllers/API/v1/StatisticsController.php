@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
@@ -17,7 +16,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class StatisticsController extends ResponseController
+class StatisticsController extends Controller
 {
     /**
      * @return AnonymousResourceCollection
@@ -85,7 +84,7 @@ class StatisticsController extends ResponseController
             ]
         ];
 
-        return $this->sendv1Response(data: $returnData, additional: $additionalData);
+        return $this->sendResponse(data: $returnData, additional: $additionalData);
     }
 
     public function getGlobalStatistics(): JsonResponse {
@@ -101,7 +100,7 @@ class StatisticsController extends ResponseController
             ]
         ];
 
-        return $this->sendv1Response(data: $data, additional: $additionalData);
+        return $this->sendResponse(data: $data, additional: $additionalData);
     }
 
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {

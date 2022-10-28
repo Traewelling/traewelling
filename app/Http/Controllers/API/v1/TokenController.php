@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\User\TokenController as BackendTokenController;
 use App\Http\Resources\TokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class TokenController extends ResponseController
+class TokenController extends Controller
 {
     public function index(): AnonymousResourceCollection {
         return TokenResource::collection(BackendTokenController::index(user: auth()->user()));
@@ -21,14 +20,14 @@ class TokenController extends ResponseController
 
         try {
             BackendTokenController::revokeToken($validated['tokenId'], auth()->user());
-            return $this->sendv1Response(null, 204);
+            return $this->sendResponse(null, 204);
         } catch (PermissionException) {
-            return $this->sendv1Error(null, 403);
+            return $this->sendError(null, 403);
         }
     }
 
     public function revokeAllTokens(): JsonResponse {
         BackendTokenController::revokeAllTokens(user: auth()->user());
-        return $this->sendv1Response(null, 204);
+        return $this->sendResponse(null, 204);
     }
 }

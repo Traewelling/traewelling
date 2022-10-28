@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\StatusResource;
-use App\Models\Event;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Intervention\Image\Commands\ResponseCommand;
 
-class EventController extends ResponseController
+class EventController extends Controller
 {
     /**
      * @OA\Get(
@@ -253,9 +246,9 @@ class EventController extends ResponseController
         );
 
         if ($eventSuggestion->wasRecentlyCreated) {
-            return $this->sendv1Response(data: null, code: 201);
+            return $this->sendResponse(data: null, code: 201);
         }
-        return $this->sendv1Error(error: null, code: 500);
+        return $this->sendError(error: null, code: 500);
     }
 
     /**

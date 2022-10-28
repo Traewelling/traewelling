@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\IcsController as BackendIcsController;
 use App\Http\Resources\IcsEntryResource;
 use App\Models\IcsToken;
@@ -11,14 +10,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class IcsController extends ResponseController
+class IcsController extends Controller
 {
     public function createIcsToken(Request $request): JsonResponse {
         $validated = $request->validate(['name' => ['required', 'max:255']]);
 
         $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
-        return $this->sendv1Response(route('ics', [
+        return $this->sendResponse(route('ics', [
             'user_id' => $icsToken->user_id,
             'token'   => $icsToken->token,
             'limit'   => 10000,
@@ -32,9 +31,9 @@ class IcsController extends ResponseController
 
         try {
             BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['tokenId']);
-            return $this->sendv1Response(null, 204);
+            return $this->sendResponse(null, 204);
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error(null);
+            return $this->sendError(null);
         }
     }
 
