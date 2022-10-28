@@ -118,16 +118,6 @@ class ApiCheckinTest extends ApiTestCase
     }
 
     /**
-     * Test if the latest stations are really shown.
-     * @test
-     */
-    public function latestStationsTest(): void {
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->json('GET', route('api.v0.checkin.train.latest'));
-        $response->assertOk();
-    }
-
-    /**
      * Test the home stations
      * @test
      */
