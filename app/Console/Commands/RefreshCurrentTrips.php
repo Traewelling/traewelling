@@ -4,8 +4,6 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
-use App\Models\TrainStopover;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use PDOException;
 
@@ -48,45 +46,9 @@ class RefreshCurrentTrips extends Command
                 $this->info('Refreshing trip ' . $trip->trip_id . ' (' . $trip->linename . ')...');
                 $trip->update(['last_refreshed' => now()]);
 
-                $rawHafas = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
-
-                $payload = [];
-                foreach ($rawHafas?->stopovers ?? [] as $stopover) {
-                    $this->info('Updating stopover ' . $stopover?->stop?->name . '...');
-
-                    $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
-                    if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
-                        //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
-                        $this->warn('-> Skipping, because departure/arrival is out of range (' . $timestampToCheck->toIso8601String() . ')');
-                        continue;
-                    }
-
-                    $stop             = HafasController::parseHafasStopObject($stopover->stop);
-                    $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
-                    $arrivalReal      = Carbon::parse($stopover->arrival);
-                    $departurePlanned = Carbon::parse($stopover->plannedDeparture);
-                    $departureReal    = Carbon::parse($stopover->departure);
-
-                    $this->info('-> Arrival is delayed +' . ($arrivalReal->diffInMinutes($arrivalPlanned)) . ' minutes...');
-                    $this->info('-> Departure is delayed +' . ($departureReal->diffInMinutes($departurePlanned)) . ' minutes...');
-
-                    $payload[] = [
-                        'trip_id'           => $rawHafas->id,
-                        'train_station_id'  => $stop->id,
-                        'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned?->toDateTimeString() : $departurePlanned?->toDateTimeString(),
-                        'arrival_real'      => $arrivalReal->toDateTimeString(),
-                        'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned?->toDateTimeString() : $arrivalPlanned?->toDateTimeString(),
-                        'departure_real'    => $departureReal->toDateTimeString(),
-                    ];
-                }
-
-                $res = TrainStopover::upsert(
-                    $payload,
-                    ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
-                    ['arrival_real', 'departure_real']
-                );
-
-                $this->info('Updated ' . $res . ' rows.');
+                $rawHafas    = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                $updatedRows = HafasController::refreshStopovers($rawHafas);
+                $this->info('Updated ' . $updatedRows . ' rows.');
 
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
