@@ -38,7 +38,7 @@ class PrivacyPolicyInterceptionMiddleware extends Controller
                                          ->orderByDesc('valid_at')
                                          ->take(1)
                                          ->first();
-            return $this->sendv1Error(
+            return $this->sendError(
                 error:      'Privacy agreement not yet accepted!',
                 code:       406,
                 additional: [

@@ -38,16 +38,16 @@ class SettingsController extends Controller
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
     public function resendMail(): void {
         try {
             auth()->user()->sendEmailVerificationNotification();
-            $this->sendv1Response('', 204);
+            $this->sendResponse('', 204);
         } catch (RateLimitExceededException) {
-            $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 429);
+            $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
         }
     }
 
@@ -68,7 +68,7 @@ class SettingsController extends Controller
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
@@ -92,22 +92,22 @@ class SettingsController extends Controller
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
     public function deleteProfilePicture(): JsonResponse {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
-            return $this->sendv1Response('', 204);
+            return $this->sendResponse('', 204);
         }
 
-        return $this->sendv1Error('', 400);
+        return $this->sendError('', 400);
     }
 
     public function uploadProfilePicture(Request $request): JsonResponse {
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
-            return $this->sendv1Response('', 204);
+            return $this->sendResponse('', 204);
         }
-        return $this->sendv1Error('', 400);
+        return $this->sendError('', 400);
     }
 }

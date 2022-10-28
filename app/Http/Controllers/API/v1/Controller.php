@@ -65,9 +65,9 @@ use Illuminate\Http\JsonResponse;
  *     description="User/Profile-Settings"
  * )
  */
-class Controller
+class Controller extends \App\Http\Controllers\Controller
 {
-    public function sendv1Response(
+    public function sendResponse(
         array|string|object $data = null,
         int                 $code = 200,
         array               $additional = null
@@ -90,7 +90,7 @@ class Controller
         return response()->json($response, $code);
     }
 
-    public function sendv1Error(array|string $error, int $code = 404, array $additional = null): JsonResponse {
+    public function sendError(array|string $error, int $code = 404, array $additional = null): JsonResponse {
         $response = [
             'message' => $error,
         ];

@@ -17,7 +17,7 @@ class IcsController extends Controller
 
         $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
-        return $this->sendv1Response(route('ics', [
+        return $this->sendResponse(route('ics', [
             'user_id' => $icsToken->user_id,
             'token'   => $icsToken->token,
             'limit'   => 10000,
@@ -31,9 +31,9 @@ class IcsController extends Controller
 
         try {
             BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['tokenId']);
-            return $this->sendv1Response(null, 204);
+            return $this->sendResponse(null, 204);
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error(null);
+            return $this->sendError(null);
         }
     }
 

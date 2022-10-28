@@ -265,7 +265,7 @@ class StatusController extends Controller
             abort(404);
         }
 
-        return $this->sendv1Response();
+        return $this->sendResponse();
     }
 
     /**
@@ -319,7 +319,7 @@ class StatusController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
+            return $this->sendError($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -331,7 +331,7 @@ class StatusController extends Controller
                 business:   Business::from($validated['business']),
                 visibility: StatusVisibility::from($validated['visibility']),
             );
-            return $this->sendv1Response(new StatusResource($editStatusResponse));
+            return $this->sendResponse(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
             abort(404);
         } catch (PermissionException) {
@@ -413,7 +413,7 @@ class StatusController extends Controller
             'type'     => 'FeatureCollection',
             'features' => $geoJsonFeatures
         ];
-        return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
+        return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 
     /**
@@ -459,6 +459,6 @@ class StatusController extends Controller
         $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
-        return $this->sendv1Response($trips);
+        return $this->sendResponse($trips);
     }
 }

@@ -27,12 +27,12 @@ class FollowController extends Controller
         try {
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
-            return $instance->sendv1Error(['message' => __('controller.user.follow-error')], 409);
+            return $instance->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
             abort(409);
         }
 
-        return $instance->sendv1Response(new UserResource($createFollowResponse), 204);
+        return $instance->sendResponse(new UserResource($createFollowResponse), 204);
     }
 
     public static function destroyFollow(Request $request, FollowController $instance): JsonResponse {
@@ -41,11 +41,11 @@ class FollowController extends Controller
 
         $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
         if ($destroyFollowResponse === false) {
-            return $instance->sendv1Error(['message' => __('controller.user.follow-404')], 409);
+            return $instance->sendError(['message' => __('controller.user.follow-404')], 409);
         }
 
         $userToUnfollow->fresh();
-        return $instance->sendv1Response(new UserResource($userToUnfollow));
+        return $instance->sendResponse(new UserResource($userToUnfollow));
 
     }
 

@@ -62,9 +62,9 @@ class UserController extends Controller
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
         try {
-            return $this->sendv1Response(BackendUserBackend::deleteUserAccount(user: auth()->user()));
+            return $this->sendResponse(BackendUserBackend::deleteUserAccount(user: auth()->user()));
         } catch (Error) {
-            return $this->sendv1Error('', 409);
+            return $this->sendError('', 409);
         }
     }
 
@@ -234,7 +234,7 @@ class UserController extends Controller
         try {
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
         } catch (UserAlreadyMutedException) {
-            return $this->sendv1Error([
+            return $this->sendError(     [
                                           'message' => __(
                                               'user.already-muted',
                                               ['username' => $userToBeMuted->username]
@@ -244,9 +244,9 @@ class UserController extends Controller
 
         $userToBeMuted->refresh();
         if ($muteUserResponse) {
-            return $this->sendv1Response(new UserResource($userToBeMuted), 201);
+            return $this->sendResponse(new UserResource($userToBeMuted), 201);
         }
-        return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
@@ -304,7 +304,7 @@ class UserController extends Controller
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
 
         } catch (UserNotMutedException) {
-            return $this->sendv1Error([
+            return $this->sendError(     [
                                           'message' => __(
                                               'user.already-unmuted',
                                               ['username' => $userToBeUnmuted->username]
@@ -314,9 +314,9 @@ class UserController extends Controller
 
         $userToBeUnmuted->refresh();
         if ($unmuteUserResponse) {
-            return $this->sendv1Response(new UserResource($userToBeUnmuted));
+            return $this->sendResponse(new UserResource($userToBeUnmuted));
         }
-        return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
@@ -363,7 +363,7 @@ class UserController extends Controller
         try {
             return UserResource::collection(BackendUserBackend::searchUser($query));
         } catch (InvalidArgumentException) {
-            return $this->sendv1Error(['message' => __('messages.exception.general')], 400);
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
         }
     }
 }

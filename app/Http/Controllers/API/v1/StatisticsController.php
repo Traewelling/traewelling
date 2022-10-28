@@ -84,7 +84,7 @@ class StatisticsController extends Controller
             ]
         ];
 
-        return $this->sendv1Response(data: $returnData, additional: $additionalData);
+        return $this->sendResponse(data: $returnData, additional: $additionalData);
     }
 
     public function getGlobalStatistics(): JsonResponse {
@@ -100,7 +100,7 @@ class StatisticsController extends Controller
             ]
         ];
 
-        return $this->sendv1Response(data: $data, additional: $additionalData);
+        return $this->sendResponse(data: $data, additional: $additionalData);
     }
 
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {

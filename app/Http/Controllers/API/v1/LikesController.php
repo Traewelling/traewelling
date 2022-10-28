@@ -70,7 +70,7 @@ class LikesController extends Controller
         try {
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendv1Response(null, 201);
+            return $this->sendResponse(null, 201);
         } catch (StatusAlreadyLikedException) {
             abort(404);
         }
@@ -83,7 +83,7 @@ class LikesController extends Controller
     public function destroy(int $statusId): JsonResponse {
         try {
             StatusBackend::destroyLike(Auth::user(), $statusId);
-            return $this->sendv1Response();
+            return $this->sendResponse();
         } catch (InvalidArgumentException) {
             abort(404);
         }

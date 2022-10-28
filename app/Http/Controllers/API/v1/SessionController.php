@@ -16,6 +16,6 @@ class SessionController extends Controller
     public function deleteAllSessions(): JsonResponse {
         SessionBackend::deleteAllSessionsFor(user: auth()->user());
 
-        return $this->sendv1Response(null, 204);
+        return $this->sendResponse(null, 204);
     }
 }

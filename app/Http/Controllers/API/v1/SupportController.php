@@ -26,10 +26,10 @@ class SupportController extends Controller
                 subject: $validated['subject'],
                 message: $validated['message'],
             );
-            return $this->sendv1Response(['ticket' => $ticketNumber], 201);
+            return $this->sendResponse(['ticket' => $ticketNumber], 201);
         } catch (GuzzleException $exception) {
             report($exception);
-            return $this->sendv1Error(null, 503);
+            return $this->sendError(null, 503);
         }
     }
 }

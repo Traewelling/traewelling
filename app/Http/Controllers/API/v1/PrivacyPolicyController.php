@@ -21,9 +21,9 @@ class PrivacyPolicyController extends Controller
                 'ptime' => $exception->getPrivacyValidity(),
                 'utime' => $exception->getUserAccepted()
             ]);
-            return $this->sendv1Error(error: $error);
+            return $this->sendError(error: $error);
         }
 
-        return $this->sendv1Response(code: 204);
+        return $this->sendResponse(code: 204);
     }
 }

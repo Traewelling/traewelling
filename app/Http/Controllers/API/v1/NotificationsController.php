@@ -15,7 +15,7 @@ class NotificationsController extends Controller
      * @return JsonResponse
      */
     public function count(): JsonResponse {
-        return $this->sendv1Response(NotificationBackend::count());
+        return $this->sendResponse(NotificationBackend::count());
     }
 
     /**

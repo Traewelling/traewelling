@@ -20,14 +20,14 @@ class TokenController extends Controller
 
         try {
             BackendTokenController::revokeToken($validated['tokenId'], auth()->user());
-            return $this->sendv1Response(null, 204);
+            return $this->sendResponse(null, 204);
         } catch (PermissionException) {
-            return $this->sendv1Error(null, 403);
+            return $this->sendError(null, 403);
         }
     }
 
     public function revokeAllTokens(): JsonResponse {
         BackendTokenController::revokeAllTokens(user: auth()->user());
-        return $this->sendv1Response(null, 204);
+        return $this->sendResponse(null, 204);
     }
 }

@@ -98,12 +98,12 @@ class AuthController extends Controller
 
         if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');
-            return $this->sendv1Response([
+            return $this->sendResponse([
                                            'token'      => $userToken->accessToken,
                                            'expires_at' => $userToken->token->expires_at->toIso8601String()
                                        ]);
         }
-        return $this->sendv1Error("Sorry! Registration is not successful.", 401);
+        return $this->sendError("Sorry! Registration is not successful.", 401);
     }
 
     /**
@@ -157,11 +157,11 @@ class AuthController extends Controller
 
         if (LoginController::login($validated['login'], $validated['password'])) {
             $token = $request->user()->createToken('token');
-            return $this->sendv1Response(['token'      => $token->accessToken,
-                                          'expires_at' => $token->token->expires_at->toIso8601String()])
+            return $this->sendResponse(['token'      => $token->accessToken,
+                                        'expires_at' => $token->token->expires_at->toIso8601String()])
                         ->header('Authorization', $token->accessToken);
         }
-        return $this->sendv1Error('Non-matching credentials', 401);
+        return $this->sendError('Non-matching credentials', 401);
     }
 
     /**
@@ -194,9 +194,9 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse {
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
-            return $this->sendv1Response();
+            return $this->sendResponse();
         } else {
-            return $this->sendv1Response("unknown", 500);
+            return $this->sendResponse("unknown", 500);
         }
     }
 
@@ -230,7 +230,7 @@ class AuthController extends Controller
      * @api v1
      */
     public function user(Request $request): JsonResponse {
-        return $this->sendv1Response(new UserSettingsResource($request->user()));
+        return $this->sendResponse(new UserSettingsResource($request->user()));
     }
 
     /**
@@ -266,8 +266,8 @@ class AuthController extends Controller
         $oldToken = $request->user()->token();
         $newToken = $request->user()->createToken('token');
         $oldToken->revoke();
-        return $this->sendv1Response(['token'      => $newToken->accessToken,
-                                      'expires_at' => $newToken->token->expires_at->toIso8601String()])
+        return $this->sendResponse(['token'      => $newToken->accessToken,
+                                    'expires_at' => $newToken->token->expires_at->toIso8601String()])
                     ->header('Authorization', $newToken->accessToken);
     }
 }
