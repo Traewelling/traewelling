@@ -47,27 +47,6 @@ class UserController extends ResponseController
         return $this->sendResponse(['success' => $displaynameResponse]);
     }
 
-    public function getLeaderboard(): JsonResponse {
-        $mapping = function($row) {
-            return [
-                'username'       => $row->user->username,
-                'train_duration' => $row->duration,
-                'train_distance' => $row->distance,
-                'points'         => $row->points
-            ];
-        };
-
-        $users    = LeaderboardBackend::getLeaderboard()->map($mapping);
-        $friends  = auth()->check() ? LeaderboardBackend::getLeaderboard(onlyFollowings: true)->map($mapping) : null;
-        $distance = LeaderboardBackend::getLeaderboard(orderBy: 'distance')->map($mapping);
-
-        return $this->sendResponse([
-                                       'users'      => $users,
-                                       'friends'    => $friends,
-                                       'kilometers' => $distance
-                                   ]);
-    }
-
     public function searchUser($searchQuery) {
         return UserBackend::searchUser($searchQuery);
     }

@@ -18,18 +18,6 @@ class ApiCheckinTest extends ApiTestCase
     }
 
     /**
-     * Getting the autocomplete and only checking if the response is 200.
-     *
-     * @test
-     */
-    public function autocomplete(): void {
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-                         ->get(route('api.v0.checkin.train.autocomplete', ['station' => 'Hamb']));
-        $this->checkHafasException($response);
-        $response->assertOk();
-    }
-
-    /**
      * Use the stationboard api and check if it works.
      * @test
      */

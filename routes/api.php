@@ -149,7 +149,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
         Route::get('getuser', [AuthController::class, 'getUser'])->name('api.v0.getUser');
 
         Route::group(['prefix' => 'user'], static function() {
-            Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
             Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
             Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
@@ -161,8 +160,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], static function() {
-            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
-                 ->name('api.v0.checkin.train.autocomplete');
             Route::get('stationboard', 'API\TransportController@TrainStationboard')
                  ->name('api.v0.checkin.train.stationboard');
             Route::get('trip', 'API\TransportController@TrainTrip')
