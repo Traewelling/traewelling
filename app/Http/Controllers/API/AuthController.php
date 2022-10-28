@@ -14,58 +14,6 @@ use Illuminate\Support\Facades\Validator;
  */
 class AuthController extends ResponseController
 {
-    //create user
-    public function signup(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'username'         => 'required|string|unique:users|max:25|regex:/^[a-zA-Z0-9_]*$/',
-            'name'             => 'required|string|max:50',
-            'email'            => 'required|string|email|unique:users',
-            'password'         => 'required',
-            'confirm_password' => 'required|same:password'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        $input               = $request->all();
-        $input['password']   = Hash::make($input['password']);
-        $input['last_login'] = now();
-        $user                = User::create($input);
-
-        if ($user) {
-            $userToken = $user->createToken('token');
-            return $this->sendResponse([
-                                           'token'      => $userToken->accessToken,
-                                           'message'    => 'Registration successful.',
-                                           'expires_at' => $userToken->token->expires_at->toIso8601String()
-                                       ]);
-        }
-
-        $error = "Sorry! Registration is not successful.";
-        return $this->sendError($error, 401);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     * @deprecated with apiv1
-     */
-    public function login(Request $request) {
-        $validator = $request->validate(['email' => ['required', 'max:255'], 'password' => ['required', 'min:8']]);
-
-        if (!LoginController::login($validator['email'], $validator['password'])) {
-            $error = "Unauthorized";
-            return $this->sendError($error, 401);
-        }
-        $userToken = $request->user()->createToken('token');
-
-        return $this->sendResponse([
-                                       'token'      => $userToken->accessToken,
-                                       'expires_at' => $userToken->token->expires_at->toIso8601String()
-                                   ]);
-    }
 
     /**
      * @param Request $request
