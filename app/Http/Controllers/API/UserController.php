@@ -34,8 +34,4 @@ class UserController extends ResponseController
         $profilePictureResponse = ProfilePictureController::generateProfilePicture($user);
         return $this->sendResponse($profilePictureResponse);
     }
-
-    public function searchUser($searchQuery) {
-        return UserBackend::searchUser($searchQuery);
-    }
 }

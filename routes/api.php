@@ -141,18 +141,20 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
             Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
         });
     });
-    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
-         ->name('api.v0.user.accept_privacy');
+
     // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
+        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
         Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
+
+        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
         Route::get('getuser', [AuthController::class, 'getUser'])->name('api.v0.getUser');
 
         Route::group(['prefix' => 'user'], static function() {
+            //Endpoint used in many tests...
             Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
-            Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
 
-            //Endpoint used between 2022-09-01 and 2022-10-28
+            //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
             Route::get('{username}/active', 'API\UserController@active')
                  ->name('api.v0.user.active');
         });
@@ -161,12 +163,19 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
 
         // Controller for complete Train-Transport-Stuff
         Route::group(['prefix' => 'trains'], static function() {
+            //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
             Route::get('stationboard', 'API\TransportController@TrainStationboard')
                  ->name('api.v0.checkin.train.stationboard');
+
+            //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
             Route::get('trip', 'API\TransportController@TrainTrip')
                  ->name('api.v0.checkin.train.trip');
+
+            //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
             Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
                  ->name('api.v0.checkin.train.checkin');
+
+            //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
             Route::get('nearby', 'API\TransportController@StationByCoordinates')
                  ->name('api.v0.trains.nearby');
         });
