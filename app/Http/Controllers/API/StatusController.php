@@ -23,7 +23,7 @@ use InvalidArgumentException;
 class StatusController extends ResponseController
 {
 
-    public function index(Request $request) {
+    public function index(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'maxStatuses' => 'integer',
             'username'    => 'string|required_if:view,user',
@@ -49,51 +49,5 @@ class StatusController extends ResponseController
             $statuses = UserBackend::getProfilePage($request->username);
         }
         return response()->json($statuses['statuses']);
-    }
-
-    public function show($statusId): JsonResponse {
-        $status = StatusBackend::getStatus($statusId);
-        try {
-            $this->authorize('view', $status);
-        } catch (AuthorizationException) {
-            abort(403, 'Status invisible to you.');
-        }
-        return $this->sendResponse($status);
-    }
-
-    public function update(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'body'     => 'max:280',
-            'business' => 'integer',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-        try {
-            $editStatusResponse = StatusBackend::EditStatus(
-                user:       Auth::user(),
-                statusId:   $request['statusId'],
-                body:       $request['body'],
-                business:   Business::tryFrom($request['businessCheck']),
-                visibility: null
-            );
-        } catch (ModelNotFoundException) {
-            return $this->sendError('Not found');
-        } catch (PermissionException) {
-            return $this->sendError(__('controller.status.not-permitted'), 403);
-        }
-        return $this->sendResponse(['newBody' => $editStatusResponse->body]);
-    }
-
-    public function destroy($statusId) {
-        try {
-            StatusBackend::DeleteStatus(Auth::user(), $statusId);
-        } catch (ModelNotFoundException) {
-            return $this->sendError('Not found');
-        } catch (PermissionException) {
-            return $this->sendError(__('controller.status.not-permitted'), 403);
-        }
-
-        return $this->sendResponse(__('controller.status.delete-ok'));
     }
 }

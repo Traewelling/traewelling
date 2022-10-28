@@ -152,8 +152,9 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
         Route::get('/user/{username}/active', [\App\Http\Controllers\API\UserController::class, 'active'])
              ->name('api.v0.user.active');
 
-        //usage not checked
-        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
+        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
+        Route::get('statuses', [\App\Http\Controllers\API\StatusController::class, 'index'])
+             ->name('api.v0.statuses');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
         Route::get('/trains/stationboard', [ApiTransportController::class, 'TrainStationboard'])
