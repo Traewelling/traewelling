@@ -192,12 +192,6 @@ class TransportController extends ResponseController
 
     }
 
-    public function TrainLatestArrivals() {
-        $arrivals = TransportBackend::getLatestArrivals(auth()->user());
-
-        return $this->sendResponse($arrivals);
-    }
-
     public function StationByCoordinates(Request $request) {
         $validator = Validator::make($request->all(), [
             'latitude'  => 'required|numeric|min:-180|max:180',
