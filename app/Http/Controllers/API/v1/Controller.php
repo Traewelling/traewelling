@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use Illuminate\Http\JsonResponse;
+
 /**
  * @OA\Info(
  *      version="1.0.0 - alpha",
@@ -35,6 +37,14 @@ namespace App\Http\Controllers\API\v1;
  *
  *
  * @OA\Tag(
+ *     name="Auth",
+ *     description="Logging in, creating Accounts, etc."
+ * )
+ * @OA\Tag(
+ *     name="User",
+ *     description="Information regarding users"
+ * )
+ * @OA\Tag(
  *     name="Dashboard",
  *     description="API Endpoints of Dashboard"
  * )
@@ -46,8 +56,45 @@ namespace App\Http\Controllers\API\v1;
  *     name="Events",
  *     description="Events that users can check in to"
  * )
+ * @OA\Tag(
+ *     name="Likes",
+ *     description="Likes regarding a single status"
+ * )
+ * @OA\Tag(
+ *     name="Settings",
+ *     description="User/Profile-Settings"
+ * )
  */
-class Controller
+class Controller extends \App\Http\Controllers\Controller
 {
+    public function sendResponse(
+        array|string|object $data = null,
+        int                 $code = 200,
+        array               $additional = null
+    ): JsonResponse {
+        $disclaimer = 'APIv1 is not officially released for use and is also not fully documented. You can find the documentation at https://traewelling.de/api/documentation. Use at your own risk. Data fields may change at any time without notice.';
+        if ($data === null) {
+            return response()->json(
+                data:   [
+                            'disclaimer' => $disclaimer,
+                            'status'     => 'success',
+                        ],
+                status: $code
+            );
+        }
+        $response = [
+            'disclaimer' => $disclaimer,
+            'data'       => $data,
+        ];
+        $response = $additional ? array_merge($response, $additional) : $response;
+        return response()->json($response, $code);
+    }
 
+    public function sendError(array|string $error, int $code = 404, array $additional = null): JsonResponse {
+        $response = [
+            'message' => $error,
+        ];
+        $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
+        return response()->json($response, $code);
+    }
 }

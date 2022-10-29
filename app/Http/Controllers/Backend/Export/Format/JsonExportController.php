@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Export\Format;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusExportResource;
@@ -14,6 +15,9 @@ use JetBrains\PhpStorm\ArrayShape;
 abstract class JsonExportController extends Controller
 {
 
+    /**
+     * @throws DataOverflowException
+     */
     #[ArrayShape([
         'meta' => "array",
         'data' => AnonymousResourceCollection::class

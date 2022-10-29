@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\StatusResource;
-use App\Models\Event;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Intervention\Image\Commands\ResponseCommand;
 
-class EventController extends ResponseController
+class EventController extends Controller
 {
     /**
      * @OA\Get(
@@ -253,11 +246,47 @@ class EventController extends ResponseController
         );
 
         if ($eventSuggestion->wasRecentlyCreated) {
-            return $this->sendv1Response(data: null, code: 201);
+            return $this->sendResponse(data: null, code: 201);
         }
         return $this->sendError(error: null, code: 500);
     }
 
+    /**
+     *   @OA\Get(
+     *      path="/activeEvents",
+     *      operationId="getCurrentEvents",
+     *      tags={"Events"},
+     *      summary="Shows current events with basic information",
+     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+     *      @OA\Parameter (
+     *          name="slug",
+     *          in="path",
+     *          description="slug for event",
+     *          example="weihnachten_2022",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/Event"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     * @return AnonymousResourceCollection
+     */
     public function activeEvents(): AnonymousResourceCollection {
         $events = EventBackend::activeEvents();
         return EventResource::collection($events);

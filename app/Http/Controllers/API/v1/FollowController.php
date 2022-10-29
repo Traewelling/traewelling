@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
@@ -18,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
-class FollowController extends ResponseController
+class FollowController extends Controller
 {
 
     public static function createFollow(Request $request, FollowController $instance): JsonResponse {
@@ -28,12 +27,12 @@ class FollowController extends ResponseController
         try {
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
-            return $instance->sendv1Error(['message' => __('controller.user.follow-error')], 409);
+            return $instance->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
             abort(409);
         }
 
-        return $instance->sendv1Response(new UserResource($createFollowResponse), 204);
+        return $instance->sendResponse(new UserResource($createFollowResponse), 204);
     }
 
     public static function destroyFollow(Request $request, FollowController $instance): JsonResponse {
@@ -42,11 +41,11 @@ class FollowController extends ResponseController
 
         $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
         if ($destroyFollowResponse === false) {
-            return $instance->sendv1Error(['message' => __('controller.user.follow-404')], 409);
+            return $instance->sendError(['message' => __('controller.user.follow-404')], 409);
         }
 
         $userToUnfollow->fresh();
-        return $instance->sendv1Response(new UserResource($userToUnfollow));
+        return $instance->sendResponse(new UserResource($userToUnfollow));
 
     }
 

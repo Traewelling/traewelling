@@ -26,6 +26,7 @@ abstract class DashboardController extends Controller
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
+                     ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
                      ->whereIn('visibility', [
                          StatusVisibility::PUBLIC->value,
                          StatusVisibility::FOLLOWERS->value,

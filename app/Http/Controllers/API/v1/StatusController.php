@@ -6,11 +6,9 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Http\Resources\PolylineResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
@@ -26,7 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
-class StatusController extends ResponseController
+class StatusController extends Controller
 {
     /**
      * @OA\Get(
@@ -267,7 +265,7 @@ class StatusController extends ResponseController
             abort(404);
         }
 
-        return $this->sendv1Response();
+        return $this->sendResponse();
     }
 
     /**
@@ -321,7 +319,7 @@ class StatusController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
+            return $this->sendError($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -333,7 +331,7 @@ class StatusController extends ResponseController
                 business:   Business::from($validated['business']),
                 visibility: StatusVisibility::from($validated['visibility']),
             );
-            return $this->sendv1Response(new StatusResource($editStatusResponse));
+            return $this->sendResponse(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
             abort(404);
         } catch (PermissionException) {
@@ -415,7 +413,7 @@ class StatusController extends ResponseController
             'type'     => 'FeatureCollection',
             'features' => $geoJsonFeatures
         ];
-        return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
+        return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 
     /**
@@ -461,6 +459,6 @@ class StatusController extends ResponseController
         $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
-        return $this->sendv1Response($trips);
+        return $this->sendResponse($trips);
     }
 }

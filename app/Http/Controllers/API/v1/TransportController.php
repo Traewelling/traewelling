@@ -10,7 +10,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
@@ -27,7 +26,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 
-class TransportController extends ResponseController
+class TransportController extends Controller
 {
     /**
      * @param Request $request
@@ -49,12 +48,12 @@ class TransportController extends ResponseController
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
-            return $this->sendv1Error("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error("Your query matches no station", 404);
+            return $this->sendError("Your query matches no station", 404);
         }
 
-        return $this->sendv1Response(
+        return $this->sendResponse(
             data:       $trainStationboardResponse['departures'],
             additional: ["meta" => ['station' => $trainStationboardResponse['station'],
                                     'times'   => $trainStationboardResponse['times'],
@@ -75,9 +74,9 @@ class TransportController extends ResponseController
                 $validated['lineName'],
                 $validated['start']
             );
-            return $this->sendv1Response(data: $trainTripResponse);
+            return $this->sendResponse(data: $trainTripResponse);
         } catch (StationNotOnTripException) {
-            return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
+            return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
     }
 
@@ -95,14 +94,14 @@ class TransportController extends ResponseController
                 results:   $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
-            return $this->sendv1Error(__('messages.exception.generalHafas'), 503);
+            return $this->sendError(__('messages.exception.generalHafas'), 503);
         }
 
         if ($nearestStation === null) {
-            return $this->sendv1Error(__('controller.transport.no-station-found'));
+            return $this->sendError(__('controller.transport.no-station-found'));
         }
 
-        return $this->sendv1Response(new TrainStationResource($nearestStation));
+        return $this->sendResponse(new TrainStationResource($nearestStation));
     }
 
     public function create(Request $request): JsonResponse {
@@ -144,21 +143,21 @@ class TransportController extends ResponseController
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
-            return $this->sendv1Response($trainCheckinResponse);
+            return $this->sendResponse($trainCheckinResponse);
         } catch (CheckInCollisionException $exception) {
-            return $this->sendv1Error([
+            return $this->sendError(     [
                                           'status_id' => $exception->getCollision()->status_id,
                                           'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
                                       ], 409);
 
         } catch (StationNotOnTripException) {
-            return $this->sendv1Error('Given stations are not on the trip/have wrong departure/arrival.', 400);
+            return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
         } catch (HafasException $exception) {
-            return $this->sendv1Error($exception->getMessage(), 400);
+            return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
-            return $this->sendv1Error(__('messages.exception.already-checkedin', [], 'en'), 400);
+            return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         } catch (TrainCheckinAlreadyExistException) {
-            return $this->sendv1Error('CheckIn already exists', 409);
+            return $this->sendError('CheckIn already exists', 409);
         }
     }
 
@@ -172,18 +171,18 @@ class TransportController extends ResponseController
         try {
             $trainStation = HafasController::getStations(query: $stationName, results: 1)->first();
             if ($trainStation === null) {
-                return $this->sendv1Error("Your query matches no station");
+                return $this->sendError("Your query matches no station");
             }
 
             $station = HomeController::setHome(user: auth()->user(), trainStation: $trainStation);
 
-            return $this->sendv1Response(
+            return $this->sendResponse(
                 data: new TrainStationResource($station),
             );
         } catch (HafasException) {
-            return $this->sendv1Error("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 400);
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error("Your query matches no station", 404);
+            return $this->sendError("Your query matches no station", 404);
         }
     }
 
@@ -196,9 +195,9 @@ class TransportController extends ResponseController
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
-            return $this->sendv1Response($trainAutocompleteResponse);
+            return $this->sendResponse($trainAutocompleteResponse);
         } catch (HafasException) {
-            return $this->sendv1Error("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 400);
         }
     }
 
