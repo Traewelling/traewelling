@@ -66,7 +66,7 @@ class AuthTest extends ApiTestCase
         $this->assertUserResource($response);
         $this->assertEquals('john_doe', $response->json('data.username'));
 
-        // 7. Refresh token
+        // 6. Refresh token
         $response = $this->post('/api/v1/auth/refresh', [], [
             'Authorization' => 'Bearer ' . $token,
         ]);
@@ -78,7 +78,7 @@ class AuthTest extends ApiTestCase
                                            ]
                                        ]);
 
-        // 8. Logout / Revoke token
+        // 7. Logout / Revoke token
         $response = $this->post('/api/v1/auth/logout', [], [
             'Authorization' => 'Bearer ' . $token,
         ]);
