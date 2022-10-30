@@ -98,16 +98,19 @@ class AuthController extends Controller
 
         if ($user->wasRecentlyCreated) {
             $userToken = $user->createToken('token');
-            return $this->sendResponse([
-                                           'token'      => $userToken->accessToken,
-                                           'expires_at' => $userToken->token->expires_at->toIso8601String()
-                                       ]);
+            return $this->sendResponse(
+                data: [
+                          'token'      => $userToken->accessToken,
+                          'expires_at' => $userToken->token->expires_at->toIso8601String()
+                      ],
+                code: 201
+            );
         }
         return $this->sendError("Sorry! Registration is not successful.", 401);
     }
 
     /**
-     *  @OA\Post(
+     * @OA\Post(
      *      path="/auth/login",
      *      operationId="loginUser",
      *      tags={"Auth"},
@@ -195,18 +198,18 @@ class AuthController extends Controller
         $isUser = $request->user()->token()->revoke();
         if ($isUser) {
             return $this->sendResponse();
-        } else {
-            return $this->sendResponse("unknown", 500);
         }
+        return $this->sendResponse('unknown', 500);
     }
 
     /**
-     *  @OA\Get(
+     * @OA\Get(
      *      path="/auth/user",
      *      operationId="getAuthenticatedUser",
      *      tags={"Auth", "User"},
      *      summary="Get authenticated user information",
-     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old
+     *      token.",
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -234,12 +237,13 @@ class AuthController extends Controller
     }
 
     /**
-     *  @OA\Post(
+     * @OA\Post(
      *      path="/auth/refresh",
      *      operationId="refreshToken",
      *      tags={"Auth"},
      *      summary="Refresh Bearer Token",
-     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old
+     *      token.",
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -266,8 +270,9 @@ class AuthController extends Controller
         $oldToken = $request->user()->token();
         $newToken = $request->user()->createToken('token');
         $oldToken->revoke();
-        return $this->sendResponse(['token'      => $newToken->accessToken,
-                                    'expires_at' => $newToken->token->expires_at->toIso8601String()])
-                    ->header('Authorization', $newToken->accessToken);
+        return $this->sendResponse([
+                                       'token'      => $newToken->accessToken,
+                                       'expires_at' => $newToken->token->expires_at->toIso8601String()]
+        )->header('Authorization', $newToken->accessToken);
     }
 }
