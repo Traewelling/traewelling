@@ -217,6 +217,7 @@ abstract class TrainCheckinController extends Controller
                              'distance'    => $newDistance,
                              'points'      => $pointsResource['points'],
                          ]);
+        $checkin->refresh();
 
         return PointReason::tryFrom($pointsResource['calculation']['reason']);
     }
