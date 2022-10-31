@@ -17,29 +17,30 @@ class IcsController extends Controller
 
         $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
-        return $this->sendResponse(route('ics', [
-            'user_id' => $icsToken->user_id,
-            'token'   => $icsToken->token,
-            'limit'   => 10000,
-            'from'    => '2010-01-01',
-            'until'   => '2030-12-31'
-        ]));
+        return $this->sendResponse(
+            data: route('ics', [
+                    'user_id' => $icsToken->user_id,
+                    'token'   => $icsToken->token,
+                    'limit'   => 10000,
+                    'from'    => '2010-01-01',
+                    'until'   => '2030-12-31'
+                ]),
+            code: 201,
+        );
     }
 
     public function revokeIcsToken(Request $request): JsonResponse {
-        $validated = $request->validate(['tokenId' => ['required', 'exists:ics_tokens,id']]);
+        $validated = $request->validate(['tokenId' => ['required', 'numeric']]);
 
         try {
             BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['tokenId']);
             return $this->sendResponse(null, 204);
         } catch (ModelNotFoundException) {
-            return $this->sendError(null);
+            return $this->sendError();
         }
     }
 
     public function getIcsTokens(): AnonymousResourceCollection {
-        $tokens = IcsToken::where('user_id', auth()->user()->id)->get();
-
-        return IcsEntryResource::collection($tokens);
+        return IcsEntryResource::collection(IcsToken::where('user_id', auth()->user()->id)->get());
     }
 }

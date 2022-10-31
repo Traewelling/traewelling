@@ -90,7 +90,7 @@ class Controller extends \App\Http\Controllers\Controller
         return response()->json($response, $code);
     }
 
-    public function sendError(array|string $error, int $code = 404, array $additional = null): JsonResponse {
+    public function sendError(array|string $error = null, int $code = 404, array $additional = null): JsonResponse {
         $response = [
             'message' => $error,
         ];
