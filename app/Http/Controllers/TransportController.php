@@ -11,6 +11,7 @@ use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
+use App\Virtual\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -141,18 +142,22 @@ class TransportController extends Controller
     /**
      * @param string $tripId
      * @param string $lineName
-     * @param string $start
+     * @param int    $originId Internal ID or IBNR
      *
      * @return HafasTripResource
      * @throws HafasException
      * @throws StationNotOnTripException
      * @api v1
      */
-    public static function getTrainTrip(string $tripId, string $lineName, string $start): HafasTripResource {
+    public static function getTrainTrip(string $tripId, string $lineName, int $originId): HafasTripResource {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        if ($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
+        $countOfMatchingStopovers = $hafasTrip->stopoversNEW->filter(function(\App\Models\TrainStopover $stopover) use ($originId) {
+            return $stopover->train_station_id === $originId || $stopover->trainStation->ibnr === $originId;
+        })->count();
+
+        if ($countOfMatchingStopovers == 0) {
             throw new StationNotOnTripException();
         }
         return new HafasTripResource($hafasTrip);
