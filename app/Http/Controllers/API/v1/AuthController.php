@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\UserController as UserBackend;
 
 class AuthController extends Controller
 {
@@ -274,5 +277,49 @@ class AuthController extends Controller
                                        'token'      => $newToken->accessToken,
                                        'expires_at' => $newToken->token->expires_at->toIso8601String()]
         )->header('Authorization', $newToken->accessToken);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/auth/user/now",
+     *      operationId="userState",
+     *      tags={"Auth"},
+     *      summary="User state",
+     *      description="This request returns whether the currently logged-in user has an active check-in or not.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/StatusResource"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No active check-in"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @api v1
+     */
+    public function userState(Request $request): JsonResponse {
+        $user = $request->user();
+        try {
+            $latestStatus = StatusResource::collection(UserBackend::statusesForUser(user: $user, limit: 1))[0];
+            if ($latestStatus->trainCheckin->destination_stopover->arrival_real->isPast()) {
+                    return $this->sendError('No active status');
+            } else {
+                return $this->sendResponse($latestStatus);
+            }
+        } catch (Exception) {
+            return $this->sendError('No status found');
+        }
     }
 }

@@ -37,6 +37,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('refresh', [v1Auth::class, 'refresh']);
             Route::post('logout', [v1Auth::class, 'logout']);
             Route::get('user', [v1Auth::class, 'user']);
+            Route::get('user/now', [v1Auth::class, 'userState']);
         });
     });
 
