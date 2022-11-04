@@ -27,7 +27,7 @@ use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
- * @deprecated Will be replaced by APIv1
+ * @deprecated
  */
 class LegacyApi0Controller extends Controller
 {
@@ -93,22 +93,6 @@ class LegacyApi0Controller extends Controller
             $statuses = UserBackend::getProfilePage($request->username);
         }
         return response()->json($statuses['statuses']);
-    }
-
-    public function TrainAutocomplete($station): JsonResponse {
-        try {
-            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)
-                                                         ->map(function($station) {
-                                                             return [
-                                                                 'id'       => $station['ibnr'],
-                                                                 'name'     => $station['name'],
-                                                                 'provider' => 'train'
-                                                             ];
-                                                         });
-            return $this->sendResponse($trainAutocompleteResponse);
-        } catch (HafasException $e) {
-            return $this->sendError($e->getMessage(), 503);
-        }
     }
 
     public function showStationboard(Request $request): JsonResponse {
