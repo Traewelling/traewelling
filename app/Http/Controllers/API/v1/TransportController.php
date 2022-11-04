@@ -10,10 +10,12 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
+use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
 use App\Models\Event;
@@ -69,12 +71,12 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $trainTripResponse = TransportBackend::getTrainTrip(
+            $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripId'],
                 $validated['lineName'],
                 (int) $validated['start']
             );
-            return $this->sendResponse(data: $trainTripResponse);
+            return $this->sendResponse(data: new HafasTripResource($hafasTrip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }

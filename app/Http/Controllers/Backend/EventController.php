@@ -51,12 +51,14 @@ abstract class EventController extends Controller
         return $eventSuggestion;
     }
 
-    public static function activeEvents(): ?Collection {
-        $now = Carbon::now();
+    public static function activeEvents(Carbon $timestamp = null): ?Collection {
+        if ($timestamp === null) {
+            $timestamp = Carbon::now();
+        }
 
         return Event::where([
-                                ['begin', '<=', $now],
-                                ['end', '>=', $now]
+                                ['begin', '<=', $timestamp->toIso8601String()],
+                                ['end', '>=', $timestamp->toIso8601String()]
                             ])->get();
     }
 

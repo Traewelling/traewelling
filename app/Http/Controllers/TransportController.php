@@ -11,7 +11,6 @@ use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
-use App\Virtual\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
@@ -106,61 +105,6 @@ class TransportController extends Controller
         });
 
         return $departuresList;
-    }
-
-    /**
-     * @param string      $tripId   TripID in Hafas format
-     * @param string      $lineName Line Name in Hafas format
-     * @param             $start
-     * @param Carbon|null $departure
-     *
-     * @return array|null
-     * @throws HafasException
-     * @deprecated replaced by getTrainTrip
-     */
-    public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
-        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
-        $stopovers = json_decode($hafasTrip->stopovers, true);
-        $offset    = self::searchForId($start, $stopovers, $departure);
-        if ($offset === null) {
-            return null;
-        }
-        $stopovers   = array_slice($stopovers, $offset + 1);
-        $destination = $hafasTrip->destinationStation->name;
-        $start       = $hafasTrip->originStation->name;
-
-        return [
-            'train'       => $hafasTrip->getAttributes(), //deprecated. use hafasTrip instead
-            'hafasTrip'   => $hafasTrip,
-            'stopovers'   => $stopovers,
-            'destination' => $destination, //deprecated. use hafasTrip->destinationStation instead
-            'start'       => $start //deprecated. use hafasTrip->originStation instead
-        ];
-    }
-
-    /**
-     * @param string $tripId
-     * @param string $lineName
-     * @param int    $originId Internal ID or IBNR
-     *
-     * @return HafasTripResource
-     * @throws HafasException
-     * @throws StationNotOnTripException
-     * @api v1
-     */
-    public static function getTrainTrip(string $tripId, string $lineName, int $originId): HafasTripResource {
-        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
-
-        $countOfMatchingStopovers = $hafasTrip->stopoversNEW->filter(function(\App\Models\TrainStopover $stopover) use ($originId) {
-            return $stopover->train_station_id === $originId || $stopover->trainStation->ibnr === $originId;
-        })->count();
-
-        if ($countOfMatchingStopovers == 0) {
-            throw new StationNotOnTripException();
-        }
-        return new HafasTripResource($hafasTrip);
     }
 
     /**
