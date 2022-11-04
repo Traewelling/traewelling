@@ -99,7 +99,7 @@ abstract class TrainCheckinController extends Controller
             if (isset($status)) {
                 $status->delete();
             }
-            if ((int)$exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
+            if ((int) $exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();
             }
             throw $exception; // Other scenarios are not handled
@@ -244,16 +244,19 @@ abstract class TrainCheckinController extends Controller
      * @throws StationNotOnTripException
      * @api v1
      */
-    public static function getHafasTrip(string $tripId, string $lineName, int $start): HafasTrip {
+    public static function getHafasTrip(string $tripId, string $lineName, int $startId): HafasTrip {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        if ($hafasTrip->stopoversNEW->where('train_station_id', $start)->count() == 0) {
+        $originStopover = $hafasTrip->stopoversNEW->filter(function(TrainStopover $stopover) use ($startId) {
+            return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
+        })->first();
+
+        if ($originStopover === null) {
             throw new StationNotOnTripException();
         }
 
         //try to refresh the departure time of the origin station
-        $originStopover = $hafasTrip->stopoversNEW->where('train_station_id', $start)->first();
         if ($originStopover) {
             dispatch(function() use ($originStopover) {
                 HafasController::refreshStopover($originStopover);

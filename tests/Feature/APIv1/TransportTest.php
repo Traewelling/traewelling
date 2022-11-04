@@ -65,7 +65,6 @@ class TransportTest extends ApiTestCase
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertStatus(400);
-
         // Fetch correct trip
         $response = $this->get(
             uri:     '/api/v1/trains/trip'
