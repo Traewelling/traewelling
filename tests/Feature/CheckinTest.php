@@ -152,7 +152,6 @@ class CheckinTest extends TestCase
         // First: Get a train that's fine for our stuff
         $timestamp   = Carbon::parse($this->plus_one_day_then_8pm);
         $stationName = "Frankfurt(M) Flughafen Fernbf";
-        $ibnr        = "8070003";
         try {
             $trainStationboard = TransportController::getDepartures(
                 stationQuery: $stationName,
@@ -183,11 +182,10 @@ class CheckinTest extends TestCase
 
         try {
             // Third: Get the trip information
-            // TODO: Replace with new function
-            $trip = TransportController::TrainTrip(
-                $departure->tripId,
-                $departure->line->name,
-                $departure->stop->location->id
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $departure->tripId,
+                lineName: $departure->line->name,
+                startId:  $departure->stop->location->id
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -196,18 +194,20 @@ class CheckinTest extends TestCase
         // GIVEN: A logged-in and gdpr-acked user
         $user = $this->createGDPRAckedUser();
 
-        // WHEN: User tries to check-in
-        $response = $this->actingAs($user)
-                         ->post(route('trains.checkin'), [
-                             'body'              => 'Example Body',
-                             'tripID'            => $departure->tripId,
-                             'start'             => $ibnr,
-                             'destination'       => $trip['stopovers'][0]['stop']['location']['id'],
-                             'departure'         => Carbon::parse($departure->plannedWhen)->toIso8601String(),
-                             'arrival'           => Carbon::parse($trip['stopovers'][0]['plannedArrival'])->toIso8601String(),
-                             'checkinVisibility' => StatusVisibility::PUBLIC->value,
-                             'business_check'    => Business::PRIVATE->value,
-                         ]);
+        // WHEN: User tries to checkin
+        $originStopover      = $hafasTrip->stopoversNEW->first();
+        $destinationStopover = $hafasTrip->stopoversNEW->last();
+        $response            = $this->actingAs($user)
+                                    ->post(route('trains.checkin'), [
+                                        'body'              => 'Example Body',
+                                        'tripID'            => $departure->tripId,
+                                        'start'             => $originStopover->trainStation->ibnr,
+                                        'departure'         => $originStopover->departure_planned,
+                                        'destination'       => $destinationStopover->trainStation->ibnr,
+                                        'arrival'           => $destinationStopover->arrival_planned,
+                                        'checkinVisibility' => StatusVisibility::PUBLIC->value,
+                                        'business_check'    => Business::PRIVATE->value,
+                                    ]);
 
         // THEN: The user is redirected to dashboard and flashes the linename.
         $response->assertStatus(302);
@@ -220,8 +220,8 @@ class CheckinTest extends TestCase
         // THEN: You can get the status page and see its information
         $response = $this->get(url('/status/' . $status->id));
         $response->assertOk();
-        $response->assertSee($stationName, false);                          // Departure Station
-        $response->assertSee($trip['stopovers'][0]['stop']['name'], false); // Arrival Station
+        $response->assertSee($stationName, false);                             // Departure Station
+        $response->assertSee($destinationStopover->trainStation->name, false); // Arrival Station
         $response->assertSee("Example Body");
 
         $this->assertStringContainsString("Example Body (@ ", $status->socialText);
