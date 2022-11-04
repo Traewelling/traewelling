@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\UserController as UserBackend;
 
 class AuthController extends Controller
 {
