@@ -96,11 +96,11 @@ class TransportController extends Controller
                 results:   $validated['limit'] ?? 1
             )->first();
         } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas'), 503);
+            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 503);
         }
 
         if ($nearestStation === null) {
-            return $this->sendError(__('controller.transport.no-station-found'));
+            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         }
 
         return $this->sendResponse(new TrainStationResource($nearestStation));
@@ -148,9 +148,9 @@ class TransportController extends Controller
             return $this->sendResponse($trainCheckinResponse);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
-                                          'status_id' => $exception->getCollision()->status_id,
-                                          'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
-                                      ], 409);
+                                        'status_id' => $exception->getCollision()->status_id,
+                                        'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
+                                    ], 409);
 
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
@@ -158,8 +158,6 @@ class TransportController extends Controller
             return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
-        } catch (TrainCheckinAlreadyExistException) {
-            return $this->sendError('CheckIn already exists', 409);
         }
     }
 
@@ -167,7 +165,7 @@ class TransportController extends Controller
      * @param string $stationName
      *
      * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
+     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
      */
     public function setHome(string $stationName): JsonResponse {
         try {
@@ -192,7 +190,7 @@ class TransportController extends Controller
      * @param string $query
      *
      * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a spache (%20)
+     * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a space (%20)
      */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
