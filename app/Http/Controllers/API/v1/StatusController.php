@@ -491,18 +491,16 @@ class StatusController extends Controller
      * @return JsonResponse
      */
     public function getActiveStatus(): JsonResponse {
-        try {
-            $latestStatus = UserBackend::statusesForUser(user: Auth::user(), limit: 1)->first();
-            if ($latestStatus === null) {
-                $this->sendError('User doesn\'t have any checkins');
-            }
-            if ($latestStatus->trainCheckin->destination_stopover->arrival_real->isPast()) {
-                return $this->sendError('No active status');
-            }
-            return $this->sendResponse(new StatusResource($latestStatus));
-        } catch (Exception $exception) {
-            report($exception);
-            return $this->sendError(error: 'An unknown error occurred. Please report this issue with the current timestamp and used endpoint.', code: 500);
+        $latestStatuses = UserBackend::statusesForUser(user: Auth::user());
+        if ($latestStatuses->count() === 0) {
+            return $this->sendError('User doesn\'t have any checkins');
         }
+        foreach ($latestStatuses as $status) {
+            if ($status->trainCheckin->origin_stopover->departure->isPast()
+                && $status->trainCheckin->destination_stopover->arrival->isFuture()) {
+                return $this->sendResponse(new StatusResource($status));
+            }
+        }
+        return $this->sendError('No active status');
     }
 }
