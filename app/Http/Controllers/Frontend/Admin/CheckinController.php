@@ -99,26 +99,22 @@ class CheckinController
         }
 
         try {
-            // TODO: Replace with new function
-            $TrainTripResponse = TransportBackend::TrainTrip(
-                $tripId,
-                $validated['lineName'],
-                $validated['startIBNR'],
-                Carbon::parse($validated['departure'])
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $tripId,
+                lineName: $validated['lineName'],
+                startId:  $validated['startIBNR'],
             );
+            return view('admin.checkin.trip', [
+                'hafasTrip' => $hafasTrip,
+                'events'    => EventBackend::activeEvents(),
+                'stopovers' => $hafasTrip->stopoversNEW,
+                'user'      => $user,
+            ]);
         } catch (HafasException $exception) {
-            return back()->with('error', $exception->getMessage());
+            return back()->with('alert-danger', $exception->getMessage());
+        } catch (StationNotOnTripException) {
+            return redirect()->back()->with('alert-danger', __('controller.transport.not-in-stopovers'));
         }
-        if ($TrainTripResponse === null) {
-            return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
-        }
-
-        return view('admin.checkin.trip', [
-            'hafasTrip' => $TrainTripResponse['hafasTrip'],
-            'events'    => EventBackend::activeEvents(),
-            'stopovers' => $TrainTripResponse['stopovers'],
-            'user'      => $user,
-        ]);
     }
 
     public function checkin(Request $request): View|RedirectResponse {

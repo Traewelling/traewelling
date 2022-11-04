@@ -14,6 +14,9 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\StopoverResource;
+use App\Http\Resources\TrainStationResource;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\User;
@@ -138,21 +141,21 @@ class LegacyApi0Controller extends Controller
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainTripResponse = TransportBackend::TrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start
-        );
-        if ($trainTripResponse === null) {
+        try {
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $request->tripID,
+                lineName: $request->lineName,
+                startId:  $request->start,
+            );
+            return $this->sendResponse([
+                                           'start'       => new TrainStationResource($hafasTrip->originStation),
+                                           'destination' => new TrainStationResource($hafasTrip->destinationStation),
+                                           'train'       => new HafasTripResource($hafasTrip),
+                                           'stopovers'   => StopoverResource::collection($hafasTrip->stopoversNEW),
+                                       ]);
+        } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
-
-        return $this->sendResponse([
-                                       'start'       => $trainTripResponse['start'],
-                                       'destination' => $trainTripResponse['destination'],
-                                       'train'       => $trainTripResponse['train'],
-                                       'stopovers'   => $trainTripResponse['stopovers']
-                                   ]);
     }
 
     public function checkin(Request $request) {
