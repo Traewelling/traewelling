@@ -37,7 +37,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('refresh', [v1Auth::class, 'refresh']);
             Route::post('logout', [v1Auth::class, 'logout']);
             Route::get('user', [v1Auth::class, 'user']);
-            Route::get('user/now', [v1Auth::class, 'userState']);
         });
     });
 
@@ -89,6 +88,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
+            Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
         });
         Route::group(['prefix' => 'settings'], function() {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
