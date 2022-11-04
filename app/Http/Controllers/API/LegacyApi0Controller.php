@@ -7,12 +7,16 @@ use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Http\Controllers\Backend\User\DashboardController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Controllers\UserController as UserBackend;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -75,7 +79,35 @@ class TransportController extends ResponseController
                                    ]);
     }
 
-    public function TrainCheckin(Request $request) {
+    public function showTrip(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tripID'   => 'required',
+            'lineName' => 'required',
+            'start'    => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+
+        $trainTripResponse = TransportBackend::TrainTrip(
+            $request->tripID,
+            $request->lineName,
+            $request->start
+        );
+        if ($trainTripResponse === null) {
+            return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
+        }
+
+        return $this->sendResponse([
+                                       'start'       => $trainTripResponse['start'],
+                                       'destination' => $trainTripResponse['destination'],
+                                       'train'       => $trainTripResponse['train'],
+                                       'stopovers'   => $trainTripResponse['stopovers']
+                                   ]);
+    }
+
+    public function checkin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => ['required'],
             'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
