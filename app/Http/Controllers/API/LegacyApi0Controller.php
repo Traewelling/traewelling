@@ -29,8 +29,72 @@ use Throwable;
 /**
  * @deprecated Will be replaced by APIv1
  */
-class TransportController extends ResponseController
+class LegacyApi0Controller extends Controller
 {
+
+    public function sendResponse($response): JsonResponse {
+        $disclaimer = 'APIv0 is deprecated and will be removed within the next days __WITHOUT ANY OFFICIAL NOTICE__. Please use APIv1 instead.';
+        if (is_array($response)) {
+            $response = array_merge(['disclaimer' => $disclaimer], $response);
+        }
+        return response()->json($response);
+    }
+
+    public function sendError(array|string $error, int $code = 404): JsonResponse {
+        $response = [
+            'error' => $error,
+        ];
+        return response()->json($response, $code);
+    }
+
+    public function getUser(Request $request): JsonResponse {
+        $user = $request->user();
+        if ($user) {
+            return $this->sendResponse($user);
+        }
+        return $this->sendResponse('user not found');
+
+    }
+
+    public function showUser($username): JsonResponse {
+        return $this->sendResponse(UserBackend::getProfilePage($username));
+    }
+
+    public function getActiveStatuses($username) {
+        //Somehow this breaks without a LIKE.
+        $user           = User::where('username', 'LIKE', $username)->firstOrFail();
+        $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
+        return $this->sendResponse($statusResponse);
+    }
+
+    public function showStatuses(Request $request): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'maxStatuses' => 'integer',
+            'username'    => 'string|required_if:view,user',
+            'view'        => 'in:user,global,personal'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+
+        $view = 'global';
+        if (!empty($request->view)) {
+            $view = $request->view;
+        }
+        $statuses = ['statuses' => ''];
+        if ($view === 'global') {
+            $statuses['statuses'] = DashboardController::getGlobalDashboard(Auth::user());
+        }
+        if ($view === 'personal') {
+            $statuses['statuses'] = DashboardController::getPrivateDashboard(Auth::user());
+        }
+        if ($view === 'user') {
+            $statuses = UserBackend::getProfilePage($request->username);
+        }
+        return response()->json($statuses['statuses']);
+    }
+
     public function TrainAutocomplete($station): JsonResponse {
         try {
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)
@@ -47,7 +111,7 @@ class TransportController extends ResponseController
         }
     }
 
-    public function TrainStationboard(Request $request): JsonResponse {
+    public function showStationboard(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
@@ -196,13 +260,7 @@ class TransportController extends ResponseController
 
     }
 
-    public function TrainLatestArrivals() {
-        $arrivals = TransportBackend::getLatestArrivals(auth()->user());
-
-        return $this->sendResponse($arrivals);
-    }
-
-    public function StationByCoordinates(Request $request) {
+    public function showStationByCoordinates(Request $request) {
         $validator = Validator::make($request->all(), [
             'latitude'  => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
@@ -217,34 +275,5 @@ class TransportController extends ResponseController
         }
 
         return $this->sendResponse($nearestStation);
-    }
-
-    public function getHome() {
-        $home = auth()->user()->home;
-        if ($home === null) {
-            return $this->sendError('user has not set a home station.');
-        }
-        return $this->sendResponse($home);
-    }
-
-    public function setHome(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'ibnr' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        try {
-            $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
-            $trainStation = HomeController::setHome(Auth::user(), $station);
-            return $this->sendResponse($trainStation->name);
-        } catch (HafasException $e) {
-            return $this->sendError([
-                                        'id'      => 'HAFAS_EXCEPTION',
-                                        'message' => $e->getMessage()
-                                    ]);
-        }
     }
 }
