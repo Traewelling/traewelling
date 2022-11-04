@@ -26,13 +26,12 @@ class FollowController extends Controller
 
         try {
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
+            return $instance->sendResponse(new UserResource($createFollowResponse), 201);
         } catch (AlreadyFollowingException) {
             return $instance->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
-            abort(409);
+            return $instance->sendError(null, 400);
         }
-
-        return $instance->sendResponse(new UserResource($createFollowResponse), 204);
     }
 
     public static function destroyFollow(Request $request, FollowController $instance): JsonResponse {
@@ -46,22 +45,18 @@ class FollowController extends Controller
 
         $userToUnfollow->fresh();
         return $instance->sendResponse(new UserResource($userToUnfollow));
-
     }
 
     public function getFollowers(): AnonymousResourceCollection {
-        $followersResponse = FollowBackend::getFollowers(user: auth()->user());
-        return UserResource::collection($followersResponse);
+        return UserResource::collection(FollowBackend::getFollowers(user: auth()->user()));
     }
 
     public function getFollowRequests(): AnonymousResourceCollection {
-        $followRequestResponse = FollowBackend::getFollowRequests(user: auth()->user());
-        return UserResource::collection($followRequestResponse);
+        return UserResource::collection(FollowBackend::getFollowRequests(user: auth()->user()));
     }
 
     public function getFollowings(): AnonymousResourceCollection {
-        $followingResponse = FollowBackend::getFollowings(user: auth()->user());
-        return UserResource::collection($followingResponse);
+        return UserResource::collection(FollowBackend::getFollowings(user: auth()->user()));
     }
 
     public function removeFollower(Request $request): void {
