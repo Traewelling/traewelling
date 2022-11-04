@@ -69,15 +69,15 @@ abstract class TrainCheckinController extends Controller
             throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
-        $status = StatusBackend::createStatus(
-            user:       $user,
-            business:   $travelReason,
-            visibility: $visibility,
-            body:       $body,
-            eventId:    $event?->id
-        );
-
         try {
+            $status = StatusBackend::createStatus(
+                user:       $user,
+                business:   $travelReason,
+                visibility: $visibility,
+                body:       $body,
+                eventId:    $event?->id
+            );
+
             $trainCheckinResponse = self::createTrainCheckin(
                 status:      $status,
                 trip:        $hafasTrip,
@@ -95,9 +95,19 @@ abstract class TrainCheckinController extends Controller
             );
 
             return $trainCheckinResponse;
+        } catch (PDOException $exception) {
+            if (isset($status)) {
+                $status->delete();
+            }
+            if ((int)$exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
+                throw new AlreadyCheckedInException();
+            }
+            throw $exception; // Other scenarios are not handled
         } catch (Exception $exception) {
             // Delete status if it was created and rethrow exception, so it can be handled by the caller
-            $status->delete();
+            if (isset($status)) {
+                $status->delete();
+            }
             throw $exception;
         }
     }
@@ -219,6 +229,7 @@ abstract class TrainCheckinController extends Controller
                              'distance'    => $newDistance,
                              'points'      => $pointsResource['points'],
                          ]);
+        $checkin->refresh();
 
         return PointReason::tryFrom($pointsResource['calculation']['reason']);
     }

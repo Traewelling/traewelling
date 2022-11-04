@@ -7,7 +7,6 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Resources\HafasTripResource;
-use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
@@ -117,7 +116,6 @@ class TransportController extends Controller
      * @return array|null
      * @throws HafasException
      * @deprecated replaced by getTrainTrip
-     * TODO: Remove
      */
     public static function TrainTrip(string $tripId, string $lineName, $start, Carbon $departure = null): ?array {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
@@ -127,13 +125,6 @@ class TransportController extends Controller
         if ($offset === null) {
             return null;
         }
-
-        //try to refresh the departure time of the origin station
-        $originStopover = $hafasTrip->stopoversNEW->where('trainStation.ibnr', $start)->first();
-        dispatch(function() use ($originStopover) {
-            HafasController::refreshStopover($originStopover);
-        })->afterResponse();
-
         $stopovers   = array_slice($stopovers, $offset + 1);
         $destination = $hafasTrip->destinationStation->name;
         $start       = $hafasTrip->originStation->name;
@@ -145,6 +136,30 @@ class TransportController extends Controller
             'destination' => $destination, //deprecated. use hafasTrip->destinationStation instead
             'start'       => $start //deprecated. use hafasTrip->originStation instead
         ];
+    }
+
+    /**
+     * @param string $tripId
+     * @param string $lineName
+     * @param int    $originId Internal ID or IBNR
+     *
+     * @return HafasTripResource
+     * @throws HafasException
+     * @throws StationNotOnTripException
+     * @api v1
+     */
+    public static function getTrainTrip(string $tripId, string $lineName, int $originId): HafasTripResource {
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+
+        $countOfMatchingStopovers = $hafasTrip->stopoversNEW->filter(function(\App\Models\TrainStopover $stopover) use ($originId) {
+            return $stopover->train_station_id === $originId || $stopover->trainStation->ibnr === $originId;
+        })->count();
+
+        if ($countOfMatchingStopovers == 0) {
+            throw new StationNotOnTripException();
+        }
+        return new HafasTripResource($hafasTrip);
     }
 
     /**

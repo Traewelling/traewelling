@@ -28,14 +28,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 
-class TransportController extends ResponseController
+class TransportController extends Controller
 {
     /**
      * @param Request $request
      * @param string  $name
      *
      * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a spache (%20)
+     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
      */
     public function departures(Request $request, string $name): JsonResponse {
         $validated = $request->validate([
@@ -50,12 +50,12 @@ class TransportController extends ResponseController
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
-            return $this->sendv1Error("There has been an error with our data provider", 400);
+            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 400);
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error("Your query matches no station", 404);
+            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         }
 
-        return $this->sendv1Response(
+        return $this->sendResponse(
             data:       $trainStationboardResponse['departures'],
             additional: ["meta" => ['station' => $trainStationboardResponse['station'],
                                     'times'   => $trainStationboardResponse['times'],
@@ -65,20 +65,20 @@ class TransportController extends ResponseController
 
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'   => 'required',
-                                            'lineName' => 'required',
-                                            'start'    => 'required'
+                                            'tripId'   => ['required', 'string'],
+                                            'lineName' => ['required', 'string'],
+                                            'start'    => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripId'],
                 $validated['lineName'],
-                $validated['start']
+                (int) $validated['start']
             );
-            return $this->sendv1Response(data: new HafasTripResource($hafasTrip));
+            return $this->sendResponse(data: new HafasTripResource($hafasTrip));
         } catch (StationNotOnTripException) {
-            return $this->sendv1Error(__('controller.transport.not-in-stopovers'), 400);
+            return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }
     }
 

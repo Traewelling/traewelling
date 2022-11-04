@@ -6,15 +6,15 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Http\Resources\PolylineResource;
+use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
-class StatusController extends ResponseController
+class StatusController extends Controller
 {
     /**
      * @OA\Get(
@@ -267,7 +267,7 @@ class StatusController extends ResponseController
             abort(404);
         }
 
-        return $this->sendv1Response();
+        return $this->sendResponse();
     }
 
     /**
@@ -321,7 +321,7 @@ class StatusController extends ResponseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendv1Error($validator->errors(), 400);
+            return $this->sendError($validator->errors(), 400);
         }
         $validated = $validator->validate();
 
@@ -333,7 +333,7 @@ class StatusController extends ResponseController
                 business:   Business::from($validated['business']),
                 visibility: StatusVisibility::from($validated['visibility']),
             );
-            return $this->sendv1Response(new StatusResource($editStatusResponse));
+            return $this->sendResponse(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
             abort(404);
         } catch (PermissionException) {
@@ -415,7 +415,7 @@ class StatusController extends ResponseController
             'type'     => 'FeatureCollection',
             'features' => $geoJsonFeatures
         ];
-        return $ids ? $this->sendv1Response($geoJson) : $this->sendv1Error("");
+        return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 
     /**
@@ -461,6 +461,46 @@ class StatusController extends ResponseController
         $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
-        return $this->sendv1Response($trips);
+        return $this->sendResponse($trips);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/user/statuses/active",
+     *      operationId="userState",
+     *      tags={"Auth"},
+     *      summary="User state",
+     *      description="This request returns whether the currently logged-in user has an active check-in or not.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/StatusResource"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No active checkin"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     *
+     * @return JsonResponse
+     */
+    public function getActiveStatus(): JsonResponse {
+        $latestStatuses = UserBackend::statusesForUser(user: Auth::user());
+        if ($latestStatuses->count() === 0) {
+            return $this->sendError('User doesn\'t have any checkins');
+        }
+        foreach ($latestStatuses as $status) {
+            if ($status->trainCheckin->origin_stopover->departure->isPast()
+                && $status->trainCheckin->destination_stopover->arrival->isFuture()) {
+                return $this->sendResponse(new StatusResource($status));
+            }
+        }
+        return $this->sendError('No active status');
     }
 }
