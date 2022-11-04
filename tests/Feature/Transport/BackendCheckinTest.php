@@ -152,28 +152,26 @@ class BackendCheckinTest extends TestCase
 
         // Third: Get the trip information
         try {
-            // TODO: Replace with new function
-            $trip = TransportController::TrainTrip(
-                $departure->tripId,
-                $departure->line->name,
-                $departure->stop->location->id,
-                Carbon::parse($departure->plannedWhen)
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $departure->tripId,
+                lineName: $departure->line->name,
+                startId:  $departure->stop->location->id
             );
         } catch (HafasException $exception) {
             $this->markTestSkipped($exception->getMessage());
         }
 
         //Höhenstr., Potsdam
-        $originStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736140')->first();
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736140')->first();
         //Rathaus, Potsdam
-        $destinationStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736160')->last();
+        $destinationStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736160')->last();
 
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
         $backendResponse = TrainCheckinController::checkin(
             user:        $user,
-            hafasTrip:   $trip['hafasTrip'],
+            hafasTrip:   $hafasTrip,
             origin:      $originStopover->trainStation,
             departure:   $originStopover->departure_planned,
             destination: $destinationStopover->trainStation,

@@ -154,7 +154,6 @@ abstract class TestCase extends BaseTestCase
 
         // Third: Get the trip information
         try {
-            // TODO: Replace with new function
             $hafasTrip = TrainCheckinController::getHafasTrip(
                 tripId:   $departure->tripId,
                 lineName: $departure->line->name,
