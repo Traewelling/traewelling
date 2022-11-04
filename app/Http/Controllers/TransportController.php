@@ -108,30 +108,6 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $tripId
-     * @param string $lineName
-     * @param int    $originId Internal ID or IBNR
-     *
-     * @return HafasTripResource
-     * @throws HafasException
-     * @throws StationNotOnTripException
-     * @api v1
-     */
-    public static function getTrainTrip(string $tripId, string $lineName, int $originId): HafasTripResource {
-        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
-
-        $countOfMatchingStopovers = $hafasTrip->stopoversNEW->filter(function(\App\Models\TrainStopover $stopover) use ($originId) {
-            return $stopover->train_station_id === $originId || $stopover->trainStation->ibnr === $originId;
-        })->count();
-
-        if ($countOfMatchingStopovers == 0) {
-            throw new StationNotOnTripException();
-        }
-        return new HafasTripResource($hafasTrip);
-    }
-
-    /**
      * Check if there are colliding CheckIns
      *
      * @param User   $user
