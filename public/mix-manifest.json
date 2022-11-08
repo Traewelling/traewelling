@@ -2,7 +2,7 @@
     "/js/app.js": "/js/app.js",
     "/js/stats.js": "/js/stats.js",
     "/js/admin.js": "/js/admin.js",
+    "/css/app.css": "/css/app.css",
     "/css/welcome.css": "/css/welcome.css",
-    "/css/admin.css": "/css/admin.css",
-    "/css/app.css": "/css/app.css"
+    "/css/admin.css": "/css/admin.css"
 }

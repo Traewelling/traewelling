@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\API\ResponseController;
+use App\Http\Controllers\API\v1\Controller;
 use App\Http\Controllers\Backend\PrivacyPolicyController;
 use App\Models\PrivacyAgreement;
 use Carbon\Carbon;
@@ -10,7 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class PrivacyPolicyInterceptionMiddleware extends ResponseController
+class PrivacyPolicyInterceptionMiddleware extends Controller
 {
     /**
      * Handle an incoming request.
@@ -38,7 +38,7 @@ class PrivacyPolicyInterceptionMiddleware extends ResponseController
                                          ->orderByDesc('valid_at')
                                          ->take(1)
                                          ->first();
-            return $this->sendv1Error(
+            return $this->sendError(
                 error:      'Privacy agreement not yet accepted!',
                 code:       406,
                 additional: [

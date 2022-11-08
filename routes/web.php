@@ -200,8 +200,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('like.destroy');
 
     Route::prefix('export')->group(function() {
-        Route::get('/', [ExportController::class, 'renderForm'])->name('export.landing');
-        Route::get('/generate', [ExportController::class, 'renderExport'])->name('export.generate');
+        Route::get('/', [ExportController::class, 'renderForm'])
+             ->name('export.landing');
+        Route::post('/generate', [ExportController::class, 'renderExport'])
+             ->name('export.generate');
     });
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])

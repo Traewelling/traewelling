@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
+use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
@@ -102,7 +103,7 @@ abstract class TestCase extends BaseTestCase
      * @param StatusVisibility $statusVisibility
      *
      * @return array|null
-     * @throws TrainCheckinAlreadyExistException|NotConnectedException
+     * @throws TrainCheckinAlreadyExistException|NotConnectedException|AlreadyCheckedInException
      */
     #[ArrayShape([
         'success'              => "bool",
@@ -153,10 +154,10 @@ abstract class TestCase extends BaseTestCase
 
         // Third: Get the trip information
         try {
-            $trip = TransportController::TrainTrip(
-                $departure->tripId,
-                $departure->line->name,
-                $departure->stop->location->id
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $departure->tripId,
+                lineName: $departure->line->name,
+                startId:  $departure->stop->location->id
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -173,11 +174,10 @@ abstract class TestCase extends BaseTestCase
 
         // WHEN: User tries to check-in
         try {
-            $hafasTrip   = HafasTrip::where('trip_id', $trip['train']['trip_id'])->firstOrFail();
-            $origin      = TrainStation::where('ibnr', $trip['stopovers'][0]['stop']['id'])->firstOrFail();
-            $departure   = $hafasTrip->stopoversNew->where('train_station_id', $origin->id)->firstOrFail()->departure_planned;
-            $destination = TrainStation::where('ibnr', end($trip['stopovers'])['stop']['id'])->firstOrFail();
-            $arrival     = $hafasTrip->stopoversNew->where('train_station_id', $destination->id)->firstOrFail()->arrival_planned;
+            $origin      = $hafasTrip->originStation;
+            $departure   = $hafasTrip->departure;
+            $destination = $hafasTrip->destinationStation;
+            $arrival     = $hafasTrip->arrival;
             $event       = $eventId === null ? null : Event::find($eventId);
 
             $backendResponse = TrainCheckinController::checkin(

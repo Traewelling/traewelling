@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 abstract class EventController extends Controller
 {
     public static function suggestEvent(
-        User $user,
+        User   $user,
         string $name,
         Carbon $begin,
         Carbon $end,
@@ -30,32 +30,35 @@ abstract class EventController extends Controller
                                                        'host'    => $host
                                                    ]);
 
-
-        TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
-                                                   "Title: :name" . PHP_EOL .
-                                                   "Veranstalter: :host" . PHP_EOL .
-                                                   "Beginn: :begin" . PHP_EOL .
-                                                   "Ende: :end" . PHP_EOL .
-                                                   "Benutzer: :username\n" . PHP_EOL .
-                                                   "Der Vorschlag kann im <a href=\"" .
-                                                   route('admin.events.suggestions') .
-                                                   "\">Adminpanel</a> bearbeitet werden.", [
-                                                       ':name'     => $eventSuggestion->name,
-                                                       ':host'     => $eventSuggestion->host,
-                                                       ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
-                                                       ':end'      => $eventSuggestion->end->format('d.m.Y'),
-                                                       ':username' => $eventSuggestion->user->username,
-                                                   ]));
+        if (config('app.telegram.token') !== null) {
+            TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
+                                                       "Title: :name" . PHP_EOL .
+                                                       "Veranstalter: :host" . PHP_EOL .
+                                                       "Beginn: :begin" . PHP_EOL .
+                                                       "Ende: :end" . PHP_EOL .
+                                                       "Benutzer: :username\n" . PHP_EOL .
+                                                       "Der Vorschlag kann im <a href=\"" .
+                                                       route('admin.events.suggestions') .
+                                                       "\">Adminpanel</a> bearbeitet werden.", [
+                                                           ':name'     => $eventSuggestion->name,
+                                                           ':host'     => $eventSuggestion->host,
+                                                           ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
+                                                           ':end'      => $eventSuggestion->end->format('d.m.Y'),
+                                                           ':username' => $eventSuggestion->user->username,
+                                                       ]));
+        }
 
         return $eventSuggestion;
     }
 
-    public static function activeEvents(): ?Collection {
-        $now = Carbon::now();
+    public static function activeEvents(Carbon $timestamp = null): ?Collection {
+        if ($timestamp === null) {
+            $timestamp = Carbon::now();
+        }
 
         return Event::where([
-                                ['begin', '<=', $now],
-                                ['end', '>=', $now]
+                                ['begin', '<=', $timestamp->toIso8601String()],
+                                ['end', '>=', $timestamp->toIso8601String()]
                             ])->get();
     }
 
@@ -65,8 +68,8 @@ abstract class EventController extends Controller
 
     public static function getUpcomingEvents(): Paginator {
         return Event::where('end', '>=', Carbon::now()->toIso8601String())
-                                      ->orderBy('begin')
-                                      ->simplePaginate(15);
+                    ->orderBy('begin')
+                    ->simplePaginate(15);
     }
 
 }

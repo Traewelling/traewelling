@@ -142,7 +142,6 @@ class StatusController extends Controller
      * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
-
         if ($user->cannot('view', $status)) {
             throw new PermissionException();
         }
@@ -175,10 +174,6 @@ class StatusController extends Controller
             throw new InvalidArgumentException(__('controller.status.like-not-found'));
         }
         $like->delete();
-    }
-
-    public static function getLikes($statusId) {
-        return Status::findOrFail($statusId)->likes()->with('user')->simplePaginate(15);
     }
 
     public static function usageByDay(Carbon $date): int {
