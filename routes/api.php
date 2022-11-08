@@ -43,7 +43,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
          ->name('api.v1.getPrivacyPolicy');
 
-    Route::group(['middleware' => ['auth:api', 'privacy-policy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'activeEvents']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
@@ -55,7 +55,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
-        Route::group(['prefix' => 'notifications'], function() {
+        Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
             Route::put('{id}', [NotificationsController::class, 'update']);
@@ -63,10 +63,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('unread/{id}', [NotificationsController::class, 'unread']);
             Route::post('readAll', [NotificationsController::class, 'readAll']);
         });
-        Route::group(['prefix' => 'trains'], function() {
+        Route::group(['prefix' => 'trains'], static function() {
             Route::get('trip/', [TransportController::class, 'getTrip']);
             Route::post('checkin', [TransportController::class, 'create']);
-            Route::group(['prefix' => 'station'], function() {
+            Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'departures']);
                 Route::put('{name}/home', [TransportController::class, 'setHome']);
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
@@ -74,12 +74,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
-        Route::group(['prefix' => 'statistics'], function() {
+        Route::group(['prefix' => 'statistics'], static function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
-        Route::group(['prefix' => 'user'], function() {
+        Route::group(['prefix' => 'user'], static function() {
             Route::post('createFollow', [FollowController::class, 'createFollow']);
             Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
             Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
@@ -90,7 +90,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('search/{query}', [UserController::class, 'search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
         });
-        Route::group(['prefix' => 'settings'], function() {
+        Route::group(['prefix' => 'settings'], static function() {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
                  ->withoutMiddleware('privacy-policy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
@@ -116,7 +116,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
-    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], static function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);

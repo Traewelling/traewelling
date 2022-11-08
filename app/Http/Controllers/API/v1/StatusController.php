@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
@@ -14,6 +15,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use App\Models\TrainStopover;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -25,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class StatusController extends Controller
 {
@@ -315,9 +318,11 @@ class StatusController extends Controller
      */
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
-            'body'       => ['nullable', 'max:280', 'nullable'],
-            'business'   => ['required', new Enum(Business::class)],
-            'visibility' => ['required', new Enum(StatusVisibility::class)],
+            'body'                      => ['nullable', 'max:280', 'nullable'],
+            'business'                  => ['required', new Enum(Business::class)],
+            'visibility'                => ['required', new Enum(StatusVisibility::class)],
+            'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
+            'destinationArrivalPlanned' => ['required_with:destinationId', 'date'],
         ]);
 
         if ($validator->fails()) {
@@ -326,6 +331,25 @@ class StatusController extends Controller
         $validated = $validator->validate();
 
         try {
+            $status = Status::findOrFail($statusId);
+            $this->authorize('update', $status);
+
+            if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])) {
+                $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
+                                         ->where('arrival_planned', $validated['destinationArrivalPlanned'])
+                                         ->first();
+
+                if ($stopover === null) {
+                    return $this->sendv1Error('Invalid stopover given', 400);
+                }
+
+                TrainCheckinController::changeDestination(
+                    checkin:                $status->trainCheckin,
+                    newDestinationStopover: $stopover,
+                );
+            }
+            $status->fresh();
+
             $editStatusResponse = StatusBackend::EditStatus(
                 user:       Auth::user(),
                 statusId:   $statusId,
@@ -335,9 +359,11 @@ class StatusController extends Controller
             );
             return $this->sendResponse(new StatusResource($editStatusResponse));
         } catch (ModelNotFoundException) {
-            abort(404);
-        } catch (PermissionException) {
-            abort(403);
+            return $this->sendv1Error('Status not found');
+        } catch (PermissionException|AuthorizationException) {
+            return $this->sendv1Error('You are not authorized to edit this status', 403);
+        } catch (InvalidArgumentException) {
+            return $this->sendv1Error('Invalid Arguments', 400);
         }
     }
 

@@ -133,38 +133,6 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User             $user
-     * @param int              $statusId
-     * @param string|null      $body
-     * @param Business         $business
-     * @param StatusVisibility $visibility
-     *
-     * @return Status
-     * @throws PermissionException
-     * @api v1
-     */
-    public static function EditStatus(
-        User             $user,
-        int              $statusId,
-        string           $body = null,
-        Business         $business = Business::PRIVATE,
-        StatusVisibility $visibility = StatusVisibility::PUBLIC
-    ): Status {
-        $status = Status::findOrFail($statusId);
-
-        if ($user->id !== $status->user->id) {
-            throw new PermissionException();
-        }
-
-        $status->update([
-                            'body'       => $body,
-                            'business'   => $business,
-                            'visibility' => $visibility,
-                        ]);
-        return $status;
-    }
-
-    /**
      * Create a Statuslike for a given User
      *
      * @param User   $user
