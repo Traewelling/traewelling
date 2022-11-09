@@ -76,11 +76,6 @@ class UserController extends Controller
         Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                    ->join('train_stations', 'train_stations.ibnr', '=', 'train_checkins.origin')
-                    ->join('train_stopovers', function($join) {
-                        $join->on('train_stopovers.trip_id', '=', 'train_checkins.trip_id');
-                        $join->on('train_stopovers.train_station_id', '=', 'train_stations.id');
-                    })
                     ->with([
                                'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
                                'trainCheckin.HafasTrip.stopoversNEW', 'event'
@@ -104,8 +99,7 @@ class UserController extends Controller
                               });
                     })
                     ->select('statuses.*')
-                    ->orderByDesc('train_stopovers.departure_real')
-                    ->orderByDesc('train_stopovers.departure_planned')
+                    ->orderByDesc('train_checkins.departure')
                     ->paginate($limit !== null && $limit <= 15 ? $limit : 15);
     }
 
