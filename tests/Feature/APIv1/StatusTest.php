@@ -199,7 +199,9 @@ class StatusTest extends ApiTestCase
                                              'status_id'   => $status->id,
                                              'user_id'     => $user->id,
                                              'origin'      => $firstStation->ibnr,
+                                             'departure'   => $firstDeparture->toDateTimeString(),
                                              'destination' => $secondStation->ibnr,
+                                             'arrival'     => $secondArrival->toDateTimeString(),
                                          ])->create();
 
         TrainStopover::factory([
@@ -240,6 +242,7 @@ class StatusTest extends ApiTestCase
                      ],
             headers: ['Authorization' => 'Bearer ' . $userToken],
         );
+        dd($response->json());
         $response->assertOk();
 
         $checkin = $checkin->fresh();
