@@ -242,7 +242,6 @@ class StatusTest extends ApiTestCase
                      ],
             headers: ['Authorization' => 'Bearer ' . $userToken],
         );
-        dd($response->json());
         $response->assertOk();
 
         $checkin = $checkin->fresh();
