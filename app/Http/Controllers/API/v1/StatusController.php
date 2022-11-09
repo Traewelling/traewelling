@@ -340,7 +340,7 @@ class StatusController extends Controller
                                          ->first();
 
                 if ($stopover === null) {
-                    return $this->sendv1Error('Invalid stopover given', 400);
+                    return $this->sendError('Invalid stopover given', 400);
                 }
 
                 TrainCheckinController::changeDestination(
@@ -348,22 +348,21 @@ class StatusController extends Controller
                     newDestinationStopover: $stopover,
                 );
             }
-            $status->fresh();
 
-            $editStatusResponse = StatusBackend::EditStatus(
-                user:       Auth::user(),
-                statusId:   $statusId,
-                body:       $validated['body'],
-                business:   Business::from($validated['business']),
-                visibility: StatusVisibility::from($validated['visibility']),
-            );
-            return $this->sendResponse(new StatusResource($editStatusResponse));
+            $status->update([
+                                'body'       => $validated['body'] ?? null,
+                                'business'   => Business::from($validated['business']),
+                                'visibility' => StatusVisibility::from($validated['visibility']),
+                            ]);
+
+            $status->fresh();
+            return $this->sendResponse(new StatusResource($status));
         } catch (ModelNotFoundException) {
-            return $this->sendv1Error('Status not found');
+            return $this->sendError('Status not found');
         } catch (PermissionException|AuthorizationException) {
-            return $this->sendv1Error('You are not authorized to edit this status', 403);
+            return $this->sendError('You are not authorized to edit this status', 403);
         } catch (InvalidArgumentException) {
-            return $this->sendv1Error('Invalid Arguments', 400);
+            return $this->sendError('Invalid Arguments', 400);
         }
     }
 
