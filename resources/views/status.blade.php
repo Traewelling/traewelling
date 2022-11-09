@@ -41,6 +41,13 @@
                 <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
 
+                @if(isset($status->trainCheckin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
+                    <small class="text-muted">
+                        {{__('real-time-last-refreshed')}}
+                        {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}
+                    </small>
+                @endif
+
                 @if($status?->trainCheckin?->origin_stopover?->carriageSequences?->count() > 0)
                     @include('includes.carriage-sequence', ['carriageSequence' => $status->trainCheckin->origin_stopover->carriageSequences])
                 @endif

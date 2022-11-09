@@ -569,5 +569,6 @@
     "about.dev.5": "Wenn du Fragen hast, kannst du dich gerne auf unserem <a href=\":link\">Discord-Server</a> an uns wenden: <a href=\":link\">:link</a>",
     "other": "Sonstige",
     "exit": "Ausstieg",
-    "platform": "Gleis"
+    "platform": "Gleis",
+    "real-time-last-refreshed": "Echtzeitdaten zuletzt aktualisiert"
 }

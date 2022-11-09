@@ -569,5 +569,6 @@
     "about.dev.5": "If you have any questions, feel free to contact us on our <a href=\":link\">discord server</a>: <a href=\":link\">:link</a>.",
     "other": "Other",
     "exit": "Exit",
-    "platform": "Platform"
+    "platform": "Platform",
+    "real-time-last-refreshed": "Real time data last refreshed"
 }
