@@ -572,6 +572,7 @@
     "platform": "Platform",
     "real-time-last-refreshed": "Real time data last refreshed",
     "help": "Help",
-    "support.go-to-github": "Please report software bugs and improvement suggestions on GitHub. Use the buttons below to do so. We can help you with this form if you have problems with your account or checkins on traewelling.de."
-
+    "support.go-to-github": "Please report software bugs and improvement suggestions on GitHub. Use the buttons below to do so. We can help you with this form if you have problems with your account or checkins on traewelling.de.",
+    "no-journeys-day": "You didn't check into any journeys that day.",
+    "stats-day": "Your journeys at :date"
 }

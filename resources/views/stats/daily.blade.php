@@ -1,24 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Dein Reisetag - ' . $date->format('d.m.Y'))
+@section('title', __('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))]))
 
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-12 mb-3">
-                <h1 class="fs-4">Dein Reisetag am {{$date->isoFormat('dddd, DD.MM.YYYY')}}</h1>
+                <h1 class="fs-4">{{__('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))])}}</h1>
 
                 <a href="{{route('stats.daily', ['dateString' => $date->clone()->subDay()->format('Y-m-d')])}}"
                    class="btn btn-primary"
                 >
-                    <-- Vorheriger Tag
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    {{$date->clone()->subDay()->isoFormat(__('date-format'))}}
                 </a>
-
-                <a href="{{route('stats.daily', ['dateString' => $date->clone()->addDay()->format('Y-m-d')])}}"
-                   class="btn btn-primary float-end"
-                >
-                    Nächster Tag -->
-                </a>
+                @if($date->clone()->addDay()->isBefore(\Illuminate\Support\Facades\Date::today()->endOfDay()))
+                    <a href="{{route('stats.daily', ['dateString' => $date->clone()->addDay()->format('Y-m-d')])}}"
+                       class="btn btn-primary float-end"
+                    >
+                        {{$date->clone()->addDay()->isoFormat(__('date-format'))}}
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                @endif
             </div>
             <div class="col-md-6 mb-4">
                 <div id="map" style="min-height: 600px;"></div>
@@ -57,7 +60,9 @@
             </div>
             <div class="col-md-6">
                 @if($statuses->count() === 0)
-                    Keine Reisen
+                    <div class="alert alert-warning text-center fs-4">
+                        {{__('no-journeys-day')}}
+                    </div>
                 @else
                     @foreach($statuses as $status)
                         @include('includes.status')

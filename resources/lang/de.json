@@ -572,5 +572,7 @@
     "platform": "Gleis",
     "real-time-last-refreshed": "Echtzeitdaten zuletzt aktualisiert",
     "help": "Hilfe",
-    "support.go-to-github": "Bitte melde uns Softwarefehler und Verbesserungsvorschläge auf GitHub. Nutze dafür die folgenden Buttons. Über dieses Formular können wir dir helfen, wenn du Probleme mit deinem Account oder Checkins auf traewelling.de hast."
+    "support.go-to-github": "Bitte melde uns Softwarefehler und Verbesserungsvorschläge auf GitHub. Nutze dafür die folgenden Buttons. Über dieses Formular können wir dir helfen, wenn du Probleme mit deinem Account oder Checkins auf traewelling.de hast.",
+    "no-journeys-day": "An diesem Tag hast du in keine Fahrt eingecheckt.",
+    "stats-day": "Deine Fahrten am :date"
 }
