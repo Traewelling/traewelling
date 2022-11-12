@@ -540,10 +540,11 @@
     "warning-alternative-station": "You are about to check in for a departure at station <i>:newStation</i>, which was shown to you because it is near <i>:searchedStation</i>.",
     "carriage-sequence": "Carriage sequence",
     "carriage": "Carriage",
-    "experimental-feature": "Experimental function",
+    "experimental-feature": "Experimental feature",
+    "experimental-features": "Experimental features",
     "data-may-incomplete": "Information may be incomplete or incorrect.",
     "empty-en-route": "There are currently no Träweller en route.",
-    "stats.stations": "Route map",
+    "stats.stations": "Station map",
     "overlapping-checkin": "Overlapping Check-In",
     "overlapping-checkin.description": "Your trip could not be saved because it overlapped with your check-in in :lineName.",
     "overlapping-checkin.description2": "Do you want to force check-in now?",
@@ -574,5 +575,10 @@
     "help": "Help",
     "support.go-to-github": "Please report software bugs and improvement suggestions on GitHub. Use the buttons below to do so. We can help you with this form if you have problems with your account or checkins on traewelling.de.",
     "no-journeys-day": "You didn't check into any journeys that day.",
-    "stats-day": "Your journeys at :date"
+    "stats-day": "Your journeys at :date",
+    "stats.stations.description": "Map of your passed stations",
+    "stats.stations.passed": "Passed station",
+    "stats.stations.changed": "Entry / Exit / Change",
+    "stats.daily.description": "Diary of your journeys incl. map",
+    "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data."
 }

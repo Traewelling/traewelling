@@ -10,10 +10,17 @@
                 <div class="alert alert-danger">
                     {{__('experimental-feature')}}
                     -
-                    {{__('data-may-incomplete')}}
+                    {{__('data-may-incomplete')}}.
+                    {{__('warning.insecure-performance')}}
                 </div>
 
                 <div id="map" style="min-height: 700px;"></div>
+                <hr/>
+                <img src="{{asset('/img/marker/dot-primary.svg')}}" style="height: 14px;"/>
+                {{__('stats.stations.changed')}}
+                <br/>
+                <img src="{{asset('/img/marker/dot-secondary.svg')}}" style="height: 14px;"/>
+                {{__('stats.stations.passed')}}
             </div>
         </div>
     </div>
@@ -34,11 +41,13 @@
             iconSize: [10, 10],
         });
 
+        let featureGroup = L.featureGroup().addTo(map);
+
         @foreach($usedStations as $usedStation)
         L.marker([{{ $usedStation->latitude }}, {{ $usedStation->longitude }}], {
             icon: primaryDot
         })
-            .addTo(map)
+            .addTo(featureGroup)
             .bindPopup("{{ $usedStation->name }}");
         @endforeach
 
@@ -46,8 +55,10 @@
         L.marker([{{ $passedStation->latitude }}, {{ $passedStation->longitude }}], {
             icon: secondaryDot
         })
-            .addTo(map)
+            .addTo(featureGroup)
             .bindPopup("{{ $passedStation->name }}");
         @endforeach
+
+        map.fitBounds(featureGroup.getBounds());
     </script>
 @endsection

@@ -34,6 +34,22 @@
             </div>
             <div class="col-lg-4">
                 @include('stats.includes.global_cards')
+
+                <h4>
+                    {{__('experimental-features')}}
+                </h4>
+                <ul>
+                    <li>
+                        <a href="{{route('stats.stations')}}">
+                            {{__('stats.stations.description')}}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('stats.daily', ['dateString' => \Illuminate\Support\Facades\Date::today()->toDateString()])}}">
+                            {{__('stats.daily.description')}}
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

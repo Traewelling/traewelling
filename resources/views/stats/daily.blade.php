@@ -8,6 +8,12 @@
             <div class="col-12 mb-3">
                 <h1 class="fs-4">{{__('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))])}}</h1>
 
+                <div class="alert alert-danger">
+                    {{__('experimental-feature')}}
+                    -
+                    {{__('data-may-incomplete')}}
+                </div>
+
                 <a href="{{route('stats.daily', ['dateString' => $date->clone()->subDay()->format('Y-m-d')])}}"
                    class="btn btn-primary"
                 >
