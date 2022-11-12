@@ -126,9 +126,9 @@
                                             <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                         </a>
                                         @if(config('ticket.host') !== null)
-                                            <a class="dropdown-item" href="{{ route('support') }}">
-                                                <i class="fas fa-headset" aria-hidden="true"></i>
-                                                {{ __('support') }}
+                                            <a class="dropdown-item" href="{{ route('static.about') }}">
+                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                {{ __('help') }}
                                             </a>
                                         @endif
                                         @if(Auth::user()->role >= 5)
