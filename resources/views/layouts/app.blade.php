@@ -87,8 +87,10 @@
                                                value="{{request()->has('searchQuery') ? request()->searchQuery : ''}}"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="{{ __('stationboard.submit-search') }}"
-                                               aria-label="User suchen"/>
-                                        <button class="input-group-text btn-primary" type="submit">
+                                               aria-label="{{ __('stationboard.submit-search') }}"
+                                               required
+                                        />
+                                        <button class="btn btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
                                     </div>
