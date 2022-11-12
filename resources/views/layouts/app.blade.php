@@ -87,8 +87,10 @@
                                                value="{{request()->has('searchQuery') ? request()->searchQuery : ''}}"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="{{ __('stationboard.submit-search') }}"
-                                               aria-label="User suchen"/>
-                                        <button class="input-group-text btn-primary" type="submit">
+                                               aria-label="{{ __('stationboard.submit-search') }}"
+                                               required
+                                        />
+                                        <button class="btn btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -124,9 +126,9 @@
                                             <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                         </a>
                                         @if(config('ticket.host') !== null)
-                                            <a class="dropdown-item" href="{{ route('support') }}">
-                                                <i class="fas fa-headset" aria-hidden="true"></i>
-                                                {{ __('support') }}
+                                            <a class="dropdown-item" href="{{ route('static.about') }}">
+                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                {{ __('help') }}
                                             </a>
                                         @endif
                                         @if(Auth::user()->role >= 5)

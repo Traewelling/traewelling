@@ -570,5 +570,8 @@
     "other": "Other",
     "exit": "Exit",
     "platform": "Platform",
-    "real-time-last-refreshed": "Real time data last refreshed"
+    "real-time-last-refreshed": "Real time data last refreshed",
+    "help": "Help",
+    "support.go-to-github": "Please report software bugs and improvement suggestions on GitHub. Use the buttons below to do so. We can help you with this form if you have problems with your account or checkins on traewelling.de."
+
 }

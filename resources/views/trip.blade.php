@@ -17,14 +17,14 @@
                 @endisset
 
                 <div class="card">
-                    <div class="card-header"
+                    <div class="card-header bg-dark text-white"
                          data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}"
                          data-start="{{ request()->start }}"
                          data-tripid="{{ $hafasTrip->trip_id }}"
                     >
                         <div class="float-end">
-                            <a href="#" class="train-destinationrow"
+                            <a href="#" class="train-destinationrow text-white"
                                data-ibnr="{{$lastStopover->trainStation->ibnr}}"
                                data-stopname="{{$lastStopover->trainStation->name}}"
                                data-arrival="{{$lastStopover->arrival_planned ?? $lastStopover->departure_planned}}">
@@ -47,13 +47,6 @@
                                data-startname="{{ $hafasTrip->originStation->name }}"
                                data-start="{{ request()->start }}"
                                data-tripid="{{ $hafasTrip->trip_id }}">
-                            <thead>
-                                <tr>
-                                    <th>{{__('stationboard.stopover')}}</th>
-                                    <th></th>
-                                    <th class="text-end">{{__('platform')}}</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 @foreach($stopovers as $stopover)
                                     @if($stopover->cancelled)
@@ -62,7 +55,6 @@
                                             <td>
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
                                             </td>
-                                            <td>{{ $stopover->platform }}</td>
                                         </tr>
                                     @else
                                         <tr class="train-destinationrow"
@@ -71,21 +63,13 @@
                                             data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
                                         >
                                             <td>{{ $stopover->trainStation->name }}</td>
-                                            <td>
+                                            <td class="text-end">
                                                 {{ __('stationboard.arr') }}
                                                 {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
                                                 @isset($stopover->arrival_real)
                                                     <small>(<span
                                                             class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
                                                 @endisset
-                                            </td>
-                                            <td class="text-end">
-                                                {{$stopover->arrival_platform_planned}}
-                                                @if(isset($stopover->arrival_platform_real) && $stopover->arrival_platform_real !== $stopover->arrival_platform_planned)
-                                                    <span class="text-danger text-decoration-line-through">
-                                                        {{ $stopover->arrival_platform_real }}
-                                                    </span>
-                                                @endif
                                             </td>
                                         </tr>
                                     @endif
