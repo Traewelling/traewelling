@@ -133,6 +133,9 @@ class FrontendTransportController extends Controller
                     return $trainStopover->departure_planned->isAfter($departure);
                 });
 
+            //Show Platform row only if there are information about it
+            $showPlatform = $stopovers->whereNotNull('platform')->count() > 0;
+
             // Find out where this train terminates and offer this as a "fast check-in" option.
             $lastStopover = $hafasTrip->stopoversNEW
                 ->filter(function(TrainStopover $stopover) {
@@ -147,6 +150,7 @@ class FrontendTransportController extends Controller
                 'startStation'    => $startStation,
                 'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
                 'lastStopover'    => $lastStopover,
+                'showPlatform'    => $showPlatform,
             ]);
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
