@@ -10,7 +10,7 @@
                 <div class="alert alert-danger">
                     {{__('experimental-feature')}}
                     -
-                    {{__('data-may-incomplete')}}.
+                    {{__('data-may-incomplete')}}
                     {{__('warning.insecure-performance')}}
                 </div>
 
