@@ -6,7 +6,7 @@
                 <a href="{{route('stats.daily', ['dateString' => $status->trainCheckin->departure->toDateString()])}}"
                    class="text-trwl"
                 >
-                    <i class="fa-solid fa-map-location-dot float-end" aria-hidden="true"></i>
+                    <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
                 </a>
             @endif
         </h2>

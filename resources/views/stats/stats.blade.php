@@ -39,11 +39,13 @@
                     {{__('experimental-features')}}
                 </h4>
                 <ul>
-                    <li>
-                        <a href="{{route('stats.stations')}}">
-                            {{__('stats.stations.description')}}
-                        </a>
-                    </li>
+                    @if(auth()->check() && auth()->user()->role >= 10)
+                        <li>
+                            <a href="{{route('stats.stations')}}">
+                                {{__('stats.stations.description')}}
+                            </a>
+                        </li>
+                    @endif
                     <li>
                         <a href="{{route('stats.daily', ['dateString' => \Illuminate\Support\Facades\Date::today()->toDateString()])}}">
                             {{__('stats.daily.description')}}
