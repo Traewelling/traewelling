@@ -277,7 +277,7 @@
     "profile.follow_req.pending": "Pending",
     "profile.last-journeys-of": "Last journeys of",
     "profile.no-statuses": ":username hasn't checked into any trips yet.",
-    "profile.no-visible-statuses": "Unfortunately, the travels of :username are not visible to you.",
+    "profile.no-visible-statuses": "The journeys of :username are not visible.",
     "profile.points-abbr": "pts",
     "profile.settings": "Settings",
     "profile.statistics-for": "Statistics for",
