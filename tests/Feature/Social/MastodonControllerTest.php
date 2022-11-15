@@ -16,11 +16,11 @@ class MastodonControllerTest extends TestCase
      */
     public function testFormatDomain($case, $expected): void {
         $formatted = MastodonController::formatDomain($case);
-        self::assertEquals($expected, $formatted);
+        $this->assertEquals($expected, $formatted);
 
-        $validated = Validator::make(["domain" => $formatted], ["domain" => ["active_url"]]);
+        $validated = Validator::make(['domain' => $formatted], ['domain' => ['active_url']]);
 
-        self:self::assertFalse($validated->fails());
+        $this->assertFalse($validated->fails());
     }
 
     public function providerTestFormatDomain(): array {
