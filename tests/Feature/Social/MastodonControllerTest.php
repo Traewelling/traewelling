@@ -14,7 +14,7 @@ class MastodonControllerTest extends TestCase
     /**
      * @dataProvider providerTestFormatDomain
      */
-    public function testFormatDomain($case, $expected) {
+    public function testFormatDomain($case, $expected): void {
         $formatted = MastodonController::formatDomain($case);
         self::assertEquals($expected, $formatted);
 
