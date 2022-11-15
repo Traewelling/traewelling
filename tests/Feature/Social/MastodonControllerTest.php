@@ -1,18 +1,26 @@
 <?php
 
-namespace Tests\Unit\Social;
+namespace Tests\Feature\Social;
 
 use App\Http\Controllers\Backend\Social\MastodonController;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Validator;
+use Tests\TestCase;
 
 class MastodonControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     /**
      * @dataProvider providerTestFormatDomain
      */
     public function testFormatDomain($case, $expected) {
-        self::assertEquals($expected, MastodonController::formatDomain($case));
+        $formatted = MastodonController::formatDomain($case);
+        self::assertEquals($expected, $formatted);
+
+        $validated = Validator::make(["domain" => $formatted], ["domain" => ["active_url"]]);
+
+        self:self::assertFalse($validated->fails());
     }
 
     public function providerTestFormatDomain(): array {
@@ -22,6 +30,7 @@ class MastodonControllerTest extends TestCase
             ['uelfte.club', 'https://uelfte.club'],
             ['great_username@uelfte.club', 'https://uelfte.club'],
             ['@great_username@uelfte.club', 'https://uelfte.club'],
+            ['https://mastodon.sergal.org', 'https://mastodon.sergal.org'] # see issue 1182
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Enum;
+namespace Tests\Unit\Enum;
 
 use App\Enum\CacheKey;
 use Carbon\Carbon;
