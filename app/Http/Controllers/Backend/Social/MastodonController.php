@@ -67,6 +67,13 @@ abstract class MastodonController extends Controller
 
     public static function formatDomain(string $domain): string {
         $domain = strtolower($domain);
+
+        // remove leading usernames
+        if (str_contains($domain, '@')) {
+            $domain = last(explode('@', $domain));
+        }
+
+        // Force HTTPS
         $domain = str_replace('http://', 'https://', $domain);
         if (!str_starts_with($domain, 'https://')) {
             $domain = 'https://' . $domain;
