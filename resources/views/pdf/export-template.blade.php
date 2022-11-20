@@ -175,7 +175,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="font-style: italic;">Gesamt:</td>
+                        <td style="font-style: italic;">{{ __('export.total') }}:</td>
                         <td class="number-field">{{ $sum_duration }} min</td>
                         <td class="number-field">{{ number($sum_distance) }} km</td>
                         <td></td>
