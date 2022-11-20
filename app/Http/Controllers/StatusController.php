@@ -49,13 +49,11 @@ class StatusController extends Controller
     /**
      * This Method returns the current active status(es) for all users or a specific user.
      *
-     * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
-     *
      * @return array|stdClass|null
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses(bool $array = true): array|stdClass|null {
+    public static function getActiveStatuses(): array|stdClass|null {
         $statuses = Status::with([
                                      'likes',
                                      'user',
@@ -83,9 +81,6 @@ class StatusController extends Controller
         $polylines = $statuses->map(function($status) {
             return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
         });
-        if ($array) {
-            return ['statuses' => $statuses->toArray(), 'polylines' => $polylines];
-        }
 
         return ['statuses' => $statuses, 'polylines' => $polylines];
     }

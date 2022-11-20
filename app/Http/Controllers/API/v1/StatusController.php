@@ -175,7 +175,7 @@ class StatusController extends Controller
      *
      */
     public function enRoute(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getActiveStatuses(false)['statuses']);
+        return StatusResource::collection(StatusBackend::getActiveStatuses()['statuses']);
     }
 
     /**
