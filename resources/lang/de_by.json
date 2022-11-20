@@ -323,6 +323,7 @@
     "export.title.origin.coordinates": "Abfahrtskoordinata",
     "export.title.origin.time": "Abfahrtszeit (plant)",
     "export.title.destination.location": "Ahnkunftsörtla",
+    "export.total": "Summe",
     "leaderboard.points": "Pünktla",
     "leaderboard.top": "Top",
     "leaderboard.no_data": "Vu dem Monet gaits leidr koa Toplischdn.",
