@@ -92,7 +92,6 @@ class AuthTest extends ApiTestCase
         $token->token->revoke();
         $this->assertGuest();
         $response = $this->get('/api/v1/auth/user', [
-            'Accept'        => 'application/json',
             'Authorization' => 'Bearer ' . $token->accessToken,
         ]);
         $response->assertUnauthorized();
