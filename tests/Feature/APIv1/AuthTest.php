@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
 
@@ -83,5 +84,16 @@ class AuthTest extends ApiTestCase
             'Authorization' => 'Bearer ' . $token,
         ]);
         $response->assertOk();
+    }
+
+    public function testAccessWithRevokedTokenIsNotPossible(): void {
+        $user  = User::factory()->create();
+        $token = $user->createToken('token');
+        $token->token->revoke();
+        $this->assertGuest();
+        $response = $this->get('/api/v1/auth/user', [
+            'Authorization' => 'Bearer ' . $token->accessToken,
+        ]);
+        $response->assertUnauthorized();
     }
 }
