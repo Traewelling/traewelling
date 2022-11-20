@@ -57,8 +57,8 @@ class StatusController extends Controller
         $statuses = Status::with([
                                      'likes',
                                      'user',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
+                                     'trainCheckin.originStation',
+                                     'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.polyline',
                                      'trainCheckin.HafasTrip.stopoversNEW.trainStation',
                                      'event'
@@ -78,7 +78,7 @@ class StatusController extends Controller
         if ($statuses === null) {
             return null;
         }
-        $polylines = $statuses->map(function($status) {
+        $polylines = $statuses->map(function(Status $status) {
             return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
         });
 

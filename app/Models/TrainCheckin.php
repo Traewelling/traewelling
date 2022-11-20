@@ -69,7 +69,7 @@ class TrainCheckin extends Model
     }
 
     public function getOriginStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->originStation->id)
                                                   ->where('departure_planned', $this->departure)
                                                   ->first();
         if ($stopOver == null) {
@@ -77,7 +77,7 @@ class TrainCheckin extends Model
             $stopOver = TrainStopover::updateOrCreate(
                 [
                     "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->Origin->id
+                    "train_station_id" => $this->originStation->id
                 ],
                 [
                     "departure_planned" => $this->departure,
@@ -90,14 +90,14 @@ class TrainCheckin extends Model
     }
 
     public function getDestinationStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->destinationStation->id)
                                                   ->where('arrival_planned', $this->arrival)
                                                   ->first();
         if ($stopOver == null) {
             $stopOver = TrainStopover::updateOrCreate(
                 [
                     "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->Destination->id
+                    "train_station_id" => $this->destinationStation->id
                 ],
                 [
                     "departure_planned" => $this->arrival,
