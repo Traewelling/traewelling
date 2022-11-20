@@ -25,13 +25,9 @@ abstract class ExportController extends Controller
      */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
-                                     'trainCheckin',
-                                     'trainCheckin.HafasTrip',
                                      'trainCheckin.HafasTrip.stopoversNEW',
                                      'trainCheckin.Origin',
                                      'trainCheckin.Destination',
-                                     // 'trainCheckin.originStation',
-                                     // 'trainCheckin.destinationStation'
                                  ])
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where('statuses.user_id', $user->id)
