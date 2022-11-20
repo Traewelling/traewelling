@@ -99,9 +99,13 @@
                     @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status)?->ibnr])}}"
+
+                            @php
+                            $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
+                            @endphp
+                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $nextStation?->ibnr])}}"
                                class="text-trwl clearfix">
-                                {{\App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status)?->name}}
+                                {{$nextStation?->name}}
                             </a>
                         </p>
                     @endif
