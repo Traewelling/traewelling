@@ -2,7 +2,7 @@
     Name: Levin Baumann
     Site: https://herrlev.in
     Twitter: @HerrLevin_
-    Mastodon: HerrLevin_@uelfte.club
+    Mastodon: HerrLevin_@queer.party
     Location: Karlsruhe, Germany
 
     Name: Kristian Stöckel
@@ -14,8 +14,8 @@
     Name: Jannik Volkland
     Site: https://iamjannik.me
     Twitter: @confuzd_
-    Mastodon: jannik@uelfte.club
-    Location: Cologne, Germany
+    Mastodon: jannik@chaos.social
+    Location: Düsseldorf, Germany
 
     Additional Credits to this contributors:
         https://github.com/Traewelling/traewelling/graphs/contributors
