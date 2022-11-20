@@ -159,18 +159,4 @@ class FrontendStatusController extends Controller
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }
-
-    /**
-     * @param Status $status
-     *
-     * @return TrainStation|null
-     */
-    public static function nextStation(Status $status): ?TrainStation {
-        return $status->trainCheckin->HafasTrip->stopoversNEW
-            ->filter(function($stopover) {
-                return $stopover->arrival->isFuture();
-            })
-            ->sortBy('arrival') //sort by real time and if not available by planned time
-            ->first()?->trainStation;
-    }
 }
