@@ -89,15 +89,8 @@ class AuthTest extends ApiTestCase
     public function testAccessWithRevokedTokenIsNotPossible(): void {
         $user  = User::factory()->create();
         $token = $user->createToken('token');
-
-        $response = $this->get('/api/v1/auth/user', [
-            'Accept'        => 'application/json',
-            'Authorization' => 'Bearer ' . $token->accessToken,
-        ]);
-        $response->assertOk();
-
         $token->token->revoke();
-
+        $this->assertGuest();
         $response = $this->get('/api/v1/auth/user', [
             'Accept'        => 'application/json',
             'Authorization' => 'Bearer ' . $token->accessToken,
