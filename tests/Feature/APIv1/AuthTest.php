@@ -91,6 +91,7 @@ class AuthTest extends ApiTestCase
         $token = $user->createToken('token');
 
         $response = $this->get('/api/v1/auth/user', [
+            'Accept'        => 'application/json',
             'Authorization' => 'Bearer ' . $token->accessToken,
         ]);
         $response->assertOk();
@@ -98,6 +99,7 @@ class AuthTest extends ApiTestCase
         $token->token->revoke();
 
         $response = $this->get('/api/v1/auth/user', [
+            'Accept'        => 'application/json',
             'Authorization' => 'Bearer ' . $token->accessToken,
         ]);
         $response->assertUnauthorized();
