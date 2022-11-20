@@ -83,10 +83,14 @@ abstract class ExportController extends Controller
      * @throws DataOverflowException
      */
     private static function exportPdf(Carbon $begin, Carbon $end): \Illuminate\Http\Response {
+        $statuses = ExportBackend::getExportableStatuses(auth()->user(), $begin, $end);
+
         return Pdf::loadView('pdf.export-template', [
-            'statuses' => ExportBackend::getExportableStatuses(auth()->user(), $begin, $end),
-            'begin'    => $begin,
-            'end'      => $end
+            'statuses'     => $statuses,
+            'begin'        => $begin,
+            'end'          => $end,
+            'sum_duration' => $statuses->reduce(fn($sum, $s) => $sum + $s->trainCheckin->duration),
+            'sum_distance' => $statuses->reduce(fn($sum, $s) => $sum + $s->trainCheckin->distance) / 1000,
         ])
                   ->setPaper('a4', 'landscape')
                   ->download(
