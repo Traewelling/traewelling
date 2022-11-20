@@ -14,11 +14,10 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
+use stdClass;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -50,55 +49,34 @@ class StatusController extends Controller
     /**
      * This Method returns the current active status(es) for all users or a specific user.
      *
-     * @param null $userId UserId to get the current active status for a user. Defaults to null.
-     * @param bool $array  This parameter is a temporary solution until the frontend is no more dependend on blade.
+     * @param bool $array This parameter is a temporary solution until the frontend is no more dependend on blade.
      *
-     * @return Status|array|Builder|Model|object|null
+     * @return array|stdClass|null
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses($userId = null, bool $array = true) {
-        if ($userId === null) {
-            $statuses = Status::with([
-                                         'likes',
-                                         'user',
-                                         'trainCheckin.Origin',
-                                         'trainCheckin.Destination',
-                                         'trainCheckin.HafasTrip.polyline',
-                                         'trainCheckin.HafasTrip.stopoversNEW.trainStation',
-                                         'event'
-                                     ])
-                              ->whereHas('trainCheckin', function($query) {
-                                  $query->where('departure', '<', date('Y-m-d H:i:s'))
-                                        ->where('arrival', '>', date('Y-m-d H:i:s'));
-                              })
-                              ->get()
-                              ->filter(function(Status $status) {
-                                  return Gate::allows('view', $status);
-                              })
-                              ->sortByDesc(function(Status $status) {
-                                  return $status->trainCheckin->departure;
-                              })->values();
-        } else {
-            $status = Status::with([
-                                       'user',
-                                       'trainCheckin.Origin',
-                                       'trainCheckin.Destination',
-                                       'trainCheckin.HafasTrip.polyline',
-                                       'event'
-                                   ])
-                            ->whereHas('trainCheckin', function($query) {
-                                $query->where('departure', '<', date('Y-m-d H:i:s'))
-                                      ->where('arrival', '>', date('Y-m-d H:i:s'));
-                            })
-                            ->where('user_id', $userId)
-                            ->first();
-            if (!request()?->user()->can('view', $status)) {
-                return null;
-            }
-            return $status;
-            //This line is important since we're using this method for two different purposes and I forgot that.
-        }
+    public static function getActiveStatuses(bool $array = true): array|stdClass|null {
+        $statuses = Status::with([
+                                     'likes',
+                                     'user',
+                                     'trainCheckin.Origin',
+                                     'trainCheckin.Destination',
+                                     'trainCheckin.HafasTrip.polyline',
+                                     'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                     'event'
+                                 ])
+                          ->whereHas('trainCheckin', function($query) {
+                              $query->where('departure', '<', date('Y-m-d H:i:s'))
+                                    ->where('arrival', '>', date('Y-m-d H:i:s'));
+                          })
+                          ->get()
+                          ->filter(function(Status $status) {
+                              return Gate::allows('view', $status);
+                          })
+                          ->sortByDesc(function(Status $status) {
+                              return $status->trainCheckin->departure;
+                          })->values();
+
         if ($statuses === null) {
             return null;
         }
