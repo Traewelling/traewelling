@@ -24,7 +24,16 @@ abstract class ExportController extends Controller
      * @throws DataOverflowException If too many results are given.
      */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
-        $statuses = Status::join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+        $statuses = Status::with([
+                                     'trainCheckin',
+                                     'trainCheckin.HafasTrip',
+                                     'trainCheckin.HafasTrip.stopoversNEW',
+                                     'trainCheckin.Origin',
+                                     'trainCheckin.Destination',
+                                     // 'trainCheckin.originStation',
+                                     // 'trainCheckin.destinationStation'
+                                 ])
+                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where('statuses.user_id', $user->id)
                           ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
                           ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
@@ -89,8 +98,8 @@ abstract class ExportController extends Controller
             'statuses'     => $statuses,
             'begin'        => $begin,
             'end'          => $end,
-            'sum_duration' => $statuses->reduce(fn($sum, $s) => $sum + $s->trainCheckin->duration),
-            'sum_distance' => $statuses->reduce(fn($sum, $s) => $sum + $s->trainCheckin->distance) / 1000,
+            'sum_duration' => $statuses->sum('trainCheckin.duration'),
+            'sum_distance' => $statuses->sum('trainCheckin.distance') / 1000,
         ])
                   ->setPaper('a4', 'landscape')
                   ->download(
