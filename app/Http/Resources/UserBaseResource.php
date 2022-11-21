@@ -36,7 +36,8 @@ class UserBaseResource extends JsonResource
                     'role'          => $this->role,
                     'home'          => $this->home,
                     'dbl'           => $this->always_dbl,
-                    'language'      => $this->language
+                    'language'      => $this->language,
+                    'default_status_visibility' => $this->default_status_visibility
                 ]),
             $this->mergeWhen(isset($this->UserResource),
                 [
