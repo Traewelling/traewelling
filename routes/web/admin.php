@@ -9,7 +9,7 @@ use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('admin')->middleware(['auth', 'userrole:5'])->group(function() {
+Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
