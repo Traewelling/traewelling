@@ -13,10 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use stdClass;
 
-class StatusLiked extends Notification
+class StatusLiked extends BaseNotification
 {
     use Queueable;
 

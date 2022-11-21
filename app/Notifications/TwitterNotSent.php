@@ -8,11 +8,10 @@ use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
 use stdClass;
 
-class TwitterNotSent extends Notification
+class TwitterNotSent extends BaseNotification
 {
     use Queueable;
 
@@ -25,7 +24,7 @@ class TwitterNotSent extends Notification
     }
 
     /** @deprecated will be handled in frontend */
-    public static function render(DatabaseNotification $notification): ?string {
+    public static function render(mixed $notification): ?string {
         try {
             self::detail($notification);
         } catch (ShouldDeleteNotificationException) {
