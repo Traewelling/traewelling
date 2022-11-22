@@ -85,7 +85,7 @@ return [
     'locale'  => 'de',
     'locales' => [
         'de'     => 'Deutsch',
-        'de_he'  => 'Deutsch (südhessisch)',
+        'de_he'  => 'Deutsch (Südhessisch)',
         'de_pfl' => 'Deutsch (Pfälzisch)',
         'de_by'  => 'Deutsch (Bayerisch)',
         'en'     => 'English',
