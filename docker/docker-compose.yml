@@ -2,7 +2,8 @@ version: '3'
 
 services:
   app:
-    image: ghcr.io/traewelling/traewelling:latest
+    build: ..
+    # image: ghcr.io/traewelling/traewelling:latest
     container_name: traewelling-app
     restart: always
     ports:
@@ -17,11 +18,19 @@ services:
       - .env.app
     networks:
       - internal
-#    volumes:
+    volumes:
+      - ../app:/var/www/html/app
+      - ../tests:/var/www/html/tests
+      - ../phpunit.xml:/var/www/html/phpunit.xml
 #      - ./avatars:/var/www/html/public/uploads/avatars
-#      - ./storage:/var/www/html/storage
+      - ../storage/logs:/var/www/html/storage/logs
+      - ../resources:/var/www/html/resources
+      - ../public:/var/www/html/public
+      - ../config:/var/www/html/config
+      # - ../vendor:/var/www/html/vendor
 
   scheduler:
+    # build: ..
     image: ghcr.io/traewelling/traewelling:latest
     container_name: traewelling-scheduler
     restart: always
@@ -34,8 +43,12 @@ services:
       - .env.app
     networks:
       - internal
+    volumes:
+      - ../app:/var/www/html/app
+      - ../vendor:/var/www/html/vendor
 
   queue:
+    # build: ..
     image: ghcr.io/traewelling/traewelling:latest
     container_name: traewelling-queue
     restart: always
@@ -48,11 +61,17 @@ services:
       - .env.app
     networks:
       - internal
+    volumes:
+      - ../app:/var/www/html/app
+      - ../config:/var/www/html/config
+      - ../vendor:/var/www/html/vendor
 
   db:
     image: mariadb:10
     container_name: traewelling-db
     restart: always
+    ports:
+      - "3306:3306"
     env_file:
       - .env.db
     command:

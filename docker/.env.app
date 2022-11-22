@@ -1,7 +1,8 @@
-APP_ENV=production
-APP_DEBUG=false
+APP_ENV=local
+APP_DEBUG=true
 APP_KEY=base64:GlZCNd4MpfM2zUFhiLhgYokTZZmYoKf8z9h+wwE5Ps4=
-APP_URL=http://localhost:8080
+APP_URL=http://localhost:8081
+FORCE_HTTPS=false
 
 DB_HOST=traewelling-db
 DB_PORT=3306
@@ -10,3 +11,15 @@ DB_USERNAME=traewelling_u
 DB_PASSWORD=unsecurepassword
 
 DB_REST=http://db-rest:3000
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=56bcbc2019707f
+MAIL_PASSWORD=083794af6a0d2a
+MAIL_ENCRYPTION=tls
+
+TWITTER_ID=25678881
+# UGZMb0l0ZUphMFppVGdydG1wZm46MTpjaQ
+TWITTER_SECRET="KFq9UXNYibohXMXzTfC2hk0KZc9IxgaI20JTrEjp901POS-5Zk"
+TWITTER_REDIRECT=https://1bc7-79-152-105-129.eu.ngrok.io/auth/twitter/callback
