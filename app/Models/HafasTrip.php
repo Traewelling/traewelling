@@ -55,6 +55,8 @@ class HafasTrip extends Model
 
     public function stopoversNEW(): HasMany {
         //TODO: Rename to ->stopovers when old attribute is gone
-        return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')->orderBy('arrival_planned');
+        return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')
+                    ->orderBy('arrival_planned')
+                    ->orderBy('departure_planned');
     }
 }

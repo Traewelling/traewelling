@@ -7,12 +7,19 @@ use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Http\Controllers\Backend\User\DashboardController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Controllers\UserController as UserBackend;
+use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\StopoverResource;
+use App\Http\Resources\TrainStationResource;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -23,27 +30,68 @@ use Illuminate\Validation\Rules\Enum;
 use Throwable;
 
 /**
- * @deprecated Will be replaced by APIv1
+ * @deprecated
  */
-class TransportController extends ResponseController
+class LegacyApi0Controller extends Controller
 {
-    public function TrainAutocomplete($station): JsonResponse {
-        try {
-            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station)
-                                                         ->map(function($station) {
-                                                             return [
-                                                                 'id'       => $station['ibnr'],
-                                                                 'name'     => $station['name'],
-                                                                 'provider' => 'train'
-                                                             ];
-                                                         });
-            return $this->sendResponse($trainAutocompleteResponse);
-        } catch (HafasException $e) {
-            return $this->sendError($e->getMessage(), 503);
+
+    public function sendResponse($response): JsonResponse {
+        $disclaimer = 'APIv0 is deprecated and will be removed within the next days __WITHOUT ANY OFFICIAL NOTICE__. Please use APIv1 instead.';
+        if (is_array($response)) {
+            $response = array_merge(['disclaimer' => $disclaimer], $response);
         }
+        return response()->json($response);
     }
 
-    public function TrainStationboard(Request $request): JsonResponse {
+    public function sendError(array|string $error, int $code = 404): JsonResponse {
+        $response = [
+            'error' => $error,
+        ];
+        return response()->json($response, $code);
+    }
+
+    public function getUser(Request $request): JsonResponse {
+        $user = $request->user();
+        if ($user) {
+            return $this->sendResponse($user);
+        }
+        return $this->sendResponse('user not found');
+
+    }
+
+    public function showUser($username): JsonResponse {
+        return $this->sendResponse(UserBackend::getProfilePage($username));
+    }
+
+    public function showStatuses(Request $request): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'maxStatuses' => 'integer',
+            'username'    => 'string|required_if:view,user',
+            'view'        => 'in:user,global,personal'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), 400);
+        }
+
+        $view = 'global';
+        if (!empty($request->view)) {
+            $view = $request->view;
+        }
+        $statuses = ['statuses' => ''];
+        if ($view === 'global') {
+            $statuses['statuses'] = DashboardController::getGlobalDashboard(Auth::user());
+        }
+        if ($view === 'personal') {
+            $statuses['statuses'] = DashboardController::getPrivateDashboard(Auth::user());
+        }
+        if ($view === 'user') {
+            $statuses = UserBackend::getProfilePage($request->username);
+        }
+        return response()->json($statuses['statuses']);
+    }
+
+    public function showStationboard(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'station'    => ['required', 'string'],
             'when'       => ['nullable', 'date'],
@@ -75,7 +123,7 @@ class TransportController extends ResponseController
                                    ]);
     }
 
-    public function TrainTrip(Request $request) {
+    public function showTrip(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'   => 'required',
             'lineName' => 'required',
@@ -86,24 +134,24 @@ class TransportController extends ResponseController
             return $this->sendError($validator->errors(), 400);
         }
 
-        $trainTripResponse = TransportBackend::TrainTrip(
-            $request->tripID,
-            $request->lineName,
-            $request->start
-        );
-        if ($trainTripResponse === null) {
+        try {
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $request->tripID,
+                lineName: $request->lineName,
+                startId:  $request->start,
+            );
+            return $this->sendResponse([
+                                           'start'       => new TrainStationResource($hafasTrip->originStation),
+                                           'destination' => new TrainStationResource($hafasTrip->destinationStation),
+                                           'train'       => new HafasTripResource($hafasTrip),
+                                           'stopovers'   => StopoverResource::collection($hafasTrip->stopoversNEW),
+                                       ]);
+        } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
         }
-
-        return $this->sendResponse([
-                                       'start'       => $trainTripResponse['start'],
-                                       'destination' => $trainTripResponse['destination'],
-                                       'train'       => $trainTripResponse['train'],
-                                       'stopovers'   => $trainTripResponse['stopovers']
-                                   ]);
     }
 
-    public function TrainCheckin(Request $request) {
+    public function checkin(Request $request) {
         $validator = Validator::make($request->all(), [
             'tripID'      => ['required'],
             'lineName'    => ['nullable'], //Should be required in future API Releases due to DB Rest
@@ -192,13 +240,7 @@ class TransportController extends ResponseController
 
     }
 
-    public function TrainLatestArrivals() {
-        $arrivals = TransportBackend::getLatestArrivals(auth()->user());
-
-        return $this->sendResponse($arrivals);
-    }
-
-    public function StationByCoordinates(Request $request) {
+    public function showStationByCoordinates(Request $request) {
         $validator = Validator::make($request->all(), [
             'latitude'  => 'required|numeric|min:-180|max:180',
             'longitude' => 'required|numeric|min:-180|max:180'
@@ -213,34 +255,5 @@ class TransportController extends ResponseController
         }
 
         return $this->sendResponse($nearestStation);
-    }
-
-    public function getHome() {
-        $home = auth()->user()->home;
-        if ($home === null) {
-            return $this->sendError('user has not set a home station.');
-        }
-        return $this->sendResponse($home);
-    }
-
-    public function setHome(Request $request): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'ibnr' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), 400);
-        }
-
-        try {
-            $station      = HafasController::getTrainStation($request->ibnr); //Workaround to support APIv1
-            $trainStation = HomeController::setHome(Auth::user(), $station);
-            return $this->sendResponse($trainStation->name);
-        } catch (HafasException $e) {
-            return $this->sendError([
-                                        'id'      => 'HAFAS_EXCEPTION',
-                                        'message' => $e->getMessage()
-                                    ]);
-        }
     }
 }

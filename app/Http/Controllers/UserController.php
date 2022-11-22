@@ -128,9 +128,9 @@ class UserController extends Controller
                                             ]);
 
             $userToFollow->notify(new FollowRequestIssued($follow));
-            $user->load('followRequests');
-            $userToFollow->fresh();
-            return $userToFollow; //FixMe somehow the refresh does not really work. The Request-Attribute is still false.
+            $userToFollow->refresh();
+            $user->refresh();
+            return $userToFollow;
         }
 
         $follow = Follow::create([
@@ -242,24 +242,6 @@ class UserController extends Controller
         return User::where("created_at", ">=", $date->copy()->startOfDay())
                    ->where("created_at", "<=", $date->copy()->endOfDay())
                    ->count();
-    }
-
-    public static function updateDisplayName(string $displayName): bool {
-        $request   = new Request(['displayName' => $displayName]);
-        $validator = Validator::make($request->all(), [
-            'displayName' => ['required', 'max:120']
-        ]);
-        if ($validator->fails()) {
-            abort(400);
-        }
-        try {
-            Auth::user()->update([
-                                     'name' => $displayName
-                                 ]);
-            return true;
-        } catch (Exception) {
-            return false;
-        }
     }
 
     /**

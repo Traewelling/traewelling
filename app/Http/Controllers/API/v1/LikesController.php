@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Like;
@@ -15,7 +14,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
-class LikesController extends ResponseController
+class LikesController extends Controller
 {
     /**
      * @OA\Get(
@@ -71,22 +70,23 @@ class LikesController extends ResponseController
         try {
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendv1Response(null, 201);
+            return $this->sendResponse(code: 201);
         } catch (StatusAlreadyLikedException) {
-            abort(404);
+            return $this->sendError(code: 409);
         }
     }
 
     /**
      * @param int $statusId
+     *
      * @return JsonResponse
      */
     public function destroy(int $statusId): JsonResponse {
         try {
             StatusBackend::destroyLike(Auth::user(), $statusId);
-            return $this->sendv1Response();
+            return $this->sendResponse();
         } catch (InvalidArgumentException) {
-            abort(404);
+            return $this->sendError();
         }
     }
 }

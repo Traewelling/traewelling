@@ -3,7 +3,9 @@
 namespace Tests\Feature\Transport;
 
 use App\Enum\TravelType;
+use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController;
@@ -17,6 +19,108 @@ class BackendCheckinTest extends TestCase
 {
 
     use RefreshDatabase;
+
+
+    public function testStationNotOnTripException() {
+        $user            = User::factory()->create();
+        $stationHannover = HafasController::getTrainStation(8000152);
+        $departures      = HafasController::getDepartures(
+            station: $stationHannover,
+            when:    Carbon::parse('next monday 10:00 am'),
+            type:    TravelType::REGIONAL,
+        );
+        $rawTrip         = $departures->first();
+        if ($rawTrip === null) {
+            $this->fail('Unable to find trip.');
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', $stationHannover->ibnr)->first();
+
+        $this->expectException(StationNotOnTripException::class);
+        TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: HafasController::getTrainStation(8000001),
+            arrival:     $originStopover->departure_planned,
+        );
+    }
+
+    public function testSwitchedOriginAndDestinationShouldThrowException() {
+        $user       = User::factory()->create();
+        $station    = HafasController::getTrainStation(8000152);
+        $departures = HafasController::getDepartures(
+            station: $station,
+            when:    Carbon::parse('next monday 10:00 am'),
+            type:    TravelType::REGIONAL,
+        );
+        $rawTrip    = $departures->first();
+        if ($rawTrip === null) {
+            $this->fail('Unable to find trip.');
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', $station->ibnr)->first();
+        $nextStopovers       = $hafasTrip->stopoversNew
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return isset($stopover->arrival_planned)
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
+            });
+        $destinationStopover = $nextStopovers->first();
+
+        $this->expectException(\InvalidArgumentException::class);
+        TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $destinationStopover->trainStation,
+            departure:   $destinationStopover->departure_planned,
+            destination: $originStopover->trainStation,
+            arrival:     $originStopover->arrival_planned,
+        );
+    }
+
+    public function testDuplicateCheckinsShouldThrowException() {
+        $user       = User::factory()->create();
+        $station    = HafasController::getTrainStation(8000152);
+        $departures = HafasController::getDepartures(
+            station: $station,
+            when:    Carbon::parse('next monday 10:00 am'),
+            type:    TravelType::REGIONAL,
+        );
+        $rawTrip    = $departures->first();
+        if ($rawTrip === null) {
+            $this->fail('Unable to find trip.');
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', $station->ibnr)->first();
+        $nextStopovers       = $hafasTrip->stopoversNew
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return isset($stopover->arrival_planned)
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
+            });
+        $destinationStopover = $nextStopovers->first();
+
+        TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        );
+        $this->expectException(CheckInCollisionException::class);
+        TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        );
+    }
 
     /**
      * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus).
@@ -48,27 +152,26 @@ class BackendCheckinTest extends TestCase
 
         // Third: Get the trip information
         try {
-            $trip = TransportController::TrainTrip(
-                $departure->tripId,
-                $departure->line->name,
-                $departure->stop->location->id,
-                Carbon::parse($departure->plannedWhen)
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $departure->tripId,
+                lineName: $departure->line->name,
+                startId:  $departure->stop->location->id
             );
         } catch (HafasException $exception) {
             $this->markTestSkipped($exception->getMessage());
         }
 
         //Höhenstr., Potsdam
-        $originStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736140')->first();
+        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736140')->first();
         //Rathaus, Potsdam
-        $destinationStopover = $trip['hafasTrip']->stopoversNew->where('trainStation.ibnr', '736160')->last();
+        $destinationStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736160')->last();
 
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
         $backendResponse = TrainCheckinController::checkin(
             user:        $user,
-            hafasTrip:   $trip['hafasTrip'],
+            hafasTrip:   $hafasTrip,
             origin:      $originStopover->trainStation,
             departure:   $originStopover->departure_planned,
             destination: $destinationStopover->trainStation,
@@ -268,5 +371,46 @@ class BackendCheckinTest extends TestCase
         $this->assertEquals(102932, $trainCheckin->origin);
         $this->assertEquals(104734, $trainCheckin->destination);
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
+    }
+
+    public function testChangeTripDestination() {
+        $user       = User::factory()->create();
+        $station    = HafasController::getTrainStation(8000152);
+        $departures = HafasController::getDepartures(
+            station: $station,
+            when:    Carbon::parse('next monday 10:00 am'),
+            type:    TravelType::REGIONAL,
+        );
+        $rawTrip    = $departures->first();
+        if ($rawTrip === null) {
+            $this->fail('Unable to find trip.');
+        }
+        $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+
+        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', $station->ibnr)->first();
+        $nextStopovers       = $hafasTrip->stopoversNew
+            ->where(function(TrainStopover $stopover) use ($originStopover) {
+                return isset($stopover->arrival_planned)
+                       && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
+            });
+        $destinationStopover = $nextStopovers->first();
+        $newStopover         = $nextStopovers->last();
+
+        $status = TrainCheckinController::checkin(
+            user:        $user,
+            hafasTrip:   $hafasTrip,
+            origin:      $originStopover->trainStation,
+            departure:   $originStopover->departure_planned,
+            destination: $destinationStopover->trainStation,
+            arrival:     $destinationStopover->arrival_planned,
+        )['status'];
+
+        $this->assertEquals($originStopover->id, $status->trainCheckin->origin_stopover->id);
+        $this->assertEquals($destinationStopover->id, $status->trainCheckin->destination_stopover->id);
+
+        TrainCheckinController::changeDestination($status->trainCheckin, $newStopover);
+
+        $this->assertEquals($originStopover->id, $status->trainCheckin->origin_stopover->id);
+        $this->assertEquals($newStopover->id, $status->trainCheckin->destination_stopover->id);
     }
 }

@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -47,12 +47,4 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php artisan test --parallel
-
-# ToDo: Not working for "non-project-members"
-#      - name: Run codacy-coverage-reporter
-#        if: ${{github.repository == 'Traewelling/traewelling' && github.actor != 'dependabot'}}
-#        uses: codacy/codacy-coverage-reporter-action@v1
-#        with:
-#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-#          coverage-reports: clover.xml
+        run: php artisan test --coverage --min=36.5

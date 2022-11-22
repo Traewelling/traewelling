@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Resources\UserProfileSettingsResource;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
-class SettingsController extends ResponseController
+class SettingsController extends Controller
 {
     public function getProfileSettings(): UserProfileSettingsResource {
         return new UserProfileSettingsResource(auth()->user());
@@ -39,16 +38,16 @@ class SettingsController extends ResponseController
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
     public function resendMail(): void {
         try {
             auth()->user()->sendEmailVerificationNotification();
-            $this->sendv1Response('', 204);
+            $this->sendResponse('', 204);
         } catch (RateLimitExceededException) {
-            $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 429);
+            $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
         }
     }
 
@@ -69,7 +68,7 @@ class SettingsController extends ResponseController
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
@@ -93,13 +92,13 @@ class SettingsController extends ResponseController
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
         } catch (RateLimitExceededException) {
-            return $this->sendv1Error(error: __('email.verification.too-many-requests'), code: 400);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
     }
 
     public function deleteProfilePicture(): JsonResponse {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
-            return $this->sendv1Response('', 204);
+            return $this->sendResponse('', 204);
         }
 
         return $this->sendError('', 400);
@@ -107,7 +106,7 @@ class SettingsController extends ResponseController
 
     public function uploadProfilePicture(Request $request): JsonResponse {
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
-            return $this->sendv1Response('', 204);
+            return $this->sendResponse('', 204);
         }
         return $this->sendError('', 400);
     }

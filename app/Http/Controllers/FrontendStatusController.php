@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
@@ -23,7 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rules\Enum;
 use InvalidArgumentException;
 
 /**
@@ -78,29 +75,6 @@ class FrontendStatusController extends Controller
         return response()->json(['message' => __('controller.status.delete-ok')]);
     }
 
-    public function EditStatus(Request $request): JsonResponse|RedirectResponse {
-        $validated = $this->validate($request, [
-            'statusId'          => ['required', 'exists:statuses,id'],
-            'body'              => ['nullable', 'max:280'],
-            'business_check'    => ['required', new Enum(Business::class)],
-            'checkinVisibility' => ['required', new Enum(StatusVisibility::class)],
-        ]);
-
-        try {
-            $editStatusResponse = StatusBackend::EditStatus(
-                user:       Auth::user(),
-                statusId:   $validated['statusId'],
-                body:       $validated['body'] ?? null,
-                business:   Business::from($validated['business_check']),
-                visibility: StatusVisibility::from($validated['checkinVisibility']),
-            );
-        } catch (ModelNotFoundException|PermissionException) {
-            return redirect()->back();
-        }
-
-        return response()->json(['new_body' => $editStatusResponse->body], 200);
-    }
-
     public function createLike(Request $request) {
         $validated = $request->validate([
                                             'statusId' => ['required', 'exists:statuses,id']
@@ -127,7 +101,7 @@ class FrontendStatusController extends Controller
     }
 
     public function getActiveStatuses(): Renderable {
-        $activeStatusesResponse = StatusBackend::getActiveStatuses(null, false);
+        $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $activeEvents           = EventBackend::activeEvents();
         return view('activejourneys', [
             'currentUser' => Auth::user(),

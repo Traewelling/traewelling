@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Export;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController as ExportBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -25,10 +26,20 @@ class ExportController extends Controller
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
-        return ExportBackend::generateExport(
-            from:     Carbon::parse($validated['from']),
-            until:    Carbon::parse($validated['until']),
-            filetype: $validated['filetype']
-        );
+        $from = Carbon::parse($validated['from']);
+        $until = Carbon::parse($validated['until']);
+        if($from->diffInDays($until) > 365) {
+            return back()->with('error', __('export.error.time'));
+        }
+
+        try {
+            return ExportBackend::generateExport(
+                from:     $from,
+                until:    $until,
+                filetype: $validated['filetype']
+            );
+        } catch (DataOverflowException) {
+            return back()->with('error', __('export.error.amount'));
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Export\Format;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -11,6 +12,9 @@ use Closure;
 abstract class CsvExportController extends Controller
 {
 
+    /**
+     * @throws DataOverflowException
+     */
     public static function generateExport(User $user, Carbon $timestampFrom, Carbon $timestampTo): Closure {
         $data = ExportController::getExportableStatuses($user, $timestampFrom, $timestampTo);
 

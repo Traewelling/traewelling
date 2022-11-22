@@ -25,8 +25,7 @@
     </head>
     <body>
         <div id="app">
-            <nav
-                class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
+            <nav class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
                 <div class="container">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
@@ -88,8 +87,10 @@
                                                value="{{request()->has('searchQuery') ? request()->searchQuery : ''}}"
                                                class="border border-white rounded-left form-control my-0 py-1"
                                                placeholder="{{ __('stationboard.submit-search') }}"
-                                               aria-label="User suchen"/>
-                                        <button class="input-group-text btn-primary" type="submit">
+                                               aria-label="{{ __('stationboard.submit-search') }}"
+                                               required
+                                        />
+                                        <button class="btn btn-primary" type="submit">
                                             <i class="fas fa-search" aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -125,9 +126,9 @@
                                             <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                         </a>
                                         @if(config('ticket.host') !== null)
-                                            <a class="dropdown-item" href="{{ route('support') }}">
-                                                <i class="fas fa-headset" aria-hidden="true"></i>
-                                                {{ __('support') }}
+                                            <a class="dropdown-item" href="{{ route('static.about') }}">
+                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                {{ __('help') }}
                                             </a>
                                         @endif
                                         @if(Auth::user()->role >= 5)
@@ -225,13 +226,18 @@
             var urlDelete        = '{{ route('status.delete') }}';
             var urlDisconnect    = '{{ route('provider.destroy') }}';
             var urlDislike       = '{{ route('like.destroy') }}';
-            var urlEdit          = '{{ route('edit') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
             var urlLike          = '{{ route('like.create') }}';
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
+
+            let translations = {
+                stationboard: {
+                    position_unavailable: '{{__('stationboard.position-unavailable')}}',
+                }
+            };
         </script>
     </body>
 

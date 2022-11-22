@@ -24,7 +24,7 @@
                 ],
                 labels: [
                     @foreach($topOperators as $operator)
-                        '{{$operator->name}}',
+                        '{{$operator->name ?? __('other')}}',
                     @endforeach
                 ],
                 legend: {

@@ -2,7 +2,11 @@
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <h4 class="alert-heading">
             <i class="fa-solid fa-check"></i>
-            {{ __('controller.transport.checkin-heading') }}
+            @if(isset(session()->get('checkin-success')['reason']) && session()->get('checkin-success')['reason'] == 'status-updated')
+                {{ __('status.update.success') }}
+            @else
+                {{ __('controller.transport.checkin-heading') }}
+            @endif
         </h4>
 
         <p>

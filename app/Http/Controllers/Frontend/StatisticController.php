@@ -61,6 +61,10 @@ class StatisticController extends Controller
     }
 
     public function renderStations(Request $request): View {
+        if (!auth()->check() || auth()->user()->role < 10) {
+            abort(404);
+        }
+
         $validated = $request->validate([
                                             'from' => ['nullable', 'date'],
                                             'to'   => ['nullable', 'date', 'after_or_equal:from']

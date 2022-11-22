@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
+use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -60,5 +62,19 @@ abstract class StationController extends Controller
                            ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
                            ->limit($maxCount)
                            ->get();
+    }
+
+    public static function getAlternativeDestinationsForCheckin(TrainCheckin $checkin): Collection {
+        return $checkin->HafasTrip->stopoversNEW
+            ->filter(function(TrainStopover $stopover) use ($checkin) {
+                return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
+            })
+            ->map(function(TrainStopover $stopover) {
+                return [
+                    'id'              => $stopover->id,
+                    'name'            => $stopover->trainStation->name,
+                    'arrival_planned' => ($stopover->arrival_planned ?? $stopover->departure_planned)->format('H:i'),
+                ];
+            });
     }
 }

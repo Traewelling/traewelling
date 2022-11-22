@@ -11,8 +11,7 @@
 |
 */
 
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\TransportController as ApiTransportController;
+use App\Http\Controllers\API\LegacyApi0Controller;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -45,7 +44,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
          ->name('api.v1.getPrivacyPolicy');
 
-    Route::group(['middleware' => ['auth:api', 'privacy-policy']], function() {
+    Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'activeEvents']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
@@ -57,7 +56,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
-        Route::group(['prefix' => 'notifications'], function() {
+        Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
             Route::put('{id}', [NotificationsController::class, 'update']);
@@ -65,10 +64,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('unread/{id}', [NotificationsController::class, 'unread']);
             Route::post('readAll', [NotificationsController::class, 'readAll']);
         });
-        Route::group(['prefix' => 'trains'], function() {
+        Route::group(['prefix' => 'trains'], static function() {
             Route::get('trip/', [TransportController::class, 'getTrip']);
             Route::post('checkin', [TransportController::class, 'create']);
-            Route::group(['prefix' => 'station'], function() {
+            Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'departures']);
                 Route::put('{name}/home', [TransportController::class, 'setHome']);
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
@@ -76,12 +75,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
-        Route::group(['prefix' => 'statistics'], function() {
+        Route::group(['prefix' => 'statistics'], static function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
-        Route::group(['prefix' => 'user'], function() {
+        Route::group(['prefix' => 'user'], static function() {
             Route::post('createFollow', [FollowController::class, 'createFollow']);
             Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
             Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
@@ -90,8 +89,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
+            Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
         });
-        Route::group(['prefix' => 'settings'], function() {
+        Route::group(['prefix' => 'settings'], static function() {
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
                  ->withoutMiddleware('privacy-policy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings']);
@@ -122,7 +122,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
-    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], function() {
+    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], static function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
@@ -141,57 +141,33 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 });
 
 Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static function() {
-    Route::group(['middleware' => ['guest:api']], static function() {
-        Route::group(['prefix' => 'auth'], static function() {
-            Route::post('login', 'API\AuthController@login')->name('api.v0.auth.login');
-            Route::post('signup', 'API\AuthController@signup')->name('api.v0.auth.signup');
-        });
-    });
-    Route::put('user/accept_privacy', 'PrivacyAgreementController@ack')->middleware('auth:api')
-         ->name('api.v0.user.accept_privacy');
-    // All protected routes
     Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
-        Route::post('auth/logout', 'API\AuthController@logout')->name('api.v0.auth.logout');
-        Route::get('getuser', [AuthController::class, 'getUser'])->name('api.v0.getUser');
+        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
+        Route::get('getuser', [LegacyApi0Controller::class, 'getUser'])
+             ->name('api.v0.getUser');
 
-        Route::group(['prefix' => 'user'], static function() {
-            Route::get('leaderboard', 'API\UserController@getLeaderboard')->name('api.v0.user.leaderboard');
-            Route::get('{username}', 'API\UserController@show')->name('api.v0.user');
-            Route::get('search/{query}', 'API\UserController@searchUser')->name('api.v0.user.search');
-            Route::get('{username}/active', 'API\UserController@active')->name('api.v0.user.active');
-            Route::put('profilepicture', 'API\UserController@PutProfilepicture')->name('api.v0.user.profilepicture');
-            Route::put('displayname', 'API\UserController@PutDisplayname')->name('api.v0.user.displayname');
-        });
+        //Endpoint used between 2022-09-01 and 2022-10-28 (medium traffic)
+        Route::get('/user/{username}', [LegacyApi0Controller::class, 'showUser'])
+             ->name('api.v0.user');
 
-        // Controller for complete /statuses-stuff
-        Route::group(['prefix' => 'statuses'], static function() {
-            Route::get('enroute/all', 'API\StatusController@enroute')->name('api.v0.statuses.enroute');
-            Route::get('event/{statusId}', 'API\StatusController@getByEvent')->name('api.v0.statuses.event');
-            Route::post('{statusId}/like', 'API\StatusController@createLike')->name('api.v0.statuses.like');
-            Route::delete('{statusId}/like', 'API\StatusController@destroyLike');
-            Route::get('{statusId}/likes', 'API\StatusController@getLikes')->name('api.v0.statuses.likes');
-        });
-        Route::resource('statuses', 'API\StatusController', ['as' => 'api.v0']);
+        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
+        Route::get('statuses', [LegacyApi0Controller::class, 'showStatuses'])
+             ->name('api.v0.statuses');
 
-        Route::resource('notifications', 'API\NotificationController');
+        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
+        Route::get('/trains/stationboard', [LegacyApi0Controller::class, 'showStationboard'])
+             ->name('api.v0.checkin.train.stationboard');
 
-        // Controller for complete Train-Transport-Stuff
-        Route::group(['prefix' => 'trains'], static function() {
-            Route::get('autocomplete/{station}', 'API\TransportController@TrainAutocomplete')
-                 ->name('api.v0.checkin.train.autocomplete');
-            Route::get('stationboard', 'API\TransportController@TrainStationboard')
-                 ->name('api.v0.checkin.train.stationboard');
-            Route::get('trip', 'API\TransportController@TrainTrip')
-                 ->name('api.v0.checkin.train.trip');
-            Route::post('checkin', [ApiTransportController::class, 'TrainCheckin'])
-                 ->name('api.v0.checkin.train.checkin');
-            Route::get('latest', 'API\TransportController@TrainLatestArrivals')
-                 ->name('api.v0.checkin.train.latest');
-            Route::get('home', 'API\TransportController@getHome')
-                 ->name('api.v0.checkin.train.home');
-            Route::put('home', 'API\TransportController@setHome');
-            Route::get('nearby', 'API\TransportController@StationByCoordinates')
-                 ->name('api.v0.trains.nearby');
-        });
+        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
+        Route::get('/trains/trip', [LegacyApi0Controller::class, 'showTrip'])
+             ->name('api.v0.checkin.train.trip');
+
+        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
+        Route::post('/trains/checkin', [LegacyApi0Controller::class, 'checkin'])
+             ->name('api.v0.checkin.train.checkin');
+
+        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
+        Route::get('/trains/nearby', [LegacyApi0Controller::class, 'showStationByCoordinates'])
+             ->name('api.v0.trains.nearby');
     });
 });

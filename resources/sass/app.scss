@@ -19,6 +19,8 @@ body {
   box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
+@import '~notyf/notyf.min.css';
+
 // Overall site layout
 @import "site";
 @import "small-phones";

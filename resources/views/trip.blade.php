@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $hafasTrip->linename . ' -> ' . $destination)
+@section('title', $hafasTrip->linename . ' -> ' . $hafasTrip->destinationStation->name)
 
 @section('content')
     <div class="container">
@@ -17,17 +17,17 @@
                 @endisset
 
                 <div class="card">
-                    <div class="card-header"
+                    <div class="card-header bg-dark text-white"
                          data-linename="{{ $hafasTrip->linename }}"
                          data-startname="{{ $hafasTrip->originStation->name }}"
                          data-start="{{ request()->start }}"
                          data-tripid="{{ $hafasTrip->trip_id }}"
                     >
                         <div class="float-end">
-                            <a href="#" class="train-destinationrow"
-                               data-ibnr="{{$terminalStop['stop']['id']}}"
-                               data-stopname="{{$terminalStop['stop']['name']}}"
-                               data-arrival="{{$terminalStop['plannedArrival'] ?? $terminalStop['plannedDeparture']}}">
+                            <a href="#" class="train-destinationrow text-white"
+                               data-ibnr="{{$lastStopover->trainStation->ibnr}}"
+                               data-stopname="{{$lastStopover->trainStation->name}}"
+                               data-arrival="{{$lastStopover->arrival_planned ?? $lastStopover->departure_planned}}">
                                 <i class="fa fa-fast-forward"></i>
                             </a>
                         </div>
@@ -47,60 +47,29 @@
                                data-startname="{{ $hafasTrip->originStation->name }}"
                                data-start="{{ request()->start }}"
                                data-tripid="{{ $hafasTrip->trip_id }}">
-                            <thead>
-                                <tr>
-                                    <th>{{__('stationboard.stopover')}}</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
                             <tbody>
-                                @foreach($stopovers as $stop)
-                                    @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
-                                        @continue
-                                    @endif
-
-                                    @if(@$stop['cancelled'] == 'true' && $stop['arrival'] === null && $stop['departure'] === null)
+                                @foreach($stopovers as $stopover)
+                                    @if($stopover->cancelled)
                                         <tr>
-                                            <td>{{ $stop['stop']['name'] }}</td>
+                                            <td>{{ $stopover->trainStation->name }}</td>
                                             <td>
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
                                             </td>
-                                            <td>{{ $stop['departurePlatform'] }}</td>
                                         </tr>
                                     @else
                                         <tr class="train-destinationrow"
-                                            data-ibnr="{{$stop['stop']['id']}}"
-                                            data-stopname="{{$stop['stop']['name']}}"
-                                            data-arrival="{{$stop['plannedArrival'] ?? $stop['plannedDeparture']}}">
-                                            <td>{{ $stop['stop']['name'] }}</td>
-                                            <td>
-                                                @if(!(isset($stop['cancelled']) && $stop['arrival'] == null) && $stop['plannedArrival'] != null)
-                                                    {{ __('stationboard.arr') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
-                                                    @if(isset($stop['arrivalDelay']))
-                                                        <small>(<span
-                                                                class="traindelay">+{{ $stop['arrivalDelay'] / 60 }}</span>)</small>
-                                                    @endif
-                                                @endif
-                                                <br/>
-                                                @if(!(isset($stop['cancelled']) && $stop['departure'] == null) && $stop['plannedDeparture'] != null)
-                                                    {{ __('stationboard.dep') }}
-                                                    {{ \Carbon\Carbon::parse($stop['plannedDeparture'])->isoFormat(__('time-format'))}}
-                                                    @if(isset($stop['departureDelay']))
-                                                        <small>(<span
-                                                                class="traindelay">+{{ $stop['departureDelay']/60 }}</span>)</small>
-                                                    @endif
-                                                @endif
-                                            </td>
-                                            <td>
-                                                {{ $stop['arrivalPlatform'] }}
-                                                @if(isset($stop['plannedArrivalPlatform']) && $stop['plannedArrivalPlatform'] != $stop['arrivalPlatform'])
-                                                    &nbsp;
-                                                    <span class="text-danger text-decoration-line-through">
-                                                        {{ $stop['plannedArrivalPlatform'] }}
-                                                    </span>
-                                                @endif
+                                            data-ibnr="{{$stopover->trainStation->ibnr}}"
+                                            data-stopname="{{$stopover->trainStation->name}}"
+                                            data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
+                                        >
+                                            <td>{{ $stopover->trainStation->name }}</td>
+                                            <td class="text-end">
+                                                {{ __('stationboard.arr') }}
+                                                {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
+                                                @isset($stopover->arrival_real)
+                                                    <small>(<span
+                                                            class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
+                                                @endisset
                                             </td>
                                         </tr>
                                     @endif
@@ -119,22 +88,21 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="checkinModalTitle">{{__('stationboard.new-checkin')}}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('trains.checkin') }}" method="POST" id="checkinForm">
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label">
-                                {{__('stationboard.label-message')}}
-                            </label>
-                            <textarea name="body" class="form-control" id="message-text" maxlength="280"></textarea>
-                            <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
-                            <script>
-                                document.querySelector('#message-text').addEventListener('input', function (e) {
-                                    document.querySelector('#body-length').innerText = e.target.value.length;
-                                });
-                            </script>
+                        <div class="form-floating">
+                            <textarea name="body" class="form-control" id="message-text" maxlength="280"
+                                      style="min-height: 130px;"></textarea>
+                            <label for="message-text">{{__('stationboard.label-message')}}</label>
                         </div>
+                        <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
+                        <script>
+                            document.querySelector('#message-text').addEventListener('input', function (e) {
+                                document.querySelector('#body-length').innerText = e.target.value.length;
+                            });
+                        </script>
 
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
