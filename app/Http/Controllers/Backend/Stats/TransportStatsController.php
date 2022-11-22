@@ -128,6 +128,17 @@ abstract class TransportStatsController extends Controller
         return $query->get();
     }
 
+    /**
+     *  Get the fastest/slowest trips for a user in a given time frame
+     *
+     * @param User   $user   User to get the stats for
+     * @param Carbon $from   Start date
+     * @param Carbon $to     End date
+     * @param string $sortBy If order should be ascending or descending
+     * @param int    $limit  Limit the number of results
+     *
+     * @return Collection with stdClass objects with properties train_checkin (raw!), duration and kmh
+     */
     public static function getTripsBySpeed(User $user, Carbon $from, Carbon $to, string $sortBy = 'desc', int $limit = 10): Collection {
         if ($sortBy !== 'desc' && $sortBy !== 'asc') {
             throw new InvalidArgumentException('sortBy must be either "desc" or "asc"');
@@ -140,6 +151,35 @@ abstract class TransportStatsController extends Controller
                                 DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival) as kmh'),
                             ])
                    ->orderBy('kmh', $sortBy)
+                   ->limit($limit)
+                   ->get();
+    }
+
+    /**
+     * Get the trips with the most arrival delays for a user in a given time frame
+     *
+     * @param User   $user   User to get the stats for
+     * @param Carbon $from   Start date
+     * @param Carbon $to     End date
+     * @param string $sortBy If order should be ascending or descending
+     * @param int    $limit  Limit the number of results
+     *
+     * @return Collection with stdClass objects with properties train_checkin (raw!) and delay
+     */
+    public static function getTripsByArrivalDelay(User $user, Carbon $from, Carbon $to, string $sortBy = 'desc', int $limit = 10): Collection {
+        if ($sortBy !== 'desc' && $sortBy !== 'asc') {
+            throw new InvalidArgumentException('sortBy must be either "desc" or "asc"');
+        }
+        return self::getTrainCheckinsBetween($user, $from, $to)
+                   ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
+                   ->join('train_stations', 'train_checkins.destination', '=', 'train_stations.ibnr')
+                   ->whereRaw('train_stopovers.train_station_id = train_stations.id')
+                   ->whereRaw('train_stopovers.arrival_planned = train_checkins.arrival')
+                   ->select([
+                                'train_checkins.*',
+                                DB::raw('TIMESTAMPDIFF(MINUTE, train_stopovers.arrival_planned, train_stopovers.arrival_real) as delay'),
+                            ])
+                   ->orderBy('delay', $sortBy)
                    ->limit($limit)
                    ->get();
     }
