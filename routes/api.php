@@ -145,10 +145,6 @@ Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static functio
              ->name('api.v0.user');
 
         //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('/user/{username}/active', [LegacyApi0Controller::class, 'getActiveStatuses'])
-             ->name('api.v0.user.active');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
         Route::get('statuses', [LegacyApi0Controller::class, 'showStatuses'])
              ->name('api.v0.statuses');
 

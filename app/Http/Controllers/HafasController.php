@@ -453,9 +453,9 @@ abstract class HafasController extends Controller
             $payload[] = [
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
-                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned->toIso8601String() : $departurePlanned->toIso8601String(),
+                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned->toDateTimeString() : $departurePlanned->toDateTimeString(),
                 'arrival_real'      => $arrivalReal->toDateTimeString(),
-                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned->toIso8601String() : $arrivalPlanned->toIso8601String(),
+                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned->toDateTimeString() : $arrivalPlanned->toDateTimeString(),
                 'departure_real'    => $departureReal->toDateTimeString(),
             ];
         }

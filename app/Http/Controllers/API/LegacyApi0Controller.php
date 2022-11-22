@@ -63,13 +63,6 @@ class LegacyApi0Controller extends Controller
         return $this->sendResponse(UserBackend::getProfilePage($username));
     }
 
-    public function getActiveStatuses($username) {
-        //Somehow this breaks without a LIKE.
-        $user           = User::where('username', 'LIKE', $username)->firstOrFail();
-        $statusResponse = StatusBackend::getActiveStatuses($user->id, true);
-        return $this->sendResponse($statusResponse);
-    }
-
     public function showStatuses(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
             'maxStatuses' => 'integer',

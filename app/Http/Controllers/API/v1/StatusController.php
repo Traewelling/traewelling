@@ -16,7 +16,6 @@ use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainStopover;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -176,7 +175,7 @@ class StatusController extends Controller
      *
      */
     public function enRoute(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getActiveStatuses(null, false)['statuses']);
+        return StatusResource::collection(StatusBackend::getActiveStatuses()['statuses']);
     }
 
     /**
