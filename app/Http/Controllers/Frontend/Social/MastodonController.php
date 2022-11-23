@@ -76,6 +76,10 @@ class MastodonController extends Controller
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
 
+        if (session()->has('url.intended')) {
+            return redirect()->to(session('url.intended'));
+        }
+
         return redirect()->route('dashboard');
     }
 }
