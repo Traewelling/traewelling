@@ -23,7 +23,7 @@ class MastodonController extends Controller
      * @return SympfonyRedirectResponse|RedirectResponse
      */
     public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
-        $domain = MastodonBackend::formatDomain($request->input('domain') ?? '');
+        $domain    = MastodonBackend::formatDomain($request->input('domain') ?? '');
         $validator = Validator::make(['domain' => $domain], ['domain' => ['required', 'active_url']]);
         $validated = $validator->validate();
 
