@@ -62,10 +62,6 @@ class TwitterController extends Controller
                              ->header('Authorization', $token->accessToken);
         }
 
-        if (session()->has('url.intended')) {
-            return redirect()->to(session('url.intended'));
-        }
-
-        return redirect()->route('dashboard');
+        return redirect()->intended('/dashboard');
     }
 }
