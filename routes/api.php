@@ -27,6 +27,7 @@ use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
+use App\Http\Controllers\API\v1\YearInReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
          ->name('api.v1.getPrivacyPolicy');
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
+        Route::get('year-in-review', [YearInReviewController::class, 'show']);
         Route::post('event', [EventController::class, 'suggest']);
         Route::get('activeEvents', [EventController::class, 'activeEvents']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);

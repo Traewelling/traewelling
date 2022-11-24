@@ -40,31 +40,31 @@ abstract class YearInReviewController extends Controller
         $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 5);
 
         return [
+            'year'                => $year,
             'user'                => [
                 'id'       => $user->id,
                 'name'     => $user->name,
                 'username' => $user->username,
             ],
-            'year'                => $year,
             'distance'            => [
-                'total'         => $sum->distance,
-                'averagePerDay' => $sum->distance / $from->diffInDays($to),
+                'total'         => round($sum->distance / 1000, 3),
+                'averagePerDay' => round($sum->distance / $from->diffInDays($to), 3),
             ],
             'duration'            => [
-                'total'         => $sum->duration,
-                'averagePerDay' => $sum->duration / $from->diffInDays($to),
+                'total'         => round($sum->duration),
+                'averagePerDay' => round($sum->duration / $from->diffInDays($to), 3),
             ],
             'operators'           => [
                 'distance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,
-                        'distance' => $row->distance,
+                        'distance' => round($row->distance / 1000, 3),
                     ];
                 })->toArray(),
                 'duration' => $sumByHafasByDuration->map(static function($row) {
                     return [
                         'operator' => $row->name,
-                        'duration' => $row->duration,
+                        'duration' => round($row->duration),
                     ];
                 })->toArray(),
             ],
@@ -73,14 +73,14 @@ abstract class YearInReviewController extends Controller
                     return [
                         'operator' => $row->name,
                         'line'     => $row->linename,
-                        'distance' => $row->distance,
+                        'distance' => round($row->distance / 1000, 3),
                     ];
                 })->toArray(),
                 'duration' => $topOperatorLinesByDuration->map(static function($row) {
                     return [
                         'operator' => $row->name,
                         'line'     => $row->linename,
-                        'duration' => $row->duration,
+                        'duration' => round($row->duration),
                     ];
                 })->toArray(),
             ],
@@ -88,7 +88,7 @@ abstract class YearInReviewController extends Controller
                 'distance' => $longestTripsByDistance->map(static function($row) {
                     return [
                         //TODO: add more infos about the trip
-                        'distance' => $row->distance,
+                        'distance' => round($row->distance / 1000, 3),
                     ];
                 })->toArray(),
                 'duration' => $longestTripsByDuration->map(static function($row) {

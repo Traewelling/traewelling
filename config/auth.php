@@ -102,4 +102,8 @@ return [
         ],
     ],
 
+    'api' => [
+        'year-in-review-token' => env('API_YEAR_IN_REVIEW_TOKEN'),
+    ],
+
 ];
