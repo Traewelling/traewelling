@@ -148,9 +148,9 @@ abstract class TransportStatsController extends Controller
                    ->select([
                                 'train_checkins.*',
                                 DB::raw('TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival) as duration'),
-                                DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival) as kmh'),
+                                DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival) as speed'),
                             ])
-                   ->orderBy('kmh', $sortBy)
+                   ->orderBy('speed', $sortBy)
                    ->limit($limit)
                    ->get();
     }
