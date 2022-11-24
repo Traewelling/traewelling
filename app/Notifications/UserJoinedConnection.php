@@ -9,10 +9,9 @@ use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use stdClass;
 
-class UserJoinedConnection extends Notification
+class UserJoinedConnection extends BaseNotification
 {
     use Queueable;
 
@@ -28,7 +27,7 @@ class UserJoinedConnection extends Notification
     }
 
     /** @deprecated will be handled in frontend */
-    public static function render(DatabaseNotification $notification): ?string {
+    public static function render(mixed $notification): ?string {
         try {
             $detail = self::detail($notification);
         } catch (ShouldDeleteNotificationException) {

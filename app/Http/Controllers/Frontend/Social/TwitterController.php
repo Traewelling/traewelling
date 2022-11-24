@@ -52,6 +52,7 @@ class TwitterController extends Controller
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);
         }
 
+        // ToDo: Remove this if as soon as it's verified that nobody uses it or oAuth is implemented
         if ($request->query->get('return', 'none') === 'token') {
             $token = $request->user()->createToken('token');
             return response()->json([
@@ -61,6 +62,6 @@ class TwitterController extends Controller
                              ->header('Authorization', $token->accessToken);
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->intended('/dashboard');
     }
 }

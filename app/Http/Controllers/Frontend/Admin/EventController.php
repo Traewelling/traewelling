@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Models\Event;
 use App\Models\EventSuggestion;
+use App\Notifications\EventSuggestionProcessed;
 use Carbon\Carbon;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -46,9 +46,12 @@ class EventController extends Controller
         $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
+
         TelegramController::sendAdminMessage(
             auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" abgelehnt.'
         );
+        $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, null));
+
         return back()->with('alert-success', 'Vorschlag abgelehnt.');
     }
 
@@ -71,7 +74,7 @@ class EventController extends Controller
             return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
         }
 
-        AdminEventBackend::createEvent(
+        $event = AdminEventBackend::createEvent(
             name:         $validated['name'],
             hashtag:      $validated['hashtag'],
             host:         $validated['host'],
@@ -85,6 +88,8 @@ class EventController extends Controller
         TelegramController::sendAdminMessage(
             auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" akzeptiert.'
         );
+
+        $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde akzeptiert!');
     }
