@@ -10,10 +10,9 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use stdClass;
 
-class UserFollowed extends Notification
+class UserFollowed extends BaseNotification
 {
     use Queueable;
 
