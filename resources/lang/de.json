@@ -282,7 +282,7 @@
     "notifications.socialNotShared.twitter.429": "Es scheint, dass Träwelling temporär von Twitter gesperrt wurde. (<code>429 Too Many Requests</code>)",
     "notifications.socialNotShared.twitter.504": "Twitter war down, als wir versucht haben, Deinen Check-In zu twittern. (<code>504 Bad Gateway</code>)",
     "notifications.twitterUnstable.lead": "Du kannst Träwelling nur über deinen Twitter-Account erreichen.",
-    "notifications.twitterUnstable.notice": "Wenn Twitter ausfallen sollte, hast du keinen Zugriff mehr auf deinen Träwelling-Account. Bitte hinterlege deine Emailadresse und ein Passwort, damit du weiterhin Träwelling nutzen kannst.",
+    "notifications.twitterUnstable.notice": "Wenn Twitter ausfallen sollte, hast du keinen Zugriff mehr auf deinen Träwelling-Account. Bitte hinterlege deine E-Mail Adresse und ein Passwort, damit du Träwelling weiterhin nutzen kannst, wenn Twitter mal nicht erreichbar ist.",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> ist auch in Deiner Verbindung!",
     "notifications.userJoinedConnection.notice": "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.",
     "pagination.next": "Nächste Seite &raquo;",
