@@ -30,23 +30,21 @@ abstract class EventController extends Controller
                                                        'host'    => $host
                                                    ]);
 
-        if (config('app.telegram.token') !== null) {
-            TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
-                                                       "Title: :name" . PHP_EOL .
-                                                       "Veranstalter: :host" . PHP_EOL .
-                                                       "Beginn: :begin" . PHP_EOL .
-                                                       "Ende: :end" . PHP_EOL .
-                                                       "Benutzer: :username\n" . PHP_EOL .
-                                                       "Der Vorschlag kann im <a href=\"" .
-                                                       route('admin.events.suggestions') .
-                                                       "\">Adminpanel</a> bearbeitet werden.", [
-                                                           ':name'     => $eventSuggestion->name,
-                                                           ':host'     => $eventSuggestion->host,
-                                                           ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
-                                                           ':end'      => $eventSuggestion->end->format('d.m.Y'),
-                                                           ':username' => $eventSuggestion->user->username,
-                                                       ]));
-        }
+        TelegramController::sendAdminMessage(strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
+                                                   "Title: :name" . PHP_EOL .
+                                                   "Veranstalter: :host" . PHP_EOL .
+                                                   "Beginn: :begin" . PHP_EOL .
+                                                   "Ende: :end" . PHP_EOL .
+                                                   "Benutzer: :username\n" . PHP_EOL .
+                                                   "Der Vorschlag kann im <a href=\"" .
+                                                   route('admin.events.suggestions') .
+                                                   "\">Adminpanel</a> bearbeitet werden.", [
+                                                       ':name'     => $eventSuggestion->name,
+                                                       ':host'     => $eventSuggestion->host,
+                                                       ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
+                                                       ':end'      => $eventSuggestion->end->format('d.m.Y'),
+                                                       ':username' => $eventSuggestion->user->username,
+                                                   ]));
 
         return $eventSuggestion;
     }
