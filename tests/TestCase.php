@@ -41,6 +41,14 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
+    protected function createAdminUser(): User {
+        $admin = $this->createGDPRAckedUser();
+        $admin->role = 10;
+        $admin->update();
+
+        return $admin;
+    }
+
     /**
      * @var string Hafas is weird and it's trip ids are shorter the first 9 days of the month.
      */

@@ -37,7 +37,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-require_once realpath(__DIR__) . '/web/admin.php';
+Route::prefix('admin')->group(base_path('routes/web/admin.php'));
 
 Route::get('/@{username}/picture', [ProfilePictureController::class, 'generateProfilePicture'])
      ->name('profile.picture');

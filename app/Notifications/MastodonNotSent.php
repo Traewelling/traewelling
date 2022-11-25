@@ -8,10 +8,9 @@ use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use stdClass;
 
-class MastodonNotSent extends Notification
+class MastodonNotSent extends BaseNotification
 {
     use Queueable;
 
