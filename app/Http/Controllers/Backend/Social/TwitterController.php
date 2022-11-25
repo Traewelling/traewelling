@@ -83,7 +83,12 @@ abstract class TwitterController extends Controller
      * @throws NotConnectedException
      */
     public static function postStatus(Status $status): void {
-        if ($status?->user?->socialProfile?->twitter_id === null || config('trwl.post_social') !== true) {
+        if (config('trwl.post_social') !== true) {
+            Log::error("Was dispatched to post on Twitter, but POST_SOCIAL env variable is not set.");
+            return;
+        }
+
+        if ($status?->user?->socialProfile?->twitter_id === null) {
             return;
         }
 
