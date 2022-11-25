@@ -137,7 +137,8 @@ abstract class MastodonController extends Controller
             $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
-            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+            $post_response = Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+            $status->update(['mastodon_post_id' => $post_response['id']]);
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (RequestException $e) {
             $status->user->notify(new MastodonNotSent($e->getResponse()?->getStatusCode(), $status));
