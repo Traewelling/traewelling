@@ -88,6 +88,18 @@
                         <p class="lead m-0">{!! __('about.name') !!}</p>
                     </div>
                 </div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h2 class="fs-4 fw-bold text-trwl">
+                            <i class="fa-solid fa-calendar"></i>
+                            {{ __('about.events') }}
+                        </h2>
+                        <p class="lead mb-2">{{__('about.events.description1')}}</p>
+                        <p class="lead mb-2">{!! __('about.events.description2', ['link' => route('events.suggest')]) !!}</p>
+                        <p class="lead mb-2">{!! __('about.events.description3') !!}</p>
+                        <p class="lead mb-2">{{__('about.events.description4')}}</p>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-6">
                 <div class="card mb-2">
@@ -124,7 +136,7 @@
                             <i class="fa-solid fa-gem"></i>
                             {{ __('about.points-heading') }}
                         </h2>
-                        <p class="lead m-0">{{ __('about.points1') }}</p>
+                        <p class="lead mb-2">{{ __('about.points1') }}</p>
                         <table class="table table-hover table-striped" aria-describedby="heading-points">
                             <thead>
                                 <tr>
@@ -142,7 +154,7 @@
                             </tbody>
                         </table>
 
-                        <p class="lead m-0">{!! __('about.calculation') !!}</p>
+                        <p class="lead mb-2">{!! __('about.calculation') !!}</p>
 
                         <p class="lead text-danger mt-2">
                             <i class="fa-solid fa-circle-exclamation"></i>
