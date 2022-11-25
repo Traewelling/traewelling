@@ -11,11 +11,10 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
 use stdClass;
 
-class FollowRequestApproved extends Notification
+class FollowRequestApproved extends BaseNotification
 {
     use Queueable;
 
