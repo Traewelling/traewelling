@@ -210,7 +210,7 @@ abstract class MastodonController extends Controller
         return Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
     }
 
-    private static function getLastSavedPostIdFromUserStatuses(User $user) {
+    public static function getLastSavedPostIdFromUserStatuses(User $user) {
         return $user
             ->statuses()
             ->whereNotNull('mastodon_post_id')
