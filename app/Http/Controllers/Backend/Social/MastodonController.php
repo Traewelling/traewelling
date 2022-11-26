@@ -122,7 +122,7 @@ abstract class MastodonController extends Controller
                                      ]);
     }
 
-    public static function postStatus(Status $status): void {
+    public static function postStatus(Status $status, bool $shouldPostAsChain = true): void {
         if (config('trwl.post_social') !== true) {
             Log::error("Was dispatched to post on Mastodon, but POST_SOCIAL env variable is not set.");
             return;
@@ -132,11 +132,25 @@ abstract class MastodonController extends Controller
             return;
         }
 
+        $traverseChain = null;
+        if ($shouldPostAsChain) {
+            $chainHead = self::getLastSavedPostIdFromUserStatuses($status->user);
+
+            if ($chainHead != null) {
+                $traverseChain = self::getEndOfChain($status->user, $chainHead->mastodon_post_id);
+            }
+        }
+
         try {
             $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
-            $post_response = Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+
+            $post_response = Mastodon::createStatus($statusText, [
+                'visibility'     => 'unlisted',
+                'in_reply_to_id' => $traverseChain
+            ]);
+
             $status->update(['mastodon_post_id' => $post_response['id']]);
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (GuzzleException $e) {
@@ -194,5 +208,13 @@ abstract class MastodonController extends Controller
     private static function getClient(User $user) {
         $mastodonDomain = MastodonServer::find($user->socialProfile->mastodon_server)->domain;
         return Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+    }
+
+    private static function getLastSavedPostIdFromUserStatuses(User $user) {
+        return $user
+            ->statuses()
+            ->whereNotNull('mastodon_post_id')
+            ->latest()
+            ->first();
     }
 }
