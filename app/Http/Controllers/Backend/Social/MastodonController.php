@@ -122,7 +122,7 @@ abstract class MastodonController extends Controller
                                      ]);
     }
 
-    public static function postStatus(Status $status, bool $shouldPostAsChain = true): void {
+    public static function postStatus(Status $status, bool $shouldPostAsChain = false): void {
         if (config('trwl.post_social') !== true) {
             Log::error("Was dispatched to post on Mastodon, but POST_SOCIAL env variable is not set.");
             return;

@@ -167,6 +167,7 @@ class FrontendTransportController extends Controller
                                             'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
                                             'tweet_check'       => ['nullable', 'max:2'],
                                             'toot_check'        => ['nullable', 'max:2'],
+                                            'chainPost_check'   => ['nullable', 'max:2'],
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                             'force'             => ['nullable'],
                                         ]);
@@ -185,7 +186,7 @@ class FrontendTransportController extends Controller
                 event:        isset($validated['event']) ? Event::find($validated['event']) : null,
                 force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
-                postOnMastodon: isset($request->toot_check)
+                postOnMastodon: isset($request->toot_check), shouldChain: isset($request->chainPost_check)
             );
 
             $trainCheckin = $backendResponse['status']->trainCheckin;

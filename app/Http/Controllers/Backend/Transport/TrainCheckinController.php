@@ -63,7 +63,8 @@ abstract class TrainCheckinController extends Controller
         ?Event           $event = null,
         bool             $force = false,
         bool             $postOnTwitter = false,
-        bool             $postOnMastodon = false
+        bool             $postOnMastodon = false,
+        bool             $shouldChain = false
     ): array {
         if ($departure->isAfter($arrival)) {
             throw new InvalidArgumentException('Departure time must be before arrival time');
@@ -92,6 +93,7 @@ abstract class TrainCheckinController extends Controller
                 $status,
                 $postOnTwitter && $user->socialProfile?->twitter_id !== null,
                 $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
+                $shouldChain
             );
 
             return $trainCheckinResponse;

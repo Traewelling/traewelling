@@ -129,6 +129,16 @@
                                             </span>
                                         </label>
                                     </div>
+                                    <div class="btn-group">
+                                        <input type="checkbox" class="btn-check" id="chainPost_check" autocomplete="off"
+                                               name="chainPost_check"/>
+                                        <label class="btn btn-sm btn-outline-mastodon" for="chainPost_check">
+                                            <i class="fa-solid fa-list-ol"></i>
+                                            <span class="visually-hidden-focusable">
+                                            {{ __('stationboard.check-chainPost') }}
+                                        </span>
+                                        </label>
+                                    </div>
                                 @endif
                             @endif
                             @include('includes.business-dropdown')
