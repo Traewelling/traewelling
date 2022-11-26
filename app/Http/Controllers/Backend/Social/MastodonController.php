@@ -10,8 +10,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\MastodonNotSent;
 use Exception;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Revolution\Mastodon\Facades\Mastodon;
@@ -100,7 +99,7 @@ abstract class MastodonController extends Controller
                                                       'client_id'     => $info['client_id'],
                                                       'client_secret' => $info['client_secret'],
                                                   ]);
-        } catch (ClientException $exception) {
+        } catch (GuzzleException $exception) {
             report($exception);
             throw new InvalidMastodonException();
         }
@@ -140,10 +139,60 @@ abstract class MastodonController extends Controller
             $post_response = Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
             $status->update(['mastodon_post_id' => $post_response['id']]);
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
-        } catch (RequestException $e) {
-            $status->user->notify(new MastodonNotSent($e->getResponse()?->getStatusCode(), $status));
+        } catch (GuzzleException $e) {
+            $status->user->notify(new MastodonNotSent($e->getCode(), $status));
         } catch (Exception $e) {
             Log::error($e);
         }
+    }
+
+    /**
+     * @param User   $user             Trwl user with social profile
+     * @param string $mastodon_post_id Id of a known post of the chain, taken from the statuses table.
+     *
+     * @return string|null The id of the last post that can be replied to. Returns null if there is none.
+     * @see https://docs.joinmastodon.org/entities/Context/ Documentation of the Mastodon Context API.
+     * @see https://docs.joinmastodon.org/methods/statuses/ Documentation of the Mastodon Status API.
+     */
+    public static function getEndOfChain(User $user, string $mastodon_post_id): ?string {
+        $client = self::getClient($user);
+
+        try {
+            $context = $client->get('/statuses/' . $mastodon_post_id . '/context');
+        } catch (GuzzleException $e) {
+            Log::info("Unable to chain toot because of an issue with the connecting mastodon server.");
+            if ($e->getCode() == 404) {
+                Log::info("Original Post seems to be deleted.");
+            }
+            report($e);
+            return null;
+        }
+
+        $mastodonUserId = $user->socialProfile->mastodon_id;
+        $only_thread    = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
+            return
+                // We never want to interact with any direct messages
+                $toot['visibility'] !== 'direct'
+
+                // Only take posts that are from $OP.
+                && $toot['account']['id'] == $mastodonUserId
+
+                // Only take posts that are direct replies to an post by OP, discarding posts from OP that don't
+                // contribute to the original thread.
+                && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] == $mastodonUserId);
+        });
+
+        // If there is no post left, resort to the original post.
+        if (empty($only_thread)) {
+            return $mastodon_post_id;
+        }
+
+        // Take the newest item of the thread.
+        return last($only_thread)['id'];
+    }
+
+    private static function getClient(User $user) {
+        $mastodonDomain = MastodonServer::find($user->socialProfile->mastodon_server)->domain;
+        return Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
     }
 }
