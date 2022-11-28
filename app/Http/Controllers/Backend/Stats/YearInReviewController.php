@@ -30,6 +30,7 @@ abstract class YearInReviewController extends Controller
         $to                         = Carbon::create($year, 12, 31);
         $count                      = TransportStatsController::count($user, $from, $to);
         $sum                        = TransportStatsController::sum($user, $from, $to);
+        $countHafasOperators        = TransportStatsController::countHafasOperators($user, $from, $to);
         $sumByHafasByDistance       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'distance', 5);
         $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 5);
         $topOperatorLinesByDistance = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'distance', 5);
@@ -57,6 +58,7 @@ abstract class YearInReviewController extends Controller
                 'averagePerDay' => round($sum->duration / $from->diffInDays($to), 3),
             ],
             'operators'           => [
+                'count'    => $countHafasOperators,
                 'distance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,

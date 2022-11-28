@@ -83,6 +83,19 @@ abstract class TransportStatsController extends Controller
     }
 
     /**
+     * Get count of different hafas operators in a given time frame
+     *
+     * @param User   $user User to get the stats for
+     * @param Carbon $from Start date
+     * @param Carbon $to   End date
+     *
+     * @return int      Number of different hafas operators
+     */
+    public static function countHafasOperators(User $user, Carbon $from, Carbon $to): int {
+        return self::sumByHafasOperator($user, $from, $to)->count();
+    }
+
+    /**
      * Get travelled distance and duration for a user in a given time frame, grouped by HAFAS operator and line
      *
      * @param User     $user        User to get the stats for
