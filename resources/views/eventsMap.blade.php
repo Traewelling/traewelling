@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container mt-3">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7" id="activeJourneys">
                 @foreach($statuses as $status)
