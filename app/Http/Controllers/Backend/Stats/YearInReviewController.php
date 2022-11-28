@@ -52,7 +52,7 @@ abstract class YearInReviewController extends Controller
             ],
             'count'               => $count,
             'distance'            => [
-                'total'         => round($sum->distance / 1000, 3),
+                'total'         => round($sum->distance),
                 'averagePerDay' => round($sum->distance / $from->diffInDays($to), 3),
             ],
             'duration'            => [
@@ -64,7 +64,7 @@ abstract class YearInReviewController extends Controller
                 'topByDistance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,
-                        'distance' => round($row->distance / 1000, 3),
+                        'distance' => round($row->distance),
                     ];
                 })->first(),
                 'topByDuration' => $sumByHafasByDuration->map(static function($row) {
@@ -79,7 +79,7 @@ abstract class YearInReviewController extends Controller
                     return [
                         'operator' => $row->name,
                         'line'     => $row->linename,
-                        'distance' => round($row->distance / 1000, 3),
+                        'distance' => round($row->distance),
                     ];
                 })->first(),
                 'topByDuration' => $topOperatorLinesByDuration->map(static function($row) {
