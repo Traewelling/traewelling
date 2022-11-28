@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend\Stats;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StatusResource;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -35,11 +37,11 @@ abstract class YearInReviewController extends Controller
         $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 1);
         $topOperatorLinesByDistance = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'distance', 1);
         $topOperatorLinesByDuration = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'duration', 1);
-        $longestTripsByDistance     = TransportStatsController::getLongestTrips($user, $from, $to, 'distance', 5);
-        $longestTripsByDuration     = TransportStatsController::getLongestTrips($user, $from, $to, 'duration', 5);
-        $fastestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 5);
-        $slowestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'asc', 5);
-        $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 5);
+        $longestTripsByDistance     = TransportStatsController::getLongestTrips($user, $from, $to, 'distance', 1);
+        $longestTripsByDuration     = TransportStatsController::getLongestTrips($user, $from, $to, 'duration', 1);
+        $fastestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 1);
+        $slowestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'asc', 1);
+        $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 1);
 
         return [
             'year'                => $year,
@@ -58,7 +60,7 @@ abstract class YearInReviewController extends Controller
                 'averagePerDay' => round($sum->duration / $from->diffInDays($to), 3),
             ],
             'operators'           => [
-                'count'    => $countHafasOperators,
+                'count'         => $countHafasOperators,
                 'topByDistance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,
@@ -89,39 +91,22 @@ abstract class YearInReviewController extends Controller
                 })->first(),
             ],
             'longestTrips'        => [
-                'distance' => $longestTripsByDistance->map(static function($row) {
-                    return [
-                        //TODO: add more infos about the trip
-                        'distance' => round($row->distance / 1000, 3),
-                    ];
-                })->toArray(),
-                'duration' => $longestTripsByDuration->map(static function($row) {
-                    return [
-                        //TODO: add more infos about the trip
-                        'duration' => $row->duration,
-                    ];
-                })->toArray(),
+                'distance' => $longestTripsByDistance->map(static function(TrainCheckin $checkin) {
+                    return new StatusResource($checkin->status);
+                })->first(),
+                'duration' => $longestTripsByDuration->map(static function(TrainCheckin $checkin) {
+                    return new StatusResource($checkin->status);
+                })->first(),
             ],
-            'fastestTrips'        => $fastestTrips->map(static function($row) {
-                return [
-                    //TODO: add more infos about the trip
-                    'duration' => $row->duration,
-                    'speed'    => $row->speed,
-                ];
-            })->toArray(),
-            'slowestTrips'        => $slowestTrips->map(static function($row) {
-                return [
-                    //TODO: add more infos about the trip
-                    'duration' => $row->duration,
-                    'speed'    => $row->speed,
-                ];
-            })->toArray(),
-            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function($row) {
-                return [
-                    //TODO: add more infos about the trip
-                    'delay' => $row->delay,
-                ];
-            })->toArray(),
+            'fastestTrips'        => $fastestTrips->map(static function(TrainCheckin $checkin) {
+                return new StatusResource($checkin->status);
+            })->first(),
+            'slowestTrips'        => $slowestTrips->map(static function(TrainCheckin $checkin) {
+                return new StatusResource($checkin->status);
+            })->first(),
+            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(TrainCheckin $checkin) {
+                return new StatusResource($checkin->status);
+            })->first(),
 
         ];
     }
