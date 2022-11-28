@@ -136,7 +136,7 @@ abstract class MastodonController extends Controller
         if ($shouldPostAsChain) {
             $chainHead = self::getLastSavedPostIdFromUserStatuses($status->user);
 
-            if ($chainHead != null) {
+            if ($chainHead !== null) {
                 $traverseChain = self::getEndOfChain($status->user, $chainHead->mastodon_post_id);
             }
         }
@@ -146,12 +146,12 @@ abstract class MastodonController extends Controller
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
-            $post_response = Mastodon::createStatus($statusText, [
+            $postResponse = Mastodon::createStatus($statusText, [
                 'visibility'     => 'unlisted',
                 'in_reply_to_id' => $traverseChain
             ]);
 
-            $status->update(['mastodon_post_id' => $post_response['id']]);
+            $status->update(['mastodon_post_id' => $postResponse['id']]);
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
@@ -161,18 +161,18 @@ abstract class MastodonController extends Controller
     }
 
     /**
-     * @param User   $user             Trwl user with social profile
-     * @param string $mastodon_post_id Id of a known post of the chain, taken from the statuses table.
+     * @param User   $user           Trwl user with social profile
+     * @param string $mastodonPostId Id of a known post of the chain, taken from the statuses table.
      *
      * @return string|null The id of the last post that can be replied to. Returns null if there is none.
      * @see https://docs.joinmastodon.org/entities/Context/ Documentation of the Mastodon Context API.
      * @see https://docs.joinmastodon.org/methods/statuses/ Documentation of the Mastodon Status API.
      */
-    public static function getEndOfChain(User $user, string $mastodon_post_id): ?string {
+    public static function getEndOfChain(User $user, string $mastodonPostId): ?string {
         $client = self::getClient($user);
 
         try {
-            $context = $client->get('/statuses/' . $mastodon_post_id . '/context');
+            $context = $client->get('/statuses/' . $mastodonPostId . '/context');
         } catch (GuzzleException $e) {
             Log::info("Unable to chain toot because of an issue with the connecting mastodon server.");
             if ($e->getCode() == 404) {
@@ -183,26 +183,26 @@ abstract class MastodonController extends Controller
         }
 
         $mastodonUserId = $user->socialProfile->mastodon_id;
-        $only_thread    = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
+        $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
             return
                 // We never want to interact with any direct messages
                 $toot['visibility'] !== 'direct'
 
                 // Only take posts that are from $OP.
-                && $toot['account']['id'] == $mastodonUserId
+                && $toot['account']['id'] === $mastodonUserId
 
                 // Only take posts that are direct replies to an post by OP, discarding posts from OP that don't
                 // contribute to the original thread.
-                && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] == $mastodonUserId);
+                && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] === $mastodonUserId);
         });
 
         // If there is no post left, resort to the original post.
-        if (empty($only_thread)) {
-            return $mastodon_post_id;
+        if (empty($onlyThread)) {
+            return $mastodonPostId;
         }
 
         // Take the newest item of the thread.
-        return last($only_thread)['id'];
+        return last($onlyThread)['id'];
     }
 
     private static function getClient(User $user) {

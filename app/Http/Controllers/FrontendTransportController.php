@@ -186,7 +186,8 @@ class FrontendTransportController extends Controller
                 event:        isset($validated['event']) ? Event::find($validated['event']) : null,
                 force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
-                postOnMastodon: isset($request->toot_check), shouldChain: isset($request->chainPost_check)
+                postOnMastodon: isset($request->toot_check),
+                shouldChain: isset($request->chainPost_check),
             );
 
             $trainCheckin = $backendResponse['status']->trainCheckin;

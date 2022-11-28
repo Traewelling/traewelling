@@ -27,12 +27,13 @@ class Status extends Model
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
     protected $casts    = [
-        'id'         => 'integer',
-        'user_id'    => 'integer',
-        'business'   => Business::class,
-        'visibility' => StatusVisibility::class,
-        'event_id'   => 'integer',
-        'tweet_id'   => 'string',
+        'id'               => 'integer',
+        'user_id'          => 'integer',
+        'business'         => Business::class,
+        'visibility'       => StatusVisibility::class,
+        'event_id'         => 'integer',
+        'tweet_id'         => 'string',
+        'mastodon_post_id' => 'string',
     ];
 
     public function user(): BelongsTo {

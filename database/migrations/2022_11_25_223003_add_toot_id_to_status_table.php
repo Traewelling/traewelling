@@ -4,16 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+return new class extends Migration {
+
+    public function up(): void {
+        Schema::table('statuses', static function (Blueprint $table) {
             $table->string('mastodon_post_id')->nullable()->after('event_id');
         });
     }
@@ -23,9 +17,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('statuses', function (Blueprint $table) {
+    public function down(): void {
+        Schema::table('statuses', static function (Blueprint $table) {
             $table->dropColumn('mastodon_post_id');
         });
     }
