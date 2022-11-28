@@ -17,7 +17,7 @@
              aria-labelledby="headingCarriageSequence"
              data-mdb-parent="#accordionAdditionalDetails"
         >
-            <div class="card-body">
+            <div class="accordion-body">
                 @foreach($carriageSequence as $vehicle)
                     @if(strlen($vehicle->vehicle_number) === 12)
                         {{substr($vehicle->vehicle_number, 0, 2)}}
@@ -37,13 +37,6 @@
                     </small>
                     <br/>
                 @endforeach
-            </div>
-            <div class="card-footer">
-                <small class="text-muted">
-                    {{__('experimental-feature')}}
-                    -
-                    {{__('data-may-incomplete')}}
-                </small>
             </div>
         </div>
     </div>
