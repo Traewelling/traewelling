@@ -20,6 +20,22 @@ abstract class TransportStatsController extends Controller
     }
 
     /**
+     * Get the number of train checkins between two dates.
+     *
+     * @param User   $user The user to get the checkins for.
+     * @param Carbon $from The start date.
+     * @param Carbon $to   The end date.
+     *
+     * @return int        The number of checkins.
+     */
+    public static function count(User $user, Carbon $from, Carbon $to): int {
+        return (int) self::getTrainCheckinsBetween($user, $from, $to)
+                         ->select([DB::raw('COUNT(*) as count')])
+                         ->pluck('count')
+                         ->first();
+    }
+
+    /**
      * Get travelled distance and duration for a user in a given time frame
      *
      * @param User   $user

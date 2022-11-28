@@ -28,6 +28,7 @@ abstract class YearInReviewController extends Controller
     public static function generate(User $user, int $year): array {
         $from                       = Carbon::create($year, 1, 1);
         $to                         = Carbon::create($year, 12, 31);
+        $count                      = TransportStatsController::count($user, $from, $to);
         $sum                        = TransportStatsController::sum($user, $from, $to);
         $sumByHafasByDistance       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'distance', 5);
         $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 5);
@@ -46,6 +47,7 @@ abstract class YearInReviewController extends Controller
                 'name'     => $user->name,
                 'username' => $user->username,
             ],
+            'count'               => $count,
             'distance'            => [
                 'total'         => round($sum->distance / 1000, 3),
                 'averagePerDay' => round($sum->distance / $from->diffInDays($to), 3),
