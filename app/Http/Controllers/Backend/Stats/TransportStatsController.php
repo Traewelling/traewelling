@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Backend\Stats;
 
 use App\Http\Controllers\Controller;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -14,9 +16,10 @@ use stdClass;
 abstract class TransportStatsController extends Controller
 {
 
-    private static function getTrainCheckinsBetween(User $user, Carbon $from, Carbon $to): Builder {
-        return DB::table('train_checkins')->where('train_checkins.user_id', $user->id)
-                 ->whereBetween('train_checkins.departure', [$from, $to]);
+    private static function getTrainCheckinsBetween(User $user, Carbon $from, Carbon $to, bool $returnModel = false): QueryBuilder|EloquentBuilder {
+        return ($returnModel ? TrainCheckin::with([]) : DB::table('train_checkins'))
+            ->where('train_checkins.user_id', $user->id)
+            ->whereBetween('train_checkins.departure', [$from, $to]);
     }
 
     /**
@@ -143,7 +146,7 @@ abstract class TransportStatsController extends Controller
         if ($orderByDesc !== 'distance' && $orderByDesc !== 'duration') {
             throw new InvalidArgumentException('orderByDesc must be either "distance" or "duration"');
         }
-        $query = self::getTrainCheckinsBetween($user, $from, $to)
+        $query = self::getTrainCheckinsBetween($user, $from, $to, true)
                      ->select([
                                   'train_checkins.*',
                                   DB::raw('TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival) as duration'),
@@ -172,14 +175,9 @@ abstract class TransportStatsController extends Controller
         if ($sortBy !== 'desc' && $sortBy !== 'asc') {
             throw new InvalidArgumentException('sortBy must be either "desc" or "asc"');
         }
-        return self::getTrainCheckinsBetween($user, $from, $to)
+        return self::getTrainCheckinsBetween($user, $from, $to, true)
                    ->whereNotNull(DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival)'))
-                   ->select([
-                                'train_checkins.*',
-                                DB::raw('TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival) as duration'),
-                                DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival) as speed'),
-                            ])
-                   ->orderBy('speed', $sortBy)
+                   ->orderBy(DB::raw('(train_checkins.distance/1000) / TIMESTAMPDIFF(HOUR, train_checkins.departure, train_checkins.arrival)'), $sortBy)
                    ->limit($limit)
                    ->get();
     }
@@ -199,7 +197,7 @@ abstract class TransportStatsController extends Controller
         if ($sortBy !== 'desc' && $sortBy !== 'asc') {
             throw new InvalidArgumentException('sortBy must be either "desc" or "asc"');
         }
-        return self::getTrainCheckinsBetween($user, $from, $to)
+        return self::getTrainCheckinsBetween($user, $from, $to, true)
                    ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
                    ->join('train_stations', 'train_checkins.destination', '=', 'train_stations.ibnr')
                    ->whereRaw('train_stopovers.train_station_id = train_stations.id')
