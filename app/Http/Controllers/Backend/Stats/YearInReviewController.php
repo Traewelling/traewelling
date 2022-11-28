@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Stats;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
+use App\Http\Resources\TrainStationResource;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
@@ -42,7 +43,7 @@ abstract class YearInReviewController extends Controller
         $fastestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 1);
         $slowestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'asc', 1);
         $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 1);
-
+        $topDestinations            = TransportStatsController::getTopDestinations($user, $from, $to, 5);
         return [
             'year'                => $year,
             'user'                => [
@@ -107,7 +108,12 @@ abstract class YearInReviewController extends Controller
             'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(TrainCheckin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
-
+            'topDestinations'     => $topDestinations->map(static function($data) {
+                return [
+                    'station' => new TrainStationResource($data->station),
+                    'count'   => $data->count,
+                ];
+            }),
         ];
     }
 }

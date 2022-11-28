@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Stats;
 use App\Http\Controllers\Controller;
 use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Models\TrainStation;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -209,5 +210,23 @@ abstract class TransportStatsController extends Controller
                    ->orderBy('delay', $sortBy)
                    ->limit($limit)
                    ->get();
+    }
+
+    public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null) {
+        $data     = self::getTrainCheckinsBetween($user, $from, $to)
+                        ->groupBy('destination')
+                        ->select([
+                                     'destination',
+                                     DB::raw('COUNT(*) as count'),
+                                 ])
+                        ->orderByDesc('count')
+                        ->limit($limit)
+                        ->get();
+        $stations = TrainStation::whereIn('ibnr', $data->pluck('destination'))->get();
+        return $data->map(function($model) use ($stations) {
+            $model->station = $stations->firstWhere('ibnr', $model->destination);
+            unset($model->destination);
+            return $model;
+        });
     }
 }
