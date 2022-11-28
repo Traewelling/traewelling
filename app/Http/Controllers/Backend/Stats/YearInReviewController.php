@@ -31,10 +31,10 @@ abstract class YearInReviewController extends Controller
         $count                      = TransportStatsController::count($user, $from, $to);
         $sum                        = TransportStatsController::sum($user, $from, $to);
         $countHafasOperators        = TransportStatsController::countHafasOperators($user, $from, $to);
-        $sumByHafasByDistance       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'distance', 5);
-        $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 5);
-        $topOperatorLinesByDistance = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'distance', 5);
-        $topOperatorLinesByDuration = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'duration', 5);
+        $sumByHafasByDistance       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'distance', 1);
+        $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 1);
+        $topOperatorLinesByDistance = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'distance', 1);
+        $topOperatorLinesByDuration = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'duration', 1);
         $longestTripsByDistance     = TransportStatsController::getLongestTrips($user, $from, $to, 'distance', 5);
         $longestTripsByDuration     = TransportStatsController::getLongestTrips($user, $from, $to, 'duration', 5);
         $fastestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 5);
@@ -59,34 +59,34 @@ abstract class YearInReviewController extends Controller
             ],
             'operators'           => [
                 'count'    => $countHafasOperators,
-                'distance' => $sumByHafasByDistance->map(static function($row) {
+                'topByDistance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,
                         'distance' => round($row->distance / 1000, 3),
                     ];
-                })->toArray(),
-                'duration' => $sumByHafasByDuration->map(static function($row) {
+                })->first(),
+                'topByDuration' => $sumByHafasByDuration->map(static function($row) {
                     return [
                         'operator' => $row->name,
                         'duration' => round($row->duration),
                     ];
-                })->toArray(),
+                })->first(),
             ],
             'lines'               => [
-                'distance' => $topOperatorLinesByDistance->map(static function($row) {
+                'topByDistance' => $topOperatorLinesByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,
                         'line'     => $row->linename,
                         'distance' => round($row->distance / 1000, 3),
                     ];
-                })->toArray(),
-                'duration' => $topOperatorLinesByDuration->map(static function($row) {
+                })->first(),
+                'topByDuration' => $topOperatorLinesByDuration->map(static function($row) {
                     return [
                         'operator' => $row->name,
                         'line'     => $row->linename,
                         'duration' => round($row->duration),
                     ];
-                })->toArray(),
+                })->first(),
             ],
             'longestTrips'        => [
                 'distance' => $longestTripsByDistance->map(static function($row) {
