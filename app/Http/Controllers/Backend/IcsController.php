@@ -24,7 +24,7 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::with(['HafasTrip'])
+        $trainCheckIns = TrainCheckin::with(['HafasTrip.stopoversNEW'])
                                      ->where('user_id', $user->id)
                                      ->orderByDesc('departure')
                                      ->limit($limit);
@@ -58,13 +58,12 @@ abstract class IcsController extends Controller
                           ->name($name)
                           ->uniqueIdentifier($checkIn->id)
                           ->createdAt($checkIn->created_at)
-                          ->startsAt($checkIn->departure)
-                          ->endsAt($checkIn->arrival);
+                          ->startsAt($checkIn->origin_stopover->departure)
+                          ->endsAt($checkIn->destination_stopover->arrival);
             $calendar->event($event);
         }
 
         $icsToken->update(['last_accessed' => Carbon::now()]);
-
         return $calendar;
     }
 
