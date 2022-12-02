@@ -212,6 +212,27 @@ abstract class TransportStatsController extends Controller
                    ->get();
     }
 
+    /**
+     *  Get the toal sum of arrival delay in the given time frame
+     *
+     * @param User   $user User to get the stats for
+     * @param Carbon $from Start date
+     * @param Carbon $to   End date
+     *
+     * @return int  Total sum of arrival delay in minutes
+     */
+    public static function getTotalArrivalDelay(User $user, Carbon $from, Carbon $to): int {
+        return self::getTrainCheckinsBetween($user, $from, $to, true)
+                   ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
+                   ->join('train_stations', 'train_checkins.destination', '=', 'train_stations.ibnr')
+                   ->whereRaw('train_stopovers.train_station_id = train_stations.id')
+                   ->whereRaw('train_stopovers.arrival_planned = train_checkins.arrival')
+                   ->select([
+                                DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_stopovers.arrival_planned, train_stopovers.arrival_real)) as delay'),
+                            ])
+                   ->first()->delay;
+    }
+
     public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null) {
         $data     = self::getTrainCheckinsBetween($user, $from, $to)
                         ->groupBy('destination')

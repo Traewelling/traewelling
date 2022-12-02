@@ -60,6 +60,7 @@ abstract class YearInReviewController extends Controller
                 'total'         => round($sum->duration),
                 'averagePerDay' => round($sum->duration / $from->diffInDays($to), 3),
             ],
+            'totalDelay'          => TransportStatsController::getTotalArrivalDelay($user, $from, $to),
             'operators'           => [
                 'count'         => $countHafasOperators,
                 'topByDistance' => $sumByHafasByDistance->map(static function($row) {
