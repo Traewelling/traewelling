@@ -126,6 +126,13 @@
                                         Mastodon
                                     </label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="shouldChain_check"
+                                           name="shouldChain_check" {{$user->mastodonUrl && \App\Http\Controllers\Backend\Social\MastodonController::getLastSavedPostIdFromUserStatuses($user) ? '' : 'disabled'}}>
+                                    <label class="form-check-label" for="shouldChain_check">
+                                        Toot Chaining
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-3 border-top border-bottom">

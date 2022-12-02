@@ -17,9 +17,11 @@ class PostStatusOnMastodon implements ShouldQueue
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     protected Status $status;
+    protected bool   $shouldChain;
 
-    public function __construct(Status $status) {
-        $this->status = $status;
+    public function __construct(Status $status, bool $shouldChain) {
+        $this->status      = $status;
+        $this->shouldChain = $shouldChain;
     }
 
     /**
@@ -30,9 +32,10 @@ class PostStatusOnMastodon implements ShouldQueue
      */
     public function handle(): void {
         $this->queueData([
-                             "status_id" => $this->status->id
+                             "status_id"    => $this->status->id,
+                             "should_chain" => $this->shouldChain,
                          ]);
 
-        MastodonController::postStatus($this->status);
+        MastodonController::postStatus($this->status, $this->shouldChain);
     }
 }

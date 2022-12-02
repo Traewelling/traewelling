@@ -114,6 +114,7 @@ class TransportController extends Controller
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
                                             'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
+                                            'chainPost'   => ['nullable', 'boolean'],
                                             'ibnr'        => ['nullable', 'boolean'],
                                             'tripId'      => ['required'],
                                             'lineName'    => ['required'],
@@ -143,6 +144,7 @@ class TransportController extends Controller
                 force:          isset($validated['force']) && $validated['force'],
                 postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
+                shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
             return $this->sendResponse($trainCheckinResponse);

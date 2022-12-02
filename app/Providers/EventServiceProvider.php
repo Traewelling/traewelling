@@ -37,6 +37,6 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(fn(UserCheckedIn $event)
             => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
         Event::listen(fn(UserCheckedIn $event)
-            => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status));
+            => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
     }
 }
