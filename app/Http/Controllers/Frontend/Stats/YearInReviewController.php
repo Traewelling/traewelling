@@ -20,9 +20,18 @@ class YearInReviewController extends Controller
      */
     public function show(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'year'  => ['required', 'integer', 'min:2019', 'max:' . Date::now()->year],
+                                            'year' => ['nullable', 'integer', 'min:2019', 'max:' . Date::now()->year],
                                         ]);
 
-        return response()->json(YearInReviewBackend::get(auth()->user(), (int) $validated['year']));
+        if (isset($validated['year'])) {
+            $year = $validated['year'];
+        } else {
+            $year = Date::now()->year;
+            if (Date::now()->month < 3) {
+                $year--;
+            }
+        }
+
+        return response()->json(YearInReviewBackend::generate(auth()->user(), $year));
     }
 }
