@@ -108,6 +108,7 @@ class TrainCheckin extends Model
             );
             $this->HafasTrip->load('stopoversNEW');
         }
+        Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
         return $stopOver;
     }
 
