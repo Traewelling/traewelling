@@ -250,4 +250,44 @@ abstract class TransportStatsController extends Controller
             return $model;
         });
     }
+
+    /**
+     * Get all stations where the user is the only one to have checked in
+     *
+     * @param User   $user User to get the stats for
+     * @param Carbon $from Start date
+     * @param Carbon $to   End date
+     *
+     * @return Collection
+     */
+    public static function getLonelyStations(User $user, Carbon $from, Carbon $to): Collection {
+        $ownDestinations = self::getTrainCheckinsBetween($user, $from, $to)
+                               ->groupBy('destination')
+                               ->select(['destination'])
+                               ->distinct()
+                               ->get()
+                               ->map(function($row) {
+                                   $row->otherUsers = 0;
+                                   return $row;
+                               });
+
+        $otherUsers = DB::table('train_checkins')
+                        ->where('user_id', '!=', $user->id)
+                        ->whereBetween('departure', [$from, $to])
+                        ->whereIn('destination', $ownDestinations->pluck('destination'))
+                        ->groupBy('destination')
+                        ->select([
+                                     'destination',
+                                     DB::raw('COUNT(*) as count'),
+                                 ])
+                        ->get();
+
+        foreach ($otherUsers as $other) {
+            $ownDestinations->firstWhere('destination', $other->destination)->otherUsers = $other->count;
+        }
+
+        $lonelyStations = $ownDestinations->where('otherUsers', 0)->pluck('destination');
+
+        return TrainStation::whereIn('ibnr', $lonelyStations)->get();
+    }
 }
