@@ -119,7 +119,10 @@ abstract class YearInReviewController extends Controller
                 ];
             }),
             'lonelyStations'      => $lonelyStations->map(static function($station) {
-                return new TrainStationResource($station);
+                return [
+                    'station' => new TrainStationResource($station),
+                    'count'   => $station->count,
+                ];
             }),
             'topTravelledWith'    => $topTravelledWith,
         ];

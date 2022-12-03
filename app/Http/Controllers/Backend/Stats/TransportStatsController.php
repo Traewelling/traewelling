@@ -266,7 +266,10 @@ abstract class TransportStatsController extends Controller
     public static function getLonelyStations(User $user, Carbon $from, Carbon $to): Collection {
         $ownDestinations = self::getTrainCheckinsBetween($user, $from, $to)
                                ->groupBy('destination')
-                               ->select(['destination'])
+                               ->select([
+                                            'destination',
+                                            DB::raw('COUNT(*) as count'),
+                                        ])
                                ->distinct()
                                ->get()
                                ->map(function($row) {
@@ -291,7 +294,11 @@ abstract class TransportStatsController extends Controller
 
         $lonelyStations = $ownDestinations->where('otherUsers', 0)->pluck('destination');
 
-        return TrainStation::whereIn('ibnr', $lonelyStations)->get();
+        return TrainStation::whereIn('ibnr', $lonelyStations)->get()
+                           ->map(function($station) use ($ownDestinations) {
+                               $station->count = $ownDestinations->firstWhere('destination', $station->ibnr)->count;
+                               return $station;
+                           });
     }
 
     /**
