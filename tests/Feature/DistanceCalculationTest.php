@@ -9,6 +9,7 @@ use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
 
 class DistanceCalculationTest extends TestCase
@@ -58,19 +59,19 @@ class DistanceCalculationTest extends TestCase
                                          'linename'    => 'xxx',
                                          'origin'      => $origin->ibnr,
                                          'destination' => $destination->ibnr,
-                                         'departure'   => Carbon::now()->subHour(),
-                                         'arrival'     => Carbon::now()->addHour(),
+                                         'departure'   => Date::now()->subHour(),
+                                         'arrival'     => Date::now()->addHour(),
                                        ]);
 
         $originStopover      = TrainStopover::factory([
                                                           'trip_id'           => $hafasTrip->trip_id,
                                                           'train_station_id'  => $origin->id,
-                                                          'departure_planned' => Carbon::now()->toIso8601String(),
+                                                          'departure_planned' => Date::now()->toIso8601String(),
                                                       ])->create();
         $destinationStopover = TrainStopover::factory([
                                                           'trip_id'          => $hafasTrip->trip_id,
                                                           'train_station_id' => $destination->id,
-                                                          'arrival_planned'  => Carbon::now()
+                                                          'arrival_planned'  => Date::now()
                                                                                       ->addHours(1)
                                                                                       ->toIso8601String(),
                                                       ])->create();
@@ -96,22 +97,26 @@ class DistanceCalculationTest extends TestCase
                                              ])->create();
 
 
-        $hafasTrip = HafasTrip::factory([
-                                            'origin'      => $origin->ibnr,
-                                            'destination' => $destination->ibnr,
-                                            'polyline_id' => null,
-                                            'stopovers'   => '[{"stop":{"type":"stop","id":"8700030","name":"Lille Flandres","location":{"type":"location","id":"8700030","latitude":50.637486,"longitude":3.071129}},"arrival":null,"plannedArrival":null,"arrivalDelay":null,"arrivalPlatform":null,"plannedArrivalPlatform":null,"departure":"2021-06-09T11:42:00+02:00","plannedDeparture":"2021-06-09T11:42:00+02:00","departureDelay":null,"departurePlatform":null,"plannedDeparturePlatform":null},{"stop":{"type":"stop","id":"8700014","name":"Paris Nord","location":{"type":"location","id":"8700014","latitude":48.880886,"longitude":2.354931}},"arrival":"2021-06-09T12:44:00+02:00","plannedArrival":"2021-06-09T12:44:00+02:00","arrivalDelay":null,"arrivalPlatform":null,"plannedArrivalPlatform":null,"departure":null,"plannedDeparture":null,"departureDelay":null,"departurePlatform":null,"plannedDeparturePlatform":null}]',
-                                        ])->create();
+        $hafasTrip = HafasTrip::create([
+                                           'trip_id'     => '1|2|3|4',
+                                           'category'    => HafasTravelType::REGIONAL,
+                                           'number'      => 'xxx',
+                                           'linename'    => 'xxx',
+                                           'origin'      => $origin->ibnr,
+                                           'destination' => $destination->ibnr,
+                                           'departure'   => Date::now()->subHour(),
+                                           'arrival'     => Date::now()->addHour(),
+                                       ]);
 
         $originStopover      = TrainStopover::factory([
                                                           'trip_id'           => $hafasTrip->trip_id,
                                                           'train_station_id'  => $origin->id,
-                                                          'departure_planned' => '2021-06-09T11:42:00+02:00',
+                                                          'departure_planned' => Date::now()->subHour(),
                                                       ])->create();
         $destinationStopover = TrainStopover::factory([
                                                           'trip_id'          => $hafasTrip->trip_id,
                                                           'train_station_id' => $destination->id,
-                                                          'arrival_planned'  => '2021-06-09T12:44:00+02:00',
+                                                          'arrival_planned'  => Date::now()->addHour(),
                                                       ])->create();
 
         $hafasTrip->load(['stopoversNEW']);
