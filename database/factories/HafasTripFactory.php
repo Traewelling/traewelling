@@ -14,8 +14,13 @@ use JsonException;
 class HafasTripFactory extends Factory
 {
     public function definition(): array {
-        $origin      = TrainStation::inRandomOrder()->first();
-        $destination = TrainStation::inRandomOrder()->where('id', '!=', $origin->id)->first();
+        if (TrainStation::all()->count() > 3) {
+            $origin      = TrainStation::inRandomOrder()->first();
+            $destination = TrainStation::inRandomOrder()->where('id', '!=', $origin->id)->first();
+        } else {
+            $origin      = TrainStation::factory()->create();
+            $destination = TrainStation::factory()->create();
+        }
 
         return [
             'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
