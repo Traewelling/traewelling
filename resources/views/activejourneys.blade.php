@@ -38,7 +38,7 @@
                                 origin: {{$s->trainCheckin->origin}},
                                 destination: {{$s->trainCheckin->destination}},
                                 polyline: {!! $s->trainCheckin->hafastrip->polyline->polyline !!}, // Stored as JSON in DB
-                                stops: {!! $s->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB
+                                stops: {!! $s->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB //TODO: Replace ->stopovers with the new relation (see issue#425)
                                 percentage: 0,
                             },
                             @endforeach
