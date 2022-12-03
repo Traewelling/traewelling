@@ -32,6 +32,6 @@ class YearInReviewController extends Controller
             }
         }
 
-        return response()->json(YearInReviewBackend::generate(auth()->user(), $year));
+        return response()->json(YearInReviewBackend::get(auth()->user(), $year));
     }
 }
