@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\GeoController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
@@ -50,12 +51,16 @@ class DistanceCalculationTest extends TestCase
                                                  'longitude' => 9.718319,
                                              ])->create();
 
-        $hafasTrip = HafasTrip::factory([
-                                            'origin'      => $origin->ibnr,
-                                            'destination' => $destination->ibnr,
-                                            'stopovers'   => null,
-                                            'polyline_id' => null,
-                                        ])->create();
+        $hafasTrip = HafasTrip::create([ //Don't use factory here, so the trip can be created manually here
+                                         'trip_id'     => '1|2|3|4',
+                                         'category'    => HafasTravelType::REGIONAL,
+                                         'number'      => 'xxx',
+                                         'linename'    => 'xxx',
+                                         'origin'      => $origin->ibnr,
+                                         'destination' => $destination->ibnr,
+                                         'departure'   => Carbon::now()->subHour(),
+                                         'arrival'     => Carbon::now()->addHour(),
+                                       ]);
 
         $originStopover      = TrainStopover::factory([
                                                           'trip_id'           => $hafasTrip->trip_id,

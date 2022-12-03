@@ -88,18 +88,18 @@ class HafasTripFactory extends Factory
                                        'departure_real'    => $hafasTrip->arrival->toIso8601String(),
                                    ])->create();
 
-            $this->createPolyline($hafasTrip);
+            self::createPolyline($hafasTrip);
             $hafasTrip->refresh();
         });
     }
 
-    private function createPolyline(HafasTrip $hafasTrip) {
+    public static function createPolyline(HafasTrip $hafasTrip) {
         $time     = Carbon::now()->subMinutes(15);
         $features = [];
         foreach ($hafasTrip->stopoversNEW as $stopover) {
             $products = [];
             foreach (HafasTravelType::cases() as $hafasTravelType) {
-                $products[$hafasTravelType->value] = $this->faker->boolean();
+                $products[$hafasTravelType->value] = rand(0, 1);
             }
             $features[] = [
                 'type'       => 'Feature',
