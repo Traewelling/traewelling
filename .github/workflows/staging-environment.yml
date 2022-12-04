@@ -1,12 +1,9 @@
 name: fly.io
 
-# TODO: Change before merge
-# on:
-#   push:
-#     branches:
-#       - develop
-
-on: [push]
+on:
+  push:
+    branches:
+      - develop
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
