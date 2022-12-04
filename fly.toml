@@ -22,6 +22,8 @@ processes = []
   LOG_LEVEL = "info"
   LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
 
+  # secrets: APP_KEY, DB_CONNECTION, DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USERNAME
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
