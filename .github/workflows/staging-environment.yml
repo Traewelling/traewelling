@@ -1,0 +1,21 @@
+name: fly.io
+
+# TODO: Change before merge
+# on:
+#   push:
+#     branches:
+#       - develop
+
+on: [push]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy the application
+        run: flyctl deploy --remote-only
