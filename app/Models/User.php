@@ -81,6 +81,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Status::class);
     }
 
+    public function trainCheckins(): HasMany {
+        return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
+    }
+
     public function getTrainDurationAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->select(['arrival', 'departure'])
