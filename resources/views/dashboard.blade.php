@@ -91,6 +91,21 @@
                         </div>
                     </div>
                 @endif
+
+                @if(\Illuminate\Support\Facades\Date::now()->isBefore(\Illuminate\Support\Facades\Date::createFromDate(2022,12,26)))
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">
+                            <i class="fa-solid fa-champagne-glasses"></i>
+                            Träwelling {{__('year-review')}}
+                        </h4>
+                        <p>{{__('year-review.teaser')}}</p>
+                        <a class="btn btn-outline-primary btn-block" href="/your-year/">
+                            <i class="fa-solid fa-arrow-pointer text-primary"></i>
+                            {{__('year-review.open')}}
+                        </a>
+                    </div>
+                @endif
+
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 {{ $statuses->links() }}
 
