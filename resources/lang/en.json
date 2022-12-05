@@ -592,5 +592,8 @@
     "stats.stations.passed": "Passed station",
     "stats.stations.changed": "Entry / Exit / Change",
     "stats.daily.description": "Diary of your journeys incl. map",
-    "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data."
+    "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data.",
+    "year-review": "Year in review",
+    "year-review.open": "Show my year in review",
+    "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:"
 }

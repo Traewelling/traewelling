@@ -124,7 +124,6 @@ abstract class YearInReviewController extends Controller
                     'count'   => $station->count,
                 ];
             }),
-            'topTravelledWith'    => $topTravelledWith,
         ];
     }
 }
