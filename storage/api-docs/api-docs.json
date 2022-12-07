@@ -196,7 +196,7 @@
                     "User"
                 ],
                 "summary": "Get authenticated user information",
-                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\n     *      token.",
                 "operationId": "getAuthenticatedUser",
                 "responses": {
                     "200": {
@@ -232,7 +232,7 @@
                     "Auth"
                 ],
                 "summary": "Refresh Bearer Token",
-                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old token.",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\n     *      token.",
                 "operationId": "refreshToken",
                 "responses": {
                     "200": {
@@ -526,7 +526,7 @@
                     "Events"
                 ],
                 "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
                 "operationId": "getCurrentEvents",
                 "parameters": [
                     {
@@ -1109,6 +1109,45 @@
                     },
                     "403": {
                         "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/statuses/active": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User state",
+                "description": "This request returns whether the currently logged-in user has an active check-in or not.",
+                "operationId": "userState",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No active checkin"
                     }
                 },
                 "security": [
@@ -2423,6 +2462,7 @@
         "securitySchemes": {
             "token": {
                 "type": "apiKey",
+                "description": "Enter token in format \"Bearer \\<token\\>\"",
                 "name": "Authorization",
                 "in": "header"
             }
