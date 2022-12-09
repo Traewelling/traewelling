@@ -302,7 +302,7 @@ abstract class TransportStatsController extends Controller
     }
 
     /**
-     * Untested!
+     * @deprecated Do not use this function! This is untested and doesn't show correct data.
      *
      * @param User   $user  User to get the stats for
      * @param Carbon $from  Start date

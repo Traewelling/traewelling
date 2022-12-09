@@ -118,7 +118,7 @@
     "menu.legal-notice": "Redaktionsruta",
     "menu.ohno": "Åh nej!",
     "messages.exception.general": "Det har blivit ett fel. Var god försök igen.",
-    "messages.cookie-notice-learn": "Läs mer om cookies",
+    "messages.cookie-notice-learn": "Läs mer",
     "messages.cookie-notice-button": "Okej",
     "menu.readmore": "Läs mer",
     "messages.cookie-notice": "Vi använder cookies för logg-in-systemet.",
@@ -530,7 +530,7 @@
     "experimental-feature": "Experimentell funktion",
     "data-may-incomplete": "Informationen kan vara ofullständig eller felaktig.",
     "empty-en-route": "Det finns för närvarande inga Träwellers på vägen.",
-    "profile.no-visible-statuses": "Tyvärr är resorna för :username inte synliga för dig.",
+    "profile.no-visible-statuses": "Resorna av :username är inte synliga för dig.",
     "status.visibility.4": "Endast registrerade användare",
     "status.visibility.4.detail": "Endast synlig för registrerade användare",
     "stats.stations": "Ruttkarta",
@@ -566,5 +566,7 @@
     "privacy.sign.more": "Acceptera och fortsätt till Träwelling",
     "settings.delete-account.more": "Avvisa och ta bort konto igen",
     "status.update.success": "Din status har uppdaterats.",
-    "other": "Övrig"
+    "other": "Övrig",
+    "export.error.amount": "Du har begärt mer än 2000 resor. Vänligen försök att begränsa perioden.",
+    "export.error.time": "Du kan endast exportera resor under en period på högst 365 dagar."
 }
