@@ -134,7 +134,7 @@ abstract class TrainCheckinController extends Controller
         Carbon       $arrival,
         bool         $force = false,
     ): array {
-        $trip->load('stopoversNEW');
+        $trip->load('stopovers');
 
         //Note: Compare with ->format because of timezone differences!
         $firstStop = $trip->stopovers->where('train_station_id', $origin->id)
@@ -248,7 +248,7 @@ abstract class TrainCheckinController extends Controller
      */
     public static function getHafasTrip(string $tripId, string $lineName, int $startId): HafasTrip {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+        $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
         $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
             return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;

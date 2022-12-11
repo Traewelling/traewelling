@@ -25,7 +25,7 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::with(['HafasTrip.stopoversNEW'])
+        $trainCheckIns = TrainCheckin::with(['HafasTrip.stopovers'])
                                      ->where('user_id', $user->id)
                                      ->orderByDesc('departure')
                                      ->limit($limit);

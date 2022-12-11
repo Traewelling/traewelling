@@ -86,7 +86,7 @@ class TrainCheckin extends Model
                 ]
             );
             Log::error('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
-            $this->HafasTrip->load('stopoversNEW');
+            $this->HafasTrip->load('stopovers');
         }
         return $stopOver;
     }
@@ -106,7 +106,7 @@ class TrainCheckin extends Model
                     "arrival_planned"   => $this->arrival,
                 ]
             );
-            $this->HafasTrip->load('stopoversNEW');
+            $this->HafasTrip->load('stopovers');
         }
         Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
         return $stopOver;

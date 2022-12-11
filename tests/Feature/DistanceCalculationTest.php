@@ -76,7 +76,7 @@ class DistanceCalculationTest extends TestCase
                                                                                       ->toIso8601String(),
                                                       ])->create();
 
-        $hafasTrip->load(['stopoversNEW']);
+        $hafasTrip->load(['stopovers']);
 
         $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
         $this->assertEquals(4526, $result);
@@ -119,7 +119,7 @@ class DistanceCalculationTest extends TestCase
                                                           'arrival_planned'  => Date::now()->addHour(),
                                                       ])->create();
 
-        $hafasTrip->load(['stopoversNEW']);
+        $hafasTrip->load(['stopovers']);
 
         $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
         $this->assertEquals(202210, $result);
