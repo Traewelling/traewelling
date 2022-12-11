@@ -500,7 +500,7 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/StatusResource"
+     *                      ref="#/components/schemas/Status"
      *              )
      *          )
      *       ),
