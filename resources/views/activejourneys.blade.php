@@ -43,7 +43,7 @@
                             },
                             @endforeach
                         ];
-                        ActiveStatus.renderMap(statuses, events);
+                        ActiveJourneys.renderMap(statuses, events);
                     });
                 </script>
             </div>

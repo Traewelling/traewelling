@@ -87,7 +87,7 @@ window.ActiveJourneys = class ActiveJourneys {
                             isInterestingBit = true;
                         }
                         if (isInterestingBit) {
-                            stopDistLastToNext += ActiveStatus.distance(
+                            stopDistLastToNext += ActiveJourneys.distance(
                                 s.polyline.features[i].geometry.coordinates[1],
                                 s.polyline.features[i].geometry.coordinates[0],
                                 s.polyline.features[i + 1].geometry.coordinates[1],
@@ -139,7 +139,7 @@ window.ActiveJourneys = class ActiveJourneys {
 
                             if (justBehindUs == s.stops[sI].stop.id) {
                                 // The interesting part.
-                                polyDistSinceStop += ActiveStatus.distance(
+                                polyDistSinceStop += ActiveJourneys.distance(
                                     s.polyline.features[i].geometry.coordinates[1],
                                     s.polyline.features[i].geometry.coordinates[0],
                                     s.polyline.features[i + 1].geometry.coordinates[1],
