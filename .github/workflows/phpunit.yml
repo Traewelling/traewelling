@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.1 ]
+        php: [ 8.1, 8.2 ]
         dependency-version: [ prefer-stable ]
 
     steps:
@@ -47,4 +47,4 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php artisan test --coverage --min=36.5
+        run: php artisan test --parallel --coverage --min=36.5
