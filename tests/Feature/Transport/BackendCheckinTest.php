@@ -131,7 +131,7 @@ class BackendCheckinTest extends TestCase
      */
     public function testCheckinAtBus603Potsdam(): void {
         // First: Get a train that's fine for our stuff
-        $timestamp = Carbon::parse("+1 days 10:00");
+        $timestamp = Carbon::parse("+1 days 10:15");
         try {
             $trainStationboard = TransportController::getDepartures(
                 stationQuery: 'Schloss Cecilienhof, Potsdam',
