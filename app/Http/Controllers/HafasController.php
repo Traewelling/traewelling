@@ -344,7 +344,6 @@ abstract class HafasController extends Controller
                                                    'operator_id' => $operator?->id,
                                                    'origin'      => $origin->ibnr,
                                                    'destination' => $destination->ibnr,
-                                                   'stopovers'   => json_encode($tripJson->stopovers),
                                                    'polyline_id' => $polyline->id,
                                                    'departure'   => $tripJson->plannedDeparture,
                                                    'arrival'     => $tripJson->plannedArrival,

@@ -44,7 +44,7 @@
                                 <div class="col-8">
                                     <select id="form-origin" class="form-control" name="origin" required>
                                         <option value="">bitte wählen</option>
-                                        @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
+                                        @foreach($status->trainCheckin->HafasTrip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->origin) selected @endif>
                                                 {{$stopover->trainStation->name}}
@@ -64,7 +64,7 @@
                                 <div class="col-8">
                                     <select id="form-origin" class="form-control" name="destination" required>
                                         <option value="">bitte wählen</option>
-                                        @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
+                                        @foreach($status->trainCheckin->HafasTrip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
                                                     @if($stopover->trainStation->ibnr == $status->trainCheckIn->destination) selected @endif>
                                                 {{$stopover->trainStation->name}}
@@ -113,7 +113,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
+                            @foreach($status->trainCheckin->HafasTrip->stopovers as $stopover)
                                 <tr>
                                     <td>{{$stopover->trainStation?->name}}</td>
                                     <td>{{$stopover->trainStation?->id}}</td>

@@ -107,7 +107,7 @@ class CheckinController
             return view('admin.checkin.trip', [
                 'hafasTrip' => $hafasTrip,
                 'events'    => EventBackend::activeEvents(),
-                'stopovers' => $hafasTrip->stopoversNEW,
+                'stopovers' => $hafasTrip->stopovers,
                 'user'      => $user,
             ]);
         } catch (HafasException $exception) {

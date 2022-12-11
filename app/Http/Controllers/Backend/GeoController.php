@@ -53,7 +53,7 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
+        $stopovers                = $hafasTrip->stopovers->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
             return $item->is($origin);
         });
@@ -147,7 +147,7 @@ abstract class GeoController extends Controller
      */
     private static function getPolylineWithTimestamps(HafasTrip $hafasTrip): stdClass {
         $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
-        $stopovers  = $hafasTrip->stopoversNEW;
+        $stopovers  = $hafasTrip->stopovers;
 
         $stopovers = $stopovers->map(function($stopover) {
             $stopover['passed'] = false;

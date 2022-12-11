@@ -70,7 +70,7 @@ class TrainCheckin extends Model
     }
 
     public function getOriginStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
+        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->Origin->id)
                                                   ->where('departure_planned', $this->departure)
                                                   ->first();
         if ($stopOver == null) {
@@ -92,7 +92,7 @@ class TrainCheckin extends Model
     }
 
     public function getDestinationStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
+        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->Destination->id)
                                                   ->where('arrival_planned', $this->arrival)
                                                   ->first();
         if ($stopOver == null) {

@@ -144,7 +144,7 @@ class LegacyApi0Controller extends Controller
                                            'start'       => new TrainStationResource($hafasTrip->originStation),
                                            'destination' => new TrainStationResource($hafasTrip->destinationStation),
                                            'train'       => new HafasTripResource($hafasTrip),
-                                           'stopovers'   => StopoverResource::collection($hafasTrip->stopoversNEW),
+                                           'stopovers'   => StopoverResource::collection($hafasTrip->stopovers),
                                        ]);
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers'), 400);
@@ -187,14 +187,14 @@ class LegacyApi0Controller extends Controller
                 $departure = Carbon::parse($request->input('departure'));
             } else {
                 //Legacy: Get best matching timestamp from stopovers... it's just APIv0
-                $departure = $hafasTrip->stopoversNEW->where('train_station_id', $origin->id)->first()->departure_planned;
+                $departure = $hafasTrip->stopovers->where('train_station_id', $origin->id)->first()->departure_planned;
             }
             $destination = TrainStation::where('ibnr', $request->input('destination'))->first();
             if (isset($request->arrival)) {
                 $arrival = Carbon::parse($request->input('arrival'));
             } else {
                 //Legacy: Get best matching timestamp from stopovers... it's just APIv0
-                $arrival = $hafasTrip->stopoversNEW->where('train_station_id', $destination->id)->first()->arrival_planned;
+                $arrival = $hafasTrip->stopovers->where('train_station_id', $destination->id)->first()->arrival_planned;
             }
 
             $backendResponse = TrainCheckinController::checkin(

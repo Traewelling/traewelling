@@ -137,10 +137,10 @@ abstract class TrainCheckinController extends Controller
         $trip->load('stopoversNEW');
 
         //Note: Compare with ->format because of timezone differences!
-        $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
+        $firstStop = $trip->stopovers->where('train_station_id', $origin->id)
                                         ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
                                         ->first();
-        $lastStop  = $trip->stopoversNEW->where('train_station_id', $destination->id)
+        $lastStop  = $trip->stopovers->where('train_station_id', $destination->id)
                                         ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
                                         ->first();
 
@@ -207,7 +207,7 @@ abstract class TrainCheckinController extends Controller
     public static function changeDestination(TrainCheckin $checkin, TrainStopover $newDestinationStopover): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
             || $newDestinationStopover->is($checkin->origin_stopover)
-            || !$checkin->HafasTrip->stopoversNEW->contains('id', $newDestinationStopover->id)
+            || !$checkin->HafasTrip->stopovers->contains('id', $newDestinationStopover->id)
         ) {
             throw new InvalidArgumentException();
         }
@@ -250,7 +250,7 @@ abstract class TrainCheckinController extends Controller
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
 
-        $originStopover = $hafasTrip->stopoversNEW->filter(function(TrainStopover $stopover) use ($startId) {
+        $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
             return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
         })->first();
 

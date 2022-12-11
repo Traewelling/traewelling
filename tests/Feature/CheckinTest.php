@@ -195,8 +195,8 @@ class CheckinTest extends TestCase
         $user = $this->createGDPRAckedUser();
 
         // WHEN: User tries to checkin
-        $originStopover      = $hafasTrip->stopoversNEW->first();
-        $destinationStopover = $hafasTrip->stopoversNEW->last();
+        $originStopover      = $hafasTrip->stopovers->first();
+        $destinationStopover = $hafasTrip->stopovers->last();
         $response            = $this->actingAs($user)
                                     ->post(route('trains.checkin'), [
                                         'body'              => 'Example Body',
