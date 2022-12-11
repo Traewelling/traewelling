@@ -36,43 +36,43 @@ window.ActiveJourneys = class ActiveJourneys {
             const tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
             const now      = new Date(Date.now() - tzoffset).toISOString();
 
-            statuses.forEach(s => {
+            statuses.forEach(status => {
                 try {
                     let i   = 0;
                     let j   = 0;
-                    s.stops = s.stops.filter(s => !s.cancelled)
-                        .map(s => {
-                            s.stop.id = i++ + "_" + s.stop.id;
-                            return s;
+                    status.stops = status.stops.filter(s => !status.cancelled)
+                        .map(status => {
+                            status.stop.id = i++ + "_" + status.stop.id;
+                            return status;
                         });
 
                     // Statuses with empty polylines (e.g. migrated or broken) stop right here and don't throw more errors than needed.
-                    if (typeof s.polyline.features == "undefined") {
+                    if (typeof status.polyline.features == "undefined") {
                         return;
                     }
 
-                    s.polyline.features = s.polyline.features.map(f => {
+                    status.polyline.features = status.polyline.features.map(f => {
                         if (typeof f.properties.id == "undefined") {
                             return f;
                         }
                         f.properties.id = j++ + "_" + f.properties.id;
                         return f;
                     });
-                    const behindUs      = s.stops
+                    const behindUs      = status.stops
                         .filter(
                             b =>
                                 (b.departure != null && b.departure < now) ||
                                 (b.arrival != null && b.arrival < now)
                         )
                         .map(b => b.stop.id);
-                    const infrontofUs   = s.stops
+                    const infrontofUs   = status.stops
                         .filter(
                             (b => b.arrival != null && b.arrival > now) ||
                             (b => b.departure != null && b.departure > now)
                         )
                         .map(b => b.stop.id);
 
-                    const justInfrontofUs = s.stops[behindUs.length].stop.id;
+                    const justInfrontofUs = status.stops[behindUs.length].stop.id;
                     // The last station is relevant for us, but we can't act with it like any other station before.
                     const justBehindUs    = behindUs.pop();
 
@@ -82,19 +82,19 @@ window.ActiveJourneys = class ActiveJourneys {
                      */
                     let isInterestingBit   = false;
                     let stopDistLastToNext = 0;
-                    for (let i = 0; i < s.polyline.features.length - 1; i++) {
-                        if (s.polyline.features[i].properties.id == justBehindUs) {
+                    for (let i = 0; i < status.polyline.features.length - 1; i++) {
+                        if (status.polyline.features[i].properties.id == justBehindUs) {
                             isInterestingBit = true;
                         }
                         if (isInterestingBit) {
                             stopDistLastToNext += ActiveJourneys.distance(
-                                s.polyline.features[i].geometry.coordinates[1],
-                                s.polyline.features[i].geometry.coordinates[0],
-                                s.polyline.features[i + 1].geometry.coordinates[1],
-                                s.polyline.features[i + 1].geometry.coordinates[0]
+                                status.polyline.features[i].geometry.coordinates[1],
+                                status.polyline.features[i].geometry.coordinates[0],
+                                status.polyline.features[i + 1].geometry.coordinates[1],
+                                status.polyline.features[i + 1].geometry.coordinates[0]
                             );
                         }
-                        if (s.polyline.features[i].properties.id == justInfrontofUs) {
+                        if (status.polyline.features[i].properties.id == justInfrontofUs) {
                             isInterestingBit = false;
                         }
                     }
@@ -102,12 +102,12 @@ window.ActiveJourneys = class ActiveJourneys {
                     /**
                      * Here, we describe how far we are between the last and the upcoming stop.
                      */
-                    const stationWeJustLeft = s.stops.find(b => b.stop.id == justBehindUs);
+                    const stationWeJustLeft = status.stops.find(b => b.stop.id == justBehindUs);
                     const leaveTime         = new Date(stationWeJustLeft.departure).getTime();
-                    const stationNextUp     = s.stops.find(b => b.stop.id == justInfrontofUs);
+                    const stationNextUp     = status.stops.find(b => b.stop.id == justInfrontofUs);
                     const arriveTime        = new Date(stationNextUp.departure).getTime();
                     const nowTime           = new Date().getTime();
-                    s.percentage            = (nowTime - leaveTime) / (arriveTime - leaveTime);
+                    status.percentage            = (nowTime - leaveTime) / (arriveTime - leaveTime);
 
                     /**
                      * Now, let's get through all polylines.
@@ -123,40 +123,39 @@ window.ActiveJourneys = class ActiveJourneys {
                     //interesting piece of the journey.
                     let polyDistSinceStop = 0;
 
-                    for (let i = 0; i < s.polyline.features.length - 1; i++) {
+                    for (let i = 0; i < status.polyline.features.length - 1; i++) {
                         if (
-                            s.polyline.features[i].properties.id == s.stops[sI + 1].stop.id
+                            status.polyline.features[i].properties.id == status.stops[sI + 1].stop.id
                         ) {
                             sI += 1;
                         }
 
-                        if (s.stops[sI].stop.id.endsWith(s.origin)) {
+                        if (status.stops[sI].stop.id.endsWith(status.origin)) {
                             inTheTrain = true;
                         }
 
                         if (inTheTrain) {
                             let isSeen = true;
 
-                            if (justBehindUs == s.stops[sI].stop.id) {
+                            if (justBehindUs == status.stops[sI].stop.id) {
                                 // The interesting part.
                                 polyDistSinceStop += ActiveJourneys.distance(
-                                    s.polyline.features[i].geometry.coordinates[1],
-                                    s.polyline.features[i].geometry.coordinates[0],
-                                    s.polyline.features[i + 1].geometry.coordinates[1],
-                                    s.polyline.features[i + 1].geometry.coordinates[0]
+                                    status.polyline.features[i].geometry.coordinates[1],
+                                    status.polyline.features[i].geometry.coordinates[0],
+                                    status.polyline.features[i + 1].geometry.coordinates[1],
+                                    status.polyline.features[i + 1].geometry.coordinates[0]
                                 );
 
-                                isSeen =
-                                    polyDistSinceStop / stopDistLastToNext < s.percentage;
-                            } else if (behindUs.indexOf(s.stops[sI].stop.id) > -1) {
+                                isSeen = polyDistSinceStop / stopDistLastToNext < status.percentage;
+                            } else if (behindUs.indexOf(status.stops[sI].stop.id) > -1) {
                                 isSeen = true;
-                            } else if (infrontofUs.indexOf(s.stops[sI].stop.id) > -1) {
+                            } else if (infrontofUs.indexOf(status.stops[sI].stop.id) > -1) {
                                 isSeen = false;
                             }
 
                             L.polyline([
-                                swapC(s.polyline.features[i].geometry.coordinates),
-                                swapC(s.polyline.features[i + 1].geometry.coordinates)
+                                swapC(status.polyline.features[i].geometry.coordinates),
+                                swapC(status.polyline.features[i + 1].geometry.coordinates)
                             ])
                                 .setStyle({
                                     color: isSeen
@@ -167,7 +166,7 @@ window.ActiveJourneys = class ActiveJourneys {
                                 .addTo(map);
                         }
 
-                        if (s.stops[sI].stop.id.endsWith(s.destination)) {
+                        if (status.stops[sI].stop.id.endsWith(status.destination)) {
                             // After the last station on the trip, we don't need to traverse our polygons anymore.
                             break;
                         }
