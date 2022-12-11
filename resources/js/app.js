@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 window.addEventListener("load", () => {
     require("./components/alert");
+    require("./components/ActiveJourneys");
     require("./components/notifications-board");
     require("./components/progressbar");
     require("./components/settings");
