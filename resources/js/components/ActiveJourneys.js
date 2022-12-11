@@ -1,4 +1,4 @@
-window.ActiveStatus = class ActiveStatus {
+window.ActiveJourneys = class ActiveJourneys {
 
     static renderMap(statuses, events) {
         var map = L.map(document.getElementById('map'), {
