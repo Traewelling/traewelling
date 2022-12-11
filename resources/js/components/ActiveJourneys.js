@@ -40,9 +40,9 @@ window.ActiveJourneys = class ActiveJourneys {
                 try {
                     let i   = 0;
                     let j   = 0;
-                    status.stops = status.stops.filter(s => !status.cancelled)
+                    status.stopovers = status.stopovers.filter(status => !status.cancelled)
                         .map(status => {
-                            status.stop.id = i++ + "_" + status.stop.id;
+                            status.evaIdentifier = i++ + "_" + status.evaIdentifier;
                             return status;
                         });
 
@@ -58,21 +58,21 @@ window.ActiveJourneys = class ActiveJourneys {
                         f.properties.id = j++ + "_" + f.properties.id;
                         return f;
                     });
-                    const behindUs      = status.stops
+                    const behindUs      = status.stopovers
                         .filter(
-                            b =>
-                                (b.departure != null && b.departure < now) ||
-                                (b.arrival != null && b.arrival < now)
+                            stopover =>
+                                (stopover.departure != null && stopover.departure < now) ||
+                                (stopover.arrival != null && stopover.arrival < now)
                         )
-                        .map(b => b.stop.id);
-                    const infrontofUs   = status.stops
+                        .map(stopover => stopover.evaIdentifier);
+                    const infrontofUs   = status.stopovers
                         .filter(
-                            (b => b.arrival != null && b.arrival > now) ||
-                            (b => b.departure != null && b.departure > now)
+                            (stopover => stopover.arrival != null && stopover.arrival > now) ||
+                            (stopover => stopover.departure != null && stopover.departure > now)
                         )
-                        .map(b => b.stop.id);
+                        .map(stopover => stopover.evaIdentifier);
 
-                    const justInfrontofUs = status.stops[behindUs.length].stop.id;
+                    const justInfrontofUs = status.stopovers[behindUs.length].evaIdentifier;
                     // The last station is relevant for us, but we can't act with it like any other station before.
                     const justBehindUs    = behindUs.pop();
 
@@ -102,9 +102,9 @@ window.ActiveJourneys = class ActiveJourneys {
                     /**
                      * Here, we describe how far we are between the last and the upcoming stop.
                      */
-                    const stationWeJustLeft = status.stops.find(b => b.stop.id == justBehindUs);
+                    const stationWeJustLeft = status.stopovers.find(stopover => stopover.evaIdentifier == justBehindUs);
                     const leaveTime         = new Date(stationWeJustLeft.departure).getTime();
-                    const stationNextUp     = status.stops.find(b => b.stop.id == justInfrontofUs);
+                    const stationNextUp     = status.stopovers.find(stopover => stopover.evaIdentifier == justInfrontofUs);
                     const arriveTime        = new Date(stationNextUp.departure).getTime();
                     const nowTime           = new Date().getTime();
                     status.percentage            = (nowTime - leaveTime) / (arriveTime - leaveTime);
@@ -124,20 +124,18 @@ window.ActiveJourneys = class ActiveJourneys {
                     let polyDistSinceStop = 0;
 
                     for (let i = 0; i < status.polyline.features.length - 1; i++) {
-                        if (
-                            status.polyline.features[i].properties.id == status.stops[sI + 1].stop.id
-                        ) {
+                        if (status.polyline.features[i].properties.id == status.stopovers[sI + 1].evaIdentifier) {
                             sI += 1;
                         }
 
-                        if (status.stops[sI].stop.id.endsWith(status.origin)) {
+                        if (status.stopovers[sI].evaIdentifier.endsWith(status.origin)) {
                             inTheTrain = true;
                         }
 
                         if (inTheTrain) {
                             let isSeen = true;
 
-                            if (justBehindUs == status.stops[sI].stop.id) {
+                            if (justBehindUs == status.stopovers[sI].evaIdentifier) {
                                 // The interesting part.
                                 polyDistSinceStop += ActiveJourneys.distance(
                                     status.polyline.features[i].geometry.coordinates[1],
@@ -147,9 +145,9 @@ window.ActiveJourneys = class ActiveJourneys {
                                 );
 
                                 isSeen = polyDistSinceStop / stopDistLastToNext < status.percentage;
-                            } else if (behindUs.indexOf(status.stops[sI].stop.id) > -1) {
+                            } else if (behindUs.indexOf(status.stopovers[sI].evaIdentifier) > -1) {
                                 isSeen = true;
-                            } else if (infrontofUs.indexOf(status.stops[sI].stop.id) > -1) {
+                            } else if (infrontofUs.indexOf(status.stopovers[sI].evaIdentifier) > -1) {
                                 isSeen = false;
                             }
 
@@ -166,7 +164,7 @@ window.ActiveJourneys = class ActiveJourneys {
                                 .addTo(map);
                         }
 
-                        if (status.stops[sI].stop.id.endsWith(status.destination)) {
+                        if (status.stopovers[sI].evaIdentifier.endsWith(status.destination)) {
                             // After the last station on the trip, we don't need to traverse our polygons anymore.
                             break;
                         }
