@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class TrainCheckin extends Model
 {
@@ -84,6 +85,7 @@ class TrainCheckin extends Model
                     "arrival_planned"   => $this->departure,
                 ]
             );
+            Log::error('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
             $this->HafasTrip->load('stopoversNEW');
         }
         return $stopOver;
@@ -106,6 +108,7 @@ class TrainCheckin extends Model
             );
             $this->HafasTrip->load('stopoversNEW');
         }
+        Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
         return $stopOver;
     }
 
