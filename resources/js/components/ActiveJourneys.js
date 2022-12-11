@@ -107,7 +107,7 @@ window.ActiveJourneys = class ActiveJourneys {
                     const stationNextUp     = status.stopovers.find(stopover => stopover.evaIdentifier == justInfrontofUs);
                     const arriveTime        = new Date(stationNextUp.departure).getTime();
                     const nowTime           = new Date().getTime();
-                    status.percentage            = (nowTime - leaveTime) / (arriveTime - leaveTime);
+                    status.percentage       = (nowTime - leaveTime) / (arriveTime - leaveTime);
 
                     /**
                      * Now, let's get through all polylines.
@@ -120,7 +120,7 @@ window.ActiveJourneys = class ActiveJourneys {
 
                     // This is the distance that between the last station and the polygon that
                     // we're traversing through. We just change the value, once we're in the
-                    //interesting piece of the journey.
+                    // interesting piece of the journey.
                     let polyDistSinceStop = 0;
 
                     for (let i = 0; i < status.polyline.features.length - 1; i++) {
