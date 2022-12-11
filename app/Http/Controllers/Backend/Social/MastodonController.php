@@ -122,6 +122,10 @@ abstract class MastodonController extends Controller
                                      ]);
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
     public static function postStatus(Status $status, bool $shouldPostAsChain = false): void {
         if (config('trwl.post_social') !== true) {
             Log::error("Was dispatched to post on Mastodon, but POST_SOCIAL env variable is not set.");
@@ -155,8 +159,10 @@ abstract class MastodonController extends Controller
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
+            throw $e;
         } catch (Exception $e) {
             Log::error($e);
+            throw $e;
         }
     }
 

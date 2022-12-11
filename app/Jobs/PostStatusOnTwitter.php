@@ -26,7 +26,7 @@ class PostStatusOnTwitter implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws NotConnectedException
+     * @throws \Exception
      */
     public function handle(): void {
         $this->queueData([
@@ -35,4 +35,12 @@ class PostStatusOnTwitter implements ShouldQueue
 
         TwitterController::postStatus($this->status);
     }
+
+    /**
+     * Seconds until the job is retried after an error.
+     */
+    public function backoff() {
+        return [10, 60, 5*60, 15*60, 60*60, 3*60*60, 6*60*60];
+    }
+    public $tries = 8; // count(backoff()) + 1 from the first attempt.
 }

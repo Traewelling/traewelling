@@ -114,10 +114,9 @@ abstract class TwitterController extends Controller
 
             $status->update(['tweet_id' => $response->id]);
             Log::info("Posted on Twitter: " . $socialText);
-        } catch (NotConnectedException $exception) {
-            throw $exception;
         } catch (Exception $exception) {
             report($exception);
+            throw $exception;
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
         }
