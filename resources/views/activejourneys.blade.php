@@ -16,13 +16,14 @@
                 <script>
                     window.addEventListener("load", () => {
                         const statuses = [
-                                @foreach($statuses as $s)
+                                @foreach($statuses as $status)
                             {
-                                id: {{$s->id}},
-                                origin: {{$s->trainCheckin->origin}},
-                                destination: {{$s->trainCheckin->destination}},
-                                polyline: {!! $s->trainCheckin->hafastrip->polyline->polyline !!}, // Stored as JSON in DB
-                                stops: {!! $s->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB
+                                id: {{$status->id}},
+                                origin: {{$status->trainCheckin->origin}},
+                                destination: {{$status->trainCheckin->destination}},
+                                polyline: {!! $status->trainCheckin->HafasTrip->polyline->polyline !!}, // Stored as JSON in DB
+                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopoversNEW)->toJson() !!},
+                                stops: {!! $status->trainCheckin->hafastrip->stopovers !!}, // Stored as JSON in DB
                                 percentage: 0,
                             },
                             @endforeach
