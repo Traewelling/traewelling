@@ -33,8 +33,8 @@ class IcsController extends Controller
                 limit:       $validated['limit'] ?? 1000,
                 from:        Carbon::parse($validated['from']),
                 until:       Carbon::parse($validated['until']),
-                useEmojis:   (bool) $validated['emojis'] ?? true,
-                useRealTime: (bool) $validated['realtime'] ?? false,
+                useEmojis:   $validated['emojis'] ?? true,
+                useRealTime: $validated['realtime'] ?? false,
             );
             return response($calendar->get())
                 ->header('Content-Type', 'text/calendar')
