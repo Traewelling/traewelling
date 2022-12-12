@@ -26,8 +26,9 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::with(['HafasTrip.stopoversNEW'])
-                                     ->where('user_id', $user->id)
+        $trainCheckIns = TrainCheckin::where('user_id', $user->id)
+            //::with(['HafasTrip.stopoversNEW'])
+            //I don't know why, but the "with" eager loading doesn't work in prod. "HafasTrip" is always null then
                                      ->orderByDesc('departure')
                                      ->limit($limit);
 
