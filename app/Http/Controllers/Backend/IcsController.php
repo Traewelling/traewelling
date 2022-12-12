@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
-use Throwable;
 
 abstract class IcsController extends Controller
 {
@@ -43,30 +42,26 @@ abstract class IcsController extends Controller
                             ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
-            try {
-                $name = '';
-                if ($useEmojis) {
-                    $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
-                }
-                $name .= __(
-                    key:     'export.journey-from-to',
-                    replace: [
-                                 'origin'      => $checkIn->Origin->name,
-                                 'destination' => $checkIn->Destination->name
-                             ],
-                    locale:  $user->language
-                );
-
-                $event = Event::create()
-                              ->name($name)
-                              ->uniqueIdentifier($checkIn->id)
-                              ->createdAt($checkIn->created_at)
-                              ->startsAt($useRealTime ? $checkIn->origin_stopover->departure : $checkIn->origin_stopover->departure_planned)
-                              ->endsAt($useRealTime ? $checkIn->destination_stopover->arrival : $checkIn->origin_stopover->arrival_planned);
-                $calendar->event($event);
-            } catch (Throwable $throwable) {
-                report($throwable);
+            $name = '';
+            if ($useEmojis) {
+                $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
             }
+            $name .= __(
+                key:     'export.journey-from-to',
+                replace: [
+                             'origin'      => $checkIn->Origin->name,
+                             'destination' => $checkIn->Destination->name
+                         ],
+                locale:  $user->language
+            );
+
+            $event = Event::create()
+                          ->name($name)
+                          ->uniqueIdentifier($checkIn->id)
+                          ->createdAt($checkIn->created_at)
+                          ->startsAt($useRealTime ? $checkIn->origin_stopover->departure : $checkIn->origin_stopover->departure_planned)
+                          ->endsAt($useRealTime ? $checkIn->destination_stopover->arrival : $checkIn->destination_stopover->arrival_planned);
+            $calendar->event($event);
         }
 
         $icsToken->update(['last_accessed' => Carbon::now()]);
