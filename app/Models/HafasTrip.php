@@ -49,10 +49,6 @@ class HafasTrip extends Model
         return $this->belongsTo(HafasOperator::class, 'operator_id', 'id');
     }
 
-    public function remarks(): BelongsToMany {
-        return $this->belongsToMany(Remark::class, 'trip_remarks', 'trip_id', 'remark_id');
-    }
-
     public function stopoversNEW(): HasMany {
         //TODO: Rename to ->stopovers when old attribute is gone
         return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')

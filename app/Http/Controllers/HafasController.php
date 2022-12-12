@@ -7,7 +7,6 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
-use App\Models\Remark;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
@@ -409,30 +408,7 @@ abstract class HafasController extends Controller
                 // it can be throw an error here. But thats not a big deal.
             }
         }
-        try {
-            self::saveRemarks($tripJson?->remarks ?? [], $hafasTrip);
-        } catch (PDOException) {
-            // do nothing (not important)
-        }
         return $hafasTrip;
-    }
-
-    private static function saveRemarks(iterable $remarks, HafasTrip $hafasTrip): void {
-        $remarkObjects = [];
-        foreach ($remarks as $remark) {
-            try {
-                $dbRemark        = Remark::firstOrCreate([
-                                                             'text'    => $remark?->text,
-                                                             'type'    => $remark?->type,
-                                                             'code'    => $remark?->code,
-                                                             'summary' => $remark?->summary ?? null,
-                                                         ]);
-                $remarkObjects[] = $dbRemark->id;
-            } catch (Exception $exception) {
-                report($exception);
-            }
-        }
-        $hafasTrip->remarks()->syncWithoutDetaching($remarkObjects);
     }
 
     public static function refreshStopovers(stdClass $rawHafas): int {
