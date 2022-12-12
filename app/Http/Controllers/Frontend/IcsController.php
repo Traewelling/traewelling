@@ -24,20 +24,17 @@ class IcsController extends Controller
                                             'realtime' => ['nullable', 'boolean'],
                                         ]);
 
-        $user               = User::where('id', $validated['user_id'])->firstOrFail();
-        $validated['limit'] = $validated['limit'] ?? 1000;
-        $from               = Carbon::parse($validated['from']);
-        $until              = Carbon::parse($validated['until']);
+        $user = User::where('id', $validated['user_id'])->firstOrFail();
 
         try {
             $calendar = BackendIcsController::generateIcsCalendar(
                 user:        $user,
                 token:       $validated['token'],
-                limit:       $validated['limit'],
-                from:        $from,
-                until:       $until,
-                useEmojis:   $validated['emojis'] ?? true,
-                useRealTime: $validated['realtime'] ?? false,
+                limit:       $validated['limit'] ?? 1000,
+                from:        Carbon::parse($validated['from']),
+                until:       Carbon::parse($validated['until']),
+                useEmojis:   (bool) $validated['emojis'] ?? true,
+                useRealTime: (bool) $validated['realtime'] ?? false,
             );
             return response($calendar->get())
                 ->header('Content-Type', 'text/calendar')
