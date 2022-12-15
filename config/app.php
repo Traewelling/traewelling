@@ -89,6 +89,7 @@ return [
         'de_pfl' => 'Deutsch (Pfälzisch)',
         'de_by'  => 'Deutsch (Bayerisch)',
         'en'     => 'English',
+        'it'     => 'Italiano',
         'fr'     => 'Français',
         'nl'     => 'Dutch',
         'sv'     => 'Svenska',
