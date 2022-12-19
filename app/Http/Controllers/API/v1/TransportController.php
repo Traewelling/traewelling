@@ -148,6 +148,34 @@ class TransportController extends Controller
         return $this->sendResponse(new TrainStationResource($nearestStation));
     }
 
+    /**
+     * @OA\Post(
+     *      path="/trains/checkin",
+     *      operationId="createTrainCheckin",
+     *      tags={"Checkin"},
+     *      summary="Create a checkin",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinRequestBody")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="Checkin collision"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     * @TODO document the responses
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],

@@ -1222,6 +1222,42 @@
                 ]
             }
         },
+        "/trains/checkin": {
+            "post": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Create a checkin",
+                "operationId": "createTrainCheckin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TrainCheckinRequestBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/trains/station/autocomplete/{query}": {
             "get": {
                 "tags": [
@@ -2179,6 +2215,103 @@
                 "type": "object",
                 "xml": {
                     "name": "Train"
+                }
+            },
+            "TrainCheckinRequestBody": {
+                "title": "TrainCheckinRequestBody",
+                "description": "Fields for creating a train checkin",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Text that should be added to the post",
+                        "type": "string",
+                        "maxLength": 280,
+                        "example": "Meine erste Fahrt nach Knuffingen!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "eventId": {
+                        "title": "eventId",
+                        "description": "Id of an event the status should be connected to",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tweet": {
+                        "title": "tweet",
+                        "description": "Should this status be posted to twitter?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "toot": {
+                        "title": "toot",
+                        "description": "Should this status be posted to mastodon?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "chainPost": {
+                        "title": "chainPost",
+                        "description": "Should this status be posted to mastodon as a chained post?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "type": "boolean",
+                        "example": "true",
+                        "nullable": true
+                    },
+                    "tripId": {
+                        "title": "tripId",
+                        "description": "The HAFAS tripId for the to be checked in train",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "The line name for the to be checked in train",
+                        "example": "S 4"
+                    },
+                    "start": {
+                        "title": "start",
+                        "description": "The TrainStation-ID of the starting point (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "destination": {
+                        "title": "destination",
+                        "description": "The TrainStation-ID of the destination (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8079045"
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "Timestamp of the departure",
+                        "example": "2022-12-19T20:41:00+01:00"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "Timestamp of the arrival",
+                        "example": "2022-12-19T20:42:00+01:00"
+                    },
+                    "force": {
+                        "title": "force",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinRequestBody"
                 }
             },
             "TrainStation": {
