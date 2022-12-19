@@ -190,18 +190,12 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $query
-     *
-     * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a space (%20)
-     *
-     *
      * @OA\Get(
      *      path="/trains/station/autocomplete/{query}",
      *      operationId="trainStationAutocomplete",
      *      tags={"Checkin"},
      *      summary="Autocomplete for trainstations",
-     *      description="This request returns an array of max. 10 station objects matching the query",
+     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
      *      @OA\Parameter(
      *          name="query",
      *          in="path",
@@ -237,6 +231,33 @@ class TransportController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/station/history",
+     *      operationId="trainStationHistory",
+     *      tags={"Checkin"},
+     *      summary="History for trainstations",
+     *      description="This request returns an array of max. 10 most recent station objects that the user has arrived
+     *      at.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No active checkin"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getTrainStationHistory(): AnonymousResourceCollection {
         return TrainStationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
     }
