@@ -1158,6 +1158,59 @@
                 ]
             }
         },
+        "/trains/station/autocomplete/{query}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Autocomplete for trainstations",
+                "description": "This request returns an array of max. 10 station objects matching the query",
+                "operationId": "trainStationAutocomplete",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "station query",
+                        "example": "Karls"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No active checkin"
+                    },
+                    "400": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/settings/account": {
             "delete": {
                 "tags": [
@@ -1802,6 +1855,35 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
+                }
+            },
+            "ShortTrainStation": {
+                "title": "ShortTrainStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ShortTrainStation"
                 }
             },
             "Status": {

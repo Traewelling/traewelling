@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
+use OpenApi\Annotations as OA;
 
 class TransportController extends Controller
 {
@@ -193,6 +194,39 @@ class TransportController extends Controller
      *
      * @return JsonResponse
      * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a space (%20)
+     *
+     *
+     * @OA\Get(
+     *      path="/trains/station/autocomplete/{query}",
+     *      operationId="trainStationAutocomplete",
+     *      tags={"Checkin"},
+     *      summary="Autocomplete for trainstations",
+     *      description="This request returns an array of max. 10 station objects matching the query",
+     *      @OA\Parameter(
+     *          name="query",
+     *          in="path",
+     *          description="station query",
+     *          example="Karls"
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/ShortTrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No active checkin"),
+     *       @OA\Response(response=400, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
      */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
