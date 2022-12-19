@@ -83,18 +83,59 @@ class TransportController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/station/nearby",
+     *      operationId="trainStationsNearby",
+     *      tags={"Checkin"},
+     *      summary="Location based search for trainstations",
+     *      description="Returns the nearest station to the given coordinates",
+     *      @OA\Parameter(
+     *          name="latitude",
+     *          in="query",
+     *          description="latitude",
+     *          example=48.991,
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="longitude",
+     *          in="query",
+     *          description="longitude",
+     *          example=8.4005,
+     *          required=true
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No station found"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getNextStationByCoordinates(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
                                             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
-                                            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
                                         ]);
 
         try {
             $nearestStation = HafasController::getNearbyStations(
                 latitude:  $validated['latitude'],
                 longitude: $validated['longitude'],
-                results:   $validated['limit'] ?? 1
+                results:   1
             )->first();
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 503);
@@ -214,8 +255,7 @@ class TransportController extends Controller
      *          )
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No active checkin"),
-     *       @OA\Response(response=400, description="There has been an error with our data provider"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
      *          {"token": {}},
      *          {}
@@ -227,7 +267,7 @@ class TransportController extends Controller
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
             return $this->sendResponse($trainAutocompleteResponse);
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 503);
         }
     }
 
@@ -251,7 +291,6 @@ class TransportController extends Controller
      *          )
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No active checkin"),
      *       security={
      *          {"token": {}},
      *          {}

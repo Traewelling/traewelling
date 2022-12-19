@@ -1158,6 +1158,70 @@
                 ]
             }
         },
+        "/trains/station/nearby": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Location based search for trainstations",
+                "description": "Returns the nearest station to the given coordinates",
+                "operationId": "trainStationsNearby",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": true,
+                        "example": 48.991
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": true,
+                        "example": 8.4005
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No station found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/trains/station/autocomplete/{query}": {
             "get": {
                 "tags": [
@@ -1196,10 +1260,7 @@
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "No active checkin"
-                    },
-                    "400": {
+                    "503": {
                         "description": "There has been an error with our data provider"
                     }
                 },
@@ -1217,7 +1278,7 @@
                     "Checkin"
                 ],
                 "summary": "History for trainstations",
-                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived at.",
+                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
                 "operationId": "trainStationHistory",
                 "responses": {
                     "200": {
@@ -1240,9 +1301,6 @@
                     },
                     "401": {
                         "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "No active checkin"
                     }
                 },
                 "security": [
