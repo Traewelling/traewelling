@@ -23,6 +23,7 @@ use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\StatusTagController;
 use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -55,6 +56,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
         Route::put('statuses/{id}', [StatusController::class, 'update']);
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
+        Route::apiResource('statuses/{statusId}/tags', StatusTagController::class);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
