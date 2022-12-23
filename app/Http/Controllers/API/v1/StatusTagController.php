@@ -202,20 +202,15 @@ class StatusTagController extends Controller
         }
         $validated = $validator->validate();
 
-        $status = Status::find($statusId);
-        if ($status === null) {
-            return $this->sendError(
-                error: 'No Status found for the given arguments',
-            );
-        }
-
-        if ($status->tags->where('key', $validated['key'])->count() > 0) {
-            return $this->sendError(
-                error: 'StatusTag with this key already exists',
-                code:  400,
-            );
-        }
         try {
+            $status = Status::findOrFail($statusId);
+
+            if ($status->tags->where('key', $validated['key'])->count() > 0) {
+                return $this->sendError(
+                    error: 'StatusTag with this key already exists',
+                    code:  400,
+                );
+            }
             $this->authorize('update', $status);
             $validated['status_id'] = $status->id;
             $statusTag              = StatusTag::create($validated);
@@ -223,6 +218,10 @@ class StatusTagController extends Controller
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this Status',
+            );
+        } catch (ModelNotFoundException) {
+            return $this->sendError(
+                error: 'No status found for this id',
             );
         }
     }
@@ -264,26 +263,28 @@ class StatusTagController extends Controller
      *       }
      *     )
      *
-     * @param int $statusId
-     * @param int $tag
+     * @param int    $statusId
+     * @param string $tagKey
      *
      * @return JsonResponse
      */
     public function destroy(int $statusId, string $tagKey): JsonResponse {
-        $status = Status::find($statusId);
-        if ($status === null || $status->tags->where('key', $tagKey)->count() === 0) {
-            return $this->sendError(
-                error: 'No StatusTag found for the given arguments',
-            );
-        }
         try {
+            $status    = Status::findOrFail($statusId);
             $statusTag = $status->tags->where('key', $tagKey)->first();
+            if ($statusTag === null) {
+                throw new ModelNotFoundException();
+            }
             $this->authorize('destroy', $statusTag);
             $statusTag->delete();
             return $this->sendResponse();
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
+            );
+        } catch (ModelNotFoundException) {
+            return $this->sendError(
+                error: 'No StatusTag found for this arguments',
             );
         }
     }
