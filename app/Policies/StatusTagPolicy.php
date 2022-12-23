@@ -49,7 +49,7 @@ class StatusTagPolicy
         return $statusTag->status->user_id === $user->id;
     }
 
-    public function delete(User $user, StatusTag $statusTag) {
+    public function destroy(User $user, StatusTag $statusTag): bool {
         return $statusTag->status->user_id === $user->id;
     }
 }
