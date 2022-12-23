@@ -49,6 +49,10 @@ class StatusTagController extends Controller
      *                          property="value",
      *                          type="string"
      *                      ),
+     *                      @OA\Property(
+     *                          property="visibility",
+     *                          type="integer"
+     *                      ),
      *                  )
      *              ),
      *          )
@@ -130,6 +134,10 @@ class StatusTagController extends Controller
      *                          property="value",
      *                          type="string"
      *                      ),
+     *                      @OA\Property(
+     *                          property="visibility",
+     *                          type="integer"
+     *                      ),
      *          )
      *       ),
      * @OA\Response(response=400, description="Bad request"),
@@ -208,6 +216,10 @@ class StatusTagController extends Controller
      *              @OA\Property(
      *                          property="value",
      *                          type="string"
+     *              ),
+     *              @OA\Property(
+     *                          property="visibility",
+     *                          type="integer"
      *              ),
      *          )
      *       ),
