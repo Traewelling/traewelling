@@ -37,7 +37,21 @@ class StatusTagController extends Controller
      *      ),
      *      @OA\Response(
      *          response=200,
-     *          description="successful operation"
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(
+     *                          property="key",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="value",
+     *                          type="string"
+     *                      ),
+     *                  )
+     *              ),
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
@@ -106,7 +120,17 @@ class StatusTagController extends Controller
      *     ),
      * @OA\Response(
      *          response=200,
-     *          description="successful operation"
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *                      @OA\Property(
+     *                          property="key",
+     *                          type="string"
+     *                      ),
+     *                      @OA\Property(
+     *                          property="value",
+     *                          type="string"
+     *                      ),
+     *          )
      *       ),
      * @OA\Response(response=400, description="Bad request"),
      * @OA\Response(response=404, description="No status found for this id"),
@@ -175,7 +199,17 @@ class StatusTagController extends Controller
      *      ),
      *      @OA\Response(
      *          response=200,
-     *          description="successful operation"
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                          property="key",
+     *                          type="string"
+     *              ),
+     *              @OA\Property(
+     *                          property="value",
+     *                          type="string"
+     *              ),
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
@@ -253,7 +287,7 @@ class StatusTagController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse"
+     *              ref="#/components/schemas/SuccessResponse"
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
