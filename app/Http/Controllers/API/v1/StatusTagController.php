@@ -135,20 +135,22 @@ class StatusTagController extends Controller
         }
         $validated = $validator->validate();
 
-        $status = Status::find($statusId);
-        if ($status === null || $status->tags->where('key', $tagKey)->count() === 0) {
-            return $this->sendError(
-                error: 'No StatusTag found for the given arguments',
-            );
-        }
         try {
+            $status    = Status::findOrFail($statusId);
             $statusTag = $status->tags->where('key', $tagKey)->first();
+            if ($statusTag === null) {
+                throw new ModelNotFoundException();
+            }
             $this->authorize('update', $statusTag);
             $statusTag->update($validated);
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
+            );
+        } catch (ModelNotFoundException) {
+            return $this->sendError(
+                error: 'No StatusTag found for given arguments',
             );
         }
     }
