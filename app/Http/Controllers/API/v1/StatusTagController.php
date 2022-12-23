@@ -9,11 +9,13 @@ use App\Http\Resources\StatusTagResource;
 use App\Models\Status;
 use App\Models\StatusTag;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
+use function auth;
 
 class StatusTagController extends Controller
 {
@@ -53,15 +55,16 @@ class StatusTagController extends Controller
      * @return JsonResponse
      */
     public function index(int $statusId): JsonResponse {
-        $status = Status::find($statusId);
-        if ($status === null) {
+        try {
+            $status = Status::findOrFail($statusId);
+            return $this->sendResponse(
+                data: StatusTagResource::collection(StatusTagBackend::getVisibleTagsForUser($status, auth()->user())),
+            );
+        } catch (ModelNotFoundException) {
             return $this->sendError(
                 error: 'No status found for this id',
             );
         }
-        return $this->sendResponse(
-            data: StatusTagResource::collection(StatusTagBackend::getVisibleTagsForUser($status, \auth()->user())),
-        );
     }
 
     /**
@@ -82,19 +85,32 @@ class StatusTagController extends Controller
      *          name="tagKey",
      *          in="path",
      *          description="Key of StatusTag",
-     *          example=seat,
+     *          example="seat",
      *          @OA\Schema(type="string")
      *      ),
-     *      @OA\RequestBody(
-     *          required=true
-     *      ),
-     *      @OA\Response(
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="key",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="value",
+     *                     type="string"
+     *                 ),
+     *                 example={"key": "seat", "value": "42"}
+     *             )
+     *         )
+     *     ),
+     * @OA\Response(
      *          response=200,
      *          description="successful operation"
      *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     * @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=404, description="No status found for this id"),
+     * @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -229,7 +245,7 @@ class StatusTagController extends Controller
      *          name="tagKey",
      *          in="path",
      *          description="Key of StatusTag",
-     *          example=seat,
+     *          example="seat",
      *          @OA\Schema(type="string")
      *      ),
      *      @OA\Response(
