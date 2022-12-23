@@ -21,7 +21,7 @@ class StatusTagController extends Controller
      *      path="/statuses/{statusId}/tags",
      *      operationId="getTagsForStatus",
      *      tags={"Status"},
-     *      summary="[Auth optional] Show all tags for a status which are visible for the current user",
+     *      summary="Show all tags for a status which are visible for the current user",
      *      description="Returns a collection of all visible tags for the given status, if user is authorized to see
      *      it",
      *      @OA\Parameter (
@@ -124,7 +124,7 @@ class StatusTagController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/statuses/{id}/tags/{tag}",
+     *      path="/statuses/{statusId}/tags/{tag}",
      *      operationId="updateSingleStatusTag",
      *      tags={"Status"},
      *      summary="Update a StatusTag",

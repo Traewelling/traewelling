@@ -1163,7 +1163,7 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "[Auth optional] Show all tags for a status which are visible for the current user",
+                "summary": "Show all tags for a status which are visible for the current user",
                 "description": "Returns a collection of all visible tags for the given status, if user is authorized to see\n     *      it",
                 "operationId": "getTagsForStatus",
                 "parameters": [
@@ -1200,6 +1200,57 @@
             }
         },
         "/statuses/{statusId}/tags/{tag}": {
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a StatusTag",
+                "description": "Updates a single StatusTag Object, if user is authorized to",
+                "operationId": "updateSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tag",
+                        "in": "path",
+                        "description": "StatusTag-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1234
+                    }
+                ],
+                "requestBody": {
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
             "delete": {
                 "tags": [
                     "Status"
@@ -1243,59 +1294,6 @@
                     },
                     "404": {
                         "description": "No status found for this id and statusId"
-                    },
-                    "403": {
-                        "description": "User not authorized to manipulate this status"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    },
-                    {}
-                ]
-            }
-        },
-        "/statuses/{id}/tags/{tag}": {
-            "put": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Update a StatusTag",
-                "description": "Updates a single StatusTag Object, if user is authorized to",
-                "operationId": "updateSingleStatusTag",
-                "parameters": [
-                    {
-                        "name": "statusId",
-                        "in": "path",
-                        "description": "Status-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1337
-                    },
-                    {
-                        "name": "tag",
-                        "in": "path",
-                        "description": "StatusTag-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1234
-                    }
-                ],
-                "requestBody": {
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No status found for this id"
                     },
                     "403": {
                         "description": "User not authorized to manipulate this status"
