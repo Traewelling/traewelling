@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class StatusTagFactory extends Factory
 {
 
-    public function definition() {
+    public function definition(): array {
         return [
             'status_id' => Status::factory(),
-            'key'       => $this->faker->word,
+            'key'       => $this->faker->unique()->word,
             'value'     => $this->faker->word,
         ];
     }
