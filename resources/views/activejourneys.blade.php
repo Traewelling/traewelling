@@ -21,7 +21,7 @@
                                 id: {{$status->id}},
                                 origin: {{$status->trainCheckin->origin}},
                                 destination: {{$status->trainCheckin->destination}},
-                                polyline: {!! $status->trainCheckin->HafasTrip->polyline->polyline !!}, // Stored as JSON in DB
+                                polyline: {!! $status->trainCheckin->HafasTrip?->polyline?->polyline ?? '[]' !!}, // Stored as JSON in DB
                                 stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopoversNEW)->toJson() !!},
                                 percentage: 0,
                             },
