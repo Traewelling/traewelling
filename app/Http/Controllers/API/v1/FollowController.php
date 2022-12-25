@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\NotAllowedException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\UserController as UserBackend;
@@ -31,6 +32,8 @@ class FollowController extends Controller
             return $instance->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
             return $instance->sendError(null, 400);
+        } catch (NotAllowedException) {
+            return $instance->sendError(__('profile.youre-blocked-text'), 403);
         }
     }
 
