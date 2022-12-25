@@ -17,7 +17,9 @@ abstract class ProfilePictureController extends Controller
     }
 
     public static function getUrl(User $user): string {
-        if ($user->avatar === null) {
+        if ($user->avatar === null
+            || (auth()->check() && $user->blockedUsers->contains('id', auth()->user()->id)) // Blocked users always get a default picture
+        ) {
             //Return default route to generate users avatar with matching color
             return route('profile.picture', ['username' => $user->username]);
         }
@@ -27,7 +29,10 @@ abstract class ProfilePictureController extends Controller
     public static function generateProfilePicture(User $user): array {
         $publicPath = public_path('/uploads/avatars/' . $user->avatar);
 
-        if ($user->avatar === null || !file_exists($publicPath)) {
+        if ($user->avatar === null
+            || !file_exists($publicPath)
+            || (auth()->check() && $user->blockedUsers->contains('id', auth()->user()->id)) // Blocked users always get a default picture
+        ) {
             return [
                 'picture'   => self::generateDefaultAvatar($user),
                 'extension' => 'png'
