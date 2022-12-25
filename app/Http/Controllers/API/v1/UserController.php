@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 
 use App\Exceptions\UserAlreadyMutedException;
+use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
@@ -69,7 +70,7 @@ class UserController extends Controller
     }
 
     /**
-     *   @OA\Get(
+     * @OA\Get(
      *      path="/user/{username}/statuses",
      *      operationId="getStatusesForUser",
      *      tags={"User", "Status"},
@@ -129,7 +130,7 @@ class UserController extends Controller
         return StatusResource::collection($userResponse);
     }
 
-   //ToDo: Is this even used anywhere?
+    //ToDo: Is this even used anywhere?
     public function authenticated(): UserResource {
         return new UserResource(Auth::user());
     }
@@ -182,11 +183,153 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
+     *      path="/user/createBlock",
+     *      operationId="createBlock",
+     *      tags={"User"},
+     *      summary="Block a user",
+     *      description="Block a specific user. That user will not be able to see your statuses or profile information,
+     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-blocked user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       @OA\Response(response=409, description="User is already blocked"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createBlock(Request $request): JsonResponse {
+        $validated       = $request->validate([
+                                                  'userId' => [
+                                                      'required',
+                                                      'exists:users,id',
+                                                      Rule::notIn([auth()->user()->id]),
+                                                  ]
+                                              ]);
+        $userToBeBlocked = User::find($validated['userId']);
+
+        try {
+            $blockUserResponse = BackendUserBackend::blockUser(auth()->user(), $userToBeBlocked);
+        } catch (UserAlreadyMutedException) {
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-blocked',
+                                            ['username' => $userToBeBlocked->username]
+                                        )
+                                    ], 409);
+        }
+
+        $userToBeBlocked->refresh();
+        if ($blockUserResponse) {
+            return $this->sendResponse(new UserResource($userToBeBlocked), 201);
+        }
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
+    }
+
+    /**
+     * @OA\Delete(
+     *      path="/user/destroyBlock",
+     *      operationId="destroyBlock",
+     *      tags={"User"},
+     *      summary="Unmute a user",
+     *      description="Unblock a specific user. They are now able to see your statuses and profile information again,
+     *      and send you follow requests.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-unblocked user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/User"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Not logged in"),
+     *       @OA\Response(response=409, description="User is not blocked"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function destroyBlock(Request $request): JsonResponse {
+        $validated = $request->validate([
+                                            'userId' => [
+                                                'required',
+                                                'exists:users,id',
+                                            ]
+                                        ]);
+
+        $userToBeUnblocked = User::find($validated['userId']);
+
+        try {
+            $unblockUserResponse = BackendUserBackend::unblockUser(auth()->user(), $userToBeUnblocked);
+
+        } catch (UserNotBlockedException) {
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-unblocked',
+                                            ['username' => $userToBeUnblocked->username]
+                                        )
+                                    ], 409);
+        }
+
+        $userToBeUnblocked->refresh();
+        if ($unblockUserResponse) {
+            return $this->sendResponse(new UserResource($userToBeUnblocked));
+        }
+        return $this->sendError(['message' => __('messages.exception.general')], 400);
+    }
+
+    /**
+     * @OA\Post(
      *      path="/user/createMute",
      *      operationId="createMute",
      *      tags={"User"},
      *      summary="Mute a user",
-     *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+     *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active
+     *      journeys tab",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
@@ -234,12 +377,12 @@ class UserController extends Controller
         try {
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
         } catch (UserAlreadyMutedException) {
-            return $this->sendError(     [
-                                          'message' => __(
-                                              'user.already-muted',
-                                              ['username' => $userToBeMuted->username]
-                                          )
-                                      ], 409);
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-muted',
+                                            ['username' => $userToBeMuted->username]
+                                        )
+                                    ], 409);
         }
 
         $userToBeMuted->refresh();
@@ -255,7 +398,8 @@ class UserController extends Controller
      *      operationId="destroyMute",
      *      tags={"User"},
      *      summary="Unmute a user",
-     *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+     *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active
+     *      journeys tab again",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
@@ -277,7 +421,7 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=409, description="User is already unmuted"),
+     *       @OA\Response(response=409, description="User is not muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
      *           {"token": {}},
@@ -304,12 +448,12 @@ class UserController extends Controller
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
 
         } catch (UserNotMutedException) {
-            return $this->sendError(     [
-                                          'message' => __(
-                                              'user.already-unmuted',
-                                              ['username' => $userToBeUnmuted->username]
-                                          )
-                                      ], 409);
+            return $this->sendError([
+                                        'message' => __(
+                                            'user.already-unmuted',
+                                            ['username' => $userToBeUnmuted->username]
+                                        )
+                                    ], 409);
         }
 
         $userToBeUnmuted->refresh();
@@ -320,7 +464,7 @@ class UserController extends Controller
     }
 
     /**
-     *   @OA\Get(
+     * @OA\Get(
      *      path="/user/search/{query}",
      *      operationId="searchUsers",
      *      tags={"User"},

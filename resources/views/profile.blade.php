@@ -31,7 +31,7 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
-                        @include('includes.mute-button')
+                        @include('includes.hide-user-action-buttons')
                     @endauth
                 </span>
                 <br/>
