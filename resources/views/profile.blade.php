@@ -35,28 +35,31 @@
                     @endauth
                 </span>
                 <br/>
-                <span class="fs-2">
-                    <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
-                        class="small font-weight-lighter">km</span>
-                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                    <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
-                        class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
-                    @isset($user?->socialProfile?->twitter_id)
-                        <span class="font-weight-bold ps-sm-2">
-                            <a href="https://twitter.com/i/user/{{ $user->socialProfile->twitter_id }}" rel="me"
-                               class="text-white" target="_blank">
-                                <i class="fab fa-twitter d-inline"></i>
-                            </a>
-                        </span>
-                    @endisset
-                    @if($mastodonUrl)
-                        <span class="font-weight-bold ps-sm-2">
-                            <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
-                                <i class="fab fa-mastodon d-inline"></i>
-                            </a>
-                        </span>
-                    @endif
-                </span>
+
+                @if(!$user->isAuthUserBlocked)
+                    <span class="fs-2">
+                        <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
+                            class="small font-weight-lighter">km</span>
+                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
+                            class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
+                        @isset($user?->socialProfile?->twitter_id)
+                            <span class="font-weight-bold ps-sm-2">
+                                <a href="https://twitter.com/i/user/{{ $user->socialProfile->twitter_id }}" rel="me"
+                                   class="text-white" target="_blank">
+                                    <i class="fab fa-twitter d-inline"></i>
+                                </a>
+                            </span>
+                        @endisset
+                        @if($mastodonUrl)
+                            <span class="font-weight-bold ps-sm-2">
+                                <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
+                                    <i class="fab fa-mastodon d-inline"></i>
+                                </a>
+                            </span>
+                        @endif
+                    </span>
+                @endif
             </div>
         </div>
     </div>
