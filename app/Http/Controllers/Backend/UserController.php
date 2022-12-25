@@ -7,6 +7,7 @@ use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Controller;
+use App\Models\Follow;
 use App\Models\User;
 use App\Models\UserBlock;
 use App\Models\UserMute;
@@ -55,6 +56,9 @@ abstract class UserController extends Controller
             throw new InvalidArgumentException();
         }
         try {
+            Follow::where('user_id', $userToBeBlocked->id)->where('follow_id', $user->id)->delete();
+            Follow::where('user_id', $user->id)->where('follow_id', $userToBeBlocked->id)->delete();
+
             UserBlock::create([
                                   'user_id'    => $user->id,
                                   'blocked_id' => $userToBeBlocked->id

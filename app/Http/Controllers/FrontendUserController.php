@@ -52,7 +52,7 @@ class FrontendUserController extends Controller
         } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-error')], 409);
         } catch (NotAllowedException) {
-            return response()->json(['message' => __('profile.youre-blocked-text'], 403);
+            return response()->json(['message' => __('profile.youre-blocked-text')], 403);
         }
         if ($createFollowResponse == false) {
             abort(409);
