@@ -45,6 +45,9 @@ class UserPolicy
         if ($user->mutedUsers->contains('id', $model->id)) {
             return Response::deny(__('user.muted.heading'));
         }
+        if ($model->blockedUsers->contains('id', $user->id)) {
+            return Response::deny(__('user.blocked.heading'));
+        }
         return Response::allow();
     }
 

@@ -1,5 +1,5 @@
 @if(auth()->user()->id != $user->id)
-    @if(auth()->user()->mutedUsers->contains('id', $user->id))
+    @if($user->muted)
         <form style="display: inline;" method="POST" action="{{route('user.unmute')}}">
             @csrf
             <input type="hidden" name="user_id" value="{{$user->id}}"/>
@@ -18,7 +18,7 @@
             </button>
         </form>
     @endif
-    @if(auth()->user()->blockedUsers->contains('id', $user->id))
+    @if($user->isBlockedByAuthUser)
         <form style="display: inline;" method="POST" action="{{route('user.unblock')}}">
             @csrf
             <input type="hidden" name="user_id" value="{{$user->id}}"/>

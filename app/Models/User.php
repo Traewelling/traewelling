@@ -205,6 +205,20 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * The auth-user is blocked by $this user. auth-user can not see $this's statuses.
+     */
+    public function getIsAuthUserBlockedAttribute(): bool {
+        return (auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id));
+    }
+
+    /**
+     * The auth-user has blocked $this user. $this can not see auth-user's statuses.
+     */
+    public function getIsBlockedByAuthUserAttribute(): bool {
+        return (auth()->check() && auth()->user()->blockedUsers->contains('id', $this->id));
+    }
+
+    /**
      * @return string|null
      * @deprecated
      */
