@@ -25,7 +25,7 @@ abstract class ExportController extends Controller
      */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
-                                     'trainCheckin.HafasTrip.stopoversNEW',
+                                     //'trainCheckin.HafasTrip.stopoversNEW', TODO: This eager load is doing weird things. Some HafasTrips aren't loaded and this throws some http 500. Loading this manually is working.
                                      'trainCheckin.Origin',
                                      'trainCheckin.Destination',
                                  ])
@@ -59,7 +59,9 @@ abstract class ExportController extends Controller
         }
 
         if ($filetype === 'csv') {
-            return self::exportCsv($from, $until);
+             self::exportCsv($from, $until);
+
+            return view('welcome');
         }
 
         throw new InvalidArgumentException('unsupported filetype');
