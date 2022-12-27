@@ -133,11 +133,10 @@ class UserController extends Controller
             return $userToFollow;
         }
 
-        $follow = Follow::create([
-                                     'user_id'   => $user->id,
-                                     'follow_id' => $userToFollow->id
-                                 ]);
-        $user->notify(new FollowRequestApproved($follow));
+        Follow::create([
+                           'user_id'   => $user->id,
+                           'follow_id' => $userToFollow->id
+                       ]);
         $userToFollow->fresh();
         Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;
