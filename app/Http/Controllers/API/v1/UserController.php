@@ -105,6 +105,10 @@ class UserController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
      *           {"token": {}}
+     *       },
+     *       @OA\Response(response=403, description="Forbidden, User is blocked"),
+     *       security={
+     *           {"token": {}}
      *       }
      *     )
      *
@@ -121,6 +125,10 @@ class UserController extends Controller
         $validated = $request->validate([
                                             'limit' => ['nullable', 'integer', 'min:1', 'max:15'],
                                         ]);
+
+        if ($user->isAuthUserBlocked) {
+            abort(403, 'Requesting user is blocked by the profile');
+        }
 
         try {
             $userResponse = UserBackend::statusesForUser(user: $user, limit: $validated['limit'] ?? null);
@@ -165,6 +173,7 @@ class UserController extends Controller
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       @OA\Response(response=404, description="User not found"),
      *       security={
      *           {"token": {}}
@@ -178,7 +187,13 @@ class UserController extends Controller
      * @todo Maybe put this into another method?
      */
     public function show(string $username): UserResource {
-        return new UserResource(User::where('username', 'like', $username)->firstOrFail());
+        $user = User::where('username', 'like', $username)->firstOrFail();
+
+        if ($user->isAuthUserBlocked) {
+            abort(403, 'Requesting user is blocked by the profile');
+        }
+
+        return new UserResource($user);
     }
 
     /**
