@@ -479,7 +479,7 @@
     "user.blocked.text": "You can't see the check-ins from :username because you have blocked this user.",
     "user.unblocked": "You have unblocked the user :username.",
     "user.blocked.heading": "User blocked",
-    "user.blocked.heading2": "blocked users",
+    "user.blocked.heading2": "Blocked users",
     "user.already-unblocked": "The user :username is not blocked.",
     "user.unblock-tooltip": "Unblock user",
     "user.mute-tooltip": "Mute user",
