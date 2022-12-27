@@ -59,9 +59,7 @@ abstract class ExportController extends Controller
         }
 
         if ($filetype === 'csv') {
-             self::exportCsv($from, $until);
-
-            return view('welcome');
+            return self::exportCsv($from, $until);
         }
 
         throw new InvalidArgumentException('unsupported filetype');
