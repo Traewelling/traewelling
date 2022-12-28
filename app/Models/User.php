@@ -123,6 +123,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(__CLASS__, 'user_blocks', 'user_id', 'blocked_id');
     }
 
+    public function blockedByUsers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'user_blocks', 'blocked_id', 'user_id');
+    }
+
     public function mutedUsers(): BelongsToMany {
         return $this->belongsToMany(__CLASS__, 'user_mutes', 'user_id', 'muted_id');
     }

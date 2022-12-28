@@ -44,6 +44,19 @@ class UserBlockTest extends TestCase
              ->assertForbidden();
     }
 
+    public function testAlicesStatusIsHiddenFromBobsGlobalDashboard(): void {
+        $this->actingAs($this->bob)
+             ->get(route('globaldashboard'))
+             ->assertSee($this->alice->username);
+
+        $this->aliceBlocksBob();
+
+        $this->actingAs($this->bob)
+             ->get(route('globaldashboard'))
+             ->assertOk()
+             ->assertDontSee($this->alice->username);
+    }
+
     public function testStatusIsHiddenFromActiveJourneys(): void {
         $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
         $trainCheckin->arrival = Carbon::parse('+10min');
