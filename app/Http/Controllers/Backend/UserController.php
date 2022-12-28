@@ -8,6 +8,7 @@ use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
+use App\Models\Like;
 use App\Models\User;
 use App\Models\UserBlock;
 use App\Models\UserMute;
@@ -58,6 +59,9 @@ abstract class UserController extends Controller
         try {
             Follow::where('user_id', $userToBeBlocked->id)->where('follow_id', $user->id)->delete();
             Follow::where('user_id', $user->id)->where('follow_id', $userToBeBlocked->id)->delete();
+
+            Like::where('user_id', $user->id)->whereIn('status_id', $userToBeBlocked->statuses()->select('id'))->delete();
+            Like::where('user_id', $userToBeBlocked->id)->whereIn('status_id', $user->statuses()->select('id'))->delete();
 
             UserBlock::create([
                                   'user_id'    => $user->id,
