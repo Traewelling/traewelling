@@ -48,6 +48,9 @@ class UserPolicy
         if ($model->blockedUsers->contains('id', $user->id)) {
             return Response::deny(__('user.blocked.heading'));
         }
+        if ($model->blockedByUsers->contains('id', $user->id)) {
+            return Response::deny(__('profile.youre-blocked-text'));
+        }
         return Response::allow();
     }
 

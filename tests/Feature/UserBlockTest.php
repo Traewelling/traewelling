@@ -72,7 +72,7 @@ class UserBlockTest extends TestCase
              ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
     }
 
-    public function testStatusIsHiddenFromActiveJourneys(): void {
+    public function testAlicesStatusIsHiddenFromBobsActiveJourneys(): void {
         $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
         $trainCheckin->arrival = Carbon::parse('+10min');
         $trainCheckin->save();
@@ -88,6 +88,27 @@ class UserBlockTest extends TestCase
              ->get(route('statuses.active'))
              ->assertOk()
              ->assertDontSee('Frankfurt');
+    }
+
+    public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {
+        $this->checkin         = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
+        $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
+        $trainCheckin->arrival = Carbon::parse('+10min');
+        $trainCheckin->save();
+
+        $this->actingAs($this->alice)
+             ->get(route('statuses.active'))
+             ->assertOk()
+             ->assertSee(route('profile.picture', ['username' => $this->bob->username]))
+             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+
+        $this->aliceBlocksBob();
+
+        $this->actingAs($this->alice)
+             ->get(route('statuses.active'))
+             ->assertOk()
+             ->assertDontSee(route('profile.picture', ['username' => $this->bob->username]))
+             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
     }
 
     public function testProfileShowsLimitedInfo(): void {
