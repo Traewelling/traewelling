@@ -72,6 +72,7 @@ abstract class DashboardController extends Controller
                      })
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
                      ->select('statuses.*')
                      ->orderBy('train_checkins.departure', 'desc')

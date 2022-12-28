@@ -57,6 +57,21 @@ class UserBlockTest extends TestCase
              ->assertDontSee($this->alice->username);
     }
 
+    public function testBobsStatusIsHiddenFromAlicesGlobalDashboard(): void {
+        $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
+
+        $this->aliceBlocksBob();
+
+        $this->actingAs($this->alice)
+             ->get(route('globaldashboard'))
+             ->assertOk()
+             // Bob's name is present in the session bag due the "you successfully blocked bob' message. Instead, we
+             // check that Bob's profile picture is not there, while Alice's picture is still there (from the checkin
+             // in self::setUp).
+             ->assertDontSee(route('profile.picture', ['username' => $this->bob->username]))
+             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+    }
+
     public function testStatusIsHiddenFromActiveJourneys(): void {
         $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
         $trainCheckin->arrival = Carbon::parse('+10min');
