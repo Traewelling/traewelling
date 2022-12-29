@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
+use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
@@ -126,14 +127,11 @@ class UserController extends Controller
                                             'limit' => ['nullable', 'integer', 'min:1', 'max:15'],
                                         ]);
 
-        if ($user->isAuthUserBlocked) {
-            abort(403, 'Requesting user is blocked by the profile');
-        }
-
         try {
+            $this->authorize('view', $user);
             $userResponse = UserBackend::statusesForUser(user: $user, limit: $validated['limit'] ?? null);
-        } catch (AuthorizationException) {
-            abort(404, 'No statuses found, or statuses are not visible to you.');
+        } catch (AuthorizationException $exception) {
+            abort(404, $exception->response()->message() ?? 'No statuses found, or statuses are not visible to you.');
         }
         return StatusResource::collection($userResponse);
     }
@@ -189,8 +187,10 @@ class UserController extends Controller
     public function show(string $username): UserResource {
         $user = User::where('username', 'like', $username)->firstOrFail();
 
-        if ($user->isAuthUserBlocked) {
-            abort(403, 'Requesting user is blocked by the profile');
+        try {
+            $this->authorize('view', $user);
+        } catch (AuthorizationException $exception) {
+            abort(403, $exception->response()->message() ?? 'User not accessible.');
         }
 
         return new UserResource($user);

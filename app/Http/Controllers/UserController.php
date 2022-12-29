@@ -8,6 +8,7 @@ use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\NotAllowedException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
@@ -111,6 +112,7 @@ class UserController extends Controller
      * @return User
      * @throws AlreadyFollowingException
      * @throws InvalidArgumentException
+     * @throws NotAllowedException
      * @api v1
      */
     public static function createOrRequestFollow(User $user, User $userToFollow): User {
@@ -120,9 +122,7 @@ class UserController extends Controller
         if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
             throw new AlreadyFollowingException($user, $userToFollow);
         }
-
-        // user has blocked requester
-        if ($userToFollow->blockedUsers->contains('id', $user->id)) {
+        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
             throw new NotAllowedException();
         }
 
@@ -166,9 +166,7 @@ class UserController extends Controller
         if ($user->is($userToFollow)) {
             return false;
         }
-
-        // user has blocked requester
-        if ($userToFollow->blockedUsers->contains('id', $user->id)) {
+        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
             throw new NotAllowedException();
         }
 
