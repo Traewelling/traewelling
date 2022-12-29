@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Follow;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,6 +32,8 @@ class FollowController extends Controller
             return $instance->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
             return $instance->sendError(null, 400);
+        } catch (AuthorizationException) {
+            return $instance->sendError(__('profile.youre-blocked-text'), 403);
         }
     }
 

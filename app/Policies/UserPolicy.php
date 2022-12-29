@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Http\Controllers\Backend\User\BlockController;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -44,6 +45,12 @@ class UserPolicy
         }
         if ($user->mutedUsers->contains('id', $model->id)) {
             return Response::deny(__('user.muted.heading'));
+        }
+        if (BlockController::isBlocked($model, $user)) {
+            return Response::deny(__('user.blocked.heading'));
+        }
+        if (BlockController::isBlocked($user, $model)) {
+            return Response::deny(__('profile.youre-blocked-text'));
         }
         return Response::allow();
     }

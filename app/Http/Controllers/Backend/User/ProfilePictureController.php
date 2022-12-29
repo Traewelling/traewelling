@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
+use Gate;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -17,7 +18,8 @@ abstract class ProfilePictureController extends Controller
     }
 
     public static function getUrl(User $user): string {
-        if ($user->avatar === null) {
+        // Avatar is not found or user is blocked -> show default avatar
+        if ($user->avatar === null || Gate::denies('view', $user)) {
             //Return default route to generate users avatar with matching color
             return route('profile.picture', ['username' => $user->username]);
         }
@@ -27,7 +29,10 @@ abstract class ProfilePictureController extends Controller
     public static function generateProfilePicture(User $user): array {
         $publicPath = public_path('/uploads/avatars/' . $user->avatar);
 
-        if ($user->avatar === null || !file_exists($publicPath)) {
+        if ($user->avatar === null
+            || !file_exists($publicPath)
+            || Gate::denies('view', $user) // e.g. Blocked users always get a default picture
+        ) {
             return [
                 'picture'   => self::generateDefaultAvatar($user),
                 'extension' => 'png'

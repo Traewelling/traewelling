@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -50,6 +51,8 @@ class FrontendUserController extends Controller
             $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-error')], 409);
+        } catch (AuthorizationException) {
+            return response()->json(['message' => __('profile.youre-blocked-text')], 403);
         }
         if ($createFollowResponse == false) {
             abort(409);
