@@ -73,7 +73,12 @@ abstract class StatisticController extends Controller
                           ])
                  ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
-                 ->get();
+                 ->get()
+                 ->map(function($row) {
+                     $row->count    = (int) $row->count;
+                     $row->duration = (int) $row->duration;
+                     return $row;
+                 });
     }
 
     /**
@@ -111,7 +116,12 @@ abstract class StatisticController extends Controller
                           ])
                  ->orderByDesc(DB::raw('COUNT(*)'))
                  ->limit($limit)
-                 ->get();
+                 ->get()
+                 ->map(function($row) {
+                     $row->count    = (int) $row->count;
+                     $row->duration = (int) $row->duration;
+                     return $row;
+                 });
     }
 
     /**
@@ -157,8 +167,8 @@ abstract class StatisticController extends Controller
                 return $item->date->isSameDay(Carbon::parse($row->date));
             })->first();
             if ($obj) {
-                $obj->count    = $row->count;
-                $obj->duration = $row->duration;
+                $obj->count    = (int) $row->count;
+                $obj->duration = (int) $row->duration;
             } else {
                 $e           = collect();
                 $e->date     = Carbon::parse($row->date);
@@ -197,7 +207,12 @@ abstract class StatisticController extends Controller
                               DB::raw('SUM(TIMESTAMPDIFF(MINUTE, departure, arrival)) AS duration')
                           ])
                  ->orderByDesc('duration')
-                 ->get();
+                 ->get()
+                 ->map(function($row) {
+                     $row->count    = (int) $row->count;
+                     $row->duration = (int) $row->duration;
+                     return $row;
+                 });
     }
 
     public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
