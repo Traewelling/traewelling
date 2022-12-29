@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enum\CacheKey;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\NotAllowedException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Controllers\Backend\User\BlockController;
@@ -112,7 +111,7 @@ class UserController extends Controller
      * @return User
      * @throws AlreadyFollowingException
      * @throws InvalidArgumentException
-     * @throws NotAllowedException
+     * @throws AuthorizationException
      * @api v1
      */
     public static function createOrRequestFollow(User $user, User $userToFollow): User {
@@ -123,7 +122,7 @@ class UserController extends Controller
             throw new AlreadyFollowingException($user, $userToFollow);
         }
         if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
-            throw new NotAllowedException();
+            throw new AuthorizationException();
         }
 
         // Request follow if user is a private profile
@@ -159,6 +158,7 @@ class UserController extends Controller
      *
      * @return bool
      * @throws AlreadyFollowingException
+     * @throws AuthorizationException
      * @deprecated
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
@@ -166,7 +166,7 @@ class UserController extends Controller
             return false;
         }
         if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
-            throw new NotAllowedException();
+            throw new AuthorizationException();
         }
 
         //disallow re-following, if you already follow them
