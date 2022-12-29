@@ -108,6 +108,7 @@ abstract class LeaderboardController extends Controller
                            ])
                   ->groupBy('user_id')
                   ->orderByDesc('points')
+                  ->limit(100)
                   ->get();
 
         //Fetch user models in ONE query and map it to the collection
