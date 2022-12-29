@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enum\StatusVisibility;
+use App\Http\Controllers\Backend\User\BlockController;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -41,20 +42,25 @@ class StatusPolicy
             return Response::allow();
         }
 
-        // Case 3: Status is private and the status doesn't belong to the user
+        // Case 3: User is blocked by the status owner
+        if (BlockController::isBlocked($status->user, $user)) {
+            return Response::deny(__('profile.youre-blocked-text'));
+        }
+
+        // Case 4: Status is private and the status doesn't belong to the user
         if ($status->visibility === StatusVisibility::PRIVATE) {
             return Response::deny('Status is private');
         }
 
-        // Case 4: Status is followers only
+        // Case 5: Status is followers only
         if ($status->visibility === StatusVisibility::FOLLOWERS) {
             return $user->follows->contains('id', $status->user_id);
         }
 
-        // Case 5: Status is unlisted
+        // Case 6: Status is unlisted
         // This isn't checked here. This is done in the query from the (global/private) dashboard.
 
-        // Case 6: Status is public or authenticated
+        // Case 7: Status is public or authenticated
         if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
             return Response::allow(); //TODO: How to handle with private profile?
         }
