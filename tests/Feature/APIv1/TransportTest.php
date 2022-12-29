@@ -114,7 +114,7 @@ class TransportTest extends ApiTestCase
                      ],
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
-        $response->assertOk();
+        $response->assertCreated();
         $response->assertJsonStructure([
                                            'data' => [
                                                'status' => [

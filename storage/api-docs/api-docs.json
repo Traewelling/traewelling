@@ -629,6 +629,181 @@
                 ]
             }
         },
+        "/leaderboard": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get array of 20 best users",
+                "operationId": "getLeaderboard",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/leaderboard/distance": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get leaderboard array sorted by distance",
+                "operationId": "getLeaderboardByDistance",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/leaderboard/friends": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "Get friends-leaderboard array sorted",
+                "operationId": "getLeaderboardByFriends",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/leaderboard/{month}": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get leaderboard array for a specific month",
+                "operationId": "getMonthlyLeaderboard",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "path",
+                        "description": "Month for the complete leaderboard in Format `YYYY-MM`",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2022-04"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [
@@ -1148,6 +1323,205 @@
                     },
                     "404": {
                         "description": "No active checkin"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/trains/station/nearby": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Location based search for trainstations",
+                "description": "Returns the nearest station to the given coordinates",
+                "operationId": "trainStationsNearby",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": true,
+                        "example": 48.991
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": true,
+                        "example": 8.4005
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No station found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/trains/checkin": {
+            "post": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Create a checkin",
+                "operationId": "createTrainCheckin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TrainCheckinRequestBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TrainCheckinResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Checkin collision"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/trains/station/autocomplete/{query}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Autocomplete for trainstations",
+                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "operationId": "trainStationAutocomplete",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "station query",
+                        "example": "Karls"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/trains/station/history": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "History for trainstations",
+                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
+                "operationId": "trainStationHistory",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
@@ -1758,11 +2132,120 @@
                     "name": "PaginationMeta"
                 }
             },
+            "LeaderboardUser": {
+                "title": "LeaderboardUser",
+                "properties": {
+                    "username": {
+                        "title": "username",
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration travelled by train in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 6
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance travelled by train in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "trainSpeed": {
+                        "title": "trainSpeed",
+                        "description": "average speed travelled by train in meters",
+                        "type": "number",
+                        "format": "float",
+                        "example": 123.45
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "Current points of the last 7 days",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 300
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LeaderboardUser"
+                }
+            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
                 "xml": {
                     "name": "PaginationPage"
+                }
+            },
+            "Points": {
+                "title": "Points",
+                "description": "Points model",
+                "properties": {
+                    "points": {
+                        "title": "points",
+                        "description": "points",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "calculation": {
+                        "$ref": "#/components/schemas/PointsCalculation"
+                    },
+                    "additional": {
+                        "title": "additional",
+                        "description": "extra points that can be given",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "identifier": "extrapoints",
+                                "points": 4,
+                                "divisibile": false
+                            }
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Points"
+                }
+            },
+            "PointsCalculation": {
+                "title": "PointsCalculation",
+                "properties": {
+                    "base": {
+                        "title": "base",
+                        "description": "Basepoints for this type of vehicle",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.5
+                    },
+                    "distance": {
+                        "title": "distance",
+                        "description": "Points for the travelled distance",
+                        "example": 0.25
+                    },
+                    "factor": {
+                        "title": "factor",
+                        "example": 0.25
+                    },
+                    "reason": {
+                        "$ref": "#/components/schemas/PointsReasonEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PointsCalculation"
                 }
             },
             "Polyline": {
@@ -1802,6 +2285,35 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
+                }
+            },
+            "ShortTrainStation": {
+                "title": "ShortTrainStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ShortTrainStation"
                 }
             },
             "Status": {
@@ -1997,6 +2509,129 @@
                 "type": "object",
                 "xml": {
                     "name": "Train"
+                }
+            },
+            "TrainCheckinRequestBody": {
+                "title": "TrainCheckinRequestBody",
+                "description": "Fields for creating a train checkin",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Text that should be added to the post",
+                        "type": "string",
+                        "maxLength": 280,
+                        "example": "Meine erste Fahrt nach Knuffingen!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "eventId": {
+                        "title": "eventId",
+                        "description": "Id of an event the status should be connected to",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tweet": {
+                        "title": "tweet",
+                        "description": "Should this status be posted to twitter?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "toot": {
+                        "title": "toot",
+                        "description": "Should this status be posted to mastodon?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "chainPost": {
+                        "title": "chainPost",
+                        "description": "Should this status be posted to mastodon as a chained post?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "type": "boolean",
+                        "example": "true",
+                        "nullable": true
+                    },
+                    "tripId": {
+                        "title": "tripId",
+                        "description": "The HAFAS tripId for the to be checked in train",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "The line name for the to be checked in train",
+                        "example": "S 4"
+                    },
+                    "start": {
+                        "title": "start",
+                        "description": "The TrainStation-ID of the starting point (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "destination": {
+                        "title": "destination",
+                        "description": "The TrainStation-ID of the destination (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8079045"
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "Timestamp of the departure",
+                        "example": "2022-12-19T20:41:00+01:00"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "Timestamp of the arrival",
+                        "example": "2022-12-19T20:42:00+01:00"
+                    },
+                    "force": {
+                        "title": "force",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinRequestBody"
+                }
+            },
+            "TrainCheckinResponse": {
+                "title": "TrainCheckinResponse",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "StatusModel of the created status",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "points": {
+                        "$ref": "#/components/schemas/Points"
+                    },
+                    "alsoOnThisConnection": {
+                        "title": "alsoOnThisconnection",
+                        "description": "Statuses of other people on this connection",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Status"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinResponse"
                 }
             },
             "TrainStation": {
@@ -2433,6 +3068,18 @@
                     2
                 ],
                 "example": 0
+            },
+            "PointsReasonEnum": {
+                "title": "PointsReason",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
             },
             "VisibilityEnum": {
                 "title": "visibility",
