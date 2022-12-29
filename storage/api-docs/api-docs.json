@@ -1241,10 +1241,20 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "successful operation"
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TrainCheckinResponse"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Checkin collision"
                     },
                     "403": {
                         "description": "User not authorized"
@@ -1954,6 +1964,66 @@
                     "name": "PaginationPage"
                 }
             },
+            "Points": {
+                "title": "Points",
+                "description": "Points model",
+                "properties": {
+                    "points": {
+                        "title": "points",
+                        "description": "points",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "calculation": {
+                        "$ref": "#/components/schemas/PointsCalculation"
+                    },
+                    "additional": {
+                        "title": "additional",
+                        "description": "extra points that can be given",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "identifier": "extrapoints",
+                                "points": 4,
+                                "divisibile": false
+                            }
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Points"
+                }
+            },
+            "PointsCalculation": {
+                "title": "PointsCalculation",
+                "properties": {
+                    "base": {
+                        "title": "base",
+                        "description": "Basepoints for this type of vehicle",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.5
+                    },
+                    "distance": {
+                        "title": "distance",
+                        "description": "Points for the travelled distance",
+                        "example": 0.25
+                    },
+                    "factor": {
+                        "title": "factor",
+                        "example": 0.25
+                    },
+                    "reason": {
+                        "$ref": "#/components/schemas/PointsReasonEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PointsCalculation"
+                }
+            },
             "Polyline": {
                 "title": "Polyline",
                 "description": "Polyline of a single status as GeoJSON Feature",
@@ -2264,7 +2334,7 @@
                     },
                     "ibnr": {
                         "title": "ibnr",
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
                         "type": "boolean",
                         "example": "true",
                         "nullable": true
@@ -2303,7 +2373,7 @@
                     },
                     "force": {
                         "title": "force",
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
@@ -2312,6 +2382,32 @@
                 "type": "object",
                 "xml": {
                     "name": "TrainCheckinRequestBody"
+                }
+            },
+            "TrainCheckinResponse": {
+                "title": "TrainCheckinResponse",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "StatusModel of the created status",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "points": {
+                        "$ref": "#/components/schemas/Points"
+                    },
+                    "alsoOnThisConnection": {
+                        "title": "alsoOnThisconnection",
+                        "description": "Statuses of other people on this connection",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Status"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinResponse"
                 }
             },
             "TrainStation": {
@@ -2748,6 +2844,18 @@
                     2
                 ],
                 "example": 0
+            },
+            "PointsReasonEnum": {
+                "title": "PointsReason",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
             },
             "VisibilityEnum": {
                 "title": "visibility",

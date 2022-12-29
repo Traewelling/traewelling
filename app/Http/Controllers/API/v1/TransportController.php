@@ -161,6 +161,7 @@ class TransportController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinResponse")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
@@ -217,7 +218,7 @@ class TransportController extends Controller
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
-            return $this->sendResponse($trainCheckinResponse);
+            return $this->sendResponse($trainCheckinResponse, 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
