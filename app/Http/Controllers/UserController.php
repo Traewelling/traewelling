@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Models\Follow;
@@ -16,7 +17,6 @@ use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -110,6 +110,7 @@ class UserController extends Controller
      * @return User
      * @throws AlreadyFollowingException
      * @throws InvalidArgumentException
+     * @throws AuthorizationException
      * @api v1
      */
     public static function createOrRequestFollow(User $user, User $userToFollow): User {
@@ -118,6 +119,9 @@ class UserController extends Controller
         }
         if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
             throw new AlreadyFollowingException($user, $userToFollow);
+        }
+        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
+            throw new AuthorizationException();
         }
 
         // Request follow if user is a private profile
@@ -133,11 +137,10 @@ class UserController extends Controller
             return $userToFollow;
         }
 
-        $follow = Follow::create([
-                                     'user_id'   => $user->id,
-                                     'follow_id' => $userToFollow->id
-                                 ]);
-        $user->notify(new FollowRequestApproved($follow));
+        Follow::create([
+                           'user_id'   => $user->id,
+                           'follow_id' => $userToFollow->id
+                       ]);
         $userToFollow->fresh();
         Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;
@@ -154,11 +157,15 @@ class UserController extends Controller
      *
      * @return bool
      * @throws AlreadyFollowingException
+     * @throws AuthorizationException
      * @deprecated
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
         if ($user->is($userToFollow)) {
             return false;
+        }
+        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
+            throw new AuthorizationException();
         }
 
         //disallow re-following, if you already follow them

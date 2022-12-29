@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
+use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
 use App\Http\Controllers\Controller;
+use App\Models\Follow;
+use App\Models\Like;
 use App\Models\User;
+use App\Models\UserBlock;
 use App\Models\UserMute;
 use Error;
 use Exception;
@@ -34,6 +39,57 @@ abstract class UserController extends Controller
             return true;
         }
         throw new Error();
+    }
+
+    /**
+     * @param User $user
+     * @param User $userToBeBlocked
+     *
+     * @return bool
+     * @throws UserAlreadyBlockedException
+     * @throws InvalidArgumentException
+     */
+    public static function blockUser(User $user, User $userToBeBlocked): bool {
+        if ($user->blockedUsers->contains('id', $userToBeBlocked->id)) {
+            throw new UserAlreadyBlockedException();
+        }
+        if ($user->is($userToBeBlocked)) {
+            throw new InvalidArgumentException();
+        }
+        try {
+            Follow::where('user_id', $userToBeBlocked->id)->where('follow_id', $user->id)->delete();
+            Follow::where('user_id', $user->id)->where('follow_id', $userToBeBlocked->id)->delete();
+
+            Like::where('user_id', $user->id)->whereIn('status_id', $userToBeBlocked->statuses()->select('id'))->delete();
+            Like::where('user_id', $userToBeBlocked->id)->whereIn('status_id', $user->statuses()->select('id'))->delete();
+
+            UserBlock::create([
+                                  'user_id'    => $user->id,
+                                  'blocked_id' => $userToBeBlocked->id
+                              ]);
+            $user->load('blockedUsers');
+            return true;
+        } catch (Exception $exception) {
+            report($exception);
+            return false;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param User $userToBeUnblocked
+     *
+     * @return bool
+     * @throws UserNotBlockedException
+     */
+    public static function unblockUser(User $user, User $userToBeUnblocked): bool {
+        if (!$user->blockedUsers->contains('id', $userToBeUnblocked->id)) {
+            throw new UserNotBlockedException();
+        }
+
+        $queryCount = UserBlock::where('user_id', $user->id)->where('blocked_id', $userToBeUnblocked->id)->delete();
+        $user->load('blockedUsers');
+        return $queryCount === 1;
     }
 
     /**

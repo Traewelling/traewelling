@@ -1,4 +1,6 @@
-@if($user->id == Auth::user()->id)
+@if($user->isAuthUserBlocked)
+    <!-- Blocked, so you cannot follow -->
+@elseif($user->id == Auth::user()->id)
     <a href="{{ route('settings') }}" class="btn btn-sm btn-primary">{{ __('profile.settings') }}</a>
 @elseif($user->private_profile && $user->followRequests->contains('user_id', Auth::user()->id))
     <a href="#" class="btn btn-sm btn-primary disabled" aria-disabled="true">{{ __('profile.follow_req.pending') }}</a>
