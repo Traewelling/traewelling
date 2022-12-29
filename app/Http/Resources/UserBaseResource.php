@@ -29,7 +29,6 @@ class UserBaseResource extends JsonResource
             'twitterUrl'      => $this->twitterUrl ?? null,
             'mastodonUrl'     => $this->mastodonUrl ?? null,
             'privateProfile'  => (bool) $this->private_profile,
-            'privacyHideDays' => $this->privacy_hide_days,
             'preventIndex'    => $this->prevent_index,
             $this->mergeWhen(isset($this->UserSettingsResource),
                 [
