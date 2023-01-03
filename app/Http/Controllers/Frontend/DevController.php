@@ -62,13 +62,14 @@ class DevController extends Controller
     }
 
     public function createApp(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'name'     => ['required', 'string'],
-                                            'redirect' => ['required', 'string'],
-                                        ]);
+        $validated    = $request->validate([
+                                               'name'     => ['required', 'string'],
+                                               'redirect' => ['required', 'string'],
+                                           ]);
+        $confidential = boolval($request->input("confidential"));
 
         $clients = new ClientRepository();
-        $clients->create(auth()->user()->id, $validated['name'], $validated['redirect']);
+        $clients->create(auth()->user()->id, $validated['name'], $validated['redirect'], null, false, false, $confidential);
 
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
