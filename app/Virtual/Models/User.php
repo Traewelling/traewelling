@@ -145,17 +145,6 @@ class User
 
     /**
      * @OA\Property (
-     *     title="privacyHideDays",
-     *     description="Hide all statuses after x days",
-     *     example=3
-     * )
-     *
-     * @var integer
-     */
-    private $privacyHideDays;
-
-    /**
-     * @OA\Property (
      *     title="userInvisibleToMe",
      *     description="Can the currently authenticated user see the statuses of this user?",
      *     type="boolean",
