@@ -2,38 +2,35 @@
 
 namespace App\Http\Controllers\Backend\Social;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Exceptions\NotConnectedException;
+use App\Http\Controllers\Backend\LegacyTwitterController;
+use App\Http\Controllers\Backend\TwitterController;
+use App\Exceptions\SocialAuth\TweetNotSendException;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\TwitterNotSent;
 use Exception;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
-use InvalidArgumentException;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
-abstract class TwitterController extends Controller
+abstract class AbstractTwitterController extends Controller
 {
     /**
-     * @param User $user
-     *
-     * @return TwitterOAuth
-     * @throws InvalidArgumentException
      * @throws NotConnectedException
      */
-    public static function getApi(User $user): TwitterOAuth {
-        $sPro = $user?->socialProfile;
-        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null || $sPro?->twitter_tokenSecret === null) {
+    public static function getTwitterControllerForUser(User $user): AbstractTwitterController {
+        $socialProfile = $user->socialProfile;
+        if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null) {
             throw new NotConnectedException();
         }
-        return new TwitterOAuth(
-            consumerKey:      config('trwl.twitter_id'),
-            consumerSecret:   config('trwl.twitter_secret'),
-            oauthToken:       $user->socialProfile->twitter_token,
-            oauthTokenSecret: $user->socialProfile->twitter_tokenSecret
-        );
+
+        if ($socialProfile?->twitter_tokenSecret !== null) {
+            return new LegacyTwitterController();
+        }
+        return new TwitterController();
     }
 
     /**
@@ -71,54 +68,62 @@ abstract class TwitterController extends Controller
 
     private static function updateToken(User $user, SocialiteUser $socialiteUser): void {
         $user->socialProfile->update([
-                                         'twitter_id'          => $socialiteUser->id,
-                                         'twitter_token'       => $socialiteUser->token,
-                                         'twitter_tokenSecret' => $socialiteUser->tokenSecret,
+                                         'twitter_id'               => $socialiteUser->id,
+                                         'twitter_token'            => $socialiteUser->token,
+                                         'twitter_tokenSecret'      => null,
+                                         'twitter_refresh_token'    => $socialiteUser->refreshToken,
+                                         'twitter_token_expires_at' => Date::now()->addSeconds($socialiteUser->expiresIn)
                                      ]);
     }
 
+
     /**
      * @param Status $status
+     * @param string $socialText
      *
+     * @return string
      * @throws NotConnectedException
+     * @throws TweetNotSendException
+     */
+    abstract public function postTweet(Status $status, string $socialText): string;
+
+    /**
+     * @throws NotConnectedException|TweetNotSendException
      */
     public static function postStatus(Status $status): void {
         if (config('trwl.post_social') !== true) {
             Log::error("Was dispatched to post on Twitter, but POST_SOCIAL env variable is not set.");
             return;
         }
-
         if ($status?->user?->socialProfile?->twitter_id === null) {
             return;
         }
+        $controller = self::getTwitterControllerForUser($status->user);
 
         try {
-            $connection = self::getApi($status->user);
-            #dbl only works on Twitter.
-            $socialText = $status->socialText;
-            if ($status->user->always_dbl) {
-                $socialText .= ' #dbl';
-            }
-            $socialText .= ' ' . url('/status/' . $status->id);
-            $response   = $connection->post('statuses/update',
-                                            [
-                                                'status' => $socialText,
-                                                'lat'    => $status->trainCheckin->Origin->latitude,
-                                                'lon'    => $status->trainCheckin->Origin->longitude
-                                            ]
-            );
-
-            if ($connection->getLastHttpCode() !== 200) {
-                $status->user->notify(new TwitterNotSent($connection->getLastHttpCode(), $status));
-            }
-
-            $status->update(['tweet_id' => $response->id]);
+            $socialText = self::generateFullSocialText($status);
+            $tweetId    = $controller->postTweet($status, $socialText);
+            $status->update(['tweet_id' => $tweetId]);
             Log::info("Posted on Twitter: " . $socialText);
+        } catch (NotConnectedException $exception) {
+            throw $exception;
+        } catch (TweetNotSendException $exception) {
+            $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $status));
         } catch (Exception $exception) {
             report($exception);
             throw $exception;
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
         }
+    }
+
+    protected static function generateFullSocialText(Status $status): string {
+        $socialText = $status->socialText;
+        if ($status->user->always_dbl) {
+            $socialText .= ' #dbl';
+        }
+        $socialText .= ' ' . url('/status/' . $status->id);
+
+        return $socialText;
     }
 }
