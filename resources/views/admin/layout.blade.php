@@ -6,6 +6,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
         <title>@yield('title') | Admin | {{ config('app.name') }}</title>
+
+        <!-- Fonts -->
+        <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
+
         <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
         <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
         <script src="{{ asset('js/admin.js') }}"></script>
