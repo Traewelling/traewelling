@@ -61,7 +61,6 @@ class LikesTest extends ApiTestCase
                                                    'twitterUrl',
                                                    'mastodonUrl',
                                                    'privateProfile',
-                                                   'privacyHideDays',
                                                    'preventIndex',
                                                    'userInvisibleToMe',
                                                    'muted',
