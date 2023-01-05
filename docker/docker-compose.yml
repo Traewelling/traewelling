@@ -15,6 +15,7 @@ services:
 #      - SEED_DB=true
     env_file:
       - .env.app
+      - ../.env
     networks:
       - internal
 #    volumes:
@@ -32,6 +33,7 @@ services:
       - CONTAINER_ROLE=scheduler
     env_file:
       - .env.app
+      - ../.env
     networks:
       - internal
 
@@ -46,6 +48,7 @@ services:
       - CONTAINER_ROLE=queue
     env_file:
       - .env.app
+      - ../.env
     networks:
       - internal
 

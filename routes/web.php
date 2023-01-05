@@ -22,6 +22,8 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
+use App\Http\Controllers\Frontend\Stats\DailyStatsController;
+use App\Http\Controllers\Frontend\Stats\YearInReviewController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
@@ -36,7 +38,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-require_once realpath(__DIR__) . '/web/admin.php';
+Route::prefix('admin')->group(base_path('routes/web/admin.php'));
 
 Route::get('/@{username}/picture', [ProfilePictureController::class, 'generateProfilePicture'])
      ->name('profile.picture');
@@ -119,6 +121,7 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
+    Route::get('year-in-review', [YearInReviewController::class, 'show']);
 
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken');
@@ -133,6 +136,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('stats');
         Route::get('/stations', [StatisticController::class, 'renderStations'])
              ->name('stats.stations');
+        Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
+             ->name('stats.daily');
     });
 
     Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
@@ -245,6 +250,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
 
+    Route::post('/user/block', [\App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
+         ->name('user.block');
+    Route::post('/user/unblock', [\App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
+         ->name('user.unblock');
     Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
          ->name('user.mute');
     Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])

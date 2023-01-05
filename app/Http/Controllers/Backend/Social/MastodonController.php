@@ -10,8 +10,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\MastodonNotSent;
 use Exception;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Revolution\Mastodon\Facades\Mastodon;
@@ -67,6 +66,13 @@ abstract class MastodonController extends Controller
 
     public static function formatDomain(string $domain): string {
         $domain = strtolower($domain);
+
+        // remove leading usernames
+        if (str_contains($domain, '@')) {
+            $domain = last(explode('@', $domain));
+        }
+
+        // Force HTTPS
         $domain = str_replace('http://', 'https://', $domain);
         if (!str_starts_with($domain, 'https://')) {
             $domain = 'https://' . $domain;
@@ -93,7 +99,7 @@ abstract class MastodonController extends Controller
                                                       'client_id'     => $info['client_id'],
                                                       'client_secret' => $info['client_secret'],
                                                   ]);
-        } catch (ClientException $exception) {
+        } catch (GuzzleException $exception) {
             report($exception);
             throw new InvalidMastodonException();
         }
@@ -116,21 +122,105 @@ abstract class MastodonController extends Controller
                                      ]);
     }
 
-    public static function postStatus(Status $status): void {
-        if ($status?->user?->socialProfile?->mastodon_server === null || config('trwl.post_social') !== true) {
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    public static function postStatus(Status $status, bool $shouldPostAsChain = false): void {
+        if (config('trwl.post_social') !== true) {
+            Log::error("Was dispatched to post on Mastodon, but POST_SOCIAL env variable is not set.");
             return;
+        }
+
+        if ($status?->user?->socialProfile?->mastodon_server === null) {
+            return;
+        }
+
+        $traverseChain = null;
+        if ($shouldPostAsChain) {
+            $chainHead = self::getLastSavedPostIdFromUserStatuses($status->user);
+
+            if ($chainHead !== null) {
+                $traverseChain = self::getEndOfChain($status->user, $chainHead->mastodon_post_id);
+            }
         }
 
         try {
             $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
-            Mastodon::createStatus($statusText, ['visibility' => 'unlisted']);
+
+            $postResponse = Mastodon::createStatus($statusText, [
+                'visibility'     => 'unlisted',
+                'in_reply_to_id' => $traverseChain
+            ]);
+
+            $status->update(['mastodon_post_id' => $postResponse['id']]);
             Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
-        } catch (RequestException $e) {
-            $status->user->notify(new MastodonNotSent($e->getResponse()?->getStatusCode(), $status));
+        } catch (GuzzleException $e) {
+            $status->user->notify(new MastodonNotSent($e->getCode(), $status));
+            throw $e;
         } catch (Exception $e) {
             Log::error($e);
+            throw $e;
         }
+    }
+
+    /**
+     * @param User   $user           Trwl user with social profile
+     * @param string $mastodonPostId Id of a known post of the chain, taken from the statuses table.
+     *
+     * @return string|null The id of the last post that can be replied to. Returns null if there is none.
+     * @see https://docs.joinmastodon.org/entities/Context/ Documentation of the Mastodon Context API.
+     * @see https://docs.joinmastodon.org/methods/statuses/ Documentation of the Mastodon Status API.
+     */
+    public static function getEndOfChain(User $user, string $mastodonPostId): ?string {
+        $client = self::getClient($user);
+
+        try {
+            $context = $client->get('/statuses/' . $mastodonPostId . '/context');
+        } catch (GuzzleException $e) {
+            Log::info("Unable to chain toot because of an issue with the connecting mastodon server.");
+            if ($e->getCode() == 404) {
+                Log::info("Original Post seems to be deleted.");
+            }
+            report($e);
+            return null;
+        }
+
+        $mastodonUserId = $user->socialProfile->mastodon_id;
+        $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
+            return
+                // We never want to interact with any direct messages
+                $toot['visibility'] !== 'direct'
+
+                // Only take posts that are from $OP.
+                && $toot['account']['id'] === $mastodonUserId
+
+                // Only take posts that are direct replies to an post by OP, discarding posts from OP that don't
+                // contribute to the original thread.
+                && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] === $mastodonUserId);
+        });
+
+        // If there is no post left, resort to the original post.
+        if (empty($onlyThread)) {
+            return $mastodonPostId;
+        }
+
+        // Take the newest item of the thread.
+        return last($onlyThread)['id'];
+    }
+
+    private static function getClient(User $user) {
+        $mastodonDomain = MastodonServer::find($user->socialProfile->mastodon_server)->domain;
+        return Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
+    }
+
+    public static function getLastSavedPostIdFromUserStatuses(User $user) {
+        return $user
+            ->statuses()
+            ->whereNotNull('mastodon_post_id')
+            ->latest()
+            ->first();
     }
 }

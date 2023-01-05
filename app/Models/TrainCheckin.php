@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class TrainCheckin extends Model
 {
@@ -74,6 +75,7 @@ class TrainCheckin extends Model
                                                   ->first();
         if ($stopOver == null) {
             //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
+            Log::error('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
             $stopOver = TrainStopover::updateOrCreate(
                 [
                     "trip_id"          => $this->trip_id,
@@ -94,6 +96,8 @@ class TrainCheckin extends Model
                                                   ->where('arrival_planned', $this->arrival)
                                                   ->first();
         if ($stopOver == null) {
+            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
+            Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
             $stopOver = TrainStopover::updateOrCreate(
                 [
                     "trip_id"          => $this->trip_id,

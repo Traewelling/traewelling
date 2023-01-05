@@ -9,6 +9,7 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Transport\HomeController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -117,37 +119,40 @@ class FrontendTransportController extends Controller
                                         ]);
 
         try {
-            $TrainTripResponse = TransportBackend::TrainTrip(
+            $startStation = TrainStation::where('ibnr', $validated['start'])->firstOrFail();
+            $departure    = Carbon::parse($validated['departure']);
+
+            $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],
                 $validated['lineName'],
-                $validated['start'],
-                Carbon::parse($validated['departure'])
+                $startStation->id,
             );
+
+            $stopovers = $hafasTrip->stopoversNEW
+                ->filter(function(TrainStopover $trainStopover) use ($departure): bool {
+                    return $trainStopover->departure_planned->isAfter($departure);
+                });
+
+            // Find out where this train terminates and offer this as a "fast check-in" option.
+            $lastStopover = $hafasTrip->stopoversNEW
+                ->filter(function(TrainStopover $stopover) {
+                    return !$stopover->cancelled;
+                })
+                ->last();
+
+            return view('trip', [
+                'hafasTrip'       => $hafasTrip,
+                'events'          => EventBackend::activeEvents(),
+                'stopovers'       => $stopovers,
+                'startStation'    => $startStation,
+                'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
+                'lastStopover'    => $lastStopover,
+            ]);
         } catch (HafasException $exception) {
             return back()->with('error', $exception->getMessage());
-        }
-        if ($TrainTripResponse === null) {
+        } catch (StationNotOnTripException) {
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
-
-        // Find out where this train terminates and offer this as a "fast check-in" option.
-        $terminalStopIndex = count($TrainTripResponse['stopovers']) - 1;
-        while ($terminalStopIndex >= 1 && @$this->isCancelled($TrainTripResponse['stopovers'][$terminalStopIndex])) {
-            $terminalStopIndex--;
-        }
-        $terminalStop = $TrainTripResponse['stopovers'][$terminalStopIndex];
-
-        return view('trip', [
-            'hafasTrip'       => $TrainTripResponse['hafasTrip'],
-            'destination'     => $TrainTripResponse['destination'], //deprecated. use hafasTrip->destinationStation instead
-            'events'          => EventBackend::activeEvents(),
-            'start'           => $TrainTripResponse['start'], //deprecated. use hafasTrip->originStation instead
-            'stopovers'       => $TrainTripResponse['stopovers'],
-            'startStation'    => TrainStation::where('ibnr', $validated['start'])->firstOrFail(),
-            'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
-            'terminalStop'    => $terminalStop,
-            'user'            => Auth::user(),
-        ]);
     }
 
     public function TrainCheckin(Request $request): RedirectResponse {
@@ -162,6 +167,7 @@ class FrontendTransportController extends Controller
                                             'checkinVisibility' => ['nullable', new Enum(StatusVisibility::class)],
                                             'tweet_check'       => ['nullable', 'max:2'],
                                             'toot_check'        => ['nullable', 'max:2'],
+                                            'chainPost_check'   => ['nullable', 'max:2'],
                                             'event'             => ['nullable', 'numeric', 'exists:events,id'],
                                             'force'             => ['nullable'],
                                         ]);
@@ -180,7 +186,8 @@ class FrontendTransportController extends Controller
                 event:        isset($validated['event']) ? Event::find($validated['event']) : null,
                 force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
-                postOnMastodon: isset($request->toot_check)
+                postOnMastodon: isset($request->toot_check),
+                shouldChain: isset($request->chainPost_check),
             );
 
             $trainCheckin = $backendResponse['status']->trainCheckin;

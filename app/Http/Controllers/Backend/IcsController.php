@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
+use Throwable;
 
 abstract class IcsController extends Controller
 {
@@ -21,11 +22,13 @@ abstract class IcsController extends Controller
         ?Carbon $from = null,
         ?Carbon $until = null,
         bool    $useEmojis = true,
+        bool    $useRealTime = false,
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::with(['HafasTrip'])
-                                     ->where('user_id', $user->id)
+        $trainCheckIns = TrainCheckin::where('user_id', $user->id)
+            //::with(['HafasTrip.stopoversNEW'])
+            //I don't know why, but the "with" eager loading doesn't work in prod. "HafasTrip" is always null then
                                      ->orderByDesc('departure')
                                      ->limit($limit);
 
@@ -41,30 +44,33 @@ abstract class IcsController extends Controller
                             ->description(__('ics.description', [], $user->language));
 
         foreach ($trainCheckIns->get() as $checkIn) {
-            $name = '';
-            if ($useEmojis) {
-                $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
-            }
-            $name .= __(
-                key:     'export.journey-from-to',
-                replace: [
-                             'origin'      => $checkIn->Origin->name,
-                             'destination' => $checkIn->Destination->name
-                         ],
-                locale:  $user->language
-            );
+            try {
+                $name = '';
+                if ($useEmojis) {
+                    $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
+                }
+                $name .= __(
+                    key:     'export.journey-from-to',
+                    replace: [
+                                 'origin'      => $checkIn->Origin->name,
+                                 'destination' => $checkIn->Destination->name
+                             ],
+                    locale:  $user->language
+                );
 
-            $event = Event::create()
-                          ->name($name)
-                          ->uniqueIdentifier($checkIn->id)
-                          ->createdAt($checkIn->created_at)
-                          ->startsAt($checkIn->departure)
-                          ->endsAt($checkIn->arrival);
-            $calendar->event($event);
+                $event = Event::create()
+                              ->name($name)
+                              ->uniqueIdentifier($checkIn->id)
+                              ->createdAt($checkIn->created_at)
+                              ->startsAt($useRealTime ? $checkIn->origin_stopover->departure : $checkIn->origin_stopover->departure_planned)
+                              ->endsAt($useRealTime ? $checkIn->destination_stopover->arrival : $checkIn->destination_stopover->arrival_planned);
+                $calendar->event($event);
+            } catch (Throwable $throwable) {
+                report($throwable);
+            }
         }
 
         $icsToken->update(['last_accessed' => Carbon::now()]);
-
         return $calendar;
     }
 

@@ -90,7 +90,14 @@ abstract class AbstractTwitterController extends Controller
     /**
      * @throws NotConnectedException
      */
-    public static function postStatus(Status $status) {
+    public static function postStatus(Status $status): void {
+        if (config('trwl.post_social') !== true) {
+            Log::error("Was dispatched to post on Twitter, but POST_SOCIAL env variable is not set.");
+            return;
+        }
+        if ($status?->user?->socialProfile?->twitter_id === null) {
+            return;
+        }
         $controller = self::forUser($status->user);
 
         try {
@@ -104,6 +111,7 @@ abstract class AbstractTwitterController extends Controller
             $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $status));
         } catch (Exception $exception) {
             report($exception);
+            throw $exception;
             // The Twitter adapter itself won't throw Exceptions, but rather return HTTP codes.
             // However, we still want to continue if it explodes, thus why not catch exceptions here.
         }

@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\NotConnectedException;
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
@@ -17,22 +16,33 @@ class PostStatusOnMastodon implements ShouldQueue
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     protected Status $status;
+    protected bool   $shouldChain;
 
-    public function __construct(Status $status) {
-        $this->status = $status;
+    public function __construct(Status $status, bool $shouldChain) {
+        $this->status      = $status;
+        $this->shouldChain = $shouldChain;
     }
 
     /**
      * Execute the job.
      *
      * @return void
-     * @throws NotConnectedException
+     * @throws \Exception
      */
     public function handle(): void {
         $this->queueData([
-                             "status_id" => $this->status->id
+                             "status_id"    => $this->status->id,
+                             "should_chain" => $this->shouldChain,
                          ]);
 
-        MastodonController::postStatus($this->status);
+        MastodonController::postStatus($this->status, $this->shouldChain);
     }
+
+    /**
+     * Seconds until the job is retried after an error.
+     */
+    public function backoff() {
+        return [10, 60, 5*60, 15*60, 60*60, 3*60*60, 6*60*60];
+    }
+    public $tries = 8; // count(backoff()) + 1 from the first attempt.
 }

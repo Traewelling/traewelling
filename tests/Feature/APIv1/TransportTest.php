@@ -65,7 +65,6 @@ class TransportTest extends ApiTestCase
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertStatus(400);
-
         // Fetch correct trip
         $response = $this->get(
             uri:     '/api/v1/trains/trip'
@@ -115,7 +114,7 @@ class TransportTest extends ApiTestCase
                      ],
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
-        $response->assertOk();
+        $response->assertCreated();
         $response->assertJsonStructure([
                                            'data' => [
                                                'status' => [
@@ -174,5 +173,43 @@ class TransportTest extends ApiTestCase
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertNotFound();
+    }
+
+    public function testSetHome(): void {
+        $user      = User::factory()->create();
+        $userToken = $user->createToken('token')->accessToken;
+
+        $this->assertNull($user->home);
+
+        $response = $this->put(
+            uri:     '/api/v1/trains/station/Hannover Hbf/home',
+            headers: ['Authorization' => 'Bearer ' . $userToken]
+        );
+        $response->assertOk();
+        $user->refresh();
+        $this->assertEquals('Hannover Hbf', $user->home?->name);
+    }
+
+    public function testAutocompleteWithDs100(): void {
+        $user      = User::factory()->create();
+        $userToken = $user->createToken('token')->accessToken;
+
+        $response = $this->get(
+            uri:     '/api/v1/trains/station/autocomplete/HH',
+            headers: ['Authorization' => 'Bearer ' . $userToken]
+        );
+        $response->assertOk();
+        $response->assertJsonStructure([
+                                           'data' => [
+                                               '*' => [
+                                                   'ibnr',
+                                                   'rilIdentifier',
+                                                   'name',
+                                               ]
+                                           ]
+                                       ]);
+        $this->assertCount(1, $response->json('data'));
+        $this->assertEquals('HH', $response->json('data.0.rilIdentifier'));
+        $this->assertEquals('Hannover Hbf', $response->json('data.0.name'));
     }
 }

@@ -28,14 +28,6 @@ use Illuminate\Http\JsonResponse;
  *      description="This instance"
  * )
  *
- * @OA\SecurityScheme(
- *     type="apiKey",
- *     in="header",
- *     securityScheme="token",
- *     name="Authorization"
- * )
- *
- *
  * @OA\Tag(
  *     name="Auth",
  *     description="Logging in, creating Accounts, etc."

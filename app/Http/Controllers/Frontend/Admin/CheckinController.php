@@ -99,42 +99,40 @@ class CheckinController
         }
 
         try {
-            $TrainTripResponse = TransportBackend::TrainTrip(
-                $tripId,
-                $validated['lineName'],
-                $validated['startIBNR'],
-                Carbon::parse($validated['departure'])
+            $hafasTrip = TrainCheckinController::getHafasTrip(
+                tripId:   $tripId,
+                lineName: $validated['lineName'],
+                startId:  $validated['startIBNR'],
             );
+            return view('admin.checkin.trip', [
+                'hafasTrip' => $hafasTrip,
+                'events'    => EventBackend::activeEvents(),
+                'stopovers' => $hafasTrip->stopoversNEW,
+                'user'      => $user,
+            ]);
         } catch (HafasException $exception) {
-            return back()->with('error', $exception->getMessage());
+            return back()->with('alert-danger', $exception->getMessage());
+        } catch (StationNotOnTripException) {
+            return redirect()->back()->with('alert-danger', __('controller.transport.not-in-stopovers'));
         }
-        if ($TrainTripResponse === null) {
-            return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
-        }
-
-        return view('admin.checkin.trip', [
-            'hafasTrip' => $TrainTripResponse['hafasTrip'],
-            'events'    => EventBackend::activeEvents(),
-            'stopovers' => $TrainTripResponse['stopovers'],
-            'user'      => $user,
-        ]);
     }
 
     public function checkin(Request $request): View|RedirectResponse {
         $validated = $request->validate([
-                                            'body'        => ['nullable', 'max:280'],
-                                            'business'    => ['nullable', new Enum(Business::class)],
-                                            'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
-                                            'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'       => ['nullable', 'max:2'],
-                                            'toot'        => ['nullable', 'max:2'],
-                                            'tripId'      => ['required'],
-                                            'lineName'    => ['required'],
-                                            'startIBNR'   => ['required', 'numeric'],
-                                            'destination' => ['required', 'json'],
-                                            'departure'   => ['required', 'date'],
-                                            'force'       => ['nullable', 'max:2'],
-                                            'userId'      => ['required', 'integer']
+                                            'body'              => ['nullable', 'max:280'],
+                                            'business'          => ['nullable', new Enum(Business::class)],
+                                            'visibility'        => ['nullable', new Enum(StatusVisibility::class)],
+                                            'eventId'           => ['nullable', 'integer', 'exists:events,id'],
+                                            'tweet'             => ['nullable', 'max:2'],
+                                            'toot'              => ['nullable', 'max:2'],
+                                            'shouldChain_check' => ['nullable', 'max:2'],
+                                            'tripId'            => ['required'],
+                                            'lineName'          => ['required'],
+                                            'startIBNR'         => ['required', 'numeric'],
+                                            'destination'       => ['required', 'json'],
+                                            'departure'         => ['required', 'date'],
+                                            'force'             => ['nullable', 'max:2'],
+                                            'userId'            => ['required', 'integer']
                                         ]);
         try {
             $user = User::findOrFail($validated['userId']);
@@ -158,7 +156,8 @@ class CheckinController
                 event:        isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force: isset($validated['force']),
                 postOnTwitter: isset($request->tweet_check),
-                postOnMastodon: isset($request->toot_check)
+                postOnMastodon: isset($request->toot_check),
+                shouldChain: isset($request->shouldChain_check)
             );
 
             $status = $backendResponse['status'];

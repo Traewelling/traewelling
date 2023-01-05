@@ -8,10 +8,12 @@ use App\Enum\StatusVisibility;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
@@ -61,7 +63,8 @@ abstract class TrainCheckinController extends Controller
         ?Event           $event = null,
         bool             $force = false,
         bool             $postOnTwitter = false,
-        bool             $postOnMastodon = false
+        bool             $postOnMastodon = false,
+        bool             $shouldChain = false
     ): array {
         if ($departure->isAfter($arrival)) {
             throw new InvalidArgumentException('Departure time must be before arrival time');
@@ -88,8 +91,9 @@ abstract class TrainCheckinController extends Controller
 
             UserCheckedIn::dispatch(
                 $status,
-                $postOnTwitter && $user->socialProfile?->twitter_id !== null && config('trwl.post_social') === true,
-                $postOnMastodon && $user->socialProfile?->mastodon_id !== null && config('trwl.post_social') === true,
+                $postOnTwitter && $user->socialProfile?->twitter_id !== null,
+                $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
+                $shouldChain
             );
 
             return $trainCheckinResponse;
@@ -97,7 +101,7 @@ abstract class TrainCheckinController extends Controller
             if (isset($status)) {
                 $status->delete();
             }
-            if ((int)$exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
+            if ((int) $exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();
             }
             throw $exception; // Other scenarios are not handled
@@ -232,4 +236,35 @@ abstract class TrainCheckinController extends Controller
         return PointReason::tryFrom($pointsResource['calculation']['reason']);
     }
 
+    /**
+     * @param string $tripId
+     * @param string $lineName
+     * @param int    $start
+     *
+     * @return HafasTrip
+     * @throws HafasException
+     * @throws StationNotOnTripException
+     * @api v1
+     */
+    public static function getHafasTrip(string $tripId, string $lineName, int $startId): HafasTrip {
+        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+
+        $originStopover = $hafasTrip->stopoversNEW->filter(function(TrainStopover $stopover) use ($startId) {
+            return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
+        })->first();
+
+        if ($originStopover === null) {
+            throw new StationNotOnTripException();
+        }
+
+        //try to refresh the departure time of the origin station
+        if ($originStopover) {
+            dispatch(function() use ($originStopover) {
+                HafasController::refreshStopover($originStopover);
+            })->afterResponse();
+        }
+
+        return $hafasTrip;
+    }
 }

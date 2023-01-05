@@ -14,6 +14,7 @@
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Redirect URL</th>
+                        <th scope="col">Confidential</th>
                         <th scope="col">&nbsp;</th>
                     </tr>
                 </thead>
@@ -23,6 +24,7 @@
                         <tr>
                             <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
                             <td>{{ $app->redirect }}</td>
+                            <td>{{ $app->confidential() == 1 ? "Ja" : "Nein" }}</td>
                             <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post"
                                   onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');">
                                 @csrf

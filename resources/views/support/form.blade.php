@@ -7,9 +7,26 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 @if($emailAvailable)
+
+                    <div class="alert alert-danger">
+                        <b>{{__('support.go-to-github')}}</b>
+                        <hr/>
+                        <a href="https://github.com/Traewelling/traewelling/issues/new?assignees=&labels=bug%2CTo+Do&template=bug_report.md"
+                           target="_blank" class="btn btn-sm btn-danger">
+                            <i class="fa-solid fa-bug text-white" aria-hidden="true"></i>
+                            {{__('report-bug')}}
+                        </a>
+                        <a href="https://github.com/Traewelling/traewelling/issues/new?assignees=&labels=enhancement&template=feature_request.md&title="
+                           target="_blank" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-plus text-white" aria-hidden="true"></i>
+                            {{__('request-feature')}}
+                        </a>
+                    </div>
+
                     <div class="card mb-4">
-                        <div class="card-header">{{__('support.create')}}</div>
                         <div class="card-body">
+                            <h1 class="fs-4 pb-2">{{__('support.create')}}</h1>
+
                             <form method="POST" action="{{route('support.submit')}}">
                                 @csrf
 

@@ -62,7 +62,11 @@
             }
 
             .export-container table tr:nth-child(even) {
-                background: #EEE
+                background: #EEE;
+            }
+
+            .export-container table tfoot {
+                border-top: 4px double black;
             }
 
             .footer .page-number:after {
@@ -85,12 +89,16 @@
                 height: 50px;
             }
 
+            .number-field {
+                text-align: right;
+                white-space: nowrap;
+            }
+
             .right {
                 float: right;
             }
 
             .center {
-
                 text-align: center;
                 font-style: italic;
             }
@@ -101,12 +109,11 @@
         <div class="footer-wrapper">
             <div class="footer fixed-section">
                 <div class="right">
-                    <span class="page-number">{{ __('export.page') }}</span>
+                    <span class="page-number">{{ __('export.page') }} </span>
                 </div>
                 <div class="center">
-                    0 {{ __('export.reason.private') }} |
-                    1 {{ __('export.reason.business') }} |
-                    2 {{ __('export.reason.commute') }}
+                    *: 0- {{ __('export.reason.private') }} | 1- {{ __('export.reason.business') }} |
+                    2- {{ __('export.reason.commute') }}
                 </div>
                 <div class="left">
                     <span class="promo">
@@ -143,7 +150,7 @@
                         <th>{{ __('export.arrival') }}</th>
                         <th>{{ __('export.duration') }}</th>
                         <th>{{ __('export.kilometers') }}</th>
-                        <th>{{ __('export.reason') }}</th>
+                        <th>{{ __('export.reason') }}*</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -155,12 +162,25 @@
                             <td>{{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}</td>
                             <td>{{ $status->trainCheckin->Destination->name }}</td>
                             <td>{{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}</td>
-                            <td>{{ $status->trainCheckin->duration }} min</td>
-                            <td>{{ number($status->trainCheckin->distance / 1000) }} km</td>
-                            <td><i>{{ $status->business->value }}</i></td>
+                            <td class="number-field">{{ $status->trainCheckin->duration }} min</td>
+                            <td class="number-field">{{ number($status->trainCheckin->distance / 1000) }} km</td>
+                            <td class="number-field"><i>{{ $status->business->value }}</i></td>
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="font-style: italic;">{{ __('export.total') }}:</td>
+                        <td class="number-field">{{ $sum_duration }} min</td>
+                        <td class="number-field">{{ number($sum_distance) }} km</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 

@@ -81,6 +81,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Status::class);
     }
 
+    public function trainCheckins(): HasMany {
+        return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
+    }
+
     public function getTrainDurationAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->select(['arrival', 'departure'])
@@ -113,6 +117,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function follows(): BelongsToMany {
         return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
+    }
+
+    public function blockedUsers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'user_blocks', 'user_id', 'blocked_id');
+    }
+
+    public function blockedByUsers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'user_blocks', 'blocked_id', 'user_id');
     }
 
     public function mutedUsers(): BelongsToMany {
@@ -194,6 +206,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getMutedAttribute(): bool {
         return (auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id));
+    }
+
+    /**
+     * The auth-user is blocked by $this user. auth-user can not see $this's statuses.
+     */
+    public function getIsAuthUserBlockedAttribute(): bool {
+        return (auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id));
+    }
+
+    /**
+     * The auth-user has blocked $this user. $this can not see auth-user's statuses.
+     */
+    public function getIsBlockedByAuthUserAttribute(): bool {
+        return (auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id));
     }
 
     /**

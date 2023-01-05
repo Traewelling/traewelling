@@ -22,15 +22,9 @@ abstract class DashboardController extends Controller
                                 'trainCheckin.HafasTrip.stopoversNEW.trainStation'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->join('train_stations', 'train_stations.ibnr', '=', 'train_checkins.origin')
-                     ->join('train_stopovers', function($join) {
-                         $join->on('train_stopovers.trip_id', '=', 'train_checkins.trip_id');
-                         $join->on('train_stopovers.train_station_id', '=', 'train_stations.id');
-                     })
                      ->select('statuses.*')
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
-                     ->orderByDesc('train_stopovers.departure_real')
-                     ->orderByDesc('train_stopovers.departure_planned')
+                     ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
                      ->whereIn('visibility', [
@@ -52,11 +46,6 @@ abstract class DashboardController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->join('train_stations', 'train_stations.ibnr', '=', 'train_checkins.origin')
-                     ->join('train_stopovers', function($join) {
-                         $join->on('train_stopovers.trip_id', '=', 'train_checkins.trip_id');
-                         $join->on('train_stopovers.train_station_id', '=', 'train_stations.id');
-                     })
                      ->where(function(Builder $query) use ($user) {
                          //Visibility checks: One of the following options must be true
 
@@ -83,9 +72,11 @@ abstract class DashboardController extends Controller
                      })
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
+                     ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
                      ->select('statuses.*')
-                     ->orderByDesc('train_stopovers.departure_real')
-                     ->orderByDesc('train_stopovers.departure_planned')->withCount('likes')
+                     ->orderBy('train_checkins.departure', 'desc')
+                     ->withCount('likes')
                      ->simplePaginate(15);
     }
 }

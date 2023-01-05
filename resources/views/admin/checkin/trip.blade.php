@@ -22,33 +22,44 @@
                                 <div class="form-floating mb-2">
                                     <select class="form-select" name="destination" required>
                                         <option selected value="">Open this select menu</option>
-                                        @foreach($stopovers as $stop)
-                                            @if(!\Carbon\Carbon::parse($stop['plannedArrival'])->isAfter(\Carbon\Carbon::parse(request()->departure)))
+                                        @foreach($stopovers as $stopover)
+                                            @if($stopover->arrival_planned->isBefore(\Carbon\Carbon::parse(request()->departure)))
                                                 @continue
                                             @endif
 
-                                            @if(@$stop['cancelled'] == 'true' && $stop['arrival'] === null && $stop['departure'] === null)
-                                                <option>{{ $stop['stop']['name'] }}
-                                                    &vert; {{ __('stationboard.stop-cancelled') }}</option>
+                                            @if($stopover->cancelled)
+                                                <tr>
+                                                    <td>{{ $stopover->trainStation->name }}</td>
+                                                    <td>
+                                                        <span
+                                                            class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
+                                                    </td>
+                                                    <td>{{ $stopover->platform }}</td>
+                                                </tr>
                                             @else
-                                                <option
-                                                    value='{"destination": "{{$stop['stop']['id']}}", "arrival": "{{$stop['plannedArrival']}}"}'>
-                                                    {{$stop['stop']['name']}}
-                                                    &lt;&gt;
-                                                    @if(!(isset($stop['cancelled']) && $stop['arrival'] == null) && $stop['plannedArrival'] != null)
+                                                <tr class="train-destinationrow"
+                                                    data-ibnr="{{$stopover->trainStation->ibnr}}"
+                                                    data-stopname="{{$stopover->trainStation->name}}"
+                                                    data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
+                                                >
+                                                    <td>{{ $stopover->trainStation->name }}</td>
+                                                    <td>
                                                         {{ __('stationboard.arr') }}
-                                                        {{ \Carbon\Carbon::parse($stop['plannedArrival'])->isoFormat(__('time-format'))}}
-                                                        @if(isset($stop['arrivalDelay']))
-                                                            (+{{ $stop['arrivalDelay'] / 60 }})
+                                                        {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
+                                                        @isset($stopover->arrival_real)
+                                                            <small>(<span
+                                                                    class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
+                                                        @endisset
+                                                    </td>
+                                                    <td class="text-end">
+                                                        {{$stopover->arrival_platform_planned}}
+                                                        @if(isset($stopover->arrival_platform_real) && $stopover->arrival_platform_real !== $stopover->arrival_platform_planned)
+                                                            <span class="text-danger text-decoration-line-through">
+                                                        {{ $stopover->arrival_platform_real }}
+                                                    </span>
                                                         @endif
-                                                    @endif
-                                                    &lt;&gt;
-                                                    Gleis {{ $stop['arrivalPlatform'] }}
-                                                    @if(isset($stop['plannedArrivalPlatform']) && $stop['plannedArrivalPlatform'] != $stop['arrivalPlatform'])
-                                                        &nbsp;
-                                                        {{ $stop['plannedArrivalPlatform'] }}
-                                                    @endif
-                                                </option>
+                                                    </td>
+                                                </tr>
                                             @endif
                                         @endforeach
                                     </select>
@@ -113,6 +124,13 @@
                                            name="toot" {{$user->mastodonUrl ? '' : 'disabled'}}>
                                     <label class="form-check-label" for="mastodon">
                                         Mastodon
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="shouldChain_check"
+                                           name="shouldChain_check" {{$user->mastodonUrl && \App\Http\Controllers\Backend\Social\MastodonController::getLastSavedPostIdFromUserStatuses($user) ? '' : 'disabled'}}>
+                                    <label class="form-check-label" for="shouldChain_check">
+                                        Toot Chaining
                                     </label>
                                 </div>
                             </div>

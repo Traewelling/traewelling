@@ -10,10 +10,12 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
+use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\HafasTripResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
 use App\Models\Event;
@@ -25,6 +27,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
+use OpenApi\Annotations as OA;
 
 class TransportController extends Controller
 {
@@ -69,29 +72,70 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $trainTripResponse = TransportBackend::getTrainTrip(
+            $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripId'],
                 $validated['lineName'],
                 (int) $validated['start']
             );
-            return $this->sendResponse(data: $trainTripResponse);
+            return $this->sendResponse(data: new HafasTripResource($hafasTrip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/station/nearby",
+     *      operationId="trainStationsNearby",
+     *      tags={"Checkin"},
+     *      summary="Location based search for trainstations",
+     *      description="Returns the nearest station to the given coordinates",
+     *      @OA\Parameter(
+     *          name="latitude",
+     *          in="query",
+     *          description="latitude",
+     *          example=48.991,
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="longitude",
+     *          in="query",
+     *          description="longitude",
+     *          example=8.4005,
+     *          required=true
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No station found"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getNextStationByCoordinates(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
                                             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
-                                            'limit'     => ['nullable', 'numeric', 'min:1', 'max:20']
                                         ]);
 
         try {
             $nearestStation = HafasController::getNearbyStations(
                 latitude:  $validated['latitude'],
                 longitude: $validated['longitude'],
-                results:   $validated['limit'] ?? 1
+                results:   1
             )->first();
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 503);
@@ -104,6 +148,35 @@ class TransportController extends Controller
         return $this->sendResponse(new TrainStationResource($nearestStation));
     }
 
+    /**
+     * @OA\Post(
+     *      path="/trains/checkin",
+     *      operationId="createTrainCheckin",
+     *      tags={"Checkin"},
+     *      summary="Create a checkin",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinRequestBody")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinResponse")
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="Checkin collision"),
+     *       @OA\Response(response=403, description="User not authorized"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     * @TODO document the responses
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
@@ -112,6 +185,7 @@ class TransportController extends Controller
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
                                             'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
+                                            'chainPost'   => ['nullable', 'boolean'],
                                             'ibnr'        => ['nullable', 'boolean'],
                                             'tripId'      => ['required'],
                                             'lineName'    => ['required'],
@@ -141,9 +215,10 @@ class TransportController extends Controller
                 force:          isset($validated['force']) && $validated['force'],
                 postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
+                shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
-            return $this->sendResponse($trainCheckinResponse);
+            return $this->sendResponse($trainCheckinResponse, 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
@@ -185,20 +260,72 @@ class TransportController extends Controller
     }
 
     /**
-     * @param string $query
-     *
-     * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $query need to be replaced, preferrably by a space (%20)
+     * @OA\Get(
+     *      path="/trains/station/autocomplete/{query}",
+     *      operationId="trainStationAutocomplete",
+     *      tags={"Checkin"},
+     *      summary="Autocomplete for trainstations",
+     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+     *      @OA\Parameter(
+     *          name="query",
+     *          in="path",
+     *          description="station query",
+     *          example="Karls"
+     *     ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/ShortTrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
      */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
             $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($query);
             return $this->sendResponse($trainAutocompleteResponse);
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 503);
         }
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/station/history",
+     *      operationId="trainStationHistory",
+     *      tags={"Checkin"},
+     *      summary="History for trainstations",
+     *      description="This request returns an array of max. 10 most recent station objects that the user has arrived
+     *      at.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TrainStation"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getTrainStationHistory(): AnonymousResourceCollection {
         return TrainStationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
     }

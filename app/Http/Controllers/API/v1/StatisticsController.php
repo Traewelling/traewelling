@@ -19,6 +19,30 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class StatisticsController extends Controller
 {
     /**
+     * @OA\Get(
+     *      path="/leaderboard",
+     *      operationId="getLeaderboard",
+     *      tags={"Leaderboard"},
+     *      summary="[Auth optional] Get array of 20 best users",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/LeaderboardUser"
+     *                  )
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboard(): AnonymousResourceCollection {
@@ -26,13 +50,62 @@ class StatisticsController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *      path="/leaderboard/distance",
+     *      operationId="getLeaderboardByDistance",
+     *      tags={"Leaderboard"},
+     *      summary="[Auth optional] Get leaderboard array sorted by distance",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/LeaderboardUser"
+     *                  )
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboardByDistance(): AnonymousResourceCollection {
         return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(orderBy: 'distance'));
     }
 
+
     /**
+     * @OA\Get(
+     *      path="/leaderboard/friends",
+     *      operationId="getLeaderboardByFriends",
+     *      tags={"Leaderboard"},
+     *      summary="Get friends-leaderboard array sorted",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/LeaderboardUser"
+     *                  )
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboardFriends(): AnonymousResourceCollection {
@@ -40,7 +113,36 @@ class StatisticsController extends Controller
     }
 
     /**
-     * @param string $date
+     * @OA\Get(
+     *      path="/leaderboard/{month}",
+     *      operationId="getMonthlyLeaderboard",
+     *      tags={"Leaderboard"},
+     *      summary="[Auth optional] Get leaderboard array for a specific month",
+     *      @OA\Parameter(
+     *          name="month",
+     *          in="path",
+     *          description="Month for the complete leaderboard in Format `YYYY-MM`",
+     *          example="2022-04",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/LeaderboardUser"
+     *                  )
+     *              ),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No Event found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
      *
      * @return AnonymousResourceCollection
      */

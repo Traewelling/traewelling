@@ -17,8 +17,8 @@ class ExportTripsTest extends TestCase
 
         $this->user = $this->createGDPRAckedUser();
 
-        $this->checkin("Frankfurt(M) Flughafen Fernbf", Carbon::parse("+1 day 8:00"));
-        $this->checkin("Hamburg Hbf", Carbon::parse("+2 day 7:45"));
+        $this->checkin('Frankfurt(M) Flughafen Fernbf', Carbon::parse("next monday 8:00"));
+        $this->checkin('Hamburg Hbf', Carbon::parse("next thursday 7:45"));
     }
 
     public function test_two_checkins_have_been_created_at_setup() {
