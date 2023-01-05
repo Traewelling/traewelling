@@ -73,6 +73,42 @@ class FollowController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *      path="/user/destroyFollow",
+     *      operationId="destroyFollow",
+     *      tags={"User"},
+     *      summary="Unfollow a user",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the to-be-unfollowed user",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/User")
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="Already following"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     * @param Request          $request
+     * @param FollowController $instance
+     *
+     * @return JsonResponse
+     */
     public static function destroyFollow(Request $request, FollowController $instance): JsonResponse {
         $validated      = $request->validate(['userId' => ['required', 'exists:users,id']]);
         $userToUnfollow = User::find($validated['userId']);
