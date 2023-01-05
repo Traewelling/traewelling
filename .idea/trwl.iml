@@ -176,6 +176,13 @@
       <excludeFolder url="file://$MODULE_DIR$/storage/debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/storage/framework" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/oauth-subscriber" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/coderjerk/bird-elephant" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth2-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/smolblog/oauth2-twitter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ircmaxell/security-lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

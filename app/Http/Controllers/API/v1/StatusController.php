@@ -9,10 +9,12 @@ use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -460,5 +462,45 @@ class StatusController extends Controller
             return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
         });
         return $this->sendResponse($trips);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/user/statuses/active",
+     *      operationId="userState",
+     *      tags={"Auth"},
+     *      summary="User state",
+     *      description="This request returns whether the currently logged-in user has an active check-in or not.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/StatusResource"
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No active checkin"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     *
+     * @return JsonResponse
+     */
+    public function getActiveStatus(): JsonResponse {
+        $latestStatuses = UserBackend::statusesForUser(user: Auth::user());
+        if ($latestStatuses->count() === 0) {
+            return $this->sendError('User doesn\'t have any checkins');
+        }
+        foreach ($latestStatuses as $status) {
+            if ($status->trainCheckin->origin_stopover->departure->isPast()
+                && $status->trainCheckin->destination_stopover->arrival->isFuture()) {
+                return $this->sendResponse(new StatusResource($status));
+            }
+        }
+        return $this->sendError('No active status');
     }
 }

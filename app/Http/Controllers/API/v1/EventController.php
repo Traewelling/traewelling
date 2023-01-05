@@ -55,8 +55,7 @@ class EventController extends Controller
      * @return EventResource
      */
     public function show(string $slug): EventResource {
-        $event = EventBackend::getBySlug($slug);
-        return new EventResource($event);
+        return new EventResource(EventBackend::getBySlug($slug));
     }
 
     /**
@@ -100,8 +99,7 @@ class EventController extends Controller
      * @return EventDetailsResource
      */
     public function showDetails(string $slug): EventDetailsResource {
-        $event = EventBackend::getBySlug($slug);
-        return new EventDetailsResource($event);
+        return new EventDetailsResource(EventBackend::getBySlug($slug));
     }
 
     /**
@@ -153,8 +151,7 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
-        $event = EventBackend::getBySlug($slug);
-        return StatusResource::collection($event->statuses()->paginate(15));
+        return StatusResource::collection(EventBackend::getBySlug($slug)->statuses()->paginate());
     }
 
     /**
@@ -195,8 +192,7 @@ class EventController extends Controller
      * Returns upcoming events
      */
     public function upcoming(): AnonymousResourceCollection {
-        $events = EventBackend::getUpcomingEvents();
-        return EventResource::collection($events);
+        return EventResource::collection(EventBackend::getUpcomingEvents());
     }
 
     /**
@@ -257,7 +253,7 @@ class EventController extends Controller
      *      operationId="getCurrentEvents",
      *      tags={"Events"},
      *      summary="Shows current events with basic information",
-     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkinn",
+     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
      *      @OA\Parameter (
      *          name="slug",
      *          in="path",
@@ -288,7 +284,6 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public function activeEvents(): AnonymousResourceCollection {
-        $events = EventBackend::activeEvents();
-        return EventResource::collection($events);
+        return EventResource::collection(EventBackend::activeEvents());
     }
 }
