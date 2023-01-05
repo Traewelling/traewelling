@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Exceptions\SocialAuth;
 
@@ -9,8 +9,7 @@ class TweetNotSendException extends Exception
     protected int    $statusCode;
 
     /**
-     * @param Status $status
-     * @param int    $statusCOde
+     * @param int $statusCode
      */
     public function __construct(int $statusCode) {
         parent::__construct();

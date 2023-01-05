@@ -21,8 +21,10 @@ class LegacyTwitterController extends AbstractTwitterController
      * @throws NotConnectedException
      */
     public static function getApi(User $user): TwitterOAuth {
-        $sPro = $user?->socialProfile;
-        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null || $sPro->twitter_tokenSecret) {
+        $socialProfile = $user?->socialProfile;
+        if ($socialProfile?->twitter_id === null
+            || $socialProfile?->twitter_token === null
+            || $socialProfile->twitter_tokenSecret === null) {
             throw new NotConnectedException();
         }
         return new TwitterOAuth(
@@ -48,6 +50,12 @@ class LegacyTwitterController extends AbstractTwitterController
         );
 
         if ($connection->getLastHttpCode() !== 200) {
+            Log::error('Legacy Tweet was\t sent. Twitter API Response was not 200.', [
+                'response' => [
+                    'code' => $connection->getLastHttpCode(),
+                    'body' => $connection->getLastBody(),
+                ]
+            ]);
             throw new TweetNotSendException($connection->getLastHttpCode());
         }
 

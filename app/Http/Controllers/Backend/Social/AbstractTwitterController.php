@@ -81,14 +81,14 @@ abstract class AbstractTwitterController extends Controller
      * @param Status $status
      * @param string $socialText
      *
-     * @return int
+     * @return string
      * @throws NotConnectedException
      * @throws TweetNotSendException
      */
     public abstract function postTweet(Status $status, string $socialText): string;
 
     /**
-     * @throws NotConnectedException
+     * @throws NotConnectedException|TweetNotSendException
      */
     public static function postStatus(Status $status): void {
         if (config('trwl.post_social') !== true) {
