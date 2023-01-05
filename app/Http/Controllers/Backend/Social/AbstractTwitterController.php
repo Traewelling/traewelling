@@ -71,6 +71,7 @@ abstract class AbstractTwitterController extends Controller
         $user->socialProfile->update([
                                          'twitter_id'               => $socialiteUser->id,
                                          'twitter_token'            => $socialiteUser->token,
+                                         'twitter_tokenSecret'      => null,
                                          'twitter_refresh_token'    => $socialiteUser->refreshToken,
                                          'twitter_token_expires_at' => Date::now()->add('second', $socialiteUser->expiresIn)
                                      ]);
