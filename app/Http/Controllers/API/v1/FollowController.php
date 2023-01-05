@@ -158,8 +158,8 @@ class FollowController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/settings/followers",
-     *      operationId="getFollowers",
+     *      path="/settings/follow-requests",
+     *      operationId="getFollowRequests",
      *      tags={"User", "Settings"},
      *      summary="List all followers",
      *      @OA\Response(

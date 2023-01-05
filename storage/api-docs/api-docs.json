@@ -573,6 +573,387 @@
                 ]
             }
         },
+        "/user/createFollow": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Follow a user",
+                "operationId": "createFollow",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-followed user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    },
+                    "403": {
+                        "description": "User is blocked"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/destroyFollow": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Unfollow a user",
+                "operationId": "destroyFollow",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unfollowed user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/settings/followers": {
+            "get": {
+                "tags": [
+                    "User",
+                    "Settings"
+                ],
+                "summary": "List all followers",
+                "operationId": "getFollowers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/settings/follow-requests": {
+            "get": {
+                "tags": [
+                    "User",
+                    "Settings"
+                ],
+                "summary": "List all followers",
+                "operationId": "getFollowRequests",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/settings/followings": {
+            "get": {
+                "tags": [
+                    "User",
+                    "Settings"
+                ],
+                "summary": "List all users the current user is following",
+                "operationId": "getFollowings",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/removeFollower": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove a follower",
+                "operationId": "removeFollower",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unfollowed user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "404": {
+                        "description": "Follow not found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/acceptFollowRequest": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Accept a follow request",
+                "operationId": "acceptFollowRequest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the user who sent the follow request",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/rejectFollowRequest": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Reject a follow request",
+                "operationId": "rejectFollowRequest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the user who sent the follow request",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/statuses/{id}/likedby": {
             "get": {
                 "tags": [
@@ -1635,6 +2016,9 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Forbidden, User is blocked"
                     }
                 },
                 "security": [
@@ -1688,6 +2072,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "403": {
+                        "description": "Forbidden, User is blocked"
+                    },
                     "404": {
                         "description": "User not found"
                     }
@@ -1699,13 +2086,129 @@
                 ]
             }
         },
+        "/user/createBlock": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Block a user",
+                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+                "operationId": "createBlock",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-blocked user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "409": {
+                        "description": "User is already blocked"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/user/destroyBlock": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Unmute a user",
+                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\n     *      and send you follow requests.",
+                "operationId": "destroyBlock",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unblocked user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "409": {
+                        "description": "User is not blocked"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/user/createMute": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Mute a user",
-                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
                 "operationId": "createMute",
                 "requestBody": {
                     "required": true,
@@ -1763,7 +2266,7 @@
                     "User"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
                 "operationId": "destroyMute",
                 "requestBody": {
                     "required": true,
@@ -1801,7 +2304,7 @@
                         "description": "Not logged in"
                     },
                     "409": {
-                        "description": "User is already unmuted"
+                        "description": "User is not muted"
                     },
                     "403": {
                         "description": "User not authorized"
@@ -2876,12 +3379,6 @@
                         "description": "is this profile set to private?",
                         "type": "boolean",
                         "example": false
-                    },
-                    "privacyHideDays": {
-                        "title": "privacyHideDays",
-                        "description": "Hide all statuses after x days",
-                        "type": "integer",
-                        "example": 3
                     },
                     "userInvisibleToMe": {
                         "title": "userInvisibleToMe",
