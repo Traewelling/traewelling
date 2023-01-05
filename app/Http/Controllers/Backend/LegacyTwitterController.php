@@ -50,7 +50,7 @@ class LegacyTwitterController extends AbstractTwitterController
         );
 
         if ($connection->getLastHttpCode() !== 200) {
-            Log::error('Legacy Tweet was\t sent. Twitter API Response was not 200.', [
+            Log::error('Legacy Tweet wasn\'t sent. Twitter API Response was not 200.', [
                 'response' => [
                     'code' => $connection->getLastHttpCode(),
                     'body' => $connection->getLastBody(),

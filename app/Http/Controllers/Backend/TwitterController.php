@@ -32,6 +32,8 @@ class TwitterController extends AbstractTwitterController
         ) {
             throw new NotConnectedException();
         }
+
+        $accessToken = $socialProfile->twitter_token;
         if (Date::now()->isAfter($socialProfile->twitter_token_expires_at)) {
             $provider = new Twitter([
                                         'clientId'     => config('trwl.twitter_id'),
@@ -49,8 +51,6 @@ class TwitterController extends AbstractTwitterController
                                    ]);
             $accessToken = $token->getToken();
             Log::info("Refreshed twitter access token for {$socialProfile->twitter_id}");
-        } else {
-            $accessToken = $socialProfile->twitter_token;
         }
 
         $credentials = [

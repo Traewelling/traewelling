@@ -21,7 +21,7 @@ abstract class AbstractTwitterController extends Controller
     /**
      * @throws NotConnectedException
      */
-    public static function forUser(User $user): AbstractTwitterController {
+    public static function getTwitterControllerForUser(User $user): AbstractTwitterController {
         $socialProfile = $user->socialProfile;
         if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null) {
             throw new NotConnectedException();
@@ -29,9 +29,8 @@ abstract class AbstractTwitterController extends Controller
 
         if ($socialProfile?->twitter_tokenSecret !== null) {
             return new LegacyTwitterController();
-        } else {
-            return new TwitterController();
         }
+        return new TwitterController();
     }
 
     /**
@@ -73,7 +72,7 @@ abstract class AbstractTwitterController extends Controller
                                          'twitter_token'            => $socialiteUser->token,
                                          'twitter_tokenSecret'      => null,
                                          'twitter_refresh_token'    => $socialiteUser->refreshToken,
-                                         'twitter_token_expires_at' => Date::now()->add('second', $socialiteUser->expiresIn)
+                                         'twitter_token_expires_at' => Date::now()->addSeconds($socialiteUser->expiresIn)
                                      ]);
     }
 
@@ -86,7 +85,7 @@ abstract class AbstractTwitterController extends Controller
      * @throws NotConnectedException
      * @throws TweetNotSendException
      */
-    public abstract function postTweet(Status $status, string $socialText): string;
+    abstract public function postTweet(Status $status, string $socialText): string;
 
     /**
      * @throws NotConnectedException|TweetNotSendException
@@ -99,7 +98,7 @@ abstract class AbstractTwitterController extends Controller
         if ($status?->user?->socialProfile?->twitter_id === null) {
             return;
         }
-        $controller = self::forUser($status->user);
+        $controller = self::getTwitterControllerForUser($status->user);
 
         try {
             $socialText = self::generateFullSocialText($status);
