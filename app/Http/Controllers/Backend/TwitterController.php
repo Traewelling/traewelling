@@ -63,11 +63,9 @@ class TwitterController extends AbstractTwitterController
             throw new NotConnectedException();
         }
 
-        $api = self::getApi($status->user);
-
-
-        $tweet = (new Tweet)->text($socialText);
-
-        return $api->tweets()->tweet($tweet)->data->id_str;
+        $twitterApi  = self::getApi($status->user);
+        $newTweet    = (new Tweet)->text($socialText);
+        $postedTweet = $twitterApi->tweets()->tweet($newTweet)->data;
+        return $postedTweet?->id_str ?? $postedTweet->id;
     }
 }
