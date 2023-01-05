@@ -122,10 +122,69 @@ class FollowController extends Controller
         return $this->sendResponse(new UserResource($userToUnfollow));
     }
 
+    /**
+     * @OA\Get(
+     *      path="/settings/followers",
+     *      operationId="getFollowers",
+     *      tags={"User", "Settings"},
+     *      summary="List all followers",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="Already following"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function getFollowers(): AnonymousResourceCollection {
         return UserResource::collection(FollowBackend::getFollowers(user: auth()->user()));
     }
 
+
+    /**
+     * @OA\Get(
+     *      path="/settings/followers",
+     *      operationId="getFollowers",
+     *      tags={"User", "Settings"},
+     *      summary="List all followers",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=409, description="Already following"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function getFollowRequests(): AnonymousResourceCollection {
         return UserResource::collection(FollowBackend::getFollowRequests(user: auth()->user()));
     }
@@ -139,7 +198,7 @@ class FollowController extends Controller
      *      path="/user/removeFollower",
      *      operationId="removeFollower",
      *      tags={"User"},
-     *      summary="Unfollow a user",
+     *      summary="Remove a follower",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
@@ -195,7 +254,43 @@ class FollowController extends Controller
         }
     }
 
-    public function approveFollowRequest(Request $request) {
+    /**
+     * @OA\Put(
+     *     path="/user/acceptFollowRequest",
+     *     operationId="acceptFollowRequest",
+     *     tags={"User"},
+     *     summary="Accept a follow request",
+     *     @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *     @OA\Property(
+     *     property="userId",
+     *     title="userId",
+     *     format="int64",
+     *     description="ID of the user who sent the follow request",
+     *     example=1
+     *     )
+     *    )
+     *  ),
+     *     @OA\Response(
+     *     response=200,
+     *     description="successful operation",
+     *    ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Request not found"),
+     *     @OA\Response(response=500, description="Unknown error"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function approveFollowRequest(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'userId' => [
                                                 'required',
@@ -205,16 +300,51 @@ class FollowController extends Controller
 
         try {
             FollowBackend::approveFollower(auth()->user()->id, $validated['userId']);
-            abort(204);
+            return $this->sendResponse();
         } catch (ModelNotFoundException) {
-            abort(404);
-        } catch (AlreadyFollowingException $exception) {
-            report($exception);
+            return $this->sendError('Request not found');
+        } catch (Exception) {
+            Log::error('APIv1/approveFollowRequest: Could not approve follow request', ['user' => auth()->user(), 'userId' => $validated['userId']]);
+            return $this->sendError('Unknown error', 500);
         }
-        abort(500);
     }
 
-    public function rejectFollowRequest(Request $request) {
+    /**
+     * @OA\Delete(
+     *      path="/user/rejectFollowRequest",
+     *      operationId="rejectFollowRequest",
+     *      tags={"User"},
+     *      summary="Reject a follow request",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="userId",
+     *                  title="userId",
+     *                  format="int64",
+     *                  description="ID of the user who sent the follow request",
+     *                  example=1
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=403, description="Permission denied"),
+     *       @OA\Response(response=404, description="Request not found"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function rejectFollowRequest(Request $request): JsonResponse {
         $validated = $request->validate([
                                             'userId' => [
                                                 'required',
@@ -223,10 +353,12 @@ class FollowController extends Controller
                                         ]);
         try {
             FollowBackend::rejectFollower(auth()->user()->id, $validated['userId']);
-            abort(204);
+            return $this->sendResponse();
         } catch (ModelNotFoundException) {
-            abort(404);
+            return $this->sendError('Request not found');
+        } catch (Exception) {
+            Log::error('APIv1/rejectFollowRequest: Could not reject follow request', ['user' => auth()->user(), 'userId' => $validated['userId']]);
+            return $this->sendError('Unknown error', 500);
         }
-        abort(500);
     }
 }
