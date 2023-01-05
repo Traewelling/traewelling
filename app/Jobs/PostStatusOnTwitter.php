@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Exceptions\NotConnectedException;
-use App\Http\Controllers\Backend\Social\TwitterController;
+use App\Http\Controllers\Backend\Social\AbstractTwitterController;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -33,7 +33,7 @@ class PostStatusOnTwitter implements ShouldQueue
                              "status_id" => $this->status->id
                          ]);
 
-        TwitterController::postStatus($this->status);
+        AbstractTwitterController::postStatus($this->status);
     }
 
     /**
