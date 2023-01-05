@@ -57,7 +57,6 @@ abstract class ApiTestCase extends TestCase
                                                'twitterUrl',
                                                'mastodonUrl',
                                                'privateProfile',
-                                               'privacyHideDays',
                                                'preventIndex',
                                                'role',
                                                'home',
