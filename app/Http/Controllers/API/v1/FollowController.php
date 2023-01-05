@@ -175,8 +175,6 @@ class FollowController extends Controller
      *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
      *          )
      *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=409, description="Already following"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -189,6 +187,33 @@ class FollowController extends Controller
         return UserResource::collection(FollowBackend::getFollowRequests(user: auth()->user()));
     }
 
+    /**
+     * @OA\Get(
+     *      path="/settings/followings",
+     *      operationId="getFollowings",
+     *      tags={"User", "Settings"},
+     *      summary="List all users the current user is following",
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/User"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
+     * @return AnonymousResourceCollection
+     */
     public function getFollowings(): AnonymousResourceCollection {
         return UserResource::collection(FollowBackend::getFollowings(user: auth()->user()));
     }
