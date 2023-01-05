@@ -25,7 +25,11 @@ class TwitterController extends AbstractTwitterController
      */
     public static function getApi(User $user): BirdElephant {
         $socialProfile = $user->socialProfile;
-        if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null || $socialProfile->twitter_refresh_token === null || $socialProfile->twitter_token_expires_at === null) {
+        if ($socialProfile?->twitter_id === null
+            || $socialProfile?->twitter_token === null
+            || $socialProfile->twitter_refresh_token === null
+            || $socialProfile->twitter_token_expires_at === null
+        ) {
             throw new NotConnectedException();
         }
         if (Date::now()->isAfter($socialProfile->twitter_token_expires_at)) {
@@ -39,27 +43,35 @@ class TwitterController extends AbstractTwitterController
                 'refresh_token' => $socialProfile->twitter_refresh_token
             ]);
             $socialProfile->update([
-                              'twitter_token'            => $token->getToken(),
-                              'twitter_refresh_token'    => $token->getRefreshToken(),
-                              'twitter_token_expires_at' => Date::createFromTimestamp($token->getExpires())
-                          ]);
-            $access_token = $token->getToken();
+                                       'twitter_token'            => $token->getToken(),
+                                       'twitter_refresh_token'    => $token->getRefreshToken(),
+                                       'twitter_token_expires_at' => Date::createFromTimestamp($token->getExpires())
+                                   ]);
+            $accessToken = $token->getToken();
             Log::info("Refreshed twitter access token for {$socialProfile->twitter_id}");
         } else {
-            $access_token = $socialProfile->twitter_token;
+            $accessToken = $socialProfile->twitter_token;
         }
 
         $credentials = [
             'consumer_key'    => config('trwl.twitter_id'),
             'consumer_secret' => config('trwl.twitter_secret'),
-            'auth_token'      => $access_token
+            'auth_token'      => $accessToken
         ];
         return new BirdElephant($credentials);
     }
 
+    /**
+     * @param Status $status
+     * @param string $socialText
+     *
+     * @return string
+     * @throws IdentityProviderException
+     * @throws NotConnectedException
+     */
     public function postTweet(Status $status, string $socialText): string {
-        $sPro = $status->user->socialProfile;
-        if ($sPro?->twitter_id === null || $sPro?->twitter_token === null) {
+        $socialProfile = $status->user->socialProfile;
+        if ($socialProfile?->twitter_id === null || $socialProfile?->twitter_token === null) {
             throw new NotConnectedException();
         }
 
