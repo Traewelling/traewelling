@@ -61,6 +61,8 @@ class LikesController extends Controller
     }
 
     /**
+     *
+     *
      * @param int $statusId
      *
      * @return JsonResponse

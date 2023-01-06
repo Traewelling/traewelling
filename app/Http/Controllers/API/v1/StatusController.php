@@ -228,7 +228,7 @@ class StatusController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="destroySingleStatus",
      *      tags={"Status"},
      *      summary="Destroy a status",
@@ -274,7 +274,7 @@ class StatusController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="updateSingleStatus",
      *      tags={"Status"},
      *      summary="Update a status",

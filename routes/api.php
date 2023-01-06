@@ -50,10 +50,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
         Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
-        Route::post('like/{statusId}', [LikesController::class, 'create']);
-        Route::delete('like/{status}', [LikesController::class, 'destroy']);
-        Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
-        Route::put('statuses/{id}', [StatusController::class, 'update']);
+        Route::delete('status/{id}', [StatusController::class, 'destroy']);
+        Route::put('status/{id}', [StatusController::class, 'update']);
+        Route::post('status/{id}/like', [LikesController::class, 'create']);
+        Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
+        Route::delete('statuses/{id}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::put('statuses/{id}', [StatusController::class, 'update']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::post('like/{statusId}', [LikesController::class, 'create']);  //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
+        Route::delete('like/{status}', [LikesController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
