@@ -276,6 +276,55 @@ class StatisticsController extends Controller
         return $this->sendResponse(data: $returnData, additional: $additionalData);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/statistics/global",
+     *     operationId="getGlobalStatistics",
+     *     tags={"Statistics"},
+     *     summary="Get global statistics of the last 4 weeks",
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="distance",
+     *                     description="Globally travelled distance in meters",
+     *                     type="integer",
+     *                     example=1000
+     *                 ),
+     *                 @OA\Property(
+     *                     property="duration",
+     *                     description="Globally travelled duration in minutes",
+     *                     type="integer",
+     *                     example=1000
+     *                 ),
+     *                 @OA\Property(
+     *                     property="activeUsers",
+     *                     description="Number of active users",
+     *                     type="integer",
+     *                     example=1000
+     *                ),
+     *           @OA\Property(
+     *               property="meta",
+     *               type="object",
+     *               @OA\Property(property="from", example="2021-01-01T00:00:00.000000Z"),
+     *               @OA\Property(property="until", example="2021-02-01T00:00:00.000000Z"),
+     *           ),
+     *        )
+     *      ),
+     *     ),
+     *     security={
+     *        {"token": {}},
+     *        {}
+     *     }
+     *     )
+     *
+     *
+     * @return JsonResponse
+     */
     public function getGlobalStatistics(): JsonResponse {
         $from  = Carbon::now()->subWeeks(4);
         $until = Carbon::now();
