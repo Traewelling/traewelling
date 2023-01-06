@@ -334,17 +334,12 @@ class UserController extends Controller
      *      summary="Mute a user",
      *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active
      *      journeys tab",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int64",
-     *                  description="ID of the to-be-muted user",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -397,17 +392,12 @@ class UserController extends Controller
      *      summary="Unmute a user",
      *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active
      *      journeys tab again",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int64",
-     *                  description="ID of the to-be-unmuted user",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=200,

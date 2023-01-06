@@ -24,21 +24,16 @@ class FollowController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/user/createFollow",
+     *      path="/user/{id}/follow",
      *      operationId="createFollow",
      *      tags={"User/Follow"},
      *      summary="Follow a user",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int64",
-     *                  description="ID of the to-be-followed user",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -56,17 +51,17 @@ class FollowController extends Controller
      *       }
      *     )
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function createFollow(Request $request): JsonResponse {
-        $validated    = $request->validate(['userId' => ['required', 'exists:users,id']]);
-        $userToFollow = User::find($validated['userId']);
-
+    public function createFollow(int $userId): JsonResponse {
         try {
+            $userToFollow         = User::findOrFail($userId);
             $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (AlreadyFollowingException) {
             return $this->sendError(['message' => __('controller.user.follow-error')], 409);
         } catch (InvalidArgumentException) {
@@ -78,21 +73,16 @@ class FollowController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/user/destroyFollow",
+     *      path="/user/{id}/follow",
      *      operationId="destroyFollow",
      *      tags={"User/Follow"},
      *      summary="Unfollow a user",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int64",
-     *                  description="ID of the to-be-unfollowed user",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -102,6 +92,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
      *           {"token": {}},
@@ -109,21 +100,24 @@ class FollowController extends Controller
      *       }
      *     )
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function destroyFollow(Request $request): JsonResponse {
-        $validated      = $request->validate(['userId' => ['required', 'exists:users,id']]);
-        $userToUnfollow = User::find($validated['userId']);
-
-        $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
-        if ($destroyFollowResponse === false) {
-            return $this->sendError(['message' => __('controller.user.follow-404')], 409);
+    public function destroyFollow(int $userId): JsonResponse {
+        try {
+            $userToUnfollow        = User::findOrFail($userId);
+            $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
+            if ($destroyFollowResponse === false) {
+                return $this->sendError(['message' => __('controller.user.follow-404')], 409);
+            }
+            $userToUnfollow->fresh();
+            return $this->sendResponse();
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
+        } catch (InvalidArgumentException) {
+            return $this->sendError(null, 400);
         }
-
-        $userToUnfollow->fresh();
-        return $this->sendResponse(new UserResource($userToUnfollow));
     }
 
     /**
