@@ -124,7 +124,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/followers",
      *      operationId="getFollowers",
-     *      tags={"Follow", "Settings"},
+     *      tags={"User/Follow", "Settings"},
      *      summary="List all followers",
      *      @OA\Response(
      *          response=200,
@@ -158,7 +158,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/follow-requests",
      *      operationId="getFollowRequests",
-     *      tags={"Follow", "Settings"},
+     *      tags={"User/Follow", "Settings"},
      *      summary="List all followers",
      *      @OA\Response(
      *          response=200,
@@ -189,7 +189,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/followings",
      *      operationId="getFollowings",
-     *      tags={"Follow", "Settings"},
+     *      tags={"User/Follow", "Settings"},
      *      summary="List all users the current user is following",
      *      @OA\Response(
      *          response=200,
