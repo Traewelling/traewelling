@@ -64,11 +64,68 @@ class TransportController extends Controller
         );
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/trip",
+     *      operationId="getTrainTrip",
+     *      tags={"Checkin"},
+     *      summary="Get the stopovers and trip information for a given train",
+     *      @OA\Parameter(
+     *          name="tripId",
+     *          in="query",
+     *          description="HAFAS trip ID (fetched from departures)",
+     *          example="1|323306|1|80|17072022",
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="lineName",
+     *          in="query",
+     *          description="line name for that train",
+     *          example="S 4",
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="start",
+     *          in="query",
+     *          description="start point from where the stopovers should be desplayed",
+     *          example=4711,
+     *          required=true
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="category", ref="#/components/schemas/TrainCategoryEnum"),
+     *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
+     *                  @OA\Property(property="lineName", type="string", example="S 4"),
+     *                  @OA\Property(property="origin", ref="#/components/schemas/TrainStation"),
+     *                  @OA\Property(property="destination", ref="#/components/schemas/TrainStation"),
+     *                  @OA\Property(property="stopovers", type="array",
+     *                      @OA\Items(
+     *                          ref="#/components/schemas/TrainStopover"
+     *                      )
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No station found"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'   => ['required', 'string'],
-                                            'lineName' => ['required', 'string'],
-                                            'start'    => ['required', 'numeric', 'gt:0'],
+                                            'tripId'      => ['required_unless:hafasTripId,null', 'string'],
+                                            'hafasTripId' => ['required_unless:tripId,null', 'string'],
+                                            'lineName'    => ['required', 'string'],
+                                            'start'       => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
@@ -171,7 +228,6 @@ class TransportController extends Controller
      *           {}
      *       }
      *     )
-     * @TODO document the responses
      *
      * @param Request $request
      *
@@ -265,7 +321,8 @@ class TransportController extends Controller
      *      operationId="trainStationAutocomplete",
      *      tags={"Checkin"},
      *      summary="Autocomplete for trainstations",
-     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
+     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
      *      @OA\Parameter(
      *          name="query",
      *          in="path",

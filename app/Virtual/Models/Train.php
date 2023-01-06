@@ -37,11 +37,7 @@ class Train
 
     /**
      * @OA\Property (
-     *     title="category",
-     *     description="Category of transport. ",
-     *     type="string",
-     *     enum={"nationalExpress", "national", "regionalExp", "regional", "suburban", "bus", "ferry", "subway",
-     *     "tram", "taxi"}, example="suburban"
+     *      ref="#/components/schemas/TrainCategoryEnum"
      * )
      *
      * @var string

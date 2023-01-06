@@ -1724,6 +1724,102 @@
                 ]
             }
         },
+        "/trains/trip": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get the stopovers and trip information for a given train",
+                "operationId": "getTrainTrip",
+                "parameters": [
+                    {
+                        "name": "tripId",
+                        "in": "query",
+                        "description": "HAFAS trip ID (fetched from departures)",
+                        "required": true,
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    {
+                        "name": "lineName",
+                        "in": "query",
+                        "description": "line name for that train",
+                        "required": true,
+                        "example": "S 4"
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "start point from where the stopovers should be desplayed",
+                        "required": true,
+                        "example": 4711
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "int64",
+                                                    "example": 1
+                                                },
+                                                "category": {
+                                                    "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                },
+                                                "number": {
+                                                    "type": "string",
+                                                    "example": "4-a6s4-4"
+                                                },
+                                                "lineName": {
+                                                    "type": "string",
+                                                    "example": "S 4"
+                                                },
+                                                "origin": {
+                                                    "$ref": "#/components/schemas/TrainStation"
+                                                },
+                                                "destination": {
+                                                    "$ref": "#/components/schemas/TrainStation"
+                                                },
+                                                "stopovers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TrainStopover"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No station found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/trains/station/nearby": {
             "get": {
                 "tags": [
@@ -1840,7 +1936,7 @@
                     "Checkin"
                 ],
                 "summary": "Autocomplete for trainstations",
-                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
                 "operationId": "trainStationAutocomplete",
                 "parameters": [
                     {
@@ -2958,22 +3054,7 @@
                         "example": "1|323306|1|80|17072022"
                     },
                     "category": {
-                        "title": "category",
-                        "description": "Category of transport. ",
-                        "type": "string",
-                        "enum": [
-                            "nationalExpress",
-                            "national",
-                            "regionalExp",
-                            "regional",
-                            "suburban",
-                            "bus",
-                            "ferry",
-                            "subway",
-                            "tram",
-                            "taxi"
-                        ],
-                        "example": "suburban"
+                        "$ref": "#/components/schemas/TrainCategoryEnum"
                     },
                     "number": {
                         "title": "number",
@@ -3205,6 +3286,12 @@
                         "description": "id",
                         "type": "integer",
                         "example": "12089"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
                     },
                     "rilIdentifier": {
                         "title": "rilIdentifier",
@@ -3587,6 +3674,24 @@
                     3
                 ],
                 "example": 1
+            },
+            "TrainCategoryEnum": {
+                "title": "category",
+                "description": "Category of transport. ",
+                "type": "string",
+                "enum": [
+                    "nationalExpress",
+                    "national",
+                    "regionalExp",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
             },
             "VisibilityEnum": {
                 "title": "visibility",
