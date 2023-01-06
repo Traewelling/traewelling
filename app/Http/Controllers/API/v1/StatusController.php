@@ -263,13 +263,12 @@ class StatusController extends Controller
     public function destroy(int $id): JsonResponse {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $id);
+            return $this->sendResponse();
         } catch (PermissionException) {
-            abort(403);
+            return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
-            abort(404);
+            return $this->sendError('No status found for this id.');
         }
-
-        return $this->sendResponse();
     }
 
     /**
