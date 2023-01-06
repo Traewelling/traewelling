@@ -576,7 +576,7 @@
         "/user/createFollow": {
             "post": {
                 "tags": [
-                    "User"
+                    "Follow"
                 ],
                 "summary": "Follow a user",
                 "operationId": "createFollow",
@@ -604,7 +604,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -630,7 +635,7 @@
         "/user/destroyFollow": {
             "delete": {
                 "tags": [
-                    "User"
+                    "Follow"
                 ],
                 "summary": "Unfollow a user",
                 "operationId": "destroyFollow",
@@ -653,12 +658,17 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -681,7 +691,7 @@
         "/settings/followers": {
             "get": {
                 "tags": [
-                    "User",
+                    "Follow",
                     "Settings"
                 ],
                 "summary": "List all followers",
@@ -729,7 +739,7 @@
         "/settings/follow-requests": {
             "get": {
                 "tags": [
-                    "User",
+                    "Follow",
                     "Settings"
                 ],
                 "summary": "List all followers",
@@ -771,7 +781,7 @@
         "/settings/followings": {
             "get": {
                 "tags": [
-                    "User",
+                    "Follow",
                     "Settings"
                 ],
                 "summary": "List all users the current user is following",
@@ -813,7 +823,7 @@
         "/user/removeFollower": {
             "delete": {
                 "tags": [
-                    "User"
+                    "Follow"
                 ],
                 "summary": "Remove a follower",
                 "operationId": "removeFollower",
@@ -863,7 +873,7 @@
         "/user/acceptFollowRequest": {
             "put": {
                 "tags": [
-                    "User"
+                    "Follow"
                 ],
                 "summary": "Accept a follow request",
                 "operationId": "acceptFollowRequest",
@@ -910,7 +920,7 @@
         "/user/rejectFollowRequest": {
             "delete": {
                 "tags": [
-                    "User"
+                    "Follow"
                 ],
                 "summary": "Reject a follow request",
                 "operationId": "rejectFollowRequest",

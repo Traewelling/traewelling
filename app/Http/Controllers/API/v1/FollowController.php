@@ -26,7 +26,7 @@ class FollowController extends Controller
      * @OA\Post(
      *      path="/user/createFollow",
      *      operationId="createFollow",
-     *      tags={"User"},
+     *      tags={"Follow"},
      *      summary="Follow a user",
      *      @OA\RequestBody(
      *          required=true,
@@ -43,7 +43,9 @@ class FollowController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/User")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/User")
+     *         )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Already following"),
@@ -78,7 +80,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/destroyFollow",
      *      operationId="destroyFollow",
-     *      tags={"User"},
+     *      tags={"Follow"},
      *      summary="Unfollow a user",
      *      @OA\RequestBody(
      *          required=true,
@@ -93,9 +95,11 @@ class FollowController extends Controller
      *          )
      *      ),
      *      @OA\Response(
-     *          response=201,
+     *          response=200,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/User")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/User")
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Already following"),
@@ -126,7 +130,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/followers",
      *      operationId="getFollowers",
-     *      tags={"User", "Settings"},
+     *      tags={"Follow", "Settings"},
      *      summary="List all followers",
      *      @OA\Response(
      *          response=200,
@@ -160,7 +164,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/follow-requests",
      *      operationId="getFollowRequests",
-     *      tags={"User", "Settings"},
+     *      tags={"Follow", "Settings"},
      *      summary="List all followers",
      *      @OA\Response(
      *          response=200,
@@ -191,7 +195,7 @@ class FollowController extends Controller
      * @OA\Get(
      *      path="/settings/followings",
      *      operationId="getFollowings",
-     *      tags={"User", "Settings"},
+     *      tags={"Follow", "Settings"},
      *      summary="List all users the current user is following",
      *      @OA\Response(
      *          response=200,
@@ -222,7 +226,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/removeFollower",
      *      operationId="removeFollower",
-     *      tags={"User"},
+     *      tags={"Follow"},
      *      summary="Remove a follower",
      *      @OA\RequestBody(
      *          required=true,
@@ -255,12 +259,7 @@ class FollowController extends Controller
      * @return JsonResponse
      */
     public function removeFollower(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                Rule::in(auth()->user()->followers->pluck('user_id')),
-                                            ]
-                                        ]);
+        $validated = $request->validate(['userId' => ['required',]]);
         try {
             $follow = Follow::where('user_id', $validated['userId'])
                             ->where('follow_id', auth()->user()->id)
@@ -283,7 +282,7 @@ class FollowController extends Controller
      * @OA\Put(
      *     path="/user/acceptFollowRequest",
      *     operationId="acceptFollowRequest",
-     *     tags={"User"},
+     *     tags={"Follow"},
      *     summary="Accept a follow request",
      *     @OA\RequestBody(
      *     required=true,
@@ -316,12 +315,7 @@ class FollowController extends Controller
      * @return JsonResponse
      */
     public function approveFollowRequest(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                Rule::in(auth()->user()->followRequests->pluck('user_id'))
-                                            ]
-                                        ]);
+        $validated = $request->validate(['userId' => ['required',]]);
 
         try {
             FollowBackend::approveFollower(auth()->user()->id, $validated['userId']);
@@ -338,7 +332,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/rejectFollowRequest",
      *      operationId="rejectFollowRequest",
-     *      tags={"User"},
+     *      tags={"Follow"},
      *      summary="Reject a follow request",
      *      @OA\RequestBody(
      *          required=true,
@@ -370,12 +364,7 @@ class FollowController extends Controller
      * @return JsonResponse
      */
     public function rejectFollowRequest(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                Rule::in(auth()->user()->followRequests->pluck('user_id'))
-                                            ]
-                                        ]);
+        $validated = $request->validate(['userId' => ['required',]]);
         try {
             FollowBackend::rejectFollower(auth()->user()->id, $validated['userId']);
             return $this->sendResponse();
