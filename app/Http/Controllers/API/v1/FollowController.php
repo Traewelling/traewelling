@@ -26,7 +26,7 @@ class FollowController extends Controller
      * @OA\Post(
      *      path="/user/createFollow",
      *      operationId="createFollow",
-     *      tags={"Follow"},
+     *      tags={"User/Follow"},
      *      summary="Follow a user",
      *      @OA\RequestBody(
      *          required=true,
@@ -80,7 +80,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/destroyFollow",
      *      operationId="destroyFollow",
-     *      tags={"Follow"},
+     *      tags={"User/Follow"},
      *      summary="Unfollow a user",
      *      @OA\RequestBody(
      *          required=true,
@@ -226,7 +226,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/removeFollower",
      *      operationId="removeFollower",
-     *      tags={"Follow"},
+     *      tags={"User/Follow"},
      *      summary="Remove a follower",
      *      @OA\RequestBody(
      *          required=true,
@@ -282,7 +282,7 @@ class FollowController extends Controller
      * @OA\Put(
      *     path="/user/acceptFollowRequest",
      *     operationId="acceptFollowRequest",
-     *     tags={"Follow"},
+     *     tags={"User/Follow"},
      *     summary="Accept a follow request",
      *     @OA\RequestBody(
      *     required=true,
@@ -332,7 +332,7 @@ class FollowController extends Controller
      * @OA\Delete(
      *      path="/user/rejectFollowRequest",
      *      operationId="rejectFollowRequest",
-     *      tags={"Follow"},
+     *      tags={"User/Follow"},
      *      summary="Reject a follow request",
      *      @OA\RequestBody(
      *          required=true,

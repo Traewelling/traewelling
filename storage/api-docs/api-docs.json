@@ -576,7 +576,7 @@
         "/user/createFollow": {
             "post": {
                 "tags": [
-                    "Follow"
+                    "User/Follow"
                 ],
                 "summary": "Follow a user",
                 "operationId": "createFollow",
@@ -635,7 +635,7 @@
         "/user/destroyFollow": {
             "delete": {
                 "tags": [
-                    "Follow"
+                    "User/Follow"
                 ],
                 "summary": "Unfollow a user",
                 "operationId": "destroyFollow",
@@ -823,7 +823,7 @@
         "/user/removeFollower": {
             "delete": {
                 "tags": [
-                    "Follow"
+                    "User/Follow"
                 ],
                 "summary": "Remove a follower",
                 "operationId": "removeFollower",
@@ -873,7 +873,7 @@
         "/user/acceptFollowRequest": {
             "put": {
                 "tags": [
-                    "Follow"
+                    "User/Follow"
                 ],
                 "summary": "Accept a follow request",
                 "operationId": "acceptFollowRequest",
@@ -920,7 +920,7 @@
         "/user/rejectFollowRequest": {
             "delete": {
                 "tags": [
-                    "Follow"
+                    "User/Follow"
                 ],
                 "summary": "Reject a follow request",
                 "operationId": "rejectFollowRequest",
@@ -2506,7 +2506,7 @@
         "/user/createBlock": {
             "post": {
                 "tags": [
-                    "Hide and Block"
+                    "User/Hide and Block"
                 ],
                 "summary": "Block a user",
                 "description": "Block a specific user. That user will not be able to see your statuses or profile information,\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
@@ -2569,7 +2569,7 @@
         "/user/destroyBlock": {
             "delete": {
                 "tags": [
-                    "Hide and Block"
+                    "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
                 "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\n     *      and send you follow requests.",
@@ -2632,7 +2632,7 @@
         "/user/createMute": {
             "post": {
                 "tags": [
-                    "Hide and Block"
+                    "User/Hide and Block"
                 ],
                 "summary": "Mute a user",
                 "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
@@ -2695,7 +2695,7 @@
         "/user/destroyMute": {
             "delete": {
                 "tags": [
-                    "Hide and Block"
+                    "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
                 "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
@@ -4105,11 +4105,11 @@
             "description": "Information regarding users"
         },
         {
-            "name": "Follow",
+            "name": "User/Follow",
             "description": "Follow and unfollow users, manage your followers"
         },
         {
-            "name": "Hide and Block",
+            "name": "User/Hide and Block",
             "description": "Mute and block users"
         },
         {

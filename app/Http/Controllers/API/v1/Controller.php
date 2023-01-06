@@ -57,11 +57,11 @@ use Illuminate\Http\JsonResponse;
  *     description="Information regarding users"
  * )
  * @OA\Tag(
- *     name="Follow",
+ *     name="User/Follow",
  *     description="Follow and unfollow users, manage your followers"
  * )
  * @OA\Tag(
- *     name="Hide and Block",
+ *     name="User/Hide and Block",
  *     description="Mute and block users"
  * )
  * @OA\Tag(
