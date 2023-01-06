@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors.",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -573,31 +573,24 @@
                 ]
             }
         },
-        "/user/createFollow": {
+        "/user/{id}/follow": {
             "post": {
                 "tags": [
                     "User/Follow"
                 ],
                 "summary": "Follow a user",
                 "operationId": "createFollow",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "userId": {
-                                        "title": "userId",
-                                        "description": "ID of the to-be-followed user",
-                                        "format": "int64",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
-                },
+                ],
                 "responses": {
                     "201": {
                         "description": "successful operation",
@@ -630,33 +623,24 @@
                     },
                     {}
                 ]
-            }
-        },
-        "/user/destroyFollow": {
+            },
             "delete": {
                 "tags": [
                     "User/Follow"
                 ],
                 "summary": "Unfollow a user",
                 "operationId": "destroyFollow",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "userId": {
-                                        "title": "userId",
-                                        "description": "ID of the to-be-unfollowed user",
-                                        "format": "int64",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -676,6 +660,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "404": {
+                        "description": "User not found"
+                    },
                     "409": {
                         "description": "Already following"
                     }
@@ -691,7 +678,7 @@
         "/settings/followers": {
             "get": {
                 "tags": [
-                    "Follow",
+                    "User/Follow",
                     "Settings"
                 ],
                 "summary": "List all followers",
@@ -739,7 +726,7 @@
         "/settings/follow-requests": {
             "get": {
                 "tags": [
-                    "Follow",
+                    "User/Follow",
                     "Settings"
                 ],
                 "summary": "List all followers",
@@ -781,7 +768,7 @@
         "/settings/followings": {
             "get": {
                 "tags": [
-                    "Follow",
+                    "User/Follow",
                     "Settings"
                 ],
                 "summary": "List all users the current user is following",
@@ -964,7 +951,7 @@
                 ]
             }
         },
-        "/statuses/{id}/likedby": {
+        "/status/{id}/likes": {
             "get": {
                 "tags": [
                     "Likes"
@@ -1010,6 +997,100 @@
                     },
                     "403": {
                         "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/status/{id}/like": {
+            "post": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Add like to status",
+                "description": "Add like to status",
+                "operationId": "addLikeToStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "409": {
+                        "description": "Status already liked by user"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Remove like from status",
+                "description": "Removes like from status",
+                "operationId": "removeLikeFromStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
                     }
                 },
                 "security": [
@@ -1260,6 +1341,202 @@
                 ]
             }
         },
+        "/statistics": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get personal statistics",
+                "operationId": "getStatistics",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "purpose": {
+                                                    "description": "The purpose of travel",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "$ref": "#/components/schemas/BusinessEnum"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 11
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                            minutes",
+                                                                "type": "integer",
+                                                                "example": 425
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "categories": {
+                                                    "description": "The categories of the travel",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 11
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 425
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "operators": {
+                                                    "description": "The operators of the means of transport",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "example": "Gertruds Verkehrsgesellschaft mbH"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 424
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "time": {
+                                                    "description": "Shows the daily travel volume",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "2021-01-01T00:00:00.000Z"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 424
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "from": {
+                                                    "example": "2021-01-01T00:00:00.000000Z"
+                                                },
+                                                "until": {
+                                                    "example": "2021-02-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/statistics/global": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get global statistics of the last 4 weeks",
+                "operationId": "getGlobalStatistics",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "distance": {
+                                                    "description": "Globally travelled distance in meters",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "duration": {
+                                                    "description": "Globally travelled duration in minutes",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "activeUsers": {
+                                                    "description": "Number of active users",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "from": {
+                                                            "example": "2021-01-01T00:00:00.000000Z"
+                                                        },
+                                                        "until": {
+                                                            "example": "2021-02-01T00:00:00.000000Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [
@@ -1473,7 +1750,7 @@
                 ]
             }
         },
-        "/statuses/{id}": {
+        "/status/{id}": {
             "get": {
                 "tags": [
                     "Status"
@@ -2503,7 +2780,7 @@
                 ]
             }
         },
-        "/user/createBlock": {
+        "/user/{id}/block": {
             "post": {
                 "tags": [
                     "User/Hide and Block"
@@ -2551,11 +2828,14 @@
                     "401": {
                         "description": "Not logged in"
                     },
-                    "409": {
-                        "description": "User is already blocked"
-                    },
                     "403": {
                         "description": "User not authorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "User is already blocked"
                     }
                 },
                 "security": [
@@ -2564,9 +2844,7 @@
                     },
                     {}
                 ]
-            }
-        },
-        "/user/destroyBlock": {
+            },
             "delete": {
                 "tags": [
                     "User/Hide and Block"
@@ -2614,11 +2892,14 @@
                     "401": {
                         "description": "Not logged in"
                     },
-                    "409": {
-                        "description": "User is not blocked"
-                    },
                     "403": {
                         "description": "User not authorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "User is not blocked"
                     }
                 },
                 "security": [
@@ -2629,7 +2910,7 @@
                 ]
             }
         },
-        "/user/createMute": {
+        "/user/{id}/mute": {
             "post": {
                 "tags": [
                     "User/Hide and Block"
@@ -2637,24 +2918,17 @@
                 "summary": "Mute a user",
                 "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
                 "operationId": "createMute",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "userId": {
-                                        "title": "userId",
-                                        "description": "ID of the to-be-muted user",
-                                        "format": "int64",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
-                },
+                ],
                 "responses": {
                     "201": {
                         "description": "successful operation",
@@ -2690,9 +2964,7 @@
                     },
                     {}
                 ]
-            }
-        },
-        "/user/destroyMute": {
+            },
             "delete": {
                 "tags": [
                     "User/Hide and Block"
@@ -2700,24 +2972,17 @@
                 "summary": "Unmute a user",
                 "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
                 "operationId": "destroyMute",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "userId": {
-                                        "title": "userId",
-                                        "description": "ID of the to-be-unmuted user",
-                                        "format": "int64",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -4115,6 +4380,10 @@
         {
             "name": "Leaderboard",
             "description": "Leaderboard related endpoints"
+        },
+        {
+            "name": "Statistics",
+            "description": "Statistics related endpoints"
         },
         {
             "name": "Settings",

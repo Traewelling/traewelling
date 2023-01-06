@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
  * @OA\Info(
  *      version="1.0.0 - alpha",
  *      title="Träwelling API",
- *      description="Träwelling user API description. This is an incomplete documentation with still many errors.",
+ *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
  *      @OA\Contact(
  *          email="support@traewelling.de"
  *      ),
