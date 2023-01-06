@@ -180,7 +180,7 @@ class StatusController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="getSingleStatus",
      *      tags={"Status"},
      *      summary="[Auth optional] Get single statuses",

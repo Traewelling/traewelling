@@ -124,8 +124,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], static function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
-        Route::get('statuses/{id}', [StatusController::class, 'show']);
-        Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
+        Route::get('status/{id}', [StatusController::class, 'show']);
+        Route::get('status/{id}/likes', [LikesController::class, 'show']);
+        Route::get('statuses/{id}', [StatusController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
         Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);

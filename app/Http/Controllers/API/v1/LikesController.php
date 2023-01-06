@@ -20,7 +20,7 @@ class LikesController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/statuses/{id}/likedby",
+     *      path="/status/{id}/likes",
      *      operationId="getLikesForStatus",
      *      tags={"Likes"},
      *      summary="[Auth optional] Get likes for status",
