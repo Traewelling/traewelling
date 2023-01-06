@@ -9,6 +9,8 @@ use App\Http\Resources\UserResource;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +20,7 @@ class LikesController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/statuses/{id}/likedby",
+     *      path="/status/{id}/likes",
      *      operationId="getLikesForStatus",
      *      tags={"Likes"},
      *      summary="[Auth optional] Get likes for status",
@@ -61,12 +63,39 @@ class LikesController extends Controller
     }
 
     /**
-     *
+     * @OA\Post(
+     *      path="/status/{id}/like",
+     *      operationId="addLikeToStatus",
+     *      tags={"Likes"},
+     *      summary="Add like to status",
+     *      description="Add like to status",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *                      ref="#/components/schemas/SuccessResponse"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       @OA\Response(response=409, description="Status already liked by user"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
      *
      * @param int $statusId
      *
      * @return JsonResponse
-     * @throws PermissionException
      */
     public function create(int $statusId): JsonResponse {
         try {
@@ -75,10 +104,42 @@ class LikesController extends Controller
             return $this->sendResponse(code: 201);
         } catch (StatusAlreadyLikedException) {
             return $this->sendError(code: 409);
+        } catch (PermissionException) {
+            return $this->sendError(code: 403);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(code: 404);
         }
     }
 
     /**
+     * @OA\Delete(
+     *      path="/status/{id}/like",
+     *      operationId="removeLikeFromStatus",
+     *      tags={"Likes"},
+     *      summary="Remove like from status",
+     *      description="Removes like from status",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *                      ref="#/components/schemas/SuccessResponse"
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     *     )
+     *
      * @param int $statusId
      *
      * @return JsonResponse
@@ -88,7 +149,7 @@ class LikesController extends Controller
             StatusBackend::destroyLike(Auth::user(), $statusId);
             return $this->sendResponse();
         } catch (InvalidArgumentException) {
-            return $this->sendError();
+            return $this->sendError('No status found for this id', 404);
         }
     }
 }

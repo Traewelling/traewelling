@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 
+use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
@@ -14,6 +15,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Error;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -198,7 +200,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/user/createBlock",
+     *      path="/user/{id}/block",
      *      operationId="createBlock",
      *      tags={"User/Hide and Block"},
      *      summary="Block a user",
@@ -225,8 +227,9 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=409, description="User is already blocked"),
      *       @OA\Response(response=403, description="User not authorized"),
+     *       @OA\Response(response=404, description="User not found"),
+     *       @OA\Response(response=409, description="User is already blocked"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -234,23 +237,22 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function createBlock(Request $request): JsonResponse {
-        $validated       = $request->validate([
-                                                  'userId' => [
-                                                      'required',
-                                                      'exists:users,id',
-                                                      Rule::notIn([auth()->user()->id]),
-                                                  ]
-                                              ]);
-        $userToBeBlocked = User::find($validated['userId']);
-
+    public function createBlock(int $userId): JsonResponse {
         try {
+            $userToBeBlocked   = User::findOrFail($userId);
             $blockUserResponse = BackendUserBackend::blockUser(auth()->user(), $userToBeBlocked);
-        } catch (UserAlreadyMutedException) {
+            $userToBeBlocked->refresh();
+            if ($blockUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeBlocked), 201);
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
+        } catch (UserAlreadyBlockedException) {
             return $this->sendError([
                                         'message' => __(
                                             'user.already-blocked',
@@ -258,17 +260,11 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeBlocked->refresh();
-        if ($blockUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeBlocked), 201);
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
      * @OA\Delete(
-     *      path="/user/destroyBlock",
+     *      path="/user/{id}/block",
      *      operationId="destroyBlock",
      *      tags={"User/Hide and Block"},
      *      summary="Unmute a user",
@@ -295,8 +291,9 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=409, description="User is not blocked"),
      *       @OA\Response(response=403, description="User not authorized"),
+     *       @OA\Response(response=404, description="User not found"),
+     *       @OA\Response(response=409, description="User is not blocked"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -304,23 +301,21 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function destroyBlock(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                'exists:users,id',
-                                            ]
-                                        ]);
-
-        $userToBeUnblocked = User::find($validated['userId']);
-
+    public function destroyBlock(int $userId): JsonResponse {
         try {
+            $userToBeUnblocked   = User::findOrFail($userId);
             $unblockUserResponse = BackendUserBackend::unblockUser(auth()->user(), $userToBeUnblocked);
-
+            $userToBeUnblocked->refresh();
+            if ($unblockUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeUnblocked));
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserNotBlockedException) {
             return $this->sendError([
                                         'message' => __(
@@ -329,17 +324,11 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeUnblocked->refresh();
-        if ($unblockUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeUnblocked));
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
      * @OA\Post(
-     *      path="/user/createMute",
+     *      path="/user/{id}/mute",
      *      operationId="createMute",
      *      tags={"User/Hide and Block"},
      *      summary="Mute a user",
@@ -375,22 +364,21 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function createMute(Request $request): JsonResponse {
-        $validated     = $request->validate([
-                                                'userId' => [
-                                                    'required',
-                                                    'exists:users,id',
-                                                    Rule::notIn([auth()->user()->id]),
-                                                ]
-                                            ]);
-        $userToBeMuted = User::find($validated['userId']);
-
+    public function createMute(int $userId): JsonResponse {
         try {
+            $userToBeMuted    = User::findOrFail($userId);
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
+            $userToBeMuted->refresh();
+            if ($muteUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeMuted), 201);
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserAlreadyMutedException) {
             return $this->sendError([
                                         'message' => __(
@@ -399,17 +387,11 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeMuted->refresh();
-        if ($muteUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeMuted), 201);
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
      * @OA\Delete(
-     *      path="/user/destroyMute",
+     *      path="/user/{id}/mute",
      *      operationId="destroyMute",
      *      tags={"User/Hide and Block"},
      *      summary="Unmute a user",
@@ -445,23 +427,21 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function destroyMute(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                'exists:users,id',
-                                            ]
-                                        ]);
-
-        $userToBeUnmuted = User::find($validated['userId']);
-
+    public function destroyMute(int $userId): JsonResponse {
         try {
+            $userToBeUnmuted    = User::findOrFail($userId);
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
-
+            $userToBeUnmuted->refresh();
+            if ($unmuteUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeUnmuted));
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserNotMutedException) {
             return $this->sendError([
                                         'message' => __(
@@ -470,12 +450,6 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeUnmuted->refresh();
-        if ($unmuteUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeUnmuted));
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
