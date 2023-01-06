@@ -264,7 +264,7 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/user/{userId}/block",
+     *      path="/user/{id}/block",
      *      operationId="destroyBlock",
      *      tags={"User/Hide and Block"},
      *      summary="Unmute a user",
