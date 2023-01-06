@@ -1020,6 +1020,71 @@
                 ]
             }
         },
+        "/static/privacy": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get the current privacy policy",
+                "description": "Get the current privacy policy",
+                "operationId": "e649bec35ba50765db023e745233eda9",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "validFrom": {
+                                                    "example": "2022-01-05T16:26:14.000000Z"
+                                                },
+                                                "en": {
+                                                    "example": "This is the english privacy policy"
+                                                },
+                                                "de": {
+                                                    "example": "Dies ist die deutsche Datenschutzerklärung"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/acceptPrivacy": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Accept the current privacy policy",
+                "description": "Accept the current privacy policy",
+                "operationId": "4baaf2c20fed6c12e13df7493ffa62ad",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Already accepted"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/leaderboard": {
             "get": {
                 "tags": [
