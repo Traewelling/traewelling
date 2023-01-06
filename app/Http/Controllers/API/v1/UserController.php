@@ -200,7 +200,7 @@ class UserController extends Controller
      * @OA\Post(
      *      path="/user/createBlock",
      *      operationId="createBlock",
-     *      tags={"User"},
+     *      tags={"Hide and Block"},
      *      summary="Block a user",
      *      description="Block a specific user. That user will not be able to see your statuses or profile information,
      *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
@@ -220,7 +220,7 @@ class UserController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              ref="#/components/schemas/User"
+     *              @OA\Property(property="data", ref="#/components/schemas/User")
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -270,7 +270,7 @@ class UserController extends Controller
      * @OA\Delete(
      *      path="/user/destroyBlock",
      *      operationId="destroyBlock",
-     *      tags={"User"},
+     *      tags={"Hide and Block"},
      *      summary="Unmute a user",
      *      description="Unblock a specific user. They are now able to see your statuses and profile information again,
      *      and send you follow requests.",
@@ -290,7 +290,7 @@ class UserController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              ref="#/components/schemas/User"
+     *              @OA\Property(property="data", ref="#/components/schemas/User")
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -341,7 +341,7 @@ class UserController extends Controller
      * @OA\Post(
      *      path="/user/createMute",
      *      operationId="createMute",
-     *      tags={"User"},
+     *      tags={"Hide and Block"},
      *      summary="Mute a user",
      *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active
      *      journeys tab",
@@ -361,7 +361,7 @@ class UserController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              ref="#/components/schemas/User"
+     *              @OA\Property(property="data", ref="#/components/schemas/User")
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -411,7 +411,7 @@ class UserController extends Controller
      * @OA\Delete(
      *      path="/user/destroyMute",
      *      operationId="destroyMute",
-     *      tags={"User"},
+     *      tags={"Hide and Block"},
      *      summary="Unmute a user",
      *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active
      *      journeys tab again",
@@ -431,7 +431,7 @@ class UserController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              ref="#/components/schemas/User"
+     *              @OA\Property(property="data", ref="#/components/schemas/User")
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),

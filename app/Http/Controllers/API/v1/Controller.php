@@ -61,6 +61,10 @@ use Illuminate\Http\JsonResponse;
  *     description="Follow and unfollow users, manage your followers"
  * )
  * @OA\Tag(
+ *     name="Hide and Block",
+ *     description="Mute and block users"
+ * )
+ * @OA\Tag(
  *     name="Leaderboard",
  *     description="Leaderboard related endpoints"
  * )
