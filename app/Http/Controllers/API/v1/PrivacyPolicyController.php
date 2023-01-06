@@ -36,6 +36,22 @@ class PrivacyPolicyController extends Controller
         return new PrivacyPolicyResource(PrivacyBackend::getCurrentPrivacyPolicy());
     }
 
+    /**
+     * @OA\Post(
+     *     path="/settings/acceptPrivacy",
+     *     tags={"Settings"},
+     *     summary="Accept the current privacy policy",
+     *     description="Accept the current privacy policy",
+     *     @OA\Response(response=204, description="Success"),
+     *     @OA\Response(response=400, description="Already accepted"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     security={
+     *           {"token": {}},
+     *           {}
+     *     }
+     * )
+     * @return JsonResponse
+     */
     public function acceptPrivacyPolicy(): JsonResponse {
         try {
             PrivacyBackend::acceptPrivacyPolicy(user: auth()->user());
@@ -44,7 +60,7 @@ class PrivacyPolicyController extends Controller
                 'ptime' => $exception->getPrivacyValidity(),
                 'utime' => $exception->getUserAccepted()
             ]);
-            return $this->sendError(error: $error);
+            return $this->sendError(error: $error, code: 409);
         }
 
         return $this->sendResponse(code: 204);
