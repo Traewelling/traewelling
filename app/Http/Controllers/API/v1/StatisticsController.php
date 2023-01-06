@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
@@ -152,6 +153,84 @@ class StatisticsController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/statistics",
+     *     operationId="getStatistics",
+     *     tags={"Statistics"},
+     *     summary="Get personal statistics",
+     *     @OA\Property(
+     *         property="from",
+     *         description="Start date for the statistics",
+     *         example="2021-01-01T00:00:00.000Z",
+     *         type="string",
+     *         format="date-time"
+     *     ),
+     *     @OA\Property(
+     *         property="until",
+     *         description="End date for the statistics",
+     *         example="2021-02-01T00:00:00.000Z",
+     *         type="string",
+     *         format="date-time"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                      property="purpose",
+     *                      description="The purpose of travel",
+     *                      type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="name", ref="#/components/schemas/BusinessEnum"),
+     *                          @OA\Property(property="count", type="integer", example=11),
+     *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
+     *                                                            minutes"),
+     *                      )
+     *                ),
+     *                @OA\Property(
+     *                    property="categories",
+     *                    description="The categories of the travel",
+     *                    type="array",
+     *                    @OA\Items(
+     *                        @OA\Property(property="name", ref="#/components/schemas/TrainCategoryEnum"),
+     *                        @OA\Property(property="count", type="integer", example=11),
+     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in
+     *                                                          minutes"),
+     *                    )
+     *                ),
+     *                @OA\Property(
+     *                    property="operators",
+     *                    description="The operators of the means of transport",
+     *                    type="array",
+     *                    @OA\Items(
+     *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
+     *                        @OA\Property(property="count", type="integer", example=10),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
+     *                                                          minutes"),
+     *                    )
+     *                ),
+     *                @OA\Property(
+     *                    property="time",
+     *                    description="Shows the daily travel volume",
+     *                    type="array",
+     *                    @OA\Items(
+     *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
+     *                        @OA\Property(property="count", type="integer", example=10),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
+     *                                                          minutes"),
+     *                    )
+     *               ),
+     *            )
+     *        )
+     *    ),
+     *     security={
+     *     {"token": {}},
+     *     {}
+     *     }
+     * )
      * @param Request $request
      *
      * @return JsonResponse
