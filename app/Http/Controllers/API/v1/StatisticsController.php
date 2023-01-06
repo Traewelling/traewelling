@@ -223,9 +223,17 @@ class StatisticsController extends Controller
      *                                                          minutes"),
      *                    )
      *               ),
+     *            ),
+     *            @OA\Property(
+     *                property="meta",
+     *                type="object",
+     *                @OA\Property(property="from", example="2021-01-01T00:00:00.000000Z"),
+     *                @OA\Property(property="until", example="2021-02-01T00:00:00.000000Z"),
      *            )
      *        )
      *    ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
      *     {"token": {}},
      *     {}

@@ -69,6 +69,10 @@ use Illuminate\Http\JsonResponse;
  *     description="Leaderboard related endpoints"
  * )
  * @OA\Tag(
+ *     name="Statistics",
+ *     description="Statistics related endpoints"
+ * )
+ * @OA\Tag(
  *     name="Settings",
  *     description="User/Profile-Settings"
  * )
