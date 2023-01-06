@@ -91,8 +91,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             Route::post('/{userId}/block', [UserController::class, 'createBlock']);
             Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
-            Route::post('createMute', [UserController::class, 'createMute']);
-            Route::delete('destroyMute', [UserController::class, 'destroyMute']);
+            Route::post('/{userId}/mute', [UserController::class, 'createMute']);
+            Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
+            Route::post('createMute', [UserController::class, 'createMute']);//TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
+            Route::delete('destroyMute', [UserController::class, 'destroyMute']);//TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             Route::get('search/{query}', [UserController::class, 'search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
         });

@@ -328,7 +328,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/user/createMute",
+     *      path="/user/{id}/mute",
      *      operationId="createMute",
      *      tags={"User/Hide and Block"},
      *      summary="Mute a user",
@@ -364,22 +364,21 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function createMute(Request $request): JsonResponse {
-        $validated     = $request->validate([
-                                                'userId' => [
-                                                    'required',
-                                                    'exists:users,id',
-                                                    Rule::notIn([auth()->user()->id]),
-                                                ]
-                                            ]);
-        $userToBeMuted = User::find($validated['userId']);
-
+    public function createMute(int $userId): JsonResponse {
         try {
+            $userToBeMuted    = User::findOrFail($userId);
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
+            $userToBeMuted->refresh();
+            if ($muteUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeMuted), 201);
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserAlreadyMutedException) {
             return $this->sendError([
                                         'message' => __(
@@ -388,17 +387,11 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeMuted->refresh();
-        if ($muteUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeMuted), 201);
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
      * @OA\Delete(
-     *      path="/user/destroyMute",
+     *      path="/user/{id}/mute",
      *      operationId="destroyMute",
      *      tags={"User/Hide and Block"},
      *      summary="Unmute a user",
@@ -434,23 +427,21 @@ class UserController extends Controller
      *     )
      *
      *
-     * @param Request $request
+     * @param int $userId
      *
      * @return JsonResponse
      */
-    public function destroyMute(Request $request): JsonResponse {
-        $validated = $request->validate([
-                                            'userId' => [
-                                                'required',
-                                                'exists:users,id',
-                                            ]
-                                        ]);
-
-        $userToBeUnmuted = User::find($validated['userId']);
-
+    public function destroyMute(int $userId): JsonResponse {
         try {
+            $userToBeUnmuted    = User::findOrFail($userId);
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
-
+            $userToBeUnmuted->refresh();
+            if ($unmuteUserResponse) {
+                return $this->sendResponse(new UserResource($userToBeUnmuted));
+            }
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserNotMutedException) {
             return $this->sendError([
                                         'message' => __(
@@ -459,12 +450,6 @@ class UserController extends Controller
                                         )
                                     ], 409);
         }
-
-        $userToBeUnmuted->refresh();
-        if ($unmuteUserResponse) {
-            return $this->sendResponse(new UserResource($userToBeUnmuted));
-        }
-        return $this->sendError(['message' => __('messages.exception.general')], 400);
     }
 
     /**
