@@ -89,8 +89,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
             Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
             Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
-            Route::post('createBlock', [UserController::class, 'createBlock']);
-            Route::delete('destroyBlock', [UserController::class, 'destroyBlock']);
+            Route::post('/{userId}/block', [UserController::class, 'createBlock']);
+            Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
             Route::post('createMute', [UserController::class, 'createMute']);
             Route::delete('destroyMute', [UserController::class, 'destroyMute']);
             Route::get('search/{query}', [UserController::class, 'search']);
