@@ -8,6 +8,7 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
@@ -131,6 +132,7 @@ class TransportController extends Controller
      *         response=422,
      *         description="Invalid input",
      *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
      *        {"token": {}},
      *        {}
@@ -327,7 +329,7 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
-     *       @OA\Response(response=403, description="User not authorized"),
+     *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -337,6 +339,7 @@ class TransportController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws NotConnectedException
      */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -396,6 +399,35 @@ class TransportController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/trains/station/{name}/home",
+     *     operationId="setHomeStation",
+     *     tags={"Checkin"},
+     *     summary="Set a station as home station",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="path",
+     *         description="Name of the station",
+     *         required=true,
+     *         example="Karlsruhe Hbf",
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", ref="#/components/schemas/TrainStation")
+     *         ),
+     *     ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Station not found"),
+     *     @OA\Response(response=502, description="Error with our data provider"),
+     *     security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     * )
      * @param string $stationName
      *
      * @return JsonResponse
@@ -414,9 +446,9 @@ class TransportController extends Controller
                 data: new TrainStationResource($station),
             );
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 502);
         } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station", 404);
+            return $this->sendError("Your query matches no station");
         }
     }
 
