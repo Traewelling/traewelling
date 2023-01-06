@@ -1770,7 +1770,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\n     *                     external documentation at\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
                                                 "externalDocs": "https://v5.db.transport.rest/api.html#get-stopsiddepartures",
                                                 "example": {
                                                     "tripId": "1|200513|0|81|6012023",
@@ -3940,24 +3940,36 @@
             "description": "Logging in, creating Accounts, etc."
         },
         {
-            "name": "User",
-            "description": "Information regarding users"
-        },
-        {
-            "name": "Dashboard",
-            "description": "API Endpoints of Dashboard"
-        },
-        {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Checkin",
+            "description": "Checkin related endpoints. Regular process is departures -> trip -> checkin"
         },
         {
             "name": "Events",
             "description": "Events that users can check in to"
         },
         {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+        },
+        {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        },
+        {
             "name": "Likes",
             "description": "Likes regarding a single status"
+        },
+        {
+            "name": "User",
+            "description": "Information regarding users"
+        },
+        {
+            "name": "Follow",
+            "description": "Follow and unfollow users, manage your followers"
+        },
+        {
+            "name": "Leaderboard",
+            "description": "Leaderboard related endpoints"
         },
         {
             "name": "Settings",

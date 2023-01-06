@@ -33,24 +33,36 @@ use Illuminate\Http\JsonResponse;
  *     description="Logging in, creating Accounts, etc."
  * )
  * @OA\Tag(
- *     name="User",
- *     description="Information regarding users"
- * )
- * @OA\Tag(
- *     name="Dashboard",
- *     description="API Endpoints of Dashboard"
- * )
- * @OA\Tag(
- *     name="Status",
- *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ *     name="Checkin",
+ *     description="Checkin related endpoints. Regular process is departures -> trip -> checkin"
  * )
  * @OA\Tag(
  *     name="Events",
  *     description="Events that users can check in to"
  * )
  * @OA\Tag(
+ *     name="Status",
+ *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ * )
+ * @OA\Tag(
+ *     name="Dashboard",
+ *     description="API Endpoints of Dashboard"
+ * )
+ * @OA\Tag(
  *     name="Likes",
  *     description="Likes regarding a single status"
+ * )
+ * @OA\Tag(
+ *     name="User",
+ *     description="Information regarding users"
+ * )
+ * @OA\Tag(
+ *     name="Follow",
+ *     description="Follow and unfollow users, manage your followers"
+ * )
+ * @OA\Tag(
+ *     name="Leaderboard",
+ *     description="Leaderboard related endpoints"
  * )
  * @OA\Tag(
  *     name="Settings",
