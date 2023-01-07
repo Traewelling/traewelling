@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\API\LegacyApi0Controller;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
@@ -55,9 +54,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::post('status/{id}/like', [LikesController::class, 'create']);
         Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
         Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-        Route::put('statuses/{id}', [StatusController::class, 'update']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-        Route::post('like/{statusId}', [LikesController::class, 'create']);  //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
-        Route::delete('like/{status}', [LikesController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
+        Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::post('like/{statusId}', [LikesController::class, 'create']);         //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
+        Route::delete('like/{status}', [LikesController::class, 'destroy']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
@@ -86,7 +85,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['prefix' => 'user'], static function() {
             Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
             Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
-            Route::post('createFollow', [FollowController::class, 'createFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
+            Route::post('createFollow', [FollowController::class, 'createFollow']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
             Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
             Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
             Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
@@ -95,7 +94,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
             Route::post('/{userId}/mute', [UserController::class, 'createMute']);
             Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
-            Route::post('createMute', [UserController::class, 'createMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
+            Route::post('createMute', [UserController::class, 'createMute']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             Route::delete('destroyMute', [UserController::class, 'destroyMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             Route::get('search/{query}', [UserController::class, 'search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
@@ -130,7 +129,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('statuses', [StatusController::class, 'enRoute']);
         Route::get('status/{id}', [StatusController::class, 'show']);
         Route::get('status/{id}/likes', [LikesController::class, 'show']);
-        Route::get('statuses/{id}', [StatusController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::get('statuses/{id}', [StatusController::class, 'show']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
         Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
@@ -143,37 +142,5 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
         Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
         Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
-    });
-});
-
-Route::group(['prefix' => 'v0', 'middleware' => ['return-json']], static function() {
-    Route::group(['middleware' => ['auth:api', 'privacy']], static function() {
-        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('getuser', [LegacyApi0Controller::class, 'getUser'])
-             ->name('api.v0.getUser');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (medium traffic)
-        Route::get('/user/{username}', [LegacyApi0Controller::class, 'showUser'])
-             ->name('api.v0.user');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::get('statuses', [LegacyApi0Controller::class, 'showStatuses'])
-             ->name('api.v0.statuses');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/stationboard', [LegacyApi0Controller::class, 'showStationboard'])
-             ->name('api.v0.checkin.train.stationboard');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/trip', [LegacyApi0Controller::class, 'showTrip'])
-             ->name('api.v0.checkin.train.trip');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (many requests)
-        Route::post('/trains/checkin', [LegacyApi0Controller::class, 'checkin'])
-             ->name('api.v0.checkin.train.checkin');
-
-        //Endpoint used between 2022-09-01 and 2022-10-28 (very low traffic)
-        Route::get('/trains/nearby', [LegacyApi0Controller::class, 'showStationByCoordinates'])
-             ->name('api.v0.trains.nearby');
     });
 });
