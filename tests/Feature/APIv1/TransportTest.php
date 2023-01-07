@@ -59,7 +59,7 @@ class TransportTest extends ApiTestCase
         //Fetch trip with wrong origin / stopover
         $response = $this->get(
             uri:     '/api/v1/trains/trip'
-                     . '?tripId=' . $departure['tripId']
+                     . '?hafasTripId=' . $departure['tripId']
                      . '&lineName=' . $departure['line']['name']
                      . '&start=' . ($departure['stop']['id'] + 99999),
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]

@@ -180,7 +180,7 @@ class StatusController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="getSingleStatus",
      *      tags={"Status"},
      *      summary="[Auth optional] Get single statuses",
@@ -228,7 +228,7 @@ class StatusController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="destroySingleStatus",
      *      tags={"Status"},
      *      summary="Destroy a status",
@@ -256,25 +256,24 @@ class StatusController extends Controller
      *       }
      *     )
      *
-     * @param int $id
+     * @param int $statusId
      *
      * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse {
+    public function destroy(int $statusId): JsonResponse {
         try {
-            StatusBackend::DeleteStatus(Auth::user(), $id);
+            StatusBackend::DeleteStatus(Auth::user(), $statusId);
+            return $this->sendResponse();
         } catch (PermissionException) {
-            abort(403);
+            return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
-            abort(404);
+            return $this->sendError('No status found for this id.');
         }
-
-        return $this->sendResponse();
     }
 
     /**
      * @OA\Put(
-     *      path="/statuses/{id}",
+     *      path="/status/{id}",
      *      operationId="updateSingleStatus",
      *      tags={"Status"},
      *      summary="Update a status",

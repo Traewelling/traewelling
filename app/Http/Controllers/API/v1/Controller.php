@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
  * @OA\Info(
  *      version="1.0.0 - alpha",
  *      title="Träwelling API",
- *      description="Träwelling user API description. This is an incomplete documentation with still many errors.",
+ *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
  *      @OA\Contact(
  *          email="support@traewelling.de"
  *      ),
@@ -33,24 +33,44 @@ use Illuminate\Http\JsonResponse;
  *     description="Logging in, creating Accounts, etc."
  * )
  * @OA\Tag(
- *     name="User",
- *     description="Information regarding users"
- * )
- * @OA\Tag(
- *     name="Dashboard",
- *     description="API Endpoints of Dashboard"
- * )
- * @OA\Tag(
- *     name="Status",
- *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ *     name="Checkin",
+ *     description="Checkin related endpoints. Regular process is departures -> trip -> checkin"
  * )
  * @OA\Tag(
  *     name="Events",
  *     description="Events that users can check in to"
  * )
  * @OA\Tag(
+ *     name="Status",
+ *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ * )
+ * @OA\Tag(
+ *     name="Dashboard",
+ *     description="API Endpoints of Dashboard"
+ * )
+ * @OA\Tag(
  *     name="Likes",
  *     description="Likes regarding a single status"
+ * )
+ * @OA\Tag(
+ *     name="User",
+ *     description="Information regarding users"
+ * )
+ * @OA\Tag(
+ *     name="User/Follow",
+ *     description="Follow and unfollow users, manage your followers"
+ * )
+ * @OA\Tag(
+ *     name="User/Hide and Block",
+ *     description="Mute and block users"
+ * )
+ * @OA\Tag(
+ *     name="Leaderboard",
+ *     description="Leaderboard related endpoints"
+ * )
+ * @OA\Tag(
+ *     name="Statistics",
+ *     description="Statistics related endpoints"
  * )
  * @OA\Tag(
  *     name="Settings",

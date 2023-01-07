@@ -24,8 +24,7 @@ class FollowTest extends ApiTestCase
         ]);
 
         $response = $this->postJson(
-            uri:     '/api/v1/user/createFollow',
-            data:    ['userId' => $user2->id],
+            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
             headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertCreated();
@@ -74,9 +73,8 @@ class FollowTest extends ApiTestCase
         $user2      = User::factory()->create();
         UserBackend::createOrRequestFollow($user1, $user2);
 
-        $response = $this->deleteJson(
-            uri:     '/api/v1/user/destroyFollow',
-            data:    ['userId' => $user2->id],
+        $response = $this->delete(
+            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
             headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertOk();
@@ -86,9 +84,8 @@ class FollowTest extends ApiTestCase
             'follow_id' => $user2->id,
         ]);
 
-        $response = $this->deleteJson(
-            uri:     '/api/v1/user/destroyFollow',
-            data:    ['userId' => $user2->id],
+        $response = $this->delete(
+            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
             headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertStatus(409);

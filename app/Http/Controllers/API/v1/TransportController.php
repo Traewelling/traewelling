@@ -8,6 +8,7 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
@@ -32,6 +33,112 @@ use OpenApi\Annotations as OA;
 class TransportController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/trains/station/{name}/departures",
+     *     operationId="getDepartures",
+     *     tags={"Checkin"},
+     *     summary="Get departures from a station",
+     *     description="Get departures from a station",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="path",
+     *         description="Name of the station (replace slashes with spaces)",
+     *         required=true,
+     *     ),
+     *     @OA\Parameter(
+     *         name="when",
+     *         in="query",
+     *         description="When to get the departures (default: now)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2020-01-01T12:00:00.000Z"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="travelType",
+     *         in="query",
+     *         description="Means of transport (default: all)",
+     *         required=false,
+     *         @OA\Schema(
+     *          ref="#/components/schemas/TravelTypeEnum"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     externalDocs="https://v5.db.transport.rest/api.html#get-stopsiddepartures",
+     *                     description="HAFAS Train model. This model might be subject to unexpected changes. See also
+     *                     external documentation at
+     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+     *                     example={ "tripId": "1|200513|0|81|6012023", "stop": { "type": "stop", "id": "8000191",
+     *                     "name": "Karlsruhe Hbf", "location": { "type": "location", "id": "8000191", "latitude":
+     *                     48.99353, "longitude": 8.401939 }, "products": { "nationalExpress": true, "national": true,
+     *                     "regionalExp": true, "regional": true, "suburban": true, "bus": true, "ferry": false,
+     *                     "subway": false, "tram": true, "taxi": true } }, "when": "2023-01-06T13:49:00+01:00",
+     *                     "plannedWhen": "2023-01-06T13:49:00+01:00", "delay": null, "platform": "2",
+     *                     "plannedPlatform": "2", "direction": "Zürich HB", "provenance": null, "line": { "type":
+     *                     "line", "id": "ec-9", "fahrtNr": "9", "name": "EC 9", "public": true, "adminCode": "80____", "productName": "EC", "mode": "train", "product": "national", "operator": { "type": "operator", "id": "db-fernverkehr-ag", "name": "DB Fernverkehr AG" } }, "remarks": null, "origin": null, "destination": { "type": "stop", "id": "8503000", "name": "Zürich HB", "location": { "type": "location", "id": "8503000", "latitude": 47.378177, "longitude": 8.540211 }, "products": { "nationalExpress": true, "national": true, "regionalExp": true, "regional": true, "suburban": true, "bus": true, "ferry": false, "subway": false, "tram": true, "taxi": false } }, "currentTripPosition": { "type": "location", "latitude": 48.725382, "longitude": 8.142888 }, "loadFactor": "high", "station": { "id": 5181, "ibnr": 8000191, "rilIdentifier": "RK", "name": "Karlsruhe Hbf", "latitude": "48.993530", "longitude": "8.401939" } }
+     *                 )
+     *            ),
+     *            @OA\Property(
+     *              property="meta",
+     *              type="object",
+     *              @OA\Property(
+     *                  property="station",
+     *                  ref="#/components/schemas/TrainStation"
+     *              ),
+     *              @OA\Property(
+     *                  property="times",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="now",
+     *                     type="string",
+     *                     format="date-time",
+     *                     example="2020-01-01T12:00:00.000Z"
+     *                ),
+     *                @OA\Property(
+     *                    property="prev",
+     *                    type="string",
+     *                    format="date-time",
+     *                    example="2020-01-01T11:45:00.000Z"
+     *               ),
+     *               @OA\Property(
+     *                   property="next",
+     *                   type="string",
+     *                   format="date-time",
+     *                   example="2020-01-01T12:15:00.000Z"
+     *              )
+     *         )
+     *         )
+     *        )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Station not found",
+     *     ),
+     *     @OA\Response(
+     *         response=502,
+     *         description="Error with our data provider",
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input",
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     security={
+     *        {"token": {}},
+     *        {}
+     *     }
+     * )
+     *
      * @param Request $request
      * @param string  $name
      *
@@ -51,7 +158,7 @@ class TransportController extends Controller
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
         } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 400);
+            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         }
@@ -64,16 +171,73 @@ class TransportController extends Controller
         );
     }
 
+    /**
+     * @OA\Get(
+     *      path="/trains/trip",
+     *      operationId="getTrainTrip",
+     *      tags={"Checkin"},
+     *      summary="Get the stopovers and trip information for a given train",
+     *      @OA\Parameter(
+     *          name="hafasTripId",
+     *          in="query",
+     *          description="HAFAS trip ID (fetched from departures)",
+     *          example="1|323306|1|80|17072022",
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="lineName",
+     *          in="query",
+     *          description="line name for that train",
+     *          example="S 4",
+     *          required=true
+     *     ),
+     *     @OA\Parameter(
+     *          name="start",
+     *          in="query",
+     *          description="start point from where the stopovers should be desplayed",
+     *          example=4711,
+     *          required=true
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="category", ref="#/components/schemas/TrainCategoryEnum"),
+     *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
+     *                  @OA\Property(property="lineName", type="string", example="S 4"),
+     *                  @OA\Property(property="origin", ref="#/components/schemas/TrainStation"),
+     *                  @OA\Property(property="destination", ref="#/components/schemas/TrainStation"),
+     *                  @OA\Property(property="stopovers", type="array",
+     *                      @OA\Items(
+     *                          ref="#/components/schemas/TrainStopover"
+     *                      )
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=404, description="No station found"),
+     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"token": {}},
+     *          {}
+     *       }
+     *     )
+     */
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'   => ['required', 'string'],
-                                            'lineName' => ['required', 'string'],
-                                            'start'    => ['required', 'numeric', 'gt:0'],
+                                            'tripId'      => ['required_without:hafasTripId', 'string'], //ToDo deprecated: remove after 2023-02-28
+                                            'hafasTripId' => ['required_without:tripId', 'string'],
+                                            'lineName'    => ['required', 'string'],
+                                            'start'       => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
-                $validated['tripId'],
+                $validated['hafasTripId'] ?? $validated['tripId'], //ToDo deprecated: change to hafasTripId after 2023-02-28
                 $validated['lineName'],
                 (int) $validated['start']
             );
@@ -165,17 +329,17 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
-     *       @OA\Response(response=403, description="User not authorized"),
+     *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *           {"token": {}},
      *           {}
      *       }
      *     )
-     * @TODO document the responses
      *
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws NotConnectedException
      */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -235,6 +399,35 @@ class TransportController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/trains/station/{name}/home",
+     *     operationId="setHomeStation",
+     *     tags={"Checkin"},
+     *     summary="Set a station as home station",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="path",
+     *         description="Name of the station",
+     *         required=true,
+     *         example="Karlsruhe Hbf",
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", ref="#/components/schemas/TrainStation")
+     *         ),
+     *     ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Station not found"),
+     *     @OA\Response(response=502, description="Error with our data provider"),
+     *     security={
+     *           {"token": {}},
+     *           {}
+     *       }
+     * )
      * @param string $stationName
      *
      * @return JsonResponse
@@ -253,9 +446,9 @@ class TransportController extends Controller
                 data: new TrainStationResource($station),
             );
         } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 400);
+            return $this->sendError("There has been an error with our data provider", 502);
         } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station", 404);
+            return $this->sendError("Your query matches no station");
         }
     }
 
@@ -265,7 +458,8 @@ class TransportController extends Controller
      *      operationId="trainStationAutocomplete",
      *      tags={"Checkin"},
      *      summary="Autocomplete for trainstations",
-     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
+     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
      *      @OA\Parameter(
      *          name="query",
      *          in="path",

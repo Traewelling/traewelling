@@ -27,7 +27,7 @@ class TrainStopover
     private $id;
 
     /**
-     * @OA\Propert (
+     * @OA\Property (
      *     title="name",
      *     description="name of the station",
      *     example="Karlsruhe Hbf"

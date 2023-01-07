@@ -50,10 +50,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('dashboard', [StatusController::class, 'getDashboard']);
         Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
         Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
-        Route::post('like/{statusId}', [LikesController::class, 'create']);
-        Route::delete('like/{status}', [LikesController::class, 'destroy']);
-        Route::delete('statuses/{id}', [StatusController::class, 'destroy']);
-        Route::put('statuses/{id}', [StatusController::class, 'update']);
+        Route::delete('status/{id}', [StatusController::class, 'destroy']);
+        Route::put('status/{id}', [StatusController::class, 'update']);
+        Route::post('status/{id}/like', [LikesController::class, 'create']);
+        Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
+        Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::put('statuses/{id}', [StatusController::class, 'update']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::post('like/{statusId}', [LikesController::class, 'create']);  //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
+        Route::delete('like/{status}', [LikesController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
@@ -80,15 +84,19 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('export', [StatisticsController::class, 'generateTravelExport']);
         });
         Route::group(['prefix' => 'user'], static function() {
-            Route::post('createFollow', [FollowController::class, 'createFollow']);
-            Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']);
+            Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
+            Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
+            Route::post('createFollow', [FollowController::class, 'createFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
+            Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
             Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
             Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
             Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
-            Route::post('createBlock', [UserController::class, 'createBlock']);
-            Route::delete('destroyBlock', [UserController::class, 'destroyBlock']);
-            Route::post('createMute', [UserController::class, 'createMute']);
-            Route::delete('destroyMute', [UserController::class, 'destroyMute']);
+            Route::post('/{userId}/block', [UserController::class, 'createBlock']);
+            Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
+            Route::post('/{userId}/mute', [UserController::class, 'createMute']);
+            Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
+            Route::post('createMute', [UserController::class, 'createMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
+            Route::delete('destroyMute', [UserController::class, 'destroyMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             Route::get('search/{query}', [UserController::class, 'search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus']);
         });
@@ -120,8 +128,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], static function() {
         Route::get('statuses', [StatusController::class, 'enRoute']);
-        Route::get('statuses/{id}', [StatusController::class, 'show']);
-        Route::get('statuses/{id}/likedby', [LikesController::class, 'show']);
+        Route::get('status/{id}', [StatusController::class, 'show']);
+        Route::get('status/{id}/likes', [LikesController::class, 'show']);
+        Route::get('statuses/{id}', [StatusController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+        Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
         Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);
