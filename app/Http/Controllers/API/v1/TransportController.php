@@ -386,7 +386,7 @@ class TransportController extends Controller
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
-                                        'lineName'  => $exception->getCollision()->HafasTrip->first()->linename
+                                        'lineName'  => $exception->getCollision()->HafasTrip->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {
