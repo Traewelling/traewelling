@@ -178,7 +178,7 @@ class TransportController extends Controller
      *      tags={"Checkin"},
      *      summary="Get the stopovers and trip information for a given train",
      *      @OA\Parameter(
-     *          name="tripId",
+     *          name="hafasTripId",
      *          in="query",
      *          description="HAFAS trip ID (fetched from departures)",
      *          example="1|323306|1|80|17072022",
@@ -229,15 +229,15 @@ class TransportController extends Controller
      */
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'      => ['required_unless:hafasTripId,null', 'string'],
-                                            'hafasTripId' => ['required_unless:tripId,null', 'string'],
+                                            'tripId'      => ['required_without:hafasTripId', 'string'],
+                                            'hafasTripId' => ['required_without:tripId', 'string'],
                                             'lineName'    => ['required', 'string'],
                                             'start'       => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
-                $validated['tripId'],
+                $validated['hafasTripId'] ?? $validated['tripId'],
                 $validated['lineName'],
                 (int) $validated['start']
             );
