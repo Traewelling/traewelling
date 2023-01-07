@@ -229,7 +229,7 @@ class TransportController extends Controller
      */
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'      => ['required_without:hafasTripId', 'string'],
+                                            'tripId'      => ['required_without:hafasTripId', 'string'], //ToDo deprecated: remove after 2023-02-28
                                             'hafasTripId' => ['required_without:tripId', 'string'],
                                             'lineName'    => ['required', 'string'],
                                             'start'       => ['required', 'numeric', 'gt:0'],
@@ -237,7 +237,7 @@ class TransportController extends Controller
 
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
-                $validated['hafasTripId'] ?? $validated['tripId'],
+                $validated['hafasTripId'] ?? $validated['tripId'], //ToDo deprecated: change to hafasTripId after 2023-02-28
                 $validated['lineName'],
                 (int) $validated['start']
             );
