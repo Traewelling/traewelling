@@ -2268,7 +2268,7 @@
                 "operationId": "getTrainTrip",
                 "parameters": [
                     {
-                        "name": "tripId",
+                        "name": "hafasTripId",
                         "in": "query",
                         "description": "HAFAS trip ID (fetched from departures)",
                         "required": true,
