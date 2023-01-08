@@ -82,7 +82,6 @@ class SettingsController extends Controller
                                             'private_profile'           => ['boolean', 'nullable'],
                                             'prevent_index'             => ['boolean', 'nullable'],
                                             'privacy_hide_days'         => ['integer', 'nullable', 'gte:1'],
-                                            'always_dbl'                => ['boolean', 'nullable'],
                                             'default_status_visibility' => [
                                                 'nullable',
                                                 new Enum(StatusVisibility::class),

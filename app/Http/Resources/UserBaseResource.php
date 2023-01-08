@@ -34,7 +34,6 @@ class UserBaseResource extends JsonResource
                 [
                     'role'                      => $this->role,
                     'home'                      => $this->home,
-                    'dbl'                       => $this->always_dbl,
                     'language'                  => $this->language,
                     'defaultStatusVisibility'   => $this->default_status_visibility
                 ]),
