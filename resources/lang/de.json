@@ -105,7 +105,6 @@
     "user.home-set": "Dein Heimatbahnhof ist nun :Station.",
     "user.home-not-set": "Du hast noch keinen Heimatbahnhof festgelegt.",
     "user.private-profile": "Privates Profil",
-    "user.private-profile": "Privates Profil",
     "user.liked-status": "gefällt dieser Status.",
     "user.liked-own-status": "gefällt der eigene Status.",
     "user.invalid-mastodon": ":domain scheint keine Mastodon-Instanz zu sein.",
