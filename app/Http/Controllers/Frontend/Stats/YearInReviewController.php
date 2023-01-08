@@ -19,6 +19,10 @@ class YearInReviewController extends Controller
      * @return JsonResponse
      */
     public function show(Request $request): JsonResponse {
+        if (config('trwl.year_in_review_active') === false) {
+            abort(403);
+        }
+
         $validated = $request->validate([
                                             'year' => ['nullable', 'integer', 'min:2019', 'max:' . Date::now()->year],
                                         ]);

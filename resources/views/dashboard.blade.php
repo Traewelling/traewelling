@@ -92,7 +92,7 @@
                     </div>
                 @endif
 
-                @if(\Illuminate\Support\Facades\Date::now()->isBefore(\Illuminate\Support\Facades\Date::createFromDate(2022,12,26)))
+                @if(config('trwl.year_in_review_active'))
                     <div class="alert alert-info">
                         <h4 class="alert-heading">
                             <i class="fa-solid fa-champagne-glasses"></i>
