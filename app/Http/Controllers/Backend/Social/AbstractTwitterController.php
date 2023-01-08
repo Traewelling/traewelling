@@ -119,9 +119,6 @@ abstract class AbstractTwitterController extends Controller
 
     protected static function generateFullSocialText(Status $status): string {
         $socialText = $status->socialText;
-        if ($status->user->always_dbl) {
-            $socialText .= ' #dbl';
-        }
         $socialText .= ' ' . url('/status/' . $status->id);
 
         return $socialText;
