@@ -1,30 +1,30 @@
 {
-  "_readme": [
-    "This file locks the dependencies of your project to a known state",
-    "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-    "This file is @generated automatically"
-  ],
-  "content-hash": "f310d65fa723ff5d7bfd0679de40773b",
-  "packages": [
-    {
-      "name": "abraham/twitteroauth",
-      "version": "4.0.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/abraham/twitteroauth.git",
-        "reference": "b9302599e416e5c00742cf7f4455220897f8291d"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/abraham/twitteroauth/zipball/b9302599e416e5c00742cf7f4455220897f8291d",
-        "reference": "b9302599e416e5c00742cf7f4455220897f8291d",
-        "shasum": ""
-      },
-      "require": {
-        "composer/ca-bundle": "^1.2",
-        "ext-curl": "*",
-        "php": "^7.4 || ^8.0 || ^8.1"
-      },
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "f18fb19274cbbb99b33a957eb8b55066",
+    "packages": [
+        {
+            "name": "abraham/twitteroauth",
+            "version": "4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abraham/twitteroauth.git",
+                "reference": "b9302599e416e5c00742cf7f4455220897f8291d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abraham/twitteroauth/zipball/b9302599e416e5c00742cf7f4455220897f8291d",
+                "reference": "b9302599e416e5c00742cf7f4455220897f8291d",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.2",
+                "ext-curl": "*",
+                "php": "^7.4 || ^8.0 || ^8.1"
+            },
             "require-dev": {
                 "php-vcr/php-vcr": "^1",
                 "php-vcr/phpunit-testlistener-vcr": "dev-php-8",
@@ -275,99 +275,99 @@
                 "Arbitrary-precision",
                 "BigInteger",
                 "BigRational",
-              "arithmetic",
-              "bigdecimal",
-              "bignum",
-              "brick",
-              "math"
+                "arithmetic",
+                "bigdecimal",
+                "bignum",
+                "brick",
+                "math"
             ],
-          "support": {
-            "issues": "https://github.com/brick/math/issues",
-            "source": "https://github.com/brick/math/tree/0.10.2"
-          },
-          "funding": [
-            {
-              "url": "https://github.com/BenMorel",
-              "type": "github"
-            }
-          ],
-          "time": "2022-08-10T22:54:19+00:00"
+            "support": {
+                "issues": "https://github.com/brick/math/issues",
+                "source": "https://github.com/brick/math/tree/0.10.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-08-10T22:54:19+00:00"
         },
-    {
-      "name": "coderjerk/bird-elephant",
-      "version": "v0.5.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/danieldevine/bird-elephant.git",
-        "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
-        "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
-        "shasum": ""
-      },
-      "require": {
-        "guzzlehttp/guzzle": "^7.0",
-        "guzzlehttp/oauth-subscriber": "^0.6.0"
-      },
-      "require-dev": {
-        "league/oauth1-client": "^1.10",
-        "phpunit/phpunit": "^9.5",
-        "smolblog/oauth2-twitter": "^1.0",
-        "symfony/var-dumper": "^5.1",
-        "vlucas/phpdotenv": "^5.2"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "Coderjerk\\BirdElephant\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
         {
-          "name": "Daniel Devine",
-          "email": "jerk@coderjerk.com"
-        }
-      ],
-      "description": "A simple library to request data from the Twitter APIv2 endpoints",
-      "support": {
-        "issues": "https://github.com/danieldevine/bird-elephant/issues",
-        "source": "https://github.com/danieldevine/bird-elephant/tree/v0.5.0"
-      },
-      "funding": [
+            "name": "coderjerk/bird-elephant",
+            "version": "v0.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/danieldevine/bird-elephant.git",
+                "reference": "108e338c0770935fb07a0ffa0f5a32cddb63348e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/108e338c0770935fb07a0ffa0f5a32cddb63348e",
+                "reference": "108e338c0770935fb07a0ffa0f5a32cddb63348e",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "guzzlehttp/oauth-subscriber": "^0.6.0"
+            },
+            "require-dev": {
+                "league/oauth1-client": "^1.10",
+                "phpunit/phpunit": "^9.5",
+                "smolblog/oauth2-twitter": "^1.0",
+                "symfony/var-dumper": "^5.1",
+                "vlucas/phpdotenv": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Coderjerk\\BirdElephant\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Devine",
+                    "email": "jerk@coderjerk.com"
+                }
+            ],
+            "description": "A simple library to request data from the Twitter APIv2 endpoints",
+            "support": {
+                "issues": "https://github.com/danieldevine/bird-elephant/issues",
+                "source": "https://github.com/danieldevine/bird-elephant/tree/v0.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/danieldevine",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-01-03T17:24:41+00:00"
+        },
         {
-          "url": "https://github.com/danieldevine",
-          "type": "github"
-        }
-      ],
-      "time": "2022-06-19T22:36:24+00:00"
-    },
-    {
-      "name": "composer/ca-bundle",
-      "version": "1.3.4",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/composer/ca-bundle.git",
-        "reference": "69098eca243998b53eed7a48d82dedd28b447cd5"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/composer/ca-bundle/zipball/69098eca243998b53eed7a48d82dedd28b447cd5",
-        "reference": "69098eca243998b53eed7a48d82dedd28b447cd5",
-        "shasum": ""
-      },
-      "require": {
-        "ext-openssl": "*",
-        "ext-pcre": "*",
-        "php": "^5.3.2 || ^7.0 || ^8.0"
-      },
-      "require-dev": {
-        "phpstan/phpstan": "^0.12.55",
+            "name": "composer/ca-bundle",
+            "version": "1.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/ca-bundle.git",
+                "reference": "69098eca243998b53eed7a48d82dedd28b447cd5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/69098eca243998b53eed7a48d82dedd28b447cd5",
+                "reference": "69098eca243998b53eed7a48d82dedd28b447cd5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-pcre": "*",
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.55",
                 "psr/log": "^1.0",
                 "symfony/phpunit-bridge": "^4.2 || ^5",
                 "symfony/process": "^2.5 || ^3.0 || ^4.0 || ^5.0 || ^6.0"
@@ -1934,101 +1934,101 @@
                 "source": "https://github.com/guzzle/guzzle/tree/7.5.0"
             },
             "funding": [
-              {
-                "url": "https://github.com/GrahamCampbell",
-                "type": "github"
-              },
-              {
-                "url": "https://github.com/Nyholm",
-                "type": "github"
-              },
-              {
-                "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
-                "type": "tidelift"
-              }
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
+                    "type": "tidelift"
+                }
             ],
-          "time": "2022-08-28T15:39:27+00:00"
+            "time": "2022-08-28T15:39:27+00:00"
         },
-    {
-      "name": "guzzlehttp/oauth-subscriber",
-      "version": "0.6.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/guzzle/oauth-subscriber.git",
-        "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/8d6cab29f8397e5712d00a383eeead36108a3c1f",
-        "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f",
-        "shasum": ""
-      },
-      "require": {
-        "guzzlehttp/guzzle": "^6.5|^7.2",
-        "guzzlehttp/psr7": "^1.7|^2.0",
-        "php": ">=5.5.0"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "~4.0|^9.3.3"
-      },
-      "suggest": {
-        "ext-openssl": "Required to sign using RSA-SHA1"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "0.6-dev"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "GuzzleHttp\\Subscriber\\Oauth\\": "src"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
         {
-          "name": "Michael Dowling",
-          "email": "mtdowling@gmail.com",
-          "homepage": "https://github.com/mtdowling"
-        }
-      ],
-      "description": "Guzzle OAuth 1.0 subscriber",
-      "homepage": "http://guzzlephp.org/",
-      "keywords": [
-        "Guzzle",
-        "oauth"
-      ],
-      "support": {
-        "issues": "https://github.com/guzzle/oauth-subscriber/issues",
-        "source": "https://github.com/guzzle/oauth-subscriber/tree/0.6.0"
-      },
-      "time": "2021-07-13T12:01:32+00:00"
-    },
-    {
-      "name": "guzzlehttp/promises",
-      "version": "1.5.2",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/guzzle/promises.git",
-        "reference": "b94b2807d85443f9719887892882d0329d1e2598"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
-        "reference": "b94b2807d85443f9719887892882d0329d1e2598",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.5"
-      },
-      "require-dev": {
-        "symfony/phpunit-bridge": "^4.4 || ^5.1"
-      },
-      "type": "library",
+            "name": "guzzlehttp/oauth-subscriber",
+            "version": "0.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/oauth-subscriber.git",
+                "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/8d6cab29f8397e5712d00a383eeead36108a3c1f",
+                "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.5|^7.2",
+                "guzzlehttp/psr7": "^1.7|^2.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0|^9.3.3"
+            },
+            "suggest": {
+                "ext-openssl": "Required to sign using RSA-SHA1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Subscriber\\Oauth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle OAuth 1.0 subscriber",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "oauth"
+            ],
+            "support": {
+                "issues": "https://github.com/guzzle/oauth-subscriber/issues",
+                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.6.0"
+            },
+            "time": "2021-07-13T12:01:32+00:00"
+        },
+        {
+            "name": "guzzlehttp/promises",
+            "version": "1.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/promises.git",
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
+                "reference": "b94b2807d85443f9719887892882d0329d1e2598",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^4.4 || ^5.1"
+            },
+            "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "1.5-dev"
@@ -2284,88 +2284,88 @@
                 "source": "https://github.com/Intervention/image/tree/2.7.2"
             },
             "funding": [
-              {
-                "url": "https://paypal.me/interventionio",
-                "type": "custom"
-              },
-              {
-                "url": "https://github.com/Intervention",
-                "type": "github"
-              }
+                {
+                    "url": "https://paypal.me/interventionio",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/Intervention",
+                    "type": "github"
+                }
             ],
-          "time": "2022-05-21T17:30:32+00:00"
+            "time": "2022-05-21T17:30:32+00:00"
         },
-    {
-      "name": "ircmaxell/security-lib",
-      "version": "v1.1.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/ircmaxell/SecurityLib.git",
-        "reference": "f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/ircmaxell/SecurityLib/zipball/f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5",
-        "reference": "f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.3.2"
-      },
-      "require-dev": {
-        "mikey179/vfsstream": "1.1.*"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "1.0.x-dev"
-        }
-      },
-      "autoload": {
-        "psr-0": {
-          "SecurityLib": "lib"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
         {
-          "name": "Anthony Ferrara",
-          "email": "ircmaxell@ircmaxell.com",
-          "homepage": "http://blog.ircmaxell.com"
-        }
-      ],
-      "description": "A Base Security Library",
-      "homepage": "https://github.com/ircmaxell/SecurityLib",
-      "support": {
-        "issues": "https://github.com/ircmaxell/SecurityLib/issues",
-        "source": "https://github.com/ircmaxell/SecurityLib/tree/master"
-      },
-      "time": "2015-03-20T14:31:23+00:00"
-    },
-    {
-      "name": "jaybizzle/crawler-detect",
-      "version": "v1.2.112",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-        "reference": "2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f",
-        "reference": "2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.3.0"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "^4.8|^5.5|^6.5|^9.4"
-      },
-      "type": "library",
+            "name": "ircmaxell/security-lib",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/SecurityLib.git",
+                "reference": "f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/SecurityLib/zipball/f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5",
+                "reference": "f3db6de12c20c9bcd1aa3db4353a1bbe0e44e1b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.1.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "SecurityLib": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@ircmaxell.com",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A Base Security Library",
+            "homepage": "https://github.com/ircmaxell/SecurityLib",
+            "support": {
+                "issues": "https://github.com/ircmaxell/SecurityLib/issues",
+                "source": "https://github.com/ircmaxell/SecurityLib/tree/master"
+            },
+            "time": "2015-03-20T14:31:23+00:00"
+        },
+        {
+            "name": "jaybizzle/crawler-detect",
+            "version": "v1.2.112",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JayBizzle/Crawler-Detect.git",
+                "reference": "2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f",
+                "reference": "2c555ce35a07a5c1c808cee7d5bb52c41a4c7b2f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.5|^6.5|^9.4"
+            },
+            "type": "library",
             "autoload": {
                 "psr-4": {
                     "Jaybizzle\\CrawlerDetect\\": "src/"
@@ -3709,116 +3709,116 @@
             ],
             "description": "OAuth 1.0 Client Library",
             "keywords": [
-              "Authentication",
-              "SSO",
-              "authorization",
-              "bitbucket",
-              "identity",
-              "idp",
-              "oauth",
-              "oauth1",
-              "single sign on",
-              "trello",
-              "tumblr",
-              "twitter"
+                "Authentication",
+                "SSO",
+                "authorization",
+                "bitbucket",
+                "identity",
+                "idp",
+                "oauth",
+                "oauth1",
+                "single sign on",
+                "trello",
+                "tumblr",
+                "twitter"
             ],
-          "support": {
-            "issues": "https://github.com/thephpleague/oauth1-client/issues",
-            "source": "https://github.com/thephpleague/oauth1-client/tree/v1.10.1"
-          },
-          "time": "2022-04-15T14:02:14+00:00"
-        },
-    {
-      "name": "league/oauth2-client",
-      "version": "2.6.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/thephpleague/oauth2-client.git",
-        "reference": "2334c249907190c132364f5dae0287ab8666aa19"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/2334c249907190c132364f5dae0287ab8666aa19",
-        "reference": "2334c249907190c132364f5dae0287ab8666aa19",
-        "shasum": ""
-      },
-      "require": {
-        "guzzlehttp/guzzle": "^6.0 || ^7.0",
-        "paragonie/random_compat": "^1 || ^2 || ^9.99",
-        "php": "^5.6 || ^7.0 || ^8.0"
-      },
-      "require-dev": {
-        "mockery/mockery": "^1.3.5",
-        "php-parallel-lint/php-parallel-lint": "^1.3.1",
-        "phpunit/phpunit": "^5.7 || ^6.0 || ^9.5",
-        "squizlabs/php_codesniffer": "^2.3 || ^3.0"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-2.x": "2.0.x-dev"
-        }
-      },
-      "autoload": {
-        "psr-4": {
-          "League\\OAuth2\\Client\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Alex Bilbie",
-          "email": "hello@alexbilbie.com",
-          "homepage": "http://www.alexbilbie.com",
-          "role": "Developer"
+            "support": {
+                "issues": "https://github.com/thephpleague/oauth1-client/issues",
+                "source": "https://github.com/thephpleague/oauth1-client/tree/v1.10.1"
+            },
+            "time": "2022-04-15T14:02:14+00:00"
         },
         {
-          "name": "Woody Gilk",
-          "homepage": "https://github.com/shadowhand",
-          "role": "Contributor"
-        }
-      ],
-      "description": "OAuth 2.0 Client Library",
-      "keywords": [
-        "Authentication",
-        "SSO",
-        "authorization",
-        "identity",
-        "idp",
-        "oauth",
-        "oauth2",
-        "single sign on"
-      ],
-      "support": {
-        "issues": "https://github.com/thephpleague/oauth2-client/issues",
-        "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.1"
-      },
-      "time": "2021-12-22T16:42:49+00:00"
-    },
-    {
-      "name": "league/oauth2-server",
-      "version": "8.3.6",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/thephpleague/oauth2-server.git",
-        "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/28c5441716c10d0c936bd731860dc385d0f6d1a8",
-        "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8",
-        "shasum": ""
-      },
-      "require": {
-        "defuse/php-encryption": "^2.2.1",
-        "ext-json": "*",
-        "ext-openssl": "*",
-        "lcobucci/jwt": "^3.4.6 || ^4.0.4",
-        "league/event": "^2.2",
-        "league/uri": "^6.4",
+            "name": "league/oauth2-client",
+            "version": "2.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth2-client.git",
+                "reference": "2334c249907190c132364f5dae0287ab8666aa19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/2334c249907190c132364f5dae0287ab8666aa19",
+                "reference": "2334c249907190c132364f5dae0287ab8666aa19",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0 || ^7.0",
+                "paragonie/random_compat": "^1 || ^2 || ^9.99",
+                "php": "^5.6 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3.5",
+                "php-parallel-lint/php-parallel-lint": "^1.3.1",
+                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.5",
+                "squizlabs/php_codesniffer": "^2.3 || ^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth2\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Bilbie",
+                    "email": "hello@alexbilbie.com",
+                    "homepage": "http://www.alexbilbie.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Woody Gilk",
+                    "homepage": "https://github.com/shadowhand",
+                    "role": "Contributor"
+                }
+            ],
+            "description": "OAuth 2.0 Client Library",
+            "keywords": [
+                "Authentication",
+                "SSO",
+                "authorization",
+                "identity",
+                "idp",
+                "oauth",
+                "oauth2",
+                "single sign on"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/oauth2-client/issues",
+                "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.1"
+            },
+            "time": "2021-12-22T16:42:49+00:00"
+        },
+        {
+            "name": "league/oauth2-server",
+            "version": "8.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth2-server.git",
+                "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/28c5441716c10d0c936bd731860dc385d0f6d1a8",
+                "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8",
+                "shasum": ""
+            },
+            "require": {
+                "defuse/php-encryption": "^2.2.1",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "lcobucci/jwt": "^3.4.6 || ^4.0.4",
+                "league/event": "^2.2",
+                "league/uri": "^6.4",
                 "php": "^7.2 || ^8.0",
                 "psr/http-message": "^1.0.1"
             },
@@ -4948,247 +4948,247 @@
                 "base16",
                 "base32",
                 "base32_decode",
-              "base32_encode",
-              "base64",
-              "base64_decode",
-              "base64_encode",
-              "bin2hex",
-              "encoding",
-              "hex",
-              "hex2bin",
-              "rfc4648"
+                "base32_encode",
+                "base64",
+                "base64_decode",
+                "base64_encode",
+                "bin2hex",
+                "encoding",
+                "hex",
+                "hex2bin",
+                "rfc4648"
             ],
-          "support": {
-            "email": "info@paragonie.com",
-            "issues": "https://github.com/paragonie/constant_time_encoding/issues",
-            "source": "https://github.com/paragonie/constant_time_encoding"
-          },
-          "time": "2022-06-14T06:56:20+00:00"
-        },
-    {
-      "name": "paragonie/random-lib",
-      "version": "v2.0.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/paragonie/RandomLib.git",
-        "reference": "f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/paragonie/RandomLib/zipball/f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7",
-        "reference": "f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7",
-        "shasum": ""
-      },
-      "require": {
-        "ircmaxell/security-lib": "^1.1",
-        "paragonie/random_compat": "^2",
-        "paragonie/sodium_compat": "^1.3",
-        "php": ">=5.3.2"
-      },
-      "require-dev": {
-        "friendsofphp/php-cs-fixer": "^1.11",
-        "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^4.8 || >=5.0.0 <5.4"
-      },
-      "type": "library",
-      "extra": {
-        "branch-alias": {
-          "dev-master": "2.1.x-dev"
-        }
-      },
-      "autoload": {
-        "psr-0": {
-          "RandomLib": "lib"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Paragon Initiative Enterprises",
-          "email": "security@paragonie.com",
-          "homepage": "https://paragonie.com"
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/constant_time_encoding/issues",
+                "source": "https://github.com/paragonie/constant_time_encoding"
+            },
+            "time": "2022-06-14T06:56:20+00:00"
         },
         {
-          "name": "Anthony Ferrara",
-          "email": "ircmaxell@ircmaxell.com",
-          "homepage": "http://blog.ircmaxell.com"
-        }
-      ],
-      "description": "A Library For Generating Secure Random Numbers",
-      "homepage": "https://github.com/ircmaxell/RandomLib",
-      "keywords": [
-        "cryptography",
-        "random",
-        "random-numbers",
-        "random-strings"
-      ],
-      "support": {
-        "source": "https://github.com/paragonie/RandomLib/tree/v2.0.1"
-      },
-      "time": "2019-12-23T23:03:52+00:00"
-    },
-    {
-      "name": "paragonie/random_compat",
-      "version": "v2.0.21",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/paragonie/random_compat.git",
-        "reference": "96c132c7f2f7bc3230723b66e89f8f150b29d5ae"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/paragonie/random_compat/zipball/96c132c7f2f7bc3230723b66e89f8f150b29d5ae",
-        "reference": "96c132c7f2f7bc3230723b66e89f8f150b29d5ae",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.2.0"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "*"
-      },
-      "suggest": {
-        "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-      },
-      "type": "library",
-      "autoload": {
-        "files": [
-          "lib/random.php"
-        ]
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Paragon Initiative Enterprises",
-          "email": "security@paragonie.com",
-          "homepage": "https://paragonie.com"
-        }
-      ],
-      "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-      "keywords": [
-        "csprng",
-        "polyfill",
-        "pseudorandom",
-        "random"
-      ],
-      "support": {
-        "email": "info@paragonie.com",
-        "issues": "https://github.com/paragonie/random_compat/issues",
-        "source": "https://github.com/paragonie/random_compat"
-      },
-      "time": "2022-02-16T17:07:03+00:00"
-    },
-    {
-      "name": "paragonie/sodium_compat",
-      "version": "v1.19.0",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/paragonie/sodium_compat.git",
-        "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/cb15e403ecbe6a6cc515f855c310eb6b1872a933",
-        "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933",
-        "shasum": ""
-      },
-      "require": {
-        "paragonie/random_compat": ">=1",
-        "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7|^8"
-      },
-      "require-dev": {
-        "phpunit/phpunit": "^3|^4|^5|^6|^7|^8|^9"
-      },
-      "suggest": {
-        "ext-libsodium": "PHP < 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security.",
-        "ext-sodium": "PHP >= 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
-      },
-      "type": "library",
-      "autoload": {
-        "files": [
-          "autoload.php"
-        ]
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "ISC"
-      ],
-      "authors": [
-        {
-          "name": "Paragon Initiative Enterprises",
-          "email": "security@paragonie.com"
+            "name": "paragonie/random-lib",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/RandomLib.git",
+                "reference": "f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/RandomLib/zipball/f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7",
+                "reference": "f0ca6a2859b22f7caea9c343e63ffb3ce9b2ffa7",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/security-lib": "^1.1",
+                "paragonie/random_compat": "^2",
+                "paragonie/sodium_compat": "^1.3",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^4.8 || >=5.0.0 <5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "RandomLib": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                },
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@ircmaxell.com",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A Library For Generating Secure Random Numbers",
+            "homepage": "https://github.com/ircmaxell/RandomLib",
+            "keywords": [
+                "cryptography",
+                "random",
+                "random-numbers",
+                "random-strings"
+            ],
+            "support": {
+                "source": "https://github.com/paragonie/RandomLib/tree/v2.0.1"
+            },
+            "time": "2019-12-23T23:03:52+00:00"
         },
         {
-          "name": "Frank Denis",
-          "email": "jedisct1@pureftpd.org"
-        }
-      ],
-      "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
-      "keywords": [
-        "Authentication",
-        "BLAKE2b",
-        "ChaCha20",
-        "ChaCha20-Poly1305",
-        "Chapoly",
-        "Curve25519",
-        "Ed25519",
-        "EdDSA",
-        "Edwards-curve Digital Signature Algorithm",
-        "Elliptic Curve Diffie-Hellman",
-        "Poly1305",
-        "Pure-PHP cryptography",
-        "RFC 7748",
-        "RFC 8032",
-        "Salpoly",
-        "Salsa20",
-        "X25519",
-        "XChaCha20-Poly1305",
-        "XSalsa20-Poly1305",
-        "Xchacha20",
-        "Xsalsa20",
-        "aead",
-        "cryptography",
-        "ecdh",
-        "elliptic curve",
-        "elliptic curve cryptography",
-        "encryption",
-        "libsodium",
-        "php",
-        "public-key cryptography",
-        "secret-key cryptography",
-        "side-channel resistant"
-      ],
-      "support": {
-        "issues": "https://github.com/paragonie/sodium_compat/issues",
-        "source": "https://github.com/paragonie/sodium_compat/tree/v1.19.0"
-      },
-      "time": "2022-09-26T03:40:35+00:00"
-    },
-    {
-      "name": "phar-io/manifest",
-      "version": "2.0.3",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/phar-io/manifest.git",
-        "reference": "97803eca37d319dfa7826cc2437fc020857acb53"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/phar-io/manifest/zipball/97803eca37d319dfa7826cc2437fc020857acb53",
-        "reference": "97803eca37d319dfa7826cc2437fc020857acb53",
-        "shasum": ""
-      },
-      "require": {
-        "ext-dom": "*",
-        "ext-phar": "*",
-        "ext-xmlwriter": "*",
-        "phar-io/version": "^3.0.1",
+            "name": "paragonie/random_compat",
+            "version": "v2.0.21",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "96c132c7f2f7bc3230723b66e89f8f150b29d5ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/96c132c7f2f7bc3230723b66e89f8f150b29d5ae",
+                "reference": "96c132c7f2f7bc3230723b66e89f8f150b29d5ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/random_compat/issues",
+                "source": "https://github.com/paragonie/random_compat"
+            },
+            "time": "2022-02-16T17:07:03+00:00"
+        },
+        {
+            "name": "paragonie/sodium_compat",
+            "version": "v1.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/sodium_compat.git",
+                "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/cb15e403ecbe6a6cc515f855c310eb6b1872a933",
+                "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": ">=1",
+                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^3|^4|^5|^6|^7|^8|^9"
+            },
+            "suggest": {
+                "ext-libsodium": "PHP < 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security.",
+                "ext-sodium": "PHP >= 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com"
+                },
+                {
+                    "name": "Frank Denis",
+                    "email": "jedisct1@pureftpd.org"
+                }
+            ],
+            "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
+            "keywords": [
+                "Authentication",
+                "BLAKE2b",
+                "ChaCha20",
+                "ChaCha20-Poly1305",
+                "Chapoly",
+                "Curve25519",
+                "Ed25519",
+                "EdDSA",
+                "Edwards-curve Digital Signature Algorithm",
+                "Elliptic Curve Diffie-Hellman",
+                "Poly1305",
+                "Pure-PHP cryptography",
+                "RFC 7748",
+                "RFC 8032",
+                "Salpoly",
+                "Salsa20",
+                "X25519",
+                "XChaCha20-Poly1305",
+                "XSalsa20-Poly1305",
+                "Xchacha20",
+                "Xsalsa20",
+                "aead",
+                "cryptography",
+                "ecdh",
+                "elliptic curve",
+                "elliptic curve cryptography",
+                "encryption",
+                "libsodium",
+                "php",
+                "public-key cryptography",
+                "secret-key cryptography",
+                "side-channel resistant"
+            ],
+            "support": {
+                "issues": "https://github.com/paragonie/sodium_compat/issues",
+                "source": "https://github.com/paragonie/sodium_compat/tree/v1.19.0"
+            },
+            "time": "2022-09-26T03:40:35+00:00"
+        },
+        {
+            "name": "phar-io/manifest",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phar-io/manifest.git",
+                "reference": "97803eca37d319dfa7826cc2437fc020857acb53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phar-io/manifest/zipball/97803eca37d319dfa7826cc2437fc020857acb53",
+                "reference": "97803eca37d319dfa7826cc2437fc020857acb53",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-phar": "*",
+                "ext-xmlwriter": "*",
+                "phar-io/version": "^3.0.1",
                 "php": "^7.2 || ^8.0"
             },
             "type": "library",
@@ -7922,104 +7922,104 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                  "email": "sebastian@phpunit.de",
-                  "role": "lead"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
-          "description": "Library that helps with managing the version number of Git-hosted PHP projects",
-          "homepage": "https://github.com/sebastianbergmann/version",
-          "support": {
-            "issues": "https://github.com/sebastianbergmann/version/issues",
-            "source": "https://github.com/sebastianbergmann/version/tree/3.0.2"
-          },
-          "funding": [
-            {
-              "url": "https://github.com/sebastianbergmann",
-              "type": "github"
-            }
-          ],
-          "time": "2020-09-28T06:39:44+00:00"
-        },
-    {
-      "name": "smolblog/oauth2-twitter",
-      "version": "1.0.1",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/smolblog/oauth2-twitter.git",
-        "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/smolblog/oauth2-twitter/zipball/b8601d94ed3478e054922cc3ae0299a2ab339c62",
-        "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62",
-        "shasum": ""
-      },
-      "require": {
-        "league/oauth2-client": "^2.0",
-        "paragonie/random-lib": "^2.0",
-        "php": "^7.3 || ^8.0"
-      },
-      "require-dev": {
-        "eloquent/phony-phpunit": "^6.0 || ^7.1",
-        "phpunit/phpunit": ">=8.0",
-        "squizlabs/php_codesniffer": "^3.0"
-      },
-      "type": "library",
-      "autoload": {
-        "psr-4": {
-          "Smolblog\\OAuth2\\Client\\Provider\\": "src/"
-        }
-      },
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
-        {
-          "name": "Smolblog",
-          "email": "dev@smolblog.org"
+            "description": "Library that helps with managing the version number of Git-hosted PHP projects",
+            "homepage": "https://github.com/sebastianbergmann/version",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/version/issues",
+                "source": "https://github.com/sebastianbergmann/version/tree/3.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-09-28T06:39:44+00:00"
         },
         {
-          "name": "Evan Hildreth",
-          "email": "me@eph.me"
-        }
-      ],
-      "description": "Twitter OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
-      "keywords": [
-        "authorisation",
-        "authorization",
-        "client",
-        "oauth",
-        "oauth2",
-        "twitter"
-      ],
-      "support": {
-        "issues": "https://github.com/smolblog/oauth2-twitter/issues",
-        "source": "https://github.com/smolblog/oauth2-twitter/tree/1.0.1"
-      },
-      "time": "2022-08-16T00:15:13+00:00"
-    },
-    {
-      "name": "spatie/browsershot",
-      "version": "3.57.6",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/spatie/browsershot.git",
-        "reference": "41382e013a00a62a7b2f2945a615d73e59b3a907"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/spatie/browsershot/zipball/41382e013a00a62a7b2f2945a615d73e59b3a907",
-        "reference": "41382e013a00a62a7b2f2945a615d73e59b3a907",
-        "shasum": ""
-      },
-      "require": {
-        "ext-json": "*",
-        "php": "^7.4|^8.0",
-        "spatie/image": "^1.5.3|^2.0",
-        "spatie/temporary-directory": "^1.1|^2.0",
-        "symfony/process": "^4.2|^5.0|^6.0"
-      },
+            "name": "smolblog/oauth2-twitter",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smolblog/oauth2-twitter.git",
+                "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smolblog/oauth2-twitter/zipball/b8601d94ed3478e054922cc3ae0299a2ab339c62",
+                "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62",
+                "shasum": ""
+            },
+            "require": {
+                "league/oauth2-client": "^2.0",
+                "paragonie/random-lib": "^2.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "eloquent/phony-phpunit": "^6.0 || ^7.1",
+                "phpunit/phpunit": ">=8.0",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Smolblog\\OAuth2\\Client\\Provider\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Smolblog",
+                    "email": "dev@smolblog.org"
+                },
+                {
+                    "name": "Evan Hildreth",
+                    "email": "me@eph.me"
+                }
+            ],
+            "description": "Twitter OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+            "keywords": [
+                "authorisation",
+                "authorization",
+                "client",
+                "oauth",
+                "oauth2",
+                "twitter"
+            ],
+            "support": {
+                "issues": "https://github.com/smolblog/oauth2-twitter/issues",
+                "source": "https://github.com/smolblog/oauth2-twitter/tree/1.0.1"
+            },
+            "time": "2022-08-16T00:15:13+00:00"
+        },
+        {
+            "name": "spatie/browsershot",
+            "version": "3.57.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/browsershot.git",
+                "reference": "41382e013a00a62a7b2f2945a615d73e59b3a907"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/41382e013a00a62a7b2f2945a615d73e59b3a907",
+                "reference": "41382e013a00a62a7b2f2945a615d73e59b3a907",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.4|^8.0",
+                "spatie/image": "^1.5.3|^2.0",
+                "spatie/temporary-directory": "^1.1|^2.0",
+                "symfony/process": "^4.2|^5.0|^6.0"
+            },
             "require-dev": {
                 "pestphp/pest": "^1.20",
                 "spatie/phpunit-snapshot-assertions": "^4.2.3"
