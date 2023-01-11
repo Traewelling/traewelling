@@ -133,14 +133,17 @@ abstract class HafasController extends Controller
      */
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/stops/nearby", [
+            $response = self::getHttpClient()->get("/stops/nearby", [
                 'query' => [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
                     'results'   => $results
                 ]
             ]);
+
+            if (!$response->ok()) {
+                self::throwGeneralHafasException();
+            }
 
             $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
             $stations = self::parseHafasStops($data);
@@ -482,5 +485,12 @@ abstract class HafasController extends Controller
         $stopover->update([
                               'departure_real' => Carbon::parse($departure->when)->toIso8601String(),
                           ]);
+    }
+
+    /**
+     * @throws HafasException
+     */
+    private static function throwGeneralHafasException(): void {
+        throw new HafasException(__('messages.exception.generalHafas'));
     }
 }
