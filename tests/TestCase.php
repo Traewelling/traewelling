@@ -29,6 +29,30 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    const        FRANKFURT_HBF = [
+        "type"     => "stop",
+        "id"       => "8000105",
+        "name"     => "Frankfurt(Main)Hbf",
+        "location" => [
+            "type"      => "location",
+            "id"        => "8000105",
+            "latitude"  => 50.106817,
+            "longitude" => 8.663003,
+        ]
+    ];
+    const        HANNOVER_HBF  = [
+        "type"     => "stop",
+        "id"       => 8000152,
+        "name"     => "Hannover Hbf",
+        "ril100"   => "HH",
+        "location" => [
+            "type"      => "location",
+            "id"        => "8000152",
+            "latitude"  => 52.377079,
+            "longitude" => 9.741763
+        ]
+    ];
+
     protected function setUp(): void {
         parent::setUp();
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\PrivacyAgreementSeeder');

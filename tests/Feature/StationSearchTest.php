@@ -15,19 +15,6 @@ class StationSearchTest extends TestCase
 {
     use RefreshDatabase;
 
-    const HANNOVER_HBF = [
-        "type"     => "stop",
-        "id"       => 8000152,
-        "name"     => "Hannover Hbf",
-        "ril100"   => "HH",
-        "location" => [
-            "type"      => "location",
-            "id"        => "8000152",
-            "latitude"  => 52.377079,
-            "longitude" => 9.741763
-        ]
-    ];
-
     public function testStringSearch(): void {
         $searchResults = [self::HANNOVER_HBF];
         Http::fake(["*" => Http::response($searchResults)]);
