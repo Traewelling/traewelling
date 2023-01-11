@@ -58,7 +58,7 @@ abstract class HafasController extends Controller
         return null;
     }
 
-    public static function getTrainStationsByRilIdentifier(string $rilIdentifier): ?Collection {
+    public static function getTrainStationsByFuzzyRilIdentifier(string $rilIdentifier): ?Collection {
         $trainStations = TrainStation::where('rilIdentifier', 'LIKE', "$rilIdentifier%")->orderBy('rilIdentifier')->get();
         if ($trainStations->count() > 0) {
             return $trainStations;
