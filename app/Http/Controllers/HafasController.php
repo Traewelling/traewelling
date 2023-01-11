@@ -14,13 +14,19 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use JsonException;
 use PDOException;
 use stdClass;
 
 abstract class HafasController extends Controller
 {
+    public static function getHttpClient(): PendingRequest {
+        return Http::baseUrl(config('trwl.db_rest'))
+                   ->timeout(config('trwl.db_rest_timeout'));
+    }
 
     public static function getTrainStationByRilIdentifier(string $rilIdentifier): ?TrainStation {
         $trainStation = TrainStation::where('rilIdentifier', $rilIdentifier)->first();
@@ -28,9 +34,12 @@ abstract class HafasController extends Controller
             return $trainStation;
         }
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/stations/$rilIdentifier");
-            $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $response = self::getHttpClient()
+                            ->get("/stations/$rilIdentifier");
+            if (!$response->ok()) {
+                return null;
+            }
+            $data = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
             return TrainStation::updateOrCreate([
                                                     'ibnr' => $data->id
                                                 ], [
@@ -62,21 +71,24 @@ abstract class HafasController extends Controller
      */
     public static function getStations(string $query, int $results = 10): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/locations", [
-                'query' => [
-                    'query'     => $query,
-                    'fuzzy'     => 'true',
-                    'stops'     => 'true',
-                    'addresses' => 'false',
-                    'poi'       => 'false',
-                    'results'   => $results
-                ]
-            ]);
+            $response = self::getHttpClient()
+                            ->get("/locations",
+                                  [
+                                      'query'     => $query,
+                                      'fuzzy'     => 'true',
+                                      'stops'     => 'true',
+                                      'addresses' => 'false',
+                                      'poi'       => 'false',
+                                      'results'   => $results
+                                  ]);
 
-            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+            if (!$response->ok() or empty($data)) {
+                return Collection::empty();
+            }
+
             return self::parseHafasStops($data);
-        } catch (GuzzleException|JsonException $exception) {
+        } catch (JsonException $exception) {
             throw new HafasException($exception->getMessage());
         }
     }

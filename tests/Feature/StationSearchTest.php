@@ -4,25 +4,66 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\TrainStation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class StationSearchTest extends TestCase
 {
     use RefreshDatabase;
 
+    const HANNOVER_HBF = [
+        "type"     => "stop",
+        "id"       => 8000152,
+        "name"     => "Hannover Hbf",
+        "ril100"   => "HH",
+        "location" => [
+            "type"      => "location",
+            "id"        => "8000152",
+            "latitude"  => 52.377079,
+            "longitude" => 9.741763
+        ]
+    ];
+
     public function testStringSearch(): void {
-        $station = StationController::lookupStation('Hannover Hbf');
-        $this->assertEquals('Hannover Hbf', $station->name);
+        $searchResults = [self::HANNOVER_HBF];
+        Http::fake(["*" => Http::response($searchResults)]);
+
+        $station = StationController::lookupStation(self::HANNOVER_HBF['name']);
+        $this->assertEquals(self::HANNOVER_HBF['name'], $station->name);
+    }
+
+    public function testNameNotFound(): void {
+        Http::fake(["*" => Http::response([], 200)]);
+
+        $this->assertThrows(function() {
+            StationController::lookupStation("Bielefeld Hbf");
+        }, ModelNotFoundException::class);
     }
 
     public function testDs100Search(): void {
-        $station = StationController::lookupStation('HH');
-        $this->assertEquals('Hannover Hbf', $station->name);
+        $hannoverHbf = self::HANNOVER_HBF;
+        Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response($hannoverHbf)]);
+
+        $station = StationController::lookupStation(self::HANNOVER_HBF['ril100']);
+        $this->assertEquals(self::HANNOVER_HBF['name'], $station->name);
     }
 
-    public function testIdSearch(): void {
-        $station = StationController::lookupStation(1);
-        $this->assertEquals(TrainStation::find(1)->name, $station->name);
+    public function testDs100NotFound(): void {
+        Http::fake(["*" => Http::response([], 200)]);
+
+        $this->assertThrows(function() {
+            StationController::lookupStation("EBIL");
+        }, ModelNotFoundException::class);
+    }
+
+    public function testIbnrLocalSearch(): void {
+        Http::preventStrayRequests();
+        $expected = TrainStation::factory()->make();
+        $expected->save();
+
+        $station = StationController::lookupStation(str($expected->ibnr));
+        $this->assertEquals(TrainStation::find($expected->id)->name, $station->name);
     }
 }
