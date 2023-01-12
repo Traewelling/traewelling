@@ -29,7 +29,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    const        FRANKFURT_HBF = [
+    const FRANKFURT_HBF = [
         "type"     => "stop",
         "id"       => "8000105",
         "name"     => "Frankfurt(Main)Hbf",
@@ -40,7 +40,7 @@ abstract class TestCase extends BaseTestCase
             "longitude" => 8.663003,
         ]
     ];
-    const        HANNOVER_HBF  = [
+    const HANNOVER_HBF  = [
         "type"     => "stop",
         "id"       => 8000152,
         "name"     => "Hannover Hbf",

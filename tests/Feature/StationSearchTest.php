@@ -32,8 +32,7 @@ class StationSearchTest extends TestCase
     }
 
     public function testDs100Search(): void {
-        $hannoverHbf = self::HANNOVER_HBF;
-        Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response($hannoverHbf)]);
+        Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
         $station = StationController::lookupStation(self::HANNOVER_HBF['ril100']);
         $this->assertEquals(self::HANNOVER_HBF['name'], $station->name);
