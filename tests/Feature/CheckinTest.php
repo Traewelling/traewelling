@@ -23,45 +23,6 @@ class CheckinTest extends TestCase
 
     use RefreshDatabase;
 
-    const DEPARTURE_TIME = "2023-01-12T08:09:00+01:00";
-    const ARRIVAL_TIME   = "2023-01-12T10:12:00+01:00";
-
-    const TRIP_ID = "1|154966|0|81|12012023";
-    const ICE802  = [
-        "tripId"          => self::TRIP_ID,
-        "stop"            => self::FRANKFURT_HBF,
-        "when"            => self::DEPARTURE_TIME,
-        "plannedWhen"     => self::DEPARTURE_TIME,
-        "delay"           => null,
-        "platform"        => "8",
-        "plannedPlatform" => "8",
-        "prognosisType"   => null,
-        "direction"       => self::HANNOVER_HBF['name'],
-        "provenance"      => null,
-        "line"            => [
-            "type"        => "line",
-            "id"          => "ice-822",
-            "fahrtNr"     => "822",
-            "name"        => "ICE 822",
-            "public"      => true,
-            "adminCode"   => "80____",
-            "productName" => "ICE",
-            "mode"        => "train",
-            "product"     => "nationalExpress",
-            "operator"    => [
-                "type" => "operator",
-                "id"   => "db-fernverkehr-ag",
-                "name" => "DB Fernverkehr AG",
-            ],
-        ],
-        "remarks"         => [],
-        "origin"          => null,
-        "destination"     => self::HANNOVER_HBF,
-
-    ];
-
-    const EXAMPLE_BODY = 'Example Body';
-
     private string $plus_one_day_then_8pm = "+1 day 8:00";
 
     /**
@@ -154,48 +115,11 @@ class CheckinTest extends TestCase
         // GIVEN: A logged-in and gdpr-acked user
         $user = $this->createGDPRAckedUser();
 
-        // GIVEN: Detailed information about some fake trip
-        $tripInfo = [
-            "origin"           => self::FRANKFURT_HBF,
-            "destination"      => self::HANNOVER_HBF,
-            "departure"        => self::DEPARTURE_TIME,
-            "plannedDeparture" => self::DEPARTURE_TIME,
-            "departureDelay"   => null,
-            "arrival"          => self::ARRIVAL_TIME,
-            "plannedArrival"   => self::ARRIVAL_TIME,
-            "arrivalDelay"     => null,
-            "polyline"         => ["features" => []],
-            "line"             => self::ICE802['line'],
-            "direction"        => self::HANNOVER_HBF['name'],
-            "stopovers"        => [
-                [
-                    'arrival'                  => null,
-                    'plannedArrival'           => null,
-                    'plannedArrivalPlatform'   => null,
-                    'departure'                => self::DEPARTURE_TIME,
-                    'departurePlatform'        => 19,
-                    'plannedDeparture'         => self::DEPARTURE_TIME,
-                    'plannedDeparturePlatform' => 19,
-                    'stop'                     => self::FRANKFURT_HBF
-                ],
-                [
-                    'arrival'                  => null,
-                    'plannedArrival'           => null,
-                    'plannedArrivalPlatform'   => 9,
-                    'departure'                => self::ARRIVAL_TIME,
-                    'departurePlatform'        => null,
-                    'plannedDeparture'         => self::ARRIVAL_TIME,
-                    'plannedDeparturePlatform' => null,
-                    'stop'                     => self::HANNOVER_HBF
-                ],
-            ]
-        ];
-
         // WHEN: User follows Check-In Flow (checks departures, takes a look at trip information, performs check-in)
         Http::fake([
                        '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
                        '/stops/8000105/departures*'               => Http::response([self::ICE802]),
-                       '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response($tripInfo),
+                       '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
                    ]);
         TransportController::getDepartures(
             stationQuery: self::FRANKFURT_HBF['name'],

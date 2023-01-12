@@ -1,0 +1,53 @@
+[
+  {
+    "tripId": "1|447402|11|81|16012023",
+    "stop": {
+      "type": "stop",
+      "id": "102932",
+      "name": "Flughafen Terminal 1, Frankfurt a.M.",
+      "location": {
+        "type": "location",
+        "id": "102932",
+        "latitude": 50.05085,
+        "longitude": 8.570585
+      }
+    },
+    "when": "2023-01-16T10:14:00+01:00",
+    "plannedWhen": "2023-01-16T10:14:00+01:00",
+    "delay": null,
+    "platform": null,
+    "plannedPlatform": null,
+    "prognosisType": null,
+    "direction": "Kongresszentrum darmstadtium, Darmstadt",
+    "provenance": null,
+    "line": {
+      "type": "line",
+      "id": "5-rmvheb-air",
+      "fahrtNr": "210",
+      "name": "Bus AIR",
+      "public": true,
+      "adminCode": "rmvHEB",
+      "productName": "Bus",
+      "mode": "bus",
+      "product": "bus",
+      "operator": {
+        "type": "operator",
+        "id": "nahreisezug",
+        "name": "Nahreisezug"
+      }
+    },
+    "remarks": [],
+    "origin": null,
+    "destination": {
+      "type": "stop",
+      "id": "102668",
+      "name": "Kongresszentrum darmstadtium, Darmstadt",
+      "location": {
+        "type": "location",
+        "id": "102668",
+        "latitude": 49.87387,
+        "longitude": 8.656118
+      }
+    }
+  }
+]

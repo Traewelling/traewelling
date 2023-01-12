@@ -29,6 +29,17 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    const AACHEN_HBF =  [
+        "type"     => "stop",
+        "id"       => "8000001",
+        "name"     => "Aachen Hbf",
+        "location" => [
+            "type"      => "location",
+            "id"        => "8000105",
+            "latitude"  => 50.767641,
+            "longitude" => 6.09119,
+        ]
+    ];
     const FRANKFURT_HBF = [
         "type"     => "stop",
         "id"       => "8000105",
@@ -89,7 +100,7 @@ abstract class TestCase extends BaseTestCase
         "origin"          => null,
         "destination"     => self::HANNOVER_HBF,
     ];
-
+    
     const TRIP_INFO = [
         "origin"           => self::FRANKFURT_HBF,
         "destination"      => self::HANNOVER_HBF,
