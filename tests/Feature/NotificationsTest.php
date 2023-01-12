@@ -65,15 +65,16 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(0); // no follow no more
     }
 
-    /** @test */
+    /**
+     * Fit for mocked db-rest requests
+     * @test
+     */
     public function bob_joining_on_alices_connection_should_spawn_a_notification(): void {
-        $this->markTestSkipped('Test is broken; Notification is still working.');
-
         // GIVEN: Alice checked-into a train.
         $alice     = $this->createGDPRAckedUser();
         $timestamp = Carbon::now()->setHour(7)->setMinute(45);
         $this->checkin(
-            stationName: "Hamburg Hbf",
+            stationName: "Frankfurt(Main)Hbf",
             timestamp:   $timestamp,
             user:        $alice,
         );
@@ -81,7 +82,7 @@ class NotificationsTest extends TestCase
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
         $this->checkin(
-            stationName: "Hamburg Hbf",
+            stationName: "Frankfurt(Main)Hbf",
             timestamp:   $timestamp,
             user:        $bob
         );
@@ -109,12 +110,16 @@ class NotificationsTest extends TestCase
         $notifications->assertJsonCount(0); // no other user no more
     }
 
+    /**
+     * Fit for mocked db-rest requests
+     * @test
+     */
     public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void {
         // GIVEN: Alice checked-into a train.
         $alice     = $this->createGDPRAckedUser();
         $timestamp = Carbon::now()->setHour(7)->setMinute(45);
         $this->checkin(
-            stationName: "Hamburg Hbf",
+            stationName: "Frankfurt(Main)Hbf",
             timestamp:   $timestamp,
             user:        $alice,
         );
@@ -122,7 +127,7 @@ class NotificationsTest extends TestCase
         // WHEN: Bob also checks into the train
         $bob = $this->createGDPRAckedUser();
         $this->checkin(
-            stationName:      "Hamburg Hbf",
+            stationName:      "Frankfurt(Main)Hbf",
             timestamp:        $timestamp,
             user:             $bob,
             statusVisibility: StatusVisibility::PRIVATE,
