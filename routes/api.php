@@ -26,6 +26,7 @@ use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
+use App\Http\Controllers\API\v1\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
@@ -122,6 +123,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('followers', [FollowController::class, 'getFollowers']);
             Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
             Route::get('followings', [FollowController::class, 'getFollowings']);
+        });
+        Route::group(['prefix' => 'webhooks'], static function() {
+            Route::get('/', [WebhookController::class, 'getWebhooks']);
+            Route::post('/', [WebhookController::class, 'createWebhook']);
+            Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
+            Route::delete('/', [WebhookController::class, 'deleteAllWebhooks']);
         });
     });
 

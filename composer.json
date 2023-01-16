@@ -41,6 +41,7 @@
         "smolblog/oauth2-twitter": "^1.0",
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-sitemap": "^6.0",
+        "spatie/laravel-webhook-server": "^3.4",
         "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {

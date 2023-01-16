@@ -29,7 +29,13 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(): void {
+    public function boot(): void
+    {
         $this->registerPolicies();
+
+        Passport::tokensCan([
+            'read-webhooks' => 'Read Webhooks',
+            'write-webhooks' => 'Write Webhooks',
+        ]);
     }
 }
