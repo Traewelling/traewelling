@@ -27,6 +27,7 @@ use App\Http\Controllers\Frontend\Stats\YearInReviewController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -184,6 +185,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('delsession');
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken');
+        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
+             ->name('delwebhook');
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])

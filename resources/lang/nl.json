@@ -118,7 +118,7 @@
     "stationboard.business.commute.detail": "Woon-werkverkeer",
     "status.ogp-title": ":name reis met Träwelling",
     "transport_types.tram": "Tram",
-    "settings.no-tokens": "Momenteel hebben geen extern apps toegang naar jouw account.",
+    "settings.no-access-from-external-applications": "Momenteel hebben geen extern apps toegang naar jouw account.",
     "settings.token": "Token",
     "stationboard.dep": "af",
     "stationboard.destination": "Bestemming",

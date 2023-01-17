@@ -229,7 +229,7 @@
     "settings.expires": "Lauft ab",
     "dates.January": "Januar",
     "events.website": "Webseit",
-    "settings.no-tokens": "Aktuell hend koane andre Anwendunga Zuagriff uff dein Account.",
+    "settings.no-access-from-external-applications": "Aktuell hend koane andre Anwendunga Zuagriff uff dein Account.",
     "settings.revoke-token": "Zuagriff entzieha",
     "stationboard.business.private": "Privat",
     "stationboard.check-toot": "Toota",

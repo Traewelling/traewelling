@@ -377,7 +377,7 @@
     "settings.prevent": "Verbieten",
     "settings.privacy.update.success": "Deine Privatsphäreneinstellungen wurden aktualisiert.",
     "settings.search-engines.description": "Wir setzen ein noindex-Tag auf deinem Profil um den Suchmaschinen mitzuteilen, dass dein Profil nicht indexiert werden darf. Wir haben keinen Einfluss darauf, ob die Suchmaschine diesen Wunsch berücksichtigt.",
-    "settings.no-tokens": "Es haben aktuell keine externen Anwendungen Zugriff auf deinen Account.",
+    "settings.no-access-from-external-applications": "Es haben aktuell keine externen Anwendungen Zugriff auf deinen Account.",
     "settings.no-ics-tokens": "Du hast bisher keine Kalenderfreigabe für deine Fahrten erstellt.",
     "settings.ics.name-placeholder": "Tokenbezeichnung - z.B. Google Kalender, Outlook, …",
     "settings.ics.descriptor": "Hier kannst du deine ICS-Link verwalten. Damit kannst du deine bisherigen Fahrten in einem Kalender anzeigen, der das unterstützt.",
@@ -607,5 +607,7 @@
     "warning.insecure-performance": "Die Ladezeit dieser Seite ist ggfs. bei vielen Daten sehr langsam.",
     "year-review": "Jahresrückblick",
     "year-review.open": "Jahresrückblick anzeigen",
-    "year-review.teaser": "Das Jahr neigt sich dem Ende und wir haben viel zusammen erlebt. Schaue dir jetzt deinen Träwelling Jahresrückblick an:"
+    "year-review.teaser": "Das Jahr neigt sich dem Ende und wir haben viel zusammen erlebt. Schaue dir jetzt deinen Träwelling Jahresrückblick an:",
+    "settings.title-webhooks": "Webhooks",
+    "settings.delete-webhook.success": "Webhook wurde gelöscht"
 }

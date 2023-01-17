@@ -296,7 +296,7 @@
     "settings.prevent": "Verbiete",
     "settings.privacy.update.success": "Dei Privatsfärenoischdellungen wurdn aktualisiert.",
     "settings.search-engines.description": "Mer hogge ein noindex-Tag uff deim Profil um de Suchmaschine mitzuteile, dass dein Profil nedd indexiert werrn darf. Mer hawwe koan Einfluss druff, ob die Suchmaschine denn Wunsch berücksischdischd.",
-    "settings.no-tokens": "'s hawwe aktuell koa externe Anwendunge Zugriff uff dein Account.",
+    "settings.no-access-from-external-applications": "'s hawwe aktuell koa externe Anwendunge Zugriff uff dein Account.",
     "settings.no-ics-tokens": "Du hoaschd bisher koa Kalennerfreigabe für dei Fahrte erstellt.",
     "settings.ics.name-placeholder": "Tokenbezeischnung - z.B. Google Kalenner, Outlook, …",
     "settings.token": "Token",

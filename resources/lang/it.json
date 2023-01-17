@@ -336,7 +336,7 @@
     "settings.allow": "Consentire",
     "settings.prevent": "Impedire",
     "settings.privacy.update.success": "Le tue impostazioni sulla privacy sono state aggiornate.",
-    "settings.no-tokens": "Nessuna applicazione esterna ha attualmente accesso al tuo account.",
+    "settings.no-access-from-external-applications": "Nessuna applicazione esterna ha attualmente accesso al tuo account.",
     "settings.no-ics-tokens": "Non hai ancora creato una condivisione del calendario per le tue corse.",
     "settings.ics.name-placeholder": "Denominazione del token - ad esempio Google Calendar, Outlook, …",
     "settings.ics.modal": "Gettoni ICS emessi",

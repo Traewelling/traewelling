@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Enum\WebhookEventEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Passport\Client;
-use Spatie\WebhookServer\WebhookCall;
 
 /**
  * @mixin Builder
@@ -20,7 +19,7 @@ class Webhook extends Model
 
     protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret'];
     protected $hidden   = ['oauth_client_id', 'secret', 'created_at', 'updated_at'];
-    protected $appends = ['events'];
+    protected $appends  = ['events'];
     protected $casts    = [
         'id'              => 'integer',
         'oauth_client_id' => 'string',
@@ -29,8 +28,8 @@ class Webhook extends Model
         'user_id'         => 'integer'
     ];
 
-    public function oauthClient(): BelongsTo {
-        return $this->belongsTo(Client::class);
+    public function client(): BelongsTo {
+        return $this->belongsTo(Client::class, 'oauth_client_id');
     }
 
     public function user(): BelongsTo {
@@ -42,7 +41,7 @@ class Webhook extends Model
     }
 
     public function getEventsAttribute(): array {
-        return $this->events()->get()->map(function ($event) {
+        return $this->events()->get()->map(function($event) {
             return $event->event;
         })->toArray();
     }

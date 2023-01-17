@@ -9,15 +9,17 @@ use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\Webhook;
-use App\Models\WebhookEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
 
 abstract class WebhookController extends Controller
 {
+    public static function index(User $user): object {
+        return $user->webhooks;
+    }
+
     public static function createWebhook(
         User   $user,
         Client $client,
@@ -45,16 +47,16 @@ abstract class WebhookController extends Controller
     /**
      * Deletes a webhook
      *
-     * @param User   $user
-     * @param Client $client
-     * @param int    $webhookId
+     * @param User        $user
+     * @param Client|null $client
+     * @param int         $webhookId
      *
      * @return bool
      * @throws PermissionException
      */
     public static function deleteWebhook(
         User   $user,
-        Client $client,
+        Client|null $client,
         int    $webhookId
     ): bool {
         $webhook = Webhook::find($webhookId);
@@ -62,8 +64,10 @@ abstract class WebhookController extends Controller
         if ($webhook === null) {
             throw new ModelNotFoundException();
         }
-        if ($user->id != $webhook->user->id || $client->id != $webhook->oauthClient->id) {
-            throw new PermissionException();
+        if ($client != null) {
+            if ($user->id != $webhook->user->id || $client->id != $webhook->oauthClient->id) {
+                throw new PermissionException();
+            }
         }
         $webhook->delete();
         return true;
