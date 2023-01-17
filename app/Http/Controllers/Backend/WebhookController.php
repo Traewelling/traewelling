@@ -69,22 +69,29 @@ abstract class WebhookController extends Controller
         return true;
     }
 
-    public static function sendStatusWebhook(Status $status) {
-        $webhooks = Webhook::where('user_id', '=', $status->user_id)
-                           ->get();
+    public static function sendStatusWebhook(Status $status, WebhookEventEnum $event) {
+        self::dispatchWebhook($status->user, $event, [
+            'status' => new StatusResource($status)
+        ]);
+    }
+
+    static function dispatchWebhook(User $user, WebhookEventEnum $event, array $data) {
+        $webhooks = $user->webhooks()->joinWhere('webhook_events', 'event', '=', $event->value)->get();
         foreach ($webhooks as $webhook) {
             Log::debug("Sending webhook", [
                 'webhook_id' => $webhook->id,
                 'user_id'    => $webhook->user->id,
             ]);
-            $resource = new StatusResource($status);
             WebhookCall::create()
                        ->url($webhook->url)
                        ->withHeaders([
-                                         'X-Trwl-User-Id'    => $status->user_id,
+                                         'X-Trwl-User-Id'    => $user->id,
                                          'X-Trwl-Webhook-Id' => $webhook->id,
                                      ])
-                       ->payload($resource->toArray(new Request()))
+                       ->payload([
+                                     'event' => $event,
+                                     ...$data
+                                 ])
                        ->useSecret($webhook->secret)
                        ->dispatch();
         }

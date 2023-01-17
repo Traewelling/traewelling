@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Transport;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
+use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
@@ -36,6 +37,8 @@ class StatusController extends Controller
                                 'business'   => Business::from($validated['business_check']),
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
+
+            StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
                 && $validated['destinationStopoverId'] != $status->trainCheckin->destination_stopover->id) {

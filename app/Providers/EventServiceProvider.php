@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\StatusDeleteEvent;
+use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Http\Controllers\Backend\WebhookController;
 use App\Jobs\PostStatusOnMastodon;
 use App\Jobs\PostStatusOnTwitter;
+use App\Listeners\StatusCreateWebhookListener;
+use App\Listeners\StatusDeleteWebhookListener;
+use App\Listeners\StatusUpdateWebhookListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
@@ -20,11 +25,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class    => [
+        Registered::class        => [
             //SendEmailVerificationNotification::class,
         ],
-        UserCheckedIn::class => [
-
+        UserCheckedIn::class     => [
+            StatusCreateWebhookListener::class
+        ],
+        StatusUpdateEvent::class => [
+            StatusUpdateWebhookListener::class
+        ],
+        StatusDeleteEvent::class => [
+            StatusDeleteWebhookListener::class
         ]
     ];
 
@@ -39,7 +50,6 @@ class EventServiceProvider extends ServiceProvider
         // Dispatch Jobs from Events
         Event::listen(fn(UserCheckedIn $event) => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
         Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(fn(UserCheckedIn $event) => WebhookController::sendStatusWebhook($event->status));
-        Event::listen(fn(WebhookCallFailedEvent $event) => Log::error("Webhook call failed: " . implode($event)));
+        Event::listen(fn(WebhookCallFailedEvent $event) => Log::error("Webhook call failed: " . json_encode($event)));
     }
 }
