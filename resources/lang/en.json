@@ -611,5 +611,5 @@
     "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:",
     "settings.title-webhooks": "Webhooks",
     "settings.delete-webhook.success": "Webhook has been deleted",
-    "settings.no-webhooks": "No external applications will be notified about activities of your account."
+    "settings.no-webhooks": "No third-party applications will be notified about activities of your account."
 }
