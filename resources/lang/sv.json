@@ -245,7 +245,7 @@
     "settings.create-ics-token-success": "Kalenderdelningen har skapats. Du kan tillägga följande länken till en kalender som stöder ICS-formatet: <a href=\":link\">:link</a>",
     "settings.expires": "Rinner ut",
     "settings.upload-image": "Ladda upp profilbild",
-    "settings.no-access-from-external-applications": "Inga externa applikationer har för närvarande tillgång till ditt konto.",
+    "settings.no-tokens": "Inga externa applikationer har för närvarande tillgång till ditt konto.",
     "settings.follower.no-follower": "Du har ingen följare.",
     "stationboard.arr": "ankomst",
     "stationboard.btn-checkin": "Checka in!",

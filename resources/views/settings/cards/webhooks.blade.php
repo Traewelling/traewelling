@@ -3,7 +3,7 @@
     <div class="card-header">{{ __('settings.title-webhooks') }}</div>
     <div class="card-body">
         @if(count($webhooks) == 0)
-            <p class="text-danger">{{__('settings.no-access-from-external-applications')}}</p>
+            <p class="text-danger">{{__('settings.no-webhooks')}}</p>
         @else
             <table class="table table-responsive">
                 <thead>

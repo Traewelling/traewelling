@@ -359,7 +359,7 @@
     "settings.last-accessed": "Last accessed",
     "settings.never": "Never",
     "settings.deletetokenfor": "Invalidate token for:",
-    "settings.no-access-from-external-applications": "There are no third-party applications with access to your account.",
+    "settings.no-tokens": "There are no third-party applications with access to your account.",
     "settings.no-ics-tokens": "You haven't created a calendar share for your journeys yet.",
     "settings.ics.name-placeholder": "Tokendescription - e.g. Google Calendar, Outlook, …",
     "settings.ics.descriptor": "You can manage your ICS links here. This will allow you to view your previous trips in a calendar that supports it.",
@@ -610,5 +610,6 @@
     "year-review.open": "Show my year in review",
     "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:",
     "settings.title-webhooks": "Webhooks",
-    "settings.delete-webhook.success": "Webhook has been deleted"
+    "settings.delete-webhook.success": "Webhook has been deleted",
+    "settings.no-webhooks": "No external applications will be notified about activities of your account."
 }

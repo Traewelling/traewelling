@@ -27,7 +27,7 @@
     "transport_types.tram": "tramway",
     "passwords.sent": "Nous t’avons envoyé un lien pour réinitialiser ton mot de passe par courriel.",
     "modals.deleteEvent-body": "Est-ce que tu es sûr·e de vouloir supprimer l’évènement nommé « <em>:name</em> » ? Les enregistrements en faisant partie seront modifiés en <code>NULL</code>.",
-    "settings.no-access-from-external-applications": "Il n’y a actuellement aucune application externe qui a accès à ton compte.",
+    "settings.no-tokens": "Il n’y a actuellement aucune application externe qui a accès à ton compte.",
     "dates.May": "mai",
     "controller.transport.no-station-found": "Aucune station n’a été trouvé pour cette recherche.",
     "privacy.sign": "D’accord",

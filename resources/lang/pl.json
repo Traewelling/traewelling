@@ -206,7 +206,7 @@
     "settings.expires": "Wygasa",
     "settings.hide-search-engines": "Indeksowanie przez wyszukiwarki",
     "settings.prevent": "Blokuj",
-    "settings.no-access-from-external-applications": "Brak aplikacji zewnętrznych z dostępem do twojego konta.",
+    "settings.no-tokens": "Brak aplikacji zewnętrznych z dostępem do twojego konta.",
     "settings.no-ics-tokens": "Jeszcze nie udostępniłeś kalendarza dla swoich podróży.",
     "settings.ics.name-placeholder": "Opis tokena - np. Google Calendar, Outlook, …",
     "settings.token": "Token",

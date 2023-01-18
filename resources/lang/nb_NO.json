@@ -383,7 +383,7 @@
     "profile.private-profile-information-text": "Bare bekreftede følgere kan se @:username innsjekkinger. For å be om tilgang, klikk på Be om.",
     "settings.delete-account-verify": "Ved bekreftelse slettes alle data som er knyttet til kontoen på :appname, ugjenkallelig.<br /> Tweets og toots sendt via :appname vil ikke bli slettet.",
     "settings.privacy.update.success": "Dine personverninnstillinger ble oppdatert.",
-    "settings.no-access-from-external-applications": "Ingen eksterne applikasjoner har for øyeblikket tilgang til kontoen din.",
+    "settings.no-tokens": "Ingen eksterne applikasjoner har for øyeblikket tilgang til kontoen din.",
     "settings.create-ics-token-success": "Kalenderandelen har blitt opprettet. Du kan inkludere følgende lenke i en kalender som støtter ICS -formatet: <a href=\":link\">:link</a>",
     "settings.follower.delete-success": "Du har fjernet følgeren.",
     "stationboard.arr": "på",
