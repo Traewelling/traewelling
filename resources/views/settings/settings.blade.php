@@ -9,9 +9,9 @@
                 @include('settings.cards.general')
                 @include('settings.cards.privacy')
                 @include('settings.cards.password')
+                @include('settings.cards.ics')
                 @include('settings.cards.login-providers')
                 @include('settings.cards.sessions')
-                @include('settings.cards.ics')
                 @include('settings.cards.account-deletion')
             </div>
         </div>
