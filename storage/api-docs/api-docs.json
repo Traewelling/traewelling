@@ -4207,12 +4207,6 @@
                     "home": {
                         "$ref": "#/components/schemas/TrainStation"
                     },
-                    "dbl": {
-                        "title": "dbl",
-                        "description": "Should tweets contain the hashtag #dbl? (see https://twitter.com/dblocator)",
-                        "type": "boolean",
-                        "example": false
-                    },
                     "language": {
                         "title": "language",
                         "description": "what is the specified language of this user",

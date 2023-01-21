@@ -190,18 +190,6 @@ class UserAuth
     private $home;
 
     /**
-     * @OA\Property (
-     *     title="dbl",
-     *     description="Should tweets contain the hashtag #dbl? (see https://twitter.com/dblocator)",
-     *     type="boolean",
-     *     example=false
-     * )
-     *
-     * @var bool
-     */
-    private $dbl;
-
-    /**
      * @OA\Property(
      *     title="language",
      *     description="what is the specified language of this user",
