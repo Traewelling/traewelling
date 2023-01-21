@@ -70,7 +70,7 @@
                                         {{__('stats')}}
                                     </a>
                                 </li>
-                                @if(\Illuminate\Support\Facades\Date::now()->isBefore(\Illuminate\Support\Facades\Date::createFromDate(2023,1,10)))
+                                @if(config('trwl.year_in_review_active'))
                                     <li class="nav-item">
                                         <a class="nav-link" href="/your-year/">
                                             <i class="fa-solid fa-champagne-glasses"></i>

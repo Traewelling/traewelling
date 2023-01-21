@@ -32,7 +32,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('trwl:refreshTrips')->withoutOverlapping()->everyMinute();
         $schedule->command('trwl:hideStatus')->daily();
         $schedule->command('trwl:cache:leaderboard')->withoutOverlapping()->everyFiveMinutes();
-        $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');
+
+        if (config('trwl.year_in_review_active')) {
+            $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');
+        }
     }
 
     /**
