@@ -5,7 +5,7 @@
      data-trwl-visibility="{{ $status->visibility->value }}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
-         data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+     data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
@@ -53,7 +53,11 @@
                                 />
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
-                            @endif {{ $status->trainCheckin->HafasTrip->linename }}
+                            @endif
+                            {{ $status->trainCheckin->HafasTrip->linename }}
+                            @isset($status->trainCheckin->HafasTrip->journey_number)
+                                <small>({{$status->trainCheckin->HafasTrip->journey_number}})</small>
+                            @endisset
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-route d-inline" aria-hidden="true"></i>
@@ -101,7 +105,7 @@
                             {{ __('stationboard.next-stop') }}
 
                             @php
-                            $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
+                                $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
                             @endphp
                             <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $nextStation?->ibnr])}}"
                                class="text-trwl clearfix">
