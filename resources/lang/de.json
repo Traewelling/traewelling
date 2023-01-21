@@ -606,5 +606,7 @@
     "warning.insecure-performance": "Die Ladezeit dieser Seite ist ggfs. bei vielen Daten sehr langsam.",
     "year-review": "Jahresrückblick",
     "year-review.open": "Jahresrückblick anzeigen",
-    "year-review.teaser": "Das Jahr neigt sich dem Ende und wir haben viel zusammen erlebt. Schaue dir jetzt deinen Träwelling Jahresrückblick an:"
+    "year-review.teaser": "Das Jahr neigt sich dem Ende und wir haben viel zusammen erlebt. Schaue dir jetzt deinen Träwelling Jahresrückblick an:",
+    "unknown-service": "Unbekannter Dienst",
+    "access-expires-at": "läuft ab :diffForHumans"
 }

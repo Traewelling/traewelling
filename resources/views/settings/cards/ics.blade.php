@@ -5,35 +5,37 @@
         @if(auth()->user()->icsTokens->count() == 0)
             <p class="text-danger">{{__('settings.no-ics-tokens')}}</p>
         @else
-            <table class="table table-responsive">
-                <thead>
-                    <tr>
-                        <th colspan="2">{{ __('settings.token') }}</th>
-                        <th>{{ __('settings.created') }}</th>
-                        <th>{{ __('settings.last-accessed') }}</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(auth()->user()->icsTokens as $icsToken)
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{$icsToken->name}}</td>
-                            <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
-                            <td>{{ $icsToken->created_at->isoFormat(__('datetime-format')) }}</td>
-                            <td>{{ $icsToken?->last_accessed?->isoFormat(__('datetime-format')) ?? __('settings.never') }}</td>
-                            <td>
-                                <form method="POST" action="{{route('ics.revokeToken')}}">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{$icsToken->id}}"/>
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        {{__('settings.revoke-token')}}
-                                    </button>
-                                </form>
-                            </td>
+                            <th colspan="2">{{ __('settings.token') }}</th>
+                            <th>{{ __('settings.created') }}</th>
+                            <th>{{ __('settings.last-accessed') }}</th>
+                            <th></th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach(auth()->user()->icsTokens as $icsToken)
+                            <tr>
+                                <td>{{$icsToken->name}}</td>
+                                <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
+                                <td>{{ $icsToken->created_at->isoFormat(__('datetime-format')) }}</td>
+                                <td>{{ $icsToken?->last_accessed?->isoFormat(__('datetime-format')) ?? __('settings.never') }}</td>
+                                <td>
+                                    <form method="POST" action="{{route('ics.revokeToken')}}">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$icsToken->id}}"/>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            {{__('settings.revoke-token')}}
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
 
         <form method="POST" action="{{route('ics.createToken')}}">
