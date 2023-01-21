@@ -424,6 +424,8 @@
     "stationboard.set-time": "Zeit setzen",
     "stationboard.no-departures": "Für diese Uhrzeit/diesen Filter gibt es derzeit leider keine Abfahrten.",
     "stationboard.station-placeholder": "Haltestelle",
+    "ril100": "Ril 100 Kürzel",
+    "or-alternative": "oder",
     "stationboard.stop-cancelled": "Halt entfällt",
     "stationboard.stopover": "Station",
     "stationboard.submit-search": "Suchen",
