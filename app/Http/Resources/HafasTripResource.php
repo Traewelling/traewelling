@@ -11,17 +11,19 @@ class HafasTripResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function toArray($request): array {
         return [
-            "id"          => $this->id,
-            "category"    => $this->category->value,
-            "number"      => $this->number,
-            "lineName"    => $this->linename,
-            "origin"      => new TrainStationResource($this->originStation),
-            "destination" => new TrainStationResource($this->destinationStation),
-            "stopovers"   => StopoverResource::collection($this->stopoversNEW)
+            'id'            => $this->id,
+            'category'      => $this->category->value,
+            'number'        => $this->number,
+            'lineName'      => $this->linename,
+            'journeyNumber' => $this->journey_number,
+            'origin'        => new TrainStationResource($this->originStation),
+            'destination'   => new TrainStationResource($this->destinationStation),
+            'stopovers'     => StopoverResource::collection($this->stopoversNEW)
         ];
     }
 }

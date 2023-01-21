@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://my-default-host.com",
             "description": "This instance"
         }
     ],
@@ -2312,6 +2312,10 @@
                                                 "lineName": {
                                                     "type": "string",
                                                     "example": "S 4"
+                                                },
+                                                "journeyNumber": {
+                                                    "type": "int64",
+                                                    "example": "34427"
                                                 },
                                                 "origin": {
                                                     "$ref": "#/components/schemas/TrainStation"
