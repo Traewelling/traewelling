@@ -55,9 +55,9 @@
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif
                             {{ $status->trainCheckin->HafasTrip->linename }}
-                            @isset($status->trainCheckin->HafasTrip->journey_number)
+                            @if(isset($status->trainCheckin->HafasTrip->journey_number) && !str_contains($status->trainCheckin->HafasTrip->linename, $status->trainCheckin->HafasTrip->journey_number))
                                 <small>({{$status->trainCheckin->HafasTrip->journey_number}})</small>
-                            @endisset
+                            @endif
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-route d-inline" aria-hidden="true"></i>
