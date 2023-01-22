@@ -207,6 +207,7 @@ class TransportController extends Controller
      *                  @OA\Property(property="category", ref="#/components/schemas/TrainCategoryEnum"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
+     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/TrainStation"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/TrainStation"),
      *                  @OA\Property(property="stopovers", type="array",
