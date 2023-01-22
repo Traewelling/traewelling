@@ -2,6 +2,9 @@
 <div class="card mt-3">
     <div class="card-header">{{ __('settings.title-webhooks') }}</div>
     <div class="card-body">
+        <p>
+            {{ __('settings.webhook-description') }}
+        </p>
         @if(count($webhooks) == 0)
             <p class="text-danger">{{__('settings.no-webhooks')}}</p>
         @else
@@ -10,6 +13,8 @@
                     <tr>
                         <th>{{ __('settings.client-name') }}</th>
                         <th>{{ __('settings.created') }}</th>
+                        <th>{{ __('settings.webhook-event-notifications-description') }}</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,6 +22,13 @@
                         <tr>
                             <td>{{ $webhook->client->name }}</td>
                             <td>{{ Carbon::parse($webhook->created_at)->isoFormat(__('datetime-format')) }}</td>
+                            <td>
+                                <ul>
+                                    @foreach($webhook->events as $event)
+                                        <li>{{ __('settings.webhook_event.' . $event)}}</li>
+                                    @endforeach
+                                </ul>
+                            </td>
                             <td>
                                 <form method="post" action="{{ route('delwebhook') }}">
                                     @csrf

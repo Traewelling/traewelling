@@ -611,5 +611,10 @@
     "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:",
     "settings.title-webhooks": "Webhooks",
     "settings.delete-webhook.success": "Webhook has been deleted",
-    "settings.no-webhooks": "No third-party applications will be notified about activities of your account."
+    "settings.no-webhooks": "No third-party applications will be notified about activities of your account.",
+    "settings.webhook-description": "Webhooks are a technology to inform external applications about activities on your Träwelling account. In the following table you can see which external applications have registered webhooks and about which activities they are informed.",
+    "settings.webhook-event-notifications-description": "Activities",
+    "settings.webhook_event.checkin_create": "Creation of a checkin",
+    "settings.webhook_event.checkin_update": "Editing of a checkin",
+    "settings.webhook_event.checkin_delete": "Deletion of a checking"
 }

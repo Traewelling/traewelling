@@ -610,5 +610,10 @@
     "year-review.teaser": "Das Jahr neigt sich dem Ende und wir haben viel zusammen erlebt. Schaue dir jetzt deinen Träwelling Jahresrückblick an:",
     "settings.title-webhooks": "Webhooks",
     "settings.delete-webhook.success": "Webhook wurde gelöscht",
-    "settings.no-webhooks": "Es werden keine externen Anwendungen über Aktivitäten von deinem Account benachrichtigt."
+    "settings.no-webhooks": "Es werden keine externen Anwendungen über Aktivitäten von deinem Account benachrichtigt.",
+    "settings.webhook-description": "Webhooks sind eine Technologie um externe Anwendungen über Aktivitäten auf deinem Träwelling Account zu informieren. In der folgenden Tabelle siehst du welche externen Anwendungen Webhooks registriert haben und über welche Aktivitäten diese informiert werden.",
+    "settings.webhook-event-notifications-description": "Aktivitäten",
+    "settings.webhook_event.checkin_create": "Erstellen eines Checkins",
+    "settings.webhook_event.checkin_update": "Bearbeiten eines Checkins",
+    "settings.webhook_event.checkin_delete": "Löschen eines Checkins"
 }
