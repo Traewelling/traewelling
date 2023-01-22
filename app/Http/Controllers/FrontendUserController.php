@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -29,6 +30,7 @@ class FrontendUserController extends Controller
             'statuses'    => $profilePage['statuses'],
             'user'        => $profilePage['user'],
             'currentUser' => Auth::user(),
+            'events'      => EventBackend::activeEvents(),
             'twitterUrl'  => $profilePage['twitterUrl'],
             'mastodonUrl' => $profilePage['mastodonUrl']
         ]);

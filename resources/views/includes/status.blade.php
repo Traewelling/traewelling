@@ -195,6 +195,19 @@
                             <i class="fas fa-trash" aria-hidden="true"></i>
                         </a>
                     </li>
+                @else
+                    <li class="list-inline-item like-text">
+                        <a href="#" class="join" data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
+                           data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
+                           data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
+                           data-trwl-destination="{{$status->trainCheckIn->destination}}"
+                           data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
+                           data-trwl-start="{{$status->trainCheckIn->origin}}"
+                           data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                        >
+                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                        </a>
+                    </li>
                 @endif
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
@@ -228,4 +241,5 @@
             </div>
         @endforeach
     @endif
+    @include('includes.check-in-modal')
 </div>
