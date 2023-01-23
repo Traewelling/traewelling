@@ -15,6 +15,24 @@ use Illuminate\Validation\ValidationException;
 
 class SettingsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/settings/profile",
+     *     tags={"Settings"},
+     *     summary="Get the current user's profile settings",
+     *     description="Get the current user's profile settings",
+     *     @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *          )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     security={{"token": {}}}
+     * )
+     *
+     */
     public function getProfileSettings(): UserProfileSettingsResource {
         return new UserProfileSettingsResource(auth()->user());
     }
