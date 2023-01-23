@@ -8214,21 +8214,21 @@
         },
         {
             "name": "spatie/icalendar-generator",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/icalendar-generator.git",
-                "reference": "128d8fe4f0d759b8bdb0383a178c15963b54f458"
+                "reference": "b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/128d8fe4f0d759b8bdb0383a178c15963b54f458",
-                "reference": "128d8fe4f0d759b8bdb0383a178c15963b54f458",
+                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a",
+                "reference": "b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "nesbot/carbon": "^2.54",
+                "nesbot/carbon": "^2.63",
                 "php": "^7.4|^8.0",
                 "spatie/enum": "^3.11"
             },
@@ -8269,9 +8269,9 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.1"
+                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.2"
             },
-            "time": "2022-10-26T10:18:21+00:00"
+            "time": "2023-01-23T08:15:15+00:00"
         },
         {
             "name": "spatie/image",
