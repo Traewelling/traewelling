@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d331371f4b1074b28cb990f39eb2f15e",
+    "content-hash": "95f6eaea292834daf530f818b6b59177",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -295,16 +295,16 @@
         },
         {
             "name": "coderjerk/bird-elephant",
-            "version": "v0.5.0",
+            "version": "v0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danieldevine/bird-elephant.git",
-                "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84"
+                "reference": "1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
-                "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
+                "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b",
+                "reference": "1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
             "description": "A simple library to request data from the Twitter APIv2 endpoints",
             "support": {
                 "issues": "https://github.com/danieldevine/bird-elephant/issues",
-                "source": "https://github.com/danieldevine/bird-elephant/tree/v0.5.0"
+                "source": "https://github.com/danieldevine/bird-elephant/tree/v0.6.1"
             },
             "funding": [
                 {
@@ -345,7 +345,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-06-19T22:36:24+00:00"
+            "time": "2023-01-09T15:04:03+00:00"
         },
         {
             "name": "composer/ca-bundle",
