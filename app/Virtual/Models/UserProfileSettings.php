@@ -84,6 +84,17 @@ class UserProfileSettings
 
     /**
      * @OA\Property(
+     *     title="privacyHideDays",
+     *     description="Number of days after which a status is hidden from the public",
+     *     format="int64",
+     *     example=1,
+     *     nullable=true
+     * )
+     */
+    private $privacyHideDays;
+
+    /**
+     * @OA\Property(
      *     title="password",
      *     description="Does the user have a password set?",
      *     format="boolean",

@@ -1199,6 +1199,86 @@
                         "token": []
                     }
                 ]
+            },
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the current user's profile settings",
+                "description": "Update the current user's profile settings",
+                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "maxLength": 25,
+                                        "example": "gertrud123"
+                                    },
+                                    "displayName": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Gertrud"
+                                    },
+                                    "privateProfile": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "preventIndex": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "privacyHideDays": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "defaultStatusVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
             }
         },
         "/leaderboard": {
@@ -4295,6 +4375,13 @@
                     },
                     "defaultStatusVisibility": {
                         "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Number of days after which a status is hidden from the public",
+                        "format": "int64",
+                        "example": 1,
+                        "nullable": true
                     },
                     "password": {
                         "title": "password",
