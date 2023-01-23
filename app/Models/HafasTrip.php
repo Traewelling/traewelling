@@ -6,7 +6,6 @@ use App\Enum\HafasTravelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -16,7 +15,7 @@ class HafasTrip extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id', 'category', 'number', 'linename', 'operator_id', 'origin', 'destination',
+        'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
         'stopovers', 'polyline_id', 'departure', 'arrival', 'delay', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -24,6 +23,7 @@ class HafasTrip extends Model
         'id'             => 'integer',
         'trip_id'        => 'string',
         'category'       => HafasTravelType::class,
+        'journey_number' => 'integer',
         'operator_id'    => 'integer',
         'origin'         => 'integer',
         'destination'    => 'integer',
