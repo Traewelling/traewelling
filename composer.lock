@@ -4,33 +4,33 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f310d65fa723ff5d7bfd0679de40773b",
+    "content-hash": "95f6eaea292834daf530f818b6b59177",
     "packages": [
         {
             "name": "abraham/twitteroauth",
-            "version": "4.0.1",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/abraham/twitteroauth.git",
-                "reference": "b9302599e416e5c00742cf7f4455220897f8291d"
+                "reference": "6a68a5e53f72fbb31d4d304dc4752d3adefe0d10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/abraham/twitteroauth/zipball/b9302599e416e5c00742cf7f4455220897f8291d",
-                "reference": "b9302599e416e5c00742cf7f4455220897f8291d",
+                "url": "https://api.github.com/repos/abraham/twitteroauth/zipball/6a68a5e53f72fbb31d4d304dc4752d3adefe0d10",
+                "reference": "6a68a5e53f72fbb31d4d304dc4752d3adefe0d10",
                 "shasum": ""
             },
             "require": {
                 "composer/ca-bundle": "^1.2",
                 "ext-curl": "*",
-                "php": "^7.4 || ^8.0 || ^8.1"
+                "php": "^8.0 || ^8.1"
             },
             "require-dev": {
                 "php-vcr/php-vcr": "^1",
-                "php-vcr/phpunit-testlistener-vcr": "dev-php-8",
+                "php-vcr/phpunit-testlistener-vcr": "dev-php8",
                 "phpmd/phpmd": "^2",
-                "phpunit/phpunit": "^8 || ^9",
-                "rector/rector": "^0.12.19 || ^0.13.0",
+                "phpunit/phpunit": "^9",
+                "rector/rector": "^0.14.0",
                 "squizlabs/php_codesniffer": "^3"
             },
             "type": "library",
@@ -66,7 +66,7 @@
                 "issues": "https://github.com/abraham/twitteroauth/issues",
                 "source": "https://github.com/abraham/twitteroauth"
             },
-            "time": "2022-08-18T23:30:33+00:00"
+            "time": "2023-01-17T01:10:54+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",
@@ -295,16 +295,16 @@
         },
         {
             "name": "coderjerk/bird-elephant",
-            "version": "v0.5.0",
+            "version": "v0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danieldevine/bird-elephant.git",
-                "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84"
+                "reference": "1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
-                "reference": "7dd5464209b2fa85f20689d2caa3d7f4aa8c9c84",
+                "url": "https://api.github.com/repos/danieldevine/bird-elephant/zipball/1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b",
+                "reference": "1e4e0fafb5aff354c32786db4c9ad4e9b5b9cf3b",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
             "description": "A simple library to request data from the Twitter APIv2 endpoints",
             "support": {
                 "issues": "https://github.com/danieldevine/bird-elephant/issues",
-                "source": "https://github.com/danieldevine/bird-elephant/tree/v0.5.0"
+                "source": "https://github.com/danieldevine/bird-elephant/tree/v0.6.1"
             },
             "funding": [
                 {
@@ -345,7 +345,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-06-19T22:36:24+00:00"
+            "time": "2023-01-09T15:04:03+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -8214,21 +8214,21 @@
         },
         {
             "name": "spatie/icalendar-generator",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/icalendar-generator.git",
-                "reference": "128d8fe4f0d759b8bdb0383a178c15963b54f458"
+                "reference": "b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/128d8fe4f0d759b8bdb0383a178c15963b54f458",
-                "reference": "128d8fe4f0d759b8bdb0383a178c15963b54f458",
+                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a",
+                "reference": "b8e855e7090b77d62f3c80e84a7f4c7ef4d1b08a",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "nesbot/carbon": "^2.54",
+                "nesbot/carbon": "^2.63",
                 "php": "^7.4|^8.0",
                 "spatie/enum": "^3.11"
             },
@@ -8269,9 +8269,9 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.1"
+                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.2"
             },
-            "time": "2022-10-26T10:18:21+00:00"
+            "time": "2023-01-23T08:15:15+00:00"
         },
         {
             "name": "spatie/image",

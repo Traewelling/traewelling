@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://my-default-host.com",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -1163,6 +1163,121 @@
                         "token": []
                     },
                     {}
+                ]
+            }
+        },
+        "/settings/profile": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get the current user's profile settings",
+                "description": "Get the current user's profile settings",
+                "operationId": "47327232762d35b0766eee97b7cd62e9",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the current user's profile settings",
+                "description": "Update the current user's profile settings",
+                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "maxLength": 25,
+                                        "example": "gertrud123"
+                                    },
+                                    "displayName": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Gertrud"
+                                    },
+                                    "privateProfile": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "preventIndex": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "privacyHideDays": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "defaultStatusVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -4221,6 +4336,96 @@
                 "type": "object",
                 "xml": {
                     "name": "UserAuth"
+                }
+            },
+            "UserProfileSettings": {
+                "title": "UserProfileSettings",
+                "description": "Model for all user profile settings",
+                "properties": {
+                    "username": {
+                        "title": "username",
+                        "description": "username",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "displayName": {
+                        "title": "displayName",
+                        "description": "Display name of the user",
+                        "example": "Gertrud"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "privateProfile": {
+                        "title": "privateProfile",
+                        "description": "Is the profile private?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": false
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": false
+                    },
+                    "defaultStatusVisibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Number of days after which a status is hidden from the public",
+                        "format": "int64",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "password": {
+                        "title": "password",
+                        "description": "Does the user have a password set?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": true
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "The email address of the user",
+                        "type": "string",
+                        "example": "gertrud@example.com",
+                        "nullable": true
+                    },
+                    "emailVerified": {
+                        "title": "emailVerified",
+                        "description": "Is the email address verified?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": "https://chaos.social/@traewelling"
+                    },
+                    "profilePictureSet": {
+                        "title": "profilePictureSet",
+                        "description": "Has the user set a profile picture other then the default one?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "twitter": {
+                        "title": "twitter",
+                        "description": "Twitter URL of user",
+                        "type": "string",
+                        "example": "https://twitter.com/i/user/843458335"
+                    },
+                    "mastodon": {
+                        "title": "mastodon",
+                        "description": "Mastodon URL of user",
+                        "type": "string",
+                        "example": "https://chaos.social/@traewelling"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserProfileSettings"
                 }
             },
             "StatusUpdateBody": {
