@@ -615,5 +615,12 @@
     "settings.webhook-event-notifications-description": "Aktivitäten",
     "settings.webhook_event.checkin_create": "Erstellen eines Checkins",
     "settings.webhook_event.checkin_update": "Bearbeiten eines Checkins",
-    "settings.webhook_event.checkin_delete": "Löschen eines Checkins"
+    "settings.webhook_event.checkin_delete": "Löschen eines Checkins",
+    "settings.webhook_event.notification": "Erhalten einer Benachrichtigung",
+    "menu.oauth_authorize_title": "Autorisierung",
+    "menu.oauth_authorize_authorize": "Autorisieren",
+    "menu.oauth_authorize_cancel": "Abbrechen",
+    "menu.oauth_authorize_webhook_request": "Diese Anwendung möchte über die folgenden Aktivitäten auf deinem Träwelling Account benachrichtigt werden:",
+    "menu.oauth_authorize_request": "<span class=\"fw-bold\">:application</span> is requesting permission to access your account.",
+    "menu.oauth_authorize_request_title": "Autorisierungsanfrage"
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
 use App\Models\Status;
 use App\Models\User;
@@ -9,7 +10,7 @@ use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Route;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -33,9 +34,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::tokensCan([
-            'read-webhooks' => 'Read Webhooks',
-            'write-webhooks' => 'Write Webhooks',
-        ]);
+        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {
+            Route::get('authorize', [AuthorizationController::class, 'authorize'])
+                ->middleware(['web'])
+                ->name('authorizations.authorize');
+        });
     }
 }
