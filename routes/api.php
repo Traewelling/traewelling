@@ -1,4 +1,4 @@
-<?php
+<? php
 
 /*
 |--------------------------------------------------------------------------
@@ -126,9 +126,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
         Route::group(['prefix' => 'webhooks'], static function() {
             Route::get('/', [WebhookController::class, 'getWebhooks']);
-            Route::post('/', [WebhookController::class, 'createWebhook']);
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
-            Route::delete('/', [WebhookController::class, 'deleteAllWebhooks']);
         });
     });
 
