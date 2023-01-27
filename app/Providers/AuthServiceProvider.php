@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Backend\Auth\AccessTokenController;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
 use App\Models\Status;
@@ -34,10 +35,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // Override passport routes
         Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {
             Route::get('authorize', [AuthorizationController::class, 'authorize'])
                 ->middleware(['web'])
                 ->name('authorizations.authorize');
+            Route::post("/token", [AccessTokenController::class, 'issueToken'])
+                ->middleware("throttle")
+                ->name("authorizations.token");
         });
     }
 }

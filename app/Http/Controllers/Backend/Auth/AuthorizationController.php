@@ -78,6 +78,7 @@ class AuthorizationController extends PassportAuthorizationController
 
         $request->session()->put('authToken', $authToken = Str::random());
         $request->session()->put('authRequest', $authRequest);
+        $request->session()->put('webhook', $webhook);
 
         return $this->response->view('auth.authorize', [
             'client' => $client,
