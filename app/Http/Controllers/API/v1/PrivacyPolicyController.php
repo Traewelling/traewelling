@@ -46,8 +46,8 @@ class PrivacyPolicyController extends Controller
      *     @OA\Response(response=400, description="Already accepted"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *     }
      * )
      * @return JsonResponse

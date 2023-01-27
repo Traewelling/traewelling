@@ -60,7 +60,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -99,7 +99,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -139,7 +139,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -168,8 +168,8 @@ class StatusController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -205,8 +205,8 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -251,8 +251,8 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -303,8 +303,8 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -402,8 +402,8 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -470,8 +470,8 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -506,8 +506,8 @@ class StatusController extends Controller
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="No active checkin"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *

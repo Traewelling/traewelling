@@ -53,8 +53,8 @@ class UserController extends Controller
      * @OA\Response(response=401, description="Not logged in"),
      * @OA\Response(response=403, description="User not authorized to do this action"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      * )
      *
@@ -107,11 +107,11 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       },
      *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -176,7 +176,7 @@ class UserController extends Controller
      *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       @OA\Response(response=404, description="User not found"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      * Returns Model of user
@@ -231,8 +231,8 @@ class UserController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="User is already blocked"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -295,8 +295,8 @@ class UserController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="User is not blocked"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -353,8 +353,8 @@ class UserController extends Controller
      *       @OA\Response(response=409, description="User is already muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -411,8 +411,8 @@ class UserController extends Controller
      *       @OA\Response(response=409, description="User is not muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -477,7 +477,7 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
-     *           {"token": {}}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
