@@ -45,7 +45,10 @@
                         <span class="input-group-text">@</span>
                         <input id="username" type="text"
                                class="form-control @error('username') is-invalid @enderror"
-                               name="username" value="{{ auth()->user()->username }}" required autofocus/>
+                               name="username"
+                               value="{{ auth()->user()->username }}"
+                               required
+                        />
                     </div>
 
                     @error('username')
