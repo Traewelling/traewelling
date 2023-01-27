@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
 use Illuminate\Console\Command;
@@ -56,6 +57,8 @@ class RefreshCurrentTrips extends Command
                 } else {
                     report($exception);
                 }
+            } catch (HafasException) {
+                // Do nothing
             } catch (\Exception $exception) {
                 report($exception);
             }

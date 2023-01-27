@@ -297,8 +297,9 @@ abstract class HafasController extends Controller
                 ]
             ]);
             return json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-        } catch (GuzzleException|JsonException) {
+        } catch (GuzzleException|JsonException $exception) {
             //sometimes DB-Rest gives 502 Bad Request
+            report($exception); //I wanna log this exceptions temporarily, so we can learn how to catch various errors better (~kris, 2023)
         }
         throw new HafasException(__('messages.exception.generalHafas'));
     }
