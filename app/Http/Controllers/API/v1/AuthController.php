@@ -274,8 +274,4 @@ class AuthController extends Controller
                                        'expires_at' => $newToken->token->expires_at->toIso8601String()]
         )->header('Authorization', $newToken->accessToken);
     }
-
-    /**
-     * @OA\
-     */
 }
