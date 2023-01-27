@@ -41,8 +41,7 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -86,8 +85,7 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -139,8 +137,7 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -184,8 +181,8 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -213,8 +210,8 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -277,8 +274,8 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      * @return AnonymousResourceCollection

@@ -188,8 +188,7 @@ class AuthController extends Controller
      *       ),
      *       @OA\Response(response=500, description="Error during revoke"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
      *       }
      *     )
      * @param Request $request
@@ -211,8 +210,7 @@ class AuthController extends Controller
      *      operationId="getAuthenticatedUser",
      *      tags={"Auth", "User"},
      *      summary="Get authenticated user information",
-     *      description="This request issues a new Bearer-Token with a new expiration date while also revoking the old
-     *      token.",
+     *      description="Get all profile information about the authenticated user",
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -224,8 +222,7 @@ class AuthController extends Controller
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
@@ -258,8 +255,7 @@ class AuthController extends Controller
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
      *       }
      *     )
      *
