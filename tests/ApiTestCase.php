@@ -60,7 +60,6 @@ abstract class ApiTestCase extends TestCase
                                                'preventIndex',
                                                'role',
                                                'home',
-                                               'dbl',
                                                'language',
                                            ]
                                        ]);

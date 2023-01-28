@@ -13,10 +13,14 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Haltestelle / DS100"
-                                           aria-label="Haltestelle" name="station" id="formStation"
+                                    <input type="text" class="form-control"
+                                           placeholder="{{__('stationboard.station-placeholder')}} {{__('or-alternative')}} {{__('ril100')}}"
+                                           aria-label="{{__('stationboard.station-placeholder')}} {{__('or-alternative')}} {{__('ril100')}}"
+                                           name="station" id="formStation"
                                            value="{{isset($station['name']) ? $station['name'] : ''}}">
-                                    <label for="formStation" class="form-label">Haltestelle / DS100</label>
+                                    <label for="formStation" class="form-label">
+                                        {{__('stationboard.station-placeholder')}} {{__('or-alternative')}} {{__('ril100')}}
+                                    </label>
                                 </div>
                             </div>
                         </div>

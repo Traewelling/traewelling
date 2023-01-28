@@ -12,9 +12,28 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Annotations as OA;
 
 class SettingsController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/settings/profile",
+     *     tags={"Settings"},
+     *     summary="Get the current user's profile settings",
+     *     description="Get the current user's profile settings",
+     *     @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *          )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     security={{"passport": {}}, {"token": {}}}
+     * )
+     *
+     */
     public function getProfileSettings(): UserProfileSettingsResource {
         return new UserProfileSettingsResource(auth()->user());
     }
@@ -72,18 +91,54 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/settings/profile",
+     *     tags={"Settings"},
+     *     summary="Update the current user's profile settings",
+     *     description="Update the current user's profile settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="username", type="string", example="gertrud123", maxLength=25),
+     *             @OA\Property(property="displayName", type="string", example="Gertrud", maxLength=50),
+     *             @OA\Property(property="privateProfile", type="boolean", example=false, nullable=true),
+     *             @OA\Property(property="preventIndex", type="boolean", example=false, nullable=true),
+     *             @OA\Property(property="privacyHideDays", type="integer", example=1, nullable=true),
+     *             @OA\Property(
+     *                  property="defaultStatusVisibility",
+     *                  type="integer",
+     *                  nullable=true,
+     *                  @OA\Schema(ref="#/components/schemas/VisibilityEnum")
+     *              )
+     *         )
+     *    ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Unprocessable Entity"),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     security={
+     *          {"passport": {}}, {"token": {}}
+     *     }
+     *     )
+     */
     public function updateSettings(Request $request): UserProfileSettingsResource|JsonResponse {
         $validated = $request->validate([
-                                            'username'                  => ['required',
-                                                                            'string',
-                                                                            'max:25',
-                                                                            'regex:/^[a-zA-Z0-9_]*$/'],
-                                            'name'                      => ['required', 'string', 'max:50'],
-                                            'private_profile'           => ['boolean', 'nullable'],
-                                            'prevent_index'             => ['boolean', 'nullable'],
-                                            'privacy_hide_days'         => ['integer', 'nullable', 'gte:1'],
-                                            'always_dbl'                => ['boolean', 'nullable'],
-                                            'default_status_visibility' => [
+                                            'username'                => ['required',
+                                                                          'string',
+                                                                          'max:25',
+                                                                          'regex:/^[a-zA-Z0-9_]*$/'],
+                                            'displayName'             => ['required', 'string', 'max:50'],
+                                            'privateProfile'          => ['boolean', 'nullable'],
+                                            'preventIndex'            => ['boolean', 'nullable'],
+                                            'privacyHideDays'         => ['integer', 'nullable', 'gte:1'],
+                                            'defaultStatusVisibility' => [
                                                 'nullable',
                                                 new Enum(StatusVisibility::class),
                                             ]
