@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up():void {
+    public function up(): void {
         Schema::table('oauth_clients', static function(Blueprint $table) {
             $table->string('secret', 100)->nullable()->change();
         });
