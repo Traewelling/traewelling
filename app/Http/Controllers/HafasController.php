@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use PDOException;
 use stdClass;
@@ -135,7 +136,7 @@ abstract class HafasController extends Controller
             ]);
 
             if (!$response->ok()) {
-                self::throwGeneralHafasException();
+                throw new HafasException(__('messages.exception.generalHafas'));
             }
 
             $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
@@ -186,7 +187,7 @@ abstract class HafasController extends Controller
             $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
 
             if (!$response->ok()) {
-                self::throwGeneralHafasException();
+                throw new HafasException(__('messages.exception.generalHafas'));
             }
 
             $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
@@ -292,7 +293,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws HafasException|JsonException
      */
     public static function fetchRawHafasTrip(string $tripId, string $lineName) {
         $tripResponse = self::getHttpClient()->get("trips/$tripId", [
@@ -300,10 +301,19 @@ abstract class HafasController extends Controller
             'polyline'  => 'true',
             'stopovers' => 'true'
         ]);
-        if (!$tripResponse->ok()) {
-            self::throwGeneralHafasException();
+
+        if ($tripResponse->ok()) {
+            return json_decode($tripResponse->body(), false, 512, JSON_THROW_ON_ERROR);
         }
-        return json_decode($tripResponse->body(), false, 512, JSON_THROW_ON_ERROR);
+        //sometimes HAFAS returnes 502 Bad Gateway
+        if ($tripResponse->status() === 502) {
+            throw new HafasException(__('messages.exception.hafas.502'));
+        }
+        Log::error('Unknown HAFAS Error (fetchRawHafasTrip)', [
+            'status' => $tripResponse->status(),
+            'body'   => $tripResponse->body()
+        ]);
+        throw new HafasException(__('messages.exception.generalHafas'));
     }
 
     /**
@@ -474,12 +484,5 @@ abstract class HafasController extends Controller
         $stopover->update([
                               'departure_real' => Carbon::parse($departure->when)->toIso8601String(),
                           ]);
-    }
-
-    /**
-     * @throws HafasException
-     */
-    private static function throwGeneralHafasException(): void {
-        throw new HafasException(__('messages.exception.generalHafas'));
     }
 }
