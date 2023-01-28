@@ -1,3 +1,5 @@
+@php use App\Http\Controllers\Backend\EventController; @endphp
+@php($events = EventController::activeEvents())
 <div class="modal fade" id="checkinModal" tabindex="-1" role="dialog"
      aria-hidden="true" aria-labelledby="checkinModalTitle">
     <div class="modal-dialog" role="document">

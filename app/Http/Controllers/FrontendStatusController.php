@@ -44,8 +44,7 @@ class FrontendStatusController extends Controller
         return view('dashboard', [
             'statuses' => $statuses,
             'latest'   => TransportController::getLatestArrivals(auth()->user()),
-            'future'   => StatusBackend::getFutureCheckins(),
-            'events'   => EventBackend::activeEvents()
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 
@@ -53,8 +52,7 @@ class FrontendStatusController extends Controller
         return view('dashboard', [
             'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
             'latest'   => TransportController::getLatestArrivals(Auth::user()),
-            'future'   => StatusBackend::getFutureCheckins(),
-            'events'   => EventBackend::activeEvents()
+            'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
 
