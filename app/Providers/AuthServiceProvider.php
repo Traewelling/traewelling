@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Backend\Auth\AccessTokenController;
+use App\Http\Controllers\Backend\Auth\ApproveAuthorizationController;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
 use App\Models\Status;
@@ -40,6 +41,9 @@ class AuthServiceProvider extends ServiceProvider
             Route::get('authorize', [AuthorizationController::class, 'authorize'])
                 ->middleware(['web'])
                 ->name('authorizations.authorize');
+            Route::post('/authorize', [ApproveAuthorizationController::class, 'approve'])
+                ->middleware(['web'])
+                ->name('authorizations.approve');
             Route::post("/token", [AccessTokenController::class, 'issueToken'])
                 ->middleware("throttle")
                 ->name("authorizations.token");

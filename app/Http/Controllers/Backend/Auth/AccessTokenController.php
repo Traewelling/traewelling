@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Backend\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Laravel\Passport\Http\Controllers\AccessTokenController as ControllersAccessTokenController;
+use Laravel\Passport\Http\Controllers\AccessTokenController as PassportAccessTokenController;
 use Nyholm\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ServerRequestInterface;
 
-class AccessTokenController extends ControllersAccessTokenController
+class AccessTokenController extends PassportAccessTokenController
 {
     public function issueToken(ServerRequestInterface $requestInterface)
     {

@@ -22,7 +22,8 @@ class WebhookEvent extends Model
         'event' => 'string'
     ];
 
-    public function webhook(): BelongsTo {
+    public function webhook(): BelongsTo
+    {
         return $this->belongsTo(Webhook::class, null, 'webhook_id');
     }
 }

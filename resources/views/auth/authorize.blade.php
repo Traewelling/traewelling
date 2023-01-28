@@ -44,7 +44,7 @@
 
                     <div class="d-flex justify-content-evenly">
                         <!-- Authorize Button -->
-                        <form method="post" action="{{ route('passport.authorizations.approve') }}">
+                        <form method="post" action="{{ route('oauth.authorizations.approve') }}">
                             @csrf
 
                             <input type="hidden" name="state" value="{{ $request->state }}">
