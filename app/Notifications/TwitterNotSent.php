@@ -81,10 +81,6 @@ class TwitterNotSent extends BaseNotification
         return $notification->detail;
     }
 
-    public function via(): array {
-        return ['database'];
-    }
-
     #[ArrayShape(['error' => "string", 'status_id' => "int"])]
     public function toArray(): array {
         return [

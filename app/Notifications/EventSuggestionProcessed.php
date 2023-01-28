@@ -34,10 +34,6 @@ class EventSuggestionProcessed extends BaseNotification
         ])->render();
     }
 
-    public function via($notifiable): array {
-        return ['database'];
-    }
-
     #[ArrayShape(['accepted' => 'bool', 'event' => Event::class, 'name' => 'string'])]
     public function toArray($notifiable): array {
         return [

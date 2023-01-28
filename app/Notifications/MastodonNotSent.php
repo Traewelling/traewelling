@@ -80,10 +80,6 @@ class MastodonNotSent extends BaseNotification
         return $notification->detail;
     }
 
-    public function via(): array {
-        return ['database'];
-    }
-
     public function toArray(): array {
         return [
             'error'     => $this->error,

@@ -20,11 +20,6 @@ class FollowRequestApproved extends BaseNotification
 
     public FollowRequest $followRequest;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
     public function __construct(Follow $follow = null) {
         $this->follow = $follow;
     }
@@ -51,7 +46,8 @@ class FollowRequestApproved extends BaseNotification
         ])->render();
     }
 
-    /**Detail-Handler of notification
+    /**
+     * Detail-Handler of notification
      *
      * @param DatabaseNotification $notification
      *
@@ -73,8 +69,8 @@ class FollowRequestApproved extends BaseNotification
         $notification->detail->sender  = new UserResource($sender);
         $notification->detail->message = new UserNotificationMessageResource
         ([
-             'icon'   => 'fas fa-user-plus',
-             'lead'   => [
+             'icon' => 'fas fa-user-plus',
+             'lead' => [
                  'key'    => 'notifications.userApprovedFollow.lead',
                  'values' => [
                      'followerRequestUsername' => $sender->username
@@ -83,15 +79,6 @@ class FollowRequestApproved extends BaseNotification
          ]);
 
         return $notification->detail;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
     }
 
     /**

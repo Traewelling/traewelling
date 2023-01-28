@@ -6,5 +6,5 @@ use Illuminate\Notifications\Notification;
 
 abstract class BaseNotification extends Notification
 {
-    public abstract static function render(mixed $notification): ?string;
+    abstract public static function render(mixed $notification): ?string;
 }

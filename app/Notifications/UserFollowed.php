@@ -18,11 +18,6 @@ class UserFollowed extends BaseNotification
 
     public $follow;
 
-    /**
-     * Create a new notification instance
-     *
-     * @return void
-     */
     public function __construct(Follow $follow = null) {
         $this->follow = $follow;
     }
@@ -81,15 +76,6 @@ class UserFollowed extends BaseNotification
          ]);
 
         return $notification->detail;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
     }
 
     /**

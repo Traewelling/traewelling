@@ -19,11 +19,6 @@ class FollowRequestIssued extends BaseNotification
 
     public FollowRequest $followRequest;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
     public function __construct(FollowRequest $followRequest = null) {
         $this->followRequest = $followRequest;
     }
@@ -50,7 +45,8 @@ class FollowRequestIssued extends BaseNotification
         ])->render();
     }
 
-    /**Detail-Handler of notification
+    /**
+     * Detail-Handler of notification
      *
      * @param DatabaseNotification $notification
      *
@@ -85,15 +81,6 @@ class FollowRequestIssued extends BaseNotification
          ]);
 
         return $notification->detail;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
     }
 
     /**

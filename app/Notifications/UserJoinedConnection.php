@@ -17,11 +17,6 @@ class UserJoinedConnection extends BaseNotification
 
     private Status $status;
 
-    /**
-     * Create a new notification instance
-     *
-     * @return void
-     */
     public function __construct(Status $status) {
         $this->status = $status;
     }
@@ -93,15 +88,6 @@ class UserJoinedConnection extends BaseNotification
             ]
         );
         return $notification->detail;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
-    public function via(): array {
-        return ['database'];
     }
 
     /**
