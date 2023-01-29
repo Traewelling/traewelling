@@ -33,7 +33,7 @@ class BackendCheckinTest extends TestCase
         $stationHannover = HafasController::getTrainStation(8000152);
         $departures      = HafasController::getDepartures(
             station: $stationHannover,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-12 08:00'),
             type:    TravelType::EXPRESS,
         );
         $rawTrip         = $departures->first();
@@ -67,7 +67,7 @@ class BackendCheckinTest extends TestCase
         $station    = HafasController::getTrainStation(8000105);
         $departures = HafasController::getDepartures(
             station: $station,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-12 08:00'),
             type:    TravelType::EXPRESS,
         );
         $rawTrip    = $departures->first();
@@ -107,7 +107,7 @@ class BackendCheckinTest extends TestCase
         $station    = HafasController::getTrainStation(8000105);
         $departures = HafasController::getDepartures(
             station: $station,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-12 08:00'),
             type:    TravelType::EXPRESS,
         );
         $rawTrip    = $departures->first();
@@ -157,7 +157,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         // First: Get a train that's fine for our stuff
-        $timestamp = Carbon::parse("+1 days 10:15");
+        $timestamp = Carbon::parse("2023-01-15 10:15");
         try {
             $trainStationboard = TransportController::getDepartures(
                 stationQuery: 'Schloss Cecilienhof, Potsdam',
@@ -235,7 +235,7 @@ class BackendCheckinTest extends TestCase
         $station    = HafasController::getTrainStation(8089110);
         $departures = HafasController::getDepartures(
             station: $station,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-16 10:00'),
         );
         $rawTrip    = $departures->where('line.name', 'S 42')
                                  ->first();
@@ -294,7 +294,7 @@ class BackendCheckinTest extends TestCase
         $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-16 10:00'),
             type:    TravelType::TRAM,
         );
         $rawTrip                 = $departures->where('line.name', 'STR 94')
@@ -354,7 +354,7 @@ class BackendCheckinTest extends TestCase
         $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-16 10:00'),
         );
         $rawTrip                 = $departures->where('line.name', 'STR 94')
                                               ->where('direction', 'Schloss Charlottenhof, Potsdam')
@@ -413,7 +413,7 @@ class BackendCheckinTest extends TestCase
         $station    = HafasController::getTrainStation(102932); // Flughafen Terminal 1, Frankfurt a.M.
         $departures = HafasController::getDepartures(
             station: $station,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-16 10:00'),
             type:    TravelType::BUS,
         );
         $rawTrip    = $departures->where('line.name', 'Bus AIR')
@@ -460,7 +460,7 @@ class BackendCheckinTest extends TestCase
         $station    = HafasController::getTrainStation(self::FRANKFURT_HBF['id']);
         $departures = HafasController::getDepartures(
             station: $station,
-            when:    Carbon::parse('next monday 10:00 am'),
+            when:    Carbon::parse('2023-01-16 08:00'),
             type:    TravelType::EXPRESS,
         );
         $rawTrip    = $departures->first();
