@@ -47,8 +47,8 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      * @param int $status
@@ -88,8 +88,8 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=409, description="Status already liked by user"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -135,8 +135,8 @@ class LikesController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
