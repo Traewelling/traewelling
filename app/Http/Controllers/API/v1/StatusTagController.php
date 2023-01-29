@@ -39,22 +39,11 @@ class StatusTagController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array",
-     *                  @OA\Items(
-     *                      @OA\Property(
-     *                          property="key",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="value",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="visibility",
-     *                          type="integer"
-     *                      ),
-     *                  )
-     *              ),
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/StatusTag")
+     *              )
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
