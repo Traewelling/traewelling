@@ -22,12 +22,11 @@ class StatusTagController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/statuses/{statusId}/tags",
+     *      path="/status/{statusId}/tags",
      *      operationId="getTagsForStatus",
      *      tags={"Status"},
      *      summary="Show all tags for a status which are visible for the current user",
-     *      description="Returns a collection of all visible tags for the given status, if user is authorized to see
-     *      it",
+     *      description="Returns a collection of all visible tags for the given status, if user is authorized",
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
@@ -51,8 +50,7 @@ class StatusTagController extends Controller
      *      @OA\Response(response=404, description="No status found for this id"),
      *      @OA\Response(response=403, description="User not authorized to access this status"),
      *      security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
      *      }
      *  )
      *
@@ -77,7 +75,7 @@ class StatusTagController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/statuses/{statusId}/tags/{tagKey}",
+     *      path="/status/{statusId}/tags/{tagKey}",
      *      operationId="updateSingleStatusTag",
      *      tags={"Status"},
      *      summary="Update a StatusTag",
@@ -165,7 +163,7 @@ class StatusTagController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/statuses/{statusId}/tags",
+     *      path="/status/{statusId}/tags",
      *      operationId="createSingleStatusTag",
      *      tags={"Status"},
      *      summary="Create a StatusTag",
@@ -253,7 +251,7 @@ class StatusTagController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/statuses/{statusId}/tags/{tagKey}",
+     *      path="/status/{statusId}/tags/{tagKey}",
      *      operationId="destroySingleStatusTag",
      *      tags={"Status"},
      *      summary="Destroy a StatusTag",

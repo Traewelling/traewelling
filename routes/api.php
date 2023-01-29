@@ -54,12 +54,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::put('status/{id}', [StatusController::class, 'update']);
         Route::post('status/{id}/like', [LikesController::class, 'create']);
         Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
+        Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
+        Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
+        Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
         Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
         Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
         Route::post('like/{statusId}', [LikesController::class, 'create']);         //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         Route::delete('like/{status}', [LikesController::class, 'destroy']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
-        Route::apiResource('statuses/{statusId}/tags', StatusTagController::class);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::get('/', [NotificationsController::class, 'index']);
             Route::get('count', [NotificationsController::class, 'count']);
@@ -133,6 +135,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('status/{id}/likes', [LikesController::class, 'show']);
         Route::get('statuses/{id}', [StatusController::class, 'show']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
         Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
+        Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
         Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
         Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
         Route::get('event/{slug}', [EventController::class, 'show']);

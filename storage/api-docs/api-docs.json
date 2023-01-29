@@ -2264,13 +2264,13 @@
                 ]
             }
         },
-        "/statuses/{statusId}/tags": {
+        "/status/{statusId}/tags": {
             "get": {
                 "tags": [
                     "Status"
                 ],
                 "summary": "Show all tags for a status which are visible for the current user",
-                "description": "Returns a collection of all visible tags for the given status, if user is authorized to see\n     *      it",
+                "description": "Returns a collection of all visible tags for the given status, if user is authorized",
                 "operationId": "getTagsForStatus",
                 "parameters": [
                     {
@@ -2317,9 +2317,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             },
             "post": {
@@ -2386,7 +2388,7 @@
                 ]
             }
         },
-        "/statuses/{statusId}/tags/{tagKey}": {
+        "/status/{statusId}/tags/{tagKey}": {
             "put": {
                 "tags": [
                     "Status"
