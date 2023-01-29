@@ -1,0 +1,2140 @@
+{
+  "origin": {
+    "type": "stop",
+    "id": "8089118",
+    "name": "Berlin Beusselstraße",
+    "location": {
+      "type": "location",
+      "id": "8089118",
+      "latitude": 52.534336,
+      "longitude": 13.329178
+    },
+    "products": {
+      "nationalExpress": false,
+      "national": false,
+      "regionalExp": false,
+      "regional": false,
+      "suburban": true,
+      "bus": true,
+      "ferry": false,
+      "subway": false,
+      "tram": false,
+      "taxi": false
+    }
+  },
+  "destination": {
+    "type": "stop",
+    "id": "8089118",
+    "name": "Berlin Beusselstraße",
+    "location": {
+      "type": "location",
+      "id": "8089118",
+      "latitude": 52.534336,
+      "longitude": 13.329178
+    },
+    "products": {
+      "nationalExpress": false,
+      "national": false,
+      "regionalExp": false,
+      "regional": false,
+      "suburban": true,
+      "bus": true,
+      "ferry": false,
+      "subway": false,
+      "tram": false,
+      "taxi": false
+    }
+  },
+  "departure": "2023-01-16T09:53:00+01:00",
+  "plannedDeparture": "2023-01-16T09:53:00+01:00",
+  "departureDelay": null,
+  "arrival": "2023-01-16T11:52:00+01:00",
+  "plannedArrival": "2023-01-16T11:52:00+01:00",
+  "arrivalDelay": null,
+  "reachable": true,
+  "polyline": {
+    "type": "FeatureCollection",
+    "features": []
+  },
+  "line": {
+    "type": "line",
+    "id": "4-08-42",
+    "fahrtNr": "42595",
+    "name": "S 42",
+    "public": true,
+    "adminCode": "08____",
+    "productName": "S",
+    "mode": "train",
+    "product": "suburban",
+    "operator": {
+      "type": "operator",
+      "id": "s-bahn-berlin",
+      "name": "S-Bahn Berlin"
+    }
+  },
+  "direction": "Ring S42",
+  "arrivalPlatform": "2",
+  "plannedArrivalPlatform": "2",
+  "arrivalPrognosisType": "prognosed",
+  "departurePlatform": "2",
+  "plannedDeparturePlatform": "2",
+  "departurePrognosisType": "prognosed",
+  "stopovers": [
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089118",
+        "name": "Berlin Beusselstraße",
+        "location": {
+          "type": "location",
+          "id": "8089118",
+          "latitude": 52.534336,
+          "longitude": 13.329178
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": null,
+      "plannedArrival": null,
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": "2023-01-16T09:53:00+01:00",
+      "plannedDeparture": "2023-01-16T09:53:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": "prognosed",
+      "plannedDeparturePlatform": "2",
+      "remarks": [
+        {
+          "type": "hint",
+          "code": "PF",
+          "text": "Please wear an FFP2 mask. You are legally required to do so"
+        },
+        {
+          "text": "Number of bicycles conveyed limited",
+          "type": "hint",
+          "code": "bicycle-conveyance",
+          "summary": "bicycles conveyed"
+        },
+        {
+          "text": "2nd class only",
+          "type": "hint",
+          "code": "2nd-class-only",
+          "summary": "2. class only"
+        }
+      ]
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089100",
+        "name": "Berlin Jungfernheide (S)",
+        "location": {
+          "type": "location",
+          "id": "8089100",
+          "latitude": 52.530408,
+          "longitude": 13.299424
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T09:55:00+01:00",
+      "plannedArrival": "2023-01-16T09:55:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "6",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "6",
+      "departure": "2023-01-16T09:55:00+01:00",
+      "plannedDeparture": "2023-01-16T09:55:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "6",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "6"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089111",
+        "name": "Berlin Westend",
+        "location": {
+          "type": "location",
+          "id": "8089111",
+          "latitude": 52.517841,
+          "longitude": 13.2846
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T09:58:00+01:00",
+      "plannedArrival": "2023-01-16T09:58:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T09:58:00+01:00",
+      "plannedDeparture": "2023-01-16T09:58:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089110",
+        "name": "Berlin Messe Nord/ICC (Witzleben)",
+        "location": {
+          "type": "location",
+          "id": "8089110",
+          "latitude": 52.507539,
+          "longitude": 13.28345
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:00:00+01:00",
+      "plannedArrival": "2023-01-16T10:00:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:00:00+01:00",
+      "plannedDeparture": "2023-01-16T10:00:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089047",
+        "name": "Berlin Westkreuz",
+        "location": {
+          "type": "location",
+          "id": "8089047",
+          "latitude": 52.500734,
+          "longitude": 13.283962
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:02:00+01:00",
+      "plannedArrival": "2023-01-16T10:02:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T10:02:00+01:00",
+      "plannedDeparture": "2023-01-16T10:02:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089109",
+        "name": "Berlin-Halensee",
+        "location": {
+          "type": "location",
+          "id": "8089109",
+          "latitude": 52.496114,
+          "longitude": 13.290417
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:03:00+01:00",
+      "plannedArrival": "2023-01-16T10:03:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:04:00+01:00",
+      "plannedDeparture": "2023-01-16T10:04:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089108",
+        "name": "Berlin Hohenzollerndamm",
+        "location": {
+          "type": "location",
+          "id": "8089108",
+          "latitude": 52.488671,
+          "longitude": 13.300287
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:05:00+01:00",
+      "plannedArrival": "2023-01-16T10:05:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:06:00+01:00",
+      "plannedDeparture": "2023-01-16T10:06:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089112",
+        "name": "Berlin Heidelberger Platz",
+        "location": {
+          "type": "location",
+          "id": "8089112",
+          "latitude": 52.479789,
+          "longitude": 13.312314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:07:00+01:00",
+      "plannedArrival": "2023-01-16T10:07:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:08:00+01:00",
+      "plannedDeparture": "2023-01-16T10:08:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089107",
+        "name": "Berlin Bundesplatz",
+        "location": {
+          "type": "location",
+          "id": "8089107",
+          "latitude": 52.477695,
+          "longitude": 13.329295
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:09:00+01:00",
+      "plannedArrival": "2023-01-16T10:09:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:10:00+01:00",
+      "plannedDeparture": "2023-01-16T10:10:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089106",
+        "name": "Berlin Innsbrucker Platz",
+        "location": {
+          "type": "location",
+          "id": "8089106",
+          "latitude": 52.478135,
+          "longitude": 13.341916
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:11:00+01:00",
+      "plannedArrival": "2023-01-16T10:11:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:12:00+01:00",
+      "plannedDeparture": "2023-01-16T10:12:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089474",
+        "name": "Berlin-Schöneberg",
+        "location": {
+          "type": "location",
+          "id": "8089474",
+          "latitude": 52.479034,
+          "longitude": 13.35024
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:13:00+01:00",
+      "plannedArrival": "2023-01-16T10:13:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T10:13:00+01:00",
+      "plannedDeparture": "2023-01-16T10:13:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089073",
+        "name": "Berlin Südkreuz (S)",
+        "location": {
+          "type": "location",
+          "id": "8089073",
+          "latitude": 52.474962,
+          "longitude": 13.365881
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:15:00+01:00",
+      "plannedArrival": "2023-01-16T10:15:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T10:15:00+01:00",
+      "plannedDeparture": "2023-01-16T10:15:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089090",
+        "name": "Berlin-Tempelhof",
+        "location": {
+          "type": "location",
+          "id": "8089090",
+          "latitude": 52.471025,
+          "longitude": 13.384264
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:17:00+01:00",
+      "plannedArrival": "2023-01-16T10:17:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:18:00+01:00",
+      "plannedDeparture": "2023-01-16T10:18:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089105",
+        "name": "Berlin Hermannstraße",
+        "location": {
+          "type": "location",
+          "id": "8089105",
+          "latitude": 52.467645,
+          "longitude": 13.430945
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:21:00+01:00",
+      "plannedArrival": "2023-01-16T10:21:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:21:00+01:00",
+      "plannedDeparture": "2023-01-16T10:21:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089077",
+        "name": "Berlin-Neukölln",
+        "location": {
+          "type": "location",
+          "id": "8089077",
+          "latitude": 52.469434,
+          "longitude": 13.443071
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:23:00+01:00",
+      "plannedArrival": "2023-01-16T10:23:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:23:00+01:00",
+      "plannedDeparture": "2023-01-16T10:23:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089327",
+        "name": "Berlin Sonnenallee",
+        "location": {
+          "type": "location",
+          "id": "8089327",
+          "latitude": 52.472778,
+          "longitude": 13.455521
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:25:00+01:00",
+      "plannedArrival": "2023-01-16T10:25:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:25:00+01:00",
+      "plannedDeparture": "2023-01-16T10:25:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089043",
+        "name": "Berlin Treptower Park",
+        "location": {
+          "type": "location",
+          "id": "8089043",
+          "latitude": 52.493345,
+          "longitude": 13.461364
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:28:00+01:00",
+      "plannedArrival": "2023-01-16T10:28:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:28:00+01:00",
+      "plannedDeparture": "2023-01-16T10:28:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089028",
+        "name": "Berlin Ostkreuz (S)",
+        "location": {
+          "type": "location",
+          "id": "8089028",
+          "latitude": 52.503305,
+          "longitude": 13.468861
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:30:00+01:00",
+      "plannedArrival": "2023-01-16T10:30:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T10:31:00+01:00",
+      "plannedDeparture": "2023-01-16T10:31:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089013",
+        "name": "Berlin Frankfurter Allee",
+        "location": {
+          "type": "location",
+          "id": "8089013",
+          "latitude": 52.513283,
+          "longitude": 13.475352
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:33:00+01:00",
+      "plannedArrival": "2023-01-16T10:33:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:33:00+01:00",
+      "plannedDeparture": "2023-01-16T10:33:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089041",
+        "name": "Berlin Storkower Str",
+        "location": {
+          "type": "location",
+          "id": "8089041",
+          "latitude": 52.523684,
+          "longitude": 13.465005
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:35:00+01:00",
+      "plannedArrival": "2023-01-16T10:35:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:35:00+01:00",
+      "plannedDeparture": "2023-01-16T10:35:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089020",
+        "name": "Berlin Landsberger Allee",
+        "location": {
+          "type": "location",
+          "id": "8089020",
+          "latitude": 52.529572,
+          "longitude": 13.454551
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:37:00+01:00",
+      "plannedArrival": "2023-01-16T10:37:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:37:00+01:00",
+      "plannedDeparture": "2023-01-16T10:37:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089011",
+        "name": "Berlin Greifswalder Str",
+        "location": {
+          "type": "location",
+          "id": "8089011",
+          "latitude": 52.5399,
+          "longitude": 13.439314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:39:00+01:00",
+      "plannedArrival": "2023-01-16T10:39:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:39:00+01:00",
+      "plannedDeparture": "2023-01-16T10:39:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089033",
+        "name": "Berlin Prenzlauer Allee",
+        "location": {
+          "type": "location",
+          "id": "8089033",
+          "latitude": 52.544898,
+          "longitude": 13.425623
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:41:00+01:00",
+      "plannedArrival": "2023-01-16T10:41:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:41:00+01:00",
+      "plannedDeparture": "2023-01-16T10:41:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089039",
+        "name": "Berlin Schönhauser Allee",
+        "location": {
+          "type": "location",
+          "id": "8089039",
+          "latitude": 52.549492,
+          "longitude": 13.406314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:43:00+01:00",
+      "plannedArrival": "2023-01-16T10:43:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:43:00+01:00",
+      "plannedDeparture": "2023-01-16T10:43:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089015",
+        "name": "Berlin Gesundbrunnen(S)",
+        "location": {
+          "type": "location",
+          "id": "8089015",
+          "latitude": 52.549186,
+          "longitude": 13.391042
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:45:00+01:00",
+      "plannedArrival": "2023-01-16T10:45:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:46:00+01:00",
+      "plannedDeparture": "2023-01-16T10:46:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089131",
+        "name": "Berlin-Wedding",
+        "location": {
+          "type": "location",
+          "id": "8089131",
+          "latitude": 52.543298,
+          "longitude": 13.368218
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:48:00+01:00",
+      "plannedArrival": "2023-01-16T10:48:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:48:00+01:00",
+      "plannedDeparture": "2023-01-16T10:48:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089116",
+        "name": "Berlin Westhafen",
+        "location": {
+          "type": "location",
+          "id": "8089116",
+          "latitude": 52.536224,
+          "longitude": 13.344226
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:50:00+01:00",
+      "plannedArrival": "2023-01-16T10:50:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:51:00+01:00",
+      "plannedDeparture": "2023-01-16T10:51:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089118",
+        "name": "Berlin Beusselstraße",
+        "location": {
+          "type": "location",
+          "id": "8089118",
+          "latitude": 52.534336,
+          "longitude": 13.329178
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:52:00+01:00",
+      "plannedArrival": "2023-01-16T10:52:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:53:00+01:00",
+      "plannedDeparture": "2023-01-16T10:53:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089100",
+        "name": "Berlin Jungfernheide (S)",
+        "location": {
+          "type": "location",
+          "id": "8089100",
+          "latitude": 52.530408,
+          "longitude": 13.299424
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:55:00+01:00",
+      "plannedArrival": "2023-01-16T10:55:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "6",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "6",
+      "departure": "2023-01-16T10:55:00+01:00",
+      "plannedDeparture": "2023-01-16T10:55:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "6",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "6"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089111",
+        "name": "Berlin Westend",
+        "location": {
+          "type": "location",
+          "id": "8089111",
+          "latitude": 52.517841,
+          "longitude": 13.2846
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:58:00+01:00",
+      "plannedArrival": "2023-01-16T10:58:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T10:58:00+01:00",
+      "plannedDeparture": "2023-01-16T10:58:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089110",
+        "name": "Berlin Messe Nord/ICC (Witzleben)",
+        "location": {
+          "type": "location",
+          "id": "8089110",
+          "latitude": 52.507539,
+          "longitude": 13.28345
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:00:00+01:00",
+      "plannedArrival": "2023-01-16T11:00:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:00:00+01:00",
+      "plannedDeparture": "2023-01-16T11:00:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089047",
+        "name": "Berlin Westkreuz",
+        "location": {
+          "type": "location",
+          "id": "8089047",
+          "latitude": 52.500734,
+          "longitude": 13.283962
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:02:00+01:00",
+      "plannedArrival": "2023-01-16T11:02:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T11:02:00+01:00",
+      "plannedDeparture": "2023-01-16T11:02:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089109",
+        "name": "Berlin-Halensee",
+        "location": {
+          "type": "location",
+          "id": "8089109",
+          "latitude": 52.496114,
+          "longitude": 13.290417
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:03:00+01:00",
+      "plannedArrival": "2023-01-16T11:03:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:04:00+01:00",
+      "plannedDeparture": "2023-01-16T11:04:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089108",
+        "name": "Berlin Hohenzollerndamm",
+        "location": {
+          "type": "location",
+          "id": "8089108",
+          "latitude": 52.488671,
+          "longitude": 13.300287
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:05:00+01:00",
+      "plannedArrival": "2023-01-16T11:05:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:06:00+01:00",
+      "plannedDeparture": "2023-01-16T11:06:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089112",
+        "name": "Berlin Heidelberger Platz",
+        "location": {
+          "type": "location",
+          "id": "8089112",
+          "latitude": 52.479789,
+          "longitude": 13.312314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:07:00+01:00",
+      "plannedArrival": "2023-01-16T11:07:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:08:00+01:00",
+      "plannedDeparture": "2023-01-16T11:08:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089107",
+        "name": "Berlin Bundesplatz",
+        "location": {
+          "type": "location",
+          "id": "8089107",
+          "latitude": 52.477695,
+          "longitude": 13.329295
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:09:00+01:00",
+      "plannedArrival": "2023-01-16T11:09:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:10:00+01:00",
+      "plannedDeparture": "2023-01-16T11:10:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089106",
+        "name": "Berlin Innsbrucker Platz",
+        "location": {
+          "type": "location",
+          "id": "8089106",
+          "latitude": 52.478135,
+          "longitude": 13.341916
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:11:00+01:00",
+      "plannedArrival": "2023-01-16T11:11:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:12:00+01:00",
+      "plannedDeparture": "2023-01-16T11:12:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089474",
+        "name": "Berlin-Schöneberg",
+        "location": {
+          "type": "location",
+          "id": "8089474",
+          "latitude": 52.479034,
+          "longitude": 13.35024
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:13:00+01:00",
+      "plannedArrival": "2023-01-16T11:13:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T11:13:00+01:00",
+      "plannedDeparture": "2023-01-16T11:13:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089073",
+        "name": "Berlin Südkreuz (S)",
+        "location": {
+          "type": "location",
+          "id": "8089073",
+          "latitude": 52.474962,
+          "longitude": 13.365881
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:15:00+01:00",
+      "plannedArrival": "2023-01-16T11:15:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T11:15:00+01:00",
+      "plannedDeparture": "2023-01-16T11:15:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089090",
+        "name": "Berlin-Tempelhof",
+        "location": {
+          "type": "location",
+          "id": "8089090",
+          "latitude": 52.471025,
+          "longitude": 13.384264
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:17:00+01:00",
+      "plannedArrival": "2023-01-16T11:17:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:18:00+01:00",
+      "plannedDeparture": "2023-01-16T11:18:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089105",
+        "name": "Berlin Hermannstraße",
+        "location": {
+          "type": "location",
+          "id": "8089105",
+          "latitude": 52.467645,
+          "longitude": 13.430945
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:21:00+01:00",
+      "plannedArrival": "2023-01-16T11:21:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:21:00+01:00",
+      "plannedDeparture": "2023-01-16T11:21:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089077",
+        "name": "Berlin-Neukölln",
+        "location": {
+          "type": "location",
+          "id": "8089077",
+          "latitude": 52.469434,
+          "longitude": 13.443071
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:23:00+01:00",
+      "plannedArrival": "2023-01-16T11:23:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:23:00+01:00",
+      "plannedDeparture": "2023-01-16T11:23:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089327",
+        "name": "Berlin Sonnenallee",
+        "location": {
+          "type": "location",
+          "id": "8089327",
+          "latitude": 52.472778,
+          "longitude": 13.455521
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:25:00+01:00",
+      "plannedArrival": "2023-01-16T11:25:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:25:00+01:00",
+      "plannedDeparture": "2023-01-16T11:25:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089043",
+        "name": "Berlin Treptower Park",
+        "location": {
+          "type": "location",
+          "id": "8089043",
+          "latitude": 52.493345,
+          "longitude": 13.461364
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:28:00+01:00",
+      "plannedArrival": "2023-01-16T11:28:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:28:00+01:00",
+      "plannedDeparture": "2023-01-16T11:28:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089028",
+        "name": "Berlin Ostkreuz (S)",
+        "location": {
+          "type": "location",
+          "id": "8089028",
+          "latitude": 52.503305,
+          "longitude": 13.468861
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:30:00+01:00",
+      "plannedArrival": "2023-01-16T11:30:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "12",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "12",
+      "departure": "2023-01-16T11:31:00+01:00",
+      "plannedDeparture": "2023-01-16T11:31:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "12",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "12"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089013",
+        "name": "Berlin Frankfurter Allee",
+        "location": {
+          "type": "location",
+          "id": "8089013",
+          "latitude": 52.513283,
+          "longitude": 13.475352
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:33:00+01:00",
+      "plannedArrival": "2023-01-16T11:33:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:33:00+01:00",
+      "plannedDeparture": "2023-01-16T11:33:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089041",
+        "name": "Berlin Storkower Str",
+        "location": {
+          "type": "location",
+          "id": "8089041",
+          "latitude": 52.523684,
+          "longitude": 13.465005
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:35:00+01:00",
+      "plannedArrival": "2023-01-16T11:35:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:35:00+01:00",
+      "plannedDeparture": "2023-01-16T11:35:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089020",
+        "name": "Berlin Landsberger Allee",
+        "location": {
+          "type": "location",
+          "id": "8089020",
+          "latitude": 52.529572,
+          "longitude": 13.454551
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:37:00+01:00",
+      "plannedArrival": "2023-01-16T11:37:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:37:00+01:00",
+      "plannedDeparture": "2023-01-16T11:37:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089011",
+        "name": "Berlin Greifswalder Str",
+        "location": {
+          "type": "location",
+          "id": "8089011",
+          "latitude": 52.5399,
+          "longitude": 13.439314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:39:00+01:00",
+      "plannedArrival": "2023-01-16T11:39:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:39:00+01:00",
+      "plannedDeparture": "2023-01-16T11:39:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089033",
+        "name": "Berlin Prenzlauer Allee",
+        "location": {
+          "type": "location",
+          "id": "8089033",
+          "latitude": 52.544898,
+          "longitude": 13.425623
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:41:00+01:00",
+      "plannedArrival": "2023-01-16T11:41:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:41:00+01:00",
+      "plannedDeparture": "2023-01-16T11:41:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089039",
+        "name": "Berlin Schönhauser Allee",
+        "location": {
+          "type": "location",
+          "id": "8089039",
+          "latitude": 52.549492,
+          "longitude": 13.406314
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:43:00+01:00",
+      "plannedArrival": "2023-01-16T11:43:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:43:00+01:00",
+      "plannedDeparture": "2023-01-16T11:43:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089015",
+        "name": "Berlin Gesundbrunnen(S)",
+        "location": {
+          "type": "location",
+          "id": "8089015",
+          "latitude": 52.549186,
+          "longitude": 13.391042
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:45:00+01:00",
+      "plannedArrival": "2023-01-16T11:45:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:46:00+01:00",
+      "plannedDeparture": "2023-01-16T11:46:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089131",
+        "name": "Berlin-Wedding",
+        "location": {
+          "type": "location",
+          "id": "8089131",
+          "latitude": 52.543298,
+          "longitude": 13.368218
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:48:00+01:00",
+      "plannedArrival": "2023-01-16T11:48:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:48:00+01:00",
+      "plannedDeparture": "2023-01-16T11:48:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089116",
+        "name": "Berlin Westhafen",
+        "location": {
+          "type": "location",
+          "id": "8089116",
+          "latitude": 52.536224,
+          "longitude": 13.344226
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": true,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:50:00+01:00",
+      "plannedArrival": "2023-01-16T11:50:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": "2",
+      "departure": "2023-01-16T11:51:00+01:00",
+      "plannedDeparture": "2023-01-16T11:51:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": "2",
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": "2"
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "8089118",
+        "name": "Berlin Beusselstraße",
+        "location": {
+          "type": "location",
+          "id": "8089118",
+          "latitude": 52.534336,
+          "longitude": 13.329178
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T11:52:00+01:00",
+      "plannedArrival": "2023-01-16T11:52:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": "2",
+      "arrivalPrognosisType": "prognosed",
+      "plannedArrivalPlatform": "2",
+      "departure": null,
+      "plannedDeparture": null,
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    }
+  ],
+  "id": "1|1136689|13|81|16012023",
+  "realtimeDataUpdatedAt": 1673534008
+}

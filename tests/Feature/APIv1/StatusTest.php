@@ -141,7 +141,7 @@ class StatusTest extends ApiTestCase
         $this->assertEquals('No active status', $response->json('message'));
     }
 
-    public function testStatusUpdate() {
+    public function testStatusUpdate(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token')->accessToken;
 

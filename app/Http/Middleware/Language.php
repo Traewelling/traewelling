@@ -17,7 +17,6 @@ class Language
      * @return mixed
      */
     public function handle(Request $request, Closure $next): mixed {
-
         if ($request->has('language')) {
             if (!self::isValidLanguageCode($request->get('language'))) {
                 return $next($request);
@@ -48,9 +47,9 @@ class Language
         }
 
         // Use default session language if none is set -> detect browser language
-        $browserLanguage = request()->server('http_accept_language');
+        $browserLanguage = request()?->header('Accept-Language');
         if (isset($browserLanguage)) {
-            $browserLanguage = substr(request()->server('http_accept_language'), 0, 2);
+            $browserLanguage = substr($browserLanguage, 0, 2);
 
             if (self::isValidLanguageCode($browserLanguage)) {
                 // browser lang is supported, use it
