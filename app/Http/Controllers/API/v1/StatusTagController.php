@@ -46,15 +46,16 @@ class StatusTagController extends Controller
      *                  @OA\Items(ref="#/components/schemas/StatusTag")
      *              )
      *          )
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"token": {}},
-     *           {}
-     *       }
-     *     )
+     *      ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="No status found for this id"),
+     *      @OA\Response(response=403, description="User not authorized to access this status"),
+     *      security={
+     *          {"token": {}},
+     *          {}
+     *      }
+     *  )
      *
      * Show all tags for a status which are visible for the current user
      *
@@ -96,14 +97,14 @@ class StatusTagController extends Controller
      *          example="seat",
      *          @OA\Schema(type="string")
      *      ),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 ref="#/components/schemas/StatusTag"
-     *             )
-     *         )
-     *     ),
+     *      @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/StatusTag"
+     *              ),
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -114,10 +115,11 @@ class StatusTagController extends Controller
      *                  ref="#/components/schemas/StatusTag"
      *              )
      *          )
-     *       ),
-     * @OA\Response(response=400, description="Bad request"),
-     * @OA\Response(response=404, description="No status found for this id"),
-     * @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *      ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="No status found for this id"),
+     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
      *           {"token": {}},
      *           {}
@@ -197,14 +199,15 @@ class StatusTagController extends Controller
      *              ),
      *          )
      *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *       security={
-     *           {"token": {}},
-     *           {}
-     *       }
-     *     )
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="No status found for this id"),
+     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *      security={
+     *          {"token": {}},
+     *          {}
+     *      }
+     *  )
      *
      * @param Request $request
      * @param int     $statusId
@@ -275,15 +278,16 @@ class StatusTagController extends Controller
      *          @OA\JsonContent(
      *              ref="#/components/schemas/SuccessResponse"
      *          )
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id and statusId"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *       security={
-     *           {"token": {}},
-     *           {}
-     *       }
-     *     )
+     *      ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="No status found for this id and statusId"),
+     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *      security={
+     *          {"token": {}},
+     *          {}
+     *      }
+     *  )
      *
      * @param int    $statusId
      * @param string $tagKey
