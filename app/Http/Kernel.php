@@ -6,6 +6,8 @@ use App\Http\Middleware\Api\JsonMiddleware;
 use App\Http\Middleware\ApiLogMiddleware;
 use App\Http\Middleware\SemiGuest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Laravel\Passport\Http\Middleware\CheckForAnyScope;
+use Laravel\Passport\Http\Middleware\CheckScopes;
 
 class Kernel extends HttpKernel
 {
@@ -74,6 +76,8 @@ class Kernel extends HttpKernel
         'verified'       => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'return-json'    => JsonMiddleware::class,
         'privacy-policy' => \App\Http\Middleware\PrivacyPolicyInterceptionMiddleware::class,
+        'scopes'         => CheckScopes::class,
+        'scope'          => CheckForAnyScope::class,
     ];
 
     /**

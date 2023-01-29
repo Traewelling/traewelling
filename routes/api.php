@@ -43,12 +43,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
          ->name('api.v1.getPrivacyPolicy');
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
-        Route::post('event', [EventController::class, 'suggest']);
-        Route::get('activeEvents', [EventController::class, 'activeEvents']);
-        Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
-        Route::get('dashboard', [StatusController::class, 'getDashboard']);
-        Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
-        Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
+        Route::post('event', [EventController::class, 'suggest'])->middleware(['scopes:write-event-suggestions']);
+        Route::get('activeEvents', [EventController::class, 'activeEvents'])->middleware(['scopes:read-statuses']);
+        Route::group(['middleware' => ['scopes:read-statistics']], static function() {
+
+            Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends']);
+        });
+        Route::group(['middleware' => ['scopes:read-statuses']], static function() {
+            Route::get('dashboard', [StatusController::class, 'getDashboard']);
+            Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
+            Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
+        });
         Route::delete('status/{id}', [StatusController::class, 'destroy']);
         Route::put('status/{id}', [StatusController::class, 'update']);
         Route::post('status/{id}/like', [LikesController::class, 'create']);
