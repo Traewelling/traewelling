@@ -14,7 +14,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use function auth;
 
@@ -219,7 +218,7 @@ class StatusTagController extends Controller
         $validator = Validator::make($request->all(), [
             'key'        => ['required', 'string', 'max:255'],
             'value'      => ['required', 'string', 'max:255'],
-            'visibility' => ['required', new Enum(StatusVisibility::class)],
+            'visibility' => ['required', Rule::in(StatusVisibility::keys())],
         ]);
 
         if ($validator->fails()) {
@@ -237,8 +236,9 @@ class StatusTagController extends Controller
                 );
             }
             $this->authorize('update', $status);
-            $validated['status_id'] = $status->id;
-            $statusTag              = StatusTag::create($validated);
+            $validated['status_id']  = $status->id;
+            $validated['visibility'] = StatusVisibility::fromName($validated['visibility']);
+            $statusTag               = StatusTag::create($validated);
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(

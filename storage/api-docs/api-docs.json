@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://my-default-host.com",
             "description": "This instance"
         }
     ],
@@ -2264,6 +2264,260 @@
                 ]
             }
         },
+        "/statuses/{statusId}/tags": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Show all tags for a status which are visible for the current user",
+                "description": "Returns a collection of all visible tags for the given status, if user is authorized to see\n     *      it",
+                "operationId": "getTagsForStatus",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusTag"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Create a StatusTag",
+                "description": "Creates a single StatusTag Object, if user is authorized to",
+                "operationId": "createSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        },
+                                        "visibility": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
+        "/statuses/{statusId}/tags/{tagKey}": {
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a StatusTag",
+                "description": "Updates a single StatusTag Object, if user is authorized to",
+                "operationId": "updateSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "seat"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Destroy a StatusTag",
+                "description": "Deletes a single StatusTag Object, if user is authorized to",
+                "operationId": "destroySingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "seat"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id and statusId"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    },
+                    {}
+                ]
+            }
+        },
         "/trains/station/{name}/departures": {
             "get": {
                 "tags": [
@@ -2820,277 +3074,6 @@
                     {
                         "token": []
                     }
-                ]
-            }
-        },
-        "/statuses/{statusId}/tags": {
-            "get": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Show all tags for a status which are visible for the current user",
-                "description": "Returns a collection of all visible tags for the given status, if user is authorized to see\n     *      it",
-                "operationId": "getTagsForStatus",
-                "parameters": [
-                    {
-                        "name": "statusId",
-                        "in": "path",
-                        "description": "Status-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1337
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "key": {
-                                                        "type": "string"
-                                                    },
-                                                    "value": {
-                                                        "type": "string"
-                                                    },
-                                                    "visibility": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
-                    "403": {
-                        "description": "User not authorized to access this status"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    },
-                    {}
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to",
-                "operationId": "createSingleStatusTag",
-                "parameters": [
-                    {
-                        "name": "statusId",
-                        "in": "path",
-                        "description": "Status-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1337
-                    }
-                ],
-                "requestBody": {
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "value": {
-                                            "type": "string"
-                                        },
-                                        "visibility": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
-                    "403": {
-                        "description": "User not authorized to manipulate this status"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    },
-                    {}
-                ]
-            }
-        },
-        "/statuses/{statusId}/tags/{tagKey}": {
-            "put": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Update a StatusTag",
-                "description": "Updates a single StatusTag Object, if user is authorized to",
-                "operationId": "updateSingleStatusTag",
-                "parameters": [
-                    {
-                        "name": "statusId",
-                        "in": "path",
-                        "description": "Status-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1337
-                    },
-                    {
-                        "name": "tagKey",
-                        "in": "path",
-                        "description": "Key of StatusTag",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "seat"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "key": {
-                                        "type": "string"
-                                    },
-                                    "value": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object",
-                                "example": {
-                                    "key": "seat",
-                                    "value": "42"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "value": {
-                                            "type": "string"
-                                        },
-                                        "visibility": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
-                    "403": {
-                        "description": "User not authorized to manipulate this status"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    },
-                    {}
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Destroy a StatusTag",
-                "description": "Deletes a single StatusTag Object, if user is authorized to",
-                "operationId": "destroySingleStatusTag",
-                "parameters": [
-                    {
-                        "name": "statusId",
-                        "in": "path",
-                        "description": "Status-ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1337
-                    },
-                    {
-                        "name": "tagKey",
-                        "in": "path",
-                        "description": "Key of StatusTag",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "seat"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No status found for this id and statusId"
-                    },
-                    "403": {
-                        "description": "User not authorized to manipulate this status"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    },
-                    {}
                 ]
             }
         },
@@ -4106,6 +4089,35 @@
                     "name": "Status"
                 }
             },
+            "StatusTag": {
+                "title": "StatusTag",
+                "description": "StatusTag model",
+                "properties": {
+                    "key": {
+                        "title": "key",
+                        "description": "Key of tag",
+                        "type": "string",
+                        "example": "ticket_used"
+                    },
+                    "value": {
+                        "title": "value",
+                        "description": "Value of tag",
+                        "type": "string",
+                        "example": "BahnCard 100"
+                    },
+                    "visibility": {
+                        "title": "visibility",
+                        "description": "Visibility of tag",
+                        "type": "string",
+                        "format": "int64",
+                        "example": "PUBLIC"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StatusTag"
+                }
+            },
             "Stopovers": {
                 "title": "Stopovers",
                 "description": "Stopovers of a single status",
@@ -4929,14 +4941,14 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
                         "scopes": []
                     }
                 }
             },
-            "token_old": {
+            "token": {
                 "type": "apiKey",
                 "description": "Enter token in format \"Bearer \\<token\\>\"",
                 "name": "Authorization",
