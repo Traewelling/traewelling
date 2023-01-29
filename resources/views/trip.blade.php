@@ -46,10 +46,11 @@
                                data-linename="{{ $hafasTrip->linename }}"
                                data-startname="{{ $hafasTrip->originStation->name }}"
                                data-start="{{ request()->start }}"
-                               data-tripid="{{ $hafasTrip->trip_id }}">
+                               data-tripid="{{ $hafasTrip->trip_id }}"
+                        >
                             <tbody>
                                 @foreach($stopovers as $stopover)
-                                    @if($stopover->cancelled)
+                                    @if($stopover->isArrivalCancelled)
                                         <tr>
                                             <td>{{ $stopover->trainStation->name }}</td>
                                             <td>
