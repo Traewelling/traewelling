@@ -49,6 +49,11 @@ class TrainStopover extends Model
         return $this->hasMany(CarriageSequence::class, 'stopover_id', 'id');
     }
 
+    public function vehicleSequences(): HasMany {
+        return $this->hasMany(StopoverVehicleSequence::class, 'stopover_id', 'id')
+                    ->orderBy('order_number');
+    }
+
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣
     public function getArrivalAttribute(): ?Carbon {
         return ($this->arrival_real ?? $this->arrival_planned) ?? $this->departure;

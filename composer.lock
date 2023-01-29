@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "35796f65d3afc91f38a29f0c73631b92",
+    "content-hash": "bef272423272574c56473a53faa35f3e",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -4288,16 +4288,16 @@
         },
         {
             "name": "mrkriskrisu/db-wagenreihung-php",
-            "version": "v0.3",
+            "version": "v0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MrKrisKrisu/db-wagenreihung-php.git",
-                "reference": "341f781778487a9d3a799befb745c87b989d7819"
+                "reference": "89eb30ee4c9c6ad4fea94ed01d85a0245292c97f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MrKrisKrisu/db-wagenreihung-php/zipball/341f781778487a9d3a799befb745c87b989d7819",
-                "reference": "341f781778487a9d3a799befb745c87b989d7819",
+                "url": "https://api.github.com/repos/MrKrisKrisu/db-wagenreihung-php/zipball/89eb30ee4c9c6ad4fea94ed01d85a0245292c97f",
+                "reference": "89eb30ee4c9c6ad4fea94ed01d85a0245292c97f",
                 "shasum": ""
             },
             "require": {
@@ -4323,9 +4323,9 @@
             "description": "PHP library for DB Wagenreihung API",
             "support": {
                 "issues": "https://github.com/MrKrisKrisu/db-wagenreihung-php/issues",
-                "source": "https://github.com/MrKrisKrisu/db-wagenreihung-php/tree/v0.3"
+                "source": "https://github.com/MrKrisKrisu/db-wagenreihung-php/tree/v0.4"
             },
-            "time": "2023-01-27T17:30:42+00:00"
+            "time": "2023-01-29T20:29:22+00:00"
         },
         {
             "name": "myclabs/deep-copy",

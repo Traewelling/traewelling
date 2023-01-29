@@ -180,7 +180,8 @@
     "export.duration": "Reisezeit",
     "export.kilometers": "Kilometer",
     "export.export": "Export",
-    "export.guarantee": "Erstellt mit <a href=\":url\">:name</a>. Alle Angaben ohne Gewähr.",
+    "export.guarantee": "Erstellt mit <a href=\":url\">:name</a>.",
+    "no-guarantee": "Alle Angaben ohne Gewähr.",
     "export.page": "Seite",
     "export.journey-from-to": "Fahrt von :origin nach :destination",
     "export.reason": "Grund",
@@ -559,7 +560,7 @@
     "maintenance.title": "Wir arbeiten gerade daran, die Website zu verbessern.",
     "try-later": "Versuche es später noch einmal.",
     "warning-alternative-station": "Du bist dabei einen Checkin für eine Abfahrt an der Station <b>:newStation</b> durchzuführen, welche dir angezeigt wurde, weil diese in der Nähe von <b>:searchedStation</b> liegt.",
-    "carriage-sequence": "Wagenreihung",
+    "vehicle-sequence": "Wagenreihung",
     "carriage": "Wagen",
     "experimental-feature": "Experimentelle Funktion",
     "experimental-features": "Experimentelle Funktionen",
@@ -614,5 +615,6 @@
     "no": "Nein",
     "edit": "Bearbeiten",
     "delete": "Löschen",
-    "active-tokens-count": ":count aktive Token|:count aktive Tokens"
+    "active-tokens-count": ":count aktive Token|:count aktive Tokens",
+    "source": "Quelle"
 }

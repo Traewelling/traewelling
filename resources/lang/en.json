@@ -164,7 +164,8 @@
     "export.duration": "Duration",
     "export.kilometers": "Kilometers",
     "export.export": "Export",
-    "export.guarantee": "Created with <a href=\":url\">:name</a>. All information without guarantee.",
+    "export.guarantee": "Created with <a href=\":url\">:name</a>.",
+    "no-guarantee": "All information without guarantee.",
     "export.page": "Page",
     "export.journey-from-to": "Journey from :origin to :destination",
     "export.reason": "Reason",
@@ -565,7 +566,7 @@
     "maintenance.title": "We are currently working on improving the website.",
     "try-later": "Try again later.",
     "warning-alternative-station": "You are about to check in for a departure at station <b>:newStation</b>, which was shown to you because it is near <b>:searchedStation</b>.",
-    "carriage-sequence": "Carriage sequence",
+    "vehicle-sequence": "Vehicle sequence",
     "carriage": "Carriage",
     "experimental-feature": "Experimental feature",
     "experimental-features": "Experimental features",
@@ -615,5 +616,6 @@
     "no": "No",
     "edit": "Edit",
     "delete": "Delete",
-    "active-tokens-count": ":count active token|:count active tokens"
+    "active-tokens-count": ":count active token|:count active tokens",
+    "source": "Source"
 }

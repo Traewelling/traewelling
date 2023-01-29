@@ -3,19 +3,14 @@
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\HafasTravelType;
-use App\Enum\PointReason;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PointsCalculationResource;
-use App\Models\CarriageSequence;
 use App\Models\HafasTrip;
+use App\Models\StopoverVehicleSequence;
 use App\Models\TrainStopover;
-use Carbon\Carbon;
-use Exception;
-use GuzzleHttp\Exception\GuzzleException;
-use JetBrains\PhpStorm\Pure;
+use App\Models\Vehicle;
+use App\Models\VehicleGroup;
 use K118\DB\Exceptions\TrainNotFoundException;
 use K118\DB\Wagenreihung;
-use Throwable;
 
 abstract class CarriageSequenceController extends Controller
 {
@@ -43,28 +38,40 @@ abstract class CarriageSequenceController extends Controller
             return;
         }
         try {
-            $sequence = Wagenreihung::fetch(self::getTripNumber($stopover->trip), $stopover->departure_planned);
-            $position = 0;
-            foreach ($sequence as $vehicle) {
-                CarriageSequence::updateOrCreate(
-                    [
-                        'stopover_id' => $stopover->id,
-                        'position'    => $position++,
-                    ],
-                    [
-                        'sequence'       => $vehicle->fahrzeugsektor,
-                        'vehicle_type'   => $vehicle->fahrzeugtyp,
-                        'vehicle_number' => $vehicle->fahrzeugnummer,
-                        'order_number'   => $vehicle->wagenordnungsnummer,
-                    ]
-                );
+            $vehicleGroups = Wagenreihung::fetch(self::getTripNumber($stopover->trip), $stopover->departure_planned);
+            $position      = 0;
+            foreach ($vehicleGroups as $vehicleGroup) {
+                $modelVehicleGroup = VehicleGroup::updateOrCreate(['name' => $vehicleGroup->fahrzeuggruppebezeichnung]);
+
+                foreach ($vehicleGroup->vehicles as $vehicle) {
+                    $modelVehicle = Vehicle::updateOrCreate(
+                        ['name' => $vehicle->fahrzeugnummer],
+                        [
+                            'vehicle_group_id' => $modelVehicleGroup->id,
+                            'classification'   => $vehicle->fahrzeugtyp,
+                        ]
+                    );
+
+                    StopoverVehicleSequence::updateOrCreate(
+                        [
+                            'stopover_id' => $stopover->id,
+                            'position'    => $position++,
+                        ],
+                        [
+                            'sequence'     => $vehicle->fahrzeugsektor,
+                            'vehicle_id'   => $modelVehicle->id,
+                            'order_number' => $vehicle->wagenordnungsnummer,
+                        ]
+                    );
+                }
+
             }
         } catch (TrainNotFoundException) {
             // do nothing
-        } catch (Throwable $exception) {
-            report($exception);
-            //This feature is experimental, so just log all errors to improve later.
-        }
+        } //catch (Throwable $exception) {
+        //    report($exception);
+        //This feature is experimental, so just log all errors to improve later.
+        //}
     }
 
     private static function getTripNumber(HafasTrip $trip): int {

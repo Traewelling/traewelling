@@ -11,6 +11,7 @@ class CarriageSequence extends Model
     use HasFactory;
 
     protected $fillable = ['stopover_id', 'position', 'sequence', 'vehicle_type', 'vehicle_number', 'order_number'];
+    protected $appends  = ['specialType'];
 
     protected $casts = [
         'stopover_id'    => 'integer',

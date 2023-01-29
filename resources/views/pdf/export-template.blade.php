@@ -118,6 +118,7 @@
                 <div class="left">
                     <span class="promo">
                         {!! __('export.guarantee', ['url' => url('/'), 'name' => config('app.name', 'Träwelling')]) !!}
+                        {{__('no-guarantee')}}
                     </span>
                 </div>
             </div>

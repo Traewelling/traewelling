@@ -6,6 +6,7 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Transport\CarriageSequenceController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -128,6 +129,8 @@ class FrontendStatusController extends Controller
 
     public function getStatus($statusId): Renderable {
         $status = StatusBackend::getStatus($statusId);
+
+        CarriageSequenceController::fetchSequence($status->trainCheckin->origin_stopover, true);
 
         try {
             $this->authorize('view', $status);

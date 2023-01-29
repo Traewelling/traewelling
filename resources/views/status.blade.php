@@ -37,8 +37,10 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div class="col-12">
                 <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
+            </div>
+            <div class="col-md-8 col-lg-7">
                 @include('includes.status')
 
                 @if(isset($status->trainCheckin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
@@ -47,11 +49,12 @@
                         {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}
                     </small>
                 @endif
-
-                @if($status?->trainCheckin?->origin_stopover?->carriageSequences?->count() > 0)
-                    @include('includes.carriage-sequence', ['carriageSequence' => $status->trainCheckin->origin_stopover->carriageSequences])
-                @endif
             </div>
+            @if($status?->trainCheckin?->origin_stopover?->vehicleSequences?->count() > 0)
+                <div class="col-md-4 col-lg-5">
+                    @include('includes.vehicle-sequence', ['vehicleSequences' => $status->trainCheckin->origin_stopover->vehicleSequences])
+                </div>
+            @endif
         </div>
         @if(auth()->check() && auth()->user()->id == $status->user_id)
             @include('includes.edit-modal')
