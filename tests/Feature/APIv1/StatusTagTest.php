@@ -29,7 +29,7 @@ class StatusTagTest extends ApiTestCase
         $status    = Status::factory(['user_id' => $user->id])->create();
 
         $response = $this->get(
-            uri:     '/api/v1/statuses/' . $status->id . '/tags',
+            uri:     '/api/v1/status/' . $status->id . '/tags',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertJsonStructure(['data' => []]);
@@ -46,7 +46,7 @@ class StatusTagTest extends ApiTestCase
         StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::AUTHENTICATED->value])->create();
 
         $response = $this->get(
-            uri:     '/api/v1/statuses/' . $status->id . '/tags',
+            uri:     '/api/v1/status/' . $status->id . '/tags',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertJsonStructure([
@@ -64,7 +64,7 @@ class StatusTagTest extends ApiTestCase
 
         //Delete StatusTag
         $response = $this->delete(
-            uri:     '/api/v1/statuses/' . $status->id . '/tags/' . $tagToDelete->key,
+            uri:     '/api/v1/status/' . $status->id . '/tags/' . $tagToDelete->key,
             headers: ['Authorization' => 'Bearer ' . $userToken],
         );
         $response->assertOk();
@@ -80,7 +80,7 @@ class StatusTagTest extends ApiTestCase
 
         //Create StatusTag
         $response = $this->post(
-            uri:     '/api/v1/statuses/' . $status->id . '/tags',
+            uri:     '/api/v1/status/' . $status->id . '/tags',
             data:    [
                          'key'        => 'test',
                          'value'      => 'test',
@@ -101,7 +101,7 @@ class StatusTagTest extends ApiTestCase
 
         //Update StatusTag and change key and value
         $response = $this->put(
-            uri:     '/api/v1/statuses/' . $status->id . '/tags/test',
+            uri:     '/api/v1/status/' . $status->id . '/tags/test',
             data:    [
                          'key'   => 'test2',
                          'value' => 'test2',
