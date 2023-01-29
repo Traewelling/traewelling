@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\AuthServiceProvider;
+
 return [
     'default'        => 'default',
     'documentations' => [
@@ -185,7 +187,7 @@ return [
                                          "authorizationUrl" => config('app.url') . '/oauth/authorize',
                                          "tokenUrl"         => config('app.url') . '/oauth/token',
                                          "refreshUrl"       => config('app.url') . '/auth/refresh',
-                                         "scopes"           => []
+                                         "scopes"           => AuthServiceProvider::$scopes
                                      ],
                                  ],
                 ],
