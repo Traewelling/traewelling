@@ -332,7 +332,7 @@ class CheckinTest extends TestCase
                                  'controller.transport.checkin-ok',
                                  preg_match('/\s/', $message['lineName']),
                                  ['lineName' => $message['lineName']]
-                             ), false);
+                             ));
 
         // Usual Dashboard stuff
         $response->assertSee(__('stationboard.where-are-you'), false);

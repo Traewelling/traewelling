@@ -610,5 +610,10 @@
     "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data.",
     "year-review": "Year in review",
     "year-review.open": "Show my year in review",
-    "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:"
+    "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "delete": "Delete",
+    "active-tokens-count": ":count active token|:count active tokens"
 }
