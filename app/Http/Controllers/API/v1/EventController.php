@@ -41,7 +41,7 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-event-suggestions"}}, {"token": {}}
      *       }
      *     )
      *
@@ -274,7 +274,7 @@ class EventController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )

@@ -100,10 +100,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
                 Route::post('createFollow', [FollowController::class, 'createFollow']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
                 Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
+            });
+            Route::group(['middleware' => ['scope:write-followers']], static function(){
                 Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
                 Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
                 Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             });
+            //ToDo: I added scopes to the docs until here.
             Route::group(['middleware' => ['scope:write-blocks']], static function() {
                 Route::post('/{userId}/block', [UserController::class, 'createBlock']);
                 Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
@@ -148,7 +151,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
                 Route::delete('token', [TokenController::class, 'revokeToken']);
             });
-            Route::group(['middleware' => ['scope:settings-write-followers']], static function() {
+            Route::group(['middleware' => ['scope:settings-read-followers']], static function() {
                 Route::get('followers', [FollowController::class, 'getFollowers']);
                 Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
                 Route::get('followings', [FollowController::class, 'getFollowings']);

@@ -312,7 +312,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-event-suggestions"
+                        ]
                     },
                     {
                         "token": []
@@ -583,7 +585,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1035,7 +1039,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1088,7 +1094,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
                     },
                     {
                         "token": []
@@ -1133,7 +1141,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
                     },
                     {
                         "token": []
@@ -1364,7 +1374,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1407,7 +1419,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1450,7 +1464,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1504,7 +1520,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1642,7 +1660,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1704,7 +1724,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1765,7 +1787,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1826,7 +1850,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1887,7 +1913,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1928,7 +1956,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1983,7 +2013,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2046,7 +2078,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2094,7 +2128,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2160,7 +2196,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2215,7 +2253,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2256,7 +2296,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2451,7 +2493,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2553,7 +2597,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2619,7 +2665,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2667,7 +2715,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2722,7 +2772,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2774,7 +2826,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2815,7 +2869,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -4666,6 +4722,7 @@
                             "read-notifications": "see your notifications",
                             "read-statistics": "see your statistics",
                             "write-statuses": "create, edit, delete statuses",
+                            "write-likes": "create and remove likes",
                             "write-notifications": "mark notifications as read, clear notifications",
                             "write-exports": "request data exports",
                             "write-follows": "follow and unfollow users",
@@ -4678,6 +4735,7 @@
                             "settings-write-mail": "edit your email",
                             "settings-write-profile-picture": "edit your profile picture",
                             "settings-write-privacy": "change your privacy settings",
+                            "settings-write-followers": "accept follow-requests and remove followers",
                             "settings-write-calendar": "create and delete new calendar-tokens",
                             "extra-write-password": "change your password",
                             "extra-terminate-sessions": "log you out of other sessions and apps",

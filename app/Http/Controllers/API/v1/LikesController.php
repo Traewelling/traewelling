@@ -47,7 +47,7 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -88,7 +88,7 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=409, description="Status already liked by user"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-likes"}}, {"token": {}}
      *
      *       }
      *     )
@@ -135,7 +135,7 @@ class LikesController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-likes"}}, {"token": {}}
      *
      *       }
      *     )
