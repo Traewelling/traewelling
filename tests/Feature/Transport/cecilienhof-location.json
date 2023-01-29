@@ -1,0 +1,13 @@
+[
+  {
+    "type": "stop",
+    "id": "736222",
+    "name": "Schloss Cecilienhof, Potsdam",
+    "location": {
+      "type": "location",
+      "id": "736222",
+      "latitude": 52.419544,
+      "longitude": 13.067916
+    }
+  }
+]

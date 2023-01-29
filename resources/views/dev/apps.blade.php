@@ -3,42 +3,65 @@
 @section('title', 'Deine Anwendungen')
 
 @section('additional-content-end')
-    <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-primary">Anwendung erstellen</a>
+    <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-success">
+        Anwendung erstellen
+    </a>
 @endsection
 
 @section('content')
     <div class="row">
-        @if($app)
-            <table class="table table-striped table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Redirect URL</th>
-                        <th scope="col">&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach($apps as $app)
+        <div class="col-12">
+            @if($apps->count() > 0)
+                <table class="table table-striped table-dark">
+                    <thead>
                         <tr>
-                            <td><a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">{{ $app->name }}</a></td>
-                            <td>{{ $app->redirect }}</td>
-                            <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post"
-                                  onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');">
-                                @csrf
-                                <td>
-                                    <button type="submit" class="btn btn-sm btn-link">
-                                        <i class="fa fa-times"></i> Löschen
-                                    </button>
-                                </td>
-                            </form>
+                            <th scope="col">Name</th>
+                            <th scope="col">Redirect URL</th>
+                            <th scope="col">Confidential</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            Du hast noch keine Apps angelegt
-        @endif
+                    </thead>
+                    <tbody>
+                        @foreach($apps as $app)
+                            <tr>
+                                <td>
+                                    <a href="{{route('dev.apps.edit', ['appId' => $app->id])}}" class="text-white">
+                                        {{ $app->name }}
+                                    </a>
+                                </td>
+                                <td>{{ $app->redirect }}</td>
+                                <td>{{ $app->confidential() == 1 ? __('yes') : __('no') }}</td>
+                                <td>
+                                    {{trans_choice('active-tokens-count', $app->tokens()->count(), ['count' => $app->tokens()->count()])}}
+                                </td>
+                                <td class="text-end">
+                                    <form action="{{ route('dev.apps.destroy', ['appId' => $app->id]) }}" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete \'{{$app->name}}\'?');"
+                                    >
+                                        @csrf
+                                        <div class="btn-group">
+                                            <a href="{{route('dev.apps.edit', ['appId' => $app->id])}}"
+                                               class="btn btn-sm btn-primary"
+                                            >
+                                                <i class="fas fa-edit"></i>
+                                                {{__('edit') }}
+                                            </a>
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa fa-times"></i>
+                                                {{__('delete')}}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                Du hast noch keine Apps angelegt
+            @endif
+        </div>
         <!--
                 <div class="my-4">
                     <strong class="mb-0">Security</strong>

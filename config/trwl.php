@@ -4,9 +4,11 @@ return [
     'post_social'       => env('POST_SOCIAL', false),
 
     # Twitter
-    'twitter_redirect'  => env('TWITTER_REDIRECT'),
-    'twitter_id'        => env('TWITTER_ID'),
-    'twitter_secret'    => env('TWITTER_SECRET'),
+    'twitter_redirect'         => env('TWITTER_REDIRECT'),
+    'twitter_id'               => env('TWITTER_ID'),
+    'twitter_secret'           => env('TWITTER_SECRET'),
+    'twitter_oauth1_id'        => env('TWITTER_OAUTH1_ID'),
+    'twitter_oauth1_secret'    => env('TWITTER_OAUTH1_SECRET'),
 
     # Mastodon
     'mastodon_domain'   => env('MASTODON_DOMAIN'),
@@ -38,5 +40,6 @@ return [
     'cache'             => [
         'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),
         'leaderboard-retention-seconds' => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
-    ]
+    ],
+    'year_in_review_active' => env('YEAR_IN_REVIEW_ACTIVE', false),
 ];

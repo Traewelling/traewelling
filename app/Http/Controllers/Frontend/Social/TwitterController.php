@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Social;
 
-use App\Http\Controllers\Backend\Social\TwitterController as TwitterBackend;
+use App\Http\Controllers\Backend\Social\AbstractTwitterController as TwitterBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -25,7 +25,7 @@ class TwitterController extends Controller
             if ($request->query->get('return', 'none') === 'token') {
                 config(['services.twitter.redirect' => config('trwl.twitter_redirect') . '?return=token']);
             }
-            return Socialite::driver('twitter')->redirect();
+            return Socialite::driver('twitter-oauth-2')->scopes(['tweet.write', 'users.read', 'offline.access'])->redirect();
         } catch (Exception $exception) {
             report($exception);
             return back()->with('error', __('messages.exception.general'));
@@ -40,7 +40,7 @@ class TwitterController extends Controller
      * @return JsonResponse|RedirectResponse JSON if ?return=token, otherwise Redirect
      */
     public function callback(Request $request): JsonResponse|RedirectResponse {
-        $socialiteUser = Socialite::driver(driver: 'twitter')->user();
+        $socialiteUser = Socialite::driver(driver: 'twitter-oauth-2')->user();
         $user          = TwitterBackend::getUserFromSocialite($socialiteUser);
 
         if ($user === null) {

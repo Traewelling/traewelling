@@ -65,7 +65,6 @@
     "user.you": "You",
     "user.home-set": "We set your home station to :Station.",
     "user.home-not-set": "You haven't set a home station yet.",
-    "user.always-dbl": "Tweet with #dbl?",
     "user.private-profile": "Private profile",
     "user.liked-status": "likes this status.",
     "user.liked-own-status": "likes their own status.",
@@ -233,6 +232,7 @@
     "messages.cookie-notice-learn": "Learn more",
     "messages.exception.general": "An unknown error occurred. Please try again.",
     "messages.exception.generalHafas": "There was a problem with the interface to the timetable data. Please try again.",
+    "messages.exception.hafas.502": "The timetable could not be loaded. Please try again in a moment.",
     "messages.account.please-confirm": "Please enter <i><b>:delete</b></i> to confirm the deletion.",
     "messages.exception.already-checkedin": "There is already a check-in in this connection.",
     "messages.exception.maybe-too-fast": "Maybe you sent your request multiple times by mistake?",
@@ -386,6 +386,8 @@
     "generic.change": "Change",
     "generic.why": "Why?",
     "sr.dropdown.toggle": "Toggle dropdown",
+    "ril100": "Ril 100 identifier",
+    "or-alternative": "or",
     "stationboard.arr": "arr",
     "stationboard.btn-checkin": "Check in!",
     "stationboard.check-business": "Business trip",
@@ -608,5 +610,10 @@
     "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data.",
     "year-review": "Year in review",
     "year-review.open": "Show my year in review",
-    "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:"
+    "year-review.teaser": "The year is coming to an end and we have experienced a lot together. Take a look at your Träwelling year in review now:",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "delete": "Delete",
+    "active-tokens-count": ":count active token|:count active tokens"
 }

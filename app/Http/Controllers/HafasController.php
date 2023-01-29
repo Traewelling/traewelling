@@ -11,16 +11,20 @@ use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use PDOException;
 use stdClass;
 
 abstract class HafasController extends Controller
 {
+    public static function getHttpClient(): PendingRequest {
+        return Http::baseUrl(config('trwl.db_rest'))
+                   ->timeout(config('trwl.db_rest_timeout'));
+    }
 
     public static function getTrainStationByRilIdentifier(string $rilIdentifier): ?TrainStation {
         $trainStation = TrainStation::where('rilIdentifier', $rilIdentifier)->first();
@@ -28,9 +32,12 @@ abstract class HafasController extends Controller
             return $trainStation;
         }
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/stations/$rilIdentifier");
-            $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $response = self::getHttpClient()
+                            ->get("/stations/$rilIdentifier");
+            if (!$response->ok()) {
+                return null;
+            }
+            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
             return TrainStation::updateOrCreate([
                                                     'ibnr' => $data->id
                                                 ], [
@@ -39,17 +46,13 @@ abstract class HafasController extends Controller
                                                     'latitude'      => $data->location->latitude,
                                                     'longitude'     => $data->location->longitude
                                                 ]);
-        } catch (ClientException $exception) {
-            if ($exception->getCode() !== 404) {
-                report($exception);
-            }
         } catch (Exception $exception) {
             report($exception);
         }
         return null;
     }
 
-    public static function getTrainStationsByRilIdentifier(string $rilIdentifier): ?Collection {
+    public static function getTrainStationsByFuzzyRilIdentifier(string $rilIdentifier): ?Collection {
         $trainStations = TrainStation::where('rilIdentifier', 'LIKE', "$rilIdentifier%")->orderBy('rilIdentifier')->get();
         if ($trainStations->count() > 0) {
             return $trainStations;
@@ -62,21 +65,24 @@ abstract class HafasController extends Controller
      */
     public static function getStations(string $query, int $results = 10): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/locations", [
-                'query' => [
-                    'query'     => $query,
-                    'fuzzy'     => 'true',
-                    'stops'     => 'true',
-                    'addresses' => 'false',
-                    'poi'       => 'false',
-                    'results'   => $results
-                ]
-            ]);
+            $response = self::getHttpClient()
+                            ->get("/locations",
+                                  [
+                                      'query'     => $query,
+                                      'fuzzy'     => 'true',
+                                      'stops'     => 'true',
+                                      'addresses' => 'false',
+                                      'poi'       => 'false',
+                                      'results'   => $results
+                                  ]);
 
-            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+            if (!$response->ok() or empty($data)) {
+                return Collection::empty();
+            }
+
             return self::parseHafasStops($data);
-        } catch (GuzzleException|JsonException $exception) {
+        } catch (JsonException $exception) {
             throw new HafasException($exception->getMessage());
         }
     }
@@ -121,14 +127,17 @@ abstract class HafasController extends Controller
      */
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/stops/nearby", [
+            $response = self::getHttpClient()->get("/stops/nearby", [
                 'query' => [
                     'latitude'  => $latitude,
                     'longitude' => $longitude,
                     'results'   => $results
                 ]
             ]);
+
+            if (!$response->ok()) {
+                throw new HafasException(__('messages.exception.generalHafas'));
+            }
 
             $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
             $stations = self::parseHafasStops($data);
@@ -139,7 +148,7 @@ abstract class HafasController extends Controller
             }
 
             return $stations;
-        } catch (GuzzleException|JsonException $exception) {
+        } catch (JsonException $exception) {
             throw new HafasException($exception->getMessage());
         }
     }
@@ -160,10 +169,7 @@ abstract class HafasController extends Controller
         TravelType   $type = null
     ): Collection {
         try {
-            $client   = new Client([
-                                       'base_uri' => config('trwl.db_rest'),
-                                       'timeout'  => config('trwl.db_rest_timeout'),
-                                   ]);
+            $client   = self::getHttpClient();
             $query    = [
                 'when'                       => $when->toIso8601String(),
                 'duration'                   => $duration,
@@ -178,11 +184,13 @@ abstract class HafasController extends Controller
                 HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
                 HTT::TAXI->value             => 'false',
             ];
-            $response = $client->get('/stops/' . $station->ibnr . '/departures', [
-                'query' => $query,
-            ]);
+            $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
 
-            $data = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
+            if (!$response->ok()) {
+                throw new HafasException(__('messages.exception.generalHafas'));
+            }
+
+            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
 
             //First fetch all stations in one request
             $trainStationPayload = [];
@@ -207,7 +215,7 @@ abstract class HafasController extends Controller
             }
 
             return $departures;
-        } catch (GuzzleException|JsonException $exception) {
+        } catch (JsonException $exception) {
             throw new HafasException($exception->getMessage());
         }
     }
@@ -255,20 +263,21 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     private static function fetchTrainStation(int $ibnr): TrainStation {
-        try {
-            $client   = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-            $response = $client->get("/stops/$ibnr");
-            $data     = json_decode($response->getBody()->getContents());
-            return TrainStation::updateOrCreate([
-                                                    'ibnr' => $data->id
-                                                ], [
-                                                    'name'      => $data->name,
-                                                    'latitude'  => $data->location->latitude,
-                                                    'longitude' => $data->location->longitude
-                                                ]);
-        } catch (GuzzleException $e) {
+        $response = self::getHttpClient()->get("/stops/$ibnr");
+
+        if (!$response->ok()) {
             throw new HafasException($e->getMessage());
         }
+
+        $data = json_decode($response->body());
+        return TrainStation::updateOrCreate([
+                                                'ibnr' => $data->id
+                                            ], [
+                                                'name'      => $data->name,
+                                                'latitude'  => $data->location->latitude,
+                                                'longitude' => $data->location->longitude
+                                            ]);
+
     }
 
     /**
@@ -284,22 +293,26 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws HafasException|JsonException
      */
     public static function fetchRawHafasTrip(string $tripId, string $lineName) {
-        $tripClient = new Client(['base_uri' => config('trwl.db_rest'), 'timeout' => config('trwl.db_rest_timeout')]);
-        try {
-            $tripResponse = $tripClient->get("trips/$tripId", [
-                'query' => [
-                    'lineName'  => $lineName,
-                    'polyline'  => 'true',
-                    'stopovers' => 'true'
-                ]
-            ]);
-            return json_decode($tripResponse->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-        } catch (GuzzleException|JsonException) {
-            //sometimes DB-Rest gives 502 Bad Request
+        $tripResponse = self::getHttpClient()->get("trips/$tripId", [
+            'lineName'  => $lineName,
+            'polyline'  => 'true',
+            'stopovers' => 'true'
+        ]);
+
+        if ($tripResponse->ok()) {
+            return json_decode($tripResponse->body(), false, 512, JSON_THROW_ON_ERROR);
         }
+        //sometimes HAFAS returnes 502 Bad Gateway
+        if ($tripResponse->status() === 502) {
+            throw new HafasException(__('messages.exception.hafas.502'));
+        }
+        Log::error('Unknown HAFAS Error (fetchRawHafasTrip)', [
+            'status' => $tripResponse->status(),
+            'body'   => $tripResponse->body()
+        ]);
         throw new HafasException(__('messages.exception.generalHafas'));
     }
 
@@ -337,17 +350,18 @@ abstract class HafasController extends Controller
         $hafasTrip = HafasTrip::updateOrCreate([
                                                    'trip_id' => $tripID
                                                ], [
-                                                   'category'    => $tripJson->line->product,
-                                                   'number'      => $tripJson->line->id,
-                                                   'linename'    => $tripJson->line->name,
-                                                   'operator_id' => $operator?->id,
-                                                   'origin'      => $origin->ibnr,
-                                                   'destination' => $destination->ibnr,
-                                                   'stopovers'   => json_encode($tripJson->stopovers),
-                                                   'polyline_id' => $polyline->id,
-                                                   'departure'   => $tripJson->plannedDeparture,
-                                                   'arrival'     => $tripJson->plannedArrival,
-                                                   'delay'       => $tripJson->arrivalDelay ?? null
+                                                   'category'       => $tripJson->line->product,
+                                                   'number'         => $tripJson->line->id,
+                                                   'linename'       => $tripJson->line->name,
+                                                   'journey_number' => $tripJson->line?->fahrtNr === "0" ? null : $tripJson->line?->fahrtNr,
+                                                   'operator_id'    => $operator?->id,
+                                                   'origin'         => $origin->ibnr,
+                                                   'destination'    => $destination->ibnr,
+                                                   'stopovers'      => json_encode($tripJson->stopovers),
+                                                   'polyline_id'    => $polyline->id,
+                                                   'departure'      => $tripJson->plannedDeparture,
+                                                   'arrival'        => $tripJson->plannedArrival,
+                                                   'delay'          => $tripJson->arrivalDelay ?? null
                                                ]);
 
         //Save TrainStations

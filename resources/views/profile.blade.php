@@ -78,7 +78,7 @@
                         </button>
                     </form>
                 </div>
-            @elseif($user->private_profile && !$user->following)
+            @elseif($user->private_profile && !$user->following && (!auth()->check() || $user->id !== auth()->id()))
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <span class="fs-3">{{__('profile.private-profile-text')}}</span>
                     <br/>
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="mt-5">
-                    {{ $statuses->links() }}
+                    {{ $statuses->onEachSide(0)->links() }}
                 </div>
             @else
                 <div class="col-md-8 col-lg-7">

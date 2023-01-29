@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors.",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -183,9 +183,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -196,7 +198,7 @@
                     "User"
                 ],
                 "summary": "Get authenticated user information",
-                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\n     *      token.",
+                "description": "Get all profile information about the authenticated user",
                 "operationId": "getAuthenticatedUser",
                 "responses": {
                     "200": {
@@ -220,9 +222,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -256,9 +260,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -306,9 +312,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -356,9 +364,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -424,9 +434,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -477,9 +489,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -514,9 +528,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -567,13 +583,409 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
-        "/statuses/{id}/likedby": {
+        "/user/{id}/follow": {
+            "post": {
+                "tags": [
+                    "User/Follow"
+                ],
+                "summary": "Follow a user",
+                "operationId": "createFollow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    },
+                    "403": {
+                        "description": "User is blocked"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User/Follow"
+                ],
+                "summary": "Unfollow a user",
+                "operationId": "destroyFollow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/settings/followers": {
+            "get": {
+                "tags": [
+                    "User/Follow",
+                    "Settings"
+                ],
+                "summary": "List all followers",
+                "operationId": "getFollowers",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Already following"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/settings/follow-requests": {
+            "get": {
+                "tags": [
+                    "User/Follow",
+                    "Settings"
+                ],
+                "summary": "List all followers",
+                "operationId": "getFollowRequests",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/settings/followings": {
+            "get": {
+                "tags": [
+                    "User/Follow",
+                    "Settings"
+                ],
+                "summary": "List all users the current user is following",
+                "operationId": "getFollowings",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/removeFollower": {
+            "delete": {
+                "tags": [
+                    "User/Follow"
+                ],
+                "summary": "Remove a follower",
+                "operationId": "removeFollower",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unfollowed user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "404": {
+                        "description": "Follow not found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/acceptFollowRequest": {
+            "put": {
+                "tags": [
+                    "User/Follow"
+                ],
+                "summary": "Accept a follow request",
+                "operationId": "acceptFollowRequest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the user who sent the follow request",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/rejectFollowRequest": {
+            "delete": {
+                "tags": [
+                    "User/Follow"
+                ],
+                "summary": "Reject a follow request",
+                "operationId": "rejectFollowRequest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the user who sent the follow request",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{id}/likes": {
             "get": {
                 "tags": [
                     "Likes"
@@ -623,9 +1035,680 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{id}/like": {
+            "post": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Add like to status",
+                "description": "Add like to status",
+                "operationId": "addLikeToStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "409": {
+                        "description": "Status already liked by user"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Remove like from status",
+                "description": "Removes like from status",
+                "operationId": "removeLikeFromStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/static/privacy": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get the current privacy policy",
+                "description": "Get the current privacy policy",
+                "operationId": "e649bec35ba50765db023e745233eda9",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "validFrom": {
+                                                    "example": "2022-01-05T16:26:14.000000Z"
+                                                },
+                                                "en": {
+                                                    "example": "This is the english privacy policy"
+                                                },
+                                                "de": {
+                                                    "example": "Dies ist die deutsche Datenschutzerklärung"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/acceptPrivacy": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Accept the current privacy policy",
+                "description": "Accept the current privacy policy",
+                "operationId": "4baaf2c20fed6c12e13df7493ffa62ad",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Already accepted"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/settings/profile": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get the current user's profile settings",
+                "description": "Get the current user's profile settings",
+                "operationId": "47327232762d35b0766eee97b7cd62e9",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the current user's profile settings",
+                "description": "Update the current user's profile settings",
+                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "maxLength": 25,
+                                        "example": "gertrud123"
+                                    },
+                                    "displayName": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Gertrud"
+                                    },
+                                    "privateProfile": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "preventIndex": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "privacyHideDays": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "defaultStatusVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/leaderboard": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get array of 20 best users",
+                "operationId": "getLeaderboard",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/leaderboard/distance": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get leaderboard array sorted by distance",
+                "operationId": "getLeaderboardByDistance",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/leaderboard/friends": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "Get friends-leaderboard array sorted",
+                "operationId": "getLeaderboardByFriends",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/leaderboard/{month}": {
+            "get": {
+                "tags": [
+                    "Leaderboard"
+                ],
+                "summary": "[Auth optional] Get leaderboard array for a specific month",
+                "operationId": "getMonthlyLeaderboard",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "path",
+                        "description": "Month for the complete leaderboard in Format `YYYY-MM`",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2022-04"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No Event found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statistics": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get personal statistics",
+                "operationId": "getStatistics",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "purpose": {
+                                                    "description": "The purpose of travel",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "$ref": "#/components/schemas/BusinessEnum"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 11
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                            minutes",
+                                                                "type": "integer",
+                                                                "example": 425
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "categories": {
+                                                    "description": "The categories of the travel",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 11
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 425
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "operators": {
+                                                    "description": "The operators of the means of transport",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "example": "Gertruds Verkehrsgesellschaft mbH"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 424
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "time": {
+                                                    "description": "Shows the daily travel volume",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "2021-01-01T00:00:00.000Z"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "duration": {
+                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "type": "integer",
+                                                                "example": 424
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "from": {
+                                                    "example": "2021-01-01T00:00:00.000000Z"
+                                                },
+                                                "until": {
+                                                    "example": "2021-02-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statistics/global": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get global statistics of the last 4 weeks",
+                "operationId": "getGlobalStatistics",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "distance": {
+                                                    "description": "Globally travelled distance in meters",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "duration": {
+                                                    "description": "Globally travelled duration in minutes",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "activeUsers": {
+                                                    "description": "Number of active users",
+                                                    "type": "integer",
+                                                    "example": 1000
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "from": {
+                                                            "example": "2021-01-01T00:00:00.000000Z"
+                                                        },
+                                                        "until": {
+                                                            "example": "2021-02-01T00:00:00.000000Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -681,6 +1764,9 @@
                     }
                 },
                 "security": [
+                    {
+                        "passport": []
+                    },
                     {
                         "token": []
                     }
@@ -740,6 +1826,9 @@
                 },
                 "security": [
                     {
+                        "passport": []
+                    },
+                    {
                         "token": []
                     }
                 ]
@@ -798,6 +1887,9 @@
                 },
                 "security": [
                     {
+                        "passport": []
+                    },
+                    {
                         "token": []
                     }
                 ]
@@ -836,13 +1928,15 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
-        "/statuses/{id}": {
+        "/status/{id}": {
             "get": {
                 "tags": [
                     "Status"
@@ -889,9 +1983,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             },
             "put": {
@@ -950,9 +2046,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             },
             "delete": {
@@ -996,9 +2094,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1060,9 +2160,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1113,9 +2215,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1152,9 +2256,570 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/{name}/departures": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get departures from a station",
+                "description": "Get departures from a station",
+                "operationId": "getDepartures",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name of the station (replace slashes with spaces)",
+                        "required": true
+                    },
+                    {
+                        "name": "when",
+                        "in": "query",
+                        "description": "When to get the departures (default: now)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2020-01-01T12:00:00.000Z"
+                        }
+                    },
+                    {
+                        "name": "travelType",
+                        "in": "query",
+                        "description": "Means of transport (default: all)",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/TravelTypeEnum"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\n     *                     external documentation at\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+                                                "externalDocs": "https://v5.db.transport.rest/api.html#get-stopsiddepartures",
+                                                "example": {
+                                                    "tripId": "1|200513|0|81|6012023",
+                                                    "stop": {
+                                                        "type": "stop",
+                                                        "id": "8000191",
+                                                        "name": "Karlsruhe Hbf",
+                                                        "location": {
+                                                            "type": "location",
+                                                            "id": "8000191",
+                                                            "latitude": 48.99353,
+                                                            "longitude": 8.401939
+                                                        },
+                                                        "products": {
+                                                            "nationalExpress": true,
+                                                            "national": true,
+                                                            "regionalExp": true,
+                                                            "regional": true,
+                                                            "suburban": true,
+                                                            "bus": true,
+                                                            "ferry": false,
+                                                            "subway": false,
+                                                            "tram": true,
+                                                            "taxi": true
+                                                        }
+                                                    },
+                                                    "when": "2023-01-06T13:49:00+01:00",
+                                                    "plannedWhen": "2023-01-06T13:49:00+01:00",
+                                                    "delay": null,
+                                                    "platform": "2",
+                                                    "plannedPlatform": "2",
+                                                    "direction": "Zürich HB",
+                                                    "provenance": null,
+                                                    "line": {
+                                                        "type": "line",
+                                                        "id": "ec-9",
+                                                        "fahrtNr": "9",
+                                                        "name": "EC 9",
+                                                        "public": true,
+                                                        "adminCode": "80____",
+                                                        "productName": "EC",
+                                                        "mode": "train",
+                                                        "product": "national",
+                                                        "operator": {
+                                                            "type": "operator",
+                                                            "id": "db-fernverkehr-ag",
+                                                            "name": "DB Fernverkehr AG"
+                                                        }
+                                                    },
+                                                    "remarks": null,
+                                                    "origin": null,
+                                                    "destination": {
+                                                        "type": "stop",
+                                                        "id": "8503000",
+                                                        "name": "Zürich HB",
+                                                        "location": {
+                                                            "type": "location",
+                                                            "id": "8503000",
+                                                            "latitude": 47.378177,
+                                                            "longitude": 8.540211
+                                                        },
+                                                        "products": {
+                                                            "nationalExpress": true,
+                                                            "national": true,
+                                                            "regionalExp": true,
+                                                            "regional": true,
+                                                            "suburban": true,
+                                                            "bus": true,
+                                                            "ferry": false,
+                                                            "subway": false,
+                                                            "tram": true,
+                                                            "taxi": false
+                                                        }
+                                                    },
+                                                    "currentTripPosition": {
+                                                        "type": "location",
+                                                        "latitude": 48.725382,
+                                                        "longitude": 8.142888
+                                                    },
+                                                    "loadFactor": "high",
+                                                    "station": {
+                                                        "id": 5181,
+                                                        "ibnr": 8000191,
+                                                        "rilIdentifier": "RK",
+                                                        "name": "Karlsruhe Hbf",
+                                                        "latitude": "48.993530",
+                                                        "longitude": "8.401939"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "station": {
+                                                    "$ref": "#/components/schemas/TrainStation"
+                                                },
+                                                "times": {
+                                                    "properties": {
+                                                        "now": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2020-01-01T12:00:00.000Z"
+                                                        },
+                                                        "prev": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2020-01-01T11:45:00.000Z"
+                                                        },
+                                                        "next": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2020-01-01T12:15:00.000Z"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "502": {
+                        "description": "Error with our data provider"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/trip": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get the stopovers and trip information for a given train",
+                "operationId": "getTrainTrip",
+                "parameters": [
+                    {
+                        "name": "hafasTripId",
+                        "in": "query",
+                        "description": "HAFAS trip ID (fetched from departures)",
+                        "required": true,
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    {
+                        "name": "lineName",
+                        "in": "query",
+                        "description": "line name for that train",
+                        "required": true,
+                        "example": "S 4"
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "start point from where the stopovers should be desplayed",
+                        "required": true,
+                        "example": 4711
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "int64",
+                                                    "example": 1
+                                                },
+                                                "category": {
+                                                    "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                },
+                                                "number": {
+                                                    "type": "string",
+                                                    "example": "4-a6s4-4"
+                                                },
+                                                "lineName": {
+                                                    "type": "string",
+                                                    "example": "S 4"
+                                                },
+                                                "journeyNumber": {
+                                                    "type": "int64",
+                                                    "example": "34427"
+                                                },
+                                                "origin": {
+                                                    "$ref": "#/components/schemas/TrainStation"
+                                                },
+                                                "destination": {
+                                                    "$ref": "#/components/schemas/TrainStation"
+                                                },
+                                                "stopovers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TrainStopover"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No station found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/nearby": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Location based search for trainstations",
+                "description": "Returns the nearest station to the given coordinates",
+                "operationId": "trainStationsNearby",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "latitude",
+                        "required": true,
+                        "example": 48.991
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "longitude",
+                        "required": true,
+                        "example": 8.4005
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No station found"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/checkin": {
+            "post": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Create a checkin",
+                "operationId": "createTrainCheckin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TrainCheckinRequestBody"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TrainCheckinResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Checkin collision"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/{name}/home": {
+            "put": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Set a station as home station",
+                "operationId": "setHomeStation",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name of the station",
+                        "required": true,
+                        "example": "Karlsruhe Hbf"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainStation"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "502": {
+                        "description": "Error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/autocomplete/{query}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Autocomplete for trainstations",
+                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "operationId": "trainStationAutocomplete",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "station query",
+                        "example": "Karls"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/history": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "History for trainstations",
+                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
+                "operationId": "trainStationHistory",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainStation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1473,9 +3138,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1532,9 +3199,15 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "Forbidden, User is blocked"
                     }
                 },
                 "security": [
+                    {
+                        "passport": []
+                    },
                     {
                         "token": []
                     }
@@ -1585,25 +3258,31 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "403": {
+                        "description": "Forbidden, User is blocked"
+                    },
                     "404": {
                         "description": "User not found"
                     }
                 },
                 "security": [
                     {
+                        "passport": []
+                    },
+                    {
                         "token": []
                     }
                 ]
             }
         },
-        "/user/createMute": {
+        "/user/{id}/block": {
             "post": {
                 "tags": [
-                    "User"
+                    "User/Hide and Block"
                 ],
-                "summary": "Mute a user",
-                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab",
-                "operationId": "createMute",
+                "summary": "Block a user",
+                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+                "operationId": "createBlock",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1612,7 +3291,7 @@
                                 "properties": {
                                     "userId": {
                                         "title": "userId",
-                                        "description": "ID of the to-be-muted user",
+                                        "description": "ID of the to-be-blocked user",
                                         "format": "int64",
                                         "example": 1
                                     }
@@ -1628,7 +3307,139 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "User is already blocked"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "Unmute a user",
+                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\n     *      and send you follow requests.",
+                "operationId": "destroyBlock",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userId": {
+                                        "title": "userId",
+                                        "description": "ID of the to-be-unblocked user",
+                                        "format": "int64",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "409": {
+                        "description": "User is not blocked"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/{id}/mute": {
+            "post": {
+                "tags": [
+                    "User/Hide and Block"
+                ],
+                "summary": "Mute a user",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
+                "operationId": "createMute",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1648,45 +3459,43 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
-            }
-        },
-        "/user/destroyMute": {
+            },
             "delete": {
                 "tags": [
-                    "User"
+                    "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
                 "operationId": "destroyMute",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "userId": {
-                                        "title": "userId",
-                                        "description": "ID of the to-be-unmuted user",
-                                        "format": "int64",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1698,7 +3507,7 @@
                         "description": "Not logged in"
                     },
                     "409": {
-                        "description": "User is already unmuted"
+                        "description": "User is not muted"
                     },
                     "403": {
                         "description": "User not authorized"
@@ -1706,9 +3515,11 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": []
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -1767,6 +3578,9 @@
                     }
                 },
                 "security": [
+                    {
+                        "passport": []
+                    },
                     {
                         "token": []
                     }
@@ -2029,11 +3843,120 @@
                     "name": "PaginationMeta"
                 }
             },
+            "LeaderboardUser": {
+                "title": "LeaderboardUser",
+                "properties": {
+                    "username": {
+                        "title": "username",
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "trainDuration": {
+                        "title": "trainDuration",
+                        "description": "duration travelled by train in minutes",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 6
+                    },
+                    "trainDistance": {
+                        "title": "trainDistance",
+                        "description": "distance travelled by train in meters",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "trainSpeed": {
+                        "title": "trainSpeed",
+                        "description": "average speed travelled by train in meters",
+                        "type": "number",
+                        "format": "float",
+                        "example": 123.45
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "Current points of the last 7 days",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 300
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LeaderboardUser"
+                }
+            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
                 "xml": {
                     "name": "PaginationPage"
+                }
+            },
+            "Points": {
+                "title": "Points",
+                "description": "Points model",
+                "properties": {
+                    "points": {
+                        "title": "points",
+                        "description": "points",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "calculation": {
+                        "$ref": "#/components/schemas/PointsCalculation"
+                    },
+                    "additional": {
+                        "title": "additional",
+                        "description": "extra points that can be given",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "identifier": "extrapoints",
+                                "points": 4,
+                                "divisibile": false
+                            }
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Points"
+                }
+            },
+            "PointsCalculation": {
+                "title": "PointsCalculation",
+                "properties": {
+                    "base": {
+                        "title": "base",
+                        "description": "Basepoints for this type of vehicle",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.5
+                    },
+                    "distance": {
+                        "title": "distance",
+                        "description": "Points for the travelled distance",
+                        "example": 0.25
+                    },
+                    "factor": {
+                        "title": "factor",
+                        "example": 0.25
+                    },
+                    "reason": {
+                        "$ref": "#/components/schemas/PointsReasonEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "PointsCalculation"
                 }
             },
             "Polyline": {
@@ -2073,6 +3996,35 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
+                }
+            },
+            "ShortTrainStation": {
+                "title": "ShortTrainStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ShortTrainStation"
                 }
             },
             "Status": {
@@ -2204,22 +4156,7 @@
                         "example": "1|323306|1|80|17072022"
                     },
                     "category": {
-                        "title": "category",
-                        "description": "Category of transport. ",
-                        "type": "string",
-                        "enum": [
-                            "nationalExpress",
-                            "national",
-                            "regionalExp",
-                            "regional",
-                            "suburban",
-                            "bus",
-                            "ferry",
-                            "subway",
-                            "tram",
-                            "taxi"
-                        ],
-                        "example": "suburban"
+                        "$ref": "#/components/schemas/TrainCategoryEnum"
                     },
                     "number": {
                         "title": "number",
@@ -2268,6 +4205,129 @@
                 "type": "object",
                 "xml": {
                     "name": "Train"
+                }
+            },
+            "TrainCheckinRequestBody": {
+                "title": "TrainCheckinRequestBody",
+                "description": "Fields for creating a train checkin",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Text that should be added to the post",
+                        "type": "string",
+                        "maxLength": 280,
+                        "example": "Meine erste Fahrt nach Knuffingen!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "eventId": {
+                        "title": "eventId",
+                        "description": "Id of an event the status should be connected to",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tweet": {
+                        "title": "tweet",
+                        "description": "Should this status be posted to twitter?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "toot": {
+                        "title": "toot",
+                        "description": "Should this status be posted to mastodon?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "chainPost": {
+                        "title": "chainPost",
+                        "description": "Should this status be posted to mastodon as a chained post?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "type": "boolean",
+                        "example": "true",
+                        "nullable": true
+                    },
+                    "tripId": {
+                        "title": "tripId",
+                        "description": "The HAFAS tripId for the to be checked in train",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "The line name for the to be checked in train",
+                        "example": "S 4"
+                    },
+                    "start": {
+                        "title": "start",
+                        "description": "The TrainStation-ID of the starting point (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "destination": {
+                        "title": "destination",
+                        "description": "The TrainStation-ID of the destination (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8079045"
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "Timestamp of the departure",
+                        "example": "2022-12-19T20:41:00+01:00"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "Timestamp of the arrival",
+                        "example": "2022-12-19T20:42:00+01:00"
+                    },
+                    "force": {
+                        "title": "force",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinRequestBody"
+                }
+            },
+            "TrainCheckinResponse": {
+                "title": "TrainCheckinResponse",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "StatusModel of the created status",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "points": {
+                        "$ref": "#/components/schemas/Points"
+                    },
+                    "alsoOnThisConnection": {
+                        "title": "alsoOnThisconnection",
+                        "description": "Statuses of other people on this connection",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Status"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainCheckinResponse"
                 }
             },
             "TrainStation": {
@@ -2328,6 +4388,12 @@
                         "description": "id",
                         "type": "integer",
                         "example": "12089"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
                     },
                     "rilIdentifier": {
                         "title": "rilIdentifier",
@@ -2513,12 +4579,6 @@
                         "type": "boolean",
                         "example": false
                     },
-                    "privacyHideDays": {
-                        "title": "privacyHideDays",
-                        "description": "Hide all statuses after x days",
-                        "type": "integer",
-                        "example": 3
-                    },
                     "userInvisibleToMe": {
                         "title": "userInvisibleToMe",
                         "description": "Can the currently authenticated user see the statuses of this user?",
@@ -2653,12 +4713,6 @@
                     "home": {
                         "$ref": "#/components/schemas/TrainStation"
                     },
-                    "dbl": {
-                        "title": "dbl",
-                        "description": "Should tweets contain the hashtag #dbl? (see https://twitter.com/dblocator)",
-                        "type": "boolean",
-                        "example": false
-                    },
                     "language": {
                         "title": "language",
                         "description": "what is the specified language of this user",
@@ -2669,6 +4723,96 @@
                 "type": "object",
                 "xml": {
                     "name": "UserAuth"
+                }
+            },
+            "UserProfileSettings": {
+                "title": "UserProfileSettings",
+                "description": "Model for all user profile settings",
+                "properties": {
+                    "username": {
+                        "title": "username",
+                        "description": "username",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "displayName": {
+                        "title": "displayName",
+                        "description": "Display name of the user",
+                        "example": "Gertrud"
+                    },
+                    "profilePicture": {
+                        "title": "profilePicture",
+                        "description": "URL of the profile picture of the user",
+                        "type": "integer",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "privateProfile": {
+                        "title": "privateProfile",
+                        "description": "Is the profile private?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": false
+                    },
+                    "preventIndex": {
+                        "title": "preventIndex",
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": false
+                    },
+                    "defaultStatusVisibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "privacyHideDays": {
+                        "title": "privacyHideDays",
+                        "description": "Number of days after which a status is hidden from the public",
+                        "format": "int64",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "password": {
+                        "title": "password",
+                        "description": "Does the user have a password set?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": true
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "The email address of the user",
+                        "type": "string",
+                        "example": "gertrud@example.com",
+                        "nullable": true
+                    },
+                    "emailVerified": {
+                        "title": "emailVerified",
+                        "description": "Is the email address verified?",
+                        "type": "boolean",
+                        "format": "boolean",
+                        "example": "https://chaos.social/@traewelling"
+                    },
+                    "profilePictureSet": {
+                        "title": "profilePictureSet",
+                        "description": "Has the user set a profile picture other then the default one?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "twitter": {
+                        "title": "twitter",
+                        "description": "Twitter URL of user",
+                        "type": "string",
+                        "example": "https://twitter.com/i/user/843458335"
+                    },
+                    "mastodon": {
+                        "title": "mastodon",
+                        "description": "Mastodon URL of user",
+                        "type": "string",
+                        "example": "https://chaos.social/@traewelling"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserProfileSettings"
                 }
             },
             "StatusUpdateBody": {
@@ -2705,6 +4849,53 @@
                 ],
                 "example": 0
             },
+            "PointsReasonEnum": {
+                "title": "PointsReason",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
+            },
+            "TrainCategoryEnum": {
+                "title": "category",
+                "description": "Category of transport. ",
+                "type": "string",
+                "enum": [
+                    "nationalExpress",
+                    "national",
+                    "regionalExp",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
+            "TravelTypeEnum": {
+                "title": "travelType",
+                "type": "string",
+                "enum": [
+                    "express",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
             "VisibilityEnum": {
                 "title": "visibility",
                 "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
@@ -2731,7 +4922,21 @@
             }
         },
         "securitySchemes": {
-            "token": {
+            "passport": {
+                "type": "oauth2",
+                "description": "OAuth2 authorizationCode Flow. Get your token from https://traewelling.de/settings/applications. Set the redirect URL to https://traewelling.de/api/oauth2-callback to use it here. See also https://laravel.com/docs/9.x/passport",
+                "in": "header",
+                "scheme": "https",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "scopes": []
+                    }
+                }
+            },
+            "token_old": {
                 "type": "apiKey",
                 "description": "Enter token in format \"Bearer \\<token\\>\"",
                 "name": "Authorization",
@@ -2745,24 +4950,44 @@
             "description": "Logging in, creating Accounts, etc."
         },
         {
-            "name": "User",
-            "description": "Information regarding users"
-        },
-        {
-            "name": "Dashboard",
-            "description": "API Endpoints of Dashboard"
-        },
-        {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Checkin",
+            "description": "Checkin related endpoints. Regular process is departures -> trip -> checkin"
         },
         {
             "name": "Events",
             "description": "Events that users can check in to"
         },
         {
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+        },
+        {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        },
+        {
             "name": "Likes",
             "description": "Likes regarding a single status"
+        },
+        {
+            "name": "User",
+            "description": "Information regarding users"
+        },
+        {
+            "name": "User/Follow",
+            "description": "Follow and unfollow users, manage your followers"
+        },
+        {
+            "name": "User/Hide and Block",
+            "description": "Mute and block users"
+        },
+        {
+            "name": "Leaderboard",
+            "description": "Leaderboard related endpoints"
+        },
+        {
+            "name": "Statistics",
+            "description": "Statistics related endpoints"
         },
         {
             "name": "Settings",

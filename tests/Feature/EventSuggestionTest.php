@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\EventSuggestion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class EventSuggestionTest extends TestCase
@@ -30,7 +31,7 @@ class EventSuggestionTest extends TestCase
             // For the Event POST
             'suggestionId'         => 1337, // will be replaced later
             'hashtag'              => '#eventName',
-            'nearest_station_name' => 'Krefeld Oppum',
+            'nearest_station_name' => 'Hannover Hbf',
             'url'                  => 'https://example.com',
         ];
 
@@ -69,6 +70,9 @@ class EventSuggestionTest extends TestCase
         // Admin can load the form
         $res = $this->get('/admin/events/suggestions/accept/' . $this->postData['suggestionId']);
         $res->assertSee($this->postData["name"]);
+
+        // Location Data for the Event Location
+        Http::fake(['/locations*' => Http::response([self::HANNOVER_HBF])]);
 
         // Admin accepts the event
         $res = $this->post('/admin/events/suggestions/accept', $this->postData);

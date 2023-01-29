@@ -14,7 +14,7 @@ return [
     | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
     |
     */
-    'paths'                    => ['api/*'],
+    'paths'                    => ['api/*', 'oauth/token'],
     'allowed_methods'          => ['*'],
     'allowed_origins'          => ['*'],
     'allowed_origins_patterns' => [],

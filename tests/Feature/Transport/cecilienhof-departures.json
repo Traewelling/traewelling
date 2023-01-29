@@ -1,0 +1,76 @@
+[
+  {
+    "tripId": "1|1087136|2|81|13012023",
+    "stop": {
+      "type": "stop",
+      "id": "736222",
+      "name": "Schloss Cecilienhof, Potsdam",
+      "location": {
+        "type": "location",
+        "id": "736222",
+        "latitude": 52.419544,
+        "longitude": 13.067916
+      }
+    },
+    "when": "2023-01-13T10:19:00+01:00",
+    "plannedWhen": "2023-01-13T10:19:00+01:00",
+    "delay": null,
+    "platform": null,
+    "plannedPlatform": null,
+    "prognosisType": null,
+    "direction": "Höhenstr., Potsdam",
+    "provenance": null,
+    "line": {
+      "type": "line",
+      "id": "5-vbbvib-603",
+      "fahrtNr": "433",
+      "name": "Bus 603",
+      "public": true,
+      "adminCode": "vbbVIB",
+      "productName": "Bus",
+      "mode": "bus",
+      "product": "bus",
+      "operator": {
+        "type": "operator",
+        "id": "nahreisezug",
+        "name": "Nahreisezug"
+      }
+    },
+    "remarks": [],
+    "origin": null,
+    "destination": {
+      "type": "stop",
+      "id": "736099",
+      "name": "Platz der Einheit/West, Potsdam",
+      "location": {
+        "type": "location",
+        "id": "736099",
+        "latitude": 52.398832,
+        "longitude": 13.057928
+      },
+      "products": {
+        "nationalExpress": false,
+        "national": false,
+        "regionalExp": false,
+        "regional": false,
+        "suburban": false,
+        "bus": true,
+        "ferry": false,
+        "subway": false,
+        "tram": true,
+        "taxi": false
+      },
+      "station": {
+        "type": "station",
+        "id": "736100",
+        "name": "Platz der Einheit/Nord, Potsdam",
+        "location": {
+          "type": "location",
+          "id": "736100",
+          "latitude": 52.39921,
+          "longitude": 13.058639
+        }
+      }
+    }
+  }
+]
