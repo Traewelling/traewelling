@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use http\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -65,7 +64,7 @@ class DevController extends Controller
                                             'redirect'     => ['required', 'string'],
                                             'confidential' => ['nullable'],
                                         ]);
-        
+
         $clients = new ClientRepository();
         $clients->create(
             userId:   auth()->user()->id,

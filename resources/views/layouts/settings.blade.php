@@ -7,7 +7,7 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}"></script>
+        <script src="{{ mix('js/admin.js') }}"></script>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
@@ -23,9 +23,8 @@
 
         @yield('head')
     </head>
-    <body>
-        @include('includes.message-block')
-        <main class="bg-dark">
+    <body class="bg-dark">
+        <main>
             <div class="d-flex flex-column col-3 d-none d-md-flex"></div>
 
             <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
@@ -68,38 +67,52 @@
                         <a href="{{ route('dev.apps') }}"
                            class="nav-link text-white {{ request()->is('settings/applications*') ? 'active' : '' }}">
                             <i class="fas fa-code me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Develop <span
-                                    class="badge text-bg-warning">beta</span></span>
+                            <span class="d-none d-lg-inline">
+                                Develop
+                                <span class="badge text-bg-warning">beta</span>
+                            </span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('l5-swagger.default.api') }}" target="_blank"
+                        <a href="{{ route('l5-swagger.default.api') }}" target="trwldocs"
                            class="nav-link text-white ms-2 {{ request()->is('settings/applications*') ? '' : 'd-none' }}">
                             <i class="fas fa-flask me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">API Docs <span
-                                    class="badge text-bg-danger">incomplete</span></span></span>
+                            <span class="d-none d-lg-inline">
+                                API Docs
+                                <span class="badge text-bg-danger">incomplete</span>
+                            </span>
                         </a>
                     </li>
                     <hr>
                     <li>
-                        <a href="#"
+                        <a href="#" onclick="document.getElementById('logout-form').submit();"
                            class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
                             <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>
                             <span class="d-none d-lg-inline">Logout</span>
                         </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
                     </li>
                 </ul>
             </div>
 
-            <div class="container-fluid bg-light px-5 pt-4 bg-light-gray" style="overflow-y: scroll !important;">
+            <div class="container-fluid bg-light px-5 pt-4 bg-dark text-white" style="overflow-y: scroll !important;">
                 <div class="row">
-                    <div class="col-12 col-lg-10 col-xl-8 ">
+                    <div class="col-12 col-lg-10 col-xl-8">
+                        @include('includes.message-block')
                         <div class="my-4">
-                             <span class="float-end">
-                                @yield('additional-content-end')
-                            </span>
-                            <h4 class="mb-0 mt-5">@yield('title')</h4>
-                            <p>@yield('subtitle')</p>
+                            @hasSection('additional-content-end')
+                                <span class="float-end">
+                                 @yield('additional-content-end')
+                             </span>
+                            @endif
+                            @hasSection('title')
+                                <h1 class="fs-4 mb-0 mt-5">@yield('title')</h1>
+                            @endif
+                            @hasSection('subtitle')
+                                <p>@yield('subtitle')</p>
+                            @endif
 
                             <hr class="my-4"/>
                             @yield('content')
