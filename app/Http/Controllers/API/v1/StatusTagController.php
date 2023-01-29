@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use function auth;
@@ -99,34 +100,19 @@ class StatusTagController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 @OA\Property(
-     *                     property="key",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="value",
-     *                     type="string"
-     *                 ),
-     *                 example={"key": "seat", "value": "42"}
+     *                 ref="#/components/schemas/StatusTag"
      *             )
      *         )
      *     ),
-     * @OA\Response(
+     *      @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      @OA\Property(
-     *                          property="key",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="value",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="visibility",
-     *                          type="integer"
-     *                      ),
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/StatusTag"
+     *              )
      *          )
      *       ),
      * @OA\Response(response=400, description="Bad request"),
@@ -146,15 +132,11 @@ class StatusTagController extends Controller
      * @throws ValidationException
      */
     public function update(Request $request, int $statusId, string $tagKey): JsonResponse {
-        $validator = Validator::make($request->all(), [
-            'key'   => ['nullable', 'string', 'max:255'],
-            'value' => ['required', 'string', 'max:255'],
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError(error: $validator->errors(), code: 400);
-        }
-        $validated = $validator->validate();
+        $validated = $request->validate([
+                                            'key'        => ['nullable', 'string', 'max:255'],
+                                            'value'      => ['required', 'string', 'max:255'],
+                                            'visibility' => ['nullable', Rule::in(StatusVisibility::keys())],
+                                        ]);
 
         try {
             $status    = Status::findOrFail($statusId);
@@ -163,6 +145,9 @@ class StatusTagController extends Controller
                 throw new ModelNotFoundException();
             }
             $this->authorize('update', $statusTag);
+            if (isset($validated['visibility'])) {
+                $validated['visibility'] = StatusVisibility::fromName($validated['visibility']);
+            }
             $statusTag->update($validated);
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {

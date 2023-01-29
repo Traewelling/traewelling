@@ -11,7 +11,7 @@ class StatusTagResource extends JsonResource
         return [
             'key'        => $this->key,
             'value'      => $this->value,
-            'visibility' => $this->visibility->key,
+            'visibility' => $this->visibility->name,
         ];
     }
 }
