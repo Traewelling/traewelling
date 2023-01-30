@@ -1,0 +1,53 @@
+[
+  {
+    "tripId": "1|1076293|0|81|16012023",
+    "stop": {
+      "type": "stop",
+      "id": "736165",
+      "name": "Plantagenstr., Potsdam",
+      "location": {
+        "type": "location",
+        "id": "736165",
+        "latitude": 52.392396,
+        "longitude": 13.103279
+      }
+    },
+    "when": "2023-01-16T10:04:00+01:00",
+    "plannedWhen": "2023-01-16T10:04:00+01:00",
+    "delay": null,
+    "platform": null,
+    "plannedPlatform": null,
+    "prognosisType": null,
+    "direction": "Schloss Charlottenhof, Potsdam",
+    "provenance": null,
+    "line": {
+      "type": "line",
+      "id": "8-vbbvit-94",
+      "fahrtNr": "28",
+      "name": "STR 94",
+      "public": true,
+      "adminCode": "vbbVIT",
+      "productName": "STR",
+      "mode": "train",
+      "product": "tram",
+      "operator": {
+        "type": "operator",
+        "id": "nahreisezug",
+        "name": "Nahreisezug"
+      }
+    },
+    "remarks": [],
+    "origin": null,
+    "destination": {
+      "type": "stop",
+      "id": "736114",
+      "name": "Fontanestr., Potsdam",
+      "location": {
+        "type": "location",
+        "id": "736114",
+        "latitude": 52.393214,
+        "longitude": 13.109014
+      }
+    }
+  }
+]

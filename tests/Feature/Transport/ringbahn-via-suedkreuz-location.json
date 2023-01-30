@@ -1,0 +1,11 @@
+{
+	"type": "stop",
+	"id": "8089110",
+	"name": "Berlin Messe Nord/ICC (Witzleben)",
+	"location": {
+		"type": "location",
+		"id": "8089110",
+		"latitude": 52.507539,
+		"longitude": 13.28345
+	}
+}

@@ -1,0 +1,536 @@
+{
+  "origin": {
+    "type": "stop",
+    "id": "102932",
+    "name": "Flughafen Terminal 1, Frankfurt a.M.",
+    "location": {
+      "type": "location",
+      "id": "102932",
+      "latitude": 50.05085,
+      "longitude": 8.570585
+    }
+  },
+  "destination": {
+    "type": "stop",
+    "id": "102668",
+    "name": "Kongresszentrum darmstadtium, Darmstadt",
+    "location": {
+      "type": "location",
+      "id": "102668",
+      "latitude": 49.87387,
+      "longitude": 8.656118
+    }
+  },
+  "departure": "2023-01-16T10:14:00+01:00",
+  "plannedDeparture": "2023-01-16T10:14:00+01:00",
+  "departureDelay": null,
+  "arrival": "2023-01-16T10:55:00+01:00",
+  "plannedArrival": "2023-01-16T10:55:00+01:00",
+  "arrivalDelay": null,
+  "reachable": true,
+  "polyline": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "102932",
+          "name": "Flughafen Terminal 1, Frankfurt a.M.",
+          "location": {
+            "type": "location",
+            "id": "102932",
+            "latitude": 50.05085,
+            "longitude": 8.570585
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": true,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": false,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.57059,
+            50.05085
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "102931",
+          "name": "Flughafen Tor 3, Frankfurt a.M.",
+          "location": {
+            "type": "location",
+            "id": "102931",
+            "latitude": 50.052216,
+            "longitude": 8.579134
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": false,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.57913,
+            50.05222
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "102933",
+          "name": "Flughafen Terminal 2, Frankfurt a.M.",
+          "location": {
+            "type": "location",
+            "id": "102933",
+            "latitude": 50.052567,
+            "longitude": 8.588456
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": false,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.58846,
+            50.05257
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "375622",
+          "name": "Deutsche-Telekom-Allee, Darmstadt",
+          "location": {
+            "type": "location",
+            "id": "375622",
+            "latitude": 49.868872,
+            "longitude": 8.624673
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": false,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.62467,
+            49.86887
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "104734",
+          "name": "Hauptbahnhof, Darmstadt",
+          "location": {
+            "type": "location",
+            "id": "104734",
+            "latitude": 49.872684,
+            "longitude": 8.631182
+          },
+          "products": {
+            "nationalExpress": true,
+            "national": true,
+            "regionalExp": true,
+            "regional": true,
+            "suburban": true,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": true,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.63118,
+            49.87269
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "104736",
+          "name": "Luisenplatz, Darmstadt",
+          "location": {
+            "type": "location",
+            "id": "104736",
+            "latitude": 49.872882,
+            "longitude": 8.651254
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": true,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.65125,
+            49.87288
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "type": "stop",
+          "id": "102668",
+          "name": "Kongresszentrum darmstadtium, Darmstadt",
+          "location": {
+            "type": "location",
+            "id": "102668",
+            "latitude": 49.87387,
+            "longitude": 8.656118
+          },
+          "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": true,
+            "taxi": false
+          }
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            8.65612,
+            49.87387
+          ]
+        }
+      }
+    ]
+  },
+  "line": {
+    "type": "line",
+    "id": "5-rmvheb-air",
+    "fahrtNr": "210",
+    "name": "Bus AIR",
+    "public": true,
+    "adminCode": "rmvHEB",
+    "productName": "Bus",
+    "mode": "bus",
+    "product": "bus"
+  },
+  "direction": "Kongresszentrum darmstadtium, Darmstadt",
+  "arrivalPlatform": null,
+  "plannedArrivalPlatform": null,
+  "arrivalPrognosisType": "prognosed",
+  "departurePlatform": null,
+  "plannedDeparturePlatform": null,
+  "departurePrognosisType": "prognosed",
+  "stopovers": [
+    {
+      "stop": {
+        "type": "stop",
+        "id": "102932",
+        "name": "Flughafen Terminal 1, Frankfurt a.M.",
+        "location": {
+          "type": "location",
+          "id": "102932",
+          "latitude": 50.05085,
+          "longitude": 8.570585
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": true,
+          "suburban": false,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": null,
+      "plannedArrival": null,
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": "2023-01-16T10:14:00+01:00",
+      "plannedDeparture": "2023-01-16T10:14:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": "prognosed",
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "102931",
+        "name": "Flughafen Tor 3, Frankfurt a.M.",
+        "location": {
+          "type": "location",
+          "id": "102931",
+          "latitude": 50.052216,
+          "longitude": 8.579134
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": false,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:17:00+01:00",
+      "plannedArrival": "2023-01-16T10:17:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": "2023-01-16T10:17:00+01:00",
+      "plannedDeparture": "2023-01-16T10:17:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "102933",
+        "name": "Flughafen Terminal 2, Frankfurt a.M.",
+        "location": {
+          "type": "location",
+          "id": "102933",
+          "latitude": 50.052567,
+          "longitude": 8.588456
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": false,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:20:00+01:00",
+      "plannedArrival": "2023-01-16T10:20:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": "2023-01-16T10:21:00+01:00",
+      "plannedDeparture": "2023-01-16T10:21:00+01:00",
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "375622",
+        "name": "Deutsche-Telekom-Allee, Darmstadt",
+        "location": {
+          "type": "location",
+          "id": "375622",
+          "latitude": 49.868872,
+          "longitude": 8.624673
+        },
+        "products": {
+          "nationalExpress": false,
+          "national": false,
+          "regionalExp": false,
+          "regional": false,
+          "suburban": false,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": false,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:41:00+01:00",
+      "plannedArrival": "2023-01-16T10:41:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": null,
+      "plannedDeparture": null,
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "104734",
+        "name": "Hauptbahnhof, Darmstadt",
+        "location": {
+          "type": "location",
+          "id": "104734",
+          "latitude": 49.872684,
+          "longitude": 8.631182
+        },
+        "products": {
+          "nationalExpress": true,
+          "national": true,
+          "regionalExp": true,
+          "regional": true,
+          "suburban": true,
+          "bus": true,
+          "ferry": false,
+          "subway": false,
+          "tram": true,
+          "taxi": false
+        }
+      },
+      "arrival": "2023-01-16T10:46:00+01:00",
+      "plannedArrival": "2023-01-16T10:46:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": null,
+      "plannedDeparture": null,
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "104736",
+        "name": "Luisenplatz, Darmstadt",
+        "location": {
+          "type": "location",
+          "id": "104736",
+          "latitude": 49.872882,
+          "longitude": 8.651254
+        }
+      },
+      "arrival": "2023-01-16T10:52:00+01:00",
+      "plannedArrival": "2023-01-16T10:52:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": null,
+      "plannedArrivalPlatform": null,
+      "departure": null,
+      "plannedDeparture": null,
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    },
+    {
+      "stop": {
+        "type": "stop",
+        "id": "102668",
+        "name": "Kongresszentrum darmstadtium, Darmstadt",
+        "location": {
+          "type": "location",
+          "id": "102668",
+          "latitude": 49.87387,
+          "longitude": 8.656118
+        }
+      },
+      "arrival": "2023-01-16T10:55:00+01:00",
+      "plannedArrival": "2023-01-16T10:55:00+01:00",
+      "arrivalDelay": null,
+      "arrivalPlatform": null,
+      "arrivalPrognosisType": "prognosed",
+      "plannedArrivalPlatform": null,
+      "departure": null,
+      "plannedDeparture": null,
+      "departureDelay": null,
+      "departurePlatform": null,
+      "departurePrognosisType": null,
+      "plannedDeparturePlatform": null
+    }
+  ],
+  "remarks": [
+    {
+      "type": "hint",
+      "code": "DU",
+      "text": "normal (international) tickets not valid"
+    },
+    {
+      "type": "hint",
+      "code": "ZN",
+      "text": "Subject to supplement"
+    }
+  ],
+  "id": "1|447402|11|81|16012023",
+  "realtimeDataUpdatedAt": 1673534908
+}

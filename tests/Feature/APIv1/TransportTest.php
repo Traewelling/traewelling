@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Http;
 use Tests\ApiTestCase;
 use App\Providers\AuthServiceProvider;
 
@@ -17,8 +18,14 @@ class TransportTest extends ApiTestCase
     use RefreshDatabase;
 
     public function testGetDeparturesFetchTripAndCheckin(): void {
+        Http::fake([
+                       '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
+                       '/stops/8000105/departures*'               => Http::response([self::ICE802]),
+                       '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
+                   ]);
+
         //Test departures
-        $station   = 'Hannover Hbf';
+        $station   = self::FRANKFURT_HBF['name'];
         $timestamp = Date::parse('next monday 8 am');
         $response  = $this->get(
             uri:     '/api/v1/trains/station/' . $station . '/departures?when=' . urlencode($timestamp->toIso8601String()),
@@ -52,7 +59,7 @@ class TransportTest extends ApiTestCase
                                            ]
                                        ]);
 
-        $this->assertEquals('Hannover Hbf', $response->json('meta.station.name'));
+        $this->assertEquals($station, $response->json('meta.station.name'));
         $this->assertGreaterThan(0, $response->json('data'));
 
         $departure = $response->json('data')[0];
@@ -146,10 +153,15 @@ class TransportTest extends ApiTestCase
                      ],
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
-        $response->assertStatus(400);
+        $response->assertStatus(409);
     }
 
     public function testGetStationByCoordinates(): void {
+        Http::fake(["*/stops/nearby*" => Http::response([array_merge(
+                                                             self::HANNOVER_HBF,
+                                                             ["distance" => 421]
+                                                         )])]);
+
         $response = $this->get(
             uri:     '/api/v1/trains/station/nearby?latitude=52.376564&longitude=9.741046&limit=1',
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
@@ -169,6 +181,8 @@ class TransportTest extends ApiTestCase
     }
 
     public function testGetStationByCoordinatesIfNoStationIsNearby(): void {
+        Http::fake(["*/stops/nearby*" => Http::response([])]);
+
         $response = $this->get(
             uri:     '/api/v1/trains/station/nearby?latitude=0&longitude=0&limit=1',
             headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
@@ -182,6 +196,8 @@ class TransportTest extends ApiTestCase
 
         $this->assertNull($user->home);
 
+        Http::fake(["*" => Http::response([self::HANNOVER_HBF])]);
+
         $response = $this->put(
             uri:     '/api/v1/trains/station/Hannover Hbf/home',
             headers: ['Authorization' => 'Bearer ' . $userToken]
@@ -194,6 +210,8 @@ class TransportTest extends ApiTestCase
     public function testAutocompleteWithDs100(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+        Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
         $response = $this->get(
             uri:     '/api/v1/trains/station/autocomplete/HH',
