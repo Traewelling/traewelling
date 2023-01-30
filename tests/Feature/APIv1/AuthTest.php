@@ -5,6 +5,7 @@ namespace Tests\Feature\APIv1;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class AuthTest extends ApiTestCase
 {
@@ -88,7 +89,7 @@ class AuthTest extends ApiTestCase
 
     public function testAccessWithRevokedTokenIsNotPossible(): void {
         $user  = User::factory()->create();
-        $token = $user->createToken('token');
+        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes));
         $token->token->revoke();
         $this->assertGuest();
         $response = $this->get('/api/v1/auth/user', [

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Providers\AuthServiceProvider;
 
 class TwitterController extends Controller
 {
@@ -54,7 +55,7 @@ class TwitterController extends Controller
 
         // ToDo: Remove this if as soon as it's verified that nobody uses it or oAuth is implemented
         if ($request->query->get('return', 'none') === 'token') {
-            $token = $request->user()->createToken('token');
+            $token = $request->user()->createToken('token', array_keys(AuthServiceProvider::$scopes));
             return response()->json([
                                         'token'      => $token->accessToken,
                                         'expires_at' => $token->token->expires_at->toIso8601String(),

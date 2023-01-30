@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class FollowTest extends ApiTestCase
 {
@@ -15,7 +16,7 @@ class FollowTest extends ApiTestCase
 
     public function testCreateAndListFollow(): void {
         $user1      = User::factory()->create();
-        $user1token = $user1->createToken('token')->accessToken;
+        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $user2      = User::factory()->create();
 
         $this->assertDatabaseMissing('follows', [
@@ -69,7 +70,7 @@ class FollowTest extends ApiTestCase
 
     public function testDestroyFollow(): void {
         $user1      = User::factory()->create();
-        $user1token = $user1->createToken('token')->accessToken;
+        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $user2      = User::factory()->create();
         UserBackend::createOrRequestFollow($user1, $user2);
 

@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class LikesTest extends ApiTestCase
 {
@@ -16,7 +17,7 @@ class LikesTest extends ApiTestCase
 
     public function testCreateShowAndDestroyLike(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $status    = Status::factory()->create();
 
         $this->assertDatabaseMissing('likes', [

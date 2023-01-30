@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class TransportTest extends ApiTestCase
 {
@@ -177,7 +178,7 @@ class TransportTest extends ApiTestCase
 
     public function testSetHome(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $this->assertNull($user->home);
 
@@ -192,7 +193,7 @@ class TransportTest extends ApiTestCase
 
     public function testAutocompleteWithDs100(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $response = $this->get(
             uri:     '/api/v1/trains/station/autocomplete/HH',

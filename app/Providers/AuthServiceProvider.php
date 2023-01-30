@@ -24,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Follow::class => FollowPolicy::class,
     ];
 
+    //ToDo Translate
     public static array $scopes = [
         'read-statuses'                  => 'see all statuses',
         'read-notifications'             => 'see your notifications',
