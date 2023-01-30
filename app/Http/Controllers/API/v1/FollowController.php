@@ -140,7 +140,7 @@ class FollowController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"settings-read-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -171,7 +171,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {"read-followers"}}, {"token": {}}
+     *           {"passport": {"settings-read-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -201,7 +201,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {"read-followers"}}, {"token": {}}
+     *           {"passport": {"settings-read-followers"}}, {"token": {}}
      *       }
      *     )
      *

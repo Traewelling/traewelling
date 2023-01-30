@@ -106,7 +106,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
                 Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
             });
-            //ToDo: I added scopes to the docs until here.
             Route::group(['middleware' => ['scope:write-blocks']], static function() {
                 Route::post('/{userId}/block', [UserController::class, 'createBlock']);
                 Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
@@ -115,7 +114,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::post('createMute', [UserController::class, 'createMute']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
                 Route::delete('destroyMute', [UserController::class, 'destroyMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             });
-            Route::get('search/{query}', [UserController::class, 'search']);
+            Route::get('search/{query}', [UserController::class, 'search'])->middleware(['scope:read-search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus'])
                  ->middleware(['scope:read-statuses']);
         });

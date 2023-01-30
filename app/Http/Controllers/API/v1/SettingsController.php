@@ -30,7 +30,7 @@ class SettingsController extends Controller
      *          )
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
-     *     security={{"passport": {}}, {"token": {}}}
+     *     security={{"passport": {"settings-read"}}, {"token": {}}}
      * )
      *
      */
@@ -124,7 +124,7 @@ class SettingsController extends Controller
      *     @OA\Response(response=422, description="Unprocessable Entity"),
      *     @OA\Response(response=400, description="Bad Request"),
      *     security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"settings-write"}}, {"token": {}}
      *     }
      *     )
      */

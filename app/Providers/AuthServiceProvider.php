@@ -28,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         'read-statuses'                  => 'see all statuses',
         'read-notifications'             => 'see your notifications',
         'read-statistics'                => 'see your statistics',
+        'read-search'                    => 'search in Träwelling',
         'write-statuses'                 => 'create, edit, delete statuses',
         'write-likes'                    => 'create and remove likes',
         'write-notifications'            => 'mark notifications as read, clear notifications',
