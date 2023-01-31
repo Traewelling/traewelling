@@ -26,7 +26,10 @@ return [
      *
      * See https://docs.guzzlephp.org/en/stable/request-options.html#proxy
      */
-    'proxy' => null,
+    'proxy' => [
+        'http' => env('HTTP_PROXY', null),
+        'https' => env('HTTPS_PROXY', null),
+    ],
 
     /*
      * This class is responsible for calculating the signature that will be added to
