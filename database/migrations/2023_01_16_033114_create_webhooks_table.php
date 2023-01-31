@@ -21,7 +21,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->text('url');
             $table->text('secret')->nullable();
-            $table->unsignedInteger('events')->default(0);
+            $table->unsignedInteger('events');
         });
         Schema::create('webhook_creation_requests', function (Blueprint $table) {
             $table->string('id')->primary();

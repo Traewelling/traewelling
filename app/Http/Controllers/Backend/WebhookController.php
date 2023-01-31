@@ -6,16 +6,17 @@ use App\Enum\WebhookEvent;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
+use App\Http\Resources\UserNotificationResource;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 abstract class WebhookController extends Controller
 {
@@ -31,6 +32,7 @@ abstract class WebhookController extends Controller
         $client = $request->client()->first();
         $user = $request->user()->first();
         $events = $request->events;
+        $request->update(['revoked' => true]);
         $webhook     = Webhook::create([
             'oauth_client_id' => $client->id,
             'url'             => $request->url,
@@ -39,7 +41,8 @@ abstract class WebhookController extends Controller
             'user_id'         => $user->id
         ]);
 
-        $request->delete();
+        Log::debug("Created a new webhook.", ['webhook' => $webhook]);
+
         return $webhook;
     }
 
@@ -79,9 +82,19 @@ abstract class WebhookController extends Controller
         ]);
     }
 
+    public static function sendNotificationWebhook(User $user, Notification $notification)
+    {
+        self::dispatchWebhook($user, WebhookEvent::NOTIFICATION, [
+            'notification' => new UserNotificationResource($notification)
+        ]);
+    }
+
     static function dispatchWebhook(User $user, WebhookEvent $event, array $data)
     {
-        $webhooks = $user->webhooks()->whereBitflag('events', $event->value)->get();
+        $webhooks = $user->webhooks()
+            ->whereBitflag('events', $event->value)
+            ->where('user_id', $user->id)
+            ->get();
         foreach ($webhooks as $webhook) {
             Log::debug("Sending webhook", [
                 'webhook_id' => $webhook->id,

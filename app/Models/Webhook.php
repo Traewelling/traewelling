@@ -18,7 +18,7 @@ class Webhook extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret'];
+    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret', 'events'];
     protected $hidden   = ['oauth_client_id', 'secret', 'created_at', 'updated_at'];
     protected $casts    = [
         'id'              => 'integer',
