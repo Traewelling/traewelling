@@ -44,12 +44,13 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(): void {
+    public function boot(): void
+    {
         parent::boot();
 
         // Dispatch Jobs from Events
-        Event::listen(fn(UserCheckedIn $event) => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
-        Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(fn(WebhookCallFailedEvent $event) => Log::error("Webhook call failed: " . json_encode($event)));
+        Event::listen(fn (UserCheckedIn $event) => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
+        Event::listen(fn (UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(fn (WebhookCallFailedEvent $event) => Log::error("Webhook call failed", ['event' => $event]));
     }
 }
