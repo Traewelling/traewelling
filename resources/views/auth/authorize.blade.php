@@ -36,7 +36,7 @@
 
                         <ul>
                             @foreach ($webhook['events'] as $event)
-                            <li>{{ __("settings.webhook_event." . $event->value) }}</li>
+                            <li>{{ __("settings.webhook_event." . $event) }}</li>
                             @endforeach
                         </ul>
                     </div>

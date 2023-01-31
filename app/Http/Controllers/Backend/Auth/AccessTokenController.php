@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
+use App\Http\Controllers\Backend\WebhookController;
+use App\Models\WebhookCreationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Http\Controllers\AccessTokenController as PassportAccessTokenController;
 use Nyholm\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class AccessTokenController extends PassportAccessTokenController
 {
@@ -15,16 +18,38 @@ class AccessTokenController extends PassportAccessTokenController
     {
         return $this->withErrorHandling(function () use ($requestInterface) {
             return $this->extendResponseWithWebhookData(
+                $requestInterface,
                 $this->server->respondToAccessTokenRequest($requestInterface, new Psr7Response)
             );
         });
     }
 
-    function extendResponseWithWebhookData(Psr7Response $response)
+    function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response)
     {
+        // Skip webhook stuff on error
+        if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
+            return $response;
+        }
+        $code = $requestInterface->getParsedBody()['code'];
+
+        $request = WebhookController::findWebhookRequest($code);
+        if ($request == null) {
+            return $response;
+        }
+
+        if ($request->revoked || $request->isExpired()) {
+            throw new BadRequestException('Webhook creation request has been revoked.', 419);
+        }
+
+        $webhook = WebhookController::createWebhook($request);
         $body = $response->getBody();
         $data = json_decode($body, true);
-        $data['webhook'] = ['url' => 'https://example.com', 'secret' => 'uwu', 'id' => '1'];
+        $data['webhook'] = [
+            'id' => $webhook->id,
+            'secret' => $webhook->secret,
+            'url' => $webhook->url,
+        ];
+
         return new Response(
             $data,
             $response->getStatusCode(),

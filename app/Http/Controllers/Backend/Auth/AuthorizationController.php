@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
-use App\Enum\WebhookEventEnum;
+use App\Enum\WebhookEvent;
+use App\Rules\StringifiedWebhookEvents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Passport\ClientRepository;
@@ -10,7 +11,7 @@ use Laravel\Passport\Http\Controllers\AuthorizationController as PassportAuthori
 use Psr\Http\Message\ServerRequestInterface;
 use Laravel\Passport\TokenRepository;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Enum;
+use Laravel\Passport\Client;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Spatie\ValidationRules\Rules\Delimited;
 
@@ -37,8 +38,10 @@ class AuthorizationController extends PassportAuthorizationController
             return $this->server->validateAuthorizationRequest($psrRequest);
         });
 
-        $webhook = $this->withErrorHandling(function () use ($request) {
-            return $this->parseWebhookExtensions($request);
+        $client = $clients->find($authRequest->getClient()->getIdentifier());
+
+        $webhook = $this->withErrorHandling(function () use ($request, $client) {
+            return $this->parseWebhookExtensions($request, $client);
         });
 
         if ($this->guard->guest()) {
@@ -62,7 +65,6 @@ class AuthorizationController extends PassportAuthorizationController
 
         $scopes = $this->parseScopes($authRequest);
         $user = $request->user();
-        $client = $clients->find($authRequest->getClient()->getIdentifier());
 
         if (
             $request->get('prompt') !== 'consent' &&
@@ -90,14 +92,14 @@ class AuthorizationController extends PassportAuthorizationController
         ]);
     }
 
-    function parseWebhookExtensions(Request $request)
+    function parseWebhookExtensions(Request $request, Client $client)
     {
         if (!$request->has('trwl_webhook_url') && !$request->has('trwl_webhook_events')) {
             return null;
         }
 
         $validator = Validator::make($request->all(), [
-            'trwl_webhook_events' => ['required', new Delimited(new Enum(WebhookEventEnum::class))],
+            'trwl_webhook_events' => ['required', new Delimited(new StringifiedWebhookEvents())],
             'trwl_webhook_url' => ['required', 'string']
         ]);
 
@@ -106,11 +108,12 @@ class AuthorizationController extends PassportAuthorizationController
             throw new OAuthServerException($error, 3, 'invalid_request', 400, null, null);
         }
         $data = $validator->valid();
+        $events = explode(',', $data['trwl_webhook_events']);
         return [
+            'user' => $request->user(),
+            'client' => $client,
             'url' => $data['trwl_webhook_url'],
-            'events' => array_map(function ($event) {
-                return WebhookEventEnum::from($event);
-            }, explode(',', $data['trwl_webhook_events'])),
+            'events' => $events,
         ];
     }
 }

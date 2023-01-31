@@ -2,45 +2,44 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Enum\WebhookEventEnum;
+use App\Enum\WebhookEvent;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\Webhook;
+use App\Models\WebhookCreationRequest;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 abstract class WebhookController extends Controller
 {
-    public static function index(User $user): object {
+    public static function index(User $user): object
+    {
         return $user->webhooks;
     }
 
     public static function createWebhook(
-        User   $user,
-        Client $client,
-        string $url,
-        array  $events,
+        WebhookCreationRequest $request
     ): Webhook {
         $secret      = bin2hex(random_bytes(32));
+        $client = $request->client()->first();
+        $user = $request->user()->first();
+        $events = $request->events;
         $webhook     = Webhook::create([
-                                           'oauth_client_id' => $client->id,
-                                           'url'             => $url,
-                                           'secret'          => $secret,
-                                           'user_id'         => $user->id
-                                       ]);
-        $events_data = [];
-        foreach ($events as $event) {
-            $events_data[] = [
-                'event'      => $event,
-                'webhook_id' => $webhook->id,
-            ];
-        }
-        $webhook->events()->createMany($events_data);
+            'oauth_client_id' => $client->id,
+            'url'             => $request->url,
+            'secret'          => $secret,
+            'events'          => $events,
+            'user_id'         => $user->id
+        ]);
+
+        $request->delete();
         return $webhook;
     }
 
@@ -73,37 +72,66 @@ abstract class WebhookController extends Controller
         return true;
     }
 
-    public static function sendStatusWebhook(Status $status, WebhookEventEnum $event) {
+    public static function sendStatusWebhook(Status $status, WebhookEvent $event)
+    {
         self::dispatchWebhook($status->user, $event, [
             'status' => new StatusResource($status)
         ]);
     }
 
-    static function dispatchWebhook(User $user, WebhookEventEnum $event, array $data) {
-        $webhooks = $user->webhooks()->joinWhere('webhook_events', 'event', '=', $event->value)->get();
+    static function dispatchWebhook(User $user, WebhookEvent $event, array $data)
+    {
+        $webhooks = $user->webhooks()->whereBitflag('events', $event->value)->get();
         foreach ($webhooks as $webhook) {
             Log::debug("Sending webhook", [
                 'webhook_id' => $webhook->id,
                 'user_id'    => $webhook->user->id,
             ]);
             WebhookCall::create()
-                       ->url($webhook->url)
-                       ->withHeaders([
-                                         'X-Trwl-User-Id'    => $user->id,
-                                         'X-Trwl-Webhook-Id' => $webhook->id,
-                                     ])
-                       ->payload([
-                                     'event' => $event,
-                                     ...$data
-                                 ])
-                       ->useSecret($webhook->secret)
-                       ->dispatch();
+                ->url($webhook->url)
+                ->withHeaders([
+                    'X-Trwl-User-Id'    => $user->id,
+                    'X-Trwl-Webhook-Id' => $webhook->id,
+                ])
+                ->payload([
+                    'event' => $event->name(),
+                    ...$data
+                ])
+                ->useSecret($webhook->secret)
+                ->dispatch();
         }
     }
 
-    public static function deleteAllWebhooks(User $user, Client $client) {
+    public static function deleteAllWebhooks(User $user, Client $client)
+    {
         Webhook::where('user_id', '=', $user->id)
-               ->where('oauth_client_id', '=', $client->id)
-               ->delete();
+            ->where('oauth_client_id', '=', $client->id)
+            ->delete();
+    }
+
+    /**
+     * Creates a new webhook creation request
+     */
+    public static function createWebhookRequest(
+        User $user,
+        Client $client,
+        string $oauth_code,
+        string $url,
+        int  $events,
+    ): WebhookCreationRequest {
+        return WebhookCreationRequest::create([
+            'id' => hash('sha256', $oauth_code),
+            'user_id' => $user->id,
+            'oauth_client_id' => $client->id,
+            'expires_at' => Carbon::now()->addHour(),
+            'events' => $events,
+            'url' => $url,
+        ]);
+    }
+
+    public static function findWebhookRequest(
+        string $oauth_code,
+    ): WebhookCreationRequest | null {
+        return WebhookCreationRequest::where('id', hash('sha256', $oauth_code))->first();
     }
 }

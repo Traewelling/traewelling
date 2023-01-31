@@ -1,4 +1,4 @@
-<? php
+<?php
 
 /*
 |--------------------------------------------------------------------------
@@ -148,4 +148,4 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
         Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
     });
-});
+}); 

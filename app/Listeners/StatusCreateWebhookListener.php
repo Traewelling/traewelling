@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Enum\WebhookEventEnum;
+use App\Enum\WebhookEvent;
 use App\Events\UserCheckedIn;
 use App\Http\Controllers\Backend\WebhookController;
 
 class StatusCreateWebhookListener
 {
     public function handle(UserCheckedIn $event) {
-        WebhookController::sendStatusWebhook($event->status, WebhookEventEnum::CHECKIN_CREATE);
+        WebhookController::sendStatusWebhook($event->status, WebhookEvent::CHECKIN_CREATE);
     }
 }

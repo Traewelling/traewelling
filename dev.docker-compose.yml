@@ -1,0 +1,12 @@
+# Docker Compose environment for local development
+version: '3'
+services:
+  postgres:
+    image: docker.io/bitnami/mysql
+    environment:
+      MYSQL_DATABASE: trwl
+      MYSQL_USER: trwl
+      MYSQL_PASSWORD: trwl
+      ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - "3306:3306"
