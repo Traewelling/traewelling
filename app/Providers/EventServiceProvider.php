@@ -8,11 +8,13 @@ use App\Events\UserCheckedIn;
 use App\Http\Controllers\Backend\WebhookController;
 use App\Jobs\PostStatusOnMastodon;
 use App\Jobs\PostStatusOnTwitter;
+use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusDeleteWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
@@ -36,6 +38,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         StatusDeleteEvent::class => [
             StatusDeleteWebhookListener::class
+        ],
+        NotificationSent::class => [
+            NotificationSentWebhookListener::class
         ]
     ];
 

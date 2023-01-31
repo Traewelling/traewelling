@@ -13,6 +13,7 @@ use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
@@ -82,7 +83,7 @@ abstract class WebhookController extends Controller
         ]);
     }
 
-    public static function sendNotificationWebhook(User $user, Notification $notification)
+    public static function sendNotificationWebhook(User $user, DatabaseNotification $notification)
     {
         self::dispatchWebhook($user, WebhookEvent::NOTIFICATION, [
             'notification' => new UserNotificationResource($notification)
