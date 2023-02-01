@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="mt-5">
-                    {{ $statuses->links() }}
+                    {{ $statuses->onEachSide(0)->links() }}
                 </div>
             @else
                 <div class="col-md-8 col-lg-7">

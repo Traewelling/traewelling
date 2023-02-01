@@ -39,8 +39,8 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -70,8 +70,8 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -102,8 +102,8 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -140,8 +140,8 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -235,8 +235,8 @@ class StatisticsController extends Controller
      *     @OA\Response(response=400, description="Bad request"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *     {"token": {}},
-     *     {}
+     *     {"passport": {}}, {"token": {}}
+     *
      *     }
      * )
      * @param Request $request
@@ -317,8 +317,8 @@ class StatisticsController extends Controller
      *      ),
      *     ),
      *     security={
-     *        {"token": {}},
-     *        {}
+     *        {"passport": {}}, {"token": {}}
+     *
      *     }
      *     )
      *

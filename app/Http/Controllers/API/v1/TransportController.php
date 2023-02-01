@@ -134,8 +134,8 @@ class TransportController extends Controller
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *        {"token": {}},
-     *        {}
+     *        {"passport": {}}, {"token": {}}
+     *
      *     }
      * )
      *
@@ -207,6 +207,7 @@ class TransportController extends Controller
      *                  @OA\Property(property="category", ref="#/components/schemas/TrainCategoryEnum"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
+     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/TrainStation"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/TrainStation"),
      *                  @OA\Property(property="stopovers", type="array",
@@ -222,8 +223,7 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
      *       }
      *     )
      */
@@ -284,8 +284,8 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      */
@@ -331,8 +331,8 @@ class TransportController extends Controller
      *       @OA\Response(response=409, description="Checkin collision"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      *
@@ -424,8 +424,8 @@ class TransportController extends Controller
      *     @OA\Response(response=404, description="Station not found"),
      *     @OA\Response(response=502, description="Error with our data provider"),
      *     security={
-     *           {"token": {}},
-     *           {}
+     *           {"passport": {}}, {"token": {}}
+     *
      *       }
      * )
      * @param string $stationName
@@ -477,11 +477,11 @@ class TransportController extends Controller
      *              )
      *          )
      *       ),
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=503, description="There has been an error with our data provider"),
+     * @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      */
@@ -515,8 +515,8 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {}}, {"token": {}}
+     *
      *       }
      *     )
      */

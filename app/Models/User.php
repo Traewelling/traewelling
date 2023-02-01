@@ -31,7 +31,6 @@ use Mastodon;
  * @property string  password
  * @property int     home_id
  * @property Carbon  privacy_ack_at
- * @property boolean always_dbl
  * @property integer default_status_visibility
  * @property boolean private_profile
  * @property boolean prevent_index
@@ -46,12 +45,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
-        'always_dbl', 'default_status_visibility', 'private_profile', 'prevent_index', 'privacy_hide_days',
+        'default_status_visibility', 'private_profile', 'prevent_index', 'privacy_hide_days',
         'language', 'last_login',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
-        'home_id', 'avatar', 'always_dbl', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
+        'home_id', 'avatar', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
@@ -61,7 +60,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'id'                        => 'integer',
         'email_verified_at'         => 'datetime',
         'privacy_ack_at'            => 'datetime',
-        'always_dbl'                => 'boolean',
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
         'default_status_visibility' => StatusVisibility::class,

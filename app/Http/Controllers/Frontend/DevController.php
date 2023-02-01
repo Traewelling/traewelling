@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use http\Client;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Laravel\Passport\Http\Controllers\ClientController;
 use Laravel\Passport\ClientRepository;
 
 class DevController extends Controller
@@ -62,14 +59,19 @@ class DevController extends Controller
     }
 
     public function createApp(Request $request): RedirectResponse {
-        $validated    = $request->validate([
-                                               'name'     => ['required', 'string'],
-                                               'redirect' => ['required', 'string'],
-                                           ]);
-        $confidential = boolval($request->input("confidential"));
+        $validated = $request->validate([
+                                            'name'         => ['required', 'string'],
+                                            'redirect'     => ['required', 'string'],
+                                            'confidential' => ['nullable'],
+                                        ]);
 
         $clients = new ClientRepository();
-        $clients->create(auth()->user()->id, $validated['name'], $validated['redirect'], null, false, false, $confidential);
+        $clients->create(
+            userId:   auth()->user()->id,
+            name:     $validated['name'],
+            redirect: $validated['redirect'],
+            confidential: isset($validated['confidential'])
+        );
 
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }

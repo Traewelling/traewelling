@@ -1,0 +1,1450 @@
+{
+    "origin": {
+        "type": "stop",
+        "id": "736099",
+        "name": "Platz der Einheit/West, Potsdam",
+        "location": {
+            "type": "location",
+            "id": "736099",
+            "latitude": 52.398832,
+            "longitude": 13.057928
+        },
+        "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": true,
+            "taxi": false
+        }
+    },
+    "destination": {
+        "type": "stop",
+        "id": "736099",
+        "name": "Platz der Einheit/West, Potsdam",
+        "location": {
+            "type": "location",
+            "id": "736099",
+            "latitude": 52.398832,
+            "longitude": 13.057928
+        },
+        "products": {
+            "nationalExpress": false,
+            "national": false,
+            "regionalExp": false,
+            "regional": false,
+            "suburban": false,
+            "bus": true,
+            "ferry": false,
+            "subway": false,
+            "tram": true,
+            "taxi": false
+        }
+    },
+    "departure": "2023-01-13T10:08:00+01:00",
+    "plannedDeparture": "2023-01-13T10:08:00+01:00",
+    "departureDelay": null,
+    "arrival": "2023-01-13T10:33:00+01:00",
+    "plannedArrival": "2023-01-13T10:33:00+01:00",
+    "arrivalDelay": null,
+    "reachable": true,
+    "polyline": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736099",
+                    "name": "Platz der Einheit/West, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736099",
+                        "latitude": 52.398832,
+                        "longitude": 13.057928
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.05793,
+                        52.39883
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736094",
+                    "name": "Bassinplatz, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736094",
+                        "latitude": 52.40028,
+                        "longitude": 13.061695
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0617,
+                        52.40028
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736266",
+                    "name": "Hebbelstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736266",
+                        "latitude": 52.40428,
+                        "longitude": 13.062396
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0624,
+                        52.40428
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736160",
+                    "name": "Rathaus, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736160",
+                        "latitude": 52.405233,
+                        "longitude": 13.058063
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.05806,
+                        52.40524
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736109",
+                    "name": "Reiterweg/Alleestr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736109",
+                        "latitude": 52.408163,
+                        "longitude": 13.058504
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0585,
+                        52.40817
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736141",
+                    "name": "Birkenstr./Alleestr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736141",
+                        "latitude": 52.409431,
+                        "longitude": 13.061533
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06153,
+                        52.40943
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736256",
+                    "name": "Am Neuen Garten/Große Weinmeisterstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736256",
+                        "latitude": 52.411615,
+                        "longitude": 13.063403
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0634,
+                        52.41162
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736257",
+                    "name": "Glumestr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736257",
+                        "latitude": 52.414905,
+                        "longitude": 13.066468
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06647,
+                        52.41491
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736222",
+                    "name": "Schloss Cecilienhof, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736222",
+                        "latitude": 52.419544,
+                        "longitude": 13.067916
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06792,
+                        52.41955
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736140",
+                    "name": "Höhenstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736140",
+                        "latitude": 52.421755,
+                        "longitude": 13.06823
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06823,
+                        52.42176
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736259",
+                    "name": "Langhansstr./Große Weinmeisterstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736259",
+                        "latitude": 52.420092,
+                        "longitude": 13.06539
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06539,
+                        52.42009
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "747165",
+                    "name": "Persiusstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "747165",
+                        "latitude": 52.41531,
+                        "longitude": 13.063762
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06376,
+                        52.41531
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "727620",
+                    "name": "Kleine Weinmeisterstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "727620",
+                        "latitude": 52.412451,
+                        "longitude": 13.062198
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0622,
+                        52.41245
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736141",
+                    "name": "Birkenstr./Alleestr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736141",
+                        "latitude": 52.409431,
+                        "longitude": 13.061533
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.06153,
+                        52.40943
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736109",
+                    "name": "Reiterweg/Alleestr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736109",
+                        "latitude": 52.408163,
+                        "longitude": 13.058504
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0585,
+                        52.40817
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736160",
+                    "name": "Rathaus, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736160",
+                        "latitude": 52.405233,
+                        "longitude": 13.058063
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.05806,
+                        52.40524
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736266",
+                    "name": "Hebbelstr., Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736266",
+                        "latitude": 52.40428,
+                        "longitude": 13.062396
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0624,
+                        52.40428
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736094",
+                    "name": "Bassinplatz, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736094",
+                        "latitude": 52.40028,
+                        "longitude": 13.061695
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": false,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.0617,
+                        52.40028
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "type": "stop",
+                    "id": "736099",
+                    "name": "Platz der Einheit/West, Potsdam",
+                    "location": {
+                        "type": "location",
+                        "id": "736099",
+                        "latitude": 52.398832,
+                        "longitude": 13.057928
+                    },
+                    "products": {
+                        "nationalExpress": false,
+                        "national": false,
+                        "regionalExp": false,
+                        "regional": false,
+                        "suburban": false,
+                        "bus": true,
+                        "ferry": false,
+                        "subway": false,
+                        "tram": true,
+                        "taxi": false
+                    }
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        13.05793,
+                        52.39883
+                    ]
+                }
+            }
+        ]
+    },
+    "line": {
+        "type": "line",
+        "id": "5-vbbvib-603",
+        "fahrtNr": "433",
+        "name": "Bus 603",
+        "public": true,
+        "adminCode": "vbbVIB",
+        "productName": "Bus",
+        "mode": "bus",
+        "product": "bus"
+    },
+    "direction": "Höhenstr., Potsdam",
+    "arrivalPlatform": null,
+    "plannedArrivalPlatform": null,
+    "arrivalPrognosisType": "prognosed",
+    "departurePlatform": null,
+    "plannedDeparturePlatform": null,
+    "departurePrognosisType": "prognosed",
+    "stopovers": [
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736099",
+                "name": "Platz der Einheit/West, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736099",
+                    "latitude": 52.398832,
+                    "longitude": 13.057928
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": null,
+            "plannedArrival": null,
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:08:00+01:00",
+            "plannedDeparture": "2023-01-13T10:08:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": "prognosed",
+            "plannedDeparturePlatform": null,
+            "remarks": [
+                {
+                    "type": "hint",
+                    "code": "text.journeystop.product.or.direction.changes.stop.message",
+                    "text": "As Bus 603 heading towards Höhenstr., Potsdam from here"
+                },
+                {
+                    "text": "Number of bicycles conveyed limited",
+                    "type": "hint",
+                    "code": "bicycle-conveyance",
+                    "summary": "bicycles conveyed"
+                },
+                {
+                    "text": "Behindertengerechtes Fahrzeug",
+                    "type": "hint",
+                    "code": "barrier-free-vehicle",
+                    "summary": "barrier-free vehicle"
+                },
+                {
+                    "type": "hint",
+                    "code": "xi",
+                    "text": "barrierefreier Fahrzeugeinsatz"
+                }
+            ]
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736094",
+                "name": "Bassinplatz, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736094",
+                    "latitude": 52.40028,
+                    "longitude": 13.061695
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:09:00+01:00",
+            "plannedArrival": "2023-01-13T10:09:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:09:00+01:00",
+            "plannedDeparture": "2023-01-13T10:09:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736266",
+                "name": "Hebbelstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736266",
+                    "latitude": 52.40428,
+                    "longitude": 13.062396
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:10:00+01:00",
+            "plannedArrival": "2023-01-13T10:10:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:10:00+01:00",
+            "plannedDeparture": "2023-01-13T10:10:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736160",
+                "name": "Rathaus, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736160",
+                    "latitude": 52.405233,
+                    "longitude": 13.058063
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:13:00+01:00",
+            "plannedArrival": "2023-01-13T10:13:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:13:00+01:00",
+            "plannedDeparture": "2023-01-13T10:13:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736109",
+                "name": "Reiterweg/Alleestr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736109",
+                    "latitude": 52.408163,
+                    "longitude": 13.058504
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:15:00+01:00",
+            "plannedArrival": "2023-01-13T10:15:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:15:00+01:00",
+            "plannedDeparture": "2023-01-13T10:15:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736141",
+                "name": "Birkenstr./Alleestr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736141",
+                    "latitude": 52.409431,
+                    "longitude": 13.061533
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:15:00+01:00",
+            "plannedArrival": "2023-01-13T10:15:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:15:00+01:00",
+            "plannedDeparture": "2023-01-13T10:15:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736256",
+                "name": "Am Neuen Garten/Große Weinmeisterstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736256",
+                    "latitude": 52.411615,
+                    "longitude": 13.063403
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:17:00+01:00",
+            "plannedArrival": "2023-01-13T10:17:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:17:00+01:00",
+            "plannedDeparture": "2023-01-13T10:17:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736257",
+                "name": "Glumestr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736257",
+                    "latitude": 52.414905,
+                    "longitude": 13.066468
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:18:00+01:00",
+            "plannedArrival": "2023-01-13T10:18:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:18:00+01:00",
+            "plannedDeparture": "2023-01-13T10:18:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736222",
+                "name": "Schloss Cecilienhof, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736222",
+                    "latitude": 52.419544,
+                    "longitude": 13.067916
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:19:00+01:00",
+            "plannedArrival": "2023-01-13T10:19:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:19:00+01:00",
+            "plannedDeparture": "2023-01-13T10:19:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736140",
+                "name": "Höhenstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736140",
+                    "latitude": 52.421755,
+                    "longitude": 13.06823
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:21:00+01:00",
+            "plannedArrival": "2023-01-13T10:21:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:22:00+01:00",
+            "plannedDeparture": "2023-01-13T10:22:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null,
+            "remarks": [
+                {
+                    "type": "hint",
+                    "code": "text.journeystop.product.or.direction.changes.stop.message",
+                    "text": "As Bus 603 heading towards Platz der Einheit/West, Potsdam from here"
+                }
+            ]
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736259",
+                "name": "Langhansstr./Große Weinmeisterstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736259",
+                    "latitude": 52.420092,
+                    "longitude": 13.06539
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:22:00+01:00",
+            "plannedArrival": "2023-01-13T10:22:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:22:00+01:00",
+            "plannedDeparture": "2023-01-13T10:22:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "747165",
+                "name": "Persiusstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "747165",
+                    "latitude": 52.41531,
+                    "longitude": 13.063762
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:24:00+01:00",
+            "plannedArrival": "2023-01-13T10:24:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:24:00+01:00",
+            "plannedDeparture": "2023-01-13T10:24:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "727620",
+                "name": "Kleine Weinmeisterstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "727620",
+                    "latitude": 52.412451,
+                    "longitude": 13.062198
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:25:00+01:00",
+            "plannedArrival": "2023-01-13T10:25:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:25:00+01:00",
+            "plannedDeparture": "2023-01-13T10:25:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736141",
+                "name": "Birkenstr./Alleestr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736141",
+                    "latitude": 52.409431,
+                    "longitude": 13.061533
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:26:00+01:00",
+            "plannedArrival": "2023-01-13T10:26:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:26:00+01:00",
+            "plannedDeparture": "2023-01-13T10:26:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736109",
+                "name": "Reiterweg/Alleestr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736109",
+                    "latitude": 52.408163,
+                    "longitude": 13.058504
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:27:00+01:00",
+            "plannedArrival": "2023-01-13T10:27:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:27:00+01:00",
+            "plannedDeparture": "2023-01-13T10:27:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736160",
+                "name": "Rathaus, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736160",
+                    "latitude": 52.405233,
+                    "longitude": 13.058063
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:28:00+01:00",
+            "plannedArrival": "2023-01-13T10:28:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:28:00+01:00",
+            "plannedDeparture": "2023-01-13T10:28:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736266",
+                "name": "Hebbelstr., Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736266",
+                    "latitude": 52.40428,
+                    "longitude": 13.062396
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:30:00+01:00",
+            "plannedArrival": "2023-01-13T10:30:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:30:00+01:00",
+            "plannedDeparture": "2023-01-13T10:30:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736094",
+                "name": "Bassinplatz, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736094",
+                    "latitude": 52.40028,
+                    "longitude": 13.061695
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": false,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:32:00+01:00",
+            "plannedArrival": "2023-01-13T10:32:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": null,
+            "plannedArrivalPlatform": null,
+            "departure": "2023-01-13T10:32:00+01:00",
+            "plannedDeparture": "2023-01-13T10:32:00+01:00",
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        },
+        {
+            "stop": {
+                "type": "stop",
+                "id": "736099",
+                "name": "Platz der Einheit/West, Potsdam",
+                "location": {
+                    "type": "location",
+                    "id": "736099",
+                    "latitude": 52.398832,
+                    "longitude": 13.057928
+                },
+                "products": {
+                    "nationalExpress": false,
+                    "national": false,
+                    "regionalExp": false,
+                    "regional": false,
+                    "suburban": false,
+                    "bus": true,
+                    "ferry": false,
+                    "subway": false,
+                    "tram": true,
+                    "taxi": false
+                }
+            },
+            "arrival": "2023-01-13T10:33:00+01:00",
+            "plannedArrival": "2023-01-13T10:33:00+01:00",
+            "arrivalDelay": null,
+            "arrivalPlatform": null,
+            "arrivalPrognosisType": "prognosed",
+            "plannedArrivalPlatform": null,
+            "departure": null,
+            "plannedDeparture": null,
+            "departureDelay": null,
+            "departurePlatform": null,
+            "departurePrognosisType": null,
+            "plannedDeparturePlatform": null
+        }
+    ],
+    "remarks": [
+        {
+            "type": "hint",
+            "code": "text.journeystop.product.or.direction.changes.journey.message",
+            "text": "From Höhenstr., Potsdam as Bus 603 heading towards Platz der Einheit/West, Potsdam"
+        }
+    ],
+    "id": "1|1087136|2|81|13012023",
+    "realtimeDataUpdatedAt": 1673524407
+}

@@ -27,7 +27,6 @@ class SettingsController extends Controller
                                             'username'   => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
                                             'name'       => ['required', 'string', 'max:50'],
                                             'email'      => ['required', 'string', 'email:rfc,dns', 'max:255'],
-                                            'always_dbl' => ['nullable'],
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {
@@ -39,7 +38,6 @@ class SettingsController extends Controller
             $validated['email_verified_at'] = null;
             $validated['email']             = strtolower($validated['email']);
         }
-        $validated['always_dbl'] = isset($validated['always_dbl']) && $validated['always_dbl'] === 'on';
 
         auth()->user()->update($validated);
 

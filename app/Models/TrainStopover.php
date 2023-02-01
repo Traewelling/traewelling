@@ -20,7 +20,10 @@ class TrainStopover extends Model
         'departure_platform_planned', 'departure_platform_real',
         'cancelled'
     ];
-    protected $appends  = ['arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed'];
+    protected $appends  = [
+        'arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed',
+        'isArrivalCancelled', 'isDepartureCancelled'
+    ];
     protected $casts    = [
         'id'                         => 'integer',
         'train_station_id'           => 'integer',
@@ -72,5 +75,13 @@ class TrainStopover extends Model
             return false;
         }
         return $this->departure_real->isAfter($this->departure_planned);
+    }
+
+    public function getIsArrivalCancelledAttribute(): bool {
+        return $this->cancelled && is_null($this->arrival_platform_planned);
+    }
+
+    public function getIsDepartureCancelledAttribute(): bool {
+        return $this->cancelled && is_null($this->departure_platform_planned);
     }
 }

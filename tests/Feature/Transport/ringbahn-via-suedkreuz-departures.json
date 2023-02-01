@@ -1,0 +1,77 @@
+[
+	{
+		"tripId": "1|1136689|13|81|16012023",
+		"stop": {
+			"type": "stop",
+			"id": "8089110",
+			"name": "Berlin Messe Nord/ICC (Witzleben)",
+			"location": {
+				"type": "location",
+				"id": "8089110",
+				"latitude": 52.507539,
+				"longitude": 13.28345
+			},
+			"products": {
+				"nationalExpress": false,
+				"national": false,
+				"regionalExp": false,
+				"regional": false,
+				"suburban": true,
+				"bus": true,
+				"ferry": false,
+				"subway": false,
+				"tram": false,
+				"taxi": false
+			}
+		},
+		"when": "2023-01-16T10:00:00+01:00",
+		"plannedWhen": "2023-01-16T10:00:00+01:00",
+		"delay": null,
+		"platform": "2",
+		"plannedPlatform": "2",
+		"prognosisType": null,
+		"direction": "Ring S42",
+		"provenance": null,
+		"line": {
+			"type": "line",
+			"id": "4-08-42",
+			"fahrtNr": "42595",
+			"name": "S 42",
+			"public": true,
+			"adminCode": "08____",
+			"productName": "S",
+			"mode": "train",
+			"product": "suburban",
+			"operator": {
+				"type": "operator",
+				"id": "s-bahn-berlin",
+				"name": "S-Bahn Berlin"
+			}
+		},
+		"remarks": [],
+		"origin": null,
+		"destination": {
+			"type": "stop",
+			"id": "8089118",
+			"name": "Berlin Beusselstraße",
+			"location": {
+				"type": "location",
+				"id": "8089118",
+				"latitude": 52.534336,
+				"longitude": 13.329178
+			},
+			"products": {
+				"nationalExpress": false,
+				"national": false,
+				"regionalExp": false,
+				"regional": false,
+				"suburban": true,
+				"bus": true,
+				"ferry": false,
+				"subway": false,
+				"tram": false,
+				"taxi": false
+			}
+		}
+	}
+]
