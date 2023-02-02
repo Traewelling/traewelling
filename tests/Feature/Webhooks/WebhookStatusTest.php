@@ -7,6 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Enum\WebhookEvent;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusResource;
 use App\Models\User;
 use Carbon\Carbon;
@@ -36,6 +37,33 @@ class WebhookStatusTest extends WebhookTestCase
                 'event' => WebhookEvent::CHECKIN_CREATE->name(),
                 'status' => new StatusResource($status),
             ], $job->payload);
+            return true;
+        });
+    }
+
+    public function testWebhookSendingOnStatusBodyChange()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+        $this->actingAs($user)
+            ->post(route('status.update'), [
+                'statusId' => $status['id'],
+                'body' => 'New Example Body',
+                'business_check' => $status['business']->value,
+                'checkinVisibility' => $status['visibility']->value
+            ]);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals('New Example Body', $job->payload['status']['body'],);
             return true;
         });
     }
