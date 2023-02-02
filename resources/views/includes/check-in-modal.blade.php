@@ -23,7 +23,7 @@
                     </script>
 
                     <div class="mt-2">
-                        @if (auth()->user()->socialProfile != null)
+                        @if (auth()->user()?->socialProfile != null)
                             @if (auth()->user()->socialProfile->twitter_id != null)
                                 <div class="btn-group">
                                     <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
