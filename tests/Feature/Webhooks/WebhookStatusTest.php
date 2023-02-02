@@ -68,6 +68,27 @@ class WebhookStatusTest extends WebhookTestCase
         });
     }
 
+    public function testWebhookSendingOnLike()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+        StatusController::createLike($user, $status);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals(1, count($job->payload['status']['likes']));
+            return true;
+        });
+    }
+
     protected function createStatus(User $user)
     {
         Http::fake([
