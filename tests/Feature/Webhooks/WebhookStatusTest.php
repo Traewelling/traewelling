@@ -146,6 +146,33 @@ class WebhookStatusTest extends WebhookTestCase
         });
     }
 
+    public function testWebhookSendingOnVisibilityChange()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+        $this->actingAs($user)
+            ->post(route('status.update'), [
+                'statusId' => $status['id'],
+                'body' => $status['body'],
+                'business_check' => $status['business']->value,
+                'checkinVisibility' => StatusVisibility::UNLISTED->value,
+            ]);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals(StatusVisibility::UNLISTED, $job->payload['status']->visibility);
+            return true;
+        });
+    }
+
     protected function createStatus(User $user)
     {
         Http::fake([
