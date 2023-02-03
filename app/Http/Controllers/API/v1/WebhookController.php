@@ -20,6 +20,19 @@ class WebhookController extends Controller
         return $this->sendResponse($webhooks);
     }
 
+    public function getWebhook(Request $request, int $webhookId): JsonResponse
+    {
+        $clientId = $request->user()->token()->client->id;
+        $webhooks = Webhook::where('oauth_client_id', '=', $clientId)
+            ->where('user_id', '=', $request->user()->id)
+            ->where('id', '=', $webhookId)
+            ->first();
+        if ($webhooks == null) {
+            return $this->sendError('No webhook found for this id.');
+        }
+        return $this->sendResponse($webhooks);
+    }
+
     public function deleteWebhook(Request $request, int $webhookId): JsonResponse
     {
         try {

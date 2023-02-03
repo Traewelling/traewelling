@@ -126,6 +126,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
         Route::group(['prefix' => 'webhooks'], static function() {
             Route::get('/', [WebhookController::class, 'getWebhooks']);
+            Route::get('/{webhookId}', [WebhookController::class, 'getWebhook']);
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
         });
     });
