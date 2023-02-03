@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('menu.oauth_authorize_title'))
+@section('title', __('menu.oauth_authorize.title'))
 @section('meta-robots', 'noindex')
 
 @section('content')
@@ -9,11 +9,11 @@
         <div class="col-md-6">
             <div class="card card-default">
                 <div class="card-header">
-                    {{__("menu.oauth_authorize_request_title")}}
+                    {{__("menu.oauth_authorize.request_title")}}
                 </div>
                 <div class="card-body">
                     <!-- Introduction -->
-                    <p>{!!__("menu.oauth_authorize_request", ['application' => $client->name])!!}</p>
+                    <p>{!!__("menu.oauth_authorize.request", ['application' => $client->name])!!}</p>
 
                     <!-- TODO: Make this prettier once scopes are a thing -->
                     <!-- Scope List -->
@@ -32,7 +32,7 @@
                     <!-- Webhook -->
                     @if ($webhook)
                     <div>
-                        <p>{{ __("menu.oauth_authorize_webhook_request") }}</p>
+                        <p>{{ __("menu.oauth_authorize.webhook_request") }}</p>
 
                         <ul>
                             @foreach ($webhook['events'] as $event)
@@ -50,7 +50,7 @@
                             <input type="hidden" name="state" value="{{ $request->state }}">
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="auth_token" value="{{ $authToken }}">
-                            <button type="submit" class="btn btn-success btn-approve">{{__("menu.oauth_authorize_authorize")}}</button>
+                            <button type="submit" class="btn btn-success btn-approve">{{__("menu.oauth_authorize.authorize")}}</button>
                         </form>
 
                         <!-- Cancel Button -->
@@ -61,7 +61,7 @@
                             <input type="hidden" name="state" value="{{ $request->state }}">
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="auth_token" value="{{ $authToken }}">
-                            <button class="btn btn-danger">{{__("menu.oauth_authorize_cancel")}}</button>
+                            <button class="btn btn-danger">{{__("menu.oauth_authorize.cancel")}}</button>
                         </form>
                     </div>
                 </div>
