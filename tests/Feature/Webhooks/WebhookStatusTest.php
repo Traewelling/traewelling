@@ -173,6 +173,26 @@ class WebhookStatusTest extends WebhookTestCase
         });
     }
 
+    public function testWebhookSendingOnStatusDeletion()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_DELETE]);
+        $status = $this->createStatus($user);
+        StatusController::DeleteStatus($user, $status['id']);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_DELETE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            return true;
+        });
+    }
+
     protected function createStatus(User $user)
     {
         Http::fake([
