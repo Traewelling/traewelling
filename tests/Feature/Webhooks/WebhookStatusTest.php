@@ -119,6 +119,33 @@ class WebhookStatusTest extends WebhookTestCase
         });
     }
 
+    public function testWebhookSendingOnBusinessChange()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+        $this->actingAs($user)
+            ->post(route('status.update'), [
+                'statusId' => $status['id'],
+                'body' => $status['body'],
+                'business_check' => Business::BUSINESS->value,
+                'checkinVisibility' => $status['visibility']->value
+            ]);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals(Business::BUSINESS, $job->payload['status']->business);
+            return true;
+        });
+    }
+
     protected function createStatus(User $user)
     {
         Http::fake([
