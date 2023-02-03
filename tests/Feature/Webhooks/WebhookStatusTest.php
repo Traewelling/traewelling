@@ -89,6 +89,36 @@ class WebhookStatusTest extends WebhookTestCase
         });
     }
 
+    public function testWebhookSendingOnDestinationChange()
+    {
+        Bus::fake();
+
+        $user = $this->createGDPRAckedUser();
+        $client = $this->createClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+        $checkin = $status->trainCheckin()->first();
+        $hafasTrip = TrainCheckinController::getHafasTrip(
+            tripId: self::TRIP_ID,
+            lineName: self::ICE802['line']['name'],
+            startId: self::FRANKFURT_HBF['id']
+        );
+        $aachen  = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
+        TrainCheckinController::changeDestination($checkin, $aachen);
+
+        Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->name(),
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            // This is really hacky, but i didn't got it working otherwise.
+            $parsedStatus = json_decode($job->payload['status']->toJson());
+            assertEquals(self::AACHEN_HBF['id'], $parsedStatus->train->destination->evaIdentifier);
+            return true;
+        });
+    }
+
     protected function createStatus(User $user)
     {
         Http::fake([
