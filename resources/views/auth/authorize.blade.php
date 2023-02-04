@@ -6,7 +6,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card card-default">
                 <div class="card-header">
                     {{__("menu.oauth_authorize.request_title")}}
@@ -64,6 +64,24 @@
                             <button class="btn btn-danger">{{__("menu.oauth_authorize.cancel")}}</button>
                         </form>
                     </div>
+
+                </div>
+                <div class="card-footer row">
+                    <p class="m-0 col-md-4 text-center">{!! __("menu.oauth_authorize.application_information.author", [
+                        "application" => $client->name,
+                        "user" => $user->username,
+                        "url" => route("profile", $user->username)
+                        ])!!}</p>
+                    <p class="m-0 col-md-4 text-center">{{ __("menu.oauth_authorize.application_information.created_at", [
+                        "time" => $client->created_at->diffForHumans()
+                    ]); }}</p>
+                    <p class="m-0 col-md-4 text-center">
+                        {{ trans_choice(
+                            "menu.oauth_authorize.application_information.user_count",
+                            $userCount
+                           );
+                        }}
+                    </p>
                 </div>
             </div>
         </div>

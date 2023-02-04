@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
-use App\Enum\WebhookEvent;
+use App\Models\Webhook;
 use App\Rules\StringifiedWebhookEvents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -82,6 +82,14 @@ class AuthorizationController extends PassportAuthorizationController
         $request->session()->put('authRequest', $authRequest);
         $request->session()->put('webhook', $webhook);
 
+        $userCount = $client->tokens()
+            ->selectRaw('count(distinct user_id) as count')
+            ->where('revoked', 0)
+            ->union(
+                Webhook::select('user_id')
+                    ->where('oauth_client_id', $client->id)
+            )->value('count');
+
         return $this->response->view('auth.authorize', [
             'client' => $client,
             'user' => $user,
@@ -89,6 +97,7 @@ class AuthorizationController extends PassportAuthorizationController
             'request' => $request,
             'authToken' => $authToken,
             'webhook' => $webhook,
+            'userCount' => $userCount,
         ]);
     }
 
