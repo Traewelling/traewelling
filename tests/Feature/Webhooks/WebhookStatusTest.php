@@ -15,11 +15,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Spatie\WebhookServer\CallWebhookJob;
-use Tests\WebhookTestCase;
+use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookStatusTest extends WebhookTestCase
+class WebhookStatusTest extends TestCase
 {
     use RefreshDatabase;
 
