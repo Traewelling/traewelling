@@ -1,6 +1,6 @@
 name: Resources build with `prod`
 
-on: [ push ]
+on: [ push, pull_request ]
 
 jobs:
   build:
