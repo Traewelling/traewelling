@@ -175,7 +175,7 @@
                         </button>
                         <div class="dropdown-menu">
                             @foreach(config('app.locales') as $key => $lang)
-                                <a class="dropdown-item" href="?language={{ $key }}">
+                                <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
                                     {{ $lang }}
                                 </a>
                             @endforeach
