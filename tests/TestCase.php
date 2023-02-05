@@ -16,6 +16,7 @@ use App\Models\Event;
 use App\Models\User;
 use App\Http\Controllers\Backend\WebhookController;
 use App\Models\Webhook;
+use App\Repositories\OAuthClientRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -150,6 +151,7 @@ abstract class TestCase extends BaseTestCase
     ];
 
     const EXAMPLE_BODY = 'Example Body';
+    const EXAMPLE_WEBHOOK_URL = 'https://example.com/webhook';
 
     protected function setUp(): void
     {
@@ -176,8 +178,19 @@ abstract class TestCase extends BaseTestCase
 
     public function createClient(User $user): PassportClient
     {
-        $clients = new ClientRepository();
-        return $clients->create($user->id, "TRWL Testing Application", "https://example.com", null, false, false, true);
+        $clients = new OAuthClientRepository();
+        return $clients->create(
+            $user->id,
+            "TRWL Testing Application",
+            "https://example.com",
+            null,
+            false,
+            false,
+            true,
+            "https://example.com/privacy",
+            true,
+            self::EXAMPLE_WEBHOOK_URL
+        );
     }
 
     public function createWebhook(User $user, PassportClient $client, array $events): Webhook

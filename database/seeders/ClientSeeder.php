@@ -3,11 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Repositories\OAuthClientRepository;
 use Illuminate\Database\Seeder;
-use Laravel\Passport\Client;
-use Laravel\Passport\ClientRepository;
-use Laravel\Passport\Database\Factories\ClientFactory;
 
 class ClientSeeder extends Seeder
 {
@@ -19,7 +16,18 @@ class ClientSeeder extends Seeder
     public function run()
     {
         $gertrud = User::where('username', 'Gertrud123')->first();
-        $clients = new ClientRepository();
-        $clients->create($gertrud->id, 'Test Application', 'https://oauthdebugger.com/debug', null, false, false, false);
+        $clients = new OAuthClientRepository();
+        $clients->create(
+            $gertrud->id,
+            'Test Application',
+            'https://oauthdebugger.com/debug',
+            null,
+            false,
+            false,
+            false,
+            "https://example.com/privacy",
+            true,
+            "https://example.com/webhook"
+        );
     }
 }

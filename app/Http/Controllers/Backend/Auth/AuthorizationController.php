@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
+use App\Models\OAuthClient;
 use App\Models\Webhook;
+use App\Repositories\OAuthClientRepository;
+use App\Rules\AuthorizedWebhookURL;
 use App\Rules\StringifiedWebhookEvents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +14,6 @@ use Laravel\Passport\Http\Controllers\AuthorizationController as PassportAuthori
 use Psr\Http\Message\ServerRequestInterface;
 use Laravel\Passport\TokenRepository;
 use Illuminate\Support\Str;
-use Laravel\Passport\Client;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Spatie\ValidationRules\Rules\Delimited;
 
@@ -31,9 +33,11 @@ class AuthorizationController extends PassportAuthorizationController
     public function authorize(
         ServerRequestInterface $psrRequest,
         Request $request,
-        ClientRepository $clients,
+        ClientRepository $_,
         TokenRepository $tokens
     ) {
+        $clients = new OAuthClientRepository();
+
         $authRequest = $this->withErrorHandling(function () use ($psrRequest) {
             return $this->server->validateAuthorizationRequest($psrRequest);
         });
@@ -101,15 +105,26 @@ class AuthorizationController extends PassportAuthorizationController
         ]);
     }
 
-    function parseWebhookExtensions(Request $request, Client $client)
+    function parseWebhookExtensions(Request $request, OAuthClient $client)
     {
         if (!$request->has('trwl_webhook_url') && !$request->has('trwl_webhook_events')) {
             return null;
         }
 
+        if (!$client->webhooks_enabled) {
+            throw new OAuthServerException(
+                "Webhooks are not enabled. Please enable them in the application dashboard if you wish to use them.",
+                3,
+                'invalid_request',
+                400,
+                null,
+                null
+            );
+        }
+
         $validator = Validator::make($request->all(), [
             'trwl_webhook_events' => ['required', new Delimited(new StringifiedWebhookEvents())],
-            'trwl_webhook_url' => ['required', 'string']
+            'trwl_webhook_url' => ['required', 'string', new AuthorizedWebhookURL($client)]
         ]);
 
         if ($validator->fails()) {

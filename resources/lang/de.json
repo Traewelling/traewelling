@@ -628,6 +628,7 @@
     "menu.oauth_authorize.application_information.author": ":application von <a href=\":url\">:user</a>",
     "menu.oauth_authorize.application_information.created_at": "Erstellt :time",
     "menu.oauth_authorize.application_information.user_count": ":count Nutzer*in|:count Nutzer*innen",
+    "menu.oauth_authorize.application_information.privacy_policy": "Datenschutzerklärung von :client",
     "yes": "Ja",
     "no": "Nein",
     "edit": "Bearbeiten",

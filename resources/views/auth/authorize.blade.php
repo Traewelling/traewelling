@@ -82,6 +82,13 @@
                            );
                         }}
                     </p>
+                    @if ($client->privacy_policy_url)
+                    <p class="m-0 col-md-12 text-center">
+                        <a href="{{ $client->privacy_policy_url }}">{{ __("menu.oauth_authorize.application_information.privacy_policy", [
+                            "client" => $client->name,
+                        ]) }}</a>
+                    </p>
+                    @endif
                 </div>
             </div>
         </div>
