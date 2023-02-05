@@ -128,11 +128,9 @@ abstract class HafasController extends Controller
     public static function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         try {
             $response = self::getHttpClient()->get("/stops/nearby", [
-                'query' => [
-                    'latitude'  => $latitude,
-                    'longitude' => $longitude,
-                    'results'   => $results
-                ]
+                'latitude'  => $latitude,
+                'longitude' => $longitude,
+                'results'   => $results
             ]);
 
             if (!$response->ok()) {
