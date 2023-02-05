@@ -91,7 +91,7 @@ return [
         'en'     => 'English',
         'it'     => 'Italiano',
         'fr'     => 'Français',
-        'nl'     => 'Dutch',
+        'nl'     => 'Nederlands',
         'sv'     => 'Svenska',
         'pl'     => 'Polski',
     ],

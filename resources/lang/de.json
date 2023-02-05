@@ -614,5 +614,6 @@
     "no": "Nein",
     "edit": "Bearbeiten",
     "delete": "Löschen",
-    "active-tokens-count": ":count aktive Token|:count aktive Tokens"
+    "active-tokens-count": ":count aktive Token|:count aktive Tokens",
+    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest."
 }
