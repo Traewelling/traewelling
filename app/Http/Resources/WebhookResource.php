@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enum\WebhookEvent;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class WebhookResource extends JsonResource
@@ -20,6 +21,9 @@ class WebhookResource extends JsonResource
             'userId' => $this->user_id,
             'url' => $this->url,
             'createdAt' => $this->created_at->toIso8601String(),
+            'events' => array_map(function ($event) {
+                return WebhookEvent::from($event)->name();
+            }, $this->events),
         ];
     }
 }
