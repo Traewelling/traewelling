@@ -5,5 +5,8 @@
 }
 
 .stationSearchButton {
+  align-items: center;
   border: 1px solid #bdbdbd;
+  display: flex;
+  gap: 0.25em;
 }
