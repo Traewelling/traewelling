@@ -10,4 +10,9 @@
   border-left-width: 0;
   display: flex;
   gap: 0.25em;
+
+  &:hover,
+  &:focus {
+    border-color: #bdbdbd !important;
+  }
 }
