@@ -6858,16 +6858,16 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "2.3.2",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "0b8dbc68e1f7348fd838ba5c3d11bb9b86af77eb"
+                "reference": "b11876b28e6b53e7a849ecde83ab6bbcb4fba570"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/0b8dbc68e1f7348fd838ba5c3d11bb9b86af77eb",
-                "reference": "0b8dbc68e1f7348fd838ba5c3d11bb9b86af77eb",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/b11876b28e6b53e7a849ecde83ab6bbcb4fba570",
+                "reference": "b11876b28e6b53e7a849ecde83ab6bbcb4fba570",
                 "shasum": ""
             },
             "require": {
@@ -6915,7 +6915,7 @@
             "description": "Queue Monitoring for Laravel Database Job Queue",
             "support": {
                 "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/2.3.2"
+                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/2.3.3"
             },
             "funding": [
                 {
@@ -6923,7 +6923,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-15T06:58:11+00:00"
+            "time": "2023-02-01T06:05:36+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
