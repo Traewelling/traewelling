@@ -2,6 +2,7 @@
     <button class="btn btn-sm btn-outline-twitter dropdown-toggle"
             type="button"
             id="visibilityDropdownButton"
+            data-mdb-dropdown-animation="off"
             data-mdb-toggle="dropdown"
             aria-expanded="false"
     >
