@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\OAuthClientRepository;
+use App\Rules\SecureUrl;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -45,8 +46,8 @@ class DevController extends Controller {
             'name'                   => ['required', 'string'],
             'redirect'               => ['required', 'string'],
             'enable_webhooks'        => ['nullable'],
-            'authorized_webhook_url' => ['nullable', 'url'],
-            'privacy_policy_url'     => ['nullable', 'url'],
+            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
         ]);
 
         $clients = new OAuthClientRepository();
@@ -74,8 +75,8 @@ class DevController extends Controller {
             'redirect'               => ['required', 'string'],
             'confidential'           => ['nullable'],
             'enable_webhooks'        => ['nullable'],
-            'authorized_webhook_url' => ['nullable', 'url'],
-            'privacy_policy_url'     => ['nullable', 'url'],
+            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
         ]);
 
         $clients = new OAuthClientRepository();
