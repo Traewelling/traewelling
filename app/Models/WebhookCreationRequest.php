@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Laravel\Passport\Client;
+use Laravel\Passport\Passport;
 
 /**
  * @mixin Builder
@@ -28,7 +28,7 @@ class WebhookCreationRequest extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'oauth_client_id');
+        return $this->belongsTo(Passport::clientModel(), 'oauth_client_id');
     }
 
     public function user(): BelongsTo

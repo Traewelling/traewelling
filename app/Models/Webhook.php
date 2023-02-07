@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Laravel\Passport\Client;
+use Laravel\Passport\Passport;
 
 /**
  * @mixin Builder
@@ -31,7 +29,7 @@ class Webhook extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class, 'oauth_client_id');
+        return $this->belongsTo(Passport::clientModel(), 'oauth_client_id');
     }
 
     public function user(): BelongsTo
