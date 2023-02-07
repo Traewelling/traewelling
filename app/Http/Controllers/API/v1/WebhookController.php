@@ -128,7 +128,8 @@ class WebhookController extends Controller {
     public function deleteWebhook(Request $request, int $webhookId): JsonResponse {
         try {
             $webhook = Webhook::findOrFail($webhookId);
-            WebhookBackend::deleteWebhook($request->user(), $request->user()->token()->client, $webhook);
+            $this->authorize('delete', $webhook);
+            WebhookBackend::deleteWebhook($webhook, $request->user()->token()->client);
             return $this->sendResponse();
         } catch (PermissionException) {
             return $this->sendError('You are not allowed to delete this webhook', 403);

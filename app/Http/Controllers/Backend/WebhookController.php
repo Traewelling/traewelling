@@ -47,19 +47,15 @@ abstract class WebhookController extends Controller {
     /**
      * Deletes a webhook
      *
-     * @param User             $user
-     * @param OAuthClient|null $client
-     * @param int              $webhookId
-     *
-     * @return bool
      * @throws PermissionException
      */
     public static function deleteWebhook(
-        User $user,
-        OAuthClient|null $client,
-        Webhook $webhook
+        Webhook $webhook,
+        OAuthClient|null $client
     ): bool {
-        if ($user->id != $webhook->user->id || $client != null && $client->id != $webhook->oauthClient->id) {
+        // Checking if the client is allowed to delete here,
+        // because i found no way of doing that in the policy.
+        if ($client != null && $client->id != $webhook->client->id) {
             throw new PermissionException();
         }
         $webhook->delete();

@@ -9,9 +9,11 @@ use App\Models\Follow;
 use App\Models\OAuthClient;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\Webhook;
 use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\WebhookPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
@@ -23,9 +25,10 @@ class AuthServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $policies = [
-        Status::class => StatusPolicy::class,
-        User::class   => UserPolicy::class,
-        Follow::class => FollowPolicy::class,
+        Status::class  => StatusPolicy::class,
+        User::class    => UserPolicy::class,
+        Follow::class  => FollowPolicy::class,
+        Webhook::class => WebhookPolicy::class
     ];
 
     /**
