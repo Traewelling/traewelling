@@ -21,19 +21,9 @@ return new class extends Migration {
             $table->text('secret')->nullable();
             $table->unsignedInteger('events');
         });
-        Schema::create('webhook_creation_requests', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('oauth_client_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->boolean('revoked')->default(false);
-            $table->dateTime('expires_at');
-            $table->string('events');
-            $table->text('url');
-        });
     }
 
     public function down() {
         Schema::dropIfExists('webhooks');
-        Schema::dropIfExists('webhook_creation_requests');
     }
 };
