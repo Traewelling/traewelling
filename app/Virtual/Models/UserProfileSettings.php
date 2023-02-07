@@ -162,4 +162,15 @@ class UserProfileSettings
      * @var string
      */
     private $mastodon;
+
+    /**
+     * @OA\Property(
+     *     title="mastodonVisibility",
+     *     description="Post visibility for future posts to Mastodon",
+     *      ref="#/components/schemas/VisibilityEnum"
+     * )
+     *
+     * @var integer
+     */
+    private $mastodonVisibility;
 }
