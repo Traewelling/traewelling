@@ -8,10 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController as PassportApproveAuthorizationController;
 
-class ApproveAuthorizationController extends PassportApproveAuthorizationController
-{
-    public function approve(Request $request)
-    {
+class ApproveAuthorizationController extends PassportApproveAuthorizationController {
+    public function approve(Request $request) {
         $webhook = $request->session()->get('webhook');
         $response = parent::approve($request);
         if ($webhook) {

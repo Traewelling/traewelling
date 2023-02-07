@@ -24,12 +24,10 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
-use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Client as PassportClient;
 use Tests\Feature\CheckinTest;
 
-abstract class TestCase extends BaseTestCase
-{
+abstract class TestCase extends BaseTestCase {
     use CreatesApplication;
 
     const AACHEN_HBF =  [
@@ -153,22 +151,19 @@ abstract class TestCase extends BaseTestCase
     const EXAMPLE_BODY = 'Example Body';
     const EXAMPLE_WEBHOOK_URL = 'https://example.com/webhook';
 
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         parent::setUp();
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\PrivacyAgreementSeeder');
     }
 
-    public function createGDPRAckedUser(array $defaultValues = []): User
-    {
+    public function createGDPRAckedUser(array $defaultValues = []): User {
         $user = User::factory($defaultValues)->create();
         $this->acceptGDPR($user);
 
         return $user;
     }
 
-    protected function createAdminUser(): User
-    {
+    protected function createAdminUser(): User {
         $admin       = $this->createGDPRAckedUser();
         $admin->role = 10;
         $admin->update();
@@ -176,8 +171,7 @@ abstract class TestCase extends BaseTestCase
         return $admin;
     }
 
-    public function createClient(User $user): PassportClient
-    {
+    public function createClient(User $user): PassportClient {
         $clients = new OAuthClientRepository();
         return $clients->create(
             $user->id,
@@ -193,8 +187,7 @@ abstract class TestCase extends BaseTestCase
         );
     }
 
-    public function createWebhook(User $user, PassportClient $client, array $events): Webhook
-    {
+    public function createWebhook(User $user, PassportClient $client, array $events): Webhook {
         $bitflag = 0;
         foreach ($events as $event) {
             $bitflag |= $event->value;
@@ -223,8 +216,7 @@ abstract class TestCase extends BaseTestCase
      * side to provide a coherent amount of assertions.
      * @throws Exception
      */
-    public static function isCorrectHafasTrip($hafastrip, Carbon $requestDate): bool
-    {
+    public static function isCorrectHafasTrip($hafastrip, Carbon $requestDate): bool {
         $requestDateMinusMinusOneDay = $requestDate->clone()->subDays(2)->format(self::$HAFAS_ID_DATE);
         $requestDateMinusOneDay      = $requestDate->clone()->subDay()->format(self::$HAFAS_ID_DATE);
         $requestDatePlusOneDay       = $requestDate->clone()->addDay()->format(self::$HAFAS_ID_DATE);
@@ -248,8 +240,7 @@ abstract class TestCase extends BaseTestCase
         return $ret;
     }
 
-    public function acceptGDPR(User $user): void
-    {
+    public function acceptGDPR(User $user): void {
         $response = $this->actingAs($user)
             ->post('/gdpr-ack');
         $response->assertStatus(302);
@@ -379,8 +370,7 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    public function checkHafasException(TestResponse $response, int $status = 503): void
-    {
+    public function checkHafasException(TestResponse $response, int $status = 503): void {
         if ($response->getStatusCode() === $status) {
             $this->markTestIncomplete("HafasException");
         }

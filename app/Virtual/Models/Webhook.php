@@ -11,8 +11,7 @@ namespace App\Virtual\Models;
  *     )
  * )
  */
-class Webhook
-{
+class Webhook {
     /**
      * @OA\Property(
      *     title="ID",

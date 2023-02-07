@@ -149,8 +149,7 @@ class StatusController extends Controller
      * @return void
      * @throws InvalidArgumentException
      */
-    public static function destroyLike(User $user, int $statusId): void
-    {
+    public static function destroyLike(User $user, int $statusId): void {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like == null) {
             throw new InvalidArgumentException(__('controller.status.like-not-found'));

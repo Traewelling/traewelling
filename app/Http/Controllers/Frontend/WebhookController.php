@@ -8,8 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class WebhookController extends Controller
-{
+class WebhookController extends Controller {
     public static function deleteWebhook(Request $request): RedirectResponse {
         $validated = $request->validate(['webhookId' => ['required', 'exists:webhooks,id']]);
         try {

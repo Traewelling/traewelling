@@ -4,15 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->string('privacy_policy_url')->nullable();
             $table->boolean('webhooks_enabled')->default(false);
@@ -25,8 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('oauth_clients', function (Blueprint $table) {
             $table->dropColumn('privacy_policy_url');
             $table->dropColumn('webhooks_enabled');

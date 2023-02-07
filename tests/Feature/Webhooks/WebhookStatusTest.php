@@ -19,12 +19,10 @@ use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookStatusTest extends TestCase
-{
+class WebhookStatusTest extends TestCase {
     use RefreshDatabase;
 
-    public function testWebhookSendingOnStatusCreation()
-    {
+    public function testWebhookSendingOnStatusCreation() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -41,8 +39,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnStatusBodyChange()
-    {
+    public function testWebhookSendingOnStatusBodyChange() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -68,8 +65,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnLike()
-    {
+    public function testWebhookSendingOnLike() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -89,8 +85,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnDestinationChange()
-    {
+    public function testWebhookSendingOnDestinationChange() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -119,8 +114,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnBusinessChange()
-    {
+    public function testWebhookSendingOnBusinessChange() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -146,8 +140,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnVisibilityChange()
-    {
+    public function testWebhookSendingOnVisibilityChange() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -173,8 +166,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnStatusDeletion()
-    {
+    public function testWebhookSendingOnStatusDeletion() {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -193,8 +185,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    protected function createStatus(User $user)
-    {
+    protected function createStatus(User $user) {
         Http::fake([
             '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
             '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),

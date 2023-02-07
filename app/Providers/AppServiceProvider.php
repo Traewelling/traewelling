@@ -12,15 +12,13 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Contracts\Factory;
 use Revolution\Socialite\Mastodon\MastodonProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register(): void
-    {
+    public function register(): void {
         $this->app->when(AuthorizationController::class)
             ->needs(StatefulGuard::class)
             ->give(fn () => Auth::guard(config('passport.guard', null)));
@@ -32,8 +30,7 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      * @throws BindingResolutionException
      */
-    public function boot(): void
-    {
+    public function boot(): void {
         if (config('app.force-https')) {
             URL::forceScheme('https');
         }

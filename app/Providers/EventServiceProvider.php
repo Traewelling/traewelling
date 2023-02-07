@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
-use App\Http\Controllers\Backend\WebhookController;
 use App\Jobs\PostStatusOnMastodon;
 use App\Jobs\PostStatusOnTwitter;
 use App\Listeners\NotificationSentWebhookListener;
@@ -19,8 +18,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 
-class EventServiceProvider extends ServiceProvider
-{
+class EventServiceProvider extends ServiceProvider {
     /**
      * The event listener mappings for the application.
      *
@@ -49,8 +47,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(): void
-    {
+    public function boot(): void {
         parent::boot();
 
         // Dispatch Jobs from Events

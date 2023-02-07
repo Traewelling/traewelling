@@ -5,8 +5,7 @@ namespace App\Rules;
 use App\Models\OAuthClient;
 use Illuminate\Contracts\Validation\Rule;
 
-class AuthorizedWebhookURL implements Rule
-{
+class AuthorizedWebhookURL implements Rule {
     protected $client;
     protected $message = '';
 
@@ -15,8 +14,7 @@ class AuthorizedWebhookURL implements Rule
      *
      * @return void
      */
-    public function __construct(OAuthClient $client)
-    {
+    public function __construct(OAuthClient $client) {
         $this->client = $client;
     }
 
@@ -27,8 +25,7 @@ class AuthorizedWebhookURL implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
-    {
+    public function passes($attribute, $value) {
         $authorizedUrl = $this->client->authorized_webhook_url;
         if ($value != $authorizedUrl) {
             $this->message = "URL does not match stored webhook url.";
@@ -42,8 +39,7 @@ class AuthorizedWebhookURL implements Rule
      *
      * @return string
      */
-    public function message()
-    {
+    public function message() {
         return $this->message;
     }
 }

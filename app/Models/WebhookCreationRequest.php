@@ -12,8 +12,7 @@ use Laravel\Passport\Passport;
 /**
  * @mixin Builder
  */
-class WebhookCreationRequest extends Model
-{
+class WebhookCreationRequest extends Model {
     public $timestamps = false;
     protected $fillable = ['id', 'user_id', 'oauth_client_id', 'revoked', 'expires_at', 'events', 'url'];
     protected $casts = [
@@ -26,18 +25,15 @@ class WebhookCreationRequest extends Model
         'url' => 'string',
     ];
 
-    public function client(): BelongsTo
-    {
+    public function client(): BelongsTo {
         return $this->belongsTo(Passport::clientModel(), 'oauth_client_id');
     }
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 
-    public function isExpired(): bool
-    {
+    public function isExpired(): bool {
         return Carbon::now() > $this->expires_at;
     }
 }

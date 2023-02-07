@@ -3,19 +3,14 @@
 namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Backend\WebhookController;
-use App\Models\WebhookCreationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Http\Controllers\AccessTokenController as PassportAccessTokenController;
 use Nyholm\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
-class AccessTokenController extends PassportAccessTokenController
-{
-    public function issueToken(ServerRequestInterface $requestInterface)
-    {
+class AccessTokenController extends PassportAccessTokenController {
+    public function issueToken(ServerRequestInterface $requestInterface) {
         return $this->withErrorHandling(function () use ($requestInterface) {
             return $this->extendResponseWithWebhookData(
                 $requestInterface,
@@ -24,8 +19,7 @@ class AccessTokenController extends PassportAccessTokenController
         });
     }
 
-    function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response)
-    {
+    function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response) {
         // Skip webhook stuff on error
         if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
             return $response;

@@ -7,8 +7,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class StatusDeleteEvent
-{
+class StatusDeleteEvent {
     use Dispatchable, SerializesModels;
 
     public Status $status;

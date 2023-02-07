@@ -10,10 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
-class WebhookController extends Controller
-{
+class WebhookController extends Controller {
     /**
      * @OA\Get(
      *     path="/webhooks",
@@ -38,8 +36,7 @@ class WebhookController extends Controller
      *     }
      * )
      */
-    public function getWebhooks(Request $request): AnonymousResourceCollection
-    {
+    public function getWebhooks(Request $request): AnonymousResourceCollection {
         $clientId = $request->user()->token()->client->id;
         $webhooks = Webhook::where('oauth_client_id', '=', $clientId)
             ->where('user_id', '=', $request->user()->id)
@@ -83,8 +80,7 @@ class WebhookController extends Controller
      *
      * @return WebhookResource|JsonResponse
      */
-    public function getWebhook(Request $request, int $webhookId): WebhookResource|JsonResponse
-    {
+    public function getWebhook(Request $request, int $webhookId): WebhookResource|JsonResponse {
         $clientId = $request->user()->token()->client->id;
         $webhook = Webhook::where('oauth_client_id', '=', $clientId)
             ->where('user_id', '=', $request->user()->id)
@@ -129,8 +125,7 @@ class WebhookController extends Controller
      *
      * @return JsonResponse
      */
-    public function deleteWebhook(Request $request, int $webhookId): JsonResponse
-    {
+    public function deleteWebhook(Request $request, int $webhookId): JsonResponse {
         try {
             $webhook = Webhook::findOrFail($webhookId);
             WebhookBackend::deleteWebhook($request->user(), $request->user()->token()->client, $webhook);

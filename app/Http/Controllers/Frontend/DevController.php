@@ -9,10 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Laravel\Passport\ClientRepository;
 
-class DevController extends Controller
-{
-    public function renderAppList(): View
-    {
+class DevController extends Controller {
+    public function renderAppList(): View {
         $clients = new ClientRepository();
 
         $userId = request()->user()->getAuthIdentifier();
@@ -22,8 +20,7 @@ class DevController extends Controller
         ]);
     }
 
-    public function renderUpdateApp(int $appId): View
-    {
+    public function renderUpdateApp(int $appId): View {
         $clients = new ClientRepository();
         $app     = $clients->findForUser($appId, auth()->user()->id);
 
@@ -36,16 +33,14 @@ class DevController extends Controller
         ]);
     }
 
-    public function renderCreateApp(): View
-    {
+    public function renderCreateApp(): View {
         return view('dev.apps-edit', [
             'title' => 'Anwendung erstellen', //ToDo Übersetzen
             'app'   => null
         ]);
     }
 
-    public function updateApp(int $appId, Request $request): RedirectResponse
-    {
+    public function updateApp(int $appId, Request $request): RedirectResponse {
         $validated = $request->validate([
             'name'                   => ['required', 'string'],
             'redirect'               => ['required', 'string'],
@@ -73,8 +68,7 @@ class DevController extends Controller
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function createApp(Request $request): RedirectResponse
-    {
+    public function createApp(Request $request): RedirectResponse {
         $validated = $request->validate([
             'name'                   => ['required', 'string'],
             'redirect'               => ['required', 'string'],
@@ -98,8 +92,7 @@ class DevController extends Controller
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function destroyApp(int $appId): RedirectResponse
-    {
+    public function destroyApp(int $appId): RedirectResponse {
         $clients = new ClientRepository();
         $app     = $clients->findForUser($appId, auth()->user()->id);
 

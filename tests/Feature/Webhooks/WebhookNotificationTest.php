@@ -10,12 +10,10 @@ use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookNotificationTest extends TestCase
-{
+class WebhookNotificationTest extends TestCase {
     use RefreshDatabase;
 
-    public function testWebhookSendingOnNotification()
-    {
+    public function testWebhookSendingOnNotification() {
         Bus::fake();
 
         $alice = $this->createGDPRAckedUser();

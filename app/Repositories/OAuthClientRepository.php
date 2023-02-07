@@ -6,8 +6,7 @@ use App\Models\OAuthClient;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Str;
 
-class OAuthClientRepository
-{
+class OAuthClientRepository {
     // Based on Passports's code: https://github.com/laravel/passport/blob/d8cc34766635da552a9ddff80248c5505f19bd04/src/ClientRepository.php#L140-L156
     /**
      * Store a new client.
@@ -65,8 +64,7 @@ class OAuthClientRepository
         return $client;
     }
 
-    public function findForUser(int $clientId, int $userId): OAuthClient
-    {
+    public function findForUser(int $clientId, int $userId): OAuthClient {
         $client = Passport::client();
 
         return $client
@@ -75,8 +73,7 @@ class OAuthClientRepository
             ->first();
     }
 
-    public function find(int $id): OAuthClient
-    {
+    public function find(int $id): OAuthClient {
         $client = Passport::client();
 
         return $client->where($client->getKeyName(), $id)->first();

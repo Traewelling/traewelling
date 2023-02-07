@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Passport\Client as PassportClient;
 
-class OAuthClient extends PassportClient
-{
+class OAuthClient extends PassportClient {
     use HasFactory;
 
     protected $fillable = [
@@ -30,8 +29,7 @@ class OAuthClient extends PassportClient
         'revoked' => 'bool',
     ];
 
-    public static function newFactory()
-    {
+    public static function newFactory() {
         return parent::newFactory();
     }
 }

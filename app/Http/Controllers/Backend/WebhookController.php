@@ -13,16 +13,13 @@ use App\Models\User;
 use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
 
-abstract class WebhookController extends Controller
-{
-    public static function index(User $user): object
-    {
+abstract class WebhookController extends Controller {
+    public static function index(User $user): object {
         return $user->webhooks;
     }
 
@@ -58,9 +55,9 @@ abstract class WebhookController extends Controller
      * @throws PermissionException
      */
     public static function deleteWebhook(
-        User   $user,
+        User $user,
         OAuthClient|null $client,
-        Webhook    $webhook
+        Webhook $webhook
     ): bool {
         if ($user->id != $webhook->user->id || $client != null && $client->id != $webhook->oauthClient->id) {
             throw new PermissionException();
@@ -69,22 +66,19 @@ abstract class WebhookController extends Controller
         return true;
     }
 
-    public static function sendStatusWebhook(Status $status, WebhookEvent $event)
-    {
+    public static function sendStatusWebhook(Status $status, WebhookEvent $event): void {
         self::dispatchWebhook($status->user, $event, [
             'status' => new StatusResource($status)
         ]);
     }
 
-    public static function sendNotificationWebhook(User $user, DatabaseNotification $notification)
-    {
+    public static function sendNotificationWebhook(User $user, DatabaseNotification $notification): void {
         self::dispatchWebhook($user, WebhookEvent::NOTIFICATION, [
             'notification' => new UserNotificationResource($notification)
         ]);
     }
 
-    static function dispatchWebhook(User $user, WebhookEvent $event, array $data)
-    {
+    static function dispatchWebhook(User $user, WebhookEvent $event, array $data): void {
         $webhooks = $user->webhooks()
             ->whereBitflag('events', $event->value)
             ->where('user_id', $user->id)
@@ -109,8 +103,7 @@ abstract class WebhookController extends Controller
         }
     }
 
-    public static function deleteAllWebhooks(User $user, Client $client)
-    {
+    public static function deleteAllWebhooks(User $user, Client $client): void {
         Webhook::where('user_id', '=', $user->id)
             ->where('oauth_client_id', '=', $client->id)
             ->delete();
@@ -122,12 +115,12 @@ abstract class WebhookController extends Controller
     public static function createWebhookRequest(
         User $user,
         OAuthClient $client,
-        string $oauth_code,
+        string $oauthCode,
         string $url,
         int  $events,
     ): WebhookCreationRequest {
         return WebhookCreationRequest::create([
-            'id' => hash('sha256', $oauth_code),
+            'id' => hash('sha256', $oauthCode),
             'user_id' => $user->id,
             'oauth_client_id' => $client->id,
             'expires_at' => Carbon::now()->addHour(),
@@ -137,8 +130,8 @@ abstract class WebhookController extends Controller
     }
 
     public static function findWebhookRequest(
-        string $oauth_code,
-    ): WebhookCreationRequest | null {
-        return WebhookCreationRequest::where('id', hash('sha256', $oauth_code))->first();
+        string $oauthCode
+    ): WebhookCreationRequest|null {
+        return WebhookCreationRequest::where('id', hash('sha256', $oauthCode))->first();
     }
 }

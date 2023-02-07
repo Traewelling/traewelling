@@ -6,15 +6,13 @@ use App\Models\User;
 use App\Repositories\OAuthClientRepository;
 use Illuminate\Database\Seeder;
 
-class ClientSeeder extends Seeder
-{
+class ClientSeeder extends Seeder {
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $gertrud = User::where('username', 'Gertrud123')->first();
         $clients = new OAuthClientRepository();
         $clients->create(

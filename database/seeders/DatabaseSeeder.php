@@ -7,11 +7,9 @@ use App\Models\Location;
 use App\Models\TrainStation;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
 
-    public function run(): void
-    {
+    public function run(): void {
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(FollowTableSeeder::class);

@@ -17,8 +17,7 @@ use Illuminate\Support\Str;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Spatie\ValidationRules\Rules\Delimited;
 
-class AuthorizationController extends PassportAuthorizationController
-{
+class AuthorizationController extends PassportAuthorizationController {
     // most of this is based on passports original code
     // see: https://github.com/laravel/passport/blob/11.x/src/Http/Controllers/AuthorizationController.php
     /**
@@ -105,8 +104,7 @@ class AuthorizationController extends PassportAuthorizationController
         ]);
     }
 
-    function parseWebhookExtensions(Request $request, OAuthClient $client)
-    {
+    function parseWebhookExtensions(Request $request, OAuthClient $client) {
         if (!$request->has('trwl_webhook_url') && !$request->has('trwl_webhook_events')) {
             return null;
         }

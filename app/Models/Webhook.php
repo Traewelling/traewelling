@@ -12,8 +12,7 @@ use Laravel\Passport\Passport;
 /**
  * @mixin Builder
  */
-class Webhook extends Model
-{
+class Webhook extends Model {
     use HasFactory;
 
     protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret', 'events'];
@@ -27,13 +26,11 @@ class Webhook extends Model
         'events'          => Bitflags::class,
     ];
 
-    public function client(): BelongsTo
-    {
+    public function client(): BelongsTo {
         return $this->belongsTo(Passport::clientModel(), 'oauth_client_id');
     }
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 }
