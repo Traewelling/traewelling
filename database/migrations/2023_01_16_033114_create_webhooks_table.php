@@ -8,7 +8,6 @@ return new class extends Migration {
     public function up() {
         Schema::create('webhooks', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->foreignId('oauth_client_id')
                 ->constrained()
                 ->cascadeOnUpdate()
@@ -20,6 +19,7 @@ return new class extends Migration {
             $table->text('url');
             $table->text('secret')->nullable();
             $table->unsignedInteger('events');
+            $table->timestamps();
         });
     }
 
