@@ -62,10 +62,8 @@ abstract class WebhookController extends Controller
         OAuthClient|null $client,
         Webhook    $webhook
     ): bool {
-        if ($client != null) {
-            if ($user->id != $webhook->user->id || $client->id != $webhook->oauthClient->id) {
-                throw new PermissionException();
-            }
+        if ($user->id != $webhook->user->id || $client != null && $client->id != $webhook->oauthClient->id) {
+            throw new PermissionException();
         }
         $webhook->delete();
         return true;
