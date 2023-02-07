@@ -12,9 +12,9 @@ return new class extends Migration {
      */
     public function up() {
         Schema::table('oauth_clients', function (Blueprint $table) {
-            $table->string('privacy_policy_url')->nullable();
-            $table->boolean('webhooks_enabled')->default(false);
-            $table->string('authorized_webhook_url')->nullable();
+            $table->string('authorized_webhook_url')->nullable()->after('redirect');
+            $table->string('privacy_policy_url')->nullable()->after('redirect');
+            $table->boolean('webhooks_enabled')->default(false)->after('redirect');
         });
     }
 
