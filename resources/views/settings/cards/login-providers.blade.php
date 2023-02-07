@@ -7,28 +7,28 @@
                 <tr>
                     <td>
                         <i class="fab fa-twitter"></i>
-                        Twitter
+                        Twitter <br>
+                        <a href="https://blog.traewelling.de/posts/twitter-deprecation/">
+                            <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
+                        </a>
                     </td>
                     @if (auth()->user()?->socialProfile?->twitter_id != null)
-                        <td class="text-success">
+                        <td class="text-success align-middle">
                             <i class="fas fa-check"></i>
                             {{ __('settings.connected') }}
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <a href="javascript:void(0)" data-provider="twitter"
                                class="btn btn-sm btn-outline-danger disconnect">
                                 {{ __('settings.disconnect') }}
                             </a>
                         </td>
                     @else
-                        <td class="text-danger">
+                        <td class="text-danger align-middle">
                             <i class="fas fa-times"></i>
                             {{ __('settings.notconnected') }}
                         </td>
-                        <td>
-                            <a href="{{ url('/auth/redirect/twitter') }}" class="btn btn-sm btn-primary">
-                                {{ __('settings.connect') }}
-                            </a>
+                        <td class="align-middle">
                         </td>
                     @endif
                 </tr>

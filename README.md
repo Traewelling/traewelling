@@ -22,7 +22,7 @@
 * Follow other people and see where they're going
 * Meet new friends who are on the same trip
 * Find who's going to an event and is with you in your journey
-* Optional sharing to Twitter and Mastodon
+* Optional sharing to Mastodon
 * See statistics about your trips
 * Export your trips to CSV, JSON or PDF
 * Create own applications with our API
@@ -70,7 +70,7 @@ cp .env.example .env
 vi .env
 ```
 
-Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Twitter).
+Please change whatever sounds wrong to you. This is also the place to add API keys (e.g. for Mastodon).
 While you will not need all of those, you can stumble into weird bugs.
 
 Then, generate some application keys and migrate the database to the latest level:

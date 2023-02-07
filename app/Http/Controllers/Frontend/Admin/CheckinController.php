@@ -14,7 +14,6 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Jobs\PostStatusOnMastodon;
-use App\Jobs\PostStatusOnTwitter;
 use App\Models\Event;
 use App\Models\Status;
 use App\Models\TrainStation;
@@ -123,7 +122,6 @@ class CheckinController
                                             'business'          => ['nullable', new Enum(Business::class)],
                                             'visibility'        => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'           => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'             => ['nullable', 'max:2'],
                                             'toot'              => ['nullable', 'max:2'],
                                             'shouldChain_check' => ['nullable', 'max:2'],
                                             'tripId'            => ['required'],
@@ -155,16 +153,11 @@ class CheckinController
                 body:         $validated['body'] ?? null,
                 event:        isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force: isset($validated['force']),
-                postOnTwitter: isset($request->tweet_check),
                 postOnMastodon: isset($request->toot_check),
                 shouldChain: isset($request->shouldChain_check)
             );
 
             $status = $backendResponse['status'];
-
-            PostStatusOnTwitter::dispatchIf(isset($validated['tweet'])
-                                            && $user?->socialProfile?->twitter_id !== null,
-                                            $status);
 
             PostStatusOnMastodon::dispatchIf(isset($validated['toot'])
                                              && $user?->socialProfile?->mastodon_id !== null,
