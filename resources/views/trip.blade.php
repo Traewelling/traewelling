@@ -107,18 +107,6 @@
 
                         <div class="mt-2">
                             @if (auth()->user()->socialProfile != null)
-                                @if (auth()->user()->socialProfile->twitter_id != null)
-                                    <div class="btn-group">
-                                        <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
-                                               name="tweet_check"/>
-                                        <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
-                                            <i class="fab fa-twitter"></i>
-                                            <span
-                                                class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
-                                        </label>
-                                    </div>
-                                @endif
-
                                 @if (auth()->user()->socialProfile->mastodon_id != null)
                                     <div class="btn-group">
                                         <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"
