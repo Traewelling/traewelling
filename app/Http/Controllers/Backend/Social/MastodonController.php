@@ -123,6 +123,8 @@ abstract class MastodonController extends Controller
     }
 
     /**
+     * See: https://docs.joinmastodon.org/methods/statuses/#create
+     *
      * @throws GuzzleException
      * @throws Exception
      */
@@ -151,7 +153,7 @@ abstract class MastodonController extends Controller
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
             $postResponse = Mastodon::createStatus($statusText, [
-                'visibility'     => 'unlisted',
+                'visibility'     => strtolower($status->user->socialProfile->mastodon_visibility->name),
                 'in_reply_to_id' => $traverseChain
             ]);
 
