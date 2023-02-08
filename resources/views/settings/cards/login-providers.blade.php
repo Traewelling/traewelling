@@ -8,7 +8,7 @@
                     <td>
                         <i class="fab fa-twitter"></i>
                         Twitter <br>
-                        <a href="https://blog.traewelling.de/posts/twitter-deprecation/">
+                        <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
                             <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
                         </a>
                     </td>
