@@ -62,7 +62,6 @@ abstract class TrainCheckinController extends Controller
         ?string          $body = null,
         ?Event           $event = null,
         bool             $force = false,
-        bool             $postOnTwitter = false,
         bool             $postOnMastodon = false,
         bool             $shouldChain = false
     ): array {
@@ -91,7 +90,6 @@ abstract class TrainCheckinController extends Controller
 
             UserCheckedIn::dispatch(
                 $status,
-                $postOnTwitter && $user->socialProfile?->twitter_id !== null,
                 $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
                 $shouldChain
             );
