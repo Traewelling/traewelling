@@ -12,9 +12,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('social_login_profiles', function (Blueprint $table) {
+    public function up(): void {
+        Schema::table('social_login_profiles', static function(Blueprint $table) {
             $table->unsignedTinyInteger('mastodon_visibility')
                   ->default(MastodonVisibility::UNLISTED->value)
                   ->after('mastodon_token');
@@ -26,9 +25,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::table('social_login_profiles', function (Blueprint $table) {
+    public function down(): void {
+        Schema::table('social_login_profiles', static function(Blueprint $table) {
             $table->dropColumn('mastodon_visibility');
         });
     }
