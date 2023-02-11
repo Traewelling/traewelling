@@ -16,109 +16,47 @@
     </head>
 
     <body>
-        <main>
-            <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
-                <a href="{{ route('admin.dashboard') }}"
-                   class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{route('admin.dashboard')}}">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                          class="brand-image me-3" style="width: 30px; opacity: 0.8">
-                    <span class="fs-4 d-none d-lg-inline">TRWL Admin</span>
+                    TRWL Admin
                 </a>
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link text-muted">
-                            <i class="fas fa-backward me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            Dashboard
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.dashboard') }}"
-                           class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Dashboard</span>
+                        <a class="nav-link" href="{{ route('admin.events') }}">
+                            Veranstaltungen
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{route('admin.events')}}"
-                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
-                            <i class="fas fa-calendar me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Veranstaltungen</span>
+                        <a class="nav-link" href="{{ route('admin.status') }}">
+                            Status
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.status') }}"
-                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
-                            <i class="fas fa-train me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Status</span>
+                        <a class="nav-link" href="{{ route('admin.stationboard') }}">
+                            Checkin
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.stationboard') }}"
-                           class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
-                            <i class="fas fa-ticket-alt me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Checkin</span>
+                        <a class="nav-link" href="{{ route('admin.users') }}">
+                            Users
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.users') }}"
-                           class="nav-link text-white {{ request()->is('admin/users*') ? 'active' : '' }}">
-                            <i class="fas fa-users me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Users</span>
+                        <a class="nav-link" href="{{ route('admin.locations') }}">
+                            Locations
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.locations') }}"
-                           class="nav-link text-white {{ request()->is('admin/locations*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Locations</span>
+                        <a class="nav-link" href="{{ route('admin.api.usage') }}">
+                            API Usage
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.api.usage') }}"
-                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-book me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">API Usage</span>
-                        </a>
-                    </li>
-                </ul>
-                <hr>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                            alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong class="d-none d-lg-inline">{{auth()->user()->name}}</strong>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                        <li>
-                            <a class="dropdown-item" href="{{ url('profile/' . Auth::user()->username) }}">
-                                <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('settings') }}">
-                                <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" form="logout-form" type="submit">
-                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
-                            </button>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                  style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
+                    </div>
                 </div>
             </div>
-            <div class="container-fluid bg-light px-5 pt-4" style="overflow-y: scroll !important;">
+        </nav>
+        <main>
+            <div class="container-fluid">
                 @hasSection('title')
                     <h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
                 @endif
