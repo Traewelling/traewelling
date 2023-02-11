@@ -8,12 +8,6 @@
             <div class="col-12 mb-3">
                 <h1 class="fs-4">{{__('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))])}}</h1>
 
-                <div class="alert alert-danger">
-                    {{__('experimental-feature')}}
-                    -
-                    {{__('data-may-incomplete')}}
-                </div>
-
                 <a href="{{route('stats.daily', ['dateString' => $date->clone()->subDay()->format('Y-m-d')])}}"
                    class="btn btn-primary"
                 >
@@ -29,6 +23,18 @@
                     </a>
                 @endif
             </div>
+
+            <div class="col-12">
+                <!-- ToDo: Make this look better -->
+
+                {{$statuses->count()}}
+                Fahrten
+
+                {{$statuses->sum('trainCheckin.distance') / 1000}} km
+
+                {{$statuses->sum('trainCheckin.duration')}} min
+            </div>
+
             <div class="col-md-6 mb-4">
                 <div id="map" style="min-height: 600px;"></div>
                 <script>
@@ -50,18 +56,20 @@
                         ).addTo(map);
 
                         @foreach($statuses as $status)
-                            try {
-                            let coordinates = {{json_encode($status->mapLines)}};
+                        try {
+                        let coordinates = {{json_encode($status->mapLines)}};
                             L.polyline(coordinates)
                                 .setStyle({color: "rgb(192, 57, 43)", weight: 5})
                                 .addTo(featureGroup);
                         } catch (e) {
                             console.error(e);
                         }
-                        @endforeach
 
-                        map.fitBounds(featureGroup.getBounds());
-                    });
+                    @endforeach
+
+                    map.fitBounds(featureGroup.getBounds());
+                });
+
                 </script>
             </div>
             <div class="col-md-6">
