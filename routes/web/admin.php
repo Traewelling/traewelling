@@ -5,12 +5,16 @@ use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LocationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
+use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
+
+    Route::get('/trip/create', [TripController::class, 'renderForm'])->name('admin.trip.create');
+    Route::post('/trip/create', [TripController::class, 'createTrip']);
 
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])

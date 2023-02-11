@@ -257,7 +257,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        if ($originStopover) {
+        if ($originStopover && !str_starts_with($tripId, 'manual-')) {
             dispatch(function() use ($originStopover) {
                 HafasController::refreshStopover($originStopover);
             })->afterResponse();
