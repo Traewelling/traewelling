@@ -24,17 +24,6 @@
                 @endif
             </div>
 
-            <div class="col-12">
-                <!-- ToDo: Make this look better -->
-
-                {{$statuses->count()}}
-                Fahrten
-
-                {{$statuses->sum('trainCheckin.distance') / 1000}} km
-
-                {{$statuses->sum('trainCheckin.duration')}} min
-            </div>
-
             <div class="col-md-6 mb-4">
                 <div id="map" style="min-height: 600px;"></div>
                 <script>
@@ -78,6 +67,22 @@
                         {{__('no-journeys-day')}}
                     </div>
                 @else
+                    <div class="row text-center mb-3 fs-5">
+                        <div class="col-lg-4">
+                            <i class="fa-solid fa-train"></i>
+                            {{$statuses->count()}}
+                            {{__('stats.trips')}}
+                        </div>
+                        <div class="col-lg-4">
+                            <i class="fa-solid fa-route"></i>
+                            {{round($statuses->sum('trainCheckin.distance') / 1000)}} km
+                        </div>
+                        <div class="col-lg-4">
+                            <i class="fa-regular fa-clock"></i>
+                            {{$statuses->sum('trainCheckin.duration')}} min
+                        </div>
+                    </div>
+
                     @foreach($statuses as $status)
                         @include('includes.status')
                     @endforeach
