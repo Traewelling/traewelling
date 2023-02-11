@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Frontend\Admin\ApiUsageController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;

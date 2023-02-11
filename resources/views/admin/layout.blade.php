@@ -48,9 +48,6 @@
                         <a class="nav-link" href="{{ route('admin.locations') }}">
                             Locations
                         </a>
-                        <a class="nav-link" href="{{ route('admin.api.usage') }}">
-                            API Usage
-                        </a>
                     </div>
                 </div>
             </div>
