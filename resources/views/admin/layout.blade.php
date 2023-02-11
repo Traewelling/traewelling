@@ -45,9 +45,6 @@
                         <a class="nav-link" href="{{ route('admin.users') }}">
                             Users
                         </a>
-                        <a class="nav-link" href="{{ route('admin.locations') }}">
-                            Locations
-                        </a>
                     </div>
                 </div>
             </div>

@@ -21,22 +21,6 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.checkin');
     });
 
-    Route::prefix('locations')->group(function() {
-        Route::get('/', [LocationController::class, 'index'])
-             ->name('admin.locations');
-
-        Route::get('/edit/{id}', [LocationController::class, 'renderEdit'])
-             ->name('admin.locations.edit');
-        Route::post('/edit/{id}', [LocationController::class, 'edit']);
-
-        Route::view('/create', 'admin.locations.edit')
-             ->name('admin.locations.create');
-        Route::post('/create', [LocationController::class, 'create']);
-
-        Route::post('/delete', [LocationController::class, 'delete'])
-             ->name('admin.locations.delete');
-    });
-
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'renderIndex'])
              ->name('admin.users');
