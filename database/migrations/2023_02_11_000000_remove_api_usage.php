@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void {
-        Schema::dropIfExists('api_usage');
+        Schema::dropIfExists('api_logs');
     }
 
     public function down(): void {
