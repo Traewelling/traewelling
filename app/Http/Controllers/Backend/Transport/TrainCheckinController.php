@@ -237,7 +237,7 @@ abstract class TrainCheckinController extends Controller
     /**
      * @param string $tripId
      * @param string $lineName
-     * @param int    $start
+     * @param int    $startId
      *
      * @return HafasTrip
      * @throws HafasException

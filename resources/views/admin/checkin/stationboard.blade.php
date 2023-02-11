@@ -230,7 +230,7 @@
                                 @foreach($lastStatuses as $status)
                                     <tr>
                                         <td>
-                                            <a href="{{route('statuses.get', ['id' => $status->id])}}">
+                                            <a href="{{route('statuses.get', ['id' => $status->id])}}" target="_blank">
                                                 {{$status->id}}
                                             </a>
                                         </td>
