@@ -13,9 +13,6 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
-    Route::get('/api/usage', [ApiUsageController::class, 'showUsage'])
-         ->name('admin.api.usage');
-
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
              ->name('admin.stationboard');
