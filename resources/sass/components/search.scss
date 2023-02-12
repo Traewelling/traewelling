@@ -5,5 +5,14 @@
 }
 
 .stationSearchButton {
+  align-items: center;
   border: 1px solid #bdbdbd;
+  border-left-width: 0;
+  display: flex;
+  gap: 0.25em;
+
+  &:hover,
+  &:focus {
+    border-color: #bdbdbd !important;
+  }
 }

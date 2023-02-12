@@ -38,10 +38,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="{{ url('/auth/redirect/twitter') }}">Twitter</a>
-                    <a href="{{ url('/login') }}">Mastodon</a>
-                </div>
-                <div class="links">
+                    <a href="{{ url('/login') }}">{{__('menu.login')}}</a>
                     <a href="{{ url('/leaderboard') }}">{{__('menu.leaderboard')}}</a>
                     <a href="{{ route('static.about') }}">{{ __('menu.about')}}</a>
                     <a href="{{ url('/statuses/active') }}">{{__('menu.active')}}</a>

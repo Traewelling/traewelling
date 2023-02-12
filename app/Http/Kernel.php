@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\Api\JsonMiddleware;
-use App\Http\Middleware\ApiLogMiddleware;
 use App\Http\Middleware\SemiGuest;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -46,7 +45,6 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             JsonMiddleware::class,
             'bindings',
-            ApiLogMiddleware::class,
             \App\Http\Middleware\Language::class,
         ],
     ];
@@ -60,7 +58,6 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth'           => \App\Http\Middleware\Authenticate::class,
-        'api.log'        => ApiLogMiddleware::class,
         'semiguest'      => SemiGuest::class,
         'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'       => \Illuminate\Routing\Middleware\SubstituteBindings::class,
