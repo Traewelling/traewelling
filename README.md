@@ -9,7 +9,7 @@
 [![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev)
 [![Codacy Badge](https://img.shields.io/codacy/grade/60765ceacee5494184476eae9bf27a1f)](https://app.codacy.com/gh/Traewelling/traewelling?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Coverage Badge](https://img.shields.io/codacy/coverage/60765ceacee5494184476eae9bf27a1f)](https://www.codacy.com/gh/Traewelling/traewelling/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Coverage)
-[![Translation status](https://weblate.bubu1.eu/widgets/trawelling/-/common/svg-badge.svg)](https://weblate.bubu1.eu/engage/trawelling/)
+[![Translation status](https://translate.codeberg.org/widgets/trawelling/-/traewelling/svg-badge.svg)](https://translate.codeberg.org/engage/trawelling/)
 ![License](https://img.shields.io/github/license/traewelling/traewelling)
 [![Staging Environment](https://img.shields.io/github/actions/workflow/status/traewelling/traewelling/staging-environment.yml?branch=develop&color=%234f46e5&label=Staging%20Environment&logo=%F0%9F%9A%80)](https://trwl-develop-environment.fly.dev)
 
@@ -107,7 +107,7 @@ If you want, you can [join our discord server](https://discord.gg/QypAnG2qAw) fo
 We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
 international and for this we need you and your language skills.
 
-We use a [Weblate instance](https://weblate.bubu1.eu/projects/trawelling/) to manage the translations. There you can add
+We use a [Weblate instance](https://translate.codeberg.org/engage/trawelling/) to manage the translations. There you can add
 new translations and correct mistakes.
 
 ### Security

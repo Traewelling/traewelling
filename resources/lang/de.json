@@ -616,5 +616,6 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "active-tokens-count": ":count aktive Token|:count aktive Tokens",
-    "source": "Quelle"
+    "source": "Quelle",
+    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest."
 }
