@@ -13,6 +13,9 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
+    Route::get('/stats', [DashboardController::class, 'renderStats'])
+         ->name('admin.stats');
+
     Route::get('/trip/create', [TripController::class, 'renderForm'])->name('admin.trip.create');
     Route::post('/trip/create', [TripController::class, 'createTrip']);
 

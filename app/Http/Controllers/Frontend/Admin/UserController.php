@@ -12,12 +12,11 @@ class UserController
 {
 
     public function renderIndex(Request $request): View|RedirectResponse {
-        $validated = $request->validate(['query' => ['nullable'], 'userId' => ['nullable', 'integer']]);
+        $validated = $request->validate(['query' => ['nullable']]);
 
-        if (isset($validated['userId'])) {
-            $users = User::where('id', $validated['userId'])->simplePaginate(10);
-        } elseif (isset($validated['query'])) {
-            $users = User::where('name', 'like', '%' . $validated['query'] . '%')
+        if (isset($validated['query'])) {
+            $users = User::where('id', $validated['query'])
+                         ->orWhere('name', 'like', '%' . $validated['query'] . '%')
                          ->orWhere('username', 'like', '%' . $validated['query'] . '%')
                          ->simplePaginate(10);
         } else {
@@ -30,6 +29,4 @@ class UserController
             'userId' => $validated['userId'] ?? ''
         ]);
     }
-
-
 }

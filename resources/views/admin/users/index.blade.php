@@ -3,35 +3,19 @@
 @section('title', 'Users')
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card mb-2">
-                <div class="card-body">
-                    <form class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="inputUsername" name="query"
-                                       value="{{$query}}"
-                                       placeholder="Username / Displayname / SupportCode"/>
-                                <label for="inputUsername" class="form-label">Username / Displayname /
-                                    SupportCode</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="inputId" name="userId" value="{{$userId}}"
-                                       placeholder="UserID"/>
-                                <label for="inputId" class="form-label">UserID</label>
-                            </div>
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-primary">Suchen</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+
+    <form>
+        <div class="input-group mb-3">
+            <input type="text" name="query" class="form-control"
+                   placeholder="Search by: UserID, Username or Displayname"
+                   aria-describedby="button-search"/>
+            <button class="btn btn-outline-secondary" type="button" id="button-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search
+            </button>
         </div>
-    </div>
+    </form>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
