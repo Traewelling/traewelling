@@ -24,12 +24,8 @@
                         <table class="table table-striped table-hover" aria-labelledby="pageTitle">
                             <thead>
                                 <tr>
-                                    <th class="d-sm-table-cell d-xl-none text-center">Aktionen</th>
-                                    <th class="text-center">#</th>
-                                    <th>Username</th>
-                                    <th>Displayname</th>
-                                    <th>Registrierung</th>
-                                    <th>DSGVO-Accept</th>
+                                    <th>Name</th>
+                                    <th>Last login</th>
                                     <th>Mail</th>
                                     <th class="text-end">Aktionen</th>
                                 </tr>
@@ -37,25 +33,35 @@
                             <tbody>
                                 <tr>
                                     @foreach($users as $user)
-                                        <td class="d-sm-table-cell d-xl-none text-center">
-                                            <a href="{{ route('admin.stationboard') }}?userQuery={{ $user->id }}"
-                                               class="btn btn-small btn-success" title="Neuen Checkin erstellen">
-                                                <i class="fas fa-plus-circle"></i>
-                                            </a>
-                                        </td>
-                                        <td class="text-center">
-                                            <code>{{ $user->id }}</code>
-                                        </td>
                                         <td>
-                                            <a href="{{ route('profile', ['username' => $user->username]) }}"
-                                               target="_blank">
+                                            <a href="{{ route('admin.users.user', ['id' => $user->id]) }}">
                                                 {{ '@'.$user->username }}
                                             </a>
+                                            <code>({{ $user->id }})</code>
+                                            <br/>
+                                            {{ $user->name }}
                                         </td>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $user->created_at }}</td>
-                                        <td>{{ $user->privacy_ack_at }}</td>
-                                        <td>{{ $user->email }}<br/>{{ $user->email_verified_at }}</td>
+                                        <td>
+                                            {{ $user->last_login->diffForHumans() }}<br/>
+                                            <small>({{$user->last_login}})</small>
+                                        </td>
+                                        <td>
+                                            @isset($user->email)
+                                                {{ $user->email }}
+                                                <br/>
+                                                @isset($user->email_verified_at)
+                                                    <small class="text-success">
+                                                        <i class="fa-solid fa-check"></i>
+                                                        Verified {{$user->email_verified_at->diffForHumans()}}
+                                                    </small>
+                                                @else
+                                                    <small class="text-danger">
+                                                        <i class="fa-solid fa-times"></i>
+                                                        Not verified
+                                                    </small>
+                                                @endisset
+                                            @endisset
+                                        </td>
                                         <td class="text-end">
                                             <div class="btn-group">
                                                 @isset($user->twitterUrl)

@@ -31,6 +31,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'renderIndex'])
              ->name('admin.users');
+        Route::get('/{id}', [UserController::class, 'renderUser'])
+             ->name('admin.users.user');
     });
 
     Route::prefix('status')->group(function() {

@@ -54,6 +54,10 @@
                             <i class="fa-solid fa-plus"></i>
                             Trips
                         </a>
+                        <a class="nav-link" href="{{ route('admin.stats') }}">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Stats
+                        </a>
                     </div>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
