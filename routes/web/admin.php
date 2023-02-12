@@ -16,9 +16,6 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/stats', [DashboardController::class, 'renderStats'])
          ->name('admin.stats');
 
-    Route::get('/trip/create', [TripController::class, 'renderForm'])->name('admin.trip.create');
-    Route::post('/trip/create', [TripController::class, 'createTrip']);
-
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
              ->name('admin.stationboard');
@@ -41,6 +38,15 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
         Route::get('/edit', [StatusEditController::class, 'renderEdit'])
              ->name('admin.status.edit');
         Route::post('/edit', [StatusEditController::class, 'edit']);
+    });
+
+    Route::prefix('trip')->group(function() {
+        Route::get('/create', [TripController::class, 'renderForm'])
+             ->name('admin.trip.create');
+        Route::post('/create', [TripController::class, 'createTrip']);
+
+        Route::get('/{id}', [TripController::class, 'renderTrip'])
+             ->name('admin.trip.show');
     });
 
     Route::prefix('events')->group(function() {

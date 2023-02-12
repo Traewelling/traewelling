@@ -13,6 +13,15 @@ use Illuminate\View\View;
 
 class TripController
 {
+
+    public function renderTrip(string $id): View {
+        $trip = HafasTrip::with(['checkIns'])
+                         ->where('trip_id', $id)->firstOrFail();
+        return view('admin.trip.show', [
+            'trip' => $trip
+        ]);
+    }
+
     /**
      * This form is currently for testing purposes only.
      * Admins can create a trip with manually entered data.
