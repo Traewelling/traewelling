@@ -67,21 +67,21 @@
                         {{__('no-journeys-day')}}
                     </div>
                 @else
-                    <div class="row text-center mb-3 fs-5">
-                        <div class="col-lg-3">
+                    <div class="row text-center fs-5" id="daily-stats-statsbar">
+                        <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-solid fa-train"></i>
                             {{$statuses->count()}}
                             {{__('stats.trips')}}
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-solid fa-route"></i>
                             {{round($statuses->sum('trainCheckin.distance') / 1000)}} km
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-regular fa-clock"></i>
                             {!! durationToSpan(secondsToDuration($statuses->sum('trainCheckin.duration') * 60)) !!}
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-regular fa-dice-d20"></i>
                             {{$statuses->sum('trainCheckin.points')}} {{__('profile.points-abbr')}}
                         </div>
