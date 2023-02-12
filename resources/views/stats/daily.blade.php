@@ -90,4 +90,7 @@
             </div>
         </div>
     </div>
+
+    @include('includes.edit-modal')
+    @include('includes.delete-modal')
 @endsection
