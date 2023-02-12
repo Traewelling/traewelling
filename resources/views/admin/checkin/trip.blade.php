@@ -133,8 +133,5 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
-            @include('admin.users.usercard')
-        </div>
     </div>
 @endsection

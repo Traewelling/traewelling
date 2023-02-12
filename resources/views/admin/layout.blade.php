@@ -5,18 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
-        <title>@yield('title') | Admin | {{ config('app.name') }}</title>
+        <title>@hasSection('title')@yield('title') | @endif Admin | {{ config('app.name') }}</title>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
-        <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/admin.css') }}">
         <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
-        <script src="{{ asset('js/admin.js') }}"></script>
+        <script src="{{ mix('js/admin.js') }}"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark" id="navbar-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{route('admin.dashboard')}}">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
@@ -29,61 +29,80 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
+                    <div class="navbar-nav me-auto">
                         <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <i class="fa-solid fa-table-columns"></i>
                             Dashboard
                         </a>
+                        <a class="nav-link" href="{{ route('admin.users') }}">
+                            <i class="fa-solid fa-users"></i>
+                            Users
+                        </a>
                         <a class="nav-link" href="{{ route('admin.events') }}">
-                            Veranstaltungen
+                            <i class="fa-solid fa-calendar"></i>
+                            Events
                         </a>
                         <a class="nav-link" href="{{ route('admin.status') }}">
+                            <i class="fa-solid fa-broadcast-tower"></i>
                             Status
                         </a>
                         <a class="nav-link" href="{{ route('admin.stationboard') }}">
+                            <i class="fa-solid fa-train"></i>
                             Checkin
                         </a>
-                        <a class="nav-link" href="{{ route('admin.users') }}">
-                            Users
+                        <a class="nav-link" href="{{ route('admin.trip.create') }}">
+                            <i class="fa-solid fa-plus"></i>
+                            Trips
+                        </a>
+                        <a class="nav-link" href="{{ route('admin.stats') }}">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Stats
                         </a>
                     </div>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">
+                                <i class="fas fa-home"></i>
+                                Back to Träwelling
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
-        <main>
-            <div class="container-fluid">
-                @hasSection('title')
-                    <h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
-                @endif
-                @if ($errors->any())
+        <main class="container-fluid pt-3">
+            @hasSection('title')
+                <h1 class="mb-3 text-dark fs-3" id="pageTitle">@yield('title')</h1>
+            @endif
+            @if ($errors->any())
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <h2 class="text-alert">Some errors occurred:</h2>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                @if(Session::has('alert-' . $msg))
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="alert alert-danger">
-                                <h2 class="text-alert">Es sind Fehler aufgetreten:</h2>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <p class="alert alert-{{ $msg }}">
+                                {!! Session::get('alert-' . $msg) !!}
+                            </p>
+                            <hr/>
                         </div>
                     </div>
                 @endif
-                @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-                    @if(Session::has('alert-' . $msg))
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="alert alert-{{ $msg }}">
-                                    {!! Session::get('alert-' . $msg) !!}
-                                </p>
-                                <hr/>
-                            </div>
-                        </div>
-                    @endif
-                    {{ Session::forget('alert-' . $msg) }}
-                @endforeach
+                {{ Session::forget('alert-' . $msg) }}
+            @endforeach
 
-                @yield('content')
-            </div>
+            @yield('content')
         </main>
         @yield('scripts')
     </body>
