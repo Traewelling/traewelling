@@ -13,8 +13,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
-    Route::get('/trip/create', [TripController::class, 'renderForm'])->name('admin.trip.create');
-    Route::post('/trip/create', [TripController::class, 'createTrip']);
+    Route::get('/stats', [DashboardController::class, 'renderStats'])
+         ->name('admin.stats');
 
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
@@ -28,6 +28,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'renderIndex'])
              ->name('admin.users');
+        Route::get('/{id}', [UserController::class, 'renderUser'])
+             ->name('admin.users.user');
     });
 
     Route::prefix('status')->group(function() {
@@ -36,6 +38,15 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
         Route::get('/edit', [StatusEditController::class, 'renderEdit'])
              ->name('admin.status.edit');
         Route::post('/edit', [StatusEditController::class, 'edit']);
+    });
+
+    Route::prefix('trip')->group(function() {
+        Route::get('/create', [TripController::class, 'renderForm'])
+             ->name('admin.trip.create');
+        Route::post('/create', [TripController::class, 'createTrip']);
+
+        Route::get('/{id}', [TripController::class, 'renderTrip'])
+             ->name('admin.trip.show');
     });
 
     Route::prefix('events')->group(function() {
