@@ -79,7 +79,7 @@
                         </div>
                         <div class="col-lg-4">
                             <i class="fa-regular fa-clock"></i>
-                            {{$statuses->sum('trainCheckin.duration')}} min
+                            {!! durationToSpan(secondsToDuration($statuses->sum('trainCheckin.duration') * 60)) !!}
                         </div>
                     </div>
 
