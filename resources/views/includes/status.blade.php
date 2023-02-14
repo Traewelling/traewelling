@@ -165,10 +165,8 @@
         </span>
         <ul class="list-inline">
             @auth
-                <li class="
-                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}"
-                    data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
+                <li class="list-inline-item d-lg-none"
+                    id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img
                             src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"

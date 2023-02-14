@@ -5,153 +5,104 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
-        <title>@yield('title') | Admin | {{ config('app.name') }}</title>
+        <title>@hasSection('title')@yield('title') | @endif Admin | {{ config('app.name') }}</title>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
-        <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+        <link rel="stylesheet" href="{{ mix('css/admin.css') }}">
         <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
-        <script src="{{ asset('js/admin.js') }}"></script>
+        <script src="{{ mix('js/admin.js') }}"></script>
     </head>
 
     <body>
-        <main>
-            <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
-                <a href="{{ route('admin.dashboard') }}"
-                   class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <nav class="navbar navbar-expand-lg navbar-dark" id="navbar-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{route('admin.dashboard')}}">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                          class="brand-image me-3" style="width: 30px; opacity: 0.8">
-                    <span class="fs-4 d-none d-lg-inline">TRWL Admin</span>
+                    TRWL Admin
                 </a>
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link text-muted">
-                            <i class="fas fa-backward me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav me-auto">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <i class="fa-solid fa-table-columns"></i>
+                            Dashboard
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.dashboard') }}"
-                           class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Dashboard</span>
+                        <a class="nav-link" href="{{ route('admin.users') }}">
+                            <i class="fa-solid fa-users"></i>
+                            Users
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{route('admin.events')}}"
-                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
-                            <i class="fas fa-calendar me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Veranstaltungen</span>
+                        <a class="nav-link" href="{{ route('admin.events') }}">
+                            <i class="fa-solid fa-calendar"></i>
+                            Events
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.status') }}"
-                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
-                            <i class="fas fa-train me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Status</span>
+                        <a class="nav-link" href="{{ route('admin.status') }}">
+                            <i class="fa-solid fa-broadcast-tower"></i>
+                            Status
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.stationboard') }}"
-                           class="nav-link text-white {{ request()->is('admin/checkin*') ? 'active' : '' }}">
-                            <i class="fas fa-ticket-alt me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Checkin</span>
+                        <a class="nav-link" href="{{ route('admin.stationboard') }}">
+                            <i class="fa-solid fa-train"></i>
+                            Checkin
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.users') }}"
-                           class="nav-link text-white {{ request()->is('admin/users*') ? 'active' : '' }}">
-                            <i class="fas fa-users me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Users</span>
+                        <a class="nav-link" href="{{ route('admin.trip.create') }}">
+                            <i class="fa-solid fa-plus"></i>
+                            Trips
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.locations') }}"
-                           class="nav-link text-white {{ request()->is('admin/locations*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Locations</span>
+                        <a class="nav-link" href="{{ route('admin.stats') }}">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Stats
                         </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.api.usage') }}"
-                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-book me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">API Usage</span>
-                        </a>
-                    </li>
-                </ul>
-                <hr>
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                            alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong class="d-none d-lg-inline">{{auth()->user()->name}}</strong>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                        <li>
-                            <a class="dropdown-item" href="{{ url('profile/' . Auth::user()->username) }}">
-                                <i class="fas fa-user" aria-hidden="true"></i> {{ __('menu.profile') }}
+                    </div>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}">
+                                <i class="fas fa-home"></i>
+                                Back to Träwelling
                             </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('settings') }}">
-                                <i class="fas fa-cog" aria-hidden="true"></i> {{ __('menu.settings') }}
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" form="logout-form" type="submit">
-                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> {{ __('menu.logout') }}
-                            </button>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                  style="display: none;">
-                                @csrf
-                            </form>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="container-fluid bg-light px-5 pt-4" style="overflow-y: scroll !important;">
-                @hasSection('title')
-                    <h1 class="mt-3 mb-3 text-dark" id="pageTitle">@yield('title')</h1>
-                @endif
-                @if ($errors->any())
+        </nav>
+        <main class="container-fluid pt-3">
+            @hasSection('title')
+                <h1 class="mb-3 text-dark fs-3" id="pageTitle">@yield('title')</h1>
+            @endif
+            @if ($errors->any())
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <h2 class="text-alert">Some errors occurred:</h2>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                @if(Session::has('alert-' . $msg))
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="alert alert-danger">
-                                <h2 class="text-alert">Es sind Fehler aufgetreten:</h2>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            <p class="alert alert-{{ $msg }}">
+                                {!! Session::get('alert-' . $msg) !!}
+                            </p>
+                            <hr/>
                         </div>
                     </div>
                 @endif
-                @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-                    @if(Session::has('alert-' . $msg))
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="alert alert-{{ $msg }}">
-                                    {!! Session::get('alert-' . $msg) !!}
-                                </p>
-                                <hr/>
-                            </div>
-                        </div>
-                    @endif
-                    {{ Session::forget('alert-' . $msg) }}
-                @endforeach
+                {{ Session::forget('alert-' . $msg) }}
+            @endforeach
 
-                @yield('content')
-            </div>
+            @yield('content')
         </main>
         @yield('scripts')
     </body>

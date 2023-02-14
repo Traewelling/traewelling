@@ -63,7 +63,6 @@ abstract class TrainCheckinController extends Controller
         ?string          $body = null,
         ?Event           $event = null,
         bool             $force = false,
-        bool             $postOnTwitter = false,
         bool             $postOnMastodon = false,
         bool             $shouldChain = false
     ): array {
@@ -92,7 +91,6 @@ abstract class TrainCheckinController extends Controller
 
             UserCheckedIn::dispatch(
                 $status,
-                $postOnTwitter && $user->socialProfile?->twitter_id !== null,
                 $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
                 $shouldChain
             );
@@ -242,7 +240,7 @@ abstract class TrainCheckinController extends Controller
     /**
      * @param string $tripId
      * @param string $lineName
-     * @param int    $start
+     * @param int    $startId
      *
      * @return HafasTrip
      * @throws HafasException
@@ -262,7 +260,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        if ($originStopover) {
+        if ($originStopover && !str_starts_with($tripId, 'manual-')) {
             dispatch(function() use ($originStopover) {
                 HafasController::refreshStopover($originStopover);
             })->afterResponse();

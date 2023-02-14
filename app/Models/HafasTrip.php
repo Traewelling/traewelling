@@ -55,4 +55,8 @@ class HafasTrip extends Model
                     ->orderBy('arrival_planned')
                     ->orderBy('departure_planned');
     }
+
+    public function checkIns(): HasMany {
+        return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
+    }
 }

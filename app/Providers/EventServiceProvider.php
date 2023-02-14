@@ -6,7 +6,6 @@ use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
-use App\Jobs\PostStatusOnTwitter;
 use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusDeleteWebhookListener;
@@ -51,8 +50,8 @@ class EventServiceProvider extends ServiceProvider {
         parent::boot();
 
         // Dispatch Jobs from Events
-        Event::listen(fn (UserCheckedIn $event) => PostStatusOnTwitter::dispatchIf($event->shouldPostOnTwitter, $event->status));
-        Event::listen(fn (UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(fn (UserCheckedIn $event)
+        => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
         Event::listen(fn (WebhookCallFailedEvent $event) => Log::error("Webhook call failed", ['event' => $event]));
     }
 }

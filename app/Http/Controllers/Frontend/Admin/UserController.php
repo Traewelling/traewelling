@@ -7,21 +7,24 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-
 class UserController
 {
 
     public function renderIndex(Request $request): View|RedirectResponse {
-        $validated = $request->validate(['query' => ['nullable'], 'userId' => ['nullable', 'integer']]);
+        $validated = $request->validate(['query' => ['nullable']]);
 
-        if (isset($validated['userId'])) {
-            $users = User::where('id', $validated['userId'])->simplePaginate(10);
-        } elseif (isset($validated['query'])) {
-            $users = User::where('name', 'like', '%' . $validated['query'] . '%')
+        if (isset($validated['query'])) {
+            $users = User::where('id', $validated['query'])
+                         ->orWhere('name', 'like', '%' . $validated['query'] . '%')
                          ->orWhere('username', 'like', '%' . $validated['query'] . '%')
+                         ->orderByDesc('last_login')
                          ->simplePaginate(10);
         } else {
-            $users = User::simplePaginate(10);
+            $users = User::orderByDesc('last_login')->simplePaginate(10);
+        }
+
+        if ($users->count() === 1) {
+            return redirect()->route('admin.users.user', ['id' => $users->first()->id]);
         }
 
         return view('admin.users.index', [
@@ -31,5 +34,10 @@ class UserController
         ]);
     }
 
-
+    public function renderUser(int $id): View {
+        $user = User::findOrFail($id);
+        return view('admin.users.show', [
+            'user' => $user
+        ]);
+    }
 }

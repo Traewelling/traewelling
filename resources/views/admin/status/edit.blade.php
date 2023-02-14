@@ -94,40 +94,5 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-12 mt-2">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Stopovers (gesamter Trip)</h5>
-
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">TRWL-ID</th>
-                                <th scope="col">IBNR</th>
-                                <th scope="col">Ankunft plan</th>
-                                <th scope="col">real</th>
-                                <th scope="col">Abfahrt plan</th>
-                                <th scope="col">real</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
-                                <tr>
-                                    <td>{{$stopover->trainStation?->name}}</td>
-                                    <td>{{$stopover->trainStation?->id}}</td>
-                                    <td>{{$stopover->trainStation?->ibnr}}</td>
-                                    <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
-                                    <td>{{$stopover->arrival_real?->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_planned->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_real?->format('H:i')}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
