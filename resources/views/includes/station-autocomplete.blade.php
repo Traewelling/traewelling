@@ -17,22 +17,27 @@
                     />
 
                     @if($latest->count() > 0 || auth()->user()->home)
-                        <div class="btn btn-outline-grey stationSearchButton"
-                             data-mdb-toggle="collapse"
-                             data-mdb-target="#last-stations"
-                             title="{{__('stationboard.last-stations')}}"
+                        <button type="button"
+                                class="btn btn-outline-dark stationSearchButton"
+                                data-mdb-ripple-color="dark"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#last-stations"
+                                title="{{__('stationboard.last-stations')}}"
                         >
                             <i class="fa fa-history"></i>
-                        </div>
+                        </button>
                     @endif
 
-                    <div class="btn btn-outline-grey stationSearchButton" id="gps-button"
-                         title="{{__('stationboard.search-by-location')}}">
+                    <button type="button"
+                            class="btn btn-outline-dark stationSearchButton"
+                            id="gps-button"
+                            data-mdb-ripple-color="dark"
+                            title="{{__('stationboard.search-by-location')}}">
                         <i class="fa fa-map-marker-alt"></i>
                         <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                    </div>
+                    </button>
                 </div>
             </div>
             <div class="list-group collapse" id="last-stations">

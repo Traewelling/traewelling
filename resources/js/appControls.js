@@ -19,7 +19,6 @@ $(document).on("click", ".like", function (event) {
     statusId = event.target.dataset.trwlStatusId;
 
     let $likeCount   = document.getElementById("like-count-" + statusId);
-    let $smallAvatar = document.getElementById("avatar-small-" + statusId);
     let count        = parseInt($likeCount.innerText);
 
     if (event.target.className === "like far fa-star") {
@@ -33,14 +32,8 @@ $(document).on("click", ".like", function (event) {
 
             if (count === 0) {
                 $likeCount.classList.add("d-none");
-                if ($smallAvatar.dataset.trwlSelflike === "1") {
-                    $smallAvatar.classList.remove("d-none");
-                }
             } else {
                 $likeCount.classList.remove("d-none");
-                if ($smallAvatar.dataset.trwlSelflike === "1") {
-                    $smallAvatar.classList.add("d-none");
-                }
             }
         });
     } else {
@@ -54,14 +47,8 @@ $(document).on("click", ".like", function (event) {
 
             if (count === 0) {
                 $likeCount.classList.add("d-none");
-                if ($smallAvatar.dataset.trwlSelflike === "1") {
-                    $smallAvatar.classList.remove("d-none");
-                }
             } else {
                 $likeCount.classList.remove("d-none");
-                if ($smallAvatar.dataset.trwlSelflike === "1") {
-                    $smallAvatar.classList.add("d-none");
-                }
             }
         });
     }

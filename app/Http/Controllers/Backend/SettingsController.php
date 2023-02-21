@@ -28,6 +28,10 @@ abstract class SettingsController extends Controller
 
         $user->update($fields);
 
+        if (in_array('mastodonVisibility', $fields, true)) {
+            $user->socialProfile->update(['mastodon_visibility' => $fields['mastodonVisibility']]);
+        }
+
         return $user;
     }
 

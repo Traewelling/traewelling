@@ -263,6 +263,12 @@ return [
     'telegram' => [
         'admin_id' => env('TELEGRAM_ADMIN_ID'),
         'token'    => env('TELEGRAM_TOKEN')
+    ],
+
+    'admin' => [
+        'webhooks' => [
+            'new_event' => env('ADMIN_WEBHOOK_NEW_EVENT'),
+        ]
     ]
 
 ];

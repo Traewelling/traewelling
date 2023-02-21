@@ -1,38 +1,11 @@
 @extends('admin.layout')
 
-@section('title', 'Dashboard')
-
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title mb-4">{{__('admin.usage-board')}}</h5>
-            <form class="row">
-                <div class="col-6 col-md-4">
-                    <label for="since">{{__('export.begin')}}:</label>
-                    <input name="since" type="date" value="{{ $since?->toDateString() }}" class="form-control"/>
-                </div>
-                <div class="col-6 col-md-4">
-                    <label for="until">{{__('export.end')}}:</label>
-                    <input name="until" type="date" value="{{ $until?->toDateString() }}" class="form-control"/>
-                </div>
-                <div class="col-md-4">
-                    <label for="btn">&nbsp;</label>
-                    <input type="submit" id="btn-primary" value="{{__('admin.select-range')}}"
-                           class="btn btn-primary form-control"/>
-                </div>
-            </form>
-
-            <div class="row pt-4">
-                <div class="col-md-4">
-                    @include('admin.charts.statusesByDate')
-                </div>
-                <div class="col-md-4">
-                    @include('admin.charts.userRegistration')
-                </div>
-                <div class="col-md-4">
-                    @include('admin.charts.hafasPolylines')
-                </div>
-            </div>
-        </div>
+    <div class="text-center">
+        <i class="fa-solid fa-hammer fa-5x"></i>
+        <h1 class="mt-3 mb-3 text-dark fs-3" id="pageTitle">
+            Welcome dear Admin!<br/>
+            Don't do anything stupid!
+        </h1>
     </div>
 @endsection
