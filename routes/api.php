@@ -122,23 +122,23 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('acceptPrivacy', [PrivacyPolicyController::class, 'acceptPrivacyPolicy'])
                  ->withoutMiddleware('privacy-policy');
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
-                 ->middleware(['scope:settings-read']);
+                 ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
-                 ->middleware(['scope:settings-write']);
+                 ->middleware(['scope:write-settings']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture'])
-                 ->middleware(['scope:settings-write-profile-picture']);
+                 ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture'])
-                 ->middleware(['scope:settings-write-profile-picture']);
+                 ->middleware(['scope:write-settings-profile-picture']);
             Route::put('email', [SettingsController::class, 'updateMail'])
-                 ->middleware(['scope:settings-write-mail']);
+                 ->middleware(['scope:write-settings-mail']);
             Route::post('email/resend', [SettingsController::class, 'resendMail'])
-                 ->middleware(['scope:settings-write-mail']);
+                 ->middleware(['scope:write-settings-mail']);
             Route::put('password', [SettingsController::class, 'updatePassword'])
                  ->middleware(['scope:extra-write-password']);
             Route::delete('account', [UserController::class, 'deleteAccount'])
                  ->middleware(['extra-delete'])
                  ->withoutMiddleware('privacy-policy');
-            Route::group(['middleware' => ['scope:settings-write-calendar']], static function() {
+            Route::group(['middleware' => ['scope:write-settings-calendar']], static function() {
                 Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
                 Route::post('ics-token', [IcsController::class, 'createIcsToken']);
                 Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']);
@@ -150,7 +150,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
                 Route::delete('token', [TokenController::class, 'revokeToken']);
             });
-            Route::group(['middleware' => ['scope:settings-read-followers']], static function() {
+            Route::group(['middleware' => ['scope:read-settings-followers']], static function() {
                 Route::get('followers', [FollowController::class, 'getFollowers']);
                 Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
                 Route::get('followings', [FollowController::class, 'getFollowings']);
