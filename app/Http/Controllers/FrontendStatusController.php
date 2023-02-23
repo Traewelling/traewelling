@@ -132,7 +132,11 @@ class FrontendStatusController extends Controller
         try {
             $this->authorize('view', $status);
         } catch (AuthorizationException) {
-            abort(403, 'Status invisible to you.');
+            session(["extraLink" => [
+                        'url'  => route('profile', ['username' => $status->user->username]),
+                        'text' => "@" . $status->user->username]]
+            );
+            abort(403, __('error.status.not-authorized'));
         }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
