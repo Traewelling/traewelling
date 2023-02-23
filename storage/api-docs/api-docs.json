@@ -754,7 +754,7 @@
                 "security": [
                     {
                         "passport": [
-                            "settings-read-followers"
+                            "read-settings-followers"
                         ]
                     },
                     {
@@ -800,7 +800,7 @@
                 "security": [
                     {
                         "passport": [
-                            "settings-read-followers"
+                            "read-settings-followers"
                         ]
                     },
                     {
@@ -846,7 +846,7 @@
                 "security": [
                     {
                         "passport": [
-                            "settings-read-followers"
+                            "read-settings-followers"
                         ]
                     },
                     {
@@ -1271,7 +1271,7 @@
                 "security": [
                     {
                         "passport": [
-                            "settings-read"
+                            "read-settings"
                         ]
                     },
                     {
@@ -1320,6 +1320,10 @@
                                     "defaultStatusVisibility": {
                                         "type": "integer",
                                         "nullable": true
+                                    },
+                                    "mastodonVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1356,7 +1360,7 @@
                 "security": [
                     {
                         "passport": [
-                            "settings-write"
+                            "write-settings"
                         ]
                     },
                     {
@@ -4060,7 +4064,7 @@
                     },
                     "tweet": {
                         "title": "tweet",
-                        "description": "Should this status be posted to twitter?",
+                        "description": "The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
@@ -4635,6 +4639,9 @@
                         "description": "Mastodon URL of user",
                         "type": "string",
                         "example": "https://chaos.social/@traewelling"
+                    },
+                    "mastodonVisibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
                     }
                 },
                 "type": "object",
@@ -4675,6 +4682,18 @@
                     2
                 ],
                 "example": 0
+            },
+            "MastodonVisibilityEnum": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
             },
             "PointsReasonEnum": {
                 "title": "PointsReason",
@@ -4773,14 +4792,14 @@
                             "write-blocks": "block and unblock users, mute and unmute users",
                             "write-event-suggestions": "suggest events in your name",
                             "write-support-tickets": "create support tickets in your name",
-                            "settings-read": "see your settings, email, etc.",
-                            "settings-write-profile": "edit your profile",
-                            "settings-read-profile": "see your profile data, e.g. email",
-                            "settings-write-mail": "edit your email",
-                            "settings-write-profile-picture": "edit your profile picture",
-                            "settings-write-privacy": "change your privacy settings",
-                            "settings-read-followers": "show follow-requests and followers",
-                            "settings-write-calendar": "create and delete new calendar-tokens",
+                            "read-settings": "see your settings, email, etc.",
+                            "write-settings-profile": "edit your profile",
+                            "read-settings-profile": "see your profile data, e.g. email",
+                            "write-settings-mail": "edit your email",
+                            "write-settings-profile-picture": "edit your profile picture",
+                            "write-settings-privacy": "change your privacy settings",
+                            "read-settings-followers": "show follow-requests and followers",
+                            "write-settings-calendar": "create and delete new calendar-tokens",
                             "extra-write-password": "change your password",
                             "extra-terminate-sessions": "log you out of other sessions and apps",
                             "extra-delete": "delete your account"
