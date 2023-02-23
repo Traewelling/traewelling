@@ -194,6 +194,13 @@
                         </a>
                     </li>
                 @endif
+                @admin
+                    <li class="list-inline-item like-text">
+                        <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                            <i class="fas fa-tools" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                @endadmin
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
