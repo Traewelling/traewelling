@@ -116,44 +116,59 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
-                                       role="button" data-mdb-toggle="dropdown" aria-haspopup="true"
-                                       aria-expanded="false">
+                                       role="button" data-mdb-dropdown-animation="off" data-mdb-toggle="dropdown"
+                                       aria-haspopup="true" aria-expanded="false">
                                         {{ Auth::user()->name }}
                                         <span class="caret"></span>
                                     </a>
 
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item"
-                                           href="{{ route('profile', ['username' => auth()->user()->username]) }}">
-                                            <i class="fas fa-user"></i> {{ __('menu.profile') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('export.landing') }}">
-                                            <i class="fas fa-save"></i> {{ __('menu.export') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('settings') }}">
-                                            <i class="fas fa-cog"></i> {{ __('menu.settings') }}
-                                        </a>
-                                        @if(config('ticket.host') !== null)
-                                            <a class="dropdown-item" href="{{ route('static.about') }}">
-                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
-                                                {{ __('help') }}
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="{{ route('profile', ['username' => auth()->user()->username]) }}">
+                                                <i class="fas fa-user"></i> {{ __('menu.profile') }}
                                             </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('export.landing') }}">
+                                                <i class="fas fa-save"></i> {{ __('menu.export') }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('settings') }}">
+                                                <i class="fas fa-cog"></i> {{ __('menu.settings') }}
+                                            </a>
+                                        </li>
+                                        @if(config('ticket.host') !== null)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('static.about') }}">
+                                                    <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                    {{ __('help') }}
+                                                </a>
+                                            </li>
                                         @endif
                                         @if(Auth::user()->role >= 5)
-                                            <a class="dropdown-item" href="{{route('admin.dashboard')}}">
-                                                <i class="fas fa-tools"></i> {{__('menu.admin')}}
-                                            </a>
+                                            <li>
+                                                <a class="dropdown-item" href="{{route('admin.dashboard')}}">
+                                                    <i class="fas fa-tools"></i> {{__('menu.admin')}}
+                                                </a>
+                                            </li>
                                         @endif
-                                        <div class="dropdown-divider"></div>
-                                        <button class="dropdown-item" form="logout-form" type="submit">
-                                            <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
-                                        </button>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                               style="display: none;">
                                             @csrf
                                         </form>
-                                    </div>
+
+                                        <li>
+                                            <button class="dropdown-item" form="logout-form" type="submit">
+                                                <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </li>
                             @endguest
                         </ul>
@@ -169,13 +184,13 @@
             <footer class="footer mt-auto py-3">
                 <div class="container">
                     <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
+                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
                         </button>
                         <div class="dropdown-menu">
                             @foreach(config('app.locales') as $key => $lang)
-                                <a class="dropdown-item" href="?language={{ $key }}">
+                                <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
                                     {{ $lang }}
                                 </a>
                             @endforeach

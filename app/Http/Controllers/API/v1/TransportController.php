@@ -347,7 +347,6 @@ class TransportController extends Controller
                                             'business'    => ['nullable', new Enum(Business::class)],
                                             'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
                                             'chainPost'   => ['nullable', 'boolean'],
                                             'ibnr'        => ['nullable', 'boolean'],
@@ -377,7 +376,6 @@ class TransportController extends Controller
                 body:           $validated['body'] ?? null,
                 event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force:          isset($validated['force']) && $validated['force'],
-                postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );

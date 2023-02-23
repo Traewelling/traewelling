@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
@@ -110,6 +111,12 @@ class SettingsController extends Controller
      *                  type="integer",
      *                  nullable=true,
      *                  @OA\Schema(ref="#/components/schemas/VisibilityEnum")
+     *              ),
+     *             @OA\Property(
+     *                  property="mastodonVisibility",
+     *                  type="integer",
+     *                  nullable=true,
+     *                  @OA\Schema(ref="#/components/schemas/MastodonVisibilityEnum")
      *              )
      *         )
      *    ),
@@ -141,6 +148,10 @@ class SettingsController extends Controller
                                             'defaultStatusVisibility' => [
                                                 'nullable',
                                                 new Enum(StatusVisibility::class),
+                                            ],
+                                            'mastodonVisibility' => [
+                                                'nullable',
+                                                new Enum(MastodonVisibility::class),
                                             ]
                                         ]);
 

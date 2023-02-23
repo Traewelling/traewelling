@@ -5,7 +5,7 @@
                 @foreach ($errors->all() as $error)
                     <div class="alert my-3 alert-danger alert-dismissible" role="alert">
                         {!! $error !!}
-                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endforeach
             @endif
@@ -14,7 +14,7 @@
                 @if ($message = session()->get($sessionKey))
                     <div class="alert alert-{{$cssKey}} alert-dismissible">
                         <strong>{!! $message !!}</strong>
-                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
             @endforeach
@@ -22,7 +22,7 @@
             @if(session()->has('message'))
                 <div class="alert my-3 alert-info alert-dismissible" role="alert">
                     {!! session()->get('message') !!}
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 

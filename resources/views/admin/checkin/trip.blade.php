@@ -20,7 +20,7 @@
                         <div class="row mt-1">
                             <div class="col">
                                 <div class="form-floating mb-2">
-                                    <select class="form-select" name="destination" required>
+                                    <select class="form-select" name="destinationStopover" required>
                                         <option selected value="">Open this select menu</option>
                                         @foreach($stopovers as $stopover)
                                             @if($stopover->arrival_planned->isBefore(\Carbon\Carbon::parse(request()->departure)))
@@ -28,38 +28,20 @@
                                             @endif
 
                                             @if($stopover->cancelled)
-                                                <tr>
-                                                    <td>{{ $stopover->trainStation->name }}</td>
-                                                    <td>
-                                                        <span
-                                                            class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
-                                                    </td>
-                                                    <td>{{ $stopover->platform }}</td>
-                                                </tr>
+                                                <option value="{{$stopover->id}}" disabled>
+                                                    Arr: {{$stopover->arrival_planned->format('H:i')}}
+                                                    Dep: {{$stopover->departure_planned->format('H:i')}}
+                                                    //
+                                                    {{$stopover->trainStation->name}}
+                                                    ({{ __('stationboard.stop-cancelled') }})
+                                                </option>
                                             @else
-                                                <tr class="train-destinationrow"
-                                                    data-ibnr="{{$stopover->trainStation->ibnr}}"
-                                                    data-stopname="{{$stopover->trainStation->name}}"
-                                                    data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
-                                                >
-                                                    <td>{{ $stopover->trainStation->name }}</td>
-                                                    <td>
-                                                        {{ __('stationboard.arr') }}
-                                                        {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
-                                                        @isset($stopover->arrival_real)
-                                                            <small>(<span
-                                                                    class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
-                                                        @endisset
-                                                    </td>
-                                                    <td class="text-end">
-                                                        {{$stopover->arrival_platform_planned}}
-                                                        @if(isset($stopover->arrival_platform_real) && $stopover->arrival_platform_real !== $stopover->arrival_platform_planned)
-                                                            <span class="text-danger text-decoration-line-through">
-                                                        {{ $stopover->arrival_platform_real }}
-                                                    </span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
+                                                <option value="{{$stopover->id}}">
+                                                    Arr: {{$stopover->arrival_planned->format('H:i')}}
+                                                    Dep: {{$stopover->departure_planned->format('H:i')}}
+                                                    //
+                                                    {{$stopover->trainStation->name}}
+                                                </option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -150,9 +132,6 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="col-4">
-            @include('admin.users.usercard')
         </div>
     </div>
 @endsection

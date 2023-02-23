@@ -14,10 +14,10 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Jobs\PostStatusOnMastodon;
-use App\Jobs\PostStatusOnTwitter;
 use App\Models\Event;
 use App\Models\Status;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -119,20 +119,19 @@ class CheckinController
 
     public function checkin(Request $request): View|RedirectResponse {
         $validated = $request->validate([
-                                            'body'              => ['nullable', 'max:280'],
-                                            'business'          => ['nullable', new Enum(Business::class)],
-                                            'visibility'        => ['nullable', new Enum(StatusVisibility::class)],
-                                            'eventId'           => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'             => ['nullable', 'max:2'],
-                                            'toot'              => ['nullable', 'max:2'],
-                                            'shouldChain_check' => ['nullable', 'max:2'],
-                                            'tripId'            => ['required'],
-                                            'lineName'          => ['required'],
-                                            'startIBNR'         => ['required', 'numeric'],
-                                            'destination'       => ['required', 'json'],
-                                            'departure'         => ['required', 'date'],
-                                            'force'             => ['nullable', 'max:2'],
-                                            'userId'            => ['required', 'integer']
+                                            'body'                => ['nullable', 'max:280'],
+                                            'business'            => ['nullable', new Enum(Business::class)],
+                                            'visibility'          => ['nullable', new Enum(StatusVisibility::class)],
+                                            'eventId'             => ['nullable', 'integer', 'exists:events,id'],
+                                            'toot'                => ['nullable', 'max:2'],
+                                            'shouldChain_check'   => ['nullable', 'max:2'],
+                                            'tripId'              => ['required'],
+                                            'lineName'            => ['required'],
+                                            'startIBNR'           => ['required', 'numeric'],
+                                            'destinationStopover' => ['required', 'exists:train_stopovers,id'],
+                                            'departure'           => ['required', 'date'],
+                                            'force'               => ['nullable', 'max:2'],
+                                            'userId'              => ['required', 'integer']
                                         ]);
         try {
             $user = User::findOrFail($validated['userId']);
@@ -140,7 +139,7 @@ class CheckinController
             return redirect()->back()->withErrors('User non-existent');
         }
 
-        $destination = json_decode($validated['destination'], true, 512, JSON_THROW_ON_ERROR);
+        $destinationStopover = TrainStopover::findOrFail($validated['destinationStopover']);
 
         try {
             $backendResponse = TrainCheckinController::checkin(
@@ -148,23 +147,18 @@ class CheckinController
                 hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
                 origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
                 departure:    Carbon::parse($validated['departure']),
-                destination:  TrainStation::where('ibnr', $destination['destination'])->first(),
-                arrival:      Carbon::parse($destination['arrival']),
+                destination:  $destinationStopover->trainStation,
+                arrival:      $destinationStopover->arrival_planned,
                 travelReason: Business::tryFrom($validated['business'] ?? 0),
                 visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),
                 body:         $validated['body'] ?? null,
                 event:        isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force: isset($validated['force']),
-                postOnTwitter: isset($request->tweet_check),
                 postOnMastodon: isset($request->toot_check),
                 shouldChain: isset($request->shouldChain_check)
             );
 
             $status = $backendResponse['status'];
-
-            PostStatusOnTwitter::dispatchIf(isset($validated['tweet'])
-                                            && $user?->socialProfile?->twitter_id !== null,
-                                            $status);
 
             PostStatusOnMastodon::dispatchIf(isset($validated['toot'])
                                              && $user?->socialProfile?->mastodon_id !== null,
@@ -189,19 +183,14 @@ class CheckinController
                              ));
 
         } catch (StationNotOnTripException) {
-            return redirect()
-                ->back()
-                ->withErrors("station not on trip");
+            return back()->withErrors("station not on trip");
         } catch (HafasException $exception) {
-            return redirect()
-                ->back()
-                ->withErrors($exception->getMessage());
+            return back()->withErrors($exception->getMessage());
         } catch (TrainCheckinAlreadyExistException) {
-            return redirect()
-                ->back()
-                ->withErrors('CheckIn already exists');
-        } catch (Throwable $trowed) {
-            return back()->with('alert-danger', 'Fehler beim Speichern des CheckIns: ' . get_class($trowed) . ' -> ' . $trowed->getMessage());
+            return back()->withErrors('CheckIn already exists');
+        } catch (Throwable $throwed) {
+            report($throwed);
+            return back()->with('alert-danger', 'Fehler beim Speichern des CheckIns: ' . get_class($throwed) . ' -> ' . $throwed->getMessage());
         }
     }
 }

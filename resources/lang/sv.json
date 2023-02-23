@@ -4,7 +4,7 @@
     "about.calculation": "Avstånden blir avrundade uppåt till närmsta 10 km och dividerat med 10. Sedan blir basispoänger adderat.<br />En ICE resa med en längd av 143 km får du alltså <code>10 + avrundat uppåt(143/10) = 10 + 15 = 25</code>&nbsp;poäng, för en resa med pendeltåg (S-Bahn) med en längd av 8 km får du <code>2 + avrundat uppåt(8/10) = 2 + 1 = 3</code>&nbsp;poänger.<br />Du ska checka in så tidigt så möjligt, så att plattformen är alltidt uppdaterad om dina resa. Därför får du bara alla poänger om du checka in mens din resa eller 20 min innan live avgången (planerat avgång + försening). De som checka in en timme innan eller efter tidsrymd av resan får i alla fall 1/4 av poänger. Om du checka in även tidigare eller senare, så får du alla kilometer och timmar, men bara en barmhärtighetspoäng.",
     "about.express": "InterCity, EuroCity",
     "about.faq-heading": "vanliga frågor",
-    "about.feature-missing": "Om du vill föreslå en funktion eller hittat ett fel, rapportera det direkt till vårt <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub-förråd< /a>.",
+    "about.feature-missing": "Om du vill föreslå en funktion eller hittat ett fel, rapportera det direkt till vårt <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub-förråd</a>.",
     "about.feature-missing-heading": "Hur rapporterar jag buggar eller förslag på förbättringar?",
     "about.heading": "Om Träwelling",
     "about.international": "InterCityExpress, TGV, RailJet",
@@ -435,6 +435,10 @@
     "modals.setHome-body": "Vill du ange <em>:stationName</em> som din hemstation?",
     "settings.visibility": "synlighet",
     "settings.visibility.default": "CheckIns: standard synlighet",
+    "settings.mastodon.visibility.1": "olistad",
+    "settings.mastodon.visibility.2": "Endast för följare",
+    "settings.mastodon.visibility.0": "Allmän",
+    "settings.mastodon.visibility.3": "Enskild",
     "stats.range": "Tidsperiod",
     "stats.range.days": "Sista :days dagar",
     "transport_types.taxi": "Taxi",
@@ -595,5 +599,5 @@
     "experimental-features": "Experimentella funktioner",
     "about.events.description1": "Träwelling samlar människor som åker kollektivt. Ibland går de till och med på samma evenemang utan att känna till varandra!",
     "about.events.description2": "Det är därför vi integrerade evenemangsfunktionen. Vem som helst kan <a href=\":link\">skapa ett evenemang för en viss tidsperiod med hjälp av vårt formulär</a> och alla Träwelling-användare kan sedan länka sina incheckningar till evenemanget.",
-    "about.events.description3": "Om du vill skapa ett evenemang, observera att evenemang bör ha ett mervärde för hela Träwelling-gemenskapen. Detta inkluderar järnvägsevenemang som <a href=\"https://traewelling.de/statuses/event/late_fahrt_des_met\">den sista resan i Metropolitan</a>, evenemang från hackerutrymmen (t.ex. <a href=\" https: //traewelling.de/statuses/event/gpn20\">GPN</a>), eller från HBTQ-scenen som <a href=\"https://traewelling.de/statuses/event/csd_koln_2022\"> Cologne Pride< /a>."
+    "about.events.description3": "Om du vill skapa ett evenemang, observera att evenemang bör ha ett mervärde för hela Träwelling-gemenskapen. Detta inkluderar järnvägsevenemang som <a href=\"https://traewelling.de/statuses/event/letzte_fahrt_des_met\">den sista resan i Metropolitan</a>, evenemang från hackerutrymmen (t.ex. <a href=\"https://traewelling.de/statuses/event/gpn20\">GPN</a>), eller från HBTQ-scenen som <a href=\"https://traewelling.de/statuses/event/csd_koln_2022\"> Cologne Pride</a>."
 }

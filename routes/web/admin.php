@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Frontend\Admin\ApiUsageController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LocationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
+use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,8 +13,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
     Route::get('/', [DashboardController::class, 'renderDashboard'])
          ->name('admin.dashboard');
 
-    Route::get('/api/usage', [ApiUsageController::class, 'showUsage'])
-         ->name('admin.api.usage');
+    Route::get('/stats', [DashboardController::class, 'renderStats'])
+         ->name('admin.stats');
 
     Route::prefix('checkin')->group(function() {
         Route::get('/', [CheckinController::class, 'renderStationboard'])
@@ -25,25 +25,11 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.checkin');
     });
 
-    Route::prefix('locations')->group(function() {
-        Route::get('/', [LocationController::class, 'index'])
-             ->name('admin.locations');
-
-        Route::get('/edit/{id}', [LocationController::class, 'renderEdit'])
-             ->name('admin.locations.edit');
-        Route::post('/edit/{id}', [LocationController::class, 'edit']);
-
-        Route::view('/create', 'admin.locations.edit')
-             ->name('admin.locations.create');
-        Route::post('/create', [LocationController::class, 'create']);
-
-        Route::post('/delete', [LocationController::class, 'delete'])
-             ->name('admin.locations.delete');
-    });
-
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'renderIndex'])
              ->name('admin.users');
+        Route::get('/{id}', [UserController::class, 'renderUser'])
+             ->name('admin.users.user');
     });
 
     Route::prefix('status')->group(function() {
@@ -52,6 +38,15 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
         Route::get('/edit', [StatusEditController::class, 'renderEdit'])
              ->name('admin.status.edit');
         Route::post('/edit', [StatusEditController::class, 'edit']);
+    });
+
+    Route::prefix('trip')->group(function() {
+        Route::get('/create', [TripController::class, 'renderForm'])
+             ->name('admin.trip.create');
+        Route::post('/create', [TripController::class, 'createTrip']);
+
+        Route::get('/{id}', [TripController::class, 'renderTrip'])
+             ->name('admin.trip.show');
     });
 
     Route::prefix('events')->group(function() {
