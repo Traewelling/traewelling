@@ -52,11 +52,12 @@
                                 @foreach($trip->checkIns as $checkin)
                                     <tr>
                                         <td>
-                                            <a href="{{route('admin.users.user', ['id' => $checkin->user->id])}}">
-                                                {{'@'.$checkin->user->username}}
+                                            {{$checkin->user->name}}
+                                            <small><a href="{{route('admin.users.user', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
+                                            <br />
+                                            <a href="{{route('admin.status.edit', ['statusId' => $checkin->status->id])}}">
+                                                #{{ $checkin->status->id }}
                                             </a>
-                                            <br/>
-                                            <small>{{$checkin->user->name}}</small>
                                         </td>
                                         <td>
                                             {{$checkin->originStation->name}}

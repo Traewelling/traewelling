@@ -21,7 +21,7 @@
                             <th>Mail</th>
                             <td>
                                 {{ $user->email }}
-
+                                <br />
                                 @isset($user->email_verified_at)
                                     <small class="text-success">
                                         <i class="fa-solid fa-check"></i>
@@ -61,7 +61,17 @@
                         </tr>
                         <tr>
                             <th>Last login</th>
-                            <td>{{ $user->last_login }}</td>
+                            <td>
+                                @isset($user->last_login)
+                                    {{ $user->last_login->diffForHumans() }}<br/>
+                                    <small>({{$user->last_login}})</small>
+                                @else
+                                    <small class="text-danger">
+                                        <i class="fa-solid fa-times"></i>
+                                        Never logged in
+                                    </small>
+                                @endisset
+                            </td>
                         </tr>
                         <tr>
                             <th>Created at</th>
@@ -69,7 +79,20 @@
                         </tr>
                         <tr>
                             <th>Privacy ack at</th>
-                            <td>{{ $user->privacy_ack_at }}</td>
+                            <td>
+                                @isset($user->privacy_ack_at)
+                                    <small class="text-success">
+                                        <i class="fa-solid fa-check"></i>
+                                        {{ $user->privacy_ack_at->diffForHumans() }}<br/>
+                                        ({{$user->privacy_ack_at}})
+                                    </small>
+                                @else
+                                    <small class="text-danger">
+                                        <i class="fa-solid fa-times"></i>
+                                        Not agreed to Privacy Agreement
+                                    </small>
+                                @endisset
+                            </td>
                         </tr>
                     </table>
                 </div>

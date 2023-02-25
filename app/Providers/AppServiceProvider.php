@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Contracts\Factory;
@@ -45,5 +46,9 @@ class AppServiceProvider extends ServiceProvider {
         );
 
         Paginator::useBootstrap();
+
+        Blade::if("admin", function () {
+            return auth()->user()->role >= 5;
+        });
     }
 }

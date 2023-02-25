@@ -11,7 +11,12 @@
                             <label class="form-label" for="form-origin">Benutzer</label>
                         </div>
                         <div class="col-8">
-                            {{$status->user->username}}
+                            {{$status->user->name}}
+                            <small>
+                                <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
+                                    {{'@'.$status->user->username}}
+                                </a>
+                            </small>
                         </div>
 
                         <div class="col-4">
@@ -29,6 +34,10 @@
                             @isset($status->trainCheckIn->HafasTrip->operator?->name)
                                 <small>(Betreiber: {{$status->trainCheckIn->HafasTrip->operator?->name}})</small>
                             @endisset
+                            <br />
+                            <a href="{{route('admin.trip.show', ['id' => $status->trainCheckin->trip_id])}}">
+                                {{ $status->trainCheckin->trip_id }}
+                            </a>
                         </div>
                     </div>
                     <hr/>
