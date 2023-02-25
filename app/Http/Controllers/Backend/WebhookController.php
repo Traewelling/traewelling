@@ -14,6 +14,7 @@ use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use Carbon\Carbon;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
@@ -26,11 +27,12 @@ abstract class WebhookController extends Controller {
     public static function createWebhook(
         WebhookCreationRequest $request
     ): Webhook {
+        DB::beginTransaction();
+        $request->delete();
         $secret      = bin2hex(random_bytes(32));
         $client = $request->client()->first();
         $user = $request->user()->first();
         $events = $request->events;
-        $request->update(['revoked' => true]);
         $webhook     = Webhook::create([
             'oauth_client_id' => $client->id,
             'url'             => $request->url,
@@ -38,6 +40,7 @@ abstract class WebhookController extends Controller {
             'events'          => $events,
             'user_id'         => $user->id
         ]);
+        DB::commit();
 
         Log::debug("Created a new webhook.", ['webhook' => $webhook]);
 
