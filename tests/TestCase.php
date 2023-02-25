@@ -171,7 +171,7 @@ abstract class TestCase extends BaseTestCase {
         return $admin;
     }
 
-    public function createClient(User $user): PassportClient {
+    public function createWebhookClient(User $user): PassportClient {
         $clients = new OAuthClientRepository();
         return $clients->create(
             $user->id,

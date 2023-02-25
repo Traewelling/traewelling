@@ -26,7 +26,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_CREATE]);
         $status = $this->createStatus($user);
 
@@ -43,7 +43,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         $this->actingAs($user)
@@ -69,7 +69,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         StatusController::createLike($user, $status);
@@ -89,7 +89,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         $checkin = $status->trainCheckin()->first();
@@ -118,7 +118,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         $this->actingAs($user)
@@ -144,7 +144,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
         $this->actingAs($user)
@@ -170,7 +170,7 @@ class WebhookStatusTest extends TestCase {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
-        $client = $this->createClient($user);
+        $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_DELETE]);
         $status = $this->createStatus($user);
         StatusController::DeleteStatus($user, $status['id']);

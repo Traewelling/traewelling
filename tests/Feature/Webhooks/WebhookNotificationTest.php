@@ -19,7 +19,7 @@ class WebhookNotificationTest extends TestCase {
         $alice = $this->createGDPRAckedUser();
         $bob   = $this->createGDPRAckedUser();
 
-        $client = $this->createClient($alice);
+        $client = $this->createWebhookClient($alice);
         $this->createWebhook($bob, $client, [WebhookEvent::NOTIFICATION]);
 
         // When: Alice follows Bob
