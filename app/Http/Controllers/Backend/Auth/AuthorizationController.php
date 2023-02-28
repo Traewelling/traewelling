@@ -93,7 +93,7 @@ class AuthorizationController extends PassportAuthorizationController {
                     ->where('oauth_client_id', $client->id)
             )->value('count');
 
-        return $this->response->view('auth.authorize', [
+        return response()->view('auth.authorize', [
             'client' => $client,
             'user' => $user,
             'scopes' => $scopes,
