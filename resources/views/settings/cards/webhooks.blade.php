@@ -1,4 +1,7 @@
-@php use Carbon\Carbon; @endphp
+@php
+use Carbon\Carbon;
+use App\Enum\WebhookEvent;
+@endphp
 <div class="card mt-3">
     <div class="card-header">{{ __('settings.title-webhooks') }}</div>
     <div class="card-body">
@@ -24,8 +27,10 @@
                             <td>{{ Carbon::parse($webhook->created_at)->isoFormat(__('datetime-format')) }}</td>
                             <td>
                                 <ul>
-                                    @foreach($webhook->events as $event)
-                                        <li>{{ __('settings.webhook_event.' . $event)}}</li>
+                                    @foreach(WebhookEvent::cases() as $event)
+                                        @if(inBitmask($event->value, $webhook->events))
+                                            <li>{{ __('settings.webhook_event.' . $event->name())}}</li>
+                                        @endif
                                     @endforeach
                                 </ul>
                             </td>
