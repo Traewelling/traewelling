@@ -29,11 +29,11 @@ abstract class WebhookController extends Controller {
     ): Webhook {
         DB::beginTransaction();
         $request->delete();
-        $secret      = bin2hex(random_bytes(32));
+        $secret = bin2hex(random_bytes(32));
         $client = $request->client()->first();
         $user = $request->user()->first();
         $events = $request->events;
-        $webhook     = Webhook::create([
+        $webhook = Webhook::create([
             'oauth_client_id' => $client->id,
             'url'             => $request->url,
             'secret'          => $secret,
