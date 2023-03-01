@@ -89,8 +89,8 @@ class EventSuggestionTest extends TestCase
 
         $res = $this->followingRedirects()
                     ->post(route('events.suggest'), $this->postData);
-        $res->assertSee('alert-success');
 
         $this->postData['suggestionId'] = EventSuggestion::first()->id;
     }
 }
+

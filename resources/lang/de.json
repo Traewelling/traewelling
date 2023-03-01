@@ -135,6 +135,7 @@
     "dateformat.month-and-year": "MMMM YYYY",
     "error.bad-request": "Die Anfrage ist ungültig.",
     "error.login": "Falsche Anmeldedaten",
+    "error.status.not-authorized": "Du bist nicht berechtigt, diesen Status zu sehen.",
     "events.header": "Veranstaltung: :name",
     "events.name": "Name",
     "events.hashtag": "Hashtag",

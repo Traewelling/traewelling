@@ -17,7 +17,8 @@
                     />
 
                     @if($latest->count() > 0 || auth()->user()->home)
-                        <button class="btn btn-outline-dark stationSearchButton"
+                        <button type="button"
+                                class="btn btn-outline-dark stationSearchButton"
                                 data-mdb-ripple-color="dark"
                                 data-mdb-toggle="collapse"
                                 data-mdb-target="#last-stations"
@@ -27,7 +28,8 @@
                         </button>
                     @endif
 
-                    <button class="btn btn-outline-dark stationSearchButton"
+                    <button type="button"
+                            class="btn btn-outline-dark stationSearchButton"
                             id="gps-button"
                             data-mdb-ripple-color="dark"
                             title="{{__('stationboard.search-by-location')}}">

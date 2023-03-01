@@ -147,13 +147,13 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        @if(Auth::user()->role >= 5)
+                                        @admin
                                             <li>
                                                 <a class="dropdown-item" href="{{route('admin.dashboard')}}">
                                                     <i class="fas fa-tools"></i> {{__('menu.admin')}}
                                                 </a>
                                             </li>
-                                        @endif
+                                        @endadmin
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>

@@ -108,6 +108,7 @@
     "controller.user.password-wrong": "Password wrong.",
     "error.bad-request": "The request is invalid.",
     "error.login": "Wrong credentials",
+    "error.status.not-authorized": "You're not authorized to see this status.",
     "dates.-on-": " on ",
     "dates.decimal_point": ".",
     "dates.thousands_sep": ",",

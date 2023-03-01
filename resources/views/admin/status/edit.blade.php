@@ -11,7 +11,12 @@
                             <label class="form-label" for="form-origin">Benutzer</label>
                         </div>
                         <div class="col-8">
-                            {{$status->user->username}}
+                            {{$status->user->name}}
+                            <small>
+                                <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
+                                    {{'@'.$status->user->username}}
+                                </a>
+                            </small>
                         </div>
 
                         <div class="col-4">
@@ -29,6 +34,10 @@
                             @isset($status->trainCheckIn->HafasTrip->operator?->name)
                                 <small>(Betreiber: {{$status->trainCheckIn->HafasTrip->operator?->name}})</small>
                             @endisset
+                            <br />
+                            <a href="{{route('admin.trip.show', ['id' => $status->trainCheckin->trip_id])}}">
+                                {{ $status->trainCheckin->trip_id }}
+                            </a>
                         </div>
                     </div>
                     <hr/>
@@ -91,41 +100,6 @@
                             nicht auf Plausibilität geprüft!</small>
                         <button type="submit" class="btn btn-primary btn-block">Speichern</button>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12 mt-2">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Stopovers (gesamter Trip)</h5>
-
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">TRWL-ID</th>
-                                <th scope="col">IBNR</th>
-                                <th scope="col">Ankunft plan</th>
-                                <th scope="col">real</th>
-                                <th scope="col">Abfahrt plan</th>
-                                <th scope="col">real</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($status->trainCheckin->HafasTrip->stopoversNew as $stopover)
-                                <tr>
-                                    <td>{{$stopover->trainStation?->name}}</td>
-                                    <td>{{$stopover->trainStation?->id}}</td>
-                                    <td>{{$stopover->trainStation?->ibnr}}</td>
-                                    <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
-                                    <td>{{$stopover->arrival_real?->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_planned->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_real?->format('H:i')}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
