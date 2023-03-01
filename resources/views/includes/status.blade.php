@@ -96,7 +96,7 @@
                     </p>
 
                     @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ $status->body }}
+                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {!! nl2br(e($status->body)) !!}
                         </p>
                     @endif
 
