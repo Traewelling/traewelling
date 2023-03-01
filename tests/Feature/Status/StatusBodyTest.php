@@ -32,6 +32,14 @@ class StatusBodyTest extends TestCase
                 '<script>alert(1)</script>',
                 '&lt;script&gt;alert(1)&lt;/script&gt;'
             ],
+            [
+                'ab' . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . 'cd',
+                'ab<br />' . PHP_EOL . '<br />' . PHP_EOL . 'cd'
+            ],
+            [
+                'ab' . PHP_EOL . PHP_EOL . PHP_EOL . 'cd' . PHP_EOL . PHP_EOL . PHP_EOL . 'ef',
+                'ab<br />' . PHP_EOL . '<br />' . PHP_EOL . 'cd<br />' . PHP_EOL . '<br />' . PHP_EOL . 'ef'
+            ],
         ];
     }
 }
