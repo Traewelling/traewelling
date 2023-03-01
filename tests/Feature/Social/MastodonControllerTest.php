@@ -39,7 +39,7 @@ class MastodonControllerTest extends TestCase
         $this->assertFalse($validated->fails());
     }
 
-    public function providerTestFormatDomain(): array {
+    public static function providerTestFormatDomain(): array {
         return [
             ['https://uelfte.club', 'https://uelfte.club'],
             ['http://uelfte.club', 'https://uelfte.club'],
@@ -49,7 +49,6 @@ class MastodonControllerTest extends TestCase
             ['https://mastodon.sergal.org', 'https://mastodon.sergal.org'] # see issue 1182
         ];
     }
-
 
     public function testFindEndOfChainIfThereAreNoAnswers(): void {
         $user = $this->setupUserWithMastodonAccount();
