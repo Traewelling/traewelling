@@ -113,9 +113,8 @@ more: https://discord.gg/QypAnG2qAw
 We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
 international and for this we need you and your language skills.
 
-We use a [Weblate instance](https://translate.codeberg.org/engage/trawelling/) to manage the translations. There you can
-add
-new translations and correct mistakes.
+We use a [Weblate instance](https://translate.codeberg.org/engage/trawelling/) to manage the translations.
+There you can add new translations and correct mistakes.
 
 ### Security
 
