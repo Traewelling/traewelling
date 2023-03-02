@@ -19,7 +19,7 @@ class AccessTokenController extends PassportAccessTokenController {
         });
     }
 
-    function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response) {
+    protected function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response): Psr7Response {
         // Skip webhook stuff on error
         if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
             return $response;
