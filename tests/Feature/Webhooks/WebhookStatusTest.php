@@ -74,6 +74,7 @@ class WebhookStatusTest extends TestCase {
         $status = $this->createStatus($user);
         StatusController::createLike($user, $status);
 
+        // For self-likes, a CHECKIN_UPDATE is sent, but no notification.
         Bus::assertDispatched(function (CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->name(),
