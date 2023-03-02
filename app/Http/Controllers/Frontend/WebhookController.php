@@ -14,7 +14,6 @@ class WebhookController extends Controller {
         $validated = $request->validate(['webhookId' => ['required', 'exists:webhooks,id']]);
         try {
             $webhook = Webhook::find($validated['webhookId']);
-            $this->authorize('delete', $webhook);
             WebhookBackend::deleteWebhook($webhook, null);
             return redirect()->route('settings')->with('alert-success', __('settings.delete-webhook.success'));
         } catch (PermissionException) {

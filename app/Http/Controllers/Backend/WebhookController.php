@@ -15,6 +15,7 @@ use App\Models\WebhookCreationRequest;
 use Carbon\Carbon;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Spatie\WebhookServer\WebhookCall;
@@ -56,6 +57,7 @@ abstract class WebhookController extends Controller {
         Webhook $webhook,
         OAuthClient|null $client
     ): bool {
+        Gate::authorize("delete", $webhook);
         // Checking if the client is allowed to delete here,
         // because i found no way of doing that in the policy.
         if ($client != null && $client->id != $webhook->client->id) {

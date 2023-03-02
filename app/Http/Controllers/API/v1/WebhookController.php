@@ -128,7 +128,6 @@ class WebhookController extends Controller {
     public function deleteWebhook(Request $request, int $webhookId): JsonResponse {
         try {
             $webhook = Webhook::findOrFail($webhookId);
-            $this->authorize('delete', $webhook);
             WebhookBackend::deleteWebhook($webhook, $request->user()->token()->client);
             return $this->sendResponse();
         } catch (PermissionException) {
