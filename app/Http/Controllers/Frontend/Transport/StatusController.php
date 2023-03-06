@@ -23,6 +23,8 @@ class StatusController extends Controller
         $validated = $request->validate([
                                             'statusId'              => ['required', 'exists:statuses,id'],
                                             'body'                  => ['nullable', 'max:280'],
+                                            'real_departure'        => ['nullable', 'date'],
+                                            'real_arrival'          => ['nullable', 'date'],
                                             'business_check'        => ['required', new Enum(Business::class)],
                                             'checkinVisibility'     => ['required', new Enum(StatusVisibility::class)],
                                             'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
@@ -36,6 +38,11 @@ class StatusController extends Controller
                                 'business'   => Business::from($validated['business_check']),
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
+
+            $status->trainCheckin->update([
+                                              'real_departure' => $validated['real_departure'] ?? null,
+                                              'real_arrival'   => $validated['real_arrival'] ?? null,
+                                          ]);
 
             if (isset($validated['destinationStopoverId'])
                 && $validated['destinationStopoverId'] != $status->trainCheckin->destination_stopover->id) {

@@ -18,21 +18,23 @@ class TrainCheckin extends Model
 
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
-        'distance', 'departure', 'arrival', 'points', 'forced',
+        'distance', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
     protected $casts    = [
-        'id'          => 'integer',
-        'status_id'   => 'integer',
-        'user_id'     => 'integer',
-        'origin'      => 'integer',
-        'destination' => 'integer',
-        'distance'    => 'integer',
-        'departure'   => 'datetime',
-        'arrival'     => 'datetime',
-        'points'      => 'integer',
-        'forced'      => 'boolean',
+        'id'             => 'integer',
+        'status_id'      => 'integer',
+        'user_id'        => 'integer',
+        'origin'         => 'integer',
+        'destination'    => 'integer',
+        'distance'       => 'integer',
+        'departure'      => 'datetime',
+        'real_departure' => 'datetime',
+        'arrival'        => 'datetime',
+        'real_arrival'   => 'datetime',
+        'points'         => 'integer',
+        'forced'         => 'boolean',
     ];
 
     public function status(): BelongsTo {

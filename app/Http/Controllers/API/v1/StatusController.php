@@ -287,7 +287,8 @@ class StatusController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody")
+     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody") TODO: Implement real_departure and
+     *                                                                       real_arrival: But... in this model?
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -316,9 +317,16 @@ class StatusController extends Controller
      */
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
+            //Just changing of metadata
             'body'                      => ['nullable', 'max:280', 'nullable'],
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
+
+            //Changing of TrainCheckin-Metadata
+            'real_departure'            => ['nullable', 'date'],
+            'real_arrival'              => ['nullable', 'date'],
+
+            //Following attributes are needed, if user want's to change the destination
             'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
             'destinationArrivalPlanned' => ['required_with:destinationId', 'date'],
         ]);
@@ -352,6 +360,13 @@ class StatusController extends Controller
                                 'business'   => Business::from($validated['business']),
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
+
+            if (isset($validated['real_departure'])) {
+                $status->trainCheckin->update(['real_departure' => $validated['real_departure']]);
+            }
+            if (isset($validated['real_arrival'])) {
+                $status->trainCheckin->update(['real_arrival' => $validated['real_arrival']]);
+            }
 
             $status->fresh();
             return $this->sendResponse(new StatusResource($status));
