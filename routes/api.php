@@ -77,7 +77,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::post('readAll', [NotificationsController::class, 'readAll']);
             });
         });
-        Route::group(['prefix' => 'trains', 'middleware' => ['scope:create-statuses']], static function() {
+        Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() {
             Route::get('trip/', [TransportController::class, 'getTrip']);
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
