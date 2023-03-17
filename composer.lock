@@ -2823,16 +2823,16 @@
         },
         {
             "name": "laravel/passport",
-            "version": "v11.8.2",
+            "version": "v11.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "67c3e336af163f6eba5dbca8e5db46275ff0e433"
+                "reference": "d60300185cfd066190b7842982cce314f779f9dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/67c3e336af163f6eba5dbca8e5db46275ff0e433",
-                "reference": "67c3e336af163f6eba5dbca8e5db46275ff0e433",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/d60300185cfd066190b7842982cce314f779f9dd",
+                "reference": "d60300185cfd066190b7842982cce314f779f9dd",
                 "shasum": ""
             },
             "require": {
@@ -2857,6 +2857,7 @@
             "require-dev": {
                 "mockery/mockery": "^1.0",
                 "orchestra/testbench": "^7.0|^8.0",
+                "phpstan/phpstan": "^1.10",
                 "phpunit/phpunit": "^9.3"
             },
             "type": "library",
@@ -2896,7 +2897,7 @@
                 "issues": "https://github.com/laravel/passport/issues",
                 "source": "https://github.com/laravel/passport"
             },
-            "time": "2023-02-20T13:43:07+00:00"
+            "time": "2023-03-01T15:56:44+00:00"
         },
         {
             "name": "laravel/serializable-closure",
