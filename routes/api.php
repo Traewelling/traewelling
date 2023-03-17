@@ -158,8 +158,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
-    Route::group(['middleware' => ['semiguest:api', 'privacy-policy']], static function() {
-        Route::group(['middleware' => ['scope:read-statuses']], static function() {
+    Route::group(['middleware' => ['privacy-policy']], static function() {
+        Route::group(['middleware' => ['semiscope:read-statuses']], static function() {
             Route::get('statuses', [StatusController::class, 'enRoute']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
@@ -174,7 +174,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('user/{username}', [UserController::class, 'show']);
             Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });
-        Route::group(['middleware' => ['scope:read-statistics']], static function() {
+        Route::group(['middleware' => ['semiscope:read-statistics']], static function() {
             Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
             Route::get('leaderboard/distance', [StatisticsController::class, 'leaderboardByDistance']);
             Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);

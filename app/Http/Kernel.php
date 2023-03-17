@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Api\JsonMiddleware;
 use App\Http\Middleware\SemiGuest;
+use App\Http\Middleware\SemiScope;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Laravel\Passport\Http\Middleware\CheckScopes;
@@ -60,7 +61,6 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth'           => \App\Http\Middleware\Authenticate::class,
-        'semiguest'      => SemiGuest::class,
         'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'       => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers'  => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'privacy-policy' => \App\Http\Middleware\PrivacyPolicyInterceptionMiddleware::class,
         'scopes'         => CheckScopes::class,
         'scope'          => CheckForAnyScope::class,
+        'semiscope'      => SemiScope::class,
     ];
 
     /**
