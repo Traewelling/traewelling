@@ -1,7 +1,7 @@
 # [Träwelling](https://traewelling.de)
 
 > Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public
-> transit journeys. In short, you can check into trains and get points for it. 
+> transit journeys. In short, you can check into trains and get points for it.
 > Check it out at [traewelling.de](https://traewelling.de).
 
 ![Resources build with `prod`](https://img.shields.io/github/actions/workflow/status/Traewelling/traewelling/nodejs-prod.yml?branch=develop&logo=github)
@@ -84,13 +84,18 @@ php artisan migrate
 php artisan passport:install
 ```
 
-Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application. 
+Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application.
 You should see the Träwelling homepage at http://localhost:8000.
 
-## Contributing
+## Developing and contributing
 
-Contributions are more than welcome. Please open an issue for bugs or feature requests. If you want to implement the
-feature - great; if you don't want to, that's fine, too.
+We want to let you know that Träwelling is a leisure project, developed and maintained by a team of volunteers who
+dedicate their spare time to the project. We do our best to address issues and improve the platform, but please keep in
+mind that we may not always be able to respond to requests immediately. However, we welcome anyone who wants to
+contribute to the project! If you find a bug or have an idea for a new feature, please feel free to open an issue on
+GitHub. We also encourage you to help us out by fixing bugs and implementing new features yourself. When submitting a
+pull request, please keep it small and focused, and open multiple pull requests if needed to make the review process
+smoother and faster. Thank you for your support as we work together to make Träwelling the best it can be!
 
 If you add code:
 
@@ -100,15 +105,16 @@ If you add code:
 
 * Please consider adding unit and integration tests, especially if you're adding new features.
 
-If you want, you can [join our discord server](https://discord.gg/QypAnG2qAw) for discussions, support and more: https://discord.gg/QypAnG2qAw
+If you want, you can [join our discord server](https://discord.gg/QypAnG2qAw) for discussions, support and
+more: https://discord.gg/QypAnG2qAw
 
 ### Translations
 
 We currently support the languages German, English, Polish, French and Dutch. We would like to become even more
 international and for this we need you and your language skills.
 
-We use a [Weblate instance](https://translate.codeberg.org/engage/trawelling/) to manage the translations. There you can add
-new translations and correct mistakes.
+We use a [Weblate instance](https://translate.codeberg.org/engage/trawelling/) to manage the translations.
+There you can add new translations and correct mistakes.
 
 ### Security
 

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Http;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class TransportTest extends ApiTestCase
 {
@@ -191,7 +192,7 @@ class TransportTest extends ApiTestCase
 
     public function testSetHome(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $this->assertNull($user->home);
 
@@ -208,7 +209,7 @@ class TransportTest extends ApiTestCase
 
     public function testAutocompleteWithDs100(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
