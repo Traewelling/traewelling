@@ -190,7 +190,8 @@ abstract class MastodonController extends Controller
             return null;
         }
 
-        $mastodonUserId = $user->socialProfile->mastodon_id;
+        // Mastodon transmits ids as strings, and since we want to use === whenever possible, we convert the mastodon_id to a string.
+        $mastodonUserId = (string) $user->socialProfile->mastodon_id;
         $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
             return
                 // We never want to interact with any direct messages

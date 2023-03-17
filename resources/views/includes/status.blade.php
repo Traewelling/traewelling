@@ -96,7 +96,8 @@
                     </p>
 
                     @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ $status->body }}
+                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+                            {!! nl2br(e(preg_replace('~(\R{2})\R+~', '$1', $status->body))) !!}
                         </p>
                     @endif
 
@@ -194,6 +195,13 @@
                         </a>
                     </li>
                 @endif
+                @admin
+                    <li class="list-inline-item like-text">
+                        <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                            <i class="fas fa-tools" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                @endadmin
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
