@@ -31,6 +31,34 @@ class AuthServiceProvider extends ServiceProvider {
         Webhook::class => WebhookPolicy::class
     ];
 
+    //ToDo Translate
+    public static array $scopes = [
+        'read-statuses'                  => 'see all statuses',
+        'read-notifications'             => 'see your notifications',
+        'read-statistics'                => 'see your statistics',
+        'read-search'                    => 'search in Träwelling',
+        'write-statuses'                 => 'create, edit, delete statuses',
+        'write-likes'                    => 'create and remove likes',
+        'write-notifications'            => 'mark notifications as read, clear notifications',
+        'write-exports'                  => 'request data exports',
+        'write-follows'                  => 'follow and unfollow users',
+        'write-followers'                => 'accept follow requests and remove followers',
+        'write-blocks'                   => 'block and unblock users, mute and unmute users',
+        'write-event-suggestions'        => 'suggest events in your name',
+        'write-support-tickets'          => 'create support tickets in your name',
+        'read-settings'                  => 'see your settings, email, etc.',
+        'write-settings-profile'         => 'edit your profile',
+        'read-settings-profile'          => 'see your profile data, e.g. email',
+        'write-settings-mail'            => 'edit your email',
+        'write-settings-profile-picture' => 'edit your profile picture',
+        'write-settings-privacy'         => 'change your privacy settings',
+        'read-settings-followers'        => 'show follow-requests and followers',
+        'write-settings-calendar'        => 'create and delete new calendar-tokens',
+        'extra-write-password'           => 'change your password',
+        'extra-terminate-sessions'       => 'log you out of other sessions and apps',
+        'extra-delete'                   => 'delete your account'
+    ];
+
     /**
      * Register any authentication / authorization services.
      *
@@ -53,5 +81,16 @@ class AuthServiceProvider extends ServiceProvider {
                 ->middleware("throttle")
                 ->name("authorizations.token");
         });
+        Passport::tokensCan(self::$scopes);
+        Passport::setDefaultScope([
+                                      'read-statuses',
+                                      'write-statuses',
+                                      'write-likes',
+                                      'read-notifications',
+                                      'write-notifications',
+                                      'write-follows',
+                                      'write-followers',
+                                      'write-blocks',
+                                  ]);
     }
 }

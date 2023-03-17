@@ -312,7 +312,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -364,7 +366,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -434,7 +438,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -489,7 +495,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -583,7 +591,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -637,7 +647,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-follows"
+                        ]
                     },
                     {
                         "token": []
@@ -689,7 +701,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-follows"
+                        ]
                     },
                     {
                         "token": []
@@ -739,7 +753,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -783,7 +799,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -827,7 +845,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -879,7 +899,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -928,7 +950,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -977,7 +1001,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -1035,7 +1061,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1088,7 +1116,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
                     },
                     {
                         "token": []
@@ -1133,7 +1163,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
                     },
                     {
                         "token": []
@@ -1238,7 +1270,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings"
+                        ]
                     },
                     {
                         "token": []
@@ -1286,6 +1320,10 @@
                                     "defaultStatusVisibility": {
                                         "type": "integer",
                                         "nullable": true
+                                    },
+                                    "mastodonVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1321,7 +1359,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-settings"
+                        ]
                     },
                     {
                         "token": []
@@ -1364,7 +1404,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1407,7 +1449,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1450,7 +1494,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1504,7 +1550,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1642,7 +1690,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1704,7 +1754,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1765,7 +1817,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1826,7 +1880,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1887,7 +1943,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1928,7 +1986,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1983,7 +2043,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2046,7 +2108,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2094,7 +2158,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2160,7 +2226,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2215,7 +2283,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2256,7 +2326,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2451,7 +2523,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2553,7 +2627,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2619,7 +2695,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2667,7 +2745,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2722,7 +2802,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2774,7 +2856,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2815,7 +2899,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2867,7 +2953,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "extra-delete"
+                        ]
                     },
                     {
                         "token": []
@@ -2935,7 +3023,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2996,7 +3086,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -3064,7 +3156,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3130,7 +3224,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3188,7 +3284,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3244,7 +3342,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3308,7 +3408,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-search"
+                        ]
                     },
                     {
                         "token": []
@@ -4103,7 +4205,7 @@
                     },
                     "tweet": {
                         "title": "tweet",
-                        "description": "Should this status be posted to twitter?",
+                        "description": "The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
@@ -4678,6 +4780,9 @@
                         "description": "Mastodon URL of user",
                         "type": "string",
                         "example": "https://chaos.social/@traewelling"
+                    },
+                    "mastodonVisibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
                     }
                 },
                 "type": "object",
@@ -4768,6 +4873,18 @@
                 ],
                 "example": 0
             },
+            "MastodonVisibilityEnum": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
+            },
             "PointsReasonEnum": {
                 "title": "PointsReason",
                 "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
@@ -4848,10 +4965,35 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
-                        "scopes": []
+                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/oauth/token",
+                        "refreshUrl": "https://traewelling.de/auth/refresh",
+                        "scopes": {
+                            "read-statuses": "see all statuses",
+                            "read-notifications": "see your notifications",
+                            "read-statistics": "see your statistics",
+                            "read-search": "search in Träwelling",
+                            "write-statuses": "create, edit, delete statuses",
+                            "write-likes": "create and remove likes",
+                            "write-notifications": "mark notifications as read, clear notifications",
+                            "write-exports": "request data exports",
+                            "write-follows": "follow and unfollow users",
+                            "write-followers": "accept follow requests and remove followers",
+                            "write-blocks": "block and unblock users, mute and unmute users",
+                            "write-event-suggestions": "suggest events in your name",
+                            "write-support-tickets": "create support tickets in your name",
+                            "read-settings": "see your settings, email, etc.",
+                            "write-settings-profile": "edit your profile",
+                            "read-settings-profile": "see your profile data, e.g. email",
+                            "write-settings-mail": "edit your email",
+                            "write-settings-profile-picture": "edit your profile picture",
+                            "write-settings-privacy": "change your privacy settings",
+                            "read-settings-followers": "show follow-requests and followers",
+                            "write-settings-calendar": "create and delete new calendar-tokens",
+                            "extra-write-password": "change your password",
+                            "extra-terminate-sessions": "log you out of other sessions and apps",
+                            "extra-delete": "delete your account"
+                        }
                     }
                 }
             },
