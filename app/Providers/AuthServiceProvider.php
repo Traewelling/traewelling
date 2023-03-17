@@ -63,10 +63,12 @@ class AuthServiceProvider extends ServiceProvider
         Passport::setDefaultScope([
                                       'read-statuses',
                                       'write-statuses',
+                                      'write-likes',
                                       'read-notifications',
+                                      'write-notifications',
                                       'write-follows',
+                                      'write-followers',
                                       'write-blocks',
-                                      'write-notifications'
                                   ]);
     }
 }
