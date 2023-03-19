@@ -26,6 +26,7 @@ use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\UserController;
+use App\Http\Controllers\API\v1\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
@@ -156,6 +157,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::get('followings', [FollowController::class, 'getFollowings']);
             });
         });
+        Route::group(['prefix' => 'webhooks'], static function() {
+            Route::get('/', [WebhookController::class, 'getWebhooks']);
+            Route::get('/{webhookId}', [WebhookController::class, 'getWebhook']);
+            Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
+        });
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {
@@ -180,4 +186,4 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
         });
     });
-});
+}); 

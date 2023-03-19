@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
@@ -184,6 +185,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('delsession');
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken');
+        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
+             ->name('delwebhook');
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])

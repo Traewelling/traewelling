@@ -3417,6 +3417,147 @@
                     }
                 ]
             }
+        },
+        "/webhooks": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Get webhooks for current user and current application",
+                "description": "Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
+                "operationId": "getWebhooks",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Webhook"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/webhooks/{id}": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Get single webhook",
+                "description": "Returns a single webhook Object, if user and application is authorized to see it",
+                "operationId": "getSingleWebhook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Webhook-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Webhook"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No webhook found or unauthorized for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Delete a webhook if the user and application are authorized to do",
+                "description": "",
+                "operationId": "deleteWebhook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No webhook found for this id"
+                    },
+                    "403": {
+                        "description": "User or application not authorized to delete this webhook"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -4649,6 +4790,55 @@
                     "name": "UserProfileSettings"
                 }
             },
+            "Webhook": {
+                "title": "Webhook",
+                "description": "Webhook model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "clientId": {
+                        "title": "ClientID",
+                        "description": "ID of the client which created this webhook",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "userId": {
+                        "title": "UserID",
+                        "description": "ID of the user which created this webhook",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "URL where the webhook gets sent to",
+                        "example": "https://example.com/webhook"
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "creation date of this webhook",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
+                    },
+                    "events": {
+                        "title": "events",
+                        "description": "array of events this webhook receives",
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Webhook"
+                }
+            },
             "StatusUpdateBody": {
                 "title": "StatusUpdateBody",
                 "description": "Status Update Body",
@@ -4775,9 +4965,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/oauth/token",
+                        "refreshUrl": "https://traewelling.de/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
@@ -4863,6 +5053,10 @@
         {
             "name": "Settings",
             "description": "User/Profile-Settings"
+        },
+        {
+            "name": "Webhooks",
+            "description": "Manage Webhooks for third party applications"
         }
     ]
 }

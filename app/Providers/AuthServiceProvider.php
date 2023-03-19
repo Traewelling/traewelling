@@ -2,26 +2,33 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Backend\Auth\AccessTokenController;
+use App\Http\Controllers\Backend\Auth\ApproveAuthorizationController;
+use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
+use App\Models\OAuthClient;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\Webhook;
 use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\WebhookPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
 
-class AuthServiceProvider extends ServiceProvider
-{
+class AuthServiceProvider extends ServiceProvider {
     /**
      * The policy mappings for the application.
      *
      * @var array
      */
     protected $policies = [
-        Status::class => StatusPolicy::class,
-        User::class   => UserPolicy::class,
-        Follow::class => FollowPolicy::class,
+        Status::class  => StatusPolicy::class,
+        User::class    => UserPolicy::class,
+        Follow::class  => FollowPolicy::class,
+        Webhook::class => WebhookPolicy::class
     ];
 
     //ToDo Translate
@@ -59,6 +66,21 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void {
         $this->registerPolicies();
+
+        Passport::useClientModel(OAuthClient::class);
+
+        // Override passport routes
+        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {
+            Route::get('authorize', [AuthorizationController::class, 'authorize'])
+                ->middleware(['web'])
+                ->name('authorizations.authorize');
+            Route::post('/authorize', [ApproveAuthorizationController::class, 'approve'])
+                ->middleware(['web'])
+                ->name('authorizations.approve');
+            Route::post("/token", [AccessTokenController::class, 'issueToken'])
+                ->middleware("throttle")
+                ->name("authorizations.token");
+        });
         Passport::tokensCan(self::$scopes);
         Passport::setDefaultScope([
                                       'read-statuses',
