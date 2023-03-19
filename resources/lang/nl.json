@@ -624,5 +624,8 @@
     "yes": "Ja",
     "no": "Nee",
     "edit": "Bewerken",
-    "settings.mastodon.visibility.disclaimer": "Toekomstige Mastodonberichten worden gedeeld aan de hand van de hier ingestelde privacy-instellingen. Bestaande berichten worden niet gewijzigd. Alleen jij en personen die je vermeldt met @ kunnen privéberichten zien. Let op: sommige instanties vereisen minimaal niet-vermelde berichten."
+    "settings.mastodon.visibility.disclaimer": "Toekomstige Mastodonberichten worden gedeeld aan de hand van de hier ingestelde privacy-instellingen. Bestaande berichten worden niet gewijzigd. Alleen jij en personen die je vermeldt met @ kunnen privéberichten zien. Let op: sommige instanties vereisen minimaal niet-vermelde berichten.",
+    "settings.delete-webhook.success": "De webkoppeling is verwijderd",
+    "settings.title-webhooks": "Webkoppeling",
+    "settings.no-webhooks": "Er zijn geen externe apps die informatie omtrent je accountactiviteit doorkrijgen."
 }
