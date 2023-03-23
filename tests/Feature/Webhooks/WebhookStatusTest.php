@@ -26,9 +26,10 @@ class WebhookStatusTest extends TestCase
         if (config("trwl.webhooks_active") !== "true") {
             $this->markTestSkipped();
         }
+        parent::__construct();
     }
 
-    public function testWebhookSendingOnStatusCreation() {
+    public function testWebhookSendingOnStatusCreation(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -45,7 +46,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnStatusBodyChange() {
+    public function testWebhookSendingOnStatusBodyChange(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -60,7 +61,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(static function(CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->name(),
                 $job->payload['event']
@@ -71,7 +72,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnLike() {
+    public function testWebhookSendingOnLike(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -92,7 +93,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnDestinationChange() {
+    public function testWebhookSendingOnDestinationChange(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -108,7 +109,7 @@ class WebhookStatusTest extends TestCase
         $aachen    = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(static function(CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->name(),
                 $job->payload['event']
@@ -121,7 +122,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnBusinessChange() {
+    public function testWebhookSendingOnBusinessChange(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -136,7 +137,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(static function(CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->name(),
                 $job->payload['event']
@@ -147,7 +148,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnVisibilityChange() {
+    public function testWebhookSendingOnVisibilityChange(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -162,7 +163,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => StatusVisibility::UNLISTED->value,
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(static function(CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->name(),
                 $job->payload['event']
@@ -173,7 +174,7 @@ class WebhookStatusTest extends TestCase
         });
     }
 
-    public function testWebhookSendingOnStatusDeletion() {
+    public function testWebhookSendingOnStatusDeletion(): void {
         Bus::fake();
 
         $user   = $this->createGDPRAckedUser();
@@ -182,7 +183,7 @@ class WebhookStatusTest extends TestCase
         $status = $this->createStatus($user);
         StatusController::DeleteStatus($user, $status['id']);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(static function(CallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_DELETE->name(),
                 $job->payload['event']
