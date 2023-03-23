@@ -36,12 +36,15 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
         "mrkriskrisu/db-wagenreihung-php": "0.3",
-        "revolution/laravel-mastodon-api": "^2.0",
+        "revolution/laravel-mastodon-api": "^3.0",
         "romanzipp/laravel-queue-monitor": "^2.3",
         "smolblog/oauth2-twitter": "^1.0",
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-sitemap": "^6.0",
-        "trwl/socialite-mastodon": "^1.2"
+        "spatie/laravel-validation-rules": "^3.2",
+        "spatie/laravel-webhook-server": "^3.4",
+        "trwl/socialite-mastodon": "^1.2",
+        "uwumarie/laravel-bitflags": "dev-main"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
@@ -93,5 +96,11 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/NyCodeGHG/laravel-bitflags"
+        }
+    ]
 }

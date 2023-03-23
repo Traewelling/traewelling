@@ -134,7 +134,7 @@ class TransportController extends Controller
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *        {"passport": {}}, {"token": {}}
+     *        {"passport": {"create-statuses"}}, {"token": {}}
      *
      *     }
      * )
@@ -223,7 +223,7 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *       }
      *     )
      */
@@ -284,7 +284,7 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -331,7 +331,7 @@ class TransportController extends Controller
      *       @OA\Response(response=409, description="Checkin collision"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -347,7 +347,6 @@ class TransportController extends Controller
                                             'business'    => ['nullable', new Enum(Business::class)],
                                             'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
                                             'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'tweet'       => ['nullable', 'boolean'],
                                             'toot'        => ['nullable', 'boolean'],
                                             'chainPost'   => ['nullable', 'boolean'],
                                             'ibnr'        => ['nullable', 'boolean'],
@@ -377,7 +376,6 @@ class TransportController extends Controller
                 body:           $validated['body'] ?? null,
                 event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
                 force:          isset($validated['force']) && $validated['force'],
-                postOnTwitter:  isset($validated['tweet']) && $validated['tweet'],
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
@@ -424,7 +422,7 @@ class TransportController extends Controller
      *     @OA\Response(response=404, description="Station not found"),
      *     @OA\Response(response=502, description="Error with our data provider"),
      *     security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      * )
@@ -480,7 +478,7 @@ class TransportController extends Controller
      * @OA\Response(response=401, description="Unauthorized"),
      * @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -515,7 +513,7 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )

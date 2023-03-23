@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class IcsTest extends ApiTestCase
 {
@@ -15,7 +16,7 @@ class IcsTest extends ApiTestCase
 
     public function testCreateGetAndRevokeIcsToken(): void {
         $user1      = User::factory()->create();
-        $user1token = $user1->createToken('token')->accessToken;
+        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $this->assertDatabaseMissing('ics_tokens', [
             'user_id' => $user1->id,

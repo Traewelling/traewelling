@@ -13,19 +13,16 @@ class UserCheckedIn
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Status $status;
-    public bool   $shouldPostOnTwitter;
     public bool   $shouldPostOnMastodon;
     public bool   $shouldChain;
 
     /**
      * @param Status $status               The Status that was just checked in.
-     * @param bool   $shouldPostOnTwitter  Whether this Checkin should be posted on Twitter.
      * @param bool   $shouldPostOnMastodon Whether this Checkin should be posted on Mastodon.
      * @param bool   $shouldChain          Whether the Checkin post should be chained to the last one on Mastodon.
      */
-    public function __construct(Status $status, bool $shouldPostOnTwitter, bool $shouldPostOnMastodon, bool $shouldChain) {
+    public function __construct(Status $status, bool $shouldPostOnMastodon, bool $shouldChain) {
         $this->status               = $status;
-        $this->shouldPostOnTwitter  = $shouldPostOnTwitter;
         $this->shouldPostOnMastodon = $shouldPostOnMastodon;
         $this->shouldChain          = $shouldChain;
 

@@ -123,6 +123,8 @@ abstract class MastodonController extends Controller
     }
 
     /**
+     * See: https://docs.joinmastodon.org/methods/statuses/#create
+     *
      * @throws GuzzleException
      * @throws Exception
      */
@@ -151,7 +153,7 @@ abstract class MastodonController extends Controller
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
             $postResponse = Mastodon::createStatus($statusText, [
-                'visibility'     => 'unlisted',
+                'visibility'     => strtolower($status->user->socialProfile->mastodon_visibility->name),
                 'in_reply_to_id' => $traverseChain
             ]);
 
@@ -188,7 +190,8 @@ abstract class MastodonController extends Controller
             return null;
         }
 
-        $mastodonUserId = $user->socialProfile->mastodon_id;
+        // Mastodon transmits ids as strings, and since we want to use === whenever possible, we convert the mastodon_id to a string.
+        $mastodonUserId = (string) $user->socialProfile->mastodon_id;
         $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
             return
                 // We never want to interact with any direct messages

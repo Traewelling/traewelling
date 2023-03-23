@@ -96,7 +96,8 @@
                     </p>
 
                     @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i> {{ $status->body }}
+                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+                            {!! nl2br(e(preg_replace('~(\R{2})\R+~', '$1', $status->body))) !!}
                         </p>
                     @endif
 
@@ -165,10 +166,8 @@
         </span>
         <ul class="list-inline">
             @auth
-                <li class="
-                @if(auth()->user()->id == $status->user_id && $status->likes->count() !== 0)d-none @endif list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}"
-                    data-trwl-selflike="{{ auth()->user()->id == $status->user_id }}">
+                <li class="list-inline-item d-lg-none"
+                    id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img
                             src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
@@ -209,6 +208,13 @@
                         </a>
                     </li>
                 @endif
+                @admin
+                    <li class="list-inline-item like-text">
+                        <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                            <i class="fas fa-tools" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                @endadmin
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">

@@ -19,12 +19,12 @@ class MastodonControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    const USERID_OP       = 2342;
-    const USERID_ANSWER   = 2343;
-    const TOOTID_OP       = 1337;
-    const TOOTID_ANSWER   = 1338;
-    const TOOTID_ANSWER_2 = 1339;
-    const TOOTID_ANSWER_3 = 1340;
+    const USERID_OP       = "2342";
+    const USERID_ANSWER   = "2343";
+    const TOOTID_OP       = "1337";
+    const TOOTID_ANSWER   = "1338";
+    const TOOTID_ANSWER_2 = "1339";
+    const TOOTID_ANSWER_3 = "1340";
     const OP_CONTEXT_URL  = '/statuses/' . self::TOOTID_OP . '/context';
 
     /**
@@ -366,7 +366,7 @@ class MastodonControllerTest extends TestCase
             ->socialProfiles()
             ->create([
                          'user_id'         => $user->id,
-                         'mastodon_id'     => self::USERID_OP,
+                         'mastodon_id'     => (int) self::USERID_OP,
                          'mastodon_server' => $mastodonServer->id,
                          'mastodon_token'  => 'my_mastodon_token'
                      ]);

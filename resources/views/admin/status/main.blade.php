@@ -58,7 +58,9 @@
                                     <tr>
                                         <td>{{$status->id}}</td>
                                         <td>
-                                            {{$status->user->username}}
+                                            <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
+                                                {{'@'.$status->user->username}}
+                                            </a>
                                             <br/>
                                             <small>{{$status->user->name}}</small>
                                         </td>

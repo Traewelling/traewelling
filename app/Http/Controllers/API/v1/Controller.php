@@ -76,6 +76,10 @@ use Illuminate\Http\JsonResponse;
  *     name="Settings",
  *     description="User/Profile-Settings"
  * )
+ * @OA\Tag(
+ *     name="Webhooks",
+ *     description="Manage Webhooks for third party applications"
+ * )
  */
 class Controller extends \App\Http\Controllers\Controller
 {

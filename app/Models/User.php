@@ -155,6 +155,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(IcsToken::class, 'user_id', 'id');
     }
 
+    public function webhooks(): HasMany {
+        return $this->hasMany(Webhook::class);
+    }
+
     public function getPointsAttribute(): int {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())

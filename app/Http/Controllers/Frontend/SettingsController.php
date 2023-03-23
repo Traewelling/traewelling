@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\RateLimitExceededException;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
+use App\Http\Controllers\Backend\WebhookController;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,9 +25,9 @@ class SettingsController extends Controller
 
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'username'   => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
-                                            'name'       => ['required', 'string', 'max:50'],
-                                            'email'      => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
+                                            'name'     => ['required', 'string', 'max:50'],
+                                            'email'    => ['required', 'string', 'email:rfc,dns', 'max:255'],
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {
@@ -60,16 +62,23 @@ class SettingsController extends Controller
                                             'default_status_visibility' => [
                                                 'required',
                                                 new Enum(StatusVisibility::class),
+                                            ],
+                                            'mastodon_visibility'       => [
+                                                'required',
+                                                new Enum(MastodonVisibility::class),
                                             ]
                                         ]);
 
-        auth()->user()->update([
-                                   'prevent_index'             => $validated['prevent_index'],
-                                   'private_profile'           => isset($validated['private_profile'])
-                                                                  && $validated['private_profile'] === 'on',
-                                   'privacy_hide_days'         => $validated['privacy_hide_days'] ?? null,
-                                   'default_status_visibility' => $validated['default_status_visibility'],
-                               ]);
+        $user = auth()->user();
+        $user->update([
+                          'prevent_index'             => $validated['prevent_index'],
+                          'private_profile'           => isset($validated['private_profile'])
+                                                         && $validated['private_profile'] === 'on',
+                          'privacy_hide_days'         => $validated['privacy_hide_days'] ?? null,
+                          'default_status_visibility' => $validated['default_status_visibility'],
+                      ]);
+
+        $user->socialProfile->update(['mastodon_visibility' => $validated['mastodon_visibility']]);
 
         return back()->with('success', __('settings.privacy.update.success'));
     }
@@ -96,7 +105,8 @@ class SettingsController extends Controller
     public function renderSettings(): Renderable {
         return view('settings.settings', [
             'sessions' => SessionController::index(user: auth()->user()),
-            'tokens'   => TokenController::index(user: auth()->user())
+            'tokens'   => TokenController::index(user: auth()->user()),
+            'webhooks' => WebhookController::index(user: auth()->user()),
         ]);
     }
 

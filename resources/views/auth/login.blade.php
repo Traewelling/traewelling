@@ -83,9 +83,13 @@
                                 <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
                                     <div class="row">
                                         <div class="form-group col-md-6">
-                                            <a href="{{ url('/auth/redirect/twitter') }}"
-                                               class="btn btn-md btn-primary mt-2"><i class="fab fa-twitter"></i>
-                                                Twitter</a>
+                                            <a href="https://blog.traewelling.de/posts/twitter-deprecation/"
+                                               class="btn btn-md btn-tertiary mt-2"
+                                               target="_blank"
+                                            >
+                                                <i class="fab fa-twitter"></i>
+                                                Twitter
+                                            </a>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <div class="md-form input-group mt-2">
