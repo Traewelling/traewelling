@@ -42,4 +42,5 @@ return [
         'leaderboard-retention-seconds' => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
     ],
     'year_in_review_active' => env('YEAR_IN_REVIEW_ACTIVE', false),
+    'webhooks_active' => env("WEBHOOKS_ACTIVE", false),
 ];

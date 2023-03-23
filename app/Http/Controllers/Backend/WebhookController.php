@@ -80,6 +80,10 @@ abstract class WebhookController extends Controller {
     }
 
     static function dispatchWebhook(User $user, WebhookEvent $event, array $data): void {
+        if (config("trwl.webhooks_active") !== "true") {
+            return;
+        }
+
         $webhooks = $user->webhooks()
             ->whereBitflag('events', $event->value)
             ->where('user_id', $user->id)
