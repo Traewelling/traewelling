@@ -13,6 +13,7 @@
                 @include('settings.cards.sessions')
                 @include('settings.cards.ics')
                 @include('settings.cards.api-token')
+                @include('settings.cards.webhooks')
                 @include('settings.cards.account-deletion')
             </div>
         </div>

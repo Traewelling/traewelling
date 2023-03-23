@@ -134,7 +134,7 @@ class TransportController extends Controller
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *        {"passport": {}}, {"token": {}}
+     *        {"passport": {"create-statuses"}}, {"token": {}}
      *
      *     }
      * )
@@ -223,7 +223,7 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *       }
      *     )
      */
@@ -284,7 +284,7 @@ class TransportController extends Controller
      *       @OA\Response(response=404, description="No station found"),
      *       @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -331,7 +331,7 @@ class TransportController extends Controller
      *       @OA\Response(response=409, description="Checkin collision"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -422,7 +422,7 @@ class TransportController extends Controller
      *     @OA\Response(response=404, description="Station not found"),
      *     @OA\Response(response=502, description="Error with our data provider"),
      *     security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      * )
@@ -478,7 +478,7 @@ class TransportController extends Controller
      * @OA\Response(response=401, description="Unauthorized"),
      * @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -513,7 +513,7 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"create-statuses"}}, {"token": {}}
      *
      *       }
      *     )
