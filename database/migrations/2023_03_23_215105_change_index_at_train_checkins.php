@@ -8,8 +8,8 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('train_checkins', static function(Blueprint $table) {
-            $table->dropIndex(['departure', 'arrival']);
             $table->index(['departure', 'arrival', 'status_id']);
+            $table->dropIndex(['departure', 'arrival']);
         });
     }
 
