@@ -22,11 +22,10 @@ class WebhookStatusTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function __construct() {
+    protected function setUp(): void {
         if (config("trwl.webhooks_active") !== "true") {
             $this->markTestSkipped();
         }
-        parent::__construct();
     }
 
     public function testWebhookSendingOnStatusCreation(): void {
