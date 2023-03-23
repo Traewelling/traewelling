@@ -80,7 +80,7 @@ abstract class WebhookController extends Controller {
     }
 
     static function dispatchWebhook(User $user, WebhookEvent $event, array $data): void {
-        if (config("trwl.webhooks_active") !== "true") {
+        if (!config("trwl.webhooks_active")) {
             return;
         }
 
