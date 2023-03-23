@@ -11,8 +11,8 @@
             <div class="modal-body">
                 <form action="{{ route('trains.checkin') }}" method="POST" id="checkinForm">
                     <div class="form-floating">
-                            <textarea name="body" class="form-control" id="message-text" maxlength="280"
-                                      style="min-height: 130px;"></textarea>
+                        <textarea name="body" class="form-control" id="message-text" maxlength="280"
+                                  style="min-height: 130px;"></textarea>
                         <label for="message-text">{{__('stationboard.label-message')}}</label>
                     </div>
                     <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
@@ -89,8 +89,8 @@
 
                     <input type="hidden" id="input-tripID" name="tripID" value=""/>
                     <input type="hidden" id="input-destination" name="destination" value=""/>
-                    <input type="hidden" name="start" value="{{request()->start}}"/>
-                    <input type="hidden" name="departure" value="{{request()->departure}}"/>
+                    <input type="hidden" id="input-start" name="start" value="{{request()->start}}"/>
+                    <input type="hidden" id="input-departure" name="departure" value="{{request()->departure}}"/>
                     <input type="hidden" id="input-arrival" name="arrival"/>
                     @csrf
                 </form>
