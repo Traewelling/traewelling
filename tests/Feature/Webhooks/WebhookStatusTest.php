@@ -22,12 +22,6 @@ class WebhookStatusTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        if (config("trwl.webhooks_active") !== "true") {
-            $this->markTestSkipped();
-        }
-    }
-
     public function testWebhookSendingOnStatusCreation(): void {
         Bus::fake();
 
@@ -39,7 +33,7 @@ class WebhookStatusTest extends TestCase
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->name(),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                'status' => new StatusResource($status),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });

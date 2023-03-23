@@ -13,12 +13,6 @@ class WebhookNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        if (config("trwl.webhooks_active") !== "true") {
-            $this->markTestSkipped();
-        }
-    }
-
     public function testWebhookSendingOnNotification(): void {
         Bus::fake();
 
