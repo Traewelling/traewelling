@@ -68,18 +68,12 @@
     </div>
     <div class="container">
         <div class="row justify-content-center mt-4">
-            @if(auth()->check() && auth()->user()->mutedUsers->contains('id', $user->id))
+            @if($user->muted)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('user.muted.heading')}}</h3></header>
                     <h5>{{__('user.muted.text', ["username" => $user->username])}}</h5>
 
-                    <form method="POST" action="{{route('user.unmute')}}">
-                        @csrf
-                        <input type="hidden" name="user_id" value="{{$user->id}}"/>
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            <i class="far fa-eye"></i> {{ __('user.unmute-tooltip') }}
-                        </button>
-                    </form>
+                    <x-mute-button :user="$user" :showText="true"/>
                 </div>
             @elseif($user->private_profile && !$user->following && (!auth()->check() || $user->id !== auth()->id()))
                 <div class="col-md-8 col-lg-7 text-center mb-5">

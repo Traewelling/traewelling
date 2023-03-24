@@ -1,19 +1,19 @@
-@if($dropdown)
+@if($isDropdown())
     <li>@endif
         <form style="display: inline;" method="POST" action="{{ $getRoute() }}">
             @csrf
             <input type="hidden" name="user_id" value="{{$user->id}}"/>
             <button type="submit"
                     @class(['btn btn-sm btn-primary' => !$dropdown, 'dropdown-item' => $dropdown])
-                    @unless($dropdown)
+                    @unless($showText())
                         data-mdb-toggle="tooltip" title="{{ $getText() }}"
                     @endunless
             >
                 <i class="fas {{ $getIcon() }}"></i>
-                @if($dropdown)
+                @if($showText())
                     {{ $getText() }}
                 @endif
             </button>
         </form>
-        @if($dropdown)</li>
+        @if($isDropdown())</li>
 @endif
