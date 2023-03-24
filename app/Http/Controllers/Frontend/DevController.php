@@ -62,7 +62,7 @@ class DevController extends Controller {
             $validated['name'],
             $validated['redirect'],
             $validated['privacy_policy_url'],
-            isset($validated['enable_webhooks']),
+            isset($validated['enable_webhooks']) || $clients->hasWebhooks(id: $appId),
             $validated['authorized_webhook_url']
         );
 
