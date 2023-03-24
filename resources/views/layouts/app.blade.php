@@ -264,6 +264,7 @@
         </script>
     </body>
 
+    @include('includes.check-in-modal')
     @include('includes.modals.notifications-board')
     @yield('footer')
 </html>

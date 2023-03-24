@@ -247,5 +247,4 @@
             </div>
         @endforeach
     @endif
-    @include('includes.check-in-modal')
 </div>
