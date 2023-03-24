@@ -5,28 +5,6 @@ $(document).on("click", ".delete", function (event) {
     $("#delete-modal").modal("show");
 });
 
-$(document).on("click", ".join", function (event) {
-    event.preventDefault();
-
-    const source = event.target.parentElement.dataset;
-    console.log(source);
-    $("#checkinModal").modal("show", function (event) {
-        const modal = $(this);
-        modal
-            .find(".modal-title")
-            .html(
-                source.trwlLinename +
-                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                source.trwlStopName
-            );
-        modal.find("#input-tripID").val(source.trwlTripId);
-        modal.find("#input-destination").val(source.trwlDestination);
-        modal.find("#input-arrival").val(source.trwlArrival);
-        modal.find("#input-start").val(source.trwlStart);
-        modal.find("#input-departure").val(source.trwlDeparture);
-    });
-});
-
 $(document).on("click", "#modal-delete", function () {
     $.ajax({
         method: "DELETE",

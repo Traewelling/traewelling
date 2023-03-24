@@ -11,6 +11,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
+use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -141,6 +142,7 @@ class FrontendTransportController extends Controller
 
             return view('trip', [
                 'hafasTrip'       => $hafasTrip,
+                'events'          => EventBackend::activeEvents(),
                 'stopovers'       => $stopovers,
                 'startStation'    => $startStation,
                 'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
