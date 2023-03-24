@@ -1,7 +1,7 @@
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset.trwlStatusId;
+    deleteStatusId = event.target.dataset.trwlStatusId;
     $("#delete-modal").modal("show");
 });
 
@@ -31,7 +31,7 @@ $(document).on("click", "#modal-delete", function () {
     $.ajax({
         method: "DELETE",
         url: urlDelete,
-        data: {statusId: statusId, _token: token}
+        data: {statusId: deleteStatusId, _token: token}
     }).done(function () {
         window.location.replace("/dashboard");
     });
