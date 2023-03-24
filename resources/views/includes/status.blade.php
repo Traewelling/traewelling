@@ -220,6 +220,7 @@
                                         </a>
                                     </li>
                                     <x-mute-button :user="$status->user" :dropdown="true"/>
+                                    <x-block-button :user="$status->user" :dropdown="true"/>
                                 @endif
                                 @admin
                                 <li>

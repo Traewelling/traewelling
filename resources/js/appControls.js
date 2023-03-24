@@ -1,15 +1,14 @@
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
-    deleteStatusId = event.target.dataset.trwlStatusId;
+    deleteStatusId = getDataset(event).trwlStatusId;
     $("#delete-modal").modal("show");
 });
 
 $(document).on("click", ".join", function (event) {
     event.preventDefault();
 
-    const source = event.target.parentElement.dataset;
-    console.log(source);
+    const source = getDataset(event);
     $("#checkinModal").modal("show", function (event) {
         const modal = $(this);
         modal
@@ -38,7 +37,7 @@ $(document).on("click", "#modal-delete", function () {
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset.trwlStatusId;
+    statusId = getDataset(event).trwlStatusId;
 
     let $likeCount = document.getElementById("like-count-" + statusId);
     let count      = parseInt($likeCount.innerText);
@@ -155,8 +154,8 @@ $(document).on("click", ".disconnect", function (event) {
 $(document).on("click", ".trwl-share", function (event) {
     event.preventDefault();
 
-    let shareText = event.target.dataset.trwlShareText;
-    let shareUrl  = event.target.dataset.trwlShareUrl;
+    let shareText = getDataset(event).trwlShareText;
+    let shareUrl  = getDataset(event).trwlShareUrl;
 
     if (navigator.share) {
         navigator.share({
@@ -173,3 +172,10 @@ $(document).on("click", ".trwl-share", function (event) {
     }
 
 });
+
+function getDataset(event) {
+    let target = event.target.dataset;
+    let parent = event.target.parentElement.dataset;
+
+    return _.size(event.target.dataset) ? target : parent;
+}
