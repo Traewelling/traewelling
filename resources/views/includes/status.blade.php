@@ -280,6 +280,5 @@
                 </span>
             </div>
         @endforeach
-        @endif
-        @include('includes.check-in-modal')
+    @endif
 </div>

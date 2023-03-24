@@ -1,3 +1,4 @@
+@php use App\Repositories\OAuthClientRepository; @endphp
 @extends('layouts.settings')
 
 @section('title', request()->is('dev.apps.create') ? 'Anwendung erstellen' : 'Anwendung bearbeiten') <!-- ToDo: Übersetzen -->
@@ -61,7 +62,7 @@
                                @endif
                                @if(Route::currentRouteName() === 'dev.apps.edit')
                                    disabled
-                            @endif
+                                @endif
                         >
                     </div>
 
@@ -73,25 +74,29 @@
                     </label>
                     <div class="col-md-6">
                         <input id="enable_webhooks" type="checkbox" name="enable_webhooks"
-                            @if($app?->webhooks_enabled)
-                            checked
-                            @endif
+                               @if($app?->webhooks_enabled)
+                                   checked
+                               @if((new OAuthClientRepository)->hasWebhooks($app->id))
+                                   disabled
+                                @endif
+                                @endif
                         >
                     </div>
                 </div>
                 <div class="form-group row my-1">
                     <label for="authorized_webhook_url" class="col-md-4 col-form-label text-md-right">
-                       Authorized Webhook URL
+                        Authorized Webhook URL
                     </label>
                     <div class="col-md-6">
-                        <input id="authorized_webhook_url" type="text" class="form-control" name="authorized_webhook_url"
+                        <input id="authorized_webhook_url" type="text" class="form-control"
+                               name="authorized_webhook_url"
                                placeholder="https://example.com/webhook"
                                value="{{ $app?->authorized_webhook_url }}">
                     </div>
                 </div>
                 <div class="form-group row my-1">
                     <label for="privacy_policy_url" class="col-md-4 col-form-label text-md-right">
-                       Privacy Policy
+                        Privacy Policy
                     </label>
                     <div class="col-md-6">
                         <input id="privacy_policy_url" type="text" class="form-control" name="privacy_policy_url"
