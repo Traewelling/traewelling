@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void {
-        Schema::table('failed_jobs', static function(Blueprint $table) {
-            $table->string('uuid')->default('UUID()')->change();
+        Schema::table('train_checkins', static function(Blueprint $table) {
+            $table->index(['departure', 'arrival']);
         });
     }
 
     public function down(): void {
-        Schema::table('failed_jobs', static function(Blueprint $table) {
-            $table->string('uuid')->default(null)->change();
+        Schema::table('train_checkins', static function(Blueprint $table) {
+            $table->dropIndex(['departure', 'arrival']);
         });
     }
 };
