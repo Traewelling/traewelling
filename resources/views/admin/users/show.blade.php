@@ -53,23 +53,11 @@
                         </tr>
                         <tr>
                             <th>Twitter</th>
-                            <td>
-                                @if($user->twitterUrl)
-                                    <a href="{{ $user->twitterUrl }}" target="_blank">
-                                        {{ $user->twitterUrl }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </a>
-                                @endif
-                            </td>
+                            <td>{{ $user->twitterUrl }}</td>
                         </tr>
                         <tr>
                             <th>Mastodon</th>
-                            <td>
-                                @if($user->mastodonUrl)
-                                    <a href="{{ $user->mastodonUrl }}" target="_blank">
-                                        {{ $user->mastodonUrl }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </a>
-                                @endif
-                            </td>
+                            <td>{{ $user->mastodonUrl }}</td>
                         </tr>
                         <tr>
                             <th>Last login</th>
