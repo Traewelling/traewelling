@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                <div class="modal-body" id="notifications-list">
+                <div class="modal-body">
                     <div class="form-outline">
                         <input type="text" name="domain" class="form-control" required
                                aria-describedby="button-addon4">
@@ -15,7 +15,12 @@
                         {{__('menu.discard')}}
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fab fa-mastodon"></i> {{__('user.login')}}
+                        <i class="fab fa-mastodon"></i>
+                        @if (Route::currentRouteName() !== 'settings')
+                            {{__('user.login')}}
+                        @else
+                            {{__('settings.connect')}}
+                        @endif
                     </button>
                 </div>
             </form>
