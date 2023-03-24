@@ -32,7 +32,7 @@ abstract class TokenController extends Controller
 
         $token->revoke();
         $client = $token->client()->first();
-        if ($client && $client->webhooks_enabled) {
+        if ($client) {
             $tokens = Token::where('client_id', $client->id)
                            ->where('user_id', $user->id)
                            ->where('revoked', '=', '0')
