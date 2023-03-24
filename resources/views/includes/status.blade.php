@@ -177,7 +177,7 @@
             </div>
         </div>
 
-        <div class="col-4 row ms-auto justify-content-end">
+        <div class="col-4 row ms-auto justify-content-end pe-0 me-1">
             <div class="col-1 like-text">
                 <a href="{{ auth()->user() ? '#' : route('login') }}"
                    class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
