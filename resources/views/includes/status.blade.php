@@ -1,3 +1,4 @@
+@php use App\Enum\Business; @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
@@ -6,7 +7,7 @@
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
      data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
-    @endif
+        @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
         <div class="card-img-top">
@@ -72,16 +73,15 @@
                             {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
                         </span>
 
-                        @if($status->business === \App\Enum\Business::BUSINESS)
+                        @if($status->business !== Business::PRIVATE)
                             <span class="pl-sm-2">
-                                <i class="fa fa-briefcase" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                                   title="{{ __('stationboard.business.business') }}" aria-hidden="true"></i>
-                            </span>
-                        @endif
-                        @if($status->business === \App\Enum\Business::COMMUTE)
-                            <span class="pl-sm-2">
-                                <i class="fa fa-building" data-mdb-toggle="tooltip" data-mdb-placement="top"
-                                   title="{{ __('stationboard.business.commute') }}" aria-hidden="true"></i>
+                                <i class="fa {{$status->business->faIcon()}}"
+                                   data-mdb-toggle="tooltip"
+                                   data-mdb-placement="top"
+                                   title="{{$status->business->title()}}"
+                                   aria-hidden="true">
+                                </i>
+                                <span class="sr-only">{{$status->business->title()}}</span>
                             </span>
                         @endif
                         @if($status->event != null)
@@ -138,19 +138,18 @@
     </div>
     <div class="progress">
         <div
-            class="progress-bar progress-time"
-            role="progressbar"
-            style="width: 0"
-            data-valuenow="{{ time() }}"
-            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
-            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
+                class="progress-bar progress-time"
+                role="progressbar"
+                style="width: 0"
+                data-valuenow="{{ time() }}"
+                data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
+                data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
         ></div>
     </div>
     <div class="card-footer text-muted interaction">
         <span class="float-end like-text">
-            <i class="fas
-{{["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"][$status->visibility->value]}} visibility-icon text-small"
-               aria-hidden="true" title="{{__('status.visibility.'.$status->visibility->value)}}"
+            <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
+               aria-hidden="true" title="{{$status->visibility->title()}}"
                data-mdb-toggle="tooltip"
                data-mdb-placement="top"></i>
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
@@ -170,15 +169,15 @@
                     id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
-                            class="profile-image" alt="{{__('settings.picture')}}">
+                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                                class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
 
                 <li class="list-inline-item like-text">
                     <span
-                        class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                        data-trwl-status-id="{{ $status->id }}"></span>
+                            class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
+                            data-trwl-status-id="{{ $status->id }}"></span>
                     <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
                           id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
                 </li>
@@ -209,18 +208,18 @@
                     </li>
                 @endif
                 @admin
-                    <li class="list-inline-item like-text">
-                        <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
-                            <i class="fas fa-tools" aria-hidden="true"></i>
-                        </a>
-                    </li>
+                <li class="list-inline-item like-text">
+                    <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                        <i class="fas fa-tools" aria-hidden="true"></i>
+                    </a>
+                </li>
                 @endadmin
             @else
                 <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
-                            class="profile-image" alt="{{__('settings.picture')}}">
+                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                                class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
             @endauth
