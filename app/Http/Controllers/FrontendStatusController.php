@@ -39,6 +39,10 @@ class FrontendStatusController extends Controller
                 return redirect()->route('globaldashboard')
                                  ->with('error', Session::get('error'));
             }
+            if (Session::has('checkin-collision')) {
+                return redirect()->route('globaldashboard')
+                                 ->with('checkin-collision', Session::get('checkin-collision'));
+            }
             return redirect()->route('globaldashboard');
         }
         return view('dashboard', [
