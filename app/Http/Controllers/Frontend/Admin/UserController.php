@@ -17,6 +17,7 @@ class UserController
             $users = User::where('id', $validated['query'])
                          ->orWhere('name', 'like', '%' . $validated['query'] . '%')
                          ->orWhere('username', 'like', '%' . $validated['query'] . '%')
+                         ->orWhere('email', 'like', '%' . $validated['query'] . '%')
                          ->orderByDesc('last_login')
                          ->simplePaginate(10);
         } else {
@@ -39,5 +40,16 @@ class UserController
         return view('admin.users.show', [
             'user' => $user
         ]);
+    }
+
+    public function updateMail(Request $request): RedirectResponse {
+        $validated   = $request->validate([
+                                              'id'    => ['required', 'integer', 'exists:users,id'],
+                                              'email' => ['required', 'email', 'unique:users,email']
+                                          ]);
+        $user        = User::findOrFail($validated['id']);
+        $user->email = $validated['email'];
+        $user->save();
+        return redirect()->route('admin.users.user', ['id' => $validated['id']]);
     }
 }
