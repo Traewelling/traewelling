@@ -80,35 +80,33 @@
                         <hr>
                         <div class="row justify-content-center">
                             <div class="col-md-8 col-lg-7">
-                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <a href="https://blog.traewelling.de/posts/twitter-deprecation/"
-                                               class="btn btn-md btn-tertiary mt-2"
-                                               target="_blank"
-                                            >
-                                                <i class="fab fa-twitter"></i>
-                                                Twitter
-                                            </a>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <div class="md-form input-group mt-2">
-                                                <input type="text" name="domain" class="form-control" required
-                                                       placeholder="{{__('user.mastodon-instance-url')}}"
-                                                       aria-describedby="button-addon4">
-                                                <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                                    <i class="fab fa-mastodon"></i> Mastodon
-                                                </button>
-
-                                            </div>
-                                        </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <a href="https://blog.traewelling.de/posts/twitter-deprecation/"
+                                           class="btn btn-md btn-tertiary mt-2"
+                                           target="_blank"
+                                        >
+                                            <i class="fab fa-twitter"></i>
+                                            Twitter
+                                        </a>
                                     </div>
-                                </form>
+                                    <div class="form-group col-md-6">
+                                        <a
+                                                href="#"
+                                                class="btn btn-md btn-primary m-0 px-3"
+                                                data-mdb-target="#mastodon-auth"
+                                                data-mdb-toggle="modal"
+                                        >
+                                            <i class="fab fa-mastodon"></i> Mastodon
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        @include('includes.modals.mastodon-auth')
     </div>
 @endsection
