@@ -229,6 +229,7 @@
                                         {{__('status.join')}}
                                     </a>
                                 </li>
+                                <x-mute-button :user="$status->user" :dropdown="true"/>
                             @endif
                             @admin
                             <li>
