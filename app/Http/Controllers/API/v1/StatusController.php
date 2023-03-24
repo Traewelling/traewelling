@@ -420,7 +420,12 @@ class StatusController extends Controller
                                  ->with('trainCheckin.HafasTrip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
-                                     return \request()?->user()->can('view', $status);
+                                     try {
+                                         $this->authorize('view', $status);
+                                     } catch (AuthorizationException) {
+                                         return false;
+                                     }
+                                     return true;
                                  })
                                  ->map(function($status) {
                                      return [
