@@ -195,76 +195,64 @@
                    data-mdb-placement="top"></i>
             </div>
             <div class="col-1">
-                <button class="btn btn-sm btn-link">
-                    <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-link" type="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        @auth
+                            @if(auth()->user()->id === $status->user_id)
+                                <li>
+                                    <a class="dropdown-item edit" href="#" data-trwl-status-id="{{ $status->id }}">
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                        {{__('edit')}}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item delete" href="#" data-trwl-status-id="{{$status->id}}">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        {{__('delete')}}
+                                    </a>
+                                </li>
+                            @else
+                                <li>
+                                    <a href="#" class="dropdown-item join"
+                                       data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
+                                       data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
+                                       data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
+                                       data-trwl-destination="{{$status->trainCheckIn->destination}}"
+                                       data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
+                                       data-trwl-start="{{$status->trainCheckIn->origin}}"
+                                       data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                                    >
+                                        <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            @endif
+                            @admin
+                            <li>
+                                <hr class="dropdown-divider"/>
+                            </li>
+                            <li>
+                                <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
+                                   class="dropdown-item">
+                                    <i class="fas fa-tools" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            @endadmin
+                        @endauth
+                    </ul>
+                </div>
             </div>
         </div>
 
     </div>
-    <!--
-        <ul class="list-inline">
-            @auth
-
-        @if(auth()->user()->id == $status->user_id)
-            <li class="list-inline-item like-text">
-                <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </a>
-                    </li>
-
-                    <li class="list-inline-item like-text">
-                        <a href="#" class="delete" data-trwl-status-id="{{ $status->id }}">
-                            <i class="fas fa-trash" aria-hidden="true"></i>
-                        </a>
-                    </li>
-
-
-        @else
-            <li class="list-inline-item like-text">
-                <a href="#" class="join" data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
-                           data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
-                           data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
-                           data-trwl-destination="{{$status->trainCheckIn->destination}}"
-                           data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
-                           data-trwl-start="{{$status->trainCheckIn->origin}}"
-                           data-trwl-departure="{{$status->trainCheckIn->departure}}"
-                        >
-                            <i class="fas fa-user-plus" aria-hidden="true"></i>
-                        </a>
-                    </li>
-
-
-        @endif
-        @admin
-        <li class="list-inline-item like-text">
-            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
-                        <i class="fas fa-tools" aria-hidden="true"></i>
-                    </a>
-                </li>
-                @endadmin
-
-
-    @else
-        <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
-                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img
-                                src="{{ ProfilePictureController::getUrl($status->user) }}"
-                                class="profile-image" alt="{{__('settings.picture')}}">
-                    </a>
-                </li>
-
-
-    @endauth
-    </ul>
--->
-
-    @if(Route::current()->uri == "status/{id}")
-        @foreach($status->likes as $like)
-            <div class="card-footer text-muted clearfix">
-                <a href="{{ route('profile', ['username' => $like->user->username]) }}">
-                    <img src="{{ ProfilePictureController::getUrl($like->user) }}"
-                         class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
+        @if(Route::current()->uri == "status/{id}")
+            @foreach($status->likes as $like)
+                <div class="card-footer text-muted clearfix">
+                    <a href="{{ route('profile', ['username' => $like->user->username]) }}">
+                        <img src="{{ ProfilePictureController::getUrl($like->user) }}"
+                             class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
                 </a>
                 <span class="like-text pl-2 d-table-cell">
                     <a href="{{ route('profile', ['username' => $like->user->username]) }}">
@@ -278,6 +266,6 @@
                 </span>
             </div>
         @endforeach
-    @endif
+        @endif
+        @include('includes.check-in-modal')
 </div>
-@include('includes.check-in-modal')
