@@ -9,7 +9,7 @@
                         data-mdb-toggle="tooltip" title="{{ $getText() }}"
                     @endunless
             >
-                <i class="far {{ $getIcon() }}"></i>
+                <i class="fas {{ $getIcon() }}"></i>
                 @if($dropdown)
                     {{ $getText() }}
                 @endif

@@ -2,12 +2,13 @@
 
 namespace App\View\Components;
 
+use App\Interfaces\ActionButtonComponentInterface;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class MuteButton extends Component
+class MuteButton extends Component implements ActionButtonComponentInterface
 {
     public User $user;
     public bool $dropdown;
@@ -18,7 +19,7 @@ class MuteButton extends Component
     }
 
     public function render(): View|string|Closure {
-        return view('components.mute-button');
+        return view('components.user-action-button');
     }
 
     public function getText(): string {

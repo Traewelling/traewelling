@@ -31,7 +31,10 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
-                        @include('includes.hide-user-action-buttons')
+                        @if(auth()->user()->id != $user->id)
+                            <x-mute-button :user="$user"/>
+                            <x-block-button :user="$user"/>
+                        @endif
                     @endauth
                 </span>
                 <br/>
@@ -39,7 +42,7 @@
                 @if(!$user->isAuthUserBlocked)
                     <span class="fs-2">
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
-                            class="small font-weight-lighter">km</span>
+                                class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
                         <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
                             class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
