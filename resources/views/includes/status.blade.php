@@ -179,9 +179,9 @@
 
         <div class="col-4 row ms-auto justify-content-end">
             <div class="col-1 like-text">
-             <span
-                     class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                     data-trwl-status-id="{{ $status->id }}"></span>
+                <a href="{{ auth()->user() ? '#' : route('login') }}"
+                   class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                   data-trwl-status-id="{{ $status->id }}"></a>
             </div>
             <div class="col-1 like-text">
                 <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"

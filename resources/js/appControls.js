@@ -40,10 +40,11 @@ $(document).on("click", "#modal-delete", function () {
 $(document).on("click", ".like", function (event) {
     statusId = event.target.dataset.trwlStatusId;
 
-    let $likeCount   = document.getElementById("like-count-" + statusId);
-    let count        = parseInt($likeCount.innerText);
+    let $likeCount = document.getElementById("like-count-" + statusId);
+    let count      = parseInt($likeCount.innerText);
+    let auth       = event.target.attributes.href.value === "#";
 
-    if (event.target.className === "like far fa-star") {
+    if (auth && event.target.className === "like far fa-star") {
         $.ajax({
             method: "POST",
             url: urlLike,
@@ -58,7 +59,7 @@ $(document).on("click", ".like", function (event) {
                 $likeCount.classList.remove("d-none");
             }
         });
-    } else {
+    } else if (auth) {
         $.ajax({
             method: "POST",
             url: urlDislike,
@@ -75,8 +76,10 @@ $(document).on("click", ".like", function (event) {
         });
     }
 
-    event.preventDefault();
-    event.stopPropagation();
+    if (auth) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 });
 
 $(document).on("click", ".follow", function (event) {
