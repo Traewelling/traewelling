@@ -151,3 +151,25 @@ $(document).on("click", ".disconnect", function (event) {
         }
     });
 });
+
+$(document).on("click", ".trwl-share", function (event) {
+    event.preventDefault();
+
+    let shareText = event.target.dataset.trwlShareText;
+    let shareUrl  = event.target.dataset.trwlShareUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: "Träwelling",
+            text: shareText,
+            url: shareUrl
+        })
+            .catch(console.error);
+    } else {
+        navigator.clipboard.writeText(shareText + " " + shareUrl)
+            .then(() => {
+                window.notyf.success('Copied to clipboard');
+            });
+    }
+
+});

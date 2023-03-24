@@ -171,7 +171,7 @@
             </div>
             <div class="col">
                 {{__('dates.-on-')}}
-                <a href="{{ url('/status/'.$status->id) }}">
+                <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
                     {{ $status->created_at->isoFormat(__('time-format')) }}
                 </a>
             </div>
@@ -200,6 +200,20 @@
                         <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
                     </button>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item trwl-share"
+                               href="#"
+                               data-trwl-share-url="{{ route('statuses.get', ['id' => $status->id]) }}"
+                               @if(auth()->user() && $status->user_id == auth()->user()->id)
+                                   data-trwl-share-text="{{ $status->socialText }}"
+                               @else
+                                   data-trwl-share-text="{{ $status->description }}"
+                                    @endif
+                            >
+                                <i class="fas fa-share" aria-hidden="true"></i>
+                                {{__('menu.share')}}
+                            </a>
+                        </li>
                         @auth
                             @if(auth()->user()->id === $status->user_id)
                                 <li>

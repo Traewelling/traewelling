@@ -225,6 +225,7 @@
     "menu.settings.follower-requests": "Follower requests",
     "menu.settings.followings": "Following",
     "menu.share": "Share",
+    "menu.share.clipboard.success": "Copied to clipboard!",
     "menu.admin": "Admin-Panel",
     "menu.readmore": "Read more",
     "menu.loading": "Loading",
