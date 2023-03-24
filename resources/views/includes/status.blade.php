@@ -1,4 +1,8 @@
-@php use App\Enum\Business; @endphp
+@php
+    use App\Enum\Business;
+    use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;
+@endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
@@ -6,7 +10,7 @@
      data-trwl-visibility="{{ $status->visibility->value }}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
-     data-trwl-alternative-destinations="{{json_encode(\App\Http\Controllers\Backend\Transport\StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+     data-trwl-alternative-destinations="{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
         @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
@@ -19,7 +23,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                <img src="{{ ProfilePictureController::getUrl($status->user) }}"
                      alt="{{ $status->user->username }}">
             </a>
         </div>
@@ -146,44 +150,65 @@
                 data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
         ></div>
     </div>
-    <div class="card-footer text-muted interaction">
-        <span class="float-end like-text">
-            <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
-               aria-hidden="true" title="{{$status->visibility->title()}}"
-               data-mdb-toggle="tooltip"
-               data-mdb-placement="top"></i>
+    <div class="card-footer text-muted interaction row align-items-center py-0 me-1">
+        <div class="col-1 px-0 d-lg-none"
+             id="avatar-small-{{ $status->id }}">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                @if(auth()?->user()?->id == $status->user_id)
-                    {{__('user.you')}}
-                @else
-                    {{ $status->user->username }}
-                @endif
-            </a>{{__('dates.-on-')}}
-            <a href="{{ url('/status/'.$status->id) }}">
-                {{ $status->created_at->isoFormat(__('time-format')) }}
+                <img
+                        src="{{ ProfilePictureController::getUrl($status->user) }}"
+                        class="profile-image" alt="{{__('settings.picture')}}">
             </a>
-        </span>
+        </div>
+        <div class="col-6 row row-cols-1 my-1 ps-0 ps-lg-1">
+            <div class="col">
+                <a href="{{ route('profile', ['username' => $status->user->username]) }}">
+                    @if(auth()?->user()?->id == $status->user_id)
+                        {{__('user.you')}}
+                    @else
+                        {{ $status->user->username }}
+                    @endif
+                </a>
+            </div>
+            <div class="col">
+                {{__('dates.-on-')}}
+                <a href="{{ url('/status/'.$status->id) }}">
+                    {{ $status->created_at->isoFormat(__('time-format')) }}
+                </a>
+            </div>
+        </div>
+
+        <div class="col-4 row ms-auto justify-content-end">
+            <div class="col-1 like-text">
+             <span
+                     class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
+                     data-trwl-status-id="{{ $status->id }}"></span>
+            </div>
+            <div class="col-1 like-text">
+                <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
+                      id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                </span>
+            </div>
+            <div class="col-1 like-text">
+                <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
+                   aria-hidden="true" title="{{$status->visibility->title()}}"
+                   data-mdb-toggle="tooltip"
+                   data-mdb-placement="top"></i>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-sm btn-link">
+                    <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <!--
         <ul class="list-inline">
             @auth
-                <li class="list-inline-item d-lg-none"
-                    id="avatar-small-{{ $status->id }}">
-                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img
-                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
-                                class="profile-image" alt="{{__('settings.picture')}}">
-                    </a>
-                </li>
 
-                <li class="list-inline-item like-text">
-                    <span
-                            class="like {{ $status->likes->where('user_id', auth()->user()->id)->first() === null ? 'far fa-star' : 'fas fa-star'}}"
-                            data-trwl-status-id="{{ $status->id }}"></span>
-                    <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                          id="like-count-{{ $status->id }}">{{ $status->likes->count() }}</span>
-                </li>
-                @if(auth()->user()->id == $status->user_id)
-                    <li class="list-inline-item like-text">
-                        <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}">
+        @if(auth()->user()->id == $status->user_id)
+            <li class="list-inline-item like-text">
+                <a href="#" class="edit" data-trwl-status-id="{{ $status->id }}">
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </a>
                     </li>
@@ -193,9 +218,11 @@
                             <i class="fas fa-trash" aria-hidden="true"></i>
                         </a>
                     </li>
-                @else
-                    <li class="list-inline-item like-text">
-                        <a href="#" class="join" data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
+
+
+        @else
+            <li class="list-inline-item like-text">
+                <a href="#" class="join" data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
                            data-trwl-destination="{{$status->trainCheckIn->destination}}"
@@ -206,31 +233,37 @@
                             <i class="fas fa-user-plus" aria-hidden="true"></i>
                         </a>
                     </li>
-                @endif
-                @admin
-                <li class="list-inline-item like-text">
-                    <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+
+
+        @endif
+        @admin
+        <li class="list-inline-item like-text">
+            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
                         <i class="fas fa-tools" aria-hidden="true"></i>
                     </a>
                 </li>
                 @endadmin
-            @else
-                <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
+
+
+    @else
+        <li class="list-inline-item d-lg-none" id="avatar-small-{{ $status->id }}">
                     <a href="{{ route('profile', ['username' => $status->user->username]) }}">
                         <img
-                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($status->user) }}"
+                                src="{{ ProfilePictureController::getUrl($status->user) }}"
                                 class="profile-image" alt="{{__('settings.picture')}}">
                     </a>
                 </li>
-            @endauth
-        </ul>
-    </div>
+
+
+    @endauth
+    </ul>
+-->
 
     @if(Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
                 <a href="{{ route('profile', ['username' => $like->user->username]) }}">
-                    <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($like->user) }}"
+                    <img src="{{ ProfilePictureController::getUrl($like->user) }}"
                          class="profile-image float-start me-2" alt="{{__('settings.picture')}}">
                 </a>
                 <span class="like-text pl-2 d-table-cell">
@@ -246,5 +279,5 @@
             </div>
         @endforeach
     @endif
-    @include('includes.check-in-modal')
 </div>
+@include('includes.check-in-modal')
