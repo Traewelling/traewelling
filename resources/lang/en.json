@@ -424,6 +424,7 @@
     "stationboard.business.commute": "Commute",
     "stationboard.business.commute.detail": "Between home and work place",
     "status.ogp-title": ":name's journey with Träwelling",
+    "status.join": "Ride along",
     "status.ogp-description": ":distancekm from :origin to :destination in :linename.|:distancekm from :origin to :destination in line :linename.",
     "status.visibility.0": "Public",
     "status.visibility.0.detail": "Visible for all, shown in dashboard, events, etc.",

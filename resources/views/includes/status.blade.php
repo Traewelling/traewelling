@@ -226,6 +226,7 @@
                                        data-trwl-departure="{{$status->trainCheckIn->departure}}"
                                     >
                                         <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                        {{__('status.join')}}
                                     </a>
                                 </li>
                             @endif
