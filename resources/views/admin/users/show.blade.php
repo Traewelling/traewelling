@@ -20,10 +20,8 @@
                         <tr>
                             <th>Mail</th>
                             <td>
-                                {{ $user->email }} <a href="#mailCollapse" data-bs-toggle="collapse">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <br/>
+                                {{ $user->email }}
+                                <br />
                                 @isset($user->email_verified_at)
                                     <small class="text-success">
                                         <i class="fa-solid fa-check"></i>
@@ -35,17 +33,6 @@
                                         Not verified
                                     </small>
                                 @endisset
-                            </td>
-                        </tr>
-                        <tr class="collapse" id="mailCollapse">
-                            <th></th>
-                            <td>
-                                <form method="post" action="{{ route('admin.users.update-mail') }}">
-                                    <input type="hidden" name="id" value="{{ $user->id }}"/>
-                                    <input type="text" name="email" class="form-control" placeholder="New email"/>
-                                    <input type="submit" class="btn btn-primary" value="Change email"/>
-                                    @csrf
-                                </form>
                             </td>
                         </tr>
                         <tr>
