@@ -8312,16 +8312,16 @@
         },
         {
             "name": "spatie/icalendar-generator",
-            "version": "2.5.4",
+            "version": "2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/icalendar-generator.git",
-                "reference": "9db2b380c9af314985ebea6e21ef89840d6ad9c9"
+                "reference": "3e207f2184332a63ec593dda7e8d7e4112351007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/9db2b380c9af314985ebea6e21ef89840d6ad9c9",
-                "reference": "9db2b380c9af314985ebea6e21ef89840d6ad9c9",
+                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/3e207f2184332a63ec593dda7e8d7e4112351007",
+                "reference": "3e207f2184332a63ec593dda7e8d7e4112351007",
                 "shasum": ""
             },
             "require": {
@@ -8367,9 +8367,9 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.4"
+                "source": "https://github.com/spatie/icalendar-generator/tree/2.5.5"
             },
-            "time": "2023-01-25T13:04:28+00:00"
+            "time": "2023-03-10T09:08:41+00:00"
         },
         {
             "name": "spatie/image",
