@@ -31,27 +31,13 @@
         max-width: 100%;
     }
 
-    .list-inline {
-        margin-bottom: 0;
-
-        .like {
-            color: #f5a530;
-            cursor: pointer;
-        }
-
-        .list-inline-item:not(:last-child) {
-            margin-right: 0.5rem;
-
-            &::after {
-                content: "|";
-                margin-left: 0.5rem;
-                color: $grey;
-            }
-        }
-    }
-
     .like-text {
         line-height: 2em;
+    }
+
+    .like {
+        color: #f5a530;
+        cursor: pointer;
     }
 
     .visibility-icon {
