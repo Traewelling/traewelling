@@ -8,6 +8,7 @@
                     @unless($showText())
                         data-mdb-toggle="tooltip" title="{{ $getText() }}"
                     @endunless
+                    @disabled($isDisabled())
             >
                 <i class="fas {{ $getIcon() }}"></i>
                 @if($showText())
