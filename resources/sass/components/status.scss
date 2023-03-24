@@ -31,6 +31,14 @@
         max-width: 100%;
     }
 
+    .list-inline {
+        margin-bottom: 0;
+
+        .list-inline-item:not(:last-child) {
+            margin-right: 0.5rem;
+        }
+    }
+
     .like-text {
         line-height: 2em;
     }
