@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Models\User;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController
 {
+    use SendsPasswordResetEmails;
 
     public function renderIndex(Request $request): View|RedirectResponse {
         $validated = $request->validate(['query' => ['nullable']]);
@@ -50,6 +54,14 @@ class UserController
         $user        = User::findOrFail($validated['id']);
         $user->email = $validated['email'];
         $user->save();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (RateLimitExceededException) {
+            // Ignore
+        }
+        if ($user->password === null) {
+            $this->sendResetLinkEmail($request);
+        }
         return redirect()->route('admin.users.user', ['id' => $validated['id']]);
     }
 }
