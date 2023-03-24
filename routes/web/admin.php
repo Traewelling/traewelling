@@ -30,6 +30,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.users');
         Route::get('/{id}', [UserController::class, 'renderUser'])
              ->name('admin.users.user');
+        Route::post('/update-mail', [UserController::class, 'updateMail'])
+             ->name('admin.users.update-mail');
     });
 
     Route::prefix('status')->group(function() {
