@@ -5,7 +5,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="fs-5 card-title mb-4">Status bearbeiten</h2>
+                    <h2 class="fs-5 card-title mb-4">Edit status</h2>
                     <form method="GET" action="{{route('admin.status.edit')}}">
                         <div class="row g-3 align-items-center">
                             <div class="col-auto">
@@ -26,7 +26,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="fs-5 card-title mb-4">Letzte Reisen</h2>
+                    <h2 class="fs-5 card-title mb-4" id="h-last-journeys">Last journeys</h2>
 
                     <hr/>
                     <form method="GET">
@@ -42,21 +42,24 @@
                     <hr/>
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped">
+                        <table class="table table-hover table-striped" aria-labelledby="h-last-journeys">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>User</th>
-                                    <th>Abfahrt</th>
-                                    <th>Ankunft</th>
-                                    <th>Eingecheckt</th>
-                                    <th></th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>Visibility / Type</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($lastStatuses as $status)
                                     <tr>
-                                        <td>{{$status->id}}</td>
+                                        <td>
+                                            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                                                {{$status->id}}
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
                                                 {{'@'.$status->user->username}}
@@ -77,7 +80,7 @@
                                                 <br/>
                                             @endisset
 
-                                            <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
+                                            <small>dep {{$status?->trainCheckin?->departure->diffForHumans()}}</small>
                                         </td>
                                         <td>
                                             <strong>{{$status->trainCheckin?->destinationStation?->name}}</strong>
@@ -92,14 +95,12 @@
                                                 <br/>
                                             @endisset
 
-                                            <small>Ankunft {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
+                                            <small>arr {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
                                         </td>
-                                        <td>{{$status->created_at->diffForHumans()}}</td>
-                                        <td class="text-end">
-                                            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
-                                               class="btn btn-outline-primary">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                        <td>
+                                            <small>{{__('status.visibility.' . $status->visibility->value)}}</small>
+                                            <br />
+                                            <small>{{__('stationboard.business.' . strtolower($status->business->name))}}</small>
                                         </td>
                                     </tr>
                                 @endforeach
