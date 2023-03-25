@@ -1,0 +1,12 @@
+# Docker Compose environment for local development
+version: '3'
+services:
+  mysql:
+    image: docker.io/bitnami/mysql
+    environment:
+      MYSQL_DATABASE: homestead
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - "3306:3306"

@@ -6,17 +6,7 @@
 @if($status->user->prevent_index)
     @section('meta-robots', 'noindex')
 @else
-    @section('meta-description', __('description.status', [
-        'username' => $status->user->name,
-        'origin' => $status->trainCheckin->Origin->name .
-                    ($status->trainCheckin->Origin->rilIdentifier ?
-                    ' (' .$status->trainCheckin->Origin->rilIdentifier . ')' : ''),
-        'destination' => $status->trainCheckin->Destination->name .
-                         ($status->trainCheckin->Destination->rilIdentifier ?
-                         ' (' .$status->trainCheckin->Destination->rilIdentifier . ')' : ''),
-        'date' => $status->trainCheckin->departure->isoFormat(__('datetime-format')),
-        'lineName' => $status->trainCheckin->HafasTrip->linename
-    ]))
+    @section('meta-description', $status->description)
 @endif
 
 @section('head')

@@ -46,7 +46,7 @@ class FollowController extends Controller
      *       @OA\Response(response=409, description="Already following"),
      *       @OA\Response(response=403, description="User is blocked"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-follows"}}, {"token": {}}
      *       }
      *     )
      *
@@ -94,7 +94,7 @@ class FollowController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-follows"}}, {"token": {}}
      *       }
      *     )
      *
@@ -140,7 +140,7 @@ class FollowController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -171,7 +171,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -201,7 +201,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -238,7 +238,7 @@ class FollowController extends Controller
      *       @OA\Response(response=404, description="Follow not found"),
      *       @OA\Response(response=500, description="Unknown error"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -292,7 +292,7 @@ class FollowController extends Controller
      *     @OA\Response(response=404, description="Request not found"),
      *     @OA\Response(response=500, description="Unknown error"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *
      *       }
      *     )
@@ -342,7 +342,7 @@ class FollowController extends Controller
      *       @OA\Response(response=403, description="Permission denied"),
      *       @OA\Response(response=404, description="Request not found"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *
      *       }
      *     )

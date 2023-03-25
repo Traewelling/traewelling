@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Tests\ApiTestCase;
+use App\Providers\AuthServiceProvider;
 
 class StatusTest extends ApiTestCase
 {
@@ -24,7 +25,7 @@ class StatusTest extends ApiTestCase
 
     public function testActiveStatusesWithoutAnyStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $response = $this->get(
             uri:     '/api/v1/user/statuses/active',
@@ -36,7 +37,7 @@ class StatusTest extends ApiTestCase
 
     public function testActiveStatusesWithActiveStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
@@ -102,7 +103,7 @@ class StatusTest extends ApiTestCase
 
     public function testActiveStatusesWithInactiveStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $departure = Date::now()->addHour();
         $arrival   = Date::now()->addHours(2);
@@ -143,7 +144,7 @@ class StatusTest extends ApiTestCase
 
     public function testStatusUpdate(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $status = Status::factory([
                                       'user_id'    => $user->id,
@@ -180,7 +181,7 @@ class StatusTest extends ApiTestCase
 
     public function testStatusUpdateWithChangedDestination() {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $firstDeparture = Date::now()->addHour();
         $secondArrival  = Date::now()->addHours(2);

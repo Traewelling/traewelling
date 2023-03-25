@@ -13,9 +13,10 @@ use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\Event;
-use App\Models\HafasTrip;
-use App\Models\TrainStation;
 use App\Models\User;
+use App\Http\Controllers\Backend\WebhookController;
+use App\Models\Webhook;
+use App\Repositories\OAuthClientRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,10 +24,10 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
+use Laravel\Passport\Client as PassportClient;
 use Tests\Feature\CheckinTest;
 
-abstract class TestCase extends BaseTestCase
-{
+abstract class TestCase extends BaseTestCase {
     use CreatesApplication;
 
     const AACHEN_HBF =  [
@@ -100,7 +101,7 @@ abstract class TestCase extends BaseTestCase
         "origin"          => null,
         "destination"     => self::HANNOVER_HBF,
     ];
-    
+
     const TRIP_INFO = [
         "origin"           => self::FRANKFURT_HBF,
         "destination"      => self::HANNOVER_HBF,
@@ -148,6 +149,7 @@ abstract class TestCase extends BaseTestCase
     ];
 
     const EXAMPLE_BODY = 'Example Body';
+    const EXAMPLE_WEBHOOK_URL = 'https://example.com/webhook';
 
     protected function setUp(): void {
         parent::setUp();
@@ -167,6 +169,31 @@ abstract class TestCase extends BaseTestCase
         $admin->update();
 
         return $admin;
+    }
+
+    public function createWebhookClient(User $user): PassportClient {
+        $clients = new OAuthClientRepository();
+        return $clients->create(
+            $user->id,
+            "TRWL Testing Application",
+            "https://example.com",
+            null,
+            false,
+            false,
+            true,
+            "https://example.com/privacy",
+            true,
+            self::EXAMPLE_WEBHOOK_URL
+        );
+    }
+
+    public function createWebhook(User $user, PassportClient $client, array $events): Webhook {
+        $bitflag = 0;
+        foreach ($events as $event) {
+            $bitflag |= $event->value;
+        }
+        $request = WebhookController::createWebhookRequest($user, $client, 'stub', "https://example.com", $bitflag);
+        return WebhookController::createWebhook($request);
     }
 
     /**
@@ -215,7 +242,7 @@ abstract class TestCase extends BaseTestCase
 
     public function acceptGDPR(User $user): void {
         $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
+            ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
     }
@@ -256,8 +283,8 @@ abstract class TestCase extends BaseTestCase
         try {
             $trainStationboard = TransportController::getDepartures(
                 stationQuery: $stationName,
-                when:         $timestamp,
-                travelType:   TravelType::EXPRESS
+                when: $timestamp,
+                travelType: TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -271,7 +298,8 @@ abstract class TestCase extends BaseTestCase
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-               || count($trainStationboard['departures'][$i]->remarks) != 0) {
+            || count($trainStationboard['departures'][$i]->remarks) != 0
+        ) {
             $i++;
             if ($i == $countDepartures) {
                 $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
@@ -283,9 +311,9 @@ abstract class TestCase extends BaseTestCase
         // Third: Get the trip information
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
-                tripId:   $departure->tripId,
+                tripId: $departure->tripId,
                 lineName: $departure->line->name,
-                startId:  $departure->stop->location->id
+                startId: $departure->stop->location->id
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -309,14 +337,14 @@ abstract class TestCase extends BaseTestCase
             $event       = $eventId === null ? null : Event::find($eventId);
 
             $backendResponse = TrainCheckinController::checkin(
-                user:        $user,
-                hafasTrip:   $hafasTrip,
-                origin:      $origin,
-                departure:   $departure,
+                user: $user,
+                hafasTrip: $hafasTrip,
+                origin: $origin,
+                departure: $departure,
                 destination: $destination,
-                arrival:     $arrival,
-                visibility:  $statusVisibility,
-                event:       $event
+                arrival: $arrival,
+                visibility: $statusVisibility,
+                event: $event
             );
 
             $status       = $backendResponse['status'];
