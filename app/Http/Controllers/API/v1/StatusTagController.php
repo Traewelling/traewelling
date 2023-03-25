@@ -166,7 +166,7 @@ class StatusTagController extends Controller
      *      operationId="createSingleStatusTag",
      *      tags={"Status"},
      *      summary="Create a StatusTag",
-     *      description="Creates a single StatusTag Object, if user is authorized to",
+     *      description="Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
@@ -175,26 +175,24 @@ class StatusTagController extends Controller
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\RequestBody(
-     *          required=true
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/StatusTag"
+     *              ),
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(
-     *                          property="key",
-     *                          type="string"
-     *              ),
-     *              @OA\Property(
-     *                          property="value",
-     *                          type="string"
-     *              ),
-     *              @OA\Property(
-     *                          property="visibility",
-     *                          type="integer"
-     *              ),
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  ref="#/components/schemas/StatusTag"
+     *              )
      *          )
-     *       ),
+     *      ),
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="No status found for this id"),
@@ -265,7 +263,7 @@ class StatusTagController extends Controller
      *          name="tagKey",
      *          in="path",
      *          description="Key of StatusTag",
-     *          example="seat",
+     *          example="trwl:seat",
      *          @OA\Schema(type="string")
      *      ),
      *      @OA\Response(

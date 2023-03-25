@@ -18,7 +18,7 @@ class StatusTag
      * @OA\Property (
      *     title="key",
      *     description="Key of tag",
-     *     example="ticket_used"
+     *     example="trwl:ticket"
      * )
      *
      * @var string

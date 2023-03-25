@@ -2401,7 +2401,7 @@
                     "Status"
                 ],
                 "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
                 "operationId": "createSingleStatusTag",
                 "parameters": [
                     {
@@ -2415,7 +2415,13 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "200": {
@@ -2424,14 +2430,8 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "value": {
-                                            "type": "string"
-                                        },
-                                        "visibility": {
-                                            "type": "integer"
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
                                         }
                                     },
                                     "type": "object"
@@ -2565,7 +2565,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "example": "seat"
+                        "example": "trwl:seat"
                     }
                 ],
                 "responses": {
@@ -4359,7 +4359,7 @@
                         "title": "key",
                         "description": "Key of tag",
                         "type": "string",
-                        "example": "ticket_used"
+                        "example": "trwl:ticket"
                     },
                     "value": {
                         "title": "value",
