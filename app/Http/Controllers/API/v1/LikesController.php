@@ -89,7 +89,6 @@ class LikesController extends Controller
      *       @OA\Response(response=409, description="Status already liked by user"),
      *       security={
      *           {"passport": {"write-likes"}}, {"token": {}}
-     *
      *       }
      *     )
      *

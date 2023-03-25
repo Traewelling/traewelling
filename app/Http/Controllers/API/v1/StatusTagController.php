@@ -117,10 +117,9 @@ class StatusTagController extends Controller
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="No status found for this id"),
      *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *       security={
-     *           {"token": {}},
-     *           {}
-     *       }
+     *      security={
+     *          {"passport": {"write-statuses"}}, {"token": {}}
+     *      }
      *     )
      *
      * @param Request $request
@@ -201,8 +200,7 @@ class StatusTagController extends Controller
      *      @OA\Response(response=404, description="No status found for this id"),
      *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *      security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {"write-statuses"}}, {"token": {}}
      *      }
      *  )
      *
@@ -282,8 +280,7 @@ class StatusTagController extends Controller
      *      @OA\Response(response=404, description="No status found for this id and statusId"),
      *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *      security={
-     *          {"token": {}},
-     *          {}
+     *          {"passport": {"write-statuses"}}, {"token": {}}
      *      }
      *  )
      *

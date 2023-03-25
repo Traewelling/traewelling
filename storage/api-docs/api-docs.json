@@ -2454,9 +2454,13 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
@@ -2528,9 +2532,13 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             },
             "delete": {
@@ -2586,9 +2594,13 @@
                 },
                 "security": [
                     {
-                        "token": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
-                    {}
+                    {
+                        "token": []
+                    }
                 ]
             }
         },
