@@ -2,20 +2,12 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Http\Controllers\UserController as UserBackend;
-use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\StatusTag;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Date;
 use Tests\ApiTestCase;
 
 class StatusTagTest extends ApiTestCase
@@ -25,7 +17,7 @@ class StatusTagTest extends ApiTestCase
 
     public function testViewNonExistingTagsOnOwnStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $status    = Status::factory(['user_id' => $user->id])->create();
 
         $response = $this->get(
@@ -38,7 +30,7 @@ class StatusTagTest extends ApiTestCase
 
     public function testViewTagsOnOwnStatusWithDifferentVisibilitiesAndDeleteOne(): void {
         $user        = User::factory()->create();
-        $userToken   = $user->createToken('token')->accessToken;
+        $userToken   = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $status      = Status::factory(['user_id' => $user->id])->create();
         $tagToDelete = StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::PUBLIC->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::FOLLOWERS->value])->create();
@@ -75,7 +67,7 @@ class StatusTagTest extends ApiTestCase
 
     public function testCreateAndUpdateTag(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token')->accessToken;
+        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $status    = Status::factory(['user_id' => $user->id])->create();
 
         //Create StatusTag
@@ -119,6 +111,5 @@ class StatusTagTest extends ApiTestCase
 
         $this->assertDatabaseMissing('status_tags', ['status_id' => $status->id, 'key' => 'test', 'value' => 'test', 'visibility' => StatusVisibility::PUBLIC->value]);
         $this->assertDatabaseHas('status_tags', ['status_id' => $status->id, 'key' => 'test2', 'value' => 'test2', 'visibility' => StatusVisibility::PUBLIC->value]);
-
     }
 }
