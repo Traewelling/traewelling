@@ -26,7 +26,6 @@ class StatusEditController extends Controller
                 'user_id',
                 User::where('name', 'like', '%' . $validated['userQuery'] . '%')
                     ->orWhere('username', 'like', '%' . $validated['userQuery'] . '%')
-                    ->orWhere('support_code', $validated['userQuery'])
                     ->pluck('id')
             );
         }

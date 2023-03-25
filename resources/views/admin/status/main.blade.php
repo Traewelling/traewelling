@@ -33,9 +33,9 @@
                         <div class="form-floating">
                             <input type="text" class="form-control" id="inputUsername" name="userQuery"
                                    value="{{request()->get('userQuery')}}"
-                                   placeholder="Username / Displayname / SupportCode"/>
+                                   placeholder="Username / Displayname"/>
                             <label for="inputUsername" class="form-label">
-                                Username / Displayname / SupportCode
+                                Username / Displayname
                             </label>
                         </div>
                     </form>
