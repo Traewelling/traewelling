@@ -209,8 +209,8 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item trwl-share"
-                                   href="#"
+                                <button class="dropdown-item trwl-share"
+                                   type="button"
                                    data-trwl-share-url="{{ route('statuses.get', ['id' => $status->id]) }}"
                                    @if(auth()->user() && $status->user_id == auth()->user()->id)
                                        data-trwl-share-text="{{ $status->socialText }}"
@@ -218,27 +218,33 @@
                                        data-trwl-share-text="{{ $status->description }}"
                                         @endif
                                 >
-                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <div class="dropdown-icon-suspense">
+                                        <i class="fas fa-share" aria-hidden="true"></i>
+                                    </div>
                                     {{__('menu.share')}}
-                                </a>
+                                </button>
                             </li>
                             @auth
                                 @if(auth()->user()->id === $status->user_id)
                                     <li>
-                                        <a class="dropdown-item edit" href="#" data-trwl-status-id="{{ $status->id }}">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                        <button class="dropdown-item edit" type="button" data-trwl-status-id="{{ $status->id }}">
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                            </div>
                                             {{__('edit')}}
-                                        </a>
+                                        </button>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item delete" href="#" data-trwl-status-id="{{$status->id}}">
-                                            <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <button class="dropdown-item delete" type="button" data-trwl-status-id="{{$status->id}}">
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </div>
                                             {{__('delete')}}
-                                        </a>
+                                        </button>
                                     </li>
                                 @else
                                     <li>
-                                        <a href="#" class="dropdown-item join"
+                                        <button type="button" class="dropdown-item join"
                                            data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
                                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
                                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
@@ -247,9 +253,11 @@
                                            data-trwl-start="{{$status->trainCheckIn->origin}}"
                                            data-trwl-departure="{{$status->trainCheckIn->departure}}"
                                         >
-                                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            </div>
                                             {{__('status.join')}}
-                                        </a>
+                                        </button>
                                     </li>
                                     <x-mute-button :user="$status->user" :dropdown="true"/>
                                     <x-block-button :user="$status->user" :dropdown="true"/>
@@ -261,7 +269,10 @@
                                 <li>
                                     <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
                                        class="dropdown-item">
-                                        <i class="fas fa-tools" aria-hidden="true"></i>
+                                        <div class="dropdown-icon-suspense">
+                                            <i class="fas fa-tools" aria-hidden="true"></i>
+                                        </div>
+                                        Admin-Interface
                                     </a>
                                 </li>
                                 @endadmin

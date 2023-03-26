@@ -98,4 +98,17 @@
     .visibility-icon {
         color: #b3b3b3 !important;
     }
+
+    .dropdown-item {
+        display: flex;
+        flex-direction: row;
+        padding-left: 0;
+    }
+    .dropdown-icon-suspense {
+        display: flex;
+        width: 3em;
+        justify-content: center;
+        height: 2em;
+        align-items: center;
+    }
 }
