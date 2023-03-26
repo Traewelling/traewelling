@@ -31,6 +31,54 @@
         max-width: 100%;
     }
 
+    .interaction {
+        align-items: center;
+        display: flex;
+        height: 3.5rem;
+        justify-content: space-between;
+        padding-block: 0;
+    }
+
+    .metadata-list {
+        align-items: center;
+        display: flex;
+    }
+
+    .interaction-list {
+        margin: 0;
+        margin-right: -0.75rem;
+        padding: 0;
+    }
+
+    .interaction-list-item {
+        align-items: center;
+        display: flex;
+    }
+
+    .interaction-button {
+        align-items: center;
+        appearance: none;
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: inherit;
+        cursor: pointer;
+        display: flex;
+        gap: 0.25rem;
+        height: 2.75rem;
+        justify-content: center;
+        min-width: 2.75rem;
+        padding: 0 0.75rem;
+
+        &[data-mdb-toggle] {
+            color: var(--mdb-link-color);
+        }
+
+        span {
+            margin-top: 1px;
+        }
+    }
+
     .list-inline {
         margin-bottom: 0;
 
@@ -43,9 +91,8 @@
         line-height: 2em;
     }
 
-    .like {
+    .like-color {
         color: #f5a530;
-        cursor: pointer;
     }
 
     .visibility-icon {
