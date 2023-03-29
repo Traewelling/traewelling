@@ -145,7 +145,7 @@ class StatusTagController extends Controller
             }
             $this->authorize('update', $statusTag);
             if (isset($validated['visibility'])) {
-                $validated['visibility'] = StatusVisibility::fromName($validated['visibility']);
+                $validated['visibility'] = StatusVisibility::from($validated['visibility']);
             }
             $statusTag->update($validated);
             return $this->sendResponse(data: new StatusTagResource($statusTag));
@@ -237,7 +237,7 @@ class StatusTagController extends Controller
             }
             $this->authorize('update', $status);
             $validated['status_id']  = $status->id;
-            $validated['visibility'] = StatusVisibility::fromName($validated['visibility']);
+            $validated['visibility'] = StatusVisibility::from($validated['visibility']);
             $statusTag               = StatusTag::create($validated);
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {

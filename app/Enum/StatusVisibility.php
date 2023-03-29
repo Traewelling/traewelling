@@ -42,13 +42,4 @@ enum StatusVisibility: int implements IconEnumInterface
             self::AUTHENTICATED => __('status.visibility.4.detail')
         };
     }
-
-    public static function fromName(string $name): int {
-        foreach (self::cases() as $status) {
-            if ($name === $status->name) {
-                return $status->value;
-            }
-        }
-        throw new \ValueError("$name is not a valid backing value for enum " . self::class);
-    }
 }
