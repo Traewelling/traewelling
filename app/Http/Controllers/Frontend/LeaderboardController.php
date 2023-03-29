@@ -34,20 +34,20 @@ class LeaderboardController extends Controller
         $usersLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalPoints,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard()
+            static fn() => LeaderboardBackend::getLeaderboard()
         );
 
         $distanceLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalDistance,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
+            static fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
         );
 
         $friendsLeaderboard = auth()->check()
             ? Cache::remember(
                 CacheKey::getFriendsLeaderboardKey(auth()->id()),
                 $ttl,
-                fn() => LeaderboardBackend::getLeaderboard(onlyFollowings: true))
+                static fn() => LeaderboardBackend::getLeaderboard(onlyFollowings: true))
             : null;
 
         return view('leaderboard.leaderboard', [
