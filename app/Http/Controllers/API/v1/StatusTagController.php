@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use function auth;
 
@@ -133,7 +134,7 @@ class StatusTagController extends Controller
         $validated = $request->validate([
                                             'key'        => ['nullable', 'string', 'max:255'],
                                             'value'      => ['required', 'string', 'max:255'],
-                                            'visibility' => ['nullable', Rule::in(StatusVisibility::keys())],
+                                            'visibility' => ['nullable', new Enum(StatusVisibility::class)],
                                         ]);
 
         try {
@@ -166,7 +167,12 @@ class StatusTagController extends Controller
      *      operationId="createSingleStatusTag",
      *      tags={"Status"},
      *      summary="Create a StatusTag",
-     *      description="Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free text. You can choose it as you need it. However, <b>please use a namespace for tags</b> (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+     *      description="Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free
+     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>
+     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions
+     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon
+     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,
+     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
