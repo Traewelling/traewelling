@@ -38,10 +38,7 @@ class StatusTag
 
     /**
      * @OA\Property (
-     *     title="visibility",
-     *     description="Visibility of tag",
-     *     format="int64",
-     *     example="PUBLIC"
+     *      ref="#/components/schemas/VisibilityEnum"
      * )
      *
      * @var string

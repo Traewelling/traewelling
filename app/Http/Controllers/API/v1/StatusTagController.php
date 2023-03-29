@@ -152,6 +152,7 @@ class StatusTagController extends Controller
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
+                code:  403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(
@@ -173,14 +174,14 @@ class StatusTagController extends Controller
      *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon
      *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,
      *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
-     *      @OA\Parameter (
+     * @OA\Parameter (
      *          name="statusId",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
      *          @OA\Schema(type="integer")
      *      ),
-     *      @OA\RequestBody(
+     * @OA\RequestBody(
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
@@ -188,7 +189,7 @@ class StatusTagController extends Controller
      *              ),
      *          ),
      *      ),
-     *      @OA\Response(
+     * @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
@@ -199,10 +200,10 @@ class StatusTagController extends Controller
      *              )
      *          )
      *      ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="No status found for this id"),
-     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     * @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=404, description="No status found for this id"),
+     * @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *      security={
      *          {"passport": {"write-statuses"}}, {"token": {}}
      *      }
@@ -243,6 +244,7 @@ class StatusTagController extends Controller
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this Status',
+                code:  403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(
@@ -306,6 +308,7 @@ class StatusTagController extends Controller
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
+                code:  403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(
