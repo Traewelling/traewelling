@@ -218,7 +218,7 @@ class StatusTagController extends Controller
         $validator = Validator::make($request->all(), [
             'key'        => ['required', 'string', 'max:255'],
             'value'      => ['required', 'string', 'max:255'],
-            'visibility' => ['required', Rule::in(StatusVisibility::keys())],
+            'visibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
         if ($validator->fails()) {
