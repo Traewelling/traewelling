@@ -43,10 +43,6 @@ enum StatusVisibility: int implements IconEnumInterface
         };
     }
 
-    public static function keys(): array {
-        return array_column(self::cases(), 'name');
-    }
-
     public static function fromName(string $name): int {
         foreach (self::cases() as $status) {
             if ($name === $status->name) {
