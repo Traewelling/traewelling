@@ -76,7 +76,7 @@ class StatusTagTest extends ApiTestCase
             data:    [
                          'key'        => 'test',
                          'value'      => 'test',
-                         'visibility' => StatusVisibility::PUBLIC->name,
+                         'visibility' => StatusVisibility::PUBLIC->value,
                      ],
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
@@ -85,7 +85,7 @@ class StatusTagTest extends ApiTestCase
                                   'data' => [
                                       'key'        => 'test',
                                       'value'      => 'test',
-                                      'visibility' => StatusVisibility::PUBLIC->name,
+                                      'visibility' => StatusVisibility::PUBLIC->value,
                                   ]
                               ]);
 
@@ -105,7 +105,7 @@ class StatusTagTest extends ApiTestCase
                                   'data' => [
                                       'key'        => 'test2',
                                       'value'      => 'test2',
-                                      'visibility' => StatusVisibility::PUBLIC->name,
+                                      'visibility' => StatusVisibility::PUBLIC->value,
                                   ]
                               ]);
 
