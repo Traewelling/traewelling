@@ -151,34 +151,66 @@
             ></div>
         </div>
         <div class="card-footer text-muted interaction px-3 px-md-4">
-            <ul class="list-inline float-end">
-                <li class="like-text list-inline-item me-0">
-                    <a href="{{ auth()->user() ? '#' : route('login') }}"
-                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
-                       data-trwl-status-id="{{ $status->id }}"></a>
+            <ul class="list-inline metadata-list">
+                <li id="avatar-small-{{ $status->id }}" class="d-lg-none list-inline-item">
+                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
+                        <img
+                        src="{{ ProfilePictureController::getUrl($status->user) }}"
+                        class="profile-image" alt="{{__('settings.picture')}}">
+                    </a>
                 </li>
-                <li class="like-text list-inline-item">
-                <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                      id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
-                </span>
+                <li class="list-inline-item">
+                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
+                        @if(auth()?->user()?->id == $status->user_id)
+                        {{__('user.you')}}
+                        @else
+                        {{ $status->user->username }}
+                        @endif
+                    </a>
+                    {{__('dates.-on-')}}
+                    <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
+                        {{ $status->created_at->isoFormat(__('time-format')) }}
+                    </a>
                 </li>
-                <li class="like-text list-inline-item">
+            </ul>
+
+            <ul class="interaction-list">
+                <li class="interaction-list-item">
+                    @if(auth()->user())
+                        <button class="interaction-button like"
+                                type="button"
+                                data-trwl-status-id="{{ $status->id }}">
+                            <i class="like-color {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"></i>
+                            <span class="@if($status->likes->count() == 0) d-none @endif"
+                                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                            </span>
+                        </button>
+                    @else
+                        <a href="{{ route('login') }}"
+                           class="interaction-button like"
+                           data-trwl-status-id="{{ $status->id }}">
+                            <i class="like-color {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"></i>
+                            <span class="@if($status->likes->count() == 0) d-none @endif"
+                                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                            </span>
+                        </a>
+                    @endif
+                </li>
+                <li class="interaction-list-item">
                     <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
                        aria-hidden="true" title="{{$status->visibility->title()}}"
                        data-mdb-toggle="tooltip"
                        data-mdb-placement="top"></i>
                 </li>
-                <li class="like-text list-inline-item">
+                <li class="interaction-list-item">
                     <div class="dropdown">
-                        <a href="#" data-mdb-toggle="dropdown" aria-expanded="false">
-                            &nbsp;
+                        <button class="interaction-button" type="button" data-mdb-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
-                            &nbsp;
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item trwl-share"
-                                   href="#"
+                                <button class="dropdown-item trwl-share"
+                                   type="button"
                                    data-trwl-share-url="{{ route('statuses.get', ['id' => $status->id]) }}"
                                    @if(auth()->user() && $status->user_id == auth()->user()->id)
                                        data-trwl-share-text="{{ $status->socialText }}"
@@ -186,27 +218,33 @@
                                        data-trwl-share-text="{{ $status->description }}"
                                         @endif
                                 >
-                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <div class="dropdown-icon-suspense">
+                                        <i class="fas fa-share" aria-hidden="true"></i>
+                                    </div>
                                     {{__('menu.share')}}
-                                </a>
+                                </button>
                             </li>
                             @auth
                                 @if(auth()->user()->id === $status->user_id)
                                     <li>
-                                        <a class="dropdown-item edit" href="#" data-trwl-status-id="{{ $status->id }}">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                        <button class="dropdown-item edit" type="button" data-trwl-status-id="{{ $status->id }}">
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                            </div>
                                             {{__('edit')}}
-                                        </a>
+                                        </button>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item delete" href="#" data-trwl-status-id="{{$status->id}}">
-                                            <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <button class="dropdown-item delete" type="button" data-trwl-status-id="{{$status->id}}">
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </div>
                                             {{__('delete')}}
-                                        </a>
+                                        </button>
                                     </li>
                                 @else
                                     <li>
-                                        <a href="#" class="dropdown-item join"
+                                        <button type="button" class="dropdown-item join"
                                            data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
                                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
                                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
@@ -215,9 +253,11 @@
                                            data-trwl-start="{{$status->trainCheckIn->origin}}"
                                            data-trwl-departure="{{$status->trainCheckIn->departure}}"
                                         >
-                                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            </div>
                                             {{__('status.join')}}
-                                        </a>
+                                        </button>
                                     </li>
                                     <x-mute-button :user="$status->user" :dropdown="true"/>
                                     <x-block-button :user="$status->user" :dropdown="true"/>
@@ -229,36 +269,16 @@
                                 <li>
                                     <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
                                        class="dropdown-item">
-                                        <i class="fas fa-tools" aria-hidden="true"></i>
+                                        <div class="dropdown-icon-suspense">
+                                            <i class="fas fa-tools" aria-hidden="true"></i>
+                                        </div>
+                                        Admin-Interface
                                     </a>
                                 </li>
                                 @endadmin
                             @endauth
                         </ul>
                     </div>
-                </li>
-            </ul>
-
-            <ul class="list-inline">
-                <li id="avatar-small-{{ $status->id }}" class="d-lg-none list-inline-item">
-                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        <img
-                                src="{{ ProfilePictureController::getUrl($status->user) }}"
-                                class="profile-image" alt="{{__('settings.picture')}}">
-                    </a>
-                </li>
-                <li class="list-inline-item">
-                    <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                        @if(auth()?->user()?->id == $status->user_id)
-                            {{__('user.you')}}
-                        @else
-                            {{ $status->user->username }}
-                        @endif
-                    </a>
-                    {{__('dates.-on-')}}
-                    <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
-                        {{ $status->created_at->isoFormat(__('time-format')) }}
-                    </a>
                 </li>
             </ul>
         </div>

@@ -10,7 +10,9 @@
                     @endunless
                     @disabled($isDisabled())
             >
-                <i class="fas {{ $getIcon() }}"></i>
+                <div class="dropdown-icon-suspense">
+                    <i class="fas {{ $getIcon() }}"></i>
+                </div>
                 @if($showText())
                     {{ $getText() }}
                 @endif
