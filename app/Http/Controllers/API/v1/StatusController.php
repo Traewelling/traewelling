@@ -476,7 +476,6 @@ class StatusController extends Controller
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
      *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      *

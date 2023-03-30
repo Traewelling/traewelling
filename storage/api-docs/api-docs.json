@@ -2336,6 +2336,274 @@
                 ]
             }
         },
+        "/status/{statusId}/tags": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Show all tags for a status which are visible for the current user",
+                "description": "Returns a collection of all visible tags for the given status, if user is authorized",
+                "operationId": "getTagsForStatus",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusTag"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Create a StatusTag",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+                "operationId": "createSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{statusId}/tags/{tagKey}": {
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a StatusTag",
+                "description": "Updates a single StatusTag Object, if user is authorized to",
+                "operationId": "updateSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "seat"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Destroy a StatusTag",
+                "description": "Deletes a single StatusTag Object, if user is authorized to",
+                "operationId": "destroySingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "trwl:seat"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id and statusId"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/trains/station/{name}/departures": {
             "get": {
                 "tags": [
@@ -4070,12 +4338,42 @@
                         "$ref": "#/components/schemas/Train"
                     },
                     "event": {
-                        "$ref": "#/components/schemas/Event"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Event"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "Status"
+                }
+            },
+            "StatusTag": {
+                "title": "StatusTag",
+                "description": "StatusTag model",
+                "properties": {
+                    "key": {
+                        "title": "key",
+                        "description": "Key of tag",
+                        "type": "string",
+                        "example": "trwl:ticket"
+                    },
+                    "value": {
+                        "title": "value",
+                        "description": "Value of tag",
+                        "type": "string",
+                        "example": "BahnCard 100"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StatusTag"
                 }
             },
             "Stopovers": {
@@ -4683,7 +4981,12 @@
                         "example": 0
                     },
                     "home": {
-                        "$ref": "#/components/schemas/TrainStation"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TrainStation"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "language": {
                         "title": "language",
@@ -4965,9 +5268,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/oauth/token",
-                        "refreshUrl": "https://traewelling.de/auth/refresh",
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

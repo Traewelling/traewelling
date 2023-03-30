@@ -52,6 +52,10 @@ class Status extends Model
         return $this->hasOne(Event::class, 'id', 'event_id');
     }
 
+    public function tags(): HasMany {
+        return $this->hasMany(StatusTag::class, 'status_id', 'id');
+    }
+
     public function getFavoritedAttribute(): ?bool {
         if (!Auth::check()) {
             return null;
