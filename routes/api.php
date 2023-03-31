@@ -96,6 +96,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                  ->middleware(['scope:write-exports'])->withoutMiddleware(['scope:read-statistics']);
         });
         Route::group(['prefix' => 'user'], static function() {
+            Route::post('/{userId}/report', [UserController::class, 'createReport']);
             Route::group(['middleware' => ['scope:write-follows']], static function() {
                 Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
@@ -186,4 +187,4 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
         });
     });
-}); 
+});

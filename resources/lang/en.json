@@ -644,5 +644,7 @@
     "no": "No",
     "edit": "Edit",
     "delete": "Delete",
-    "active-tokens-count": ":count active token|:count active tokens"
+    "active-tokens-count": ":count active token|:count active tokens",
+    "user.report.sent": "Thanks for your report. We will take a look at it soon!",
+    "user.report.self_report": "You cannot report yourself."
 }

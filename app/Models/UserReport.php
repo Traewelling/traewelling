@@ -10,11 +10,11 @@ class UserReport extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['reporter_id', 'user_id', 'report'];
+    protected $fillable = ['reporter_id', 'user_id', 'message'];
     protected $casts    = [
         'reporter_id' => 'integer',
         'user_id'     => 'integer',
-        'report'      => 'string',
+        'message'     => 'string',
     ];
 
     public function reporter(): BelongsTo {

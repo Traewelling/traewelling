@@ -644,5 +644,7 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "active-tokens-count": ":count aktive Token|:count aktive Tokens",
-    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest."
+    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest.",
+    "user.report.sent": "Danke für deine Meldung. Wir werden bald einen Blick darauf werfen.",
+    "user.report.self_report": "Du kannst dich nicht selbst melden."
 }

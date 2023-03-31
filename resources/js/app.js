@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener("load", () => {
+    require("./api/api");
     require("./components/alert");
     require("./components/ActiveJourneys");
     require("./components/notifications-board");

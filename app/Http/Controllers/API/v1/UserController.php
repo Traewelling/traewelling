@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\UserReport;
 use Error;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -488,5 +489,40 @@ class UserController extends Controller
         } catch (InvalidArgumentException) {
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         }
+    }
+
+    /**
+     * TODO: API Docs
+     * TODO: test endpoint
+     *
+     * @param Request $request
+     * @param int     $userId
+     *
+     * @return JsonResponse
+     */
+    public function createReport(Request $request, int $userId): JsonResponse {
+        $validated = $request->validate([
+                                            'message' => ['required', 'string', 'max:255'],
+                                        ]);
+        if ($userId === Auth::id()) {
+            return $this->sendError(
+                error: __('user.report.self_report'),
+                code:  400,
+            );
+        }
+
+        try {
+            $userToBeReported = User::findOrFail($userId);
+        } catch (ModelNotFoundException) {
+            return $this->sendError('User not found');
+        }
+
+        UserReport::create([
+                               'reporter_id' => Auth::id(),
+                               'user_id'     => $userToBeReported->id,
+                               'message'     => $validated['message'],
+                           ]);
+
+        return $this->sendResponse(__('user.report.sent'));
     }
 }

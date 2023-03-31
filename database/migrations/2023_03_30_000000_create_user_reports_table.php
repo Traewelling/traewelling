@@ -10,8 +10,8 @@ return new class extends Migration
         Schema::create('user_reports', function(Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reporter_id')->nullable();
-            $table->unsignedSmallInteger('user_id');
-            $table->text('report');
+            $table->unsignedBigInteger('user_id');
+            $table->text('message');
             $table->timestamps();
 
             $table->foreign('reporter_id')

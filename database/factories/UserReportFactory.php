@@ -12,7 +12,7 @@ class UserReportFactory extends Factory
         return [
             'reporter_id' => User::factory(),
             'user_id'     => User::factory(),
-            'report'      => $this->faker->text,
+            'message'     => $this->faker->text,
         ];
     }
 }
