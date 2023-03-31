@@ -42,6 +42,7 @@ abstract class LeaderboardController extends Controller
                    ->join('users', 'statuses.user_id', '=', 'users.id')
                    ->where('train_checkins.departure', '>=', $since->toIso8601String())
                    ->where('train_checkins.departure', '<=', $until->toIso8601String())
+                   ->where('users.shadow_banned', false)
                    ->where(function(Builder $query) {
                        $query->where('users.private_profile', 0);
                        if (auth()->check()) {

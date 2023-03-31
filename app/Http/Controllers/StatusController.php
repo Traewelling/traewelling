@@ -71,7 +71,7 @@ class StatusController extends Controller
                           })
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status);
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned;
                           })
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;
