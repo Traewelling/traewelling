@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
 class LeaderboardController extends Controller
 {
@@ -35,13 +36,17 @@ class LeaderboardController extends Controller
             CacheKey::LeaderboardGlobalPoints,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard()
-        );
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         $distanceLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalDistance,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
-        );
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         $friendsLeaderboard = auth()->check()
             ? Cache::remember(
