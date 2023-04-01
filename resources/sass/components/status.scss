@@ -39,6 +39,8 @@
         padding-block: 0;
     }
 
+    .interaction-list,
+    .interaction-list-item,
     .metadata-list {
         align-items: center;
         display: flex;
@@ -48,11 +50,6 @@
         margin: 0;
         margin-right: -0.75rem;
         padding: 0;
-    }
-
-    .interaction-list-item {
-        align-items: center;
-        display: flex;
     }
 
     .interaction-button {
