@@ -37,19 +37,21 @@ $(document).on("click", "#modal-delete", function () {
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = getDataset(event).trwlStatusId;
+    hasLikeFromUser = getDataset(event).trwlLiked;
+    statusId        = getDataset(event).trwlStatusId;
 
     let $likeCount = document.getElementById("like-count-" + statusId);
+    let $likeIcon  = document.getElementById("like-icon-" + statusId);
     let count      = parseInt($likeCount.innerText);
-    let auth       = event.target.attributes.href.value === "#";
 
-    if (auth && event.target.className === "like far fa-star") {
+    if (!hasLikeFromUser) {
         $.ajax({
             method: "POST",
             url: urlLike,
             data: {statusId: statusId, _token: token}
         }).done(function () {
-            event.target.className = "like fas fa-star animated bounceIn";
+            event.target.dataset.trwlLiked = true;
+            $likeIcon.className    = "fas fa-star animated bounceIn";
             $likeCount.innerText   = ++count;
 
             if (count === 0) {
@@ -58,13 +60,14 @@ $(document).on("click", ".like", function (event) {
                 $likeCount.classList.remove("d-none");
             }
         });
-    } else if (auth) {
+    } else {
         $.ajax({
             method: "POST",
             url: urlDislike,
             data: {statusId: statusId, _token: token}
         }).done(function () {
-            event.target.className = "like far fa-star";
+            event.target.dataset.trwlLiked = false;
+            $likeIcon.className    = "far fa-star";
             $likeCount.innerText   = --count;
 
             if (count === 0) {
@@ -75,10 +78,7 @@ $(document).on("click", ".like", function (event) {
         });
     }
 
-    if (auth) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    event.stopPropagation();
 });
 
 $(document).on("click", ".follow", function (event) {

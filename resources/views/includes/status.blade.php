@@ -179,19 +179,21 @@
                     @if(auth()->user())
                         <button class="interaction-button like"
                                 type="button"
+                                data-trwl-liked="{{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'true' : 'false' }}"
                                 data-trwl-status-id="{{ $status->id }}">
-                            <i class="like-color {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"></i>
+                            <i id="like-icon-{{ $status->id }}"
+                               class="like-color {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"></i>
                             <span class="@if($status->likes->count() == 0) d-none @endif"
                                 id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
                             </span>
                         </button>
                     @else
                         <a href="{{ route('login') }}"
-                           class="interaction-button like"
+                           class="interaction-button"
                            data-trwl-status-id="{{ $status->id }}">
                             <i class="like-color {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"></i>
-                            <span class="@if($status->likes->count() == 0) d-none @endif"
-                                id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                            <span class="@if($status->likes->count() == 0) d-none @endif">
+                                {{ $status->likes->count() }}
                             </span>
                         </a>
                     @endif
