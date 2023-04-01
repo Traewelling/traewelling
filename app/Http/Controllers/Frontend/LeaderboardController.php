@@ -20,8 +20,10 @@ class LeaderboardController extends Controller
         $leaderboard = Cache::remember(
             CacheKey::LeaderboardMonth . '-for-' . $date->toISOString(),
             config(self::$cacheRetentionConfigKey),
-            fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
-        );
+            static fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         return view('leaderboard.month', [
             'leaderboard' => $leaderboard,
