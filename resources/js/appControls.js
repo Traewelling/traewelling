@@ -50,9 +50,10 @@ $(document).on("click", ".like", function (event) {
             url: urlLike,
             data: {statusId: statusId, _token: token}
         }).done(function () {
-            event.target.dataset.trwlLiked = true;
-            $likeIcon.className    = "fas fa-star animated bounceIn";
-            $likeCount.innerText   = ++count;
+            getDataset(event).trwlLiked = true;
+
+            $likeIcon.className  = "fas fa-star animated bounceIn";
+            $likeCount.innerText = ++count;
 
             if (count === 0) {
                 $likeCount.classList.add("d-none");
@@ -66,9 +67,10 @@ $(document).on("click", ".like", function (event) {
             url: urlDislike,
             data: {statusId: statusId, _token: token}
         }).done(function () {
-            event.target.dataset.trwlLiked = false;
-            $likeIcon.className    = "far fa-star";
-            $likeCount.innerText   = --count;
+            getDataset(event).trwlLiked = false;
+
+            $likeIcon.className  = "far fa-star";
+            $likeCount.innerText = --count;
 
             if (count === 0) {
                 $likeCount.classList.add("d-none");
