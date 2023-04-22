@@ -111,10 +111,26 @@ abstract class GeoController extends Controller
 
         $originIndex      = null;
         $destinationIndex = null;
+        $wasStopOver      = false; // To detect whether as the crow flies or real routing
         foreach ($geoJson->features as $key => $data) {
             if (!isset($data->properties->id)) {
+                $wasStopOver = false;
                 continue;
+            } else {
+                $wasStopOver = true;
             }
+
+            if ($wasStopOver) { // A real route is missing -> request route via Brouter
+                $additionalPolyline = BrouterController::getGeoJSON(
+                    $geoJson->features->{$key-1}->properties->location->latitude,
+                    $geoJson->features->{$key-1}->properties->location->longitude,
+                    $data->properties->location->latitude,
+                    $data->properties->location->longitude,
+                );
+
+                // TODO: geoJSON mit vorhandener Polyline mergen
+            }
+
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id
                 && isset($data->properties->departure_planned) //Important for ring lines!

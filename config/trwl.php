@@ -17,6 +17,10 @@ return [
     'mastodon_redirect'     => env('MASTODON_REDIRECT'),
     'mastodon_appname'      => env('MASTODON_APPNAME'),
 
+    # Brouter
+    'brouter_url'           => env('BROUTER_URL', 'https://brouter.de/brouter'),
+    'brouter_timeout'   => env('BROUTER_TIMEOUT', 10),
+
     # DB_REST
     'db_rest'               => env('DB_REST', 'https://v5.db.transport.rest/'),
     'db_rest_timeout'       => env('DB_REST_TIMEOUT', 10),
