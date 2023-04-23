@@ -18,8 +18,8 @@ return [
     'mastodon_appname'      => env('MASTODON_APPNAME'),
 
     # Brouter
-    'brouter_url'           => env('BROUTER_URL', 'https://brouter.de/brouter'),
-    'brouter_timeout'   => env('BROUTER_TIMEOUT', 10),
+    'brouter_url'           => env('BROUTER_URL', 'https://brouter.de/'),
+    'brouter_timeout'       => env('BROUTER_TIMEOUT', 10),
 
     # DB_REST
     'db_rest'               => env('DB_REST', 'https://v5.db.transport.rest/'),

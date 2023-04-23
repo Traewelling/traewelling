@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
@@ -111,24 +112,27 @@ abstract class GeoController extends Controller
 
         $originIndex      = null;
         $destinationIndex = null;
-        $wasStopOver      = false; // To detect whether as the crow flies or real routing
+        $lastStopOver     = null; // To detect whether as the crow flies or real routing
         foreach ($geoJson->features as $key => $data) {
             if (!isset($data->properties->id)) {
-                $wasStopOver = false;
+                $lastStopOver = null;
                 continue;
             } else {
-                $wasStopOver = true;
-            }
+                if (!is_null($lastStopOver)) { // A real route is missing -> request route via Brouter
+                    Log::debug('Missing route found between '.($lastStopOver->properties->name??'unknown').' and '.($data->properties->name??'unknown'));
 
-            if ($wasStopOver) { // A real route is missing -> request route via Brouter
-                $additionalPolyline = BrouterController::getGeoJSON(
-                    $geoJson->features->{$key-1}->properties->location->latitude,
-                    $geoJson->features->{$key-1}->properties->location->longitude,
-                    $data->properties->location->latitude,
-                    $data->properties->location->longitude,
-                );
+                    $additionalPolyline = BrouterController::getGeoJSON(
+                        $lastStopOver->properties->location->latitude,
+                        $lastStopOver->properties->location->longitude,
+                        $data->properties->location->latitude,
+                        $data->properties->location->longitude,
+                    );
+                    Log::debug('Route found via Brouter: '.json_encode($additionalPolyline));
 
-                // TODO: geoJSON mit vorhandener Polyline mergen
+                    // TODO: geoJSON mit vorhandener Polyline mergen
+                }
+
+                $lastStopOver = $data;
             }
 
             if ($originIndex === null
