@@ -27,7 +27,7 @@ abstract class BrouterController extends Controller
         Log::debug('Brouter URL is '.$response->effectiveUri());
         if (!$response->ok()) return null;
 
-        return json_decode($response->body());
+        return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
     }
 }
 ?>
