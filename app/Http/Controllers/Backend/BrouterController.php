@@ -21,7 +21,6 @@ abstract class BrouterController extends Controller
         float $latitudeB,
         float $longitudeB
     ): ?stdClass {
-        https://brouter.de/brouter?lonlats=49.214089,6.944311|48.876976,2.35912&profile=rail&alternativeidx=0&format=geojson
         $response = self::getHttpClient()
             ->get('brouter?lonlats='.$longitudeA.','.$latitudeA.'|'.$longitudeB.','.$latitudeB.'&profile=rail&alternativeidx=0&format=geojson');
         Log::debug('Brouter URL is '.$response->effectiveUri());
