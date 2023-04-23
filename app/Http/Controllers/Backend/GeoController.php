@@ -138,6 +138,8 @@ abstract class GeoController extends Controller
                         Log::debug('Route found via Brouter: ' . json_encode($coordinates));
                         // Save new points for later
                         $additionalRoutes[$key] = $coordinates;
+                    } else {
+                        Log::debug('No route found via Brouter! :(');
                     }
                 }
 
