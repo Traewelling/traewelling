@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
@@ -22,11 +23,13 @@ abstract class BrouterController extends Controller
         float $longitudeB
     ): ?stdClass {
         $response = self::getHttpClient()
-            ->get('brouter?lonlats='.$longitudeA.','.$latitudeA.'|'.$longitudeB.','.$latitudeB.'&profile=rail&alternativeidx=0&format=geojson');
-        Log::debug('Brouter URL is '.$response->effectiveUri());
-        if (!$response->ok()) return null;
+                        ->get('brouter?lonlats=' . $longitudeA . ',' . $latitudeA . '|' . $longitudeB . ',' . $latitudeB . '&profile=rail&alternativeidx=0&format=geojson');
+        Log::debug('Brouter URL is ' . $response->effectiveUri());
+        if (!$response->ok()) {
+            Log::debug('Brouter response was not okay.', ['body' => $response->body()]);
+            return null;
+        }
 
         return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
     }
 }
-?>

@@ -108,7 +108,7 @@ abstract class GeoController extends Controller
      * @throws JsonException
      */
     private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
-        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
+        $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
         $features = $geoJson->features;
 
         $originIndex      = null;
@@ -121,7 +121,7 @@ abstract class GeoController extends Controller
                 continue;
             } else {
                 if (!is_null($lastStopOver)) { // A real route is missing -> request route via Brouter
-                    Log::debug('Missing route found between '.($lastStopOver->properties->name??'unknown').' and '.($data->properties->name??'unknown'));
+                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
 
                     // Demande real route from BrouterController
                     $response = BrouterController::getGeoJSON(
@@ -130,12 +130,15 @@ abstract class GeoController extends Controller
                         $data->properties->location->latitude,
                         $data->properties->location->longitude,
                     );
-                    // Create new points for polyline
-                    $coordinates = $response?->features[0]?->geometry?->coordinates ?? [];
-                    $coordinates = array_map(fn($c)=>(object)['type'=>'Feature','geometry'=>(object)['type'=>'Point','coordinates'=>array_slice($c,0,2)]], $coordinates);
-                    Log::debug('Route found via Brouter: '.json_encode($coordinates));
-                    // Save new points for later
-                    $additionalRoutes[$key] = $coordinates;
+
+                    if ($response !== null) {
+                        // Create new points for polyline
+                        $coordinates = $response?->features[0]?->geometry?->coordinates ?? [];
+                        $coordinates = array_map(fn($c) => (object) ['type' => 'Feature', 'geometry' => (object) ['type' => 'Point', 'coordinates' => array_slice($c, 0, 2)]], $coordinates);
+                        Log::debug('Route found via Brouter: ' . json_encode($coordinates));
+                        // Save new points for later
+                        $additionalRoutes[$key] = $coordinates;
+                    }
                 }
 
                 $lastStopOver = $data;
@@ -159,10 +162,10 @@ abstract class GeoController extends Controller
         }
         $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
         // Add saved points to polyline
-        if(count($additionalRoutes)) {
+        if (count($additionalRoutes)) {
             $updatedFeatures = [];
-            foreach($slicedFeatures as $key => $data) {
-                if(isset($additionalRoutes[$key])) $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+            foreach ($slicedFeatures as $key => $data) {
+                if (isset($additionalRoutes[$key])) $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
                 $updatedFeatures[] = $data;
             }
             $slicedFeatures = $updatedFeatures;
