@@ -165,7 +165,9 @@ abstract class GeoController extends Controller
         if (count($additionalRoutes)) {
             $updatedFeatures = [];
             foreach ($slicedFeatures as $key => $data) {
-                if (isset($additionalRoutes[$key])) $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route but the we're at the origin?
+                    $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+                }
                 $updatedFeatures[] = $data;
             }
             $slicedFeatures = $updatedFeatures;
