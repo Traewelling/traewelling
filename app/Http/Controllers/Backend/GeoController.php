@@ -120,7 +120,7 @@ abstract class GeoController extends Controller
                 $lastStopOver = null;
                 continue;
             } else {
-                if (!is_null($lastStopOver)) { // A real route is missing -> request route via Brouter
+                if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
                     Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
 
                     // Demande real route from BrouterController
