@@ -59,7 +59,7 @@ abstract class BrouterController extends Controller
      * @return void
      * @throws \JsonException
      */
-    public static function reroutePolyline(HafasTrip $trip) {
+    public static function reroutePolyline(HafasTrip $trip): void {
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopoversNEW as $stopover) {
@@ -102,10 +102,10 @@ abstract class BrouterController extends Controller
             ];
 
             //Get feature with the lowest distance to station
-            $minDistance    = null;
+            $minDistance       = null;
             $closestFeatureKey = null;
             foreach ($geoJson['features'] as $key => $feature) {
-                if($highestMappedKey !== null && $key <= $highestMappedKey) {
+                if ($highestMappedKey !== null && $key <= $highestMappedKey) {
                     //Don't look again at the same stations.
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
@@ -117,21 +117,52 @@ abstract class BrouterController extends Controller
                     longitudeB: $stopover->trainStation->longitude,
                 );
                 if ($minDistance === null || $distance < $minDistance) {
-                    $minDistance    = $distance;
+                    $minDistance       = $distance;
                     $closestFeatureKey = $key;
                 }
             }
 
-            $highestMappedKey = $closestFeatureKey;
+            $highestMappedKey                                      = $closestFeatureKey;
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
         $polyline = PolyLine::create([
                                          'hash'     => DB::raw('UUID()'), //In this case a non required unique key
                                          'polyline' => json_encode($geoJson),
+                                         'source'   => 'brouter',
                                      ]);
         $trip->update(['polyline_id' => $polyline->id]);
 
         //dd(json_encode($geoJson, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * Check if Polyline has missing parts. If yes: Automatically schedule a job to get a real route via brouter
+     *
+     * @param HafasTrip $hafasTrip
+     *
+     * @return void
+     */
+    public static function checkPolyline(HafasTrip $hafasTrip): void {
+        $geoJson            = json_decode($hafasTrip->polyline->polyline);
+        $features           = $geoJson->features;
+        $lastStopOver       = null;
+        $partOfRouteMissing = false;
+        foreach ($features as $key => $data) {
+            if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
+                Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
+                $partOfRouteMissing = true;
+                break;
+            }
+        }
+
+        if (!$partOfRouteMissing) {
+            //Nothing to do here.
+            return;
+        }
+
+        self::reroutePolyline($trip);
+
+        //ToDo: Fetch new Polyline
     }
 }
