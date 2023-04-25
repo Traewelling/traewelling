@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
 
@@ -123,13 +123,13 @@ abstract class GeoController extends Controller
                 if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
                     Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
 
+                    $stationCoordinates = [
+                        [$lastStopOver->properties->location->latitude, $lastStopOver->properties->location->longitude],
+                        [$data->properties->location->latitude, $data->properties->location->longitude,]
+                    ];
+
                     // Demande real route from BrouterController
-                    $response = BrouterController::getGeoJSON(
-                        $lastStopOver->properties->location->latitude,
-                        $lastStopOver->properties->location->longitude,
-                        $data->properties->location->latitude,
-                        $data->properties->location->longitude,
-                    );
+                    $response = BrouterController::getGeoJSONForRoute($stationCoordinates);
 
                     if ($response !== null) {
                         // Create new points for polyline
