@@ -92,6 +92,7 @@ abstract class BrouterController extends Controller
         }
 
         //4. Try to map stations to GeoJSON
+        $highestMappedKey = null;
         foreach ($trip->stopoversNEW as $stopover) {
             $properties = [
                 'id'                => $stopover->trainStation->ibnr,
@@ -104,9 +105,14 @@ abstract class BrouterController extends Controller
             $minDistance    = null;
             $closestFeatureKey = null;
             foreach ($geoJson['features'] as $key => $feature) {
+                if($highestMappedKey !== null && $key <= $highestMappedKey) {
+                    //Don't look again at the same stations.
+                    //This is required and very important to prevent bugs for ring lines!
+                    continue;
+                }
                 $distance = GeoController::calculateDistanceBetweenCoordinates(
                     latitudeA:  $feature['geometry']['coordinates'][1],
-                    longitudeA: $feature['geometry']['coordinates'][1],
+                    longitudeA: $feature['geometry']['coordinates'][0],
                     latitudeB:  $stopover->trainStation->latitude,
                     longitudeB: $stopover->trainStation->longitude,
                 );
@@ -116,6 +122,7 @@ abstract class BrouterController extends Controller
                 }
             }
 
+            $highestMappedKey = $closestFeatureKey;
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
@@ -125,6 +132,6 @@ abstract class BrouterController extends Controller
                                      ]);
         $trip->update(['polyline_id' => $polyline->id]);
 
-        dd(json_encode($geoJson, JSON_PRETTY_PRINT));
+        //dd(json_encode($geoJson, JSON_PRETTY_PRINT));
     }
 }
