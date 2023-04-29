@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use JsonException;
+use stdClass;
 
 abstract class BrouterController extends Controller
 {
@@ -30,7 +31,7 @@ abstract class BrouterController extends Controller
     public static function getGeoJSONForRoute(
         array          $coordinates,
         BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
-    ): mixed {
+    ): ?stdClass {
         $lonlats = [];
         foreach ($coordinates as $coords) {
             $lonlats[] = implode(',', array_reverse($coords)); //brouter needs order lon,lat
