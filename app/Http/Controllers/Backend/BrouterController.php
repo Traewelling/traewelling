@@ -10,6 +10,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use JsonException;
 
 abstract class BrouterController extends Controller
 {
@@ -19,22 +20,22 @@ abstract class BrouterController extends Controller
     }
 
     /**
-     * @param array  $coordinates Array with Sub-Array containing the coordinates in order lat, lon (use floats!)
-     * @param string $profile
+     * @param array          $coordinates Array with Sub-Array containing the coordinates in order lat, lon (use
+     *                                    floats!)
+     * @param BrouterProfile $profile
      *
      * @return mixed|null
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function getGeoJSONForRoute(
         array          $coordinates,
         BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
     ): mixed {
-        $coordinateString = 'brouter?lonlats=';
+        $lonlats = [];
         foreach ($coordinates as $coords) {
-            $lonlat           = implode(',', array_reverse($coords)); //brouter needs order lon,lat
-            $coordinateString .= $lonlat . '|';
+            $lonlats[] = implode(',', array_reverse($coords)); //brouter needs order lon,lat
         }
-        $coordinateString = rtrim($coordinateString, '|'); // Remove last "|"
+        $coordinateString = implode('|', $lonlats);
 
         $response = self::getHttpClient()
                         ->get(strtr('brouter?lonlats=:coords&profile=:profile&alternativeidx=0&format=geojson', [
@@ -58,7 +59,7 @@ abstract class BrouterController extends Controller
      * @param HafasTrip $trip
      *
      * @return void
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function reroutePolyline(HafasTrip $trip): void {
         //1. Prepare coordinates from stations
@@ -133,8 +134,6 @@ abstract class BrouterController extends Controller
                                          'source'   => 'brouter',
                                      ]);
         $trip->update(['polyline_id' => $polyline->id]);
-
-        //dd(json_encode($geoJson, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -143,6 +142,7 @@ abstract class BrouterController extends Controller
      * @param HafasTrip $hafasTrip
      *
      * @return void
+     * @throws JsonException
      */
     public static function checkPolyline(HafasTrip $hafasTrip): void {
         $geoJson            = json_decode($hafasTrip->polyline->polyline);
