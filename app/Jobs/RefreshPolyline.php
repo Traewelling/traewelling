@@ -28,7 +28,6 @@ class RefreshPolyline implements ShouldQueue
      * @throws \Exception
      */
     public function handle(): void {
-        \Log::debug('running job');
         BrouterController::reroutePolyline($this->hafasTrip);
     }
 }
