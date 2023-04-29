@@ -12,6 +12,7 @@ use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -68,6 +69,9 @@ abstract class BrouterController extends Controller
      * @throws JsonException
      */
     public static function reroutePolyline(HafasTrip $trip): void {
+        if (App::runningUnitTests()) {
+            return;
+        }
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopoversNEW as $stopover) {
