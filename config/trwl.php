@@ -19,7 +19,7 @@ return [
 
     # Brouter
     'brouter_url'           => env('BROUTER_URL', 'https://brouter.de/'),
-    'brouter_timeout'       => env('BROUTER_TIMEOUT', 3),
+    'brouter_timeout'       => env('BROUTER_TIMEOUT', 10),
 
     # DB_REST
     'db_rest'               => env('DB_REST', 'https://v5.db.transport.rest/'),

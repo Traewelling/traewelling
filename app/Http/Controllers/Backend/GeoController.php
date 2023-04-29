@@ -113,25 +113,11 @@ abstract class GeoController extends Controller
 
         $originIndex      = null;
         $destinationIndex = null;
-        $lastStopOver     = null; // To detect whether as the crow flies or real routing
         $additionalRoutes = [];
         foreach ($features as $key => $data) {
             if (!isset($data->properties->id)) {
-                $lastStopOver = null;
                 continue;
             }
-
-            $partOfRouteMissing = false;
-            if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
-                Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
-                $partOfRouteMissing = true;
-            }
-
-            if($partOfRouteMissing) {
-                //ToDo: Fetch new Polyline
-            }
-
-            $lastStopOver = $data;
 
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
 use App\Http\Controllers\Controller;
+use App\Jobs\PostStatusOnMastodon;
+use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use Illuminate\Http\Client\PendingRequest;
@@ -140,28 +142,37 @@ abstract class BrouterController extends Controller
      * @param HafasTrip $hafasTrip
      *
      * @return void
-     * @throws JsonException
      */
     public static function checkPolyline(HafasTrip $hafasTrip): void {
-        $geoJson            = json_decode($hafasTrip->polyline->polyline);
-        $features           = $geoJson->features;
-        $lastStopOver       = null;
-        $partOfRouteMissing = false;
-        foreach ($features as $key => $data) {
-            if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
-                Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
-                $partOfRouteMissing = true;
-                break;
-            }
-        }
-
-        if (!$partOfRouteMissing) {
-            //Nothing to do here.
+        if (!$hafasTrip->category?->onRails()) {
             return;
         }
 
-        self::reroutePolyline($trip);
+        if (!self::checkIfPolylineHasMissingParts($hafasTrip)) {
+            Log::debug('no parts missing');
+            //Nothing to do here.
+            return;
+        }
+        Log::debug('parts missing: dispatch');
+        RefreshPolyline::dispatch($hafasTrip);
+    }
 
-        //ToDo: Fetch new Polyline
+    private static function checkIfPolylineHasMissingParts(HafasTrip $hafasTrip): bool {
+        $geoJson      = json_decode($hafasTrip->polyline->polyline);
+        $features     = $geoJson->features;
+        $lastStopOver = null; // To detect whether as the crow flies or real routing
+        foreach ($features as $key => $data) {
+            if (!isset($data->properties->id)) {
+                $lastStopOver = null;
+            } else {
+                if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
+                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
+                    return true;
+                }
+
+                $lastStopOver = $data;
+            }
+        }
+        return false;
     }
 }

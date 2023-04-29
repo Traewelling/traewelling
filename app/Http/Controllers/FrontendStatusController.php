@@ -134,8 +134,6 @@ class FrontendStatusController extends Controller
     public function getStatus($statusId): Renderable {
         $status = StatusBackend::getStatus($statusId);
 
-        BrouterController::reroutePolyline($status->trainCheckin->HafasTrip);
-
         try {
             $this->authorize('view', $status);
         } catch (AuthorizationException) {
