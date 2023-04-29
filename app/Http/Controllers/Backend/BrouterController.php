@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
+use Str;
 
 abstract class BrouterController extends Controller
 {
@@ -131,7 +132,7 @@ abstract class BrouterController extends Controller
         }
 
         $polyline = PolyLine::create([
-                                         'hash'     => DB::raw('UUID()'), //In this case a non required unique key
+                                         'hash'     => Str::uuid(), //In this case a non required unique key
                                          'polyline' => json_encode($geoJson),
                                          'source'   => 'brouter',
                                      ]);
