@@ -268,4 +268,28 @@ abstract class TrainCheckinController extends Controller
 
         return $hafasTrip;
     }
+
+    public static function refreshDistanceAndPoints(Status $status) {
+        $trainCheckin = $status->trainCheckin;
+        $firstStop    = $trainCheckin->origin_stopover;
+        $lastStop     = $trainCheckin->destination_stopover;
+        $distance     = GeoController::calculateDistance(
+            hafasTrip:   $trainCheckin->HafasTrip,
+            origin:      $firstStop,
+            destination: $lastStop
+        );
+
+        $pointsResource = PointsCalculationController::calculatePoints(
+            distanceInMeter: $distance,
+            hafasTravelType: $trainCheckin->HafasTrip->category,
+            departure:       $firstStop->departure,
+            arrival:         $lastStop->arrival
+        );
+        $payload        = [
+            'distance' => $distance,
+            'points'   => $pointsResource['points'],
+        ];
+        $trainCheckin->update($payload);
+        Log::debug('Updated distance and points of status#' . $status->id, $payload);
+    }
 }

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Backend;
 
 use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Jobs\PostStatusOnMastodon;
 use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
+use App\Models\TrainCheckin;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -134,6 +136,12 @@ abstract class BrouterController extends Controller
                                          'source'   => 'brouter',
                                      ]);
         $trip->update(['polyline_id' => $polyline->id]);
+
+        //Refresh distance and points of trips
+        $trainCheckinToRecalc = TrainCheckin::with(['status'])->where('trip_id', $trip->trip_id)->get();
+        foreach ($trainCheckinToRecalc as $trainCheckin) {
+            TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
+        }
     }
 
     /**

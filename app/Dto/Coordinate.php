@@ -12,7 +12,6 @@ class Coordinate
     public function __construct(float $latitude, float $longitude) {
         $this->latitude  = $latitude;
         $this->longitude = $longitude;
-        \Log::debug("$latitude, $longitude");
     }
 
 }
