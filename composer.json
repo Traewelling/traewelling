@@ -22,7 +22,6 @@
         "ext-sodium": "*",
         "abraham/twitteroauth": "^5.0",
         "barryvdh/laravel-dompdf": "^2.0",
-        "brianium/paratest": "^6.3",
         "coderjerk/bird-elephant": "^0.6.1",
         "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.1.4",
@@ -47,9 +46,10 @@
         "uwumarie/laravel-bitflags": "dev-main"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "barryvdh/laravel-debugbar": "^3.5",
         "beyondcode/laravel-dump-server": "dev-master",
-        "ext-pdo_sqlite": "*",
+        "brianium/paratest": "^6.9",
         "fakerphp/faker": "^1.9",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.0",
