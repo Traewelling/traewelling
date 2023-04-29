@@ -48,6 +48,7 @@ Homestead.json
 .idea/**/contentModel.xml
 .idea/commandlinetools/
 .idea/laravel-idea.xml
+.idea/sonarlint.xml
 
 # Sensitive or high-churn files
 .idea/dataSources.xml
