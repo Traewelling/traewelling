@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
@@ -21,11 +22,10 @@ abstract class BrouterController extends Controller
     }
 
     /**
-     * @param array          $coordinates Array with Sub-Array containing the coordinates in order lat, lon (use
-     *                                    floats!)
+     * @param array          $coordinates Array of App/Dto/Coordinate objects
      * @param BrouterProfile $profile
      *
-     * @return mixed|null
+     * @return null|stdClass
      * @throws JsonException
      */
     public static function getGeoJSONForRoute(
@@ -33,8 +33,8 @@ abstract class BrouterController extends Controller
         BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
     ): ?stdClass {
         $lonlats = [];
-        foreach ($coordinates as $coords) {
-            $lonlats[] = implode(',', array_reverse($coords)); //brouter needs order lon,lat
+        foreach ($coordinates as $coord) {
+            $lonlats[] = $coord->longitude . ',' . $coord->latitude; //brouter needs order lon,lat
         }
         $coordinateString = implode('|', $lonlats);
 
@@ -66,10 +66,7 @@ abstract class BrouterController extends Controller
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopoversNEW as $stopover) {
-            $coordinates[] = [
-                $stopover->trainStation->latitude,
-                $stopover->trainStation->longitude,
-            ];
+            $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
         }
 
         //2. Request route at brouter
