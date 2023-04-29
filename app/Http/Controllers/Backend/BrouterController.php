@@ -55,7 +55,10 @@ abstract class BrouterController extends Controller
             return null;
         }
 
-        return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+        $geoJson = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+        //remove unnecessary data
+        unset($geoJson->features[0]->properties->messages, $geoJson->features[0]->properties->times);
+        return $geoJson;
     }
 
     /**
@@ -80,8 +83,6 @@ abstract class BrouterController extends Controller
 
         //2. Request route at brouter
         $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
-        //remove unnecessary data
-        unset($brouterGeoJSON->features[0]->properties->messages, $brouterGeoJSON->features[0]->properties->times);
 
         //3. Create "new" GeoJSON splitted by stations (as features)
         $geoJson = ['type' => 'FeatureCollection', 'features' => []];
