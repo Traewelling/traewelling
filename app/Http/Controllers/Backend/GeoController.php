@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
 
@@ -119,32 +119,19 @@ abstract class GeoController extends Controller
             if (!isset($data->properties->id)) {
                 $lastStopOver = null;
                 continue;
-            } else {
-                if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
-                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
-
-                    // Demande real route from BrouterController
-                    $response = BrouterController::getGeoJSON(
-                        $lastStopOver->properties->location->latitude,
-                        $lastStopOver->properties->location->longitude,
-                        $data->properties->location->latitude,
-                        $data->properties->location->longitude,
-                    );
-
-                    if ($response !== null) {
-                        // Create new points for polyline
-                        $coordinates = $response?->features[0]?->geometry?->coordinates ?? [];
-                        $coordinates = array_map(fn($c) => (object) ['type' => 'Feature', 'geometry' => (object) ['type' => 'Point', 'coordinates' => array_slice($c, 0, 2)]], $coordinates);
-                        Log::debug('Route found via Brouter: ' . json_encode($coordinates));
-                        // Save new points for later
-                        $additionalRoutes[$key] = $coordinates;
-                    } else {
-                        Log::debug('No route found via Brouter! :(');
-                    }
-                }
-
-                $lastStopOver = $data;
             }
+
+            $partOfRouteMissing = false;
+            if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
+                Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
+                $partOfRouteMissing = true;
+            }
+
+            if($partOfRouteMissing) {
+                //ToDo: Fetch new Polyline
+            }
+
+            $lastStopOver = $data;
 
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id

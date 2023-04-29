@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Http\Controllers\Backend\BrouterController;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
@@ -132,6 +133,8 @@ class FrontendStatusController extends Controller
 
     public function getStatus($statusId): Renderable {
         $status = StatusBackend::getStatus($statusId);
+
+        BrouterController::reroutePolyline($status->trainCheckin->HafasTrip);
 
         try {
             $this->authorize('view', $status);
