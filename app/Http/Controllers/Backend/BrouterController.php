@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enum\BrouterProfile;
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
@@ -25,8 +26,8 @@ abstract class BrouterController extends Controller
      * @throws \JsonException
      */
     public static function getGeoJSONForRoute(
-        array  $coordinates,
-        string $profile = 'rail' //Maybe extend this for other travel types later
+        array          $coordinates,
+        BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
     ): mixed {
         $coordinateString = 'brouter?lonlats=';
         foreach ($coordinates as $coords) {
@@ -38,7 +39,7 @@ abstract class BrouterController extends Controller
         $response = self::getHttpClient()
                         ->get(strtr('brouter?lonlats=:coords&profile=:profile&alternativeidx=0&format=geojson', [
                             ':coords'  => $coordinateString,
-                            ':profile' => $profile,
+                            ':profile' => $profile->value,
                         ]));
         Log::debug('Brouter URL is ' . $response->effectiveUri());
         if (!$response->ok()) {
