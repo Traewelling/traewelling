@@ -28,7 +28,7 @@ abstract class BrouterController extends Controller
     }
 
     /**
-     * @param array          $coordinates Array of App/Dto/Coordinate objects
+     * @param array          $coordinates Array of App\Dto\Coordinate objects
      * @param BrouterProfile $profile
      *
      * @return null|stdClass
