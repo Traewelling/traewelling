@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PolyLine extends Model
 {
 
-    protected $fillable = ['hash', 'polyline'];
+    protected $fillable = ['hash', 'polyline', 'source'];
     protected $casts    = [
-        'id' => 'integer',
+        'id'     => 'integer',
+        'source' => 'string', //enum['hafas', 'brouter'] in database
     ];
 
     public function trips(): HasMany {

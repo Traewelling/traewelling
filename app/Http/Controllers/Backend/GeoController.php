@@ -7,6 +7,7 @@ use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
 
@@ -107,14 +108,17 @@ abstract class GeoController extends Controller
      * @throws JsonException
      */
     private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
-        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
+        $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
+        $features = $geoJson->features;
 
         $originIndex      = null;
         $destinationIndex = null;
-        foreach ($geoJson->features as $key => $data) {
+        $additionalRoutes = [];
+        foreach ($features as $key => $data) {
             if (!isset($data->properties->id)) {
                 continue;
             }
+
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id
                 && isset($data->properties->departure_planned) //Important for ring lines!
@@ -131,8 +135,18 @@ abstract class GeoController extends Controller
                 $destinationIndex = $key;
             }
         }
-
-        $slicedFeatures    = array_slice($geoJson->features, $originIndex, $destinationIndex - $originIndex + 1);
+        $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
+        // Add saved points to polyline
+        if (count($additionalRoutes)) {
+            $updatedFeatures = [];
+            foreach ($slicedFeatures as $key => $data) {
+                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route but we're at the origin?
+                    $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+                }
+                $updatedFeatures[] = $data;
+            }
+            $slicedFeatures = $updatedFeatures;
+        }
         $geoJson->features = $slicedFeatures;
         return $geoJson;
     }
