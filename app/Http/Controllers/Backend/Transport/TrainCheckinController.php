@@ -273,8 +273,12 @@ abstract class TrainCheckinController extends Controller
     /**
      * @throws DistanceDeviationException
      */
-    public static function refreshDistanceAndPoints(Status $status) {
+    public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline=false) {
         $trainCheckin = $status->trainCheckin;
+        if ($resetPolyline) {
+            $trainCheckin->HafasTrip->polyline_id = null;
+            $trainCheckin->HafasTrip->update();
+        }
         $firstStop    = $trainCheckin->origin_stopover;
         $lastStop     = $trainCheckin->destination_stopover;
         $distance     = GeoController::calculateDistance(
