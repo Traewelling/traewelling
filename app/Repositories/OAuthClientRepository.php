@@ -54,14 +54,25 @@ class OAuthClientRepository
         string $redirect,
         string|null $privacyPolicyUrl,
         bool $webhooksEnabled,
-        string|null $authorizedWebhookUrl
+        string|null $authorizedWebhookUrl,
+        bool $confidential = true,
     ): OAuthClient {
+        $secret = $client->secret;
+        if ($client->isConfidential() != $confidential) {
+            if ($secret == null) {
+                $secret = Str::random(40);
+            } else {
+                $secret = null;
+            }
+        }
+
         $client->forceFill([
             'name' => $name,
             'redirect' => $redirect,
             'privacy_policy_url' => $privacyPolicyUrl,
             'webhooks_enabled' => $webhooksEnabled,
             'authorized_webhook_url' => $authorizedWebhookUrl,
+            'secret' => $secret,
         ])->save();
 
         return $client;
