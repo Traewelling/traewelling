@@ -28,6 +28,13 @@
                         <hr>
                     </div>
                 @endisset
+                <div class="alert alert-warning">
+                    @if($app->confidential())
+                    WARNING: Changing the <code>confidential</code> field will delete your client secret and revoke all existing tokens.
+                    @else
+                    WARNING: Changing the <code>confidential</code> field will generate a new client secret and revoke all existing tokens.
+                    @endif
+                </div>
                 <div class="form-group row my-1">
                     <label for="name" class="col-md-4 col-form-label text-md-right">
                         Name

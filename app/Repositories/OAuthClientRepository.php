@@ -6,6 +6,7 @@ use App\Models\OAuthClient;
 use App\Models\Webhook;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Str;
+use Laravel\Passport\Token;
 
 // Based on Passports's code:
 // https://github.com/laravel/passport/blob/d8cc34766635da552a9ddff80248c5505f19bd04/src/ClientRepository.php#L140-L156
@@ -74,6 +75,8 @@ class OAuthClientRepository
             'authorized_webhook_url' => $authorizedWebhookUrl,
             'secret' => $secret,
         ])->save();
+
+        Token::where('client_id', $client->id)->update(['revoked' => true]);
 
         return $client;
     }
