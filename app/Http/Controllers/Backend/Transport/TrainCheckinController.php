@@ -9,6 +9,7 @@ use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\DistanceDeviationException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
@@ -269,6 +270,9 @@ abstract class TrainCheckinController extends Controller
         return $hafasTrip;
     }
 
+    /**
+     * @throws DistanceDeviationException
+     */
     public static function refreshDistanceAndPoints(Status $status) {
         $trainCheckin = $status->trainCheckin;
         $firstStop    = $trainCheckin->origin_stopover;
@@ -278,6 +282,16 @@ abstract class TrainCheckinController extends Controller
             origin:      $firstStop,
             destination: $lastStop
         );
+        $oldPoints    = $trainCheckin->points;
+        $oldDistance  = $trainCheckin->distance;
+
+        if ($distance / $trainCheckin->distance >= 1.15) {
+            Log::error(sprintf('Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                               $status->id,
+                               $oldDistance,
+                               $distance));
+            throw new DistanceDeviationException();
+        }
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
@@ -290,6 +304,12 @@ abstract class TrainCheckinController extends Controller
             'points'   => $pointsResource['points'],
         ];
         $trainCheckin->update($payload);
-        Log::debug('Updated distance and points of status#' . $status->id, $payload);
+        Log::debug(sprintf('Updated distance and points of status #%d: Old: %dm %dp New: %dm %dp',
+                           $status->id,
+                           $oldDistance,
+                           $oldPoints,
+                           $distance,
+                           $pointsResource['points']
+                   ));
     }
 }
