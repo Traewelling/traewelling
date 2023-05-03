@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
+use App\Exceptions\DistanceDeviationException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Jobs\PostStatusOnMastodon;
@@ -89,8 +90,8 @@ abstract class BrouterController extends Controller
 
         foreach ($brouterGeoJSON?->features[0]?->geometry?->coordinates ?? [] as $coordinate) {
             $geoJson['features'][] = [
-                'type'       => 'feature',
-                'properties' => [],
+                'type'       => 'Feature',
+                'properties' => new stdClass(),
                 'geometry'   => [
                     'type'        => 'Point',
                     'coordinates' => [
@@ -141,12 +142,17 @@ abstract class BrouterController extends Controller
                                          'polyline' => json_encode($geoJson),
                                          'source'   => 'brouter',
                                      ]);
+        $oldPolyLine = $trip->polyline_id;
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
         $trainCheckinToRecalc = TrainCheckin::with(['status'])->where('trip_id', $trip->trip_id)->get();
-        foreach ($trainCheckinToRecalc as $trainCheckin) {
-            TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
+        try {
+            foreach ($trainCheckinToRecalc as $trainCheckin) {
+                TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
+            }
+        } catch (DistanceDeviationException) {
+            $trip->update(['polyline_id' => $oldPolyLine]);
         }
     }
 
