@@ -101,6 +101,7 @@ class AuthorizationController extends PassportAuthorizationController {
             'authToken' => $authToken,
             'webhook' => $webhook,
             'userCount' => $userCount,
+            'author' => $client->user->username,
         ]);
     }
 
