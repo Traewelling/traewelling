@@ -273,23 +273,22 @@ abstract class TrainCheckinController extends Controller
     /**
      * @throws DistanceDeviationException
      */
-    public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline=false) {
+    public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
         $trainCheckin = $status->trainCheckin;
         if ($resetPolyline) {
-            $trainCheckin->HafasTrip->polyline_id = null;
-            $trainCheckin->HafasTrip->update();
+            $trainCheckin->HafasTrip->update(['polyline_id' => null]);
         }
-        $firstStop    = $trainCheckin->origin_stopover;
-        $lastStop     = $trainCheckin->destination_stopover;
-        $distance     = GeoController::calculateDistance(
+        $firstStop   = $trainCheckin->origin_stopover;
+        $lastStop    = $trainCheckin->destination_stopover;
+        $distance    = GeoController::calculateDistance(
             hafasTrip:   $trainCheckin->HafasTrip,
             origin:      $firstStop,
             destination: $lastStop
         );
-        $oldPoints    = $trainCheckin->points;
-        $oldDistance  = $trainCheckin->distance;
+        $oldPoints   = $trainCheckin->points;
+        $oldDistance = $trainCheckin->distance;
 
-        if ($distance / $trainCheckin->distance >= 1.15) {
+        if ($trainCheckin->distance === 0 || $distance / $trainCheckin->distance >= 1.15) {
             Log::error(sprintf('Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
                                $status->id,
                                $oldDistance,
