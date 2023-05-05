@@ -8,8 +8,7 @@ window.API = class API {
         return fetch('/api/v1' + path, {
             method: method,
             headers: {
-                "Content-Type": "application/json",
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data),
         });
