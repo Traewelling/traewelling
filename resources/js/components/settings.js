@@ -60,7 +60,7 @@ window.Settings = class Settings {
 
     static deleteProfilePicture() {
         API.request('/settings/profilePicture', 'delete')
-            .then(function (response) {
+            .then(response => {
                 if (!response.ok) {
                     response.json().then(data => {
                         notyf.error(data.message ?? 'An unknown error occured.');
@@ -70,15 +70,11 @@ window.Settings = class Settings {
 
                 //Remove delete-btn if existing
                 let btnModalDeleteProfilePicture = document.getElementById("btnModalDeleteProfilePicture");
-                if (btnModalDeleteProfilePicture) {
-                    btnModalDeleteProfilePicture.remove();
-                }
+                btnModalDeleteProfilePicture?.remove();
 
                 //Show default profile picture
                 let theProfilePicture = document.getElementById('theProfilePicture');
-                if (theProfilePicture) {
-                    theProfilePicture.src = '/img/user.png';
-                }
+                theProfilePicture?.setAttribute('src', `/img/user.png`);
 
                 response.json().then(data => {
                     notyf.success(data.data.message);
