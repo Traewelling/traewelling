@@ -16,6 +16,7 @@ use App\Models\Event;
 use App\Models\User;
 use App\Http\Controllers\Backend\WebhookController;
 use App\Models\Webhook;
+use App\Models\OAuthClient;
 use App\Repositories\OAuthClientRepository;
 use Carbon\Carbon;
 use Exception;
@@ -24,7 +25,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
-use Laravel\Passport\Client as PassportClient;
 use Tests\Feature\CheckinTest;
 
 abstract class TestCase extends BaseTestCase {
@@ -171,11 +171,11 @@ abstract class TestCase extends BaseTestCase {
         return $admin;
     }
 
-    public function createWebhookClient(User $user): PassportClient {
+    public function createWebhookClient(User $user): OAuthClient {
         $clients = new OAuthClientRepository();
         return $clients->create(
             $user->id,
-            "TRWL Testing Application",
+            "TRWL Webhook Testing Application",
             "https://example.com",
             null,
             false,
@@ -187,7 +187,23 @@ abstract class TestCase extends BaseTestCase {
         );
     }
 
-    public function createWebhook(User $user, PassportClient $client, array $events): Webhook {
+    public function createOAuthClient(User $user, bool $confidential): OAuthClient {
+        $clients = new OAuthClientRepository();
+        return $clients->create(
+            $user->id,
+            "TRWL OAuth Testing Application",
+            "https://example.com",
+            null,
+            false,
+            false,
+            $confidential,
+            "https://example.com/privacy",
+            false,
+            null,
+        );
+    }
+
+    public function createWebhook(User $user, OAuthClient $client, array $events): Webhook {
         $bitflag = 0;
         foreach ($events as $event) {
             $bitflag |= $event->value;

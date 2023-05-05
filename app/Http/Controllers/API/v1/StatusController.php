@@ -420,7 +420,12 @@ class StatusController extends Controller
                                  ->with('trainCheckin.HafasTrip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
-                                     return \request()?->user()->can('view', $status);
+                                     try {
+                                         $this->authorize('view', $status);
+                                     } catch (AuthorizationException) {
+                                         return false;
+                                     }
+                                     return true;
                                  })
                                  ->map(function($status) {
                                      return [
@@ -471,7 +476,6 @@ class StatusController extends Controller
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
      *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      *

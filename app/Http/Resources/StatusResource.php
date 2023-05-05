@@ -42,7 +42,7 @@ class StatusResource extends JsonResource
                 'origin'      => new StopoverResource($this->trainCheckin->origin_stopover),
                 'destination' => new StopoverResource($this->trainCheckin->destination_stopover),
             ],
-            'event'          => new EventResource($this?->event)
+            'event'          => new EventResource($this?->event),
         ];
     }
 }

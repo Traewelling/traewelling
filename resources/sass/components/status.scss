@@ -34,19 +34,8 @@
     .list-inline {
         margin-bottom: 0;
 
-        .like {
-            color: #f5a530;
-            cursor: pointer;
-        }
-
         .list-inline-item:not(:last-child) {
             margin-right: 0.5rem;
-
-            &::after {
-                content: "|";
-                margin-left: 0.5rem;
-                color: $grey;
-            }
         }
     }
 
@@ -54,7 +43,25 @@
         line-height: 2em;
     }
 
+    .like {
+        color: #f5a530;
+        cursor: pointer;
+    }
+
     .visibility-icon {
         color: #b3b3b3 !important;
+    }
+
+    .dropdown-item {
+        display: flex;
+        flex-direction: row;
+        padding-left: 0;
+    }
+    .dropdown-icon-suspense {
+        display: flex;
+        width: 3em;
+        justify-content: center;
+        height: 2em;
+        align-items: center;
     }
 }

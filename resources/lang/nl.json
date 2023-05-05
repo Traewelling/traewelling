@@ -644,5 +644,7 @@
     "settings.webhook-description": "Met webkoppelingen kun je de activiteit van je Träwelling-account delen met externe apps. De volgende tabel bevat een lijst met externe apps die webkoppelingen bevatten en welke activiteiten zij kunnen inzien.",
     "menu.oauth_authorize.cancel": "Annuleren",
     "menu.oauth_authorize.webhook_request": "Deze app wil de volgende activiteiten van je account inzien:",
-    "menu.oauth_authorize.application_information.privacy_policy": "Privacybeleid van :client"
+    "menu.oauth_authorize.application_information.privacy_policy": "Privacybeleid van :client",
+    "menu.share.clipboard.success": "Gekopieerd naar het klembord!",
+    "status.join": "Meereizen"
 }

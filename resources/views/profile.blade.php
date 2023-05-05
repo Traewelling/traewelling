@@ -31,7 +31,10 @@
                     <small class="font-weight-light">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
-                        @include('includes.hide-user-action-buttons')
+                        @if(auth()->user()->id != $user->id)
+                            <x-mute-button :user="$user"/>
+                            <x-block-button :user="$user"/>
+                        @endif
                     @endauth
                 </span>
                 <br/>
@@ -41,8 +44,12 @@
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
                             class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}</span><span
-                            class="small font-weight-lighter">{{__('profile.points-abbr')}}</span>
+                        <span class="font-weight-bold ps-sm-2">
+                            <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}
+                        </span>
+                        <span class="small font-weight-lighter">
+                            {{__('profile.points-abbr')}}
+                        </span>
                         @isset($user?->socialProfile?->twitter_id)
                             <span class="font-weight-bold ps-sm-2">
                                 <a href="https://twitter.com/i/user/{{ $user->socialProfile->twitter_id }}" rel="me"
@@ -65,18 +72,12 @@
     </div>
     <div class="container">
         <div class="row justify-content-center mt-4">
-            @if(auth()->check() && auth()->user()->mutedUsers->contains('id', $user->id))
+            @if($user->muted)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <header><h3>{{__('user.muted.heading')}}</h3></header>
                     <h5>{{__('user.muted.text', ["username" => $user->username])}}</h5>
 
-                    <form method="POST" action="{{route('user.unmute')}}">
-                        @csrf
-                        <input type="hidden" name="user_id" value="{{$user->id}}"/>
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            <i class="far fa-eye"></i> {{ __('user.unmute-tooltip') }}
-                        </button>
-                    </form>
+                    <x-mute-button :user="$user" :showText="true"/>
                 </div>
             @elseif($user->private_profile && !$user->following && (!auth()->check() || $user->id !== auth()->id()))
                 <div class="col-md-8 col-lg-7 text-center mb-5">

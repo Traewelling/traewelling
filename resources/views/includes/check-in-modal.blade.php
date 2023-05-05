@@ -10,32 +10,20 @@
             </div>
             <div class="modal-body">
                 <form action="{{ route('trains.checkin') }}" method="POST" id="checkinForm">
-                    <div class="form-floating">
+                    <div class="form-outline">
                         <textarea name="body" class="form-control" id="message-text" maxlength="280"
                                   style="min-height: 130px;"></textarea>
-                        <label for="message-text">{{__('stationboard.label-message')}}</label>
+                        <label for="message-text" class="form-label">{{__('stationboard.label-message')}}</label>
                     </div>
-                    <small class="text-muted float-end"><span id="body-length">0</span>/280</small>
+                    <small class="text-muted float-end"><span id="message-length">0</span>/280</small>
                     <script>
                         document.querySelector('#message-text').addEventListener('input', function (e) {
-                            document.querySelector('#body-length').innerText = e.target.value.length;
+                            document.querySelector('#message-length').innerText = e.target.value.length;
                         });
                     </script>
 
                     <div class="mt-2">
                         @if (auth()->user()?->socialProfile != null)
-                            @if (auth()->user()->socialProfile->twitter_id != null)
-                                <div class="btn-group">
-                                    <input type="checkbox" class="btn-check" id="tweet_check" autocomplete="off"
-                                           name="tweet_check"/>
-                                    <label class="btn btn-sm btn-outline-twitter" for="tweet_check">
-                                        <i class="fab fa-twitter"></i>
-                                        <span
-                                            class="visually-hidden-focusable">{{ __('stationboard.check-tweet') }}</span>
-                                    </label>
-                                </div>
-                            @endif
-
                             @if (auth()->user()->socialProfile->mastodon_id != null)
                                 <div class="btn-group">
                                     <input type="checkbox" class="btn-check" id="toot_check" autocomplete="off"

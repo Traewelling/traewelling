@@ -45,6 +45,7 @@ class DevController extends Controller {
         $validated = $request->validate([
             'name'                   => ['required', 'string'],
             'redirect'               => ['required', 'string'],
+            'confidential'           => ['nullable'],
             'enable_webhooks'        => ['nullable'],
             'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
             'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
@@ -62,8 +63,9 @@ class DevController extends Controller {
             $validated['name'],
             $validated['redirect'],
             $validated['privacy_policy_url'],
-            isset($validated['enable_webhooks']),
-            $validated['authorized_webhook_url']
+            isset($validated['enable_webhooks']) || $clients->hasWebhooks(id: $appId),
+            $validated['authorized_webhook_url'],
+            isset($validated['confidential'])
         );
 
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));

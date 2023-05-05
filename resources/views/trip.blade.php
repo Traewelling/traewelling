@@ -83,5 +83,4 @@
         </div>
     </div>
 
-    @include('includes.check-in-modal')
 @endsection

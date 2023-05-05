@@ -22,6 +22,7 @@ use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\StatusTagController;
 use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -58,6 +59,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('status/{id}', [StatusController::class, 'update']);
             Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
             Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
+            Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
+            Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
+            Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
         });
         Route::group(['middleware' => ['scope:write-likes']], static function() {
             Route::post('status/{id}/like', [LikesController::class, 'create']);
@@ -171,14 +175,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('statuses/{id}', [StatusController::class, 'show']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
             Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
-            Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
-            Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
-            Route::get('event/{slug}', [EventController::class, 'show']);
-            Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
-            Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
-            Route::get('events', [EventController::class, 'upcoming']);
-            Route::get('user/{username}', [UserController::class, 'show']);
-            Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+            Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
+        Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+        Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+        Route::get('event/{slug}', [EventController::class, 'show']);
+        Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
+        Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+        Route::get('events', [EventController::class, 'upcoming']);
+        Route::get('user/{username}', [UserController::class, 'show']);
+        Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });
         Route::group(['middleware' => ['semiscope:read-statistics']], static function() {
             Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
@@ -186,4 +191,4 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('leaderboard/{month}', [StatisticsController::class, 'leaderboardForMonth']);
         });
     });
-}); 
+});
