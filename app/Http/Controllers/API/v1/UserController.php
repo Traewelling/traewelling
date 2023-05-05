@@ -493,8 +493,7 @@ class UserController extends Controller
     }
 
     /**
-     * TODO: API Docs
-     * TODO: test endpoint
+     * Undocumented and not public API Endpoint
      *
      * @param Request $request
      * @param int     $userId
