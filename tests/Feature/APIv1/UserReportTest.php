@@ -35,7 +35,6 @@ class UserReportTest extends TestCase
         );
         $response->assertUnauthorized();
 
-        //ToDo: Currently failing because of cookie auth
         //Case 2: Self report
         $response = $this->actingAs($userWhoIsReporting, 'web')
                          ->postJson(
