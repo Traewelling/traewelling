@@ -6,6 +6,7 @@ import {Notyf} from 'notyf';
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
+require("./api/api");
 
 document.addEventListener("DOMContentLoaded", function () {
     window.notyf = new Notyf({

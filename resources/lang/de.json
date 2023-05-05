@@ -392,6 +392,7 @@
     "settings.create-ics-token": "Neue Freigabe erstellen",
     "settings.create-ics-token-success": "Die Kalenderfreigabe wurde erstellt. Du kannst folgenden Link in einen Kalender einbinden, der das ICS-Format unterstützt: <a href=\":link\">:link</a>",
     "settings.revoke-ics-token-success": "Die Kalenderfreigabe wurde gelöscht.",
+    "settings.profilePicture.deleted": "Dein Profilbild wurde gelöscht.",
     "settings.follower.no-follower": "Du hast keine Follower.",
     "settings.follower.no-requests": "Du hast keine Folgen-Anfragen.",
     "settings.follower.no-followings": "Du folgst niemandem.",

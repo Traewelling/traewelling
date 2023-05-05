@@ -644,5 +644,6 @@
     "no": "No",
     "edit": "Edit",
     "delete": "Delete",
-    "active-tokens-count": ":count active token|:count active tokens"
+    "active-tokens-count": ":count active token|:count active tokens",
+    "settings.profilePicture.deleted": "Your profile picture was deleted successfully."
 }

@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
-use OpenApi\Annotations as OA;
 
 class SettingsController extends Controller
 {
@@ -164,10 +163,10 @@ class SettingsController extends Controller
 
     public function deleteProfilePicture(): JsonResponse {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
-            return $this->sendResponse('', 204);
+            return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
         }
 
-        return $this->sendError('', 400);
+        return $this->sendError(__('messages.exception.general'), 400);
     }
 
     public function uploadProfilePicture(Request $request): JsonResponse {
