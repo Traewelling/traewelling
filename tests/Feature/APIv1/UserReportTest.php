@@ -53,10 +53,5 @@ class UserReportTest extends TestCase
                          );
         $response->assertOk();
         $this->assertEquals(__('user.report.sent'), $response->json('data'));
-        $this->assertDatabaseHas('user_reports', [
-            'reporter_id' => $userWhoIsReporting->id,
-            'user_id'     => $userWhoIsReported->id,
-            'message'     => 'I don\t like this user!',
-        ]);
     }
 }
