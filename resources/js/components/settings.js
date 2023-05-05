@@ -84,8 +84,7 @@ window.Settings = class Settings {
                     notyf.success(data.data.message);
                 });
             })
-            .catch(function (error) {
-                console.error(error);
+            .catch(function () {
                 notyf.error('An unknown error occured.');
             });
     }
