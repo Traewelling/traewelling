@@ -645,7 +645,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "active-tokens-count": ":count active token|:count active tokens",
-    "settings.profilePicture.deleted": "Your profile picture was deleted successfully."
+    "settings.profilePicture.deleted": "Your profile picture was deleted successfully.",
     "user.report.sent": "Thanks for your report. We will take a look at it soon!",
     "user.report.self_report": "You cannot report yourself."
 }
