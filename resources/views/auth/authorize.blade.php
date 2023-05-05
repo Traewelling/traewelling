@@ -69,8 +69,8 @@
                 <div class="card-footer row">
                     <p class="m-0 col-md-4 text-center">{!! __("menu.oauth_authorize.application_information.author", [
                         "application" => $client->name,
-                        "user" => $user->username,
-                        "url" => route("profile", $user->username)
+                        "user" => $author,
+                        "url" => route("profile", $author)
                         ])!!}</p>
                     <p class="m-0 col-md-4 text-center">{{ __("menu.oauth_authorize.application_information.created_at", [
                         "time" => $client->created_at->diffForHumans()

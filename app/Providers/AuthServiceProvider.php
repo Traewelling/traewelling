@@ -86,6 +86,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan(self::$scopes);
         Passport::setDefaultScope([
                                       'read-statuses',
+                                      'read-statistics',
                                       'write-statuses',
                                       'write-likes',
                                       'read-notifications',

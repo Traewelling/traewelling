@@ -7,6 +7,7 @@ use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
 use App\Listeners\NotificationSentWebhookListener;
+use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusDeleteWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 
-class EventServiceProvider extends ServiceProvider {
+class EventServiceProvider extends ServiceProvider
+{
     /**
      * The event listener mappings for the application.
      *
@@ -28,7 +30,8 @@ class EventServiceProvider extends ServiceProvider {
             //SendEmailVerificationNotification::class,
         ],
         UserCheckedIn::class     => [
-            StatusCreateWebhookListener::class
+            StatusCreateWebhookListener::class,
+            StatusCreateCheckPolylineListener::class,
         ],
         StatusUpdateEvent::class => [
             StatusUpdateWebhookListener::class
@@ -36,7 +39,7 @@ class EventServiceProvider extends ServiceProvider {
         StatusDeleteEvent::class => [
             StatusDeleteWebhookListener::class
         ],
-        NotificationSent::class => [
+        NotificationSent::class  => [
             NotificationSentWebhookListener::class
         ]
     ];
@@ -50,8 +53,7 @@ class EventServiceProvider extends ServiceProvider {
         parent::boot();
 
         // Dispatch Jobs from Events
-        Event::listen(fn (UserCheckedIn $event)
-        => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(fn (WebhookCallFailedEvent $event) => Log::error("Webhook call failed", ['event' => $event]));
+        Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(fn(WebhookCallFailedEvent $event) => Log::error("Webhook call failed", ['event' => $event]));
     }
 }
