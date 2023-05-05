@@ -7,7 +7,7 @@ use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
-use App\Http\Controllers\Backend\User\BlockController;
+use App\Http\Controllers\Backend\Support\TicketController;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
@@ -15,6 +15,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserReport;
 use Error;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -517,11 +518,21 @@ class UserController extends Controller
             return $this->sendError('User not found');
         }
 
-        UserReport::create([
-                               'reporter_id' => Auth::id(),
-                               'user_id'     => $userToBeReported->id,
-                               'message'     => $validated['message'],
-                           ]);
+        $ticketBody = 'Reporter: ' . \auth()->id() . ' - ' . \auth()->user()->username . PHP_EOL;
+        $ticketBody .= '------------------------------' . PHP_EOL;
+        $ticketBody .= 'Reported User: ' . $userToBeReported->id . ' - ' . $userToBeReported->username . PHP_EOL;
+        $ticketBody .= PHP_EOL;
+        $ticketBody .= 'Message:' . PHP_EOL;
+        $ticketBody .= '"' . $validated['message'] . '"';
+
+        try {
+            TicketController::createTicket(auth()->user(), 'User report', $ticketBody);
+        } catch (InvalidArgumentException $exception) {
+            return $this->sendError($exception->getMessage());
+        } catch (GuzzleException $exception) {
+            report($exception);
+            return $this->sendError(__('messages.exception.general'));
+        }
 
         return $this->sendResponse(__('user.report.sent'));
     }
