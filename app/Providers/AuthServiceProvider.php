@@ -67,7 +67,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void {
         $this->registerPolicies();
-        Passport::cookie('trwl_session');
 
         Passport::useClientModel(OAuthClient::class);
 
