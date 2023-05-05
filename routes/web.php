@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
@@ -177,13 +178,13 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
              ->name('settings.upload-image');
-        Route::get('/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
-             ->name('settings.delete-profile-picture');
 
         Route::post('/delsession', [UserController::class, 'deleteSession'])
              ->name('delsession');
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken');
+        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
+             ->name('delwebhook');
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])

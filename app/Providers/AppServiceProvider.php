@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Backend\Auth\AuthorizationController;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 use Laravel\Socialite\Contracts\Factory;
 use Revolution\Socialite\Mastodon\MastodonProvider;
 
@@ -18,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function register(): void {
-        //
+        $this->app->when(AuthorizationController::class)
+                  ->needs(StatefulGuard::class)
+                  ->give(fn() => Auth::guard(config('passport.guard', null)));
+        Passport::ignoreCsrfToken();
     }
 
     /**

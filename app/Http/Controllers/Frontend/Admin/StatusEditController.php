@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
@@ -25,7 +26,6 @@ class StatusEditController extends Controller
                 'user_id',
                 User::where('name', 'like', '%' . $validated['userQuery'] . '%')
                     ->orWhere('username', 'like', '%' . $validated['userQuery'] . '%')
-                    ->orWhere('support_code', $validated['userQuery'])
                     ->pluck('id')
             );
         }
@@ -86,6 +86,8 @@ class StatusEditController extends Controller
                                           'distance'    => $distanceInMeters,
                                           'points'      => $points,
                                       ]);
+
+        StatusUpdateEvent::dispatch($status->refresh());
 
         if ($status->body !== $validated['body']) {
             $status->update(['body' => $validated['body']]);

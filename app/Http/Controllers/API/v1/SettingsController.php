@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
-use OpenApi\Annotations as OA;
 
 class SettingsController extends Controller
 {
@@ -31,7 +30,7 @@ class SettingsController extends Controller
      *          )
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
-     *     security={{"passport": {}}, {"token": {}}}
+     *     security={{"passport": {"read-settings"}}, {"token": {}}}
      * )
      *
      */
@@ -131,7 +130,7 @@ class SettingsController extends Controller
      *     @OA\Response(response=422, description="Unprocessable Entity"),
      *     @OA\Response(response=400, description="Bad Request"),
      *     security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"write-settings"}}, {"token": {}}
      *     }
      *     )
      */
@@ -149,7 +148,7 @@ class SettingsController extends Controller
                                                 'nullable',
                                                 new Enum(StatusVisibility::class),
                                             ],
-                                            'mastodonVisibility' => [
+                                            'mastodonVisibility'      => [
                                                 'nullable',
                                                 new Enum(MastodonVisibility::class),
                                             ]
@@ -162,14 +161,26 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * Undocumented and unofficial API Endpoint
+     *
+     * @return JsonResponse
+     */
     public function deleteProfilePicture(): JsonResponse {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
-            return $this->sendResponse('', 204);
+            return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
         }
 
-        return $this->sendError('', 400);
+        return $this->sendError(__('messages.exception.general'), 400);
     }
 
+    /**
+     * Undocumented and unofficial API Endpoint
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function uploadProfilePicture(Request $request): JsonResponse {
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
             return $this->sendResponse('', 204);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Events\StatusDeleteEvent;
+use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\GeoController;
@@ -69,7 +71,7 @@ class StatusController extends Controller
                           })
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status);
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned;
                           })
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;
@@ -102,6 +104,9 @@ class StatusController extends Controller
             throw new PermissionException();
         }
         $status->delete();
+
+        StatusDeleteEvent::dispatch($status);
+
         return true;
     }
 
@@ -131,6 +136,9 @@ class StatusController extends Controller
         if (!$status->user->mutedUsers->contains('id', $user->id)) {
             $status->user->notify(new StatusLiked($like));
         }
+
+        StatusUpdateEvent::dispatch($status->refresh());
+
         return $like;
     }
 
@@ -147,6 +155,8 @@ class StatusController extends Controller
             throw new InvalidArgumentException(__('controller.status.like-not-found'));
         }
         $like->delete();
+
+        StatusUpdateEvent::dispatch(Status::find($statusId)->first());
     }
 
     public static function usageByDay(Carbon $date): int {

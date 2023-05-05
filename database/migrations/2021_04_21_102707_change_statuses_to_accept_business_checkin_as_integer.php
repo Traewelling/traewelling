@@ -15,18 +15,18 @@ class ChangeStatusesToAcceptBusinessCheckinAsInteger extends Migration
         });
 
         DB::table('statuses')
-            ->whereNull('business')
-            ->update(['business' => 0]);
+          ->whereNull('business')
+          ->update(['business' => 0]);
     }
 
     public function down() {
         Schema::table('statuses', function(Blueprint $table) {
             $table->boolean('business')
-                ->change();
+                  ->change();
         });
 
         DB::table('statuses')
-            ->where('business', '>', '1')
-            ->update(['business' => 1]);
+          ->where('business', '>', '1')
+          ->update(['business' => 1]);
     }
 }

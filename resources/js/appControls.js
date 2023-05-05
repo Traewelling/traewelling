@@ -1,27 +1,49 @@
 $(document).on("click", ".delete", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset.trwlStatusId;
+    deleteStatusId = getDataset(event).trwlStatusId;
     $("#delete-modal").modal("show");
+});
+
+$(document).on("click", ".join", function (event) {
+    event.preventDefault();
+
+    const source = getDataset(event);
+    $("#checkinModal").modal("show", function (event) {
+        const modal = $(this);
+        modal
+            .find(".modal-title")
+            .html(
+                source.trwlLinename +
+                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                source.trwlStopName
+            );
+        modal.find("#input-tripID").val(source.trwlTripId);
+        modal.find("#input-destination").val(source.trwlDestination);
+        modal.find("#input-arrival").val(source.trwlArrival);
+        modal.find("#input-start").val(source.trwlStart);
+        modal.find("#input-departure").val(source.trwlDeparture);
+    });
 });
 
 $(document).on("click", "#modal-delete", function () {
     $.ajax({
         method: "DELETE",
         url: urlDelete,
-        data: {statusId: statusId, _token: token}
+        data: {statusId: deleteStatusId, _token: token}
     }).done(function () {
         window.location.replace("/dashboard");
     });
 });
 
 $(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset.trwlStatusId;
+    statusId = getDataset(event).trwlStatusId;
 
-    let $likeCount   = document.getElementById("like-count-" + statusId);
-    let count        = parseInt($likeCount.innerText);
+    let $likeCount = document.getElementById("like-count-" + statusId);
+    let count      = parseInt($likeCount.innerText);
+    let auth       = event.target.attributes.href.value === "#";
 
-    if (event.target.className === "like far fa-star") {
+    if (auth && event.target.className === "like far fa-star") {
         $.ajax({
             method: "POST",
             url: urlLike,
@@ -36,7 +58,7 @@ $(document).on("click", ".like", function (event) {
                 $likeCount.classList.remove("d-none");
             }
         });
-    } else {
+    } else if (auth) {
         $.ajax({
             method: "POST",
             url: urlDislike,
@@ -53,8 +75,10 @@ $(document).on("click", ".like", function (event) {
         });
     }
 
-    event.preventDefault();
-    event.stopPropagation();
+    if (auth) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 });
 
 $(document).on("click", ".follow", function (event) {
@@ -126,3 +150,32 @@ $(document).on("click", ".disconnect", function (event) {
         }
     });
 });
+
+$(document).on("click", ".trwl-share", function (event) {
+    event.preventDefault();
+
+    let shareText = getDataset(event).trwlShareText;
+    let shareUrl  = getDataset(event).trwlShareUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: "Träwelling",
+            text: shareText,
+            url: shareUrl
+        })
+            .catch(console.error);
+    } else {
+        navigator.clipboard.writeText(shareText + " " + shareUrl)
+            .then(() => {
+                window.notyf.success('Copied to clipboard');
+            });
+    }
+
+});
+
+function getDataset(event) {
+    let target = event.target.dataset;
+    let parent = event.target.parentElement.dataset;
+
+    return _.size(event.target.dataset) ? target : parent;
+}

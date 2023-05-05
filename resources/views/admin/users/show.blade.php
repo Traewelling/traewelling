@@ -20,8 +20,10 @@
                         <tr>
                             <th>Mail</th>
                             <td>
-                                {{ $user->email }}
-                                <br />
+                                {{ $user->email }} <a href="#mailCollapse" data-bs-toggle="collapse">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <br/>
                                 @isset($user->email_verified_at)
                                     <small class="text-success">
                                         <i class="fa-solid fa-check"></i>
@@ -33,6 +35,17 @@
                                         Not verified
                                     </small>
                                 @endisset
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="mailCollapse">
+                            <th></th>
+                            <td>
+                                <form method="post" action="{{ route('admin.users.update-mail') }}">
+                                    <input type="hidden" name="id" value="{{ $user->id }}"/>
+                                    <input type="text" name="email" class="form-control" placeholder="New email"/>
+                                    <input type="submit" class="btn btn-primary" value="Change email"/>
+                                    @csrf
+                                </form>
                             </td>
                         </tr>
                         <tr>
@@ -53,11 +66,23 @@
                         </tr>
                         <tr>
                             <th>Twitter</th>
-                            <td>{{ $user->twitterUrl }}</td>
+                            <td>
+                                @if($user->twitterUrl)
+                                    <a href="{{ $user->twitterUrl }}" target="_blank">
+                                        {{ $user->twitterUrl }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Mastodon</th>
-                            <td>{{ $user->mastodonUrl }}</td>
+                            <td>
+                                @if($user->mastodonUrl)
+                                    <a href="{{ $user->mastodonUrl }}" target="_blank">
+                                        {{ $user->mastodonUrl }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Last login</th>

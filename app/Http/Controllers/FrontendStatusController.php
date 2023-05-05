@@ -10,7 +10,6 @@ use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
-use App\Models\TrainStation;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,6 +37,10 @@ class FrontendStatusController extends Controller
             if (Session::has('error')) {
                 return redirect()->route('globaldashboard')
                                  ->with('error', Session::get('error'));
+            }
+            if (Session::has('checkin-collision')) {
+                return redirect()->route('globaldashboard')
+                                 ->with('checkin-collision', Session::get('checkin-collision'));
             }
             return redirect()->route('globaldashboard');
         }

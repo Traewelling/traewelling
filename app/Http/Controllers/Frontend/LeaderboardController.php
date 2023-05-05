@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
 class LeaderboardController extends Controller
 {
@@ -19,8 +20,10 @@ class LeaderboardController extends Controller
         $leaderboard = Cache::remember(
             CacheKey::LeaderboardMonth . '-for-' . $date->toISOString(),
             config(self::$cacheRetentionConfigKey),
-            fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
-        );
+            static fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         return view('leaderboard.month', [
             'leaderboard' => $leaderboard,
@@ -34,20 +37,24 @@ class LeaderboardController extends Controller
         $usersLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalPoints,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard()
-        );
+            static fn() => LeaderboardBackend::getLeaderboard()
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         $distanceLeaderboard = Cache::remember(
             CacheKey::LeaderboardGlobalDistance,
             $ttl,
-            fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
-        );
+            static fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
+        )->filter(function(\stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
 
         $friendsLeaderboard = auth()->check()
             ? Cache::remember(
                 CacheKey::getFriendsLeaderboardKey(auth()->id()),
                 $ttl,
-                fn() => LeaderboardBackend::getLeaderboard(onlyFollowings: true))
+                static fn() => LeaderboardBackend::getLeaderboard(onlyFollowings: true))
             : null;
 
         return view('leaderboard.leaderboard', [

@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\AuthServiceProvider;
+
 return [
     'default'        => 'default',
     'documentations' => [
@@ -185,7 +187,7 @@ return [
                                          "authorizationUrl" => config('app.url') . '/oauth/authorize',
                                          "tokenUrl"         => config('app.url') . '/oauth/token',
                                          "refreshUrl"       => config('app.url') . '/auth/refresh',
-                                         "scopes"           => []
+                                         "scopes"           => AuthServiceProvider::$scopes
                                      ],
                                  ],
                 ],
@@ -285,7 +287,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants'             => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://traewelling.de/api/v1'),
         ],
     ],
 ];

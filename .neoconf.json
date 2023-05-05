@@ -1,0 +1,7 @@
+{
+  "lspconfig": {
+    "intelephense": {
+      "intelephense.format.braces": "k&r"
+    }
+  }
+}

@@ -19,7 +19,7 @@
                         </label>
                     </div>
 
-                    <div class="form-floating">
+                    <div class="form-outline">
                         <textarea class="form-control" name="body" id="status-body" maxlength="280"
                                   placeholder="{{__('modals.editStatus-label')}}"
                                   style="min-height: 130px;"></textarea>
