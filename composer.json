@@ -48,7 +48,7 @@
         "ext-pdo_sqlite": "*",
         "barryvdh/laravel-debugbar": "^3.5",
         "beyondcode/laravel-dump-server": "dev-master",
-        "brianium/paratest": "^6.9",
+        "brianium/paratest": "^7.0",
         "fakerphp/faker": "^1.9",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.0",
