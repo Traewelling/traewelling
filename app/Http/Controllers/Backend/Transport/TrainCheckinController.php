@@ -20,7 +20,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
-use App\Jobs\FetchCarriageSequence;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -188,8 +187,6 @@ abstract class TrainCheckinController extends Controller
                     $otherStatus->user->notify(new UserJoinedConnection($status));
                 }
             }
-
-            FetchCarriageSequence::dispatch($firstStop);
 
             return [
                 'status'               => $status,

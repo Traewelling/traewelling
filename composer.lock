@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffcd09a3533bcc9ec3bf36794b4025e3",
+    "content-hash": "ae9f4b5b2b7668c7089bc988eca74c93",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -4097,47 +4097,6 @@
                 }
             ],
             "time": "2023-02-06T13:44:46+00:00"
-        },
-        {
-            "name": "mrkriskrisu/db-wagenreihung-php",
-            "version": "v0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MrKrisKrisu/db-wagenreihung-php.git",
-                "reference": "341f781778487a9d3a799befb745c87b989d7819"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/MrKrisKrisu/db-wagenreihung-php/zipball/341f781778487a9d3a799befb745c87b989d7819",
-                "reference": "341f781778487a9d3a799befb745c87b989d7819",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.3",
-                "illuminate/support": "^9.14",
-                "nesbot/carbon": "^2.0",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "K118\\DB\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHP library for DB Wagenreihung API",
-            "support": {
-                "issues": "https://github.com/MrKrisKrisu/db-wagenreihung-php/issues",
-                "source": "https://github.com/MrKrisKrisu/db-wagenreihung-php/tree/v0.3"
-            },
-            "time": "2023-01-27T17:30:42+00:00"
         },
         {
             "name": "nesbot/carbon",
