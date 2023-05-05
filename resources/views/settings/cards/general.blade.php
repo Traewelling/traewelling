@@ -11,9 +11,9 @@
                 <div class="col-md-6 text-center">
                     <div class="image-box">
                         <img
-                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                                style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                id="theProfilePicture"
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                            style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
+                            id="theProfilePicture"
                         />
                     </div>
 
@@ -24,9 +24,12 @@
 
                     @isset(auth()->user()->avatar)
                         <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
+                           id="btnModalDeleteProfilePicture"
                            data-mdb-toggle="modal"
                            data-mdb-target="#deleteProfilePictureModal"
-                        >{{ __('settings.delete-profile-picture-btn') }}</a>
+                        >
+                            {{ __('settings.delete-profile-picture-btn') }}
+                        </a>
                     @endisset
 
                     @error('avatar')
@@ -140,7 +143,11 @@
                         aria-label="{{ __('settings.delete-profile-picture-no') }}">
                     {{ __('settings.delete-profile-picture-no') }}
                 </button>
-                <a href="{{ route('settings.delete-profile-picture') }}" class="btn btn-danger">
+                <a href="#" class="btn btn-danger"
+                   onclick="Settings.deleteProfilePicture()"
+                   data-mdb-toggle="modal"
+                   data-mdb-target="#deleteProfilePictureModal"
+                >
                     {{ __('settings.delete-profile-picture-yes') }}
                 </a>
             </div>

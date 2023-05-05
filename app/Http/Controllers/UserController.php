@@ -275,17 +275,6 @@ class UserController extends Controller
                    ->simplePaginate(10);
     }
 
-    public function deleteProfilePicture(): RedirectResponse {
-        $user = Auth::user();
-
-        if ($user->avatar != null) {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            $user->update(['avatar' => null]);
-        }
-
-        return back();
-    }
-
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();

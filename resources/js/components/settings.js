@@ -54,3 +54,34 @@ $(".upload-image").on("click", function (ev) {
         });
     });
 });
+
+
+window.Settings = class Settings {
+
+    static deleteProfilePicture() {
+        API.request('/settings/profilePicture', 'delete')
+            .then(response => {
+                if (!response.ok) {
+                    response.json().then(data => {
+                        notyf.error(data.message ?? 'An unknown error occured.');
+                    });
+                    return;
+                }
+
+                //Remove delete-btn if existing
+                let btnModalDeleteProfilePicture = document.getElementById("btnModalDeleteProfilePicture");
+                btnModalDeleteProfilePicture?.remove();
+
+                //Show default profile picture
+                let theProfilePicture = document.getElementById('theProfilePicture');
+                theProfilePicture?.setAttribute('src', `/img/user.png`);
+
+                response.json().then(data => {
+                    notyf.success(data.data.message);
+                });
+            })
+            .catch(function () {
+                notyf.error('An unknown error occured.');
+            });
+    }
+}
