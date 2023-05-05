@@ -148,7 +148,7 @@ class SettingsController extends Controller
                                                 'nullable',
                                                 new Enum(StatusVisibility::class),
                                             ],
-                                            'mastodonVisibility' => [
+                                            'mastodonVisibility'      => [
                                                 'nullable',
                                                 new Enum(MastodonVisibility::class),
                                             ]
@@ -161,6 +161,11 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * Undocumented and unofficial API Endpoint
+     *
+     * @return JsonResponse
+     */
     public function deleteProfilePicture(): JsonResponse {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
             return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
@@ -169,6 +174,13 @@ class SettingsController extends Controller
         return $this->sendError(__('messages.exception.general'), 400);
     }
 
+    /**
+     * Undocumented and unofficial API Endpoint
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function uploadProfilePicture(Request $request): JsonResponse {
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
             return $this->sendResponse('', 204);
