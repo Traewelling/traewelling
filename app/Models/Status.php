@@ -64,6 +64,10 @@ class Status extends Model
     }
 
     public function getIsLikableProperty(): bool {
+        return $this->isLikable();
+    }
+
+    public function isLikable(): bool {
         if (!$this->user->likes_enabled) {
             return false;
         }
