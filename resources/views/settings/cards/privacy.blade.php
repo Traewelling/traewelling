@@ -86,6 +86,18 @@
 
             <hr/>
 
+            <div class="form-group row"><div class="col-md-6 offset-md-4">
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input id="likes_enabled" type="checkbox"
+                               class="custom-control-input @error('likes_enabled') is-invalid @enderror"
+                               name="likes_enabled" {{ auth()->user()->likes_enabled ? 'checked' : '' }} />
+                        <label class="custom-control-label" for="likes_enabled">
+                            {{ __('user.likes-enabled') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group row">
                 <div class="col-md-6 offset-md-4">
                     <div class="custom-control custom-checkbox custom-control-inline">

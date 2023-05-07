@@ -56,6 +56,7 @@ class SettingsController extends Controller
 
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
+                                            'likes_enabled'             => ['nullable'],
                                             'private_profile'           => ['nullable'],
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
                                             'privacy_hide_days'         => ['nullable', 'gte:1',],
@@ -69,8 +70,12 @@ class SettingsController extends Controller
                                             ]
                                         ]);
 
+
+
         $user = auth()->user();
         $user->update([
+                          'likes_enabled'             => isset($validated['likes_enabled'])
+                                                         && $validated['likes_enabled'] === 'on',
                           'prevent_index'             => $validated['prevent_index'],
                           'private_profile'           => isset($validated['private_profile'])
                                                          && $validated['private_profile'] === 'on',
