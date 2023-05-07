@@ -9,7 +9,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -24,7 +23,8 @@ class LikesController extends Controller
      *      operationId="getLikesForStatus",
      *      tags={"Likes"},
      *      summary="[Auth optional] Get likes for status",
-     *      description="Returns array of users that liked the status",
+     *      description="Returns array of users that liked the status. Can return an empty dataset when the status
+     *      author or the requesting user has deactivated likes",
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
@@ -51,14 +51,18 @@ class LikesController extends Controller
      *
      *       }
      *     )
-     * @param int $status
+     * @param int $statusId
      *
      * @return AnonymousResourceCollection
      * @todo maybe put this in separate controller?
      */
-    public function show(int $status): AnonymousResourceCollection {
+    public function show(int $statusId): AnonymousResourceCollection {
+        $status = Status::findOrFail($statusId);
+
         return UserResource::collection(
-            User::whereIn('id', Like::where('status_id', $status)->select('user_id'))->get()
+            Auth::user()->likes_enabled && $status->user->likes_enabled
+                ? User::whereIn('id', Like::where('status_id', $statusId)->select('user_id'))->get()
+                : []
         );
     }
 

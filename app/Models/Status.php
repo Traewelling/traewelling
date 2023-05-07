@@ -25,7 +25,7 @@ class Status extends Model
 
     protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description', 'isLikable'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -63,7 +63,7 @@ class Status extends Model
         return $this->likes->contains('user_id', Auth::id());
     }
 
-    public function showLikeUi(): bool {
+    public function getIsLikableProperty(): bool {
         if (!$this->user->likes_enabled) {
             return false;
         }

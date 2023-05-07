@@ -51,7 +51,7 @@ class LikeTest extends TestCase
         $notifications->assertJsonCount(0);
     }
 
-    public function testNewLikesDontAppearInNotificationsIfIHaveDisabledLikes(): void {
+    public function testLikingDoesNotWorkIfIHaveDisabledLikes(): void {
         $trainCheckIn = TrainCheckin::factory()->create();
         $status       = $trainCheckIn->status;
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
@@ -60,7 +60,7 @@ class LikeTest extends TestCase
 
         $response = $this->actingAs($likingUser)
                          ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(201);
+        $response->assertStatus(403);
 
         $notifications = $this->actingAs($status->user)
                               ->get(route('notifications.latest'));

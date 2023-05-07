@@ -152,7 +152,7 @@
         </div>
         <div class="card-footer text-muted interaction px-3 px-md-4">
             <ul class="list-inline float-end">
-                @if ($status->showLikeUi())
+                @if ($status->isLikable)
                     <li class="like-text list-inline-item me-0">
                         <a href="{{ auth()->user() ? '#' : route('login') }}"
                            class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
@@ -275,7 +275,7 @@
                 </li>
             </ul>
         </div>
-        @if($status->showLikeUi() && Route::current()->uri == "status/{id}")
+        @if($status->isLikable && Route::current()->uri == "status/{id}")
             @foreach($status->likes as $like)
                 <div class="card-footer text-muted clearfix">
                     <a href="{{ route('profile', ['username' => $like->user->username]) }}">
