@@ -109,7 +109,7 @@ class LikeTest extends TestCase
         $notifications->assertJsonCount(0);
     }
 
-    public function testLikeButtonDoesNotAppearIfAuthorHasDisabledLike(): void {
+    public function testLikeButtonDoesNotAppearForLoggedInUserIfAuthorHasDisabledLike(): void {
         $trainCheckIn = TrainCheckin::factory()->create();
         $status       = $trainCheckIn->status;
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
@@ -119,7 +119,19 @@ class LikeTest extends TestCase
         $notifications = $this->actingAs($likingUser)
                               ->get("/status/" . $status->id);
         $notifications->assertOk();
-        $notifications->assertDontSee("like-text");
+        $notifications->assertDontSee("class=\"like ");
+    }
+
+    public function testLikeButtonDoesNotAppearForGuestIfAuthorHasDisabledLike(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $status->user->update(["likes_enabled" => false]);
+
+        $notifications = $this->get("/status/" . $status->id);
+        $notifications->assertOk();
+        $notifications->assertDontSee("class=\"like ");
     }
 
     public function testLikeButtonDoesNotAppearIfIHaveDisabledLike(): void {
@@ -132,6 +144,6 @@ class LikeTest extends TestCase
         $notifications = $this->actingAs($likingUser)
                               ->get("/status/" . $status->id);
         $notifications->assertOk();
-        $notifications->assertDontSee("like-text");
+        $notifications->assertDontSee("class=\"like ");
     }
 }

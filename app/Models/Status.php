@@ -63,6 +63,18 @@ class Status extends Model
         return $this->likes->contains('user_id', Auth::id());
     }
 
+    public function showLikeUi(): bool {
+        if (!$this->user->likes_enabled) {
+            return false;
+        }
+
+        if (!Auth::check()) {
+            return true;
+        }
+
+        return Auth::user()->likes_enabled;
+    }
+
     public function getSocialTextAttribute(): string {
         $postText = trans_choice(
             key:     'controller.transport.social-post',

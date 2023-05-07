@@ -152,16 +152,18 @@
         </div>
         <div class="card-footer text-muted interaction px-3 px-md-4">
             <ul class="list-inline float-end">
-                <li class="like-text list-inline-item me-0">
-                    <a href="{{ auth()->user() ? '#' : route('login') }}"
-                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
-                       data-trwl-status-id="{{ $status->id }}"></a>
-                </li>
-                <li class="like-text list-inline-item">
-                <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                      id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
-                </span>
-                </li>
+                @if ($status->showLikeUi())
+                    <li class="like-text list-inline-item me-0">
+                        <a href="{{ auth()->user() ? '#' : route('login') }}"
+                           class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                           data-trwl-status-id="{{ $status->id }}"></a>
+                    </li>
+                    <li class="like-text list-inline-item">
+                        <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
+                              id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                        </span>
+                    </li>
+                @endif
                 <li class="like-text list-inline-item">
                     <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
                        aria-hidden="true" title="{{$status->visibility->title()}}"
@@ -273,7 +275,7 @@
                 </li>
             </ul>
         </div>
-        @if(Route::current()->uri == "status/{id}")
+        @if($status->showLikeUi() && Route::current()->uri == "status/{id}")
             @foreach($status->likes as $like)
                 <div class="card-footer text-muted clearfix">
                     <a href="{{ route('profile', ['username' => $like->user->username]) }}">
