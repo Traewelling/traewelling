@@ -91,4 +91,53 @@ class LikesTest extends ApiTestCase
         );
         $response->assertNotFound();
     }
+
+    public function testNobodySeesLikesIfStatusAuthorHasDisabledLikes() {
+        $bob      = User::factory()->create();
+        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+        $status     = Status::factory()->create();
+        $alice      = $status->user;
+        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        $alice->update(["likes_enabled" => false]);
+
+        $response = $this->postJson(
+            uri:     '/api/v1/like/' . $status->id,
+            headers: ['Authorization' => 'Bearer ' . $bobToken]
+        );
+        $response->assertCreated();
+
+        $this->assertSeeNumberOfLikes($status, $bobToken, 0);
+        $this->assertSeeNumberOfLikes($status, $aliceToken, 0);
+    }
+
+    public function testBobDoesntSeeLikesIfBobHasDisabledLikes() {
+        $bob      = User::factory()->create();
+        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+        $status     = Status::factory()->create();
+        $alice      = $status->user;
+        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+
+        $bob->update(["likes_enabled" => false]);
+
+        $response = $this->postJson(
+            uri:     '/api/v1/like/' . $status->id,
+            headers: ['Authorization' => 'Bearer ' . $aliceToken]
+        );
+        $response->assertCreated();
+
+        $this->assertSeeNumberOfLikes($status, $bobToken, 0);
+        $this->assertSeeNumberOfLikes($status, $aliceToken, 1);
+    }
+
+    private function assertSeeNumberOfLikes($status, $bobToken, $expectedLikeCount): void {
+        $response = $this->get(
+            uri:     '/api/v1/statuses/' . $status->id . '/likedby',
+            headers: ['Authorization' => 'Bearer ' . $bobToken]
+        );
+        $response->assertOk();
+        $this->assertCount($expectedLikeCount, $response->json('data'));
+    }
 }
