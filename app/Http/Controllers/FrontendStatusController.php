@@ -59,25 +59,6 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse|RedirectResponse
-     * @deprecated
-     */
-    public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
-        try {
-            if (!is_numeric($request['statusId'])) {
-                return redirect()->back()->with('error', __('error.bad-request'));
-            }
-            StatusBackend::DeleteStatus(Auth::user(), (int) $request['statusId']);
-        } catch (PermissionException|ModelNotFoundException) {
-            return redirect()->back()->with('error', __('controller.status.not-permitted'));
-        }
-
-        return response()->json(['message' => __('controller.status.delete-ok')]);
-    }
-
     public function createLike(Request $request) {
         $validated = $request->validate([
                                             'statusId' => ['required', 'exists:statuses,id']
