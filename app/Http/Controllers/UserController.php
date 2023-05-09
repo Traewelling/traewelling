@@ -100,7 +100,7 @@ class UserController extends Controller
                     })
                     ->select('statuses.*')
                     ->orderByDesc('train_checkins.departure')
-                    ->paginate($limit !== null && $limit <= 15 ? $limit : 1);
+                    ->paginate($limit !== null && $limit <= 15 ? $limit : 15);
     }
 
     /**
