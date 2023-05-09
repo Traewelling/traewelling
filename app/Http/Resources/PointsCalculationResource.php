@@ -19,8 +19,8 @@ class PointsCalculationResource extends JsonResource
         return [
             'points'      => $this['points'],
             'calculation' => [
-                'base'     => $this['calculation']['base'],
-                'distance' => $this['calculation']['distance'], //TODO: This isn't the distance! Should be renamed.
+                'base'     => $this['calculation']['basePoints'],
+                'distance' => $this['calculation']['distancePoints'], //TODO: This isn't the distance! Should be renamed.
                 'factor'   => $this['calculation']['factor'] ?? 1,
                 'reason'   => $this['calculation']['reason'] ?? PointReason::IN_TIME->value,
             ],
