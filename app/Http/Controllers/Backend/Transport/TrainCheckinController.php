@@ -20,6 +20,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
+use App\Jobs\RefreshStopover;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -258,11 +259,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        if ($originStopover && !str_starts_with($tripId, 'manual-')) {
-            dispatch(function() use ($originStopover) {
-                HafasController::refreshStopover($originStopover);
-            })->afterResponse();
-        }
+        RefreshStopover::dispatchIf($originStopover && !str_starts_with($tripId, 'manual-'), $originStopover);
 
         return $hafasTrip;
     }
