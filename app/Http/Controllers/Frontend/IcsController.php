@@ -49,17 +49,18 @@ class IcsController extends Controller
 
         $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
-        return back()->with('success', strtr(__('settings.create-ics-token-success'), [
-            ':link' => route('ics', [
-                'user_id'  => $icsToken->user_id,
-                'token'    => $icsToken->token,
-                'limit'    => 10000,
-                'from'     => '2010-01-01',
-                'until'    => '2030-12-31',
-                'emojis'   => true,
-                'realtime' => true,
-            ])
-        ]));
+        return redirect()->route('settings', ['#ics'])
+                         ->with('ics-success', strtr(__('settings.create-ics-token-success'), [
+                             ':link' => route('ics', [
+                                 'user_id'  => $icsToken->user_id,
+                                 'token'    => $icsToken->token,
+                                 'limit'    => 10000,
+                                 'from'     => '2010-01-01',
+                                 'until'    => '2030-12-31',
+                                 'emojis'   => true,
+                                 'realtime' => true,
+                             ])
+                         ]));
     }
 
     public function revokeIcsToken(Request $request): RedirectResponse {

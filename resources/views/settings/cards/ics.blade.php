@@ -1,8 +1,14 @@
-<div class="card mt-3">
+<div class="card mt-3" id="ics">
     <div class="card-header">{{ __('settings.title-ics') }}</div>
 
     <div class="card-body">
-        @if(auth()->user()->icsTokens->count() == 0)
+        @if(session()->has('ics-success'))
+            <div class="alert alert-success">
+                {!! session()->get('ics-success') !!}
+            </div>
+        @endif
+
+        @if(auth()->user()->icsTokens->count() === 0)
             <p class="text-danger">{{__('settings.no-ics-tokens')}}</p>
         @else
             <div class="table-responsive">

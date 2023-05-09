@@ -645,5 +645,6 @@
     "menu.oauth_authorize.webhook_request": "Deze app wil de volgende activiteiten van je account inzien:",
     "menu.oauth_authorize.application_information.privacy_policy": "Privacybeleid van :client",
     "menu.share.clipboard.success": "Gekopieerd naar het klembord!",
-    "status.join": "Meereizen"
+    "status.join": "Meereizen",
+    "settings.profilePicture.deleted": "Je profielfoto is verwijderd."
 }

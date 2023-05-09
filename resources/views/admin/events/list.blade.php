@@ -1,20 +1,31 @@
 @extends('admin.layout')
 
-@section('title', 'Veranstaltungen')
+@section('title', 'Events' . (request()->has('query') ? ' - Search for "' . request()->get('query') . '"' : ''))
 
 @section('content')
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="GET">
+                <input type="text" class="form-control" name="query" placeholder="Search for events by title"
+                       value="{{request()->get('query')}}"
+                />
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-body">
             <a href="{{route('admin.events.suggestions')}}" class="btn btn-sm btn-info">
-                Vorschläge
+                User Suggestions
             </a>
             <a href="{{route('admin.events.create')}}" class="btn btn-sm btn-success float-end">
                 <i class="fas fa-plus" aria-hidden="true"></i>
-                Neu
+                Create
             </a>
             @if($events->count() === 0)
                 <p class="font-weight-bold text-danger">
-                    Es sind aktuell keine Veranstaltungen vorhanden. :(
+                    There are currently no events available. :(
                 </p>
             @else
                 <div class="table-responsive">
