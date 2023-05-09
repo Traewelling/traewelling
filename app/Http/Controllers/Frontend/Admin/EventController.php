@@ -16,9 +16,13 @@ use Illuminate\View\View;
 
 class EventController extends Controller
 {
-    public function renderList(): View {
+    public function renderList(Request $request): View {
+        $events = Event::orderByDesc('end');
+        if ($request->has('query')) {
+            $events->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
+        }
         return view('admin.events.list', [
-            'events' => Event::orderByDesc('end')->paginate(10)
+            'events' => $events->paginate(10)
         ]);
     }
 
