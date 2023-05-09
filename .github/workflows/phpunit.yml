@@ -47,4 +47,4 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php artisan test --parallel --coverage --min=36.5
+        run: php artisan test --parallel --coverage --min=41.2
