@@ -18,7 +18,6 @@
                             <th>Externe URL</th>
                             <th>Vorschlagender Nutzer</th>
                             <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,17 +29,20 @@
                                 <td>{{$event->end->format('d.m.Y')}}</td>
                                 <td>{{$event->url}}</td>
                                 <td>{{$event->user?->username}}</td>
-                                <td>
-                                    <a class="btn btn-sm btn-success"
-                                       href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
-                                        Bearbeiten & akzeptieren
-                                    </a>
-                                </td>
-                                <td>
+                                <td class="text-end">
                                     <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$event->id}}"/>
-                                        <button type="submit" class="btn btn-sm btn-danger">Ablehnen</button>
+
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-success"
+                                               href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
+                                                Edit & accept
+                                            </a>
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                Decline
+                                            </button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
