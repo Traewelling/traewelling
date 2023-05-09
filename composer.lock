@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae9f4b5b2b7668c7089bc988eca74c93",
+    "content-hash": "32abe4b4780295066769d8b992577eb0",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -6044,16 +6044,16 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "2.3.4",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "9284de617b1d1ef4a5f13c14697715a35cd86a1c"
+                "reference": "31a62b05ff142d22aae26f85311811198745ea9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/9284de617b1d1ef4a5f13c14697715a35cd86a1c",
-                "reference": "9284de617b1d1ef4a5f13c14697715a35cd86a1c",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/31a62b05ff142d22aae26f85311811198745ea9c",
+                "reference": "31a62b05ff142d22aae26f85311811198745ea9c",
                 "shasum": ""
             },
             "require": {
@@ -6063,15 +6063,16 @@
                 "illuminate/queue": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "nesbot/carbon": "^2.0",
-                "php": "^7.2|^8.0"
+                "php": "^8.0"
             },
             "require-dev": {
+                "doctrine/dbal": "^3.1",
                 "friendsofphp/php-cs-fixer": "^3.0",
                 "laravel/framework": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "mockery/mockery": "^1.3.2",
                 "orchestra/testbench": ">=3.8",
                 "phpstan/phpstan": "^0.12.99|^1.0",
-                "phpunit/phpunit": "^8.0|^9.0",
+                "phpunit/phpunit": "^8.5.23|^9.0",
                 "romanzipp/php-cs-fixer-config": "^3.0"
             },
             "type": "library",
@@ -6101,7 +6102,7 @@
             "description": "Queue Monitoring for Laravel Database Job Queue",
             "support": {
                 "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/2.3.4"
+                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/3.0.1"
             },
             "funding": [
                 {
@@ -6109,7 +6110,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-16T16:00:00+00:00"
+            "time": "2023-04-03T15:46:42+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
