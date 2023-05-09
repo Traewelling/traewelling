@@ -63,6 +63,7 @@ class FrontendStatusController extends Controller
      * @param Request $request
      *
      * @return JsonResponse|RedirectResponse
+     * @deprecated
      */
     public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
         try {
