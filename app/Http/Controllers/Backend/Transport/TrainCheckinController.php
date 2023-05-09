@@ -259,9 +259,7 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        if ($originStopover && !str_starts_with($tripId, 'manual-')) {
-            RefreshStopover::dispatch($originStopover);
-        }
+        RefreshStopover::dispatchIf($originStopover && !str_starts_with($tripId, 'manual-'), $originStopover);
 
         return $hafasTrip;
     }
