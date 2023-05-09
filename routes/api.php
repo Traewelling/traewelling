@@ -55,7 +55,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
         });
         Route::group(['middleware' => ['scope:write-statuses']], static function() {
-            Route::delete('status/{id}', [StatusController::class, 'destroy']);
+            Route::delete('status/{id}', [StatusController::class, 'destroy'])->whereNumber('id');
             Route::put('status/{id}', [StatusController::class, 'update']);
             Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
             Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})

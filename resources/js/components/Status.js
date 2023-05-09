@@ -4,9 +4,7 @@ window.Status = class Status {
         API.request(`/status/${statusId}`, 'delete')
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(data => {
-                        notyf.error(data?.message ?? 'An unknown error occured.');
-                    });
+                    return response.json().then(API.handleGenericError);
                 }
 
                 return response.json().then(data => {
@@ -24,9 +22,6 @@ window.Status = class Status {
                     }
                 });
             })
-            .catch(error => {
-                console.error(error);
-                notyf.error('An unknown error occured.');
-            });
+            .catch(API.handleGenericError);
     }
 }
