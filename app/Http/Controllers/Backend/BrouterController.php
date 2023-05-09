@@ -7,16 +7,15 @@ use App\Enum\BrouterProfile;
 use App\Exceptions\DistanceDeviationException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
-use App\Jobs\PostStatusOnMastodon;
 use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use JsonException;
 use stdClass;
 use Str;
@@ -59,6 +58,11 @@ abstract class BrouterController extends Controller
         $geoJson = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
         //remove unnecessary data
         unset($geoJson->features[0]->properties->messages, $geoJson->features[0]->properties->times);
+
+        if (!isset($geoJson->features[0]->geometry->coordinates)) {
+            throw new InvalidArgumentException('required data is missing');
+        }
+
         return $geoJson;
     }
 
@@ -82,9 +86,13 @@ abstract class BrouterController extends Controller
             $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
         }
 
-        //2. Request route at brouter
-        $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
-
+        try {
+            //2. Request route at brouter
+            $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
+        } catch (InvalidArgumentException) {
+            Log::error('Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            return;
+        }
         //3. Create "new" GeoJSON splitted by stations (as features)
         $geoJson = ['type' => 'FeatureCollection', 'features' => []];
 
@@ -137,11 +145,11 @@ abstract class BrouterController extends Controller
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
-        $polyline = PolyLine::create([
-                                         'hash'     => Str::uuid(), //In this case a non required unique key
-                                         'polyline' => json_encode($geoJson),
-                                         'source'   => 'brouter',
-                                     ]);
+        $polyline    = PolyLine::create([
+                                            'hash'     => Str::uuid(), //In this case a non required unique key
+                                            'polyline' => json_encode($geoJson),
+                                            'source'   => 'brouter',
+                                        ]);
         $oldPolyLine = $trip->polyline_id;
         $trip->update(['polyline_id' => $polyline->id]);
 
