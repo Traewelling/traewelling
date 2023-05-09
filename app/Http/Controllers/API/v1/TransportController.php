@@ -380,7 +380,7 @@ class TransportController extends Controller
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
-            return $this->sendResponse($trainCheckinResponse, 201);
+            return $this->sendResponse($trainCheckinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,

@@ -189,7 +189,7 @@ abstract class TrainCheckinController extends Controller
 
             return [
                 'status'               => $status,
-                'points'               => $pointCalculation, //ToDo: Check usage
+                'points'               => $pointCalculation,
                 'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
             ];
         } catch (PDOException $exception) {
