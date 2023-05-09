@@ -25,7 +25,7 @@ class Status extends Model
 
     protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description', 'isLikable'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -61,22 +61,6 @@ class Status extends Model
             return null;
         }
         return $this->likes->contains('user_id', Auth::id());
-    }
-
-    public function getIsLikableProperty(): bool {
-        return $this->isLikable();
-    }
-
-    public function isLikable(): bool {
-        if (!$this->user->likes_enabled) {
-            return false;
-        }
-
-        if (!Auth::check()) {
-            return true;
-        }
-
-        return Auth::user()->likes_enabled;
     }
 
     public function getSocialTextAttribute(): string {

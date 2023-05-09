@@ -6,13 +6,12 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
-use App\Models\Like;
 use App\Models\Status;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 
 class LikesController extends Controller
@@ -57,13 +56,14 @@ class LikesController extends Controller
      * @todo maybe put this in separate controller?
      */
     public function show(int $statusId): AnonymousResourceCollection {
-        $status = Status::findOrFail($statusId);
+        $status = Status::with('likes.user')->findOrFail($statusId);
 
-        return UserResource::collection(
-            Auth::user()->likes_enabled && $status->user->likes_enabled
-                ? User::whereIn('id', Like::where('status_id', $statusId)->select('user_id'))->get()
-                : []
-        );
+        if (!Gate::allows('like', $status)) {
+            //Return empty array if current user or status owner disabled likes
+            return UserResource::collection([]);
+        }
+
+        return UserResource::collection($status->likes->pluck('user'));
     }
 
     /**
