@@ -6,14 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
+    public function up(): void {
+        Schema::table('users', static function(Blueprint $table) {
             $table->boolean('likes_enabled')
                   ->default(true)
                   ->after('shadow_banned')
@@ -21,15 +15,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn("likes_enabled");
+    public function down(): void {
+        Schema::table('users', static function(Blueprint $table) {
+            $table->dropColumn('likes_enabled');
         });
     }
 };
