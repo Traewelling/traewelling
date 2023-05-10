@@ -51,6 +51,40 @@ class LikeTest extends TestCase
         $notifications->assertJsonCount(0);
     }
 
+    public function testLikingDoesNotWorkIfIHaveDisabledLikes(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $status->user->update(["likes_enabled" => false]);
+
+        $response = $this->actingAs($likingUser)
+                         ->post(route('like.create'), ['statusId' => $status->id]);
+        $response->assertStatus(403);
+
+        $notifications = $this->actingAs($status->user)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(0);
+    }
+
+    public function testOldLikesStillAppearInNotificationsIfIHaveDisabledLikes(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $response = $this->actingAs($likingUser)
+                         ->post(route('like.create'), ['statusId' => $status->id]);
+        $response->assertStatus(201);
+
+        $status->user->update(["likes_enabled" => false]);
+
+        $notifications = $this->actingAs($status->user)
+                              ->get(route('notifications.latest'));
+        $notifications->assertOk();
+        $notifications->assertJsonCount(1);
+    }
+
     public function testRemovedLikesDontAppearInNotifications(): void {
         $trainCheckIn = TrainCheckin::factory()->create();
         $status       = $trainCheckIn->status;
@@ -73,5 +107,43 @@ class LikeTest extends TestCase
                               ->get(route('notifications.latest'));
         $notifications->assertOk();
         $notifications->assertJsonCount(0);
+    }
+
+    public function testLikeButtonDoesNotAppearForLoggedInUserIfAuthorHasDisabledLike(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $status->user->update(["likes_enabled" => false]);
+
+        $notifications = $this->actingAs($likingUser)
+                              ->get("/status/" . $status->id);
+        $notifications->assertOk();
+        $notifications->assertDontSee("class=\"like ");
+    }
+
+    public function testLikeButtonDoesNotAppearForGuestIfAuthorHasDisabledLike(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $status->user->update(["likes_enabled" => false]);
+
+        $notifications = $this->get("/status/" . $status->id);
+        $notifications->assertOk();
+        $notifications->assertDontSee("class=\"like ");
+    }
+
+    public function testLikeButtonDoesNotAppearIfIHaveDisabledLike(): void {
+        $trainCheckIn = TrainCheckin::factory()->create();
+        $status       = $trainCheckIn->status;
+        $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+
+        $likingUser->update(["likes_enabled" => false]);
+
+        $notifications = $this->actingAs($likingUser)
+                              ->get("/status/" . $status->id);
+        $notifications->assertOk();
+        $notifications->assertDontSee("class=\"like ");
     }
 }

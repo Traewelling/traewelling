@@ -120,7 +120,7 @@ class StatusController extends Controller
      * @throws StatusAlreadyLikedException|PermissionException
      */
     public static function createLike(User $user, Status $status): Like {
-        if ($user->cannot('view', $status)) {
+        if ($user->cannot('like', $status)) {
             throw new PermissionException();
         }
 
