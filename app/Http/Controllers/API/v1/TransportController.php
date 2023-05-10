@@ -10,7 +10,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
-use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -28,7 +27,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
-use OpenApi\Annotations as OA;
 
 class TransportController extends Controller
 {
@@ -85,7 +83,17 @@ class TransportController extends Controller
      *                     "subway": false, "tram": true, "taxi": true } }, "when": "2023-01-06T13:49:00+01:00",
      *                     "plannedWhen": "2023-01-06T13:49:00+01:00", "delay": null, "platform": "2",
      *                     "plannedPlatform": "2", "direction": "Zürich HB", "provenance": null, "line": { "type":
-     *                     "line", "id": "ec-9", "fahrtNr": "9", "name": "EC 9", "public": true, "adminCode": "80____", "productName": "EC", "mode": "train", "product": "national", "operator": { "type": "operator", "id": "db-fernverkehr-ag", "name": "DB Fernverkehr AG" } }, "remarks": null, "origin": null, "destination": { "type": "stop", "id": "8503000", "name": "Zürich HB", "location": { "type": "location", "id": "8503000", "latitude": 47.378177, "longitude": 8.540211 }, "products": { "nationalExpress": true, "national": true, "regionalExp": true, "regional": true, "suburban": true, "bus": true, "ferry": false, "subway": false, "tram": true, "taxi": false } }, "currentTripPosition": { "type": "location", "latitude": 48.725382, "longitude": 8.142888 }, "loadFactor": "high", "station": { "id": 5181, "ibnr": 8000191, "rilIdentifier": "RK", "name": "Karlsruhe Hbf", "latitude": "48.993530", "longitude": "8.401939" } }
+     *                     "line", "id": "ec-9", "fahrtNr": "9", "name": "EC 9", "public": true, "adminCode": "80____",
+     *                     "productName": "EC", "mode": "train", "product": "national", "operator": { "type":
+     *                     "operator", "id": "db-fernverkehr-ag", "name": "DB Fernverkehr AG" } }, "remarks": null,
+     *                     "origin": null, "destination": { "type": "stop", "id": "8503000", "name": "Zürich HB",
+     *                     "location": { "type": "location", "id": "8503000", "latitude": 47.378177, "longitude":
+     *                     8.540211 }, "products": { "nationalExpress": true, "national": true, "regionalExp": true,
+     *                     "regional": true, "suburban": true, "bus": true, "ferry": false, "subway": false, "tram":
+     *                     true, "taxi": false } }, "currentTripPosition": { "type": "location", "latitude": 48.725382,
+     *                     "longitude": 8.142888 }, "loadFactor": "high", "station": { "id": 5181, "ibnr": 8000191,
+     *                     "rilIdentifier": "RK", "name": "Karlsruhe Hbf", "latitude": "48.993530", "longitude":
+     *                     "8.401939" } }
      *                 )
      *            ),
      *            @OA\Property(
@@ -380,7 +388,21 @@ class TransportController extends Controller
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
-            return $this->sendResponse($trainCheckinResponse, 201);
+
+            //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
+            $pointsCalculation              = $trainCheckinResponse['points'];
+            $trainCheckinResponse['points'] = [
+                'points'      => $pointsCalculation->points,
+                'calculation' => [
+                    'base'     => $pointsCalculation->basePoints,
+                    'distance' => $pointsCalculation->distancePoints,
+                    'factor'   => $pointsCalculation->factor,
+                    'reason'   => $pointsCalculation->reason->value,
+                ],
+                'additional'  => null, //unused old attribute (not removed so this isn't breaking)
+            ];
+
+            return $this->sendResponse($trainCheckinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
@@ -458,13 +480,13 @@ class TransportController extends Controller
      *      summary="Autocomplete for trainstations",
      *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
      *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
-     *      @OA\Parameter(
+     * @OA\Parameter(
      *          name="query",
      *          in="path",
      *          description="station query",
      *          example="Karls"
      *     ),
-     *      @OA\Response(
+     * @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(

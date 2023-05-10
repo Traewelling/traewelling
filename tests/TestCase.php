@@ -11,12 +11,12 @@ use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
+use App\Http\Controllers\Backend\WebhookController;
 use App\Http\Controllers\TransportController;
 use App\Models\Event;
-use App\Models\User;
-use App\Http\Controllers\Backend\WebhookController;
-use App\Models\Webhook;
 use App\Models\OAuthClient;
+use App\Models\User;
+use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
 use Carbon\Carbon;
 use Exception;
@@ -27,10 +27,11 @@ use Illuminate\Testing\TestResponse;
 use JetBrains\PhpStorm\ArrayShape;
 use Tests\Feature\CheckinTest;
 
-abstract class TestCase extends BaseTestCase {
+abstract class TestCase extends BaseTestCase
+{
     use CreatesApplication;
 
-    const AACHEN_HBF =  [
+    const AACHEN_HBF    = [
         "type"     => "stop",
         "id"       => "8000001",
         "name"     => "Aachen Hbf",
@@ -148,7 +149,7 @@ abstract class TestCase extends BaseTestCase {
         ]
     ];
 
-    const EXAMPLE_BODY = 'Example Body';
+    const EXAMPLE_BODY        = 'Example Body';
     const EXAMPLE_WEBHOOK_URL = 'https://example.com/webhook';
 
     protected function setUp(): void {
@@ -258,7 +259,7 @@ abstract class TestCase extends BaseTestCase {
 
     public function acceptGDPR(User $user): void {
         $response = $this->actingAs($user)
-            ->post('/gdpr-ack');
+                         ->post('/gdpr-ack');
         $response->assertStatus(302);
         $response->assertRedirect('/dashboard');
     }
@@ -299,8 +300,8 @@ abstract class TestCase extends BaseTestCase {
         try {
             $trainStationboard = TransportController::getDepartures(
                 stationQuery: $stationName,
-                when: $timestamp,
-                travelType: TravelType::EXPRESS
+                when:         $timestamp,
+                travelType:   TravelType::EXPRESS
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -314,7 +315,7 @@ abstract class TestCase extends BaseTestCase {
         $i = 0;
         while ((isset($trainStationboard['departures'][$i]->cancelled)
                 && $trainStationboard['departures'][$i]->cancelled)
-            || count($trainStationboard['departures'][$i]->remarks) != 0
+               || count($trainStationboard['departures'][$i]->remarks) != 0
         ) {
             $i++;
             if ($i == $countDepartures) {
@@ -327,9 +328,9 @@ abstract class TestCase extends BaseTestCase {
         // Third: Get the trip information
         try {
             $hafasTrip = TrainCheckinController::getHafasTrip(
-                tripId: $departure->tripId,
+                tripId:   $departure->tripId,
                 lineName: $departure->line->name,
-                startId: $departure->stop->location->id
+                startId:  $departure->stop->location->id
             );
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
@@ -353,14 +354,14 @@ abstract class TestCase extends BaseTestCase {
             $event       = $eventId === null ? null : Event::find($eventId);
 
             $backendResponse = TrainCheckinController::checkin(
-                user: $user,
-                hafasTrip: $hafasTrip,
-                origin: $origin,
-                departure: $departure,
+                user:        $user,
+                hafasTrip:   $hafasTrip,
+                origin:      $origin,
+                departure:   $departure,
                 destination: $destination,
-                arrival: $arrival,
-                visibility: $statusVisibility,
-                event: $event
+                arrival:     $arrival,
+                visibility:  $statusVisibility,
+                event:       $event
             );
 
             $status       = $backendResponse['status'];

@@ -49,6 +49,7 @@ window.addEventListener("load", () => {
     require("./components/station-autocomplete");
     require("./components/stationboard");
     require("./components/stationboard-gps");
+    require("./components/Status");
     require("./components/statusMap");
     require("./components/timepicker");
     require("./components/business-check-in");

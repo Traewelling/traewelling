@@ -165,7 +165,7 @@ class CheckinController
                                              $status);
 
             return redirect()->route('admin.stationboard')
-                             ->with('alert-success', 'CheckIn gespeichert! Punkte: ' . $backendResponse['points']['points']);
+                             ->with('alert-success', 'Checked in successfully. Earned points: ' . $backendResponse['points']->points);
 
         } catch (CheckInCollisionException $e) {
             return redirect()
