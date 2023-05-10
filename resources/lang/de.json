@@ -645,5 +645,8 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "active-tokens-count": ":count aktive Token|:count aktive Tokens",
-    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest."
+    "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest.",
+    "events.disclaimer.organizer": "Träwelling ist nicht der Veranstalter.",
+    "events.disclaimer.source": "Dieser Termin wurde von einem Träwelling User vorgeschlagen und durch uns genehmigt.",
+    "events.disclaimer.warranty": "Träwelling übernimmt keine Gewähr auf die Korrektheit oder Vollständigkeit der Daten."
 }

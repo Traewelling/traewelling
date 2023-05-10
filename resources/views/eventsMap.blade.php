@@ -66,6 +66,12 @@
 
         <div class="row justify-content-center mt-5">
             {{ $statuses->links() }}
+
+            <small class="text-muted">
+                <sup>1</sup> {{__('events.disclaimer.organizer')}}
+                <sup>2</sup> {{__('events.disclaimer.source')}}
+                <sup>3</sup> {{__('events.disclaimer.warranty')}}
+            </small>
         </div>
     </div>
 

@@ -645,5 +645,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "active-tokens-count": ":count active token|:count active tokens",
-    "settings.profilePicture.deleted": "Your profile picture was deleted successfully."
+    "settings.profilePicture.deleted": "Your profile picture was deleted successfully.",
+    "events.disclaimer.organizer": "Träwelling is not the organizer.",
+    "events.disclaimer.source": "This event was suggested by a Träwelling user and approved by us.",
+    "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data."
 }
