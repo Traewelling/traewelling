@@ -12,7 +12,9 @@ use App\Notifications\EventSuggestionProcessed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -53,13 +55,14 @@ class EventController extends Controller
         $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-
-        TelegramController::sendAdminMessage(
-            auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" abgelehnt.'
-        );
+        if (!App::runningUnitTests()) {
+            Http::post(config('app.admin.webhooks.new_event'), [
+                auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
+            ]);
+        }
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, null));
 
-        return back()->with('alert-success', 'Vorschlag abgelehnt.');
+        return back()->with('alert-success', 'Event denied.');
     }
 
     public function acceptSuggestion(Request $request): RedirectResponse {
@@ -96,9 +99,11 @@ class EventController extends Controller
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
-        TelegramController::sendAdminMessage(
-            auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" akzeptiert.'
-        );
+        if (!App::runningUnitTests()) {
+            Http::post(config('app.admin.webhooks.new_event'), [
+                'content' => auth()->user()->name . ' accepted the event "' . $eventSuggestion->name . '".',
+            ]);
+        }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 

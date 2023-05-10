@@ -205,7 +205,9 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                            data-trwl-status-id="{{$status->id}}">
+                                           data-mdb-toggle="modal"
+                                            data-mdb-target="#modal-status-delete"
+                                            onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-trash" aria-hidden="true"></i>
                                         </div>

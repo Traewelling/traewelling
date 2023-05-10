@@ -646,5 +646,8 @@
     "menu.oauth_authorize.application_information.privacy_policy": "Privacybeleid van :client",
     "menu.share.clipboard.success": "Gekopieerd naar het klembord!",
     "status.join": "Meereizen",
-    "settings.profilePicture.deleted": "Je profielfoto is verwijderd."
+    "settings.profilePicture.deleted": "Je profielfoto is verwijderd.",
+    "events.disclaimer.organizer": "Träwelling is niet de organisator.",
+    "events.disclaimer.source": "Het evenement is ontstaan uit een idee van een Träwelling-gebruiker en goedgekeurd door ons.",
+    "events.disclaimer.warranty": "Träwelling is niet verantwoordelijk voor de juist- en volledigheid van de gegevens."
 }

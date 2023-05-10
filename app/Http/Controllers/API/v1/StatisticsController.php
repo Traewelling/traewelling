@@ -13,8 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
@@ -263,7 +263,13 @@ class StatisticsController extends Controller
             'purpose'    => $purposes,
             'categories' => $categories,
             'operators'  => $operators,
-            'time'       => $travelTime
+            'time'       => $travelTime->map(function(Collection $row) {
+                return [
+                    'date'     => $row->date->toDateString(),
+                    'count'    => $row->count,
+                    'duration' => $row->duration,
+                ];
+            })
         ];
 
         $additionalData = [

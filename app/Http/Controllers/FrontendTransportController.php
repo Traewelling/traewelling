@@ -197,7 +197,7 @@ class FrontendTransportController extends Controller
                 'alsoOnThisConnection'    => $trainCheckin->alsoOnThisConnection,
                 'event'                   => $trainCheckin->event,
                 'forced'                  => isset($validated['force']),
-                'pointsCalculationReason' => PointReason::from($backendResponse['points']['calculation']['reason'])
+                'pointsCalculationReason' => $backendResponse['points']->reason,
             ]);
 
         } catch (CheckInCollisionException $exception) {

@@ -193,9 +193,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/dashboard/global', [FrontendStatusController::class, 'getGlobalDashboard'])
          ->name('globaldashboard');
 
-    Route::delete('/destroystatus', [FrontendStatusController::class, 'DeleteStatus'])
-         ->name('status.delete');
-
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update');
 
