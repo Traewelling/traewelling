@@ -390,18 +390,16 @@ class TransportController extends Controller
             $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
 
             //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation = $trainCheckinResponse['points'];
+            $pointsCalculation              = $trainCheckinResponse['points'];
             $trainCheckinResponse['points'] = [
-                'points' => [
-                    'points'      => $pointsCalculation->points,
-                    'calculation' => [
-                        'base'     => $pointsCalculation->basePoints,
-                        'distance' => $pointsCalculation->distancePoints,
-                        'factor'   => $pointsCalculation->factor,
-                        'reason'   => $pointsCalculation->reason->value,
-                    ],
-                    'additional'  => null, //unused old attribute (not removed so this isn't breaking)
+                'points'      => $pointsCalculation->points,
+                'calculation' => [
+                    'base'     => $pointsCalculation->basePoints,
+                    'distance' => $pointsCalculation->distancePoints,
+                    'factor'   => $pointsCalculation->factor,
+                    'reason'   => $pointsCalculation->reason->value,
                 ],
+                'additional'  => null, //unused old attribute (not removed so this isn't breaking)
             ];
 
             return $this->sendResponse($trainCheckinResponse, 201); //ToDo: Check if documented structure has changed
