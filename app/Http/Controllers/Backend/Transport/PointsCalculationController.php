@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Dto\PointCalculation;
 use App\Enum\HafasTravelType;
 use App\Enum\PointReason;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\PointsCalculationResource;
 use Carbon\Carbon;
 use JetBrains\PhpStorm\Pure;
 
@@ -18,9 +18,8 @@ abstract class PointsCalculationController extends Controller
         Carbon          $departure,
         Carbon          $arrival,
         bool            $forceCheckin = false,
-        array           $additional = [],
         Carbon          $timestampOfView = null
-    ): PointsCalculationResource {
+    ): PointCalculation {
         if ($timestampOfView == null) {
             $timestampOfView = Carbon::now();
         }
@@ -31,55 +30,37 @@ abstract class PointsCalculationController extends Controller
         return self::calculatePointsWithReason(
             basePoints:       $base,
             distancePoints:   $distance,
-            additionalPoints: $additional,
             pointReason:      self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
         );
     }
 
     #[Pure]
     private static function calculatePointsWithReason(
-        float        $basePoints,
-        float        $distancePoints,
-        ?array       $additionalPoints,
+        float       $basePoints,
+        float       $distancePoints,
         PointReason $pointReason
-    ): PointsCalculationResource {
+    ): PointCalculation {
         if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
-            return new PointsCalculationResource([
-                                                     'points'      => 1,
-                                                     'calculation' => [
-                                                         'base'     => $basePoints,
-                                                         'distance' => $distancePoints,
-                                                         'reason'   => $pointReason->value,
-                                                         'factor'   => 0,
-                                                     ],
-                                                     'additional'  => $additionalPoints,
-                                                 ]);
+            return new PointCalculation(
+                points:           1,
+                basePoints:       $basePoints,
+                distancePoints:   $distancePoints,
+                reason:           $pointReason,
+                factor:           0,
+            );
         }
         $factor = self::getFactorByReason($pointReason);
 
         $basePoints     *= $factor;
         $distancePoints *= $factor;
 
-        $result = $basePoints + $distancePoints;
-
-        foreach ($additionalPoints as $additional) {
-            $factorA = 1;
-            if ($additional->divisible) {
-                $factorA = $factor;
-            }
-            $result += $additional->points * $factorA;
-        }
-
-        return new PointsCalculationResource([
-                                                 'points'      => ceil($result),
-                                                 'calculation' => [
-                                                     'base'     => $basePoints,
-                                                     'distance' => $distancePoints,
-                                                     'factor'   => $factor,
-                                                     'reason'   => $pointReason->value,
-                                                 ],
-                                                 'additional'  => $additionalPoints,
-                                             ]);
+        return new PointCalculation(
+            points:           ceil($basePoints + $distancePoints),
+            basePoints:       $basePoints,
+            distancePoints:   $distancePoints,
+            reason:           $pointReason,
+            factor:           $factor,
+        );
     }
 
     #[Pure]

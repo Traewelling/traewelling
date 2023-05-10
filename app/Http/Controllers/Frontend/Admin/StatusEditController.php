@@ -70,13 +70,13 @@ class StatusEditController extends Controller
             destination: $newDestination
         );
 
-        $points = PointsCalculationController::calculatePoints(
+        $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
             hafasTravelType: $status->trainCheckin->HafasTrip->category,
             departure:       $newDeparture,
             arrival:         $newArrival,
             timestampOfView: $newDeparture,
-        )['points'];
+        );
 
         $status->trainCheckIn->update([
                                           'origin'      => $originStation->ibnr,
@@ -84,7 +84,7 @@ class StatusEditController extends Controller
                                           'departure'   => $newDeparture->toIso8601String(),
                                           'arrival'     => $newArrival->toIso8601String(),
                                           'distance'    => $distanceInMeters,
-                                          'points'      => $points,
+                                          'points'      => $pointCalculation->points,
                                       ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
