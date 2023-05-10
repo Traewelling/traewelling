@@ -11,4 +11,10 @@ window.API = class API {
             body: JSON.stringify(data),
         });
     }
+
+    static handleGenericError(error) {
+        console.error(error);
+        let errorMessage = error?.message ?? error?.data?.message ?? 'An unknown error occured.';
+        notyf.error(errorMessage);
+    }
 }
