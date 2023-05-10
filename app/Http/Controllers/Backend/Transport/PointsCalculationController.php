@@ -18,7 +18,6 @@ abstract class PointsCalculationController extends Controller
         Carbon          $departure,
         Carbon          $arrival,
         bool            $forceCheckin = false,
-        array           $additional = [],
         Carbon          $timestampOfView = null
     ): PointCalculation {
         if ($timestampOfView == null) {
@@ -31,7 +30,6 @@ abstract class PointsCalculationController extends Controller
         return self::calculatePointsWithReason(
             basePoints:       $base,
             distancePoints:   $distance,
-            additionalPoints: $additional,
             pointReason:      self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
         );
     }
@@ -40,7 +38,6 @@ abstract class PointsCalculationController extends Controller
     private static function calculatePointsWithReason(
         float       $basePoints,
         float       $distancePoints,
-        ?array      $additionalPoints,
         PointReason $pointReason
     ): PointCalculation {
         if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
@@ -50,7 +47,6 @@ abstract class PointsCalculationController extends Controller
                 distancePoints:   $distancePoints,
                 reason:           $pointReason,
                 factor:           0,
-                additionalPoints: $additionalPoints,
             );
         }
         $factor = self::getFactorByReason($pointReason);
@@ -58,23 +54,12 @@ abstract class PointsCalculationController extends Controller
         $basePoints     *= $factor;
         $distancePoints *= $factor;
 
-        $result = $basePoints + $distancePoints;
-
-        foreach ($additionalPoints as $additional) {
-            $factorA = 1;
-            if ($additional->divisible) {
-                $factorA = $factor;
-            }
-            $result += $additional->points * $factorA;
-        }
-
         return new PointCalculation(
-            points:           ceil($result),
+            points:           ceil($basePoints + $distancePoints),
             basePoints:       $basePoints,
             distancePoints:   $distancePoints,
             reason:           $pointReason,
             factor:           $factor,
-            additionalPoints: $additionalPoints,
         );
     }
 
