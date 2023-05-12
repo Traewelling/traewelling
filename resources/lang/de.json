@@ -655,7 +655,7 @@
     "scopes.write-followers": "Folgen-Anfragen bestätigen und Follower entfernen",
     "scopes.write-blocks": "User blocken und entblocken, muten und entmuten",
     "scopes.write-event-suggestions": "Events in deinem Namen vorschlagen",
-    "scopes.write-support-tickets": "support-Anfragen in deinem Namen erstellen",
+    "scopes.write-support-tickets": "Support-Anfragen in deinem Namen erstellen",
     "scopes.read-settings": "deine Einstellungen, Mail-Adresse, etc. sehen",
     "scopes.write-settings-profile": "dein Profil bearbeiten",
     "scopes.read-settings-profile": "deine Profildaten sehen, bspw. Mail-Adresse",
