@@ -635,7 +635,7 @@
     "menu.oauth_authorize.cancel": "Abbrechen",
     "menu.oauth_authorize.webhook_request": "Diese Anwendung möchte über die folgenden Aktivitäten auf deinem Träwelling Account benachrichtigt werden:",
     "menu.oauth_authorize.request": "<span class=\"fw-bold\">:application</span> bittet um Erlaubnis, auf dein Konto zuzugreifen.",
-    "menu.oauth_authorize.scopes_title": "Diese Anwendung wird folgendes tun können:",
+    "menu.oauth_authorize.scopes_title": "Diese Anwendung möchte folgende Berechtigungen:",
     "menu.oauth_authorize.request_title": "Autorisierungsanfrage",
     "menu.oauth_authorize.application_information.author": ":application von <a href=\":url\">:user</a>",
     "menu.oauth_authorize.application_information.created_at": "Erstellt :time",
