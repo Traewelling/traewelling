@@ -635,7 +635,7 @@
     "menu.oauth_authorize.cancel": "Cancel",
     "menu.oauth_authorize.webhook_request": "This application wants to get notified about the following activities on your account:",
     "menu.oauth_authorize.request": "<span class=\"fw-bold\">:application</span> is requesting permission to access your account.",
-    "menu.oauth_authorize.scopes_title": "This application will be able to:",
+    "menu.oauth_authorize.scopes_title": "This application is requesting the following permissions:",
     "menu.oauth_authorize.request_title": "Authorization Request",
     "menu.oauth_authorize.application_information.author": ":application by <a href=\":url\">:user</a>",
     "menu.oauth_authorize.application_information.created_at": "Created :time",
