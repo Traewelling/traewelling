@@ -63,8 +63,9 @@
                                 <input type="hidden" name="state" value="{{ $request->state }}">
                                 <input type="hidden" name="client_id" value="{{ $client->id }}">
                                 <input type="hidden" name="auth_token" value="{{ $authToken }}">
-                                <button type="submit"
-                                        class="btn btn-success btn-approve">{{__("menu.oauth_authorize.authorize")}}</button>
+                                <button type="submit" class="btn btn-success btn-approve">
+                                        {{__("menu.oauth_authorize.authorize")}}
+                                </button>
                             </form>
 
                             <!-- Cancel Button -->
