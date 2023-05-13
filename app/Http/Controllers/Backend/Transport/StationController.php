@@ -55,10 +55,14 @@ abstract class StationController extends Controller
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+        $groupAndSelect = [
+            'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
+            'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
+        ];
         return TrainStation::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
                            ->where('train_checkins.user_id', $user->id)
-                           ->groupBy(['train_stations.id', 'train_stations.ibnr', 'train_stations.name'])
-                           ->select(['train_stations.id', 'train_stations.ibnr', 'train_stations.name'])
+                           ->groupBy($groupAndSelect)
+                           ->select($groupAndSelect)
                            ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
                            ->limit($maxCount)
                            ->get();

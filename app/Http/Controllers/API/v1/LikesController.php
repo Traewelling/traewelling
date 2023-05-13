@@ -6,14 +6,12 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
-use App\Models\Like;
 use App\Models\Status;
-use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 
 class LikesController extends Controller
@@ -24,7 +22,8 @@ class LikesController extends Controller
      *      operationId="getLikesForStatus",
      *      tags={"Likes"},
      *      summary="[Auth optional] Get likes for status",
-     *      description="Returns array of users that liked the status",
+     *      description="Returns array of users that liked the status. Can return an empty dataset when the status
+     *      author or the requesting user has deactivated likes",
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
@@ -51,15 +50,20 @@ class LikesController extends Controller
      *
      *       }
      *     )
-     * @param int $status
+     * @param int $statusId
      *
      * @return AnonymousResourceCollection
      * @todo maybe put this in separate controller?
      */
-    public function show(int $status): AnonymousResourceCollection {
-        return UserResource::collection(
-            User::whereIn('id', Like::where('status_id', $status)->select('user_id'))->get()
-        );
+    public function show(int $statusId): AnonymousResourceCollection {
+        $status = Status::with('likes.user')->findOrFail($statusId);
+
+        if (!Gate::allows('like', $status)) {
+            //Return empty array if current user or status owner disabled likes
+            return UserResource::collection([]);
+        }
+
+        return UserResource::collection($status->likes->pluck('user'));
     }
 
     /**

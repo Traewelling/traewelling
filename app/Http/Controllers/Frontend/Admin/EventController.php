@@ -12,19 +12,28 @@ use App\Notifications\EventSuggestionProcessed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
-    public function renderList(): View {
+    public function renderList(Request $request): View {
+        $events = Event::orderByDesc('end');
+        if ($request->has('query')) {
+            $events->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
+        }
         return view('admin.events.list', [
-            'events' => Event::orderByDesc('end')->paginate(10)
+            'events' => $events->paginate(10)
         ]);
     }
 
     public function renderSuggestions(): View {
         return view('admin.events.suggestions', [
-            'suggestions' => EventSuggestion::where('processed', false)->get()
+            'suggestions' => EventSuggestion::where('processed', false)
+                                            ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
+                                            ->get()
         ]);
     }
 
@@ -46,13 +55,14 @@ class EventController extends Controller
         $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-
-        TelegramController::sendAdminMessage(
-            auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" abgelehnt.'
-        );
+        if (!App::runningUnitTests()) {
+            Http::post(config('app.admin.webhooks.new_event'), [
+                auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
+            ]);
+        }
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, null));
 
-        return back()->with('alert-success', 'Vorschlag abgelehnt.');
+        return back()->with('alert-success', 'Event denied.');
     }
 
     public function acceptSuggestion(Request $request): RedirectResponse {
@@ -62,32 +72,38 @@ class EventController extends Controller
                                                   'hashtag'              => ['required', 'max:30'],
                                                   'host'                 => ['required', 'max:255'],
                                                   'url'                  => ['nullable', 'url'],
-                                                  'nearest_station_name' => ['required', 'max:255'],
+                                                  'nearest_station_name' => ['nullable', 'max:255'],
                                                   'begin'                => ['required', 'date'],
                                                   'end'                  => ['required', 'date'],
                                               ]);
         $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
 
-        $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+        $trainStation = null;
+        if (isset($validated['nearest_station_name'])) {
+            $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation === null) {
-            return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            if ($trainStation === null) {
+                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            }
         }
 
-        $event = AdminEventBackend::createEvent(
-            name:         $validated['name'],
-            hashtag:      $validated['hashtag'],
-            host:         $validated['host'],
-            trainStation: $trainStation,
-            begin:        Carbon::parse($validated['begin']),
-            end:          Carbon::parse($validated['end']),
-            url:          $validated['url']
-        );
+        $event = Event::create([
+                                   'name'       => $validated['name'],
+                                   'slug'       => AdminEventBackend::createSlugFromName($validated['name']),
+                                   'hashtag'    => $validated['hashtag'],
+                                   'host'       => $validated['host'],
+                                   'station_id' => $trainStation?->id,
+                                   'begin'      => Carbon::parse($validated['begin'])->toIso8601String(),
+                                   'end'        => Carbon::parse($validated['end'])->toIso8601String(),
+                                   'url'        => $validated['url'] ?? null,
+                               ]);
 
         $eventSuggestion->update(['processed' => true]);
-        TelegramController::sendAdminMessage(
-            auth()->user()->name . ' hat den Veranstaltungsvorschlag "' . $eventSuggestion->name . '" akzeptiert.'
-        );
+        if (!App::runningUnitTests()) {
+            Http::post(config('app.admin.webhooks.new_event'), [
+                'content' => auth()->user()->name . ' accepted the event "' . $eventSuggestion->name . '".',
+            ]);
+        }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 
@@ -100,28 +116,32 @@ class EventController extends Controller
                                             'hashtag'              => ['required', 'max:30'],
                                             'host'                 => ['required', 'max:255'],
                                             'url'                  => ['nullable', 'url'],
-                                            'nearest_station_name' => ['required', 'max:255'],
+                                            'nearest_station_name' => ['nullable', 'max:255'],
                                             'begin'                => ['required', 'date'],
                                             'end'                  => ['required', 'date'],
                                         ]);
 
-        $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+        $trainStation = null;
+        if (isset($validated['nearest_station_name'])) {
+            $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation === null) {
-            return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            if ($trainStation === null) {
+                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            }
         }
 
-        AdminEventBackend::createEvent(
-            name:         $validated['name'],
-            hashtag:      $validated['hashtag'],
-            host:         $validated['host'],
-            trainStation: $trainStation,
-            begin:        Carbon::parse($validated['begin']),
-            end:          Carbon::parse($validated['end']),
-            url:          $validated['url']
-        );
+        Event::create([
+                          'name'       => $validated['name'],
+                          'slug'       => AdminEventBackend::createSlugFromName($validated['name']),
+                          'hashtag'    => $validated['hashtag'],
+                          'host'       => $validated['host'],
+                          'station_id' => $trainStation?->id,
+                          'begin'      => Carbon::parse($validated['begin'])->toIso8601String(),
+                          'end'        => Carbon::parse($validated['end'])->toIso8601String(),
+                          'url'        => $validated['url'] ?? null,
+                      ]);
 
-        return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde erstellt!');
+        return redirect()->route('admin.events')->with('alert-success', 'The event was created!');
     }
 
     public function edit(int $id, Request $request): RedirectResponse {

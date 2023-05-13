@@ -645,5 +645,10 @@
     "menu.oauth_authorize.webhook_request": "Deze app wil de volgende activiteiten van je account inzien:",
     "menu.oauth_authorize.application_information.privacy_policy": "Privacybeleid van :client",
     "menu.share.clipboard.success": "Gekopieerd naar het klembord!",
-    "status.join": "Meereizen"
+    "status.join": "Meereizen",
+    "settings.profilePicture.deleted": "Je profielfoto is verwijderd.",
+    "events.disclaimer.organizer": "Träwelling is niet de organisator.",
+    "events.disclaimer.source": "Het evenement is ontstaan uit een idee van een Träwelling-gebruiker en goedgekeurd door ons.",
+    "events.disclaimer.warranty": "Träwelling is niet verantwoordelijk voor de juist- en volledigheid van de gegevens.",
+    "user.likes-enabled": "Vind-ik-leuks tonen"
 }

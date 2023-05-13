@@ -145,6 +145,18 @@ class User
 
     /**
      * @OA\Property (
+     *     title="likes_enabled",
+     *     description="Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.",
+     *     type="boolean",
+     *     example=true
+     * )
+     *
+     * @var bool
+     */
+    private $likes_enabled;
+
+    /**
+     * @OA\Property (
      *     title="userInvisibleToMe",
      *     description="Can the currently authenticated user see the statuses of this user?",
      *     type="boolean",

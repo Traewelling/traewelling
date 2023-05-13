@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\EventSuggestion;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -25,8 +26,8 @@ class EventSuggestionTest extends TestCase
             // For the EventSuggestion POST
             'name'                 => 'eventName',
             'host'                 => 'host',
-            'begin'                => '2023-01-03T00:00:00',
-            'end'                  => '2023-01-08T00:00:00',
+            'begin'                => Carbon::tomorrow()->toIso8601String(),
+            'end'                  => Carbon::tomorrow()->addWeek()->toIso8601String(),
 
             // For the Event POST
             'suggestionId'         => 1337, // will be replaced later

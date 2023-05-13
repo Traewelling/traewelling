@@ -62,10 +62,7 @@ window.Settings = class Settings {
         API.request('/settings/profilePicture', 'delete')
             .then(response => {
                 if (!response.ok) {
-                    response.json().then(data => {
-                        notyf.error(data.message ?? 'An unknown error occured.');
-                    });
-                    return;
+                    return response.json().then(API.handleGenericError);
                 }
 
                 //Remove delete-btn if existing
@@ -76,12 +73,10 @@ window.Settings = class Settings {
                 let theProfilePicture = document.getElementById('theProfilePicture');
                 theProfilePicture?.setAttribute('src', `/img/user.png`);
 
-                response.json().then(data => {
+                return response.json().then(data => {
                     notyf.success(data.data.message);
                 });
             })
-            .catch(function () {
-                notyf.error('An unknown error occured.');
-            });
+            .catch(API.handleGenericError);
     }
 }
