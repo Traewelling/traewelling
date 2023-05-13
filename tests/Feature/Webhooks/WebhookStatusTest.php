@@ -22,7 +22,7 @@ use function PHPUnit\Framework\assertEquals;
 class WebhookStatusTest extends TestCase {
     use RefreshDatabase;
 
-    public function testWebhookSendingOnStatusCreation() {
+    public function testWebhookSendingOnStatusCreation(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -39,7 +39,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnStatusBodyChange() {
+    public function testWebhookSendingOnStatusBodyChange(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -65,7 +65,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnLike() {
+    public function testWebhookSendingOnLike(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -86,7 +86,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnDestinationChange() {
+    public function testWebhookSendingOnDestinationChange(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -115,7 +115,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnBusinessChange() {
+    public function testWebhookSendingOnBusinessChange(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -141,7 +141,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnVisibilityChange() {
+    public function testWebhookSendingOnVisibilityChange(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();
@@ -167,7 +167,7 @@ class WebhookStatusTest extends TestCase {
         });
     }
 
-    public function testWebhookSendingOnStatusDeletion() {
+    public function testWebhookSendingOnStatusDeletion(): void {
         Bus::fake();
 
         $user = $this->createGDPRAckedUser();

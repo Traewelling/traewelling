@@ -62,12 +62,16 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [],
+            "providers": [
+                "App\\Helpers\\AwStudio\\Bitflags\\BitflagsServiceProvider"
+            ]
         }
     },
     "autoload": {
         "files": [
-            "app/Helpers/Helper.php"
+            "app/Helpers/Helper.php",
+            "app/Helpers/AwStudio/Bitflags/helpers.php"
         ],
         "psr-4": {
             "App\\": "app/",
