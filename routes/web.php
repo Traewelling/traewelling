@@ -21,7 +21,6 @@ use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
-use App\Http\Controllers\Frontend\Social\TwitterController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Stats\YearInReviewController;
@@ -79,9 +78,7 @@ Route::get('/events', [EventController::class, 'renderEventOverview'])
 
 Auth::routes(['verify' => true]);
 
-Route::get('/auth/redirect/twitter', [TwitterController::class, 'redirect']);
 Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
-Route::get('/callback/twitter', [TwitterController::class, 'callback']);
 Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])

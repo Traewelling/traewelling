@@ -54,7 +54,6 @@ abstract class ApiTestCase extends TestCase
                                                'trainDuration',
                                                'trainSpeed',
                                                'points',
-                                               'twitterUrl',
                                                'mastodonUrl',
                                                'privateProfile',
                                                'preventIndex',

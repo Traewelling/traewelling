@@ -17,10 +17,6 @@
         </div>
         <div class="row mt-1">
             <div class="col border-right">
-                Twitter<br>
-                <strong>{{ $user->twitterUrl ? 'Ja' : 'Nein' }}</strong>
-            </div>
-            <div class="col border-right">
                 Mastodon<br>
                 <strong>{{ $user->mastodonUrl ? 'Ja' : 'Nein' }}</strong>
             </div>
