@@ -83,6 +83,20 @@ class StatusPolicy
     }
 
     /**
+     * @param User|null $user
+     * @param Status    $status
+     *
+     * @return bool If the given user (or unauthenticated) can like the given status
+     */
+    public function like(?User $user, Status $status): bool {
+        if ($user === null) {
+            //Unauthenticated users can't like things...
+            return false;
+        }
+        return $this->view($user, $status) && $user->likes_enabled && $status->user->likes_enabled;
+    }
+
+    /**
      * Determine whether the user can delete the model.
      *
      * @param User   $user

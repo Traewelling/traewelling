@@ -150,16 +150,18 @@
     </div>
     <div class="card-footer text-muted interaction px-3 px-md-4">
         <ul class="list-inline float-end">
-            <li class="like-text list-inline-item me-0">
-                <a href="{{ auth()->user() ? '#' : route('login') }}"
-                   class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
-                   data-trwl-status-id="{{ $status->id }}"></a>
-            </li>
-            <li class="like-text list-inline-item">
-                <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                      id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
-                </span>
-            </li>
+            @can('like', $status)
+                <li class="like-text list-inline-item me-0">
+                    <a href="{{ auth()->user() ? '#' : route('login') }}"
+                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                       data-trwl-status-id="{{ $status->id }}"></a>
+                </li>
+                <li class="like-text list-inline-item">
+                        <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
+                              id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                        </span>
+                </li>
+            @endcan
             <li class="like-text list-inline-item">
                 <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
                    aria-hidden="true" title="{{$status->visibility->title()}}"
@@ -203,10 +205,9 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                            data-mdb-toggle="modal"
+                                           data-mdb-toggle="modal"
                                             data-mdb-target="#modal-status-delete"
-                                            onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';"
-                                    >
+                                            onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-trash" aria-hidden="true"></i>
                                         </div>
@@ -276,7 +277,7 @@
             </li>
         </ul>
     </div>
-    @if(Route::current()->uri == "status/{id}")
+    @if(\Illuminate\Support\Facades\Gate::allows('like', $status) && Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
                 <a href="{{ route('profile', ['username' => $like->user->username]) }}">
