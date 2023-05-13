@@ -178,13 +178,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/sodium_compat" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/coderjerk/bird-elephant" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/fruitcake/laravel-cors" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/resource-operations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-webhook-server" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-validation-rules" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/uri-template" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/uwumarie/laravel-bitflags" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

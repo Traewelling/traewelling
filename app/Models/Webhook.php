@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use AwStudio\Bitflags\Casts\Bitflags;
+use App\Helpers\AwStudio\Bitflags\Casts\Bitflags;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,8 @@ use Laravel\Passport\Passport;
 /**
  * @mixin Builder
  */
-class Webhook extends Model {
+class Webhook extends Model
+{
     use HasFactory;
 
     protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret', 'events'];

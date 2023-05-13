@@ -24,7 +24,6 @@
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-sodium": "*",
-        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
@@ -41,8 +40,7 @@
         "spatie/laravel-sitemap": "^6.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
-        "trwl/socialite-mastodon": "^1.2",
-        "uwumarie/laravel-bitflags": "dev-main"
+        "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
@@ -95,11 +93,5 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/NyCodeGHG/laravel-bitflags"
-        }
-    ]
+    }
 }

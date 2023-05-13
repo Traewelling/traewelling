@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\Api\JsonMiddleware;
-use App\Http\Middleware\SemiGuest;
 use App\Http\Middleware\SemiScope;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Laravel\Passport\Http\Middleware\CheckForAnyScope;
