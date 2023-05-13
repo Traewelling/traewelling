@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Carbon\Carbon;
@@ -72,7 +73,7 @@ class FollowTest extends ApiTestCase
         $user1      = User::factory()->create();
         $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $user2      = User::factory()->create();
-        UserBackend::createOrRequestFollow($user1, $user2);
+        FollowController::createOrRequestFollow($user1, $user2);
 
         $response = $this->delete(
             uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
