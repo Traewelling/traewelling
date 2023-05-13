@@ -264,7 +264,7 @@
     "notifications.socialNotShared.lead": "Il tuo check-in non è stato condiviso su :Platform.",
     "notifications.socialNotShared.mastodon.429": "Sembra che Träwelling sia stato temporaneamente bloccato dalla tua istanza. (<code>429 Too Many Requests</code>)",
     "notifications.socialNotShared.mastodon.504": "La tua istanza non era disponibile quando abbiamo cercato di fare toot col tuo check-in. (<code>504 Bad Gateway</code>)",
-    notifications.userJoinedConnection.lead": "<b>@:username</b> è anche nel tuo collegamento!",
+    "notifications.userJoinedConnection.lead": "<b>@:username</b> è anche nel tuo collegamento!",
     "pagination.next": "Prossima pagina &raquo;",
     "pagination.previous": "&laquo; Pagina precedente",
     "pagination.back": "&laquo; Indietro",
