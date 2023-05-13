@@ -13,7 +13,7 @@ class StatusBodyTest extends TestCase
     /**
      * @dataProvider statusBodyProvider
      */
-    public function testStatusBodySanitizesHtml($body, $htmlSanitized) {
+    public function testStatusBodySanitizesHtml($body, $htmlSanitized): void {
         $status       = TrainCheckin::factory()->create()->status;
         $status->body = $body;
         $status->update();

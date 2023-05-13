@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use AwStudio\Bitflags\Casts\Bitflags;
+use App\Helpers\AwStudio\Bitflags\Casts\Bitflags;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
