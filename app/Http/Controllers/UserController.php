@@ -44,26 +44,6 @@ class UserController extends Controller
         return ['status' => ':ok'];
     }
 
-    public static function getProfilePage(string $username): ?array {
-        $user = User::where('username', 'like', $username)->first();
-        if ($user === null) {
-            return null;
-        }
-        try {
-            $statuses = self::statusesForUser($user);
-        } catch (AuthorizationException) {
-            $statuses = null;
-        }
-
-        return [
-            'username'    => $username,
-            'statuses'    => $statuses,
-            'twitterUrl'  => $user->twitterUrl,
-            'mastodonUrl' => $user->mastodonUrl,
-            'user'        => $user
-        ];
-    }
-
     /**
      * @param User     $user
      * @param int|null $limit
