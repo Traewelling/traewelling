@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         require("./../../node_modules/bootstrap/js/dist/modal");
         require("./../../node_modules/bootstrap/js/dist/tab");
         require("./../../node_modules/bootstrap/js/dist/dropdown");
-        require("./../../node_modules/mdb-ui-kit/js/mdb.min");
+        window.mdb = require("./../../node_modules/mdb-ui-kit/js/mdb.min");
     } catch (e) {
         throw new Error(e);
     }
