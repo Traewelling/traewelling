@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Like;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class UserBlockTest extends TestCase
@@ -127,14 +130,12 @@ class UserBlockTest extends TestCase
     }
 
     public function testLikesAreDeleted(): void {
-        $this->actingAs($this->bob)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']]) //ToDo: Use API endpoint
-             ->assertStatus(201);
+        //Create like for already given checkin
+        StatusBackend::createLike($this->bob, Status::find($this->checkin['statusId']));
 
+        //Create a second checkin and like it
         $this->checkin = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
-        $this->actingAs($this->alice)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']]) //ToDo: Use API endpoint
-             ->assertStatus(201);
+        StatusBackend::createLike($this->alice, Status::find($this->checkin['statusId']));
 
         $this->assertEquals(2, Like::all()->count());
 
