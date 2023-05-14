@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Status;
 use App\Models\User;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Tests\ApiTestCase;
-use App\Providers\AuthServiceProvider;
 
 class LikesTest extends ApiTestCase
 {
@@ -26,7 +25,7 @@ class LikesTest extends ApiTestCase
         ]);
 
         $response = $this->postJson(
-            uri:     '/api/v1/like/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertCreated();
@@ -38,13 +37,13 @@ class LikesTest extends ApiTestCase
 
         //Should fail: Already liked
         $response = $this->postJson(
-            uri:     '/api/v1/like/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertStatus(409);
 
         $response = $this->get(
-            uri:     '/api/v1/statuses/' . $status->id . '/likedby',
+            uri:     '/api/v1/status/' . $status->id . '/likes',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertOk();
@@ -73,7 +72,7 @@ class LikesTest extends ApiTestCase
         $this->assertCount(1, $response->json('data'));
 
         $response = $this->deleteJson(
-            uri:     '/api/v1/like/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertOk();
@@ -102,7 +101,7 @@ class LikesTest extends ApiTestCase
         $alice->update(["likes_enabled" => false]);
 
         $response = $this->postJson(
-            uri:     '/api/v1/like/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $bobToken]
         );
         $response->assertStatus(403);
@@ -118,7 +117,7 @@ class LikesTest extends ApiTestCase
         $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $response = $this->postJson(
-            uri:     '/api/v1/like/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $aliceToken]
         );
         $response->assertCreated();
@@ -133,7 +132,7 @@ class LikesTest extends ApiTestCase
 
     private function assertSeeNumberOfLikes(Status $status, string $token, int $expectedLikeCount): void {
         $response = $this->get(
-            uri:     '/api/v1/statuses/' . $status->id . '/likedby',
+            uri:     '/api/v1/status/' . $status->id . '/likes',
             headers: ['Authorization' => 'Bearer ' . $token]
         );
         $response->assertOk();

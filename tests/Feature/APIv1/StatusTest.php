@@ -158,7 +158,7 @@ class StatusTest extends ApiTestCase
         $this->assertEquals(Business::PRIVATE->value, $status->business->value);
 
         $response = $this->put(
-            uri:     '/api/v1/statuses/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id,
             data:    [
                          'body'       => 'new body',
                          'visibility' => StatusVisibility::PUBLIC->value,
@@ -175,7 +175,7 @@ class StatusTest extends ApiTestCase
     }
 
 
-    public function testStatusUpdateWithChangedDestination() {
+    public function testStatusUpdateWithChangedDestination(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
@@ -230,7 +230,7 @@ class StatusTest extends ApiTestCase
         $this->assertEquals($checkin->destinationStation->id, $secondStation->id);
 
         $response = $this->put(
-            uri:     '/api/v1/statuses/' . $status->id,
+            uri:     '/api/v1/status/' . $status->id,
             data:    [
                          'visibility'                => StatusVisibility::PUBLIC->value,
                          'business'                  => Business::BUSINESS->value,
