@@ -240,8 +240,4 @@ class FrontendTransportController extends Controller
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
     }
-
-    private function isCancelled(mixed $param): bool {
-        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
-    }
 }

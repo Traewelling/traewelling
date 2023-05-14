@@ -20,7 +20,7 @@ class LikeTest extends TestCase
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
         $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
+                         ->post(route('like.create'), ['statusId' => $status->id]); //ToDo: Use API endpoint
         $response->assertStatus(201);
 
         $notifications = $this->actingAs($status->user)
@@ -42,7 +42,7 @@ class LikeTest extends TestCase
         UserController::muteUser($status->user, $likingUser);
 
         $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
+                         ->post(route('like.create'), ['statusId' => $status->id]); //ToDo: Use API endpoint
         $response->assertStatus(201);
 
         $notifications = $this->actingAs($status->user)
@@ -59,7 +59,7 @@ class LikeTest extends TestCase
         $status->user->update(["likes_enabled" => false]);
 
         $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
+                         ->post(route('like.create'), ['statusId' => $status->id]); //ToDo: Use API endpoint
         $response->assertStatus(403);
 
         $notifications = $this->actingAs($status->user)
@@ -74,7 +74,7 @@ class LikeTest extends TestCase
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
         $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
+                         ->post(route('like.create'), ['statusId' => $status->id]); //ToDo: Use API endpoint
         $response->assertStatus(201);
 
         $status->user->update(["likes_enabled" => false]);
@@ -91,7 +91,7 @@ class LikeTest extends TestCase
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
         $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
+                         ->post(route('like.create'), ['statusId' => $status->id]); //ToDo: Use API endpoint
         $response->assertStatus(201);
 
         $notifications = $this->actingAs($status->user)

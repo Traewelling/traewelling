@@ -247,10 +247,8 @@
             var token            = '{{ csrf_token() }}';
             var urlAvatarUpload  = '{{route('settings.upload-image')}}';
             var urlDisconnect    = '{{ route('provider.destroy') }}';
-            var urlDislike       = '{{ route('like.destroy') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike          = '{{ route('like.create') }}';
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';

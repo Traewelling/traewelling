@@ -128,12 +128,12 @@ class UserBlockTest extends TestCase
 
     public function testLikesAreDeleted(): void {
         $this->actingAs($this->bob)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']])
+             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']]) //ToDo: Use API endpoint
              ->assertStatus(201);
 
         $this->checkin = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
         $this->actingAs($this->alice)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']])
+             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']]) //ToDo: Use API endpoint
              ->assertStatus(201);
 
         $this->assertEquals(2, Like::all()->count());
