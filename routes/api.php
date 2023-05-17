@@ -133,7 +133,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('password', [SettingsController::class, 'updatePassword'])
                  ->middleware(['scope:extra-write-password']);
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                 ->middleware(['extra-delete'])
+                 ->middleware(['scope:extra-delete'])
                  ->withoutMiddleware('privacy-policy');
             Route::group(['middleware' => ['scope:write-settings-calendar']], static function() {
                 Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
