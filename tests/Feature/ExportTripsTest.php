@@ -2,59 +2,68 @@
 
 namespace Tests\Feature;
 
+use App\Models\TrainCheckin;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Illuminate\Support\Facades\Date;
+use Tests\ApiTestCase;
 
-class ExportTripsTest extends TestCase
+class ExportTripsTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    protected $user;
+    public function test_pdf_export(): void {
+        $user = User::factory()->create();
+        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->user = User::factory()->create();
-
-        $this->checkin('Frankfurt(M) Flughafen Fernbf', Carbon::parse("next monday 8:00"));
-        $this->checkin('Hamburg Hbf', Carbon::parse("next thursday 7:45"));
+        $response = $this->postJson(
+            uri:     '/api/v1/statistics/export',
+            data:    [
+                         'from'     => Date::today()->subWeek(),
+                         'until'    => Date::today()->addWeek(),
+                         'filetype' => 'pdf'
+                     ],
+            headers: ['Authorization' => 'Bearer ' . $token]
+        );
+        $response->assertSuccessful();
+        $response->assertHeader('Content-Type', 'application/pdf');
     }
 
-    public function test_two_checkins_have_been_created_at_setup() {
-        $this->assertEquals(2, $this->user->statuses->count());
+    public function test_json_export(): void {
+        $user = User::factory()->create();
+        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+        $response = $this->postJson(
+            uri:     '/api/v1/statistics/export',
+            data:    [
+                         'from'     => Date::today()->subWeek(),
+                         'until'    => Date::today()->addWeek(),
+                         'filetype' => 'json'
+                     ],
+            headers: ['Authorization' => 'Bearer ' . $token]
+        );
+        $response->assertSuccessful();
+        $response->assertHeader('Content-Type', 'text/json; charset=UTF-8');
     }
 
-    /**
-     * Expection: Runs and does not throw errors.
-     */
+    public function test_csv_export(): void {
+        $user = User::factory()->create();
+        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
-    public function test_pdf_export() {
-        $this->actingAs($this->user)
-             ->get(route('export.generate'), [
-                 'begin'    => date('Y-m-d', time()), // now
-                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
-                 'filetype' => 'pdf'
-             ]);
-    }
-
-    public function test_json_export() {
-        $this->actingAs($this->user)
-             ->get('/export-generate', [
-                 'begin'    => date('Y-m-d', time()), // now
-                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
-                 'filetype' => 'json'
-             ]);
-    }
-
-    public function test_csv_export() {
-        $this->followingRedirects();
-        $this->actingAs($this->user)
-             ->get(route('export.generate'), [
-                 'begin'    => date('Y-m-d', time()), // now
-                 'end'      => date('Y-m-d', time() + 4 * 24 * 60 * 60), // in four days
-                 'filetype' => 'csv'
-             ]);
+        $response = $this->postJson(
+            uri:     '/api/v1/statistics/export',
+            data:    [
+                         'from'     => Date::today()->subWeek(),
+                         'until'    => Date::today()->addWeek(),
+                         'filetype' => 'csv'
+                     ],
+            headers: ['Authorization' => 'Bearer ' . $token]
+        );
+        $response->assertSuccessful();
+        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
     }
 }
