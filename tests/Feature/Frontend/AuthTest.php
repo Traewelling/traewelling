@@ -34,4 +34,20 @@ class AuthTest extends TestCase
         $response->assertRedirectToRoute('login');
         $this->assertGuest();
     }
+
+    public function testSuccessfulRegistration(): void {
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['username' => 'alice123']);
+        $response = $this->followingRedirects()
+                         ->post(route('register', [
+                             'username'              => 'alice123',
+                             'name'                  => 'Alice',
+                             'email'                 => 'alice@traewelling.de',
+                             'password'              => 'password',
+                             'password_confirmation' => 'password',
+                         ]));
+        $response->assertOk();
+        $response->assertViewIs('legal.privacy-interception');
+        $this->assertDatabaseHas('users', ['username' => 'alice123']);
+    }
 }
