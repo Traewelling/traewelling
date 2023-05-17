@@ -157,21 +157,6 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\PrivacyAgreementSeeder');
     }
 
-    public function createGDPRAckedUser(array $defaultValues = []): User {
-        $user = User::factory($defaultValues)->create();
-        $this->acceptGDPR($user);
-
-        return $user;
-    }
-
-    protected function createAdminUser(): User {
-        $admin       = $this->createGDPRAckedUser();
-        $admin->role = 10;
-        $admin->update();
-
-        return $admin;
-    }
-
     public function createWebhookClient(User $user): OAuthClient {
         $clients = new OAuthClientRepository();
         return $clients->create(

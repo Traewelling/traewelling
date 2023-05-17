@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -244,15 +245,9 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user                     = $this->createGDPRAckedUser();
-        $data->bob->user->privacy_ack_at     = now();
-        $data->gertrud->user                 = $this->createGDPRAckedUser();
-        $data->gertrud->user->privacy_ack_at = now();
-        $data->alice->user                   = $this->createGDPRAckedUser();
-        $data->alice->user->privacy_ack_at   = now();
-        $data->bob->user->save();
-        $data->gertrud->user->save();
-        $data->alice->user->save();
+        $data->bob->user     = User::factory()->create();
+        $data->gertrud->user = User::factory()->create();
+        $data->alice->user   = User::factory()->create();
 
         // Create new CheckIn for Bob
         $timestamp          = Carbon::parse("-40min");

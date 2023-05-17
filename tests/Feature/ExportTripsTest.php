@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,7 +16,7 @@ class ExportTripsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user = $this->createGDPRAckedUser();
+        $this->user = User::factory()->create();
 
         $this->checkin('Frankfurt(M) Flughafen Fernbf', Carbon::parse("next monday 8:00"));
         $this->checkin('Hamburg Hbf', Carbon::parse("next thursday 7:45"));

@@ -18,9 +18,9 @@ class PrivateProfileFollowerRelationsTest extends TestCase
 
     protected function setUp(): void {
         parent::setUp();
-        $this->user = $this->createGDPRAckedUser();
+        $this->user = User::factory()->create();
         $this->user->update(["private_profile" => true]);
-        $this->alice = $this->createGDPRAckedUser();
+        $this->alice = User::factory()->create();
     }
 
     /**

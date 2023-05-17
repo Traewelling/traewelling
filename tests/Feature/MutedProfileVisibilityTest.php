@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -225,9 +226,9 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user     = $this->createGDPRAckedUser(['name' => 'bob', 'privacy_ack_at' => now()]);
-        $data->gertrud->user = $this->createGDPRAckedUser(['name' => 'gertrud', 'privacy_ack_at' => now()]);
-        $data->alice->user   = $this->createGDPRAckedUser(['name' => 'alice', 'privacy_ack_at' => now()]);
+        $data->bob->user     = User::factory(['name' => 'bob'])->create();
+        $data->gertrud->user = User::factory(['name' => 'gertrud'])->create();
+        $data->alice->user   = User::factory(['name' => 'alice'])->create();
 
         // Create new CheckIn for Bob
         $timestamp          = Carbon::parse('+1 day 8:00');

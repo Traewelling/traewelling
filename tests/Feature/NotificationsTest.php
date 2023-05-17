@@ -23,14 +23,14 @@ class NotificationsTest extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->user = $this->createGDPRAckedUser();
+        $this->user = User::factory()->create();
     }
 
     /** @test */
     public function following_a_user_should_spawn_a_notification(): void {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob   = $this->createGDPRAckedUser();
+        $bob   = User::factory()->create();
 
         // When: Alice follows Bob
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
@@ -52,7 +52,7 @@ class NotificationsTest extends TestCase
     public function unfollowing_bob_should_remove_the_notification(): void {
         // Given: Users Alice and Bob and Alice follows Bob
         $alice  = $this->user;
-        $bob    = $this->createGDPRAckedUser();
+        $bob    = User::factory()->create();
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
         $follow->assertStatus(201);
 
@@ -116,7 +116,7 @@ class NotificationsTest extends TestCase
      */
     public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void {
         // GIVEN: Alice checked-into a train.
-        $alice     = $this->createGDPRAckedUser();
+        $alice     = User::factory()->create();
         $timestamp = Carbon::now()->setHour(7)->setMinute(45);
         $this->checkin(
             stationName: "Frankfurt(Main)Hbf",
@@ -125,7 +125,7 @@ class NotificationsTest extends TestCase
         );
 
         // WHEN: Bob also checks into the train
-        $bob = $this->createGDPRAckedUser();
+        $bob = User::factory()->create();
         $this->checkin(
             stationName:      "Frankfurt(Main)Hbf",
             timestamp:        $timestamp,
@@ -143,7 +143,7 @@ class NotificationsTest extends TestCase
     /** @test */
     public function mark_notification_as_read(): void {
         // GIVEN: Alice has a notification
-        $userToFollow = $this->createGDPRAckedUser();
+        $userToFollow = User::factory()->create();
         UserBackend::createFollow($this->user, $userToFollow);
 
         // GIVEN: Alice receives the notification and it's unread
@@ -174,7 +174,7 @@ class NotificationsTest extends TestCase
     public function deleting_a_user_should_delete_its_notifications(): void {
         // Given: Users Alice and Bob
         $alice = $this->user;
-        $bob   = $this->createGDPRAckedUser();
+        $bob   = User::factory()->create();
 
         // When: Alice follows Bob
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);

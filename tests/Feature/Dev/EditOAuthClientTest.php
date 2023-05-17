@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\Dev;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use App\Repositories\OAuthClientRepository;
-use Illuminate\Support\Facades\Log;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEquals;
 
-class EditOAuthClientTest extends TestCase {
+class EditOAuthClientTest extends TestCase
+{
     use RefreshDatabase;
 
     public function testOAuthClientConfidentialEditToggle() {
-        $user = $this->createGDPRAckedUser();
-        $client = $this->createOAuthClient($user, true);
-        $clients = new OAuthClientRepository();
+        $user           = User::factory()->create();
+        $client         = $this->createOAuthClient($user, true);
+        $clients        = new OAuthClientRepository();
         $originalSecret = $client->secret;
 
         $clients->update(

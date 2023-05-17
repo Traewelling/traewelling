@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -55,7 +56,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationPositiveTest(): void {
         // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         // GIVEN: A HTTP Mock
         Http::fake(["*/stops/nearby*" => Http::response([array_merge(
@@ -83,7 +84,7 @@ class CheckinTest extends TestCase
      */
     public function stationboardByLocationNegativeTest(): void {
         // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         // GIVEN: A HTTP Mock
         Http::fake(Http::response([]));
@@ -113,7 +114,7 @@ class CheckinTest extends TestCase
      */
     public function testCheckin(): void {
         // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         // WHEN: User follows Check-In Flow (checks departures, takes a look at trip information, performs check-in)
         Http::fake([
@@ -172,7 +173,7 @@ class CheckinTest extends TestCase
         TrainStation::factory()->count(4)->create();
 
         // GIVEN: A logged-in and gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         /*
          * We're now generating a 'base checkin' on which we are comparing all possible collision types
@@ -306,7 +307,7 @@ class CheckinTest extends TestCase
      */
     public function testCheckinSuccessFlash(): void {
         // GIVEN: A gdpr-acked user
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
         $message  = [
