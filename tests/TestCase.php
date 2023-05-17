@@ -242,14 +242,6 @@ abstract class TestCase extends BaseTestCase
         return $ret;
     }
 
-    public function acceptGDPR(User $user): void {
-        $response = $this->actingAs($user)
-                         ->post('/gdpr-ack');
-        $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
-    }
-
-
     /**
      * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
      *
