@@ -2,30 +2,14 @@
 
 namespace Tests;
 
-use App\Enum\StatusVisibility;
-use App\Enum\TravelType;
-use App\Exceptions\Checkin\AlreadyCheckedInException;
-use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
-use App\Exceptions\StationNotOnTripException;
-use App\Exceptions\TrainCheckinAlreadyExistException;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\WebhookController;
-use App\Http\Controllers\TransportController;
-use App\Models\Event;
 use App\Models\OAuthClient;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Collection;
-use Illuminate\Testing\TestResponse;
-use JetBrains\PhpStorm\ArrayShape;
-use Tests\Feature\CheckinTest;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -240,136 +224,5 @@ abstract class TestCase extends BaseTestCase
             dd($hafastrip);
         }
         return $ret;
-    }
-
-    /**
-     * This is mostly copied from Checkin Test and exactly copied from ExportTripsTest.
-     *
-     * @param string           $stationName
-     * @param Carbon           $timestamp
-     * @param User|null        $user
-     * @param bool|null        $forEvent
-     * @param StatusVisibility $statusVisibility
-     *
-     * @return array|null
-     * @throws TrainCheckinAlreadyExistException|NotConnectedException|AlreadyCheckedInException|StationNotOnTripException
-     *
-     * @deprecated Please do not use this function (unless you really want to test DB-Rest!).
-     *             Please use the factories instead. For a TrainCheckin e.g. TrainCheckin::factory()->create();
-     */
-    #[ArrayShape([
-        'success'              => "bool",
-        'statusId'             => "int",
-        'points'               => "int",
-        'alsoOnThisConnection' => Collection::class,
-        'lineName'             => "string",
-        'distance'             => "float",
-        'duration'             => "float",
-        'event'                => "mixed"
-    ])]
-    protected function checkin(
-        string           $stationName,
-        Carbon           $timestamp,
-        User             $user = null,
-        bool             $forEvent = null,
-        StatusVisibility $statusVisibility = StatusVisibility::PUBLIC
-    ): ?array {
-        if ($user === null) {
-            $user = $this->user;
-        }
-        try {
-            $trainStationboard = TransportController::getDepartures(
-                stationQuery: $stationName,
-                when:         $timestamp,
-                travelType:   TravelType::EXPRESS
-            );
-        } catch (HafasException $e) {
-            $this->markTestSkipped($e->getMessage());
-        }
-        $countDepartures = $trainStationboard['departures']->count();
-        if ($countDepartures === 0) {
-            $this->markTestSkipped("Unable to find matching trains. Is it night in $stationName?");
-        }
-
-        // Second: We don't like broken or cancelled trains.
-        $i = 0;
-        while ((isset($trainStationboard['departures'][$i]->cancelled)
-                && $trainStationboard['departures'][$i]->cancelled)
-               || count($trainStationboard['departures'][$i]->remarks) != 0
-        ) {
-            $i++;
-            if ($i == $countDepartures) {
-                $this->markTestSkipped("Unable to find unbroken train. Is it stormy in $stationName?");
-            }
-        }
-        $departure = $trainStationboard['departures'][$i];
-        CheckinTest::isCorrectHafasTrip($departure, $timestamp);
-
-        // Third: Get the trip information
-        try {
-            $hafasTrip = TrainCheckinController::getHafasTrip(
-                tripId:   $departure->tripId,
-                lineName: $departure->line->name,
-                startId:  $departure->stop->location->id
-            );
-        } catch (HafasException $e) {
-            $this->markTestSkipped($e->getMessage());
-        }
-
-        $eventId = 0;
-        if ($forEvent !== null) {
-            try {
-                $eventId = Event::firstOrFail()->id;
-            } catch (ModelNotFoundException) {
-                $this->markTestSkipped("No event found even though required");
-            }
-        }
-
-        // WHEN: User tries to check-in
-        try {
-            $origin      = $hafasTrip->originStation;
-            $departure   = $hafasTrip->departure;
-            $destination = $hafasTrip->destinationStation;
-            $arrival     = $hafasTrip->arrival;
-            $event       = $eventId === null ? null : Event::find($eventId);
-
-            $backendResponse = TrainCheckinController::checkin(
-                user:        $user,
-                hafasTrip:   $hafasTrip,
-                origin:      $origin,
-                departure:   $departure,
-                destination: $destination,
-                arrival:     $arrival,
-                visibility:  $statusVisibility,
-                event:       $event
-            );
-
-            $status       = $backendResponse['status'];
-            $trainCheckin = $status->trainCheckin;
-
-            //Legacy return to be compatible with old tests
-            return [
-                'success'              => true,
-                'statusId'             => $status->id,
-                'points'               => $trainCheckin->points,
-                'alsoOnThisConnection' => $trainCheckin->alsoOnThisConnection,
-                'lineName'             => $hafasTrip->linename,
-                'distance'             => $trainCheckin->distance,
-                'duration'             => $trainCheckin->duration,
-                'event'                => $event
-            ];
-        } catch (StationNotOnTripException) {
-            $this->markTestSkipped("failure in checkin creation for " . $stationName . ": Station not in stopovers");
-        } catch (CheckInCollisionException) {
-            $this->markTestSkipped("failure for " . $timestamp->format('Y-m-d H:i:s') . ": Collision");
-        } catch (HafasException $exception) {
-            $this->markTestSkipped($exception->getMessage());
-        }
-    }
-
-    public function checkHafasException(TestResponse $response, int $status = 503): void {
-        if ($response->getStatusCode() === $status) {
-            $this->markTestIncomplete("HafasException");
-        }
     }
 }

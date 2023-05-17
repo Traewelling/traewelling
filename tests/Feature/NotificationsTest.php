@@ -79,12 +79,12 @@ class NotificationsTest extends TestCase
         // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
         TrainCheckinController::checkin(
-            user:         $bob,
-            hafasTrip:    $aliceCheckIn->HafasTrip,
-            origin:       $aliceCheckIn->originStation,
-            departure:    $aliceCheckIn->departure,
-            destination:  $aliceCheckIn->destinationStation,
-            arrival:      $aliceCheckIn->arrival,
+            user:        $bob,
+            hafasTrip:   $aliceCheckIn->HafasTrip,
+            origin:      $aliceCheckIn->originStation,
+            departure:   $aliceCheckIn->departure,
+            destination: $aliceCheckIn->destinationStation,
+            arrival:     $aliceCheckIn->arrival,
         );
 
         // THEN: Alice should see that in their notification
@@ -115,22 +115,20 @@ class NotificationsTest extends TestCase
      * @test
      */
     public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void {
-        // GIVEN: Alice checked-into a train.
-        $alice     = User::factory()->create();
-        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
-        $this->checkin(
-            stationName: "Frankfurt(Main)Hbf",
-            timestamp:   $timestamp,
-            user:        $alice,
-        );
+        // GIVEN: A mocked checkin for Alice
+        $alice        = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $aliceCheckIn = TrainCheckin::factory(['user_id' => $alice->id])->create();
 
-        // WHEN: Bob also checks into the train
-        $bob = User::factory()->create();
-        $this->checkin(
-            stationName:      "Frankfurt(Main)Hbf",
-            timestamp:        $timestamp,
-            user:             $bob,
-            statusVisibility: StatusVisibility::PRIVATE,
+        // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
+        $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        TrainCheckinController::checkin(
+            user:        $bob,
+            hafasTrip:   $aliceCheckIn->HafasTrip,
+            origin:      $aliceCheckIn->originStation,
+            departure:   $aliceCheckIn->departure,
+            destination: $aliceCheckIn->destinationStation,
+            arrival:     $aliceCheckIn->arrival,
+            visibility:  StatusVisibility::PRIVATE // <-- important in this test
         );
 
         // THEN: Alice should NOT see that in their notification, because the Status is Private
