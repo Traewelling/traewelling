@@ -31,38 +31,18 @@ class StatusTest extends ApiTestCase
         $this->assertEquals('User doesn\'t have any checkins', $response->json('message'));
     }
 
-    public function testActiveStatusesWithActiveStatus(): void {
+    public function testActiveStatusesShowStatusesCurrentlyUnderway(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
 
-        $status  = Status::factory([
-                                       'user_id' => $user->id,
-                                   ])->create();
         $checkin = TrainCheckin::factory([
-                                             'status_id' => $status->id,
                                              'user_id'   => $user->id,
                                              'departure' => $departure,
                                              'arrival'   => $arrival,
                                          ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Origin->id,
-                                   'arrival_planned'   => $departure,
-                                   'arrival_real'      => $departure,
-                                   'departure_planned' => $departure,
-                                   'departure_real'    => $departure,
-                               ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Destination->id,
-                                   'arrival_planned'   => $arrival,
-                                   'arrival_real'      => $arrival,
-                                   'departure_planned' => $arrival,
-                                   'departure_real'    => $arrival,
-                               ])->create();
 
         $response = $this->get(
             uri:     '/api/v1/user/statuses/active',
