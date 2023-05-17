@@ -252,7 +252,10 @@ abstract class TestCase extends BaseTestCase
      * @param StatusVisibility $statusVisibility
      *
      * @return array|null
-     * @throws TrainCheckinAlreadyExistException|NotConnectedException|AlreadyCheckedInException
+     * @throws TrainCheckinAlreadyExistException|NotConnectedException|AlreadyCheckedInException|StationNotOnTripException
+     *
+     * @deprecated Please do not use this function (unless you really want to test DB-Rest!).
+     *             Please use the factories instead. For a TrainCheckin e.g. TrainCheckin::factory()->create();
      */
     #[ArrayShape([
         'success'              => "bool",
