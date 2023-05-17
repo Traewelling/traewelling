@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enum\StatusVisibility;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
@@ -70,21 +72,19 @@ class NotificationsTest extends TestCase
      * @test
      */
     public function bob_joining_on_alices_connection_should_spawn_a_notification(): void {
-        // GIVEN: Alice checked-into a train.
-        $alice     = $this->createGDPRAckedUser();
-        $timestamp = Carbon::now()->setHour(7)->setMinute(45);
-        $this->checkin(
-            stationName: "Frankfurt(Main)Hbf",
-            timestamp:   $timestamp,
-            user:        $alice,
-        );
+        // GIVEN: A mocked checkin for Alice
+        $alice        = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $aliceCheckIn = TrainCheckin::factory(['user_id' => $alice->id])->create();
 
-        // WHEN: Bob also checks into the train
-        $bob = $this->createGDPRAckedUser();
-        $this->checkin(
-            stationName: "Frankfurt(Main)Hbf",
-            timestamp:   $timestamp,
-            user:        $bob
+        // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
+        $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        TrainCheckinController::checkin(
+            user:         $bob,
+            hafasTrip:    $aliceCheckIn->HafasTrip,
+            origin:       $aliceCheckIn->originStation,
+            departure:    $aliceCheckIn->departure,
+            destination:  $aliceCheckIn->destinationStation,
+            arrival:      $aliceCheckIn->arrival,
         );
 
         // THEN: Alice should see that in their notification
