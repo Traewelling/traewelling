@@ -57,8 +57,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['middleware' => ['scope:write-statuses']], static function() {
             Route::delete('status/{id}', [StatusController::class, 'destroy'])->whereNumber('id');
             Route::put('status/{id}', [StatusController::class, 'update']);
-            Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-            Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
@@ -66,8 +64,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['middleware' => ['scope:write-likes']], static function() {
             Route::post('status/{id}/like', [LikesController::class, 'create']);
             Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
-            Route::post('like/{statusId}', [LikesController::class, 'create']);         //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
-            Route::delete('like/{status}', [LikesController::class, 'destroy']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         });
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
@@ -103,10 +99,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::group(['middleware' => ['scope:write-follows']], static function() {
                 Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
-                Route::post('createFollow', [FollowController::class, 'createFollow']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
-                Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
             });
-            Route::group(['middleware' => ['scope:write-followers']], static function(){
+            Route::group(['middleware' => ['scope:write-followers']], static function() {
                 Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
                 Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
                 Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
@@ -116,8 +110,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
                 Route::post('/{userId}/mute', [UserController::class, 'createMute']);
                 Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
-                Route::post('createMute', [UserController::class, 'createMute']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
-                Route::delete('destroyMute', [UserController::class, 'destroyMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             });
             Route::get('search/{query}', [UserController::class, 'search'])->middleware(['scope:read-search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus'])
@@ -173,17 +165,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('statuses', [StatusController::class, 'enRoute']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
-            Route::get('statuses/{id}', [StatusController::class, 'show']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-            Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
-        Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
-        Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
-        Route::get('event/{slug}', [EventController::class, 'show']);
-        Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
-        Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
-        Route::get('events', [EventController::class, 'upcoming']);
-        Route::get('user/{username}', [UserController::class, 'show']);
-        Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+            Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+            Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+            Route::get('event/{slug}', [EventController::class, 'show']);
+            Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
+            Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+            Route::get('events', [EventController::class, 'upcoming']);
+            Route::get('user/{username}', [UserController::class, 'show']);
+            Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });
         Route::group(['middleware' => ['semiscope:read-statistics']], static function() {
             Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);
