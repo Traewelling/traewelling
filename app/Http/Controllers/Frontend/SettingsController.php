@@ -23,6 +23,25 @@ use Illuminate\Validation\Rules\Enum;
 class SettingsController extends Controller
 {
 
+    /**
+     * @return Renderable
+     * @deprecated
+     */
+    public function renderFollowerSettings(): Renderable {
+        return view('settings.follower', [
+            'requests'  => auth()->user()->followRequests()->with('user')->paginate(15),
+            'followers' => auth()->user()->followers()->with('user')->paginate(15)
+        ]);
+    }
+
+    public function renderBlockedUsers(): Renderable {
+        return view('settings.blocks');
+    }
+
+    public function renderMutedUsers(): Renderable {
+        return view('settings.mutes');
+    }
+
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
@@ -71,7 +90,6 @@ class SettingsController extends Controller
                                         ]);
 
 
-
         $user = auth()->user();
         $user->update([
                           'likes_enabled'             => isset($validated['likes_enabled'])
@@ -107,10 +125,40 @@ class SettingsController extends Controller
         return back()->with('info', __('controller.user.password-changed-ok'));
     }
 
-    public function renderSettings(): Renderable {
-        return view('settings.settings', [
+    public function renderProfile(): Renderable {
+        return view('settings.profile');
+    }
+
+    public function renderPrivacy(): Renderable {
+        return view('settings.privacy');
+    }
+
+    public function renderAccount(): Renderable {
+        return view('settings.account');
+    }
+
+    public function renderLoginProviders(): Renderable {
+        return view('settings.login-providers');
+    }
+
+    public function renderSessions(): Renderable {
+        return view('settings.sessions', [
             'sessions' => SessionController::index(user: auth()->user()),
-            'tokens'   => TokenController::index(user: auth()->user()),
+        ]);
+    }
+
+    public function renderIcs(): Renderable {
+        return view('settings.ics');
+    }
+
+    public function renderToken(): Renderable {
+        return view('settings.api-token', [
+            'tokens' => TokenController::index(user: auth()->user()),
+        ]);
+    }
+
+    public function renderWebhooks(): Renderable {
+        return view('settings.webhooks', [
             'webhooks' => WebhookController::index(user: auth()->user()),
         ]);
     }

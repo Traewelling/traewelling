@@ -158,16 +158,27 @@ Route::middleware(['auth', 'privacy'])->group(function() {
             Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');
         });
 
-        Route::get('/', [SettingsController::class, 'renderSettings'])
-             ->name('settings');
+        Route::redirect('/', 'settings.profile')->name('settings');
+        Route::get('/profile', [SettingsController::class, 'renderProfile'])->name('settings.profile');
+        Route::get('/privacy', [SettingsController::class, 'renderPrivacy'])->name('settings.privacy');
         Route::post('/', [SettingsController::class, 'updateMainSettings']);
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
-             ->name('settings.privacy');
+             ->name('settings.privacy.update');
 
-        Route::post('/password', [SettingsController::class, 'updatePassword'])
+        Route::get('/account', [SettingsController::class, 'renderAccount'])->name('settings.account');
+        Route::post('/account/update', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
 
-        Route::get('/follower', [\App\Http\Controllers\SettingsController::class, 'renderFollowerSettings'])
+        Route::get('/security/login-providers', [SettingsController::class, 'renderLoginProviders'])
+             ->name('settings.login-providers');
+        Route::get('/security/sessions', [SettingsController::class, 'renderSessions'])
+             ->name('settings.sessions');
+
+        Route::get('/security/ics', [SettingsController::class, 'renderIcs'])->name('settings.ics');
+        Route::get('/security/api-tokens', [SettingsController::class, 'renderToken'])->name('settings.tokens');
+        Route::get('/security/webhooks', [SettingsController::class, 'renderWebhooks'])->name('settings.webhooks');
+
+        Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
              ->name('settings.follower');
         Route::post('/follower/remove', [\App\Http\Controllers\SettingsController::class, 'removeFollower'])
              ->name('settings.follower.remove');
@@ -175,6 +186,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('settings.follower.approve');
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
              ->name('settings.follower.reject');
+
+        Route::get('/blocks', [SettingsController::class, 'renderBlockedUsers'])->name('settings.blocks');
+        Route::get('/mutes', [SettingsController::class, 'renderMutedUsers'])->name('settings.mutes');
 
         Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
              ->name('settings.upload-image');

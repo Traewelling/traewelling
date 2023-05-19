@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-mdb-theme="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
+        <title>{{__('menu.settings')}} - {{ config('app.name', 'Träwelling') }}</title>
 
         @include('layouts.includes.meta')
 
-        <!-- Scripts -->
-        <script src="{{ mix('js/admin.js') }}"></script>
-
-        <!-- Fonts -->
+        <script src="{{ mix('js/app.js') }}"></script>
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
-
-        <!-- Styles -->
-        <link href="{{ mix('css/admin.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -22,107 +17,271 @@
         <link rel="manifest" href="/manifest.json"/>
 
         @yield('head')
+
+        <style>
+          body {
+            font-size: .875rem;
+          }
+
+          .feather {
+            width: 16px;
+            height: 16px;
+          }
+
+          /*
+           * Sidebar
+           */
+
+          .sidebar {
+            position: fixed;
+            top: 0;
+            /* rtl:raw:
+            right: 0;
+            */
+            bottom: 0;
+            /* rtl:remove */
+            left: 0;
+            z-index: 100; /* Behind the navbar */
+            padding: 48px 0 0; /* Height of navbar */
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+          }
+
+          @media (max-width: 767.98px) {
+            .sidebar {
+              top: 5rem;
+            }
+          }
+
+          .sidebar-sticky {
+            height: calc(100vh - 48px);
+            overflow-x: hidden;
+            overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+          }
+
+          .sidebar .nav-link {
+            font-weight: 500;
+            color: #333;
+          }
+
+          .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #727272;
+          }
+
+          .sidebar .nav-link.active {
+            color: #2470dc;
+          }
+
+          .sidebar .nav-link:hover .feather,
+          .sidebar .nav-link.active .feather {
+            color: inherit;
+          }
+
+          .sidebar-heading {
+            font-size: .75rem;
+          }
+
+          /*
+           * Navbar
+           */
+
+          .navbar-brand {
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            background-color: rgba(0, 0, 0, .25);
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+          }
+
+          .navbar .navbar-toggler {
+            top: .25rem;
+            right: 1rem;
+          }
+
+          .navbar .form-control {
+            padding: .75rem 1rem;
+          }
+
+          .form-control-dark {
+            color: #fff;
+            background-color: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .1);
+          }
+
+          .form-control-dark:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+          }
+
+
+          .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+          }
+
+          @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+              font-size: 3.5rem;
+            }
+          }
+
+          .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+          }
+
+          .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+          }
+
+          .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+          }
+
+          .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+          }
+
+          .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+          }
+
+        </style>
     </head>
-    <body class="bg-dark">
-        <main>
-            <div class="d-flex flex-column col-3 d-none d-md-flex"></div>
+    <body>
+        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>&nbsp;Zurück zu Träwelling
+            </a>
+            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button"
+                    data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </header>
 
-            <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
-                <a href="{{ route('dashboard') }}"
-                   class="justify-content-center mb-3 mx-auto text-white text-decoration-none">
-                    <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
-                         class="brand-image me-3" style="width: 110px">
-                </a>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link text-muted">
-                            <i class="fas fa-backward me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
-                        </a>
-                    </li>
-                    <!--
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="fas fa-user me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Profil</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
-                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Privacy</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
-                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Zugänge</span>
-                        </a>
-                    </li>
-                    -->
-                    <li>
-                        <a href="{{ route('dev.apps') }}"
-                           class="nav-link text-white {{ request()->is('settings/applications*') ? 'active' : '' }}">
-                            <i class="fas fa-code me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">
-                                Develop
-                                <span class="badge text-bg-warning">beta</span>
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('l5-swagger.default.api') }}" target="trwldocs"
-                           class="nav-link text-white ms-2 {{ request()->is('settings/applications*') ? '' : 'd-none' }}">
-                            <i class="fas fa-flask me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">
-                                API Docs
-                                <span class="badge text-bg-danger">incomplete</span>
-                            </span>
-                        </a>
-                    </li>
-                    <hr>
-                    <li>
-                        <a href="#" onclick="document.getElementById('logout-form').submit();"
-                           class="nav-link text-white {{ request()->is('admin/api/usage*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-sign-out-alt me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Logout</span>
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
-            </div>
+        <div class="container-fluid">
+            <div class="row">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-body-tertiary sidebar collapse">
+                    <div class="position-sticky pt-3 sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{{route('settings.profile')}}">
+                                    <i class="fas fa-user" aria-hidden="true"></i>
+                                    {{ __('settings.title-profile') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.privacy')}}">
+                                    <i class="fas fa-user-secret" aria-hidden="true"></i>
+                                    {{ __('menu.privacy') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.follower')}}">
+                                    <i class="fas fa-users" aria-hidden="true"></i>
+                                    {{ __('menu.settings.myFollower') }}
+                                </a>
+                            </li>
+                            @if(auth()->user()->mutedUsers->count() > 0)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('settings.mutes')}}">
+                                        <i class="fas fa-ban" aria-hidden="true"></i>
+                                        {{ __('user.muted.heading2') }}
+                                    </a>
+                                </li>
+                            @endif
+                            @if(auth()->user()->blockedUsers->count() > 0)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('settings.blocks')}}">
+                                        <i class="fas fa-ban" aria-hidden="true"></i>
+                                        {{ __('user.blocked.heading2') }}
+                                    </a>
+                                </li>
+                            @endif
+                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+                                <span>Security</span>
+                            </h6>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.login-providers')}}">
+                                    <i class="fas fa-plug" aria-hidden="true"></i>
+                                    {{ __('settings.title-loginservices') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.sessions')}}">
+                                    <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                                    {{ __('settings.title-sessions') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.ics')}}">
+                                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                    {{ __('settings.title-ics') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.tokens')}}">
+                                    <i class="fas fa-shapes" aria-hidden="true"></i>
+                                    {{ __('settings.title-tokens') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.webhooks')}}">
+                                    <i class="fas fa-shapes" aria-hidden="true"></i>
+                                    {{ __('settings.title-webhooks') }}
+                                </a>
+                            </li>
+                        </ul>
 
-            <div class="container-fluid bg-light px-5 pt-4 bg-dark text-white" style="overflow-y: scroll !important;">
-                <div class="row">
-                    <div class="col-12 col-lg-10 col-xl-8">
-                        @include('includes.message-block')
-                        <div class="my-4">
-                            @hasSection('additional-content-end')
-                                <span class="float-end">
-                                 @yield('additional-content-end')
-                             </span>
-                            @endif
-                            @hasSection('title')
-                                <h1 class="fs-4 mb-0 mt-5">@yield('title')</h1>
-                            @endif
-                            @hasSection('subtitle')
-                                <p>@yield('subtitle')</p>
-                            @endif
-
-                            <hr class="my-4"/>
-                            @yield('content')
+                        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+                            <span>Extra</span>
+                        </h6>
+                        <ul class="nav flex-column mb-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('settings.account')}}">
+                                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                    {{ __('settings.tab.account') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('dev.apps')}}">
+                                    <i class="fas fa-flask"></i>
+                                    {{ __('settings.title-appdevelopment') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-7">
+                                @yield('content')
+                            </div>
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
-        </main>
+        </div>
     </body>
-
-    @include('includes.modals.notifications-board')
-    @yield('footer')
 </html>

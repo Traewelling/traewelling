@@ -3,13 +3,19 @@
 @section('title', 'Deine Anwendungen')
 
 @section('additional-content-end')
-    <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-success">
-        Anwendung erstellen
-    </a>
+
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="row mt-3">
+        <div class="col-12 mb-2">
+            <a href="/api/documentation" target="_blank" class="btn btn-outline-info">
+                API Docs
+            </a>
+            <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-success float-end">
+                Anwendung erstellen
+            </a>
+        </div>
         <div class="col-12">
             @if($apps->count() > 0)
                 <table class="table table-striped table-dark">

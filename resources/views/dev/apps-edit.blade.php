@@ -4,7 +4,7 @@
 @section('title', request()->is('dev.apps.create') ? 'Anwendung erstellen' : 'Anwendung bearbeiten') <!-- ToDo: Übersetzen -->
 
 @section('content')
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
             <form enctype="multipart/form-data" method="POST"
                   action="{{Route::currentRouteName() === 'dev.apps.create' ? route('dev.apps.create.post') : route('dev.apps.edit', ['appId' => $app->id]) }}"
@@ -27,14 +27,16 @@
                         </table>
                         <hr>
                     </div>
+                    <div class="alert alert-warning">
+                        @if($app->confidential())
+                            WARNING: Changing the <code>confidential</code> field will delete your client secret and
+                            revoke all existing tokens.
+                        @else
+                            WARNING: Changing the <code>confidential</code> field will generate a new client secret and
+                            revoke all existing tokens.
+                        @endif
+                    </div>
                 @endisset
-                <div class="alert alert-warning">
-                    @if($app->confidential())
-                    WARNING: Changing the <code>confidential</code> field will delete your client secret and revoke all existing tokens.
-                    @else
-                    WARNING: Changing the <code>confidential</code> field will generate a new client secret and revoke all existing tokens.
-                    @endif
-                </div>
                 <div class="form-group row my-1">
                     <label for="name" class="col-md-4 col-form-label text-md-right">
                         Name
@@ -66,7 +68,7 @@
                         <input id="confidential" type="checkbox" name="confidential"
                                @if(!$app || $app->confidential())
                                    checked
-                               @endif
+                                @endif
                         >
                     </div>
 
