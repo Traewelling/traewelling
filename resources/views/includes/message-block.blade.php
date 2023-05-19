@@ -29,7 +29,22 @@
 
             @if(!request()->routeIs('gdpr.intercept'))
                 @include('includes.messages.mail-verification')
-                @include('includes.messages.checkin-success')
+            @endif
+            @if(session()->has('checkin-success'))
+                @php $success = session()->get('checkin-success') @endphp
+                <x-checkin-success
+                        :id="$success->id"
+                        :distance="$success->distance"
+                        :duration="$success->duration"
+                        :points="$success->points"
+                        :pointReason="$success->pointReason->value"
+                        :lineName="$success->lineName"
+                        :socialText="$success->socialText"
+                        :alsoOnThisConnection="$success->alsoOnThisConnection"
+                        :event="$success->event"
+                        :forced="$success->forced"
+                        :reason="$success->reason"
+                />
             @endif
             <div id="alert_placeholder"></div>
         </div>

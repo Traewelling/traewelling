@@ -1,8 +1,10 @@
-@if(session()->has('checkin-success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+@php use App\Enum\PointReason; @endphp
+<div>
+    <div class="alert alert-success fade show" role="alert">
+        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
         <h4 class="alert-heading">
             <i class="fa-solid fa-check"></i>
-            @if(isset(session()->get('checkin-success')['reason']) && session()->get('checkin-success')['reason'] == 'status-updated')
+            @if($reason === 'status-updated')
                 {{ __('status.update.success') }}
             @else
                 {{ __('controller.transport.checkin-heading') }}
@@ -10,8 +12,8 @@
         </h4>
 
         <p>
-            <span>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', session()->get('checkin-success')['lineName']), ['lineName' => session()->get('checkin-success')['lineName']]) }}</span>
-            @if(session()->get('checkin-success')["pointsCalculationReason"]  === App\Enum\PointReason::NOT_SUFFICIENT)
+            <span>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', $lineName), ['lineName' => $lineName]) }}</span>
+            @if($pointReason === PointReason::NOT_SUFFICIENT)
                 <br/>
                 <span style="display: block;" class="text-danger mt-2">
                     <i class="fa-solid fa-circle-info"></i>
@@ -21,7 +23,7 @@
                     </a>
                 </span>
             @endif
-            @if(session()->get('checkin-success')['points'] == 1 && session()->get('checkin-success')['forced'])
+            @if($points === 1 && $forced)
                 <br/>
                 <span class="text-danger">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -29,11 +31,11 @@
                 </span>
             @endif
         </p>
-        @if(session()->get('checkin-success')['alsoOnThisConnection']->count() >= 1)
-            <span>{{ trans_choice('controller.transport.also-in-connection', session()->get('checkin-success')['alsoOnThisConnection']->count()) }}</span>
+        @if($alsoOnThisConnection->count() >= 1)
+            <span>{{ trans_choice('controller.transport.also-in-connection', $alsoOnThisConnection->count()) }}</span>
             <table style="margin-left: auto;margin-right: auto;">
                 <tbody>
-                    @foreach(session()->get('checkin-success')['alsoOnThisConnection'] as $otherStatus)
+                    @foreach($alsoOnThisConnection as $otherStatus)
                         @if(request()->user()->cannot('view', $otherStatus))
                             <tr>
                                 <td colspan="5">
@@ -59,28 +61,35 @@
                 </tbody>
             </table>
         @endif
-        @if(session()->get('checkin-success')['event'])
+        @if($event)
             <p>
                 {!!  __('events.on-your-way', [
-                    "name" => session()->get('checkin-success')['event']['name'],
-                    "url" => route('statuses.byEvent', ['eventSlug' => session()->get('checkin-success')['event']['slug']])
+                    "name" => $event['name'],
+                    "url" => route('statuses.byEvent', ['eventSlug' => $event['slug']])
                 ]) !!}
             </p>
         @endif
         <hr>
         <p class="mb-0">
+            <button
+                    class="btn btn-outline-success btn-sm float-end trwl-share"
+                    data-trwl-share-url="{{ route('statuses.get', ['id' => $id]) }}"
+                    data-trwl-share-text="{{ $socialText }}"
+            >
+                <span class="d-none d-sm-inline">{{__('menu.share')}} </span><i class="fas fa-share" aria-hidden="true"></i>
+                <span class="sr-only">{{__('menu.share')}}</span>
+            </button>
             <i class="fa fa-stopwatch d-inline"></i>&nbsp;
-            <b>{!! durationToSpan(secondsToDuration(session()->get('checkin-success')['duration'] * 60)) !!}</b>
+            <b>{!! durationToSpan(secondsToDuration($duration * 60)) !!}</b>
             —
             <i class="fa fa-route d-inline"></i>&nbsp;
             <b>
-                {{ number(session()->get('checkin-success')['distance'] / 1000) }}
+                {{ number($distance / 1000) }}
                 <small>km</small>
             </b>
             —
             <i class="fa fa-dice-d20 d-inline"></i>&nbsp;
-            <b>{{ session()->get('checkin-success')['points'] }}<small>{{__('profile.points-abbr')}}</small></b>
+            <b>{{ $points }}<small>{{__('profile.points-abbr')}}</small></b>
         </p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-@endif
+</div>

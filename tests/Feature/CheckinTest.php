@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
@@ -148,7 +149,9 @@ class CheckinTest extends TestCase
 
         // THEN: The user is redirected to dashboard and flashes the linename.
         $response->assertStatus(302);
-        $response->assertSessionHas('checkin-success.lineName', self::ICE802['line']['name']);
+        $response->assertSessionHas('checkin-success', function($data) {
+            return $data->lineName === self::ICE802['line']['name'];
+        });
 
         // THEN: The user has one status.
         $this->assertCount(1, $user->statuses);
@@ -310,18 +313,19 @@ class CheckinTest extends TestCase
         $user = User::factory()->create();
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
-        $message  = [
-            "distance"                => 72.096,
-            "duration"                => 1860,
-            "points"                  => 18.0,
-            "lineName"                => "ICE 107",
-            "alsoOnThisConnection"    => new Collection(),
-            "event"                   => null,
-            "pointsCalculationReason" => PointReason::IN_TIME
-
-        ];
+        $dto  = new CheckinSuccess(
+            id:                   1,
+            distance:             72.096,
+            duration:             1860,
+            points:               18,
+            pointReason:          PointReason::IN_TIME,
+            lineName:             "ICE 107",
+            socialText:           "example share text",
+            alsoOnThisConnection: new Collection(),
+            event:                null,
+        );
         $response = $this->actingAs($user)
-                         ->withSession(["checkin-success" => $message])
+                         ->withSession(["checkin-success" => $dto])
                          ->followingRedirects()
                          ->get(route('dashboard'));
 
@@ -331,8 +335,8 @@ class CheckinTest extends TestCase
         // With the checkin data
         $response->assertSee(trans_choice(
                                  'controller.transport.checkin-ok',
-                                 preg_match('/\s/', $message['lineName']),
-                                 ['lineName' => $message['lineName']]
+                                 preg_match('/\s/', $dto->lineName),
+                                 ['lineName' => $dto->lineName]
                              ));
 
         // Usual Dashboard stuff
