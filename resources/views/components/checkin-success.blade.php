@@ -76,7 +76,8 @@
                     data-trwl-share-url="{{ route('statuses.get', ['id' => $id]) }}"
                     data-trwl-share-text="{{ $socialText }}"
             >
-                {{__('menu.share')}} <i class="fas fa-share" aria-hidden="true"></i>
+                <span class="d-none d-sm-inline">{{__('menu.share')}} </span><i class="fas fa-share" aria-hidden="true"></i>
+                <span class="sr-only">{{__('menu.share')}}</span>
             </button>
             <i class="fa fa-stopwatch d-inline"></i>&nbsp;
             <b>{!! durationToSpan(secondsToDuration($duration * 60)) !!}</b>
