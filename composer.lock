@@ -6753,16 +6753,16 @@
         },
         {
             "name": "spatie/laravel-validation-rules",
-            "version": "3.2.2",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-validation-rules.git",
-                "reference": "3cbef3441cb274cd3c12409586f18c3a44d46d0a"
+                "reference": "5819eb519decf6948f65ca2fba7ae1bbc1a1e428"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-validation-rules/zipball/3cbef3441cb274cd3c12409586f18c3a44d46d0a",
-                "reference": "3cbef3441cb274cd3c12409586f18c3a44d46d0a",
+                "url": "https://api.github.com/repos/spatie/laravel-validation-rules/zipball/5819eb519decf6948f65ca2fba7ae1bbc1a1e428",
+                "reference": "5819eb519decf6948f65ca2fba7ae1bbc1a1e428",
                 "shasum": ""
             },
             "require": {
@@ -6814,7 +6814,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-validation-rules/issues",
-                "source": "https://github.com/spatie/laravel-validation-rules/tree/3.2.2"
+                "source": "https://github.com/spatie/laravel-validation-rules/tree/3.3.0"
             },
             "funding": [
                 {
@@ -6822,7 +6822,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-25T16:22:06+00:00"
+            "time": "2023-05-09T14:23:17+00:00"
         },
         {
             "name": "spatie/laravel-webhook-server",
