@@ -31,38 +31,18 @@ class StatusTest extends ApiTestCase
         $this->assertEquals('User doesn\'t have any checkins', $response->json('message'));
     }
 
-    public function testActiveStatusesWithActiveStatus(): void {
+    public function testActiveStatusesShowStatusesCurrentlyUnderway(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
 
-        $status  = Status::factory([
-                                       'user_id' => $user->id,
-                                   ])->create();
         $checkin = TrainCheckin::factory([
-                                             'status_id' => $status->id,
                                              'user_id'   => $user->id,
                                              'departure' => $departure,
                                              'arrival'   => $arrival,
                                          ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Origin->id,
-                                   'arrival_planned'   => $departure,
-                                   'arrival_real'      => $departure,
-                                   'departure_planned' => $departure,
-                                   'departure_real'    => $departure,
-                               ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Destination->id,
-                                   'arrival_planned'   => $arrival,
-                                   'arrival_real'      => $arrival,
-                                   'departure_planned' => $arrival,
-                                   'departure_real'    => $arrival,
-                               ])->create();
 
         $response = $this->get(
             uri:     '/api/v1/user/statuses/active',
@@ -97,38 +77,18 @@ class StatusTest extends ApiTestCase
         $this->assertEquals($checkin->destinationStation->id, $response->json('data.train.destination.id'));
     }
 
-    public function testActiveStatusesWithInactiveStatus(): void {
+    public function testActiveStatusesDontShowStatusesFromTheFuture(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $departure = Date::now()->addHour();
         $arrival   = Date::now()->addHours(2);
 
-        $status  = Status::factory([
-                                       'user_id' => $user->id,
-                                   ])->create();
-        $checkin = TrainCheckin::factory([
-                                             'status_id' => $status->id,
-                                             'user_id'   => $user->id,
-                                             'departure' => $departure,
-                                             'arrival'   => $arrival,
-                                         ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Origin->id,
-                                   'arrival_planned'   => $departure,
-                                   'arrival_real'      => $departure,
-                                   'departure_planned' => $departure,
-                                   'departure_real'    => $departure,
-                               ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $checkin->Destination->id,
-                                   'arrival_planned'   => $arrival,
-                                   'arrival_real'      => $arrival,
-                                   'departure_planned' => $arrival,
-                                   'departure_real'    => $arrival,
-                               ])->create();
+        TrainCheckin::factory([
+                                  'user_id'   => $user->id,
+                                  'departure' => $departure,
+                                  'arrival'   => $arrival,
+                              ])->create();
 
         $response = $this->get(
             uri:     '/api/v1/user/statuses/active',
@@ -179,63 +139,30 @@ class StatusTest extends ApiTestCase
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
-        $firstDeparture = Date::now()->addHour();
-        $secondArrival  = Date::now()->addHours(2);
-        $thirdArrival   = Date::now()->addHours(3);
+        $checkin = TrainCheckin::factory(['user_id' => $user->id])->create();
 
-        $firstStation  = TrainStation::factory()->create();
-        $secondStation = TrainStation::factory()->create();
-        $thirdStation  = TrainStation::factory()->create();
-
-        $status  = Status::factory([
-                                       'user_id'    => $user->id,
-                                       'visibility' => StatusVisibility::PRIVATE->value,
-                                       'business'   => Business::PRIVATE->value,
-                                   ])->create();
-        $checkin = TrainCheckin::factory([
-                                             'status_id'   => $status->id,
-                                             'user_id'     => $user->id,
-                                             'origin'      => $firstStation->ibnr,
-                                             'departure'   => $firstDeparture->toDateTimeString(),
-                                             'destination' => $secondStation->ibnr,
-                                             'arrival'     => $secondArrival->toDateTimeString(),
-                                         ])->create();
-
+        //Create a new stopover now (factory creates departure 1 hour ago and arrival in 1 hour)
+        $newStation     = TrainStation::factory()->create();
+        $thirdTimestamp = Date::now()->setSecond(0);
         TrainStopover::factory([
                                    'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $firstStation->id,
-                                   'arrival_planned'   => $firstDeparture,
-                                   'arrival_real'      => $firstDeparture,
-                                   'departure_planned' => $firstDeparture,
-                                   'departure_real'    => $firstDeparture,
-                               ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $secondStation->id,
-                                   'arrival_planned'   => $secondArrival,
-                                   'arrival_real'      => $secondArrival,
-                                   'departure_planned' => $secondArrival,
-                                   'departure_real'    => $secondArrival,
-                               ])->create();
-        TrainStopover::factory([
-                                   'trip_id'           => $checkin->trip_id,
-                                   'train_station_id'  => $thirdStation->id,
-                                   'arrival_planned'   => $thirdArrival,
-                                   'arrival_real'      => $thirdArrival,
-                                   'departure_planned' => $thirdArrival,
-                                   'departure_real'    => $thirdArrival,
+                                   'train_station_id'  => $newStation->id,
+                                   'arrival_planned'   => $thirdTimestamp,
+                                   'arrival_real'      => $thirdTimestamp,
+                                   'departure_planned' => $thirdTimestamp,
+                                   'departure_real'    => $thirdTimestamp,
                                ])->create();
 
-        $this->assertEquals($checkin->originStation->id, $firstStation->id);
-        $this->assertEquals($checkin->destinationStation->id, $secondStation->id);
+        $this->assertNotEquals($checkin->originStation->id, $newStation->id);
+        $this->assertNotEquals($checkin->destinationStation->id, $newStation->id);
 
         $response = $this->put(
-            uri:     '/api/v1/status/' . $status->id,
+            uri:     '/api/v1/status/' . $checkin->status_id,
             data:    [
                          'visibility'                => StatusVisibility::PUBLIC->value,
                          'business'                  => Business::BUSINESS->value,
-                         'destinationId'             => $thirdStation->id,
-                         'destinationArrivalPlanned' => $thirdArrival->toDateTimeString(),
+                         'destinationId'             => $newStation->id,
+                         'destinationArrivalPlanned' => $thirdTimestamp->toDateTimeString(),
                      ],
             headers: ['Authorization' => 'Bearer ' . $userToken],
         );
@@ -243,7 +170,6 @@ class StatusTest extends ApiTestCase
 
         $checkin = $checkin->fresh();
 
-        $this->assertEquals($checkin->originStation->id, $firstStation->id);
-        $this->assertEquals($checkin->destinationStation->id, $thirdStation->id);
+        $this->assertEquals($checkin->destinationStation->id, $newStation->id);
     }
 }
