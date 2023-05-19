@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
@@ -189,16 +190,17 @@ class FrontendTransportController extends Controller
 
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
-            return redirect()->route('dashboard')->with('checkin-success', [
-                'distance'                => $trainCheckin->distance,
-                'duration'                => $trainCheckin->duration,
-                'points'                  => $trainCheckin->points,
-                'lineName'                => $trainCheckin->HafasTrip->linename,
-                'alsoOnThisConnection'    => $trainCheckin->alsoOnThisConnection,
-                'event'                   => $trainCheckin->event,
-                'forced'                  => isset($validated['force']),
-                'pointsCalculationReason' => $backendResponse['points']->reason,
-            ]);
+            $checkinSuccess = new CheckinSuccess(
+                distance: $trainCheckin->distance,
+                duration: $trainCheckin->duration,
+                points: $trainCheckin->points,
+                pointReason: $backendResponse['points']->reason,
+                lineName: $trainCheckin->HafasTrip->linename,
+                alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
+                event: $trainCheckin->event,
+                forced: isset($validated['force'])
+            );
+            return redirect()->route('dashboard')->with('checkin-success', (clone $checkinSuccess));
 
         } catch (CheckInCollisionException $exception) {
             return redirect()
