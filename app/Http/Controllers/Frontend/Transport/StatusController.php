@@ -50,11 +50,13 @@ class StatusController extends Controller
                 $status->fresh();
 
                 $checkinSuccess = new CheckinSuccess(
+                    id: $status->id,
                     distance: $status->trainCheckin->distance,
                     duration: $status->trainCheckin->duration,
                     points: $status->trainCheckin->points,
                     pointReason: $pointReason,
                     lineName: $status->trainCheckin->HafasTrip->linename,
+                    socialText: $status->socialText,
                     alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
                     event: $status->trainCheckin->event,
                     forced:  false,

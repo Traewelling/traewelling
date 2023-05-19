@@ -1,5 +1,7 @@
+@php use App\Enum\PointReason; @endphp
 <div>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success fade show" role="alert">
+        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
         <h4 class="alert-heading">
             <i class="fa-solid fa-check"></i>
             @if($reason === 'status-updated')
@@ -11,7 +13,7 @@
 
         <p>
             <span>{{ trans_choice('controller.transport.checkin-ok', preg_match('/\s/', $lineName), ['lineName' => $lineName]) }}</span>
-            @if($pointReason === \App\Enum\PointReason::NOT_SUFFICIENT)
+            @if($pointReason === PointReason::NOT_SUFFICIENT)
                 <br/>
                 <span style="display: block;" class="text-danger mt-2">
                     <i class="fa-solid fa-circle-info"></i>
@@ -69,6 +71,13 @@
         @endif
         <hr>
         <p class="mb-0">
+            <button
+                    class="btn btn-outline-success btn-sm float-end trwl-share"
+                    data-trwl-share-url="{{ route('statuses.get', ['id' => $id]) }}"
+                    data-trwl-share-text="{{ $socialText }}"
+            >
+                {{__('menu.share')}} <i class="fas fa-share" aria-hidden="true"></i>
+            </button>
             <i class="fa fa-stopwatch d-inline"></i>&nbsp;
             <b>{!! durationToSpan(secondsToDuration($duration * 60)) !!}</b>
             —
@@ -81,6 +90,5 @@
             <i class="fa fa-dice-d20 d-inline"></i>&nbsp;
             <b>{{ $points }}<small>{{__('profile.points-abbr')}}</small></b>
         </p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 </div>

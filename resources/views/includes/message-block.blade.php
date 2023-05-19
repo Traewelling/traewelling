@@ -33,11 +33,13 @@
             @if(session()->has('checkin-success'))
                 @php $success = session()->get('checkin-success') @endphp
                 <x-checkin-success
+                        :id="$success->id"
                         :distance="$success->distance"
                         :duration="$success->duration"
                         :points="$success->points"
                         :pointReason="$success->pointReason->value"
                         :lineName="$success->lineName"
+                        :socialText="$success->socialText"
                         :alsoOnThisConnection="$success->alsoOnThisConnection"
                         :event="$success->event"
                         :forced="$success->forced"

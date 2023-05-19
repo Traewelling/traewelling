@@ -191,11 +191,13 @@ class FrontendTransportController extends Controller
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
             $checkinSuccess = new CheckinSuccess(
+                id: $backendResponse['status']->id,
                 distance: $trainCheckin->distance,
                 duration: $trainCheckin->duration,
                 points: $trainCheckin->points,
                 pointReason: $backendResponse['points']->reason,
                 lineName: $trainCheckin->HafasTrip->linename,
+                socialText: $backendResponse['status']->socialText,
                 alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
                 event: $trainCheckin->event,
                 forced: isset($validated['force'])
