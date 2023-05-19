@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Transport;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
@@ -48,18 +49,22 @@ class StatusController extends Controller
                 );
                 $status->fresh();
 
+                $checkinSuccess = new CheckinSuccess(
+                    id: $status->id,
+                    distance: $status->trainCheckin->distance,
+                    duration: $status->trainCheckin->duration,
+                    points: $status->trainCheckin->points,
+                    pointReason: $pointReason,
+                    lineName: $status->trainCheckin->HafasTrip->linename,
+                    socialText: $status->socialText,
+                    alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
+                    event: $status->trainCheckin->event,
+                    forced:  false,
+                    reason:  'status-updated'
+                );
+
                 return redirect()->route('statuses.get', ['id' => $status->id])
-                                 ->with('checkin-success', [
-                                     'reason'                  => 'status-updated',
-                                     'distance'                => $status->trainCheckin->distance,
-                                     'duration'                => $status->trainCheckin->duration,
-                                     'points'                  => $status->trainCheckin->points,
-                                     'lineName'                => $status->trainCheckin->HafasTrip->linename,
-                                     'alsoOnThisConnection'    => $status->trainCheckin->alsoOnThisConnection,
-                                     'event'                   => $status->trainCheckin->event,
-                                     'forced'                  => false,
-                                     'pointsCalculationReason' => $pointReason,
-                                 ]);
+                                 ->with('checkin-success', (clone $checkinSuccess));
             }
 
             return redirect()->route('statuses.get', ['id' => $status->id])
