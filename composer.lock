@@ -3599,16 +3599,16 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.6.1",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "2334c249907190c132364f5dae0287ab8666aa19"
+                "reference": "160d6274b03562ebeb55ed18399281d8118b76c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/2334c249907190c132364f5dae0287ab8666aa19",
-                "reference": "2334c249907190c132364f5dae0287ab8666aa19",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/160d6274b03562ebeb55ed18399281d8118b76c8",
+                "reference": "160d6274b03562ebeb55ed18399281d8118b76c8",
                 "shasum": ""
             },
             "require": {
@@ -3663,9 +3663,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-client/issues",
-                "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.1"
+                "source": "https://github.com/thephpleague/oauth2-client/tree/2.7.0"
             },
-            "time": "2021-12-22T16:42:49+00:00"
+            "time": "2023-04-16T18:19:15+00:00"
         },
         {
             "name": "league/oauth2-server",
@@ -4857,16 +4857,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.19.0",
+            "version": "v1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933"
+                "reference": "e592a3e06d1fa0d43988c7c7d9948ca836f644b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/cb15e403ecbe6a6cc515f855c310eb6b1872a933",
-                "reference": "cb15e403ecbe6a6cc515f855c310eb6b1872a933",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/e592a3e06d1fa0d43988c7c7d9948ca836f644b6",
+                "reference": "e592a3e06d1fa0d43988c7c7d9948ca836f644b6",
                 "shasum": ""
             },
             "require": {
@@ -4937,9 +4937,9 @@
             ],
             "support": {
                 "issues": "https://github.com/paragonie/sodium_compat/issues",
-                "source": "https://github.com/paragonie/sodium_compat/tree/v1.19.0"
+                "source": "https://github.com/paragonie/sodium_compat/tree/v1.20.0"
             },
-            "time": "2022-09-26T03:40:35+00:00"
+            "time": "2023-04-30T00:54:53+00:00"
         },
         {
             "name": "phenx/php-font-lib",
@@ -6164,16 +6164,16 @@
         },
         {
             "name": "smolblog/oauth2-twitter",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smolblog/oauth2-twitter.git",
-                "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62"
+                "reference": "17de377d584a5a5b9308dc21460e1fd6cfef8a31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smolblog/oauth2-twitter/zipball/b8601d94ed3478e054922cc3ae0299a2ab339c62",
-                "reference": "b8601d94ed3478e054922cc3ae0299a2ab339c62",
+                "url": "https://api.github.com/repos/smolblog/oauth2-twitter/zipball/17de377d584a5a5b9308dc21460e1fd6cfef8a31",
+                "reference": "17de377d584a5a5b9308dc21460e1fd6cfef8a31",
                 "shasum": ""
             },
             "require": {
@@ -6194,7 +6194,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -6217,9 +6217,9 @@
             ],
             "support": {
                 "issues": "https://github.com/smolblog/oauth2-twitter/issues",
-                "source": "https://github.com/smolblog/oauth2-twitter/tree/1.0.1"
+                "source": "https://github.com/smolblog/oauth2-twitter/tree/1.1.0"
             },
-            "time": "2022-08-16T00:15:13+00:00"
+            "time": "2023-04-15T15:21:50+00:00"
         },
         {
             "name": "spatie/browsershot",
