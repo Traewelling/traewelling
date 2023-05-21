@@ -3,6 +3,7 @@
 namespace Tests\Feature\Webhooks;
 
 use App\Enum\WebhookEvent;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Spatie\WebhookServer\CallWebhookJob;
@@ -16,8 +17,8 @@ class WebhookNotificationTest extends TestCase {
     public function testWebhookSendingOnNotification() {
         Bus::fake();
 
-        $alice = $this->createGDPRAckedUser();
-        $bob   = $this->createGDPRAckedUser();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
 
         $client = $this->createWebhookClient($alice);
         $this->createWebhook($bob, $client, [WebhookEvent::NOTIFICATION]);

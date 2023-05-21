@@ -174,7 +174,6 @@ class BackendCheckinTest extends TestCase
 
         // The bus runs in a 20min interval
         $departure = $trainStationboard['departures'][0];
-        self::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         try {

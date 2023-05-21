@@ -13,7 +13,6 @@ abstract class ApiTestCase extends TestCase
         parent::setUp();
         $this->artisan('passport:install');
         $this->artisan('passport:keys', ['--no-interaction' => true]);
-        $this->artisan('db:seed');
     }
 
     protected function getTokenForTestUser(): string {
