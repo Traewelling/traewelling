@@ -38,12 +38,6 @@ use Mastodon;
 class UserController extends Controller
 {
 
-    #[ArrayShape(['status' => "string"])]
-    public static function updateProfilePicture($avatar): array {
-        BackendSettingsController::updateProfilePicture($avatar);
-        return ['status' => ':ok'];
-    }
-
     public static function getProfilePage(string $username): ?array {
         $user = User::where('username', 'like', $username)->first();
         if ($user === null) {

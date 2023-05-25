@@ -183,7 +183,7 @@ class SettingsController extends Controller
      */
     public function uploadProfilePicture(Request $request): JsonResponse {
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
-            return $this->sendResponse('', 204);
+            return $this->sendResponse(['message' => __('settings.saved')]);
         }
         return $this->sendError('', 400);
     }
