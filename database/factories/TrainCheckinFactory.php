@@ -6,8 +6,10 @@ use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
+use App\Models\TrainStopover;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
 
 class TrainCheckinFactory extends Factory
 {
@@ -19,9 +21,47 @@ class TrainCheckinFactory extends Factory
             'origin'      => TrainStation::factory()->create()->ibnr,
             'destination' => TrainStation::factory()->create()->ibnr,
             'distance'    => $this->faker->randomFloat(2, 0, 100),
-            'departure'   => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'arrival'     => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'departure'   => Date::now()->subHour()->toIso8601String(),
+            'arrival'     => Date::now()->addHour()->toIso8601String(),
             'points'      => $this->faker->numberBetween(0, 100),
         ];
+    }
+
+    public function configure(): static {
+        //Update corresponding models so that the created checkins is consistent
+        return $this->afterCreating(static function(TrainCheckin $checkin) {
+            $checkin->status->update(['user_id' => $checkin->user_id]);
+
+            $checkin->HafasTrip->update([
+                                            'origin'      => $checkin->originStation->ibnr,
+                                            'destination' => $checkin->destinationStation->ibnr,
+                                            'departure'   => $checkin->departure,
+                                            'arrival'     => $checkin->arrival,
+                                        ]);
+
+            //Create (or update) origin stopover
+            TrainStopover::updateOrCreate(
+                [
+                    'trip_id'          => $checkin->HafasTrip->trip_id,
+                    'train_station_id' => $checkin->originStation->id,
+                ],
+                [
+                    'arrival_planned'   => $checkin->departure,
+                    'departure_planned' => $checkin->departure,
+                ]
+            );
+
+            //Create (or update) destination stopover
+            TrainStopover::updateOrCreate(
+                [
+                    'trip_id'          => $checkin->HafasTrip->trip_id,
+                    'train_station_id' => $checkin->destinationStation->id,
+                ],
+                [
+                    'arrival_planned'   => $checkin->arrival,
+                    'departure_planned' => $checkin->arrival,
+                ]
+            );
+        });
     }
 }

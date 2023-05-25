@@ -176,9 +176,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
              ->name('settings.follower.reject');
 
-        Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
-             ->name('settings.upload-image');
-
         Route::post('/delsession', [UserController::class, 'deleteSession'])
              ->name('delsession');
         Route::post('/deltoken', [UserController::class, 'deleteToken'])

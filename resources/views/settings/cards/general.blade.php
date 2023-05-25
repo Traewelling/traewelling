@@ -11,9 +11,9 @@
                 <div class="col-md-6 text-center">
                     <div class="image-box">
                         <img
-                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                            style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                            id="theProfilePicture"
+                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                                style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
+                                id="theProfilePicture"
                         />
                     </div>
 
@@ -22,15 +22,14 @@
                         {{__('settings.upload-image')}}
                     </a>
 
-                    @isset(auth()->user()->avatar)
-                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
-                           id="btnModalDeleteProfilePicture"
-                           data-mdb-toggle="modal"
-                           data-mdb-target="#deleteProfilePictureModal"
-                        >
-                            {{ __('settings.delete-profile-picture-btn') }}
-                        </a>
-                    @endisset
+                    <a href="javascript:void(0)"
+                       class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
+                       id="btnModalDeleteProfilePicture"
+                       data-mdb-toggle="modal"
+                       data-mdb-target="#deleteProfilePictureModal"
+                    >
+                        {{ __('settings.delete-profile-picture-btn') }}
+                    </a>
 
                     @error('avatar')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -114,12 +113,10 @@
                     <input type="file" id="image">
                 </p>
 
-                <div class="d-none text-trwl text-center" id="upload-error" role="alert">
-                    {{ __('settings.something-wrong') }}
-                </div>
-
                 <div id="upload-demo" class="d-none"></div>
-                <button class="btn btn-primary btn-block upload-image d-none" id="upload-button">
+                <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
+                        data-mdb-dismiss="modal"
+                >
                     {{__('settings.upload-image')}}
                 </button>
             </div>

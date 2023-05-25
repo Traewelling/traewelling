@@ -26,9 +26,9 @@ class ExportController extends Controller
                                             'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
                                         ]);
 
-        $from = Carbon::parse($validated['from']);
+        $from  = Carbon::parse($validated['from']);
         $until = Carbon::parse($validated['until']);
-        if($from->diffInDays($until) > 365) {
+        if ($from->diffInDays($until) > 365) {
             return back()->with('error', __('export.error.time'));
         }
 

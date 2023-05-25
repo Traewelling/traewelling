@@ -19,8 +19,8 @@ class EventSuggestionTest extends TestCase
 
     public function setUp(): void {
         parent::setUp();
-        $this->user  = $this->createGDPRAckedUser();
-        $this->admin = $this->createAdminUser();
+        $this->user  = User::factory()->create();
+        $this->admin = User::factory(['role' => 10])->create();
 
         $this->postData = [
             // For the EventSuggestion POST
