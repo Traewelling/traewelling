@@ -38,6 +38,7 @@
                 width: 100%;
                 line-height: inherit;
                 text-align: left;
+                font-size: 0.8em;
             }
 
             .export-container table thead tr {
@@ -92,7 +93,6 @@
                 text-align: center;
                 font-style: italic;
             }
-
         </style>
     </head>
     <body>
