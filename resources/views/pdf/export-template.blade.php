@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -73,8 +74,8 @@
             .footer-wrapper {
                 position: fixed;
                 bottom: -60px;
-                left: 0px;
-                right: 0px;
+                left: 0;
+                right: 0;
                 height: 50px;
             }
 
