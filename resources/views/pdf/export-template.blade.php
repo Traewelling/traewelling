@@ -17,17 +17,6 @@
                 color: #555;
             }
 
-            .product-icon {
-                width: 16px;
-                height: 16px;
-                margin-right: -100%;
-            }
-
-            td > .product-icon {
-                padding: 0;
-                max-width: 20px;
-            }
-
             .export-container .top {
                 page-break-after: avoid;
             }
