@@ -149,9 +149,29 @@
                             <td>{{ __('transport_types.' . $status->trainCheckin->HafasTrip->category->value) }}</td>
                             <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
                             <td>{{ $status->trainCheckin->Origin->name }}</td>
-                            <td>{{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>
+                                @if($status->trainCheckin->origin_stopover->isDepartureDelayed)
+                                    <span style="text-decoration: line-through;">
+                                        {{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}
+                                    </span>
+                                    <br/>
+                                    {{ $status->trainCheckin->origin_stopover->departure_real?->isoFormat(__('datetime-format')) }}
+                                @else
+                                    {{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}
+                                @endif
+                            </td>
                             <td>{{ $status->trainCheckin->Destination->name }}</td>
-                            <td>{{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>
+                                @if($status->trainCheckin->origin_stopover->isArrivalDelayed)
+                                    <span style="text-decoration: line-through;">
+                                        {{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}
+                                    </span>
+                                    <br/>
+                                    {{ $status->trainCheckin->destination_stopover->arrival_real?->isoFormat(__('datetime-format')) }}
+                                @else
+                                    {{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}
+                                @endif
+                            </td>
                             <td class="number-field">{{ $status->trainCheckin->duration }} min</td>
                             <td class="number-field">{{ number($status->trainCheckin->distance / 1000) }} km</td>
                             <td class="number-field"><i>{{ $status->business->value }}</i></td>
