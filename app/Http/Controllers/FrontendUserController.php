@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -18,19 +19,17 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class FrontendUserController extends Controller
 {
-    public function getProfilePage($username): Renderable {
-        $profilePage = UserBackend::getProfilePage($username);
-        if ($profilePage === null) {
-            abort(404);
+    public function getProfilePage(string $username): View {
+        $user = User::where('username', $username)->firstOrFail();
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (AuthorizationException) {
+            $statuses = null;
         }
 
         return view('profile', [
-            'username'    => $profilePage['username'],
-            'statuses'    => $profilePage['statuses'],
-            'user'        => $profilePage['user'],
-            'currentUser' => Auth::user(),
-            'twitterUrl'  => $profilePage['twitterUrl'],
-            'mastodonUrl' => $profilePage['mastodonUrl']
+            'statuses' => $statuses,
+            'user'     => $user,
         ]);
     }
 
