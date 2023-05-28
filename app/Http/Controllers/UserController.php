@@ -219,12 +219,6 @@ class UserController extends Controller
         return self::isFollowing($user, $userToUnfollow) == false;
     }
 
-    public static function registerByDay(Carbon $date): int {
-        return User::where("created_at", ">=", $date->copy()->startOfDay())
-                   ->where("created_at", "<=", $date->copy()->endOfDay())
-                   ->count();
-    }
-
     /**
      * @param string|null $searchQuery
      *
@@ -274,16 +268,5 @@ class UserController extends Controller
         } catch (PermissionException) {
             return redirect()->route('settings')->withErrors(__('messages.exception.general'));
         }
-    }
-
-    public function SaveAccount(Request $request): RedirectResponse {
-
-        $this->validate($request, [
-            'name' => 'required|max:120'
-        ]);
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $request['name'];
-        $user->update();
-        return redirect()->route('account');
     }
 }
