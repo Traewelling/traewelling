@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers\Frontend\Stats;
 
-use App\Enum\Business;
-use App\Enum\CacheKey;
 use App\Http\Controllers\Backend\GeoController;
-use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
-use Illuminate\View\View;
 
 class DailyStatsController extends Controller
 {

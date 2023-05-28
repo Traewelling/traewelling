@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
@@ -65,6 +66,9 @@ class EventController extends Controller
         return back()->with('alert-success', 'Event denied.');
     }
 
+    /**
+     * @throws HafasException
+     */
     public function acceptSuggestion(Request $request): RedirectResponse {
         $validated       = $request->validate([
                                                   'suggestionId'         => ['required', 'exists:event_suggestions,id'],
@@ -110,6 +114,9 @@ class EventController extends Controller
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde akzeptiert!');
     }
 
+    /**
+     * @throws HafasException
+     */
     public function create(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'name'                 => ['required', 'max:255'],

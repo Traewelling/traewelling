@@ -68,7 +68,7 @@ abstract class BrouterController extends Controller
 
     /**
      * 1. Fetch route for all stations of a trip at brouter
-     * 2. split the route by stations (we need the GeoJSON splitted!)
+     * 2. split the route by stations (we need the GeoJSON split!)
      * 3. Create features for every station and route between
      *
      * @param HafasTrip $trip
@@ -93,7 +93,7 @@ abstract class BrouterController extends Controller
             Log::error('Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
         }
-        //3. Create "new" GeoJSON splitted by stations (as features)
+        //3. Create "new" GeoJSON split by stations (as features)
         $geoJson = ['type' => 'FeatureCollection', 'features' => []];
 
         foreach ($brouterGeoJSON?->features[0]?->geometry?->coordinates ?? [] as $coordinate) {
@@ -193,7 +193,7 @@ abstract class BrouterController extends Controller
             if (!isset($data->properties->id)) {
                 $lastStopOver = null;
             } else {
-                if (!is_null($lastStopOver) && $hafasTrip?->category?->onRails()) { // A real route is missing -> request route via Brouter
+                if (!is_null($lastStopOver) && $hafasTrip->category?->onRails()) { // A real route is missing -> request route via Brouter
                     Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
                     return true;
                 }

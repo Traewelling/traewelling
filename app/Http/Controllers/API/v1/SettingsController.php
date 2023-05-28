@@ -70,6 +70,9 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse {
         $userHasPassword = auth()->user()->password !== null;
 

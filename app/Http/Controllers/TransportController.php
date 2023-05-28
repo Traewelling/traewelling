@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
-use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
-use App\Http\Resources\HafasTripResource;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
@@ -14,7 +12,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
-use Mastodon;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!

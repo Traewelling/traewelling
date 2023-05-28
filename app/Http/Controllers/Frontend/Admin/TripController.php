@@ -54,7 +54,7 @@ class TripController
         $trip = HafasTrip::create([
                                       'trip_id'        => strtr('manual-userId-uuid', [
                                           'userId' => auth()->id(),
-                                          'uuid'   => uniqid(),
+                                          'uuid'   => uniqid('', true),
                                       ]),
                                       'category'       => $validated['category'],
                                       'number'         => $validated['number'],

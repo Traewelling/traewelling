@@ -54,10 +54,6 @@ class DevController extends Controller {
         $clients = new OAuthClientRepository();
         $app     = $clients->findForUser($appId, auth()->user()->id);
 
-        if (!$app) {
-            abort(404);
-        }
-
         $clients->update(
             $app,
             $validated['name'],
