@@ -264,7 +264,7 @@ abstract class HafasController extends Controller
         $response = self::getHttpClient()->get("/stops/$ibnr");
 
         if (!$response->ok()) {
-            throw new HafasException($e->getMessage());
+            throw new HafasException($response->reason());
         }
 
         $data = json_decode($response->body());
