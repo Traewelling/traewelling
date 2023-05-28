@@ -38,12 +38,6 @@ use Mastodon;
 class UserController extends Controller
 {
 
-    #[ArrayShape(['status' => "string"])]
-    public static function updateProfilePicture($avatar): array {
-        BackendSettingsController::updateProfilePicture($avatar);
-        return ['status' => ':ok'];
-    }
-
     /**
      * @param User     $user
      * @param int|null $limit
