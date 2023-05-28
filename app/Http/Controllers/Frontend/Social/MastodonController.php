@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse as SympfonyRedirectResponse;
 
@@ -21,6 +22,7 @@ class MastodonController extends Controller
      * @param Request $request
      *
      * @return SympfonyRedirectResponse|RedirectResponse
+     * @throws ValidationException
      */
     public function redirect(Request $request): SympfonyRedirectResponse|RedirectResponse {
         $domain    = MastodonBackend::formatDomain($request->input('domain') ?? '');
@@ -68,9 +70,6 @@ class MastodonController extends Controller
 
         $socialiteUser = Socialite::driver(driver: 'mastodon')->user();
         $user          = MastodonBackend::getUserFromSocialite($socialiteUser, $server);
-        if ($user === null) {
-            return redirect()->to('/login')->withErrors([__('controller.social.create-error')]);
-        }
         if (!auth()->check()) {
             auth()->login(user: $user, remember: true);
             $user->update(['last_login' => Carbon::now()->toIso8601String()]);

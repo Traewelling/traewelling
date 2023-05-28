@@ -15,10 +15,6 @@ class ProfilePictureController extends Controller
 
         $profilePicture = ProfilePictureBackend::generateProfilePicture($user);
 
-        if ($profilePicture === null) {
-            abort(404);
-        }
-
         return response($profilePicture['picture'])
             ->header('Content-Type', 'image/' . $profilePicture['extension'])
             ->header('Cache-Control', 'public, no-transform, max-age:900');

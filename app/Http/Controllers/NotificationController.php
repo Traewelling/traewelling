@@ -46,10 +46,11 @@ class NotificationController extends Controller
         if ($notification->read_at == null) { // old state = unread
             $notification->markAsRead();
             return Response::json($notification, 201); // new state = read, 201=created
-        } else { // old state = read
-            $notification->markAsUnread();
-            return Response::json($notification, 202); // new state = unread, 202=accepted
         }
+
+        // old state = read
+        $notification->markAsUnread();
+        return Response::json($notification, 202); // new state = unread, 202=accepted
     }
 
     public static function readAll(): void {

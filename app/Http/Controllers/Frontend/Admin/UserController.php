@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Exceptions\RateLimitExceededException;
 use App\Models\User;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
@@ -15,7 +14,6 @@ use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,8 +23,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
-use JetBrains\PhpStorm\ArrayShape;
-use Mastodon;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!

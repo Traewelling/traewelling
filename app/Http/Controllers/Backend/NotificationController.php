@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\ItemNotFoundException;
 
 abstract class NotificationController extends Controller
 {

@@ -59,7 +59,7 @@ abstract class WebhookController extends Controller {
     ): bool {
         Gate::authorize("delete", $webhook);
         // Checking if the client is allowed to delete here,
-        // because i found no way of doing that in the policy.
+        // because I found no way of doing that in the policy.
         if ($client != null && $client->id != $webhook->client->id) {
             throw new PermissionException();
         }
@@ -79,7 +79,7 @@ abstract class WebhookController extends Controller {
         ]);
     }
 
-    static function dispatchWebhook(User $user, WebhookEvent $event, array $data): void {
+    public static function dispatchWebhook(User $user, WebhookEvent $event, array $data): void {
         if (!config("trwl.webhooks_active")) {
             return;
         }
@@ -106,12 +106,6 @@ abstract class WebhookController extends Controller {
                 ->useSecret($webhook->secret)
                 ->dispatch();
         }
-    }
-
-    public static function deleteAllWebhooks(User $user, Client $client): void {
-        Webhook::where('user_id', '=', $user->id)
-            ->where('oauth_client_id', '=', $client->id)
-            ->delete();
     }
 
     /**

@@ -64,6 +64,7 @@ abstract class FollowController extends Controller
      * @param int $approverId The id of a to-be-approved follower
      *
      * @throws ModelNotFoundException|AlreadyFollowingException
+     * @throws AuthorizationException
      */
     public static function approveFollower(int $userId, int $approverId): bool {
         $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
